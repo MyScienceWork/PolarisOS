@@ -1,0 +1,16 @@
+node_modules/
+.idea
+bower_components/
+*.swp
+*.pyc
+*.o
+*.zip
+*.log
+coverage/
+build/
+public/js/
+public/css/
+public/fonts/
+public/views/
+doc/
+package-lock.json

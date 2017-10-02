@@ -1,0 +1,169 @@
+$baseline: 1.5rem;
+
+$minScreen: 20rem;
+$mediumScreen: 80rem;
+$maxScreen: 120rem;
+
+@mixin fluid-type($properties, $min-vw, $medium-vw, $max-vw, $min-value, $medium-value, $max-value) {
+	& {
+		@each $property in $properties {
+			#{$property}: $min-value;
+		}
+
+		@media screen and (min-width: $min-vw) {
+			@each $property in $properties {
+				#{$property}: calc(#{$min-value} + #{strip-unit($max-value - $min-value)} * ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)}));
+			}
+		}
+
+		@media screen and (min-width: $medium-vw) {
+			@each $property in $properties {
+				#{$property}: calc(#{$min-value} + #{strip-unit($medium-value - $min-value)} * ((100vw - #{$min-vw}) / #{strip-unit($medium-vw - $min-vw)}));
+			}
+		}
+
+		@media screen and (min-width: $max-vw) {
+			@each $property in $properties {
+				#{$property}: $max-value;
+			}
+		}
+	}
+}
+
+@function strip-unit($value) {
+	@return $value / ($value * 0 + 1);
+}
+
+
+@media screen and (orientation:portrait) {
+    $minFont: 1.0rem;
+    $mediumFont: 2.7rem;
+    $maxFont: 3.7rem;
+
+    $h0: 3.0rem;
+    $h1: 2.0rem;
+    $h2: 1.5rem;
+    $h3: 1.25rem;
+    $h4: 1.0rem;
+    $h5: .875rem;
+    $h6: .675rem;
+
+    *{
+        box-sizing: border-box;
+    }
+
+    html {
+        box-sizing: border-box;
+        height: 100%;
+        font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        @include fluid-type(font-size, $minScreen, $mediumScreen, $maxScreen, $minFont, $mediumFont, $maxFont);
+    }
+
+    .paragraph, p{	
+        line-height: $baseline;
+        font-size: $h4;
+    }
+
+    .h0-portrait, .h0 {
+        font-size: $h0;
+        line-height: $h0;
+    }
+
+    .h1-portrait, .h1, h1 {
+        font-size: $h1;
+        line-height: $h1;
+    }
+
+    .h2-portrait, .h2, h2 {
+        font-size: $h2;
+        line-height: $h2;
+    }
+
+    .h3-portrait, .h3, h3 {
+        font-size: $h3;
+        line-height: $h3;
+    }
+
+    .h4-portrait, .h4, h4 {
+        font-size: $h4;
+        line-height: $h4;
+    }
+
+    .h5-portrait, .h5, h5 {
+        font-size: $h5;
+        line-height: $h5;
+    }
+
+    .h6-portrait, .h6, h6 {
+        font-size: $h6;
+        line-height: $h6;
+    }
+}
+
+@media screen and (orientation:landscape) {
+    $minFont: .8rem;
+    $mediumFont: 2.5rem;
+    $maxFont: 3.5rem;
+
+    $h0: 2.8rem;
+    $h1: 1.8rem;
+    $h2: 1.3rem;
+    $h3: 1.05rem;
+    $h4: 0.8rem;
+    $h5: .675rem;
+    $h6: .475rem;
+
+    *{
+        box-sizing: border-box;
+    }
+
+    html {
+        box-sizing: border-box;
+        height: 100%;
+        font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        @include fluid-type(font-size, $minScreen, $mediumScreen, $maxScreen, $minFont, $mediumFont, $maxFont);
+    }
+
+    .paragraph, p{	
+        line-height: $baseline;
+        font-size: $h4;
+    }
+
+    .h0 {
+        font-size: $h0;
+        line-height: $h0;
+    }
+
+    .h1, h1 {
+        font-size: $h1;
+        line-height: $h1;
+    }
+
+    .h2, h2 {
+        font-size: $h2;
+        line-height: $h2;
+    }
+
+    .h3, h3 {
+        font-size: $h3;
+        line-height: $h3;
+    }
+
+    .h4, h4 {
+        font-size: $h4;
+        line-height: $h4;
+    }
+
+    .h5, h5 {
+        font-size: $h5;
+        line-height: $h5;
+    }
+
+    .h6, h6 {
+        font-size: $h6;
+        line-height: $h6;
+    }
+}
+

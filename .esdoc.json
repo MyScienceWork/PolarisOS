@@ -1,0 +1,25 @@
+{
+  "source": "./app",
+  "destination": "./doc",
+  "plugins": [
+    {
+        "name": "esdoc-standard-plugin", 
+        "option": {
+            "lint": {"enable": false},
+            "undocumentIdentifier": {"enable": false},
+            "unexportedIdentifier": {"enable": true}
+        }
+    },
+    {
+        "name": "esdoc-flow-type-plugin", 
+        "option": {"enable": true}
+    },
+    {
+        "name": "esdoc-ecmascript-proposal-plugin", 
+        "option": {"all": true}
+    },
+    {
+        "name": "esdoc-node"
+    }
+  ]
+}
