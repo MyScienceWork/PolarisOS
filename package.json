@@ -9,14 +9,16 @@
   "license": "MIT",
   "main": "app/app.js",
   "scripts": {
-    "test": "npm run build && NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
+    "test": "npm run build-watch && NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
     "cover": "npm run build && NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js",
-    "build": "rm -rf build && flow-remove-types app/ -d build/",
-    "prepublish": "npm run build",
+    "build": "npm run clean-public && flow-remove-types app/ -d build/ && gulp build && rm -rf ./build/public && cp -r ./public build/",
+    "build-watch": "flow-remove-types app/ -d build/ && rm -rf ./build/public && cp -r ./public build/",
     "dev": "npm run build && node build/app.js",
-    "start": "npm run build && NODE_ENV=production node build/app.js",
-    "watch": "./node_modules/.bin/nodemon -e js -w 'app/**/*.*' -x 'npm run dev'",
+    "dev-watch": "npm run build-watch && node build/app.js",
+    "start": "NODE_ENV=production npm run build && NODE_ENV=production node build/app.js",
+    "watch": "./node_modules/.bin/nodemon -e js,jsx,less,css,scss,vue -w 'app/**/*.*' -w 'public/**/*.*' -x 'npm run dev-watch'",
     "flow": "flow",
+    "clean-public": "rm -rf ./public/front/{css,js,fonts,views}/* && rm -rf ./public/back/{css,js,fonts,views}/*",
     "doc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {
