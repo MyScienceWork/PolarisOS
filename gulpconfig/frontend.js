@@ -35,6 +35,7 @@ class GulpFrontend {
 
         this.FRONT_LOCATIONS = {
             fonts: './front/frontend/fonts',
+            imgs: './front/frontend/imgs',
         };
 
         this.dependencies = [
@@ -162,6 +163,11 @@ class GulpFrontend {
         gulp.src([
             './front/frontend/views/front.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
+    }
+
+    copyImgs() {
+    return gulp.src([`${this.FRONT_LOCATIONS.imgs}/**/*`], { base: this.FRONT_LOCATIONS.imgs})
+            .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
     revisionClean() {

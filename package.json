@@ -22,6 +22,7 @@
     "doc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {
+    "bulma": "^0.5.3",
     "elasticsearch": "^13.0.1",
     "enumify": "^1.0.4",
     "joi": "^10.4.1",
@@ -39,14 +40,14 @@
     "moment-timezone": "^0.5.13",
     "shortid": "^2.2.8",
     "superagent": "^3.3.1",
-    "winston": "^2.2.0",
-    "winston-koa-logger": "0.0.2",
-    "ws": "^2.3.1",
     "toastr": "^2.1.2",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0",
     "vue-touch": "^2.0.0-beta.4",
-    "vuex": "^2.4.0"
+    "vuex": "^2.4.0",
+    "winston": "^2.2.0",
+    "winston-koa-logger": "0.0.2",
+    "ws": "^2.3.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.x.x",

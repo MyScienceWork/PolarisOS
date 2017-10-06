@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Messages = require('../api/messages');
 const StringUtils = require('../utils/strings');
-const EventType = require('../enums/event_types');
 
 module.exports = {
     [Messages.LOADING]: (state) => {

@@ -73,59 +73,71 @@ $topenter: -10px;
 }
 
 
-.fv-loader{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: - $loaderw / 2;
-  margin-top: - $loaderh / 2;
-}
-.fv-square{
-  background: white;
-  width: $squarew;
-  height: $squareh;
-  float: left;
-  top: $topenter;
-  margin-right: $squaremargin;
-  margin-top: $squaremargin;
-  position:relative;
-  opacity: 0;
-  -webkit-animation: enter 6s infinite;
-  animation: enter 6s infinite;
-}
-.fv-loader-enter{
-  top: 0px;
-  opacity: 1;
-}
-.fv-square:nth-child(1){
-  @include delay(6 * $delayenter);
-}
-.fv-square:nth-child(2){
- @include delay(7 * $delayenter);
-}
-.fv-square:nth-child(3){
-  @include delay(8 * $delayenter);
-}
-.fv-square:nth-child(4){
-  @include delay(3 * $delayenter);
-}
-.fv-square:nth-child(5){
-  @include delay(4 * $delayenter);
-}
-.fv-square:nth-child(6){
-  @include delay(5 * $delayenter);
-}
-.fv-square:nth-child(7){
-  }
-.fv-square:nth-child(8){
-  @include delay(1 * $delayenter);
-}
-.fv-square:nth-child(9){
-  @include delay(2 * $delayenter);
-}
-.fv-loader-clear{
-  clear: both;
- }
-.fv-loader-last{
-   margin-right:0;
+.msw-loader{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: - $loaderw / 2;
+    margin-top: - $loaderh / 2;
+
+    .loader-square{
+        width: $squarew;
+        height: $squareh;
+        float: left;
+        top: $topenter;
+        margin-right: $squaremargin;
+        margin-top: $squaremargin;
+        position:relative;
+        opacity: 0;
+        -webkit-animation: enter 6s infinite;
+        animation: enter 6s infinite;
+    }
+    
+    .loader-loader-enter{
+        top: 0px;
+        opacity: 1;
+    }
+    
+    .loader-square:nth-child(1){
+        @include delay(6 * $delayenter);
+    }
+    
+    .loader-square:nth-child(2){
+        @include delay(7 * $delayenter);
+    }
+    
+    .loader-square:nth-child(3){
+        @include delay(8 * $delayenter);
+    }
+    
+    .loader-square:nth-child(4){
+        @include delay(3 * $delayenter);
+    }
+    
+    .loader-square:nth-child(5){
+        @include delay(4 * $delayenter);
+    }
+    
+    .loader-square:nth-child(6){
+        @include delay(5 * $delayenter);
+    }
+    
+    .loader-square:nth-child(7){
+    }
+    
+    .loader-square:nth-child(8){
+        @include delay(1 * $delayenter);
+    }
+    
+    .loader-square:nth-child(9){
+        @include delay(2 * $delayenter);
+    }
+    
+    .loader-clear{
+        clear: both;
+    }
+    
+    .loader-last{
+        margin-right:0;
+    }
 }

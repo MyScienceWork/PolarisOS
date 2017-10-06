@@ -1,0 +1,179 @@
+@-webkit-keyframes enter {
+  0% {
+    opacity: 0;
+    top: -10px; }
+  5% {
+    opacity: 1;
+    top: 0px; }
+  50.9% {
+    opacity: 1;
+    top: 0px; }
+  55.9% {
+    opacity: 0;
+    top: 10px; } }
+
+@keyframes enter {
+  0% {
+    opacity: 0;
+    top: -10px; }
+  5% {
+    opacity: 1;
+    top: 0px; }
+  50.9% {
+    opacity: 1;
+    top: 0px; }
+  55.9% {
+    opacity: 0;
+    top: 10px; } }
+
+.msw-loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -27.5px;
+  margin-top: -27.5px; }
+  .msw-loader .loader-square {
+    width: 15px;
+    height: 15px;
+    float: left;
+    top: -10px;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
+    opacity: 0;
+    -webkit-animation: enter 6s infinite;
+    animation: enter 6s infinite; }
+  .msw-loader .loader-loader-enter {
+    top: 0px;
+    opacity: 1; }
+  .msw-loader .loader-square:nth-child(1) {
+    -webkit-animation-delay: 1.8s;
+    animation-delay: 1.8s; }
+  .msw-loader .loader-square:nth-child(2) {
+    -webkit-animation-delay: 2.1s;
+    animation-delay: 2.1s; }
+  .msw-loader .loader-square:nth-child(3) {
+    -webkit-animation-delay: 2.4s;
+    animation-delay: 2.4s; }
+  .msw-loader .loader-square:nth-child(4) {
+    -webkit-animation-delay: 0.9s;
+    animation-delay: 0.9s; }
+  .msw-loader .loader-square:nth-child(5) {
+    -webkit-animation-delay: 1.2s;
+    animation-delay: 1.2s; }
+  .msw-loader .loader-square:nth-child(6) {
+    -webkit-animation-delay: 1.5s;
+    animation-delay: 1.5s; }
+  .msw-loader .loader-square:nth-child(8) {
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s; }
+  .msw-loader .loader-square:nth-child(9) {
+    -webkit-animation-delay: 0.6s;
+    animation-delay: 0.6s; }
+  .msw-loader .loader-clear {
+    clear: both; }
+  .msw-loader .loader-last {
+    margin-right: 0; }
+
+@media screen and (orientation: portrait) {
+  * {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box; }
+  html {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    height: 100%;
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility; }
+    html {
+      font-size: 1rem; } }
+    @media screen and (orientation: portrait) and (min-width: 20rem) {
+      html {
+        font-size: calc(1rem + 2.7 * ((100vw - 20rem) / 100)); } }
+    @media screen and (orientation: portrait) and (min-width: 80rem) {
+      html {
+        font-size: calc(1rem + 1.7 * ((100vw - 20rem) / 60)); } }
+    @media screen and (orientation: portrait) and (min-width: 120rem) {
+      html {
+        font-size: 3.7rem; } }
+
+@media screen and (orientation: portrait) {
+  .paragraph, p {
+    line-height: 1.5rem;
+    font-size: 1rem; }
+  .h0-portrait, .h0 {
+    font-size: 3rem;
+    line-height: 3rem; }
+  .h1-portrait, .h1, h1 {
+    font-size: 2rem;
+    line-height: 2rem; }
+  .h2-portrait, .h2, h2 {
+    font-size: 1.5rem;
+    line-height: 1.5rem; }
+  .h3-portrait, .h3, h3 {
+    font-size: 1.25rem;
+    line-height: 1.25rem; }
+  .h4-portrait, .h4, h4 {
+    font-size: 1rem;
+    line-height: 1rem; }
+  .h5-portrait, .h5, h5 {
+    font-size: 0.875rem;
+    line-height: 0.875rem; }
+  .h6-portrait, .h6, h6 {
+    font-size: 0.675rem;
+    line-height: 0.675rem; } }
+
+@media screen and (orientation: landscape) {
+  * {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box; }
+  html {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    height: 100%;
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility; }
+    html {
+      font-size: 0.8rem; } }
+    @media screen and (orientation: landscape) and (min-width: 20rem) {
+      html {
+        font-size: calc(0.8rem + 2.7 * ((100vw - 20rem) / 100)); } }
+    @media screen and (orientation: landscape) and (min-width: 80rem) {
+      html {
+        font-size: calc(0.8rem + 1.7 * ((100vw - 20rem) / 60)); } }
+    @media screen and (orientation: landscape) and (min-width: 120rem) {
+      html {
+        font-size: 3.5rem; } }
+
+@media screen and (orientation: landscape) {
+  .paragraph, p {
+    line-height: 1.5rem;
+    font-size: 0.8rem; }
+  .h0 {
+    font-size: 2.8rem;
+    line-height: 2.8rem; }
+  .h1, h1 {
+    font-size: 1.8rem;
+    line-height: 1.8rem; }
+  .h2, h2 {
+    font-size: 1.3rem;
+    line-height: 1.3rem; }
+  .h3, h3 {
+    font-size: 1.05rem;
+    line-height: 1.05rem; }
+  .h4, h4 {
+    font-size: 0.8rem;
+    line-height: 0.8rem; }
+  .h5, h5 {
+    font-size: 0.675rem;
+    line-height: 0.675rem; }
+  .h6, h6 {
+    font-size: 0.475rem;
+    line-height: 0.475rem; } }
+
+.primary-color {
+  background-color: #E63A30;
+}
+.secondary-color {
+  background-color: #000;
+}
