@@ -1,0 +1,44 @@
+//Mixins
+.generate-colored-nav-menu(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .navbar-item-@{name}:hover {
+        background-color: @@name;
+    }
+
+    .navbar-item-@{name} {
+        border-bottom-color: @@name;
+    }
+
+    .generate-colored-nav-menu((@i - 1));
+}
+nav {
+    margin-top: 2%;
+    padding-bottom: 1.2%;
+    padding-left: 10%;
+    padding-right: 10%;
+    background-color: @grey-3;
+
+    .column {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navbar-item {
+        text-align: center;
+        border-bottom-style: solid;
+        border-bottom-width: 5px;
+        a {
+            color: @white;
+            font-weight: bold;
+        }
+        
+        a:hover {
+            color: @white;
+        }
+    }
+}
+
+.generate-colored-nav-menu();
+

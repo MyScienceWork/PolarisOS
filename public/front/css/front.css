@@ -78,6 +78,9 @@
 .is-paddingless {
   padding: 0 !important;
 }
+.is-pulled-bottom {
+  margin-top: auto;
+}
 .msw-loader .primary-color {
   background-color: #E63A30;
 }
@@ -325,4 +328,140 @@
   border-color: transparent;
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+.hero-head {
+  background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
+}
+nav {
+  margin-top: 2%;
+  padding-bottom: 1.2%;
+  padding-left: 10%;
+  padding-right: 10%;
+  background-color: #212D3A;
+}
+nav .column {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+nav .navbar-item {
+  text-align: center;
+  border-bottom-style: solid;
+  border-bottom-width: 5px;
+}
+nav .navbar-item a {
+  color: #FFF;
+  font-weight: bold;
+}
+nav .navbar-item a:hover {
+  color: #FFF;
+}
+.navbar-item-blue:hover {
+  background-color: #1CBDC7;
+}
+.navbar-item-blue {
+  border-bottom-color: #1CBDC7;
+}
+.navbar-item-green:hover {
+  background-color: #1D875F;
+}
+.navbar-item-green {
+  border-bottom-color: #1D875F;
+}
+.navbar-item-brown:hover {
+  background-color: #B39482;
+}
+.navbar-item-brown {
+  border-bottom-color: #B39482;
+}
+.navbar-item-purple:hover {
+  background-color: #7E69B4;
+}
+.navbar-item-purple {
+  border-bottom-color: #7E69B4;
+}
+.navbar-item-orange:hover {
+  background-color: #F8AA24;
+}
+.navbar-item-orange {
+  border-bottom-color: #F8AA24;
+}
+.navbar-item-red:hover {
+  background-color: #E9362F;
+}
+.navbar-item-red {
+  border-bottom-color: #E9362F;
+}
+footer {
+  background-color: #212D3A;
+  color: #FFF;
+  font-size: 0.9rem;
+}
+footer a {
+  color: #FFF;
+}
+footer a:hover {
+  color: #FFF;
+}
+footer .container {
+  margin-left: 10% !important;
+  margin-right: 10% !important;
+}
+footer .footer-menu .column {
+  border-top-width: 5px;
+  border-top-style: solid;
+}
+footer .footer-menu .column .footer-menu-title {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+footer .footer-menu .column .footer-menu-list a:hover {
+  text-decoration: underline;
+}
+footer .footer-disclaimer {
+  font-weight: bold;
+  text-align: center;
+  background: url("../imgs/footers/footer_fili.svg") no-repeat 0 0;
+}
+.footer-menu-blue {
+  border-top-color: #1CBDC7;
+}
+.footer-menu-blue .footer-menu-list a:hover {
+  color: #1CBDC7;
+}
+.footer-menu-green {
+  border-top-color: #1D875F;
+}
+.footer-menu-green .footer-menu-list a:hover {
+  color: #1D875F;
+}
+.footer-menu-brown {
+  border-top-color: #B39482;
+}
+.footer-menu-brown .footer-menu-list a:hover {
+  color: #B39482;
+}
+.footer-menu-purple {
+  border-top-color: #7E69B4;
+}
+.footer-menu-purple .footer-menu-list a:hover {
+  color: #7E69B4;
+}
+.footer-menu-orange {
+  border-top-color: #F8AA24;
+}
+.footer-menu-orange .footer-menu-list a:hover {
+  color: #F8AA24;
+}
+.footer-menu-red {
+  border-top-color: #E9362F;
+}
+.footer-menu-red .footer-menu-list a:hover {
+  color: #E9362F;
 }
