@@ -1,8 +1,8 @@
-$baseline: 1.5rem;
+$baseline: 1rem;
 
 $minScreen: 20rem;
-$mediumScreen: 80rem;
-$maxScreen: 120rem;
+$mediumScreen: 40rem;
+$maxScreen: 80rem;
 
 @mixin fluid-type($properties, $min-vw, $medium-vw, $max-vw, $min-value, $medium-value, $max-value) {
 	& {
@@ -37,16 +37,16 @@ $maxScreen: 120rem;
 
 @media screen and (orientation:portrait) {
     $minFont: 1.0rem;
-    $mediumFont: 2.7rem;
-    $maxFont: 3.7rem;
+    $mediumFont: 1.7rem;
+    $maxFont: 2.7rem;
 
-    $h0: 3.0rem;
-    $h1: 2.0rem;
-    $h2: 1.5rem;
-    $h3: 1.25rem;
-    $h4: 1.0rem;
-    $h5: .875rem;
-    $h6: .675rem;
+    $h0: 2.0rem;
+    $h1: 1.5rem;
+    $h2: 1.25rem;
+    $h3: 1.00rem;
+    $h4: 0.75rem;
+    $h5: .65rem;
+    $h6: .50rem;
 
     *{
         box-sizing: border-box;

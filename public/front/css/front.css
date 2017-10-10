@@ -75,105 +75,254 @@
   .msw-loader .loader-last {
     margin-right: 0; }
 
-@media screen and (orientation: portrait) {
-  * {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box; }
-  html {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-    height: 100%;
-    font-smoothing: antialiased;
-    text-rendering: optimizeLegibility; }
-    html {
-      font-size: 1rem; } }
-    @media screen and (orientation: portrait) and (min-width: 20rem) {
-      html {
-        font-size: calc(1rem + 2.7 * ((100vw - 20rem) / 100)); } }
-    @media screen and (orientation: portrait) and (min-width: 80rem) {
-      html {
-        font-size: calc(1rem + 1.7 * ((100vw - 20rem) / 60)); } }
-    @media screen and (orientation: portrait) and (min-width: 120rem) {
-      html {
-        font-size: 3.7rem; } }
-
-@media screen and (orientation: portrait) {
-  .paragraph, p {
-    line-height: 1.5rem;
-    font-size: 1rem; }
-  .h0-portrait, .h0 {
-    font-size: 3rem;
-    line-height: 3rem; }
-  .h1-portrait, .h1, h1 {
-    font-size: 2rem;
-    line-height: 2rem; }
-  .h2-portrait, .h2, h2 {
-    font-size: 1.5rem;
-    line-height: 1.5rem; }
-  .h3-portrait, .h3, h3 {
-    font-size: 1.25rem;
-    line-height: 1.25rem; }
-  .h4-portrait, .h4, h4 {
-    font-size: 1rem;
-    line-height: 1rem; }
-  .h5-portrait, .h5, h5 {
-    font-size: 0.875rem;
-    line-height: 0.875rem; }
-  .h6-portrait, .h6, h6 {
-    font-size: 0.675rem;
-    line-height: 0.675rem; } }
-
-@media screen and (orientation: landscape) {
-  * {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box; }
-  html {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-    height: 100%;
-    font-smoothing: antialiased;
-    text-rendering: optimizeLegibility; }
-    html {
-      font-size: 0.8rem; } }
-    @media screen and (orientation: landscape) and (min-width: 20rem) {
-      html {
-        font-size: calc(0.8rem + 2.7 * ((100vw - 20rem) / 100)); } }
-    @media screen and (orientation: landscape) and (min-width: 80rem) {
-      html {
-        font-size: calc(0.8rem + 1.7 * ((100vw - 20rem) / 60)); } }
-    @media screen and (orientation: landscape) and (min-width: 120rem) {
-      html {
-        font-size: 3.5rem; } }
-
-@media screen and (orientation: landscape) {
-  .paragraph, p {
-    line-height: 1.5rem;
-    font-size: 0.8rem; }
-  .h0 {
-    font-size: 2.8rem;
-    line-height: 2.8rem; }
-  .h1, h1 {
-    font-size: 1.8rem;
-    line-height: 1.8rem; }
-  .h2, h2 {
-    font-size: 1.3rem;
-    line-height: 1.3rem; }
-  .h3, h3 {
-    font-size: 1.05rem;
-    line-height: 1.05rem; }
-  .h4, h4 {
-    font-size: 0.8rem;
-    line-height: 0.8rem; }
-  .h5, h5 {
-    font-size: 0.675rem;
-    line-height: 0.675rem; }
-  .h6, h6 {
-    font-size: 0.475rem;
-    line-height: 0.475rem; } }
-
-.primary-color {
+.is-paddingless {
+  padding: 0 !important;
+}
+.msw-loader .primary-color {
   background-color: #E63A30;
 }
-.secondary-color {
+.msw-loader .secondary-color {
   background-color: #000;
+}
+.card {
+  padding: 1%;
+  border: 1px solid #FFF;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+.card .card-header {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  color: #212D3A;
+}
+.card .card-footer {
+  border-top: none;
+}
+.clickable-card {
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  padding: 0 2% 2% 2%;
+  cursor: pointer;
+}
+.clickable-card .card-header {
+  display: inline-block;
+  padding: 0px 10px;
+  color: #FFF;
+  border-radius: 0 0 5px 5px;
+  text-transform: uppercase;
+}
+.has-card-gradient {
+  background: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#FFF));
+  background: linear-gradient(to bottom, #EBEBEB, #FFF);
+}
+.card-blue {
+  background-color: #1CBDC7;
+}
+.clickable-card-blue:hover {
+  background-color: #1CBDC7;
+}
+.clickable-card-blue:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-blue .card-header {
+  background-color: #1CBDC7;
+}
+.card-header-blue {
+  background-color: #1CBDC7;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.card-green {
+  background-color: #1D875F;
+}
+.clickable-card-green:hover {
+  background-color: #1D875F;
+}
+.clickable-card-green:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-green .card-header {
+  background-color: #1D875F;
+}
+.card-header-green {
+  background-color: #1D875F;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.card-brown {
+  background-color: #B39482;
+}
+.clickable-card-brown:hover {
+  background-color: #B39482;
+}
+.clickable-card-brown:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-brown .card-header {
+  background-color: #B39482;
+}
+.card-header-brown {
+  background-color: #B39482;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.card-purple {
+  background-color: #7E69B4;
+}
+.clickable-card-purple:hover {
+  background-color: #7E69B4;
+}
+.clickable-card-purple:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-purple .card-header {
+  background-color: #7E69B4;
+}
+.card-header-purple {
+  background-color: #7E69B4;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.card-orange {
+  background-color: #F8AA24;
+}
+.clickable-card-orange:hover {
+  background-color: #F8AA24;
+}
+.clickable-card-orange:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-orange .card-header {
+  background-color: #F8AA24;
+}
+.card-header-orange {
+  background-color: #F8AA24;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.card-red {
+  background-color: #E9362F;
+}
+.clickable-card-red:hover {
+  background-color: #E9362F;
+}
+.clickable-card-red:hover .card-header {
+  background-color: #212D3A;
+  color: #FFF;
+}
+.clickable-card-red .card-header {
+  background-color: #E9362F;
+}
+.card-header-red {
+  background-color: #E9362F;
+  border-radius: 5px 5px 0 0;
+  padding: 1%;
+  border-bottom: 0px solid #FFF !important;
+  font-weight: bold;
+  color: #FFF !important;
+  text-transform: uppercase;
+}
+.button {
+  border-radius: 5px;
+  padding: 0px 7px 0px 7px;
+  border: solid 1px #FFF;
+  text-decoration: none;
+  color: #4E5762;
+  vertical-align: middle;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1.8em;
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  height: auto;
+}
+.button:focus:not(:active),
+.button.is-focused:not(:active) {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.button:focus,
+.button.is-focused {
+  border-color: transparent;
+}
+.button-blue:focus,
+.is-focused-blue,
+.button-blue:hover {
+  color: #1CBDC7;
+}
+.button-green:focus,
+.is-focused-green,
+.button-green:hover {
+  color: #1D875F;
+}
+.button-brown:focus,
+.is-focused-brown,
+.button-brown:hover {
+  color: #B39482;
+}
+.button-purple:focus,
+.is-focused-purple,
+.button-purple:hover {
+  color: #7E69B4;
+}
+.button-orange:focus,
+.is-focused-orange,
+.button-orange:hover {
+  color: #F8AA24;
+}
+.button-red:focus,
+.is-focused-red,
+.button-red:hover {
+  color: #E9362F;
+}
+.has-button-gradient {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#EBEBEB));
+  background-image: linear-gradient(to bottom, #FFF, #EBEBEB);
+}
+.has-button-gradient:focus {
+  background-image: -webkit-gradient(linear, left bottom, left top, from(#FFF), to(#EBEBEB));
+  background-image: linear-gradient(to top, #FFF, #EBEBEB);
+}
+.input {
+  border: 0;
+  padding: 8px;
+  min-height: 32px;
+  background-color: #EEF0F2;
+  border-radius: 8px;
+}
+.input:focus,
+.input:hover,
+.input:active {
+  border-color: transparent;
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
