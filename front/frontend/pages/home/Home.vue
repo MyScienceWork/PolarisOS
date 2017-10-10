@@ -22,10 +22,10 @@
         </div>
         <nav role="navigation" aria-label="main navigation">
             <div class="columns is-centered">
-                <div class="column is-active navbar-item-red navbar-item">
+                <div class="column navbar-item-red navbar-item">
                     <a class="" href='#'>Home</a>
                 </div>
-                <div class="column navbar-item-orange navbar-item">
+                <div class="column is-active navbar-item-orange navbar-item">
                     <a class="" href='#'>Home</a>
                 </div>
                 <div class="column navbar-item-purple navbar-item">
@@ -41,10 +41,9 @@
                     <a class="" href='#'>Home</a>
                 </div>
             </div>
-            <div class="breadcrumb breadcrumb-red">
+            <div class="breadcrumb breadcrumb-orange">
                 <div class="breadcrumb-content">
-                    <a href='#'>test test test</a>
-                    <a href='#'>test test test</a>
+                    <a class="" href='#'><i class="fa fa-home"></i></a>
                     <a href='#'>test test test</a>
                 </div>
             </div>
