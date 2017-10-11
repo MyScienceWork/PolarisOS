@@ -1,7 +1,9 @@
 <template>
-<div id="app">
+<div id="app" class="hero is-fullheight">
+    <router-view name="header"></router-view>
     <router-view></router-view>
-  </div>
+    <router-view name="footer"></router-view>
+</div>
 </template>
 
 <script>

@@ -329,6 +329,107 @@
   -webkit-box-shadow: none;
           box-shadow: none;
 }
+.stepper {
+  display: inline-block;
+  -webkit-box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
+          box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  border-radius: 5px;
+  counter-reset: flag;
+}
+.stepper a {
+  text-decoration: none;
+  outline: none;
+  display: block;
+  float: left;
+  font-size: 12px;
+  line-height: 36px;
+  color: white;
+  /*need more margin on the left of links to accomodate the numbers*/
+  padding: 0 10px 0 60px;
+  background: #666;
+  background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#333));
+  background: linear-gradient(#666, #333);
+  position: relative;
+}
+.stepper a:first-child {
+  padding-left: 46px;
+  border-radius: 5px 0 0 5px;
+  /*to match with the parent's radius*/
+}
+.stepper a:first-child:before {
+  left: 14px;
+}
+.stepper a:last-child {
+  border-radius: 0 5px 5px 0;
+  /*this was to prevent glitches on hover*/
+  padding-right: 20px;
+}
+.stepper a.active,
+.breadcrumb a:hover {
+  background: #333;
+  background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000));
+  background: linear-gradient(#333, #000);
+}
+.breadcrumb a.active:after,
+.breadcrumb a:hover:after {
+  background: #333;
+  background: linear-gradient(135deg, #333, #000);
+}
+.stepper a:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -18px;
+  /*half of square's length*/
+  width: 36px;
+  height: 36px;
+  -webkit-transform: scale(0.707) rotate(45deg);
+          transform: scale(0.707) rotate(45deg);
+  z-index: 1;
+  background: #666;
+  background: linear-gradient(135deg, #666, #333);
+  -webkit-box-shadow: 2px -2px 0 2px rgba(0, 0, 0, 0.4), 3px -3px 0 2px rgba(255, 255, 255, 0.1);
+          box-shadow: 2px -2px 0 2px rgba(0, 0, 0, 0.4), 3px -3px 0 2px rgba(255, 255, 255, 0.1);
+  border-radius: 0 5px 0 50px;
+}
+.stepper a:last-child:after {
+  content: none;
+}
+.stepper a:before {
+  content: counter(flag);
+  counter-increment: flag;
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin: 8px 0;
+  position: absolute;
+  top: 0;
+  left: 30px;
+  background: #444;
+  background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#222));
+  background: linear-gradient(#444, #222);
+  font-weight: bold;
+}
+.flat a,
+.flat a:after {
+  background: white;
+  color: black;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.flat a:before {
+  background: white;
+  -webkit-box-shadow: 0 0 0 1px #ccc;
+          box-shadow: 0 0 0 1px #ccc;
+}
+.flat a:hover,
+.flat a.active,
+.flat a:hover:after,
+.flat a.active:after {
+  background: #9EEB62;
+}
 .hero-head {
   background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
 }
@@ -360,6 +461,8 @@ nav .navbar-item {
 nav .navbar-item a {
   color: #FFF;
   font-weight: bold;
+  text-transform: uppercase;
+  width: 100%;
 }
 nav .navbar-item a:hover {
   color: #FFF;
