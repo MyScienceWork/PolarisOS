@@ -1,7 +1,10 @@
 <template>
-<div id="app" class="hero is-fullheight">
+<div id="app" class="holy-grail">
     <router-view name="header"></router-view>
-    <router-view></router-view>
+    <div class="holy-grail-body">
+        <router-view></router-view>
+        <router-view name="navbar"></router-view>
+    </div>
     <router-view name="footer"></router-view>
 </div>
 </template>

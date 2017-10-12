@@ -431,73 +431,49 @@
 .flat a.active:after {
   background: #9EEB62;
 }
-.hero-head {
-  background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
+.holy-grail {
+  height: 100vh;
 }
-nav {
-  margin-top: 2%;
-  background-color: #212D3A;
-}
-nav .columns {
-  padding-left: 10%;
-  padding-right: 10%;
-  margin-bottom: 0 !important;
-}
-nav .column {
+.holy-grail,
+.holy-grail-body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
-nav .navbar-item {
-  text-align: center;
-  border-bottom-style: solid;
-  border-bottom-width: 5px;
+.holy-grail-nav {
+  -webkit-box-ordinal-group: 0;
+      -ms-flex-order: -1;
+          order: -1;
 }
-nav .navbar-item a {
-  color: #FFF;
-  font-weight: bold;
-  text-transform: uppercase;
-  width: 100%;
+@media (min-width: 768px) {
+  .holy-grail-body {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+  }
+  .holy-grail-content {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+  }
+  .holy-grail-nav,
+  .holy-grail-ads {
+    /* 12em is the width of the columns */
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 25%;
+            flex: 0 0 25%;
+  }
 }
-nav .navbar-item a:hover {
-  color: #FFF;
-}
-.breadcrumb .breadcrumb-content {
-  padding-left: 9%;
-  padding-right: 10%;
-}
-.breadcrumb .breadcrumb-content a {
-  text-decoration: none;
-  outline: none;
-  display: block;
-  float: left;
-  line-height: 36px;
-  color: black;
-  padding: 0 10px 0 30px;
-  background: #ffffff;
-  position: relative;
-}
-.breadcrumb .breadcrumb-content a .fa {
-  font-size: 24px;
-}
-.breadcrumb .breadcrumb-content a::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -18px;
-  width: 36px;
-  height: 36px;
-  -webkit-transform: scale(0.707) rotate(45deg);
-          transform: scale(0.707) rotate(45deg);
-  z-index: 1;
-  background: #ffffff;
-  border-radius: 0 5px 0 50px;
+.hero-head {
+  background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
 }
 .navbar-item-blue:hover {
   background-color: #1CBDC7;
@@ -636,6 +612,14 @@ nav .navbar-item a:hover {
 }
 .breadcrumb-red a:first-child::after {
   background: #E9362F;
+}
+.is-sidebar-menu {
+  overflow-y: auto;
+  min-height: 20vh;
+  max-height: 65vh;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: #212D3A;
 }
 footer {
   background-color: #212D3A;

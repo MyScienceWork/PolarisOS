@@ -2,6 +2,7 @@ const Vue = require('vue');
 const Router = require('vue-router');
 const Header = require('./components/themes/ined/parts/header/Header.vue');
 const Footer = require('./components/themes/ined/parts/footer/Footer.vue');
+const Navbar = require('./components/themes/ined/parts/navbar/Navbar.vue');
 const Home = require('./pages/home/Home.vue');
 const News = require('./pages/news/News.vue');
 
@@ -17,42 +18,7 @@ module.exports = new Router({
                 default: Home,
                 header: Header,
                 footer: Footer,
-            }
-        },
-        {
-            path: '/admin/news',
-            name: 'News',
-            components: {
-                default: News,
-                header: Header,
-                footer: Footer,
-            }
-        },
-        {
-            path: '/admin/browse',
-            name: 'Browse',
-            components: {
-                default: Home,
-                header: Header,
-                footer: Footer,
-            }
-        },
-        {
-            path: '/admin/deposit',
-            name: 'Deposit',
-            components: {
-                default: Home,
-                header: Header,
-                footer: Footer,
-            }
-        },
-        {
-            path: '/admin/help',
-            name: 'Help',
-            components: {
-                default: Home,
-                header: Header,
-                footer: Footer,
+                navbar: Navbar,
             }
         },
     ],

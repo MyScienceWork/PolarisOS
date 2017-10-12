@@ -1,20 +1,40 @@
 <template>
-<nav role="navigation" aria-label="main navigation">
-    <div class="columns is-centered">
-        <div
-            v-for="(item, i) in state.routes"
-            :class="`column navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
-        >
-            <router-link class="" :to='item.path'>{{item.name}}</router-link>
-        </div>
-    </div>
-    <div v-if="active_idx !== -1" :class="`breadcrumb breadcrumb-${state.colors[active_idx]}`">
-        <div class="breadcrumb-content">
-            <router-link class="" to='/'><i class="fa fa-home"></i></router-link>
-            <a>{{state.routes[active_idx].name}}</a>
-        </div>
-    </div>
-</nav>
+<div class="holy-grail-nav">
+<aside class="menu">
+        <p class="menu-label">
+        General
+        </p>
+        <ul class="menu-list">
+            <li><a>Dashboard</a></li>
+            <li><a>Customers</a></li>
+        </ul>
+        <p class="menu-label">
+        Administration
+        </p>
+        <ul class="menu-list">
+            <li><a>Team Settings</a></li>
+            <li>
+            <a class="is-active">Manage Your Team</a>
+            <ul>
+                <li><a>Members</a></li>
+                <li><a>Plugins</a></li>
+                <li><a>Add a member</a></li>
+            </ul>
+            </li>
+            <li><a>Invitations</a></li>
+            <li><a>Cloud Storage Environment Settings</a></li>
+            <li><a>Authentication</a></li>
+        </ul>
+        <p class="menu-label">
+        Transactions
+        </p>
+        <ul class="menu-list">
+            <li><a>Payments</a></li>
+            <li><a>Transfers</a></li>
+            <li><a>Balance</a></li>
+        </ul>
+        </aside>
+</div>
 </template>
 
 <script>
