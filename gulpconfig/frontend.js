@@ -43,6 +43,7 @@ class GulpFrontend {
             'vuex',
             'vue-router',
             'lodash',
+            'moment',
         ];
 
         this.external_dependencies = [

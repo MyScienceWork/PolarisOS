@@ -3,13 +3,15 @@ const gulpconfig = require('./gulpconfig');
 
 const production = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'demo';
 
-/* const back = new gulpconfig.Backoffice(production);
+const back = new gulpconfig.Backoffice(production);
 gulp.task('back-scripts', back.bundleApp.bind(back));
 gulp.task('back-vendors', back.bundleVendors.bind(back));
 gulp.task('back-external-vendors', back.createExternalVendors.bind(back));
 gulp.task('back-vendor-styles', back.createVendorStyles.bind(back));
 gulp.task('back-styles', back.createStyles.bind(back));
 gulp.task('back-fonts', back.copyFonts.bind(back));
+gulp.task('back-imgs', back.copyImgs.bind(back));
+gulp.task('back-customers-fonts', back.copyCustomersFont.bind(back));
 gulp.task('back-views', back.copyViews.bind(back));
 gulp.task('back-revision-clean', back.revisionClean.bind(back));
 gulp.task('back-revision', ['back-scripts', 'back-vendors', 'back-external-vendors',
@@ -17,7 +19,7 @@ gulp.task('back-revision', ['back-scripts', 'back-vendors', 'back-external-vendo
     'back-fonts', 'back-views', 'back-revision-clean'], back.revision.bind(back));
 gulp.task('back-revision-replace', ['back-revision'], back.revisionReplace.bind(back));
 gulp.task('back-gzip', ['back-revision'], back.gzip.bind(back));
-gulp.task('back-watch', back.watch.bind(back));*/
+gulp.task('back-watch', back.watch.bind(back));
 
 const front = new gulpconfig.Frontend(production);
 gulp.task('front-scripts', front.bundleApp.bind(front));
@@ -37,11 +39,13 @@ gulp.task('front-revision-replace', ['front-revision'], front.revisionReplace.bi
 gulp.task('front-gzip', ['front-revision'], front.gzip.bind(front));
 gulp.task('front-watch', front.watch.bind(front));
 
-/* const backs = ['back-scripts', 'back-vendors', 'back-external-vendors',
+const backs = ['back-scripts', 'back-vendors', 'back-external-vendors',
     'back-vendor-styles', 'back-styles',
-    'back-fonts', 'back-views', 'back-gzip', 'back-revision-clean', 'back-revision',
+    'back-fonts', 'back-views',
+    'back-customers-fonts', 'back-imgs',
+    'back-gzip', 'back-revision-clean', 'back-revision',
     'back-revision-replace',
-    ];*/
+];
 
 const fronts = ['front-scripts', 'front-vendors', 'front-external-vendors',
     'front-vendor-styles', 'front-styles',
@@ -49,5 +53,5 @@ const fronts = ['front-scripts', 'front-vendors', 'front-external-vendors',
     'front-revision', 'front-revision-replace',
 ];
 
-gulp.task('default', [...fronts, 'front-watch']);
-gulp.task('build', [...fronts]);
+gulp.task('default', [...fronts, 'front-watch', ...backs, 'back-watch']);
+gulp.task('build', [...fronts, ...backs]);

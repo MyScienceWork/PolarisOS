@@ -10,6 +10,10 @@ function initialize_routes() {
         await ctx.render('front/views/front');
     });
 
+    router.get('/admin', async (ctx) => {
+        await ctx.render('back/views/back');
+    });
+
     router.get('/public/*', async (ctx) => {
         await Send(ctx, ctx.path, { root: Config.root });
     });
