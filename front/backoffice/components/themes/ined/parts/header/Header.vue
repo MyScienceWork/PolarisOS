@@ -1,6 +1,6 @@
 <template>
-<div>
-    <div class="container is-fluid">
+<header class="section">
+    <div class="container is-fluid is-marginless">
         <div class="tile is-ancestor">
             <div class="tile is-parent is-2 is-vertical is-hidden-touch">
                 <div class="image tile is-child is-16by9">
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-</div>
+</header>
 </template>
 
 <script>

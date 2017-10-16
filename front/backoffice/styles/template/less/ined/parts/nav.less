@@ -5,36 +5,19 @@
 .generate-colored-nav-menu(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
-    .navbar-item-@{name}:hover {
-        background-color: @@name;
-    }
-
-    .navbar-item-@{name}.is-active {
-        background-color: @@name; 
-    }
-
-    .navbar-item-@{name} {
-        border-bottom-color: @@name;
-    }
-
-    .breadcrumb-@{name} {
-        background-color: @@name;
-    }
-
-    .breadcrumb-@{name} {
-        a::after {
-            box-shadow: 
-            2px -2px 0 2px @@name, 
-            3px -3px 0 2px @@name;
+    aside.menu {
+        .menu-label-@{name} {
+            border-bottom-color: @@name;
         }
 
-        a:first-child {
-            background: @@name;
-            color: @white;
-        }
-
-        a:first-child::after {
-            background: @@name; 
+        .menu-list-@{name} {
+            a.is-active {
+                background-color: @@name;
+            }
+            
+            a.is-active:hover {
+                background-color: @@name;
+            }
         }
     }
 
@@ -44,12 +27,48 @@
 .generate-colored-nav-menu();
 
 
-.is-sidebar-menu {
-    overflow-y: auto;
-    min-height: 20vh;
-    max-height: 65vh;
-    padding-left: 1rem;
-    padding-right: 1rem;
-
+aside.menu {
     background-color: @grey-3;
+    padding: 1rem;
+
+    .menu-label {
+        color: @white;
+        font-weight: bold;
+    }
+
+    .menu-label {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+    }
+
+    .menu-list a {
+        color: @white;
+    }
+
+    .menu-list a:hover {
+        background-color: @grey-shadow;
+    }
+
+    .menu-list {
+        .is-active-dropdown {
+            background-color: @grey-shadow;
+        } 
+    }
+    
+    .menu-dropdown {
+        transition: height;
+    }
+
+    .menu-dropdown-enter,
+    .menu-dropdown-leave-to { opacity: 0 }
+
+    .menu-dropdown-leave,
+    .menu-dropdown-enter-to { opacity: 1 }
+
+    .menu-dropdown-enter-active,
+    .menu-dropdown-leave-active {
+        transition: opacity 100ms ease-in-out;
+    }
+
+    .menu-dropdown-enter-active { transition-delay: 100ms }
 }

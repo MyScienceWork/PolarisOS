@@ -1,37 +1,54 @@
 <template>
-<div class="holy-grail-nav">
+<div class="holy-grail-nav is-fullheight">
 <aside class="menu">
-        <p class="menu-label">
+        <p class="menu-label menu-label-red">
         General
         </p>
-        <ul class="menu-list">
-            <li><a>Dashboard</a></li>
-            <li><a>Customers</a></li>
+        <ul class="menu-list menu-list-red">
+            <li><a class="is-active">Overview</a></li>
+            <li><a>Users</a></li>
+            <li><a>Reviews</a></li>
         </ul>
-        <p class="menu-label">
+        <p class="menu-label menu-label-orange">
         Administration
         </p>
-        <ul class="menu-list">
-            <li><a>Team Settings</a></li>
+        <ul class="menu-list menu-list-orange">
             <li>
-            <a class="is-active">Manage Your Team</a>
-            <ul>
-                <li><a>Members</a></li>
-                <li><a>Plugins</a></li>
-                <li><a>Add a member</a></li>
-            </ul>
+            <a @click="show" :class="`${isShown ? 'is-active-dropdown' : ''}`">
+                Data sources
+                <span v-if="!isShown" class="is-pulled-right"><i class="fa fa-chevron-up"></i></span>
+                <span v-else class="is-pulled-right"><i class="fa fa-chevron-down"></i></span>
+            </a>
+            <transition name="menu-dropdown">
+                <ul class="menu-dropdown" v-if="isShown">
+                    <li><a>INED Typology</a></li>
+                    <li><a>Authors</a></li>
+                    <li><a>Journals</a></li>
+                </ul>
+            </transition>
             </li>
-            <li><a>Invitations</a></li>
-            <li><a>Cloud Storage Environment Settings</a></li>
-            <li><a>Authentication</a></li>
+            <li><a>Publications</a></li>
+            <li><a>CSL Management</a></li>
         </ul>
-        <p class="menu-label">
-        Transactions
+        <p class="menu-label menu-label-purple">
+        Advanced 
         </p>
-        <ul class="menu-list">
-            <li><a>Payments</a></li>
-            <li><a>Transfers</a></li>
-            <li><a>Balance</a></li>
+        <ul class="menu-list menu-list-purple">
+            <li>
+                <a class="is-active-dropdown">
+                    OAI-PMH
+                    <span class="is-pulled-right"><i class="fa fa-chevron-down"></i></span>
+                </a>
+                <transition name="menu-dropdown">
+                <ul class="menu-dropdown" v-if="true">
+                    <li><a>CAIRN</a></li>
+                    <li><a>ORBi</a></li>
+                    <li><a>MyScienceWork</a></li>
+                </ul>
+                </transition>
+            </li>
+            <li><a>API management</a></li>
+            <li><a>Handle management</a></li>
         </ul>
         </aside>
 </div>

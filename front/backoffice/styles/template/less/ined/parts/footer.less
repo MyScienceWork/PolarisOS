@@ -15,38 +15,28 @@
     .generate-colored-footer-menu((@i - 1));
 }
 
+footer.section {
+    background-color: @grey-3;
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-left: 0;
+}
 
 footer {
-    background-color: @grey-3;
-    color: @white;
-    font-size: 0.9rem;
+    .footer-container {
+        background-color: @grey-3;
+        padding-left: 10% !important;
+        padding-right: 10% !important;
 
-    a {
         color: @white;
-    }
+        font-size: 0.9rem;
 
-    a:hover {
-        color: @white;
-    }
-    
-    .container {
-        margin-left: 10% !important;
-        margin-right: 10% !important;
-    }
+        a {
+            color: @white;
+        }
 
-    .footer-menu {
-        .column {
-            border-top-width: 5px;
-            border-top-style: solid;
-            .footer-menu-title {
-                text-transform: uppercase;
-                font-weight: bold;
-            }
-            .footer-menu-list {
-                a:hover {
-                    text-decoration: underline;                       
-                }
-            }
+        a:hover {
+            color: @white;
         }
     }
 

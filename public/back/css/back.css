@@ -472,180 +472,126 @@
             flex: 0 0 25%;
   }
 }
-.hero-head {
+header {
   background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
 }
-.navbar-item-blue:hover {
-  background-color: #1CBDC7;
+header.section {
+  padding: 1rem 0;
 }
-.navbar-item-blue.is-active {
-  background-color: #1CBDC7;
-}
-.navbar-item-blue {
+aside.menu .menu-label-blue {
   border-bottom-color: #1CBDC7;
 }
-.breadcrumb-blue {
+aside.menu .menu-list-blue a.is-active {
   background-color: #1CBDC7;
 }
-.breadcrumb-blue a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #1CBDC7, 3px -3px 0 2px #1CBDC7;
-          box-shadow: 2px -2px 0 2px #1CBDC7, 3px -3px 0 2px #1CBDC7;
+aside.menu .menu-list-blue a.is-active:hover {
+  background-color: #1CBDC7;
 }
-.breadcrumb-blue a:first-child {
-  background: #1CBDC7;
-  color: #FFF;
-}
-.breadcrumb-blue a:first-child::after {
-  background: #1CBDC7;
-}
-.navbar-item-green:hover {
-  background-color: #1D875F;
-}
-.navbar-item-green.is-active {
-  background-color: #1D875F;
-}
-.navbar-item-green {
+aside.menu .menu-label-green {
   border-bottom-color: #1D875F;
 }
-.breadcrumb-green {
+aside.menu .menu-list-green a.is-active {
   background-color: #1D875F;
 }
-.breadcrumb-green a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #1D875F, 3px -3px 0 2px #1D875F;
-          box-shadow: 2px -2px 0 2px #1D875F, 3px -3px 0 2px #1D875F;
+aside.menu .menu-list-green a.is-active:hover {
+  background-color: #1D875F;
 }
-.breadcrumb-green a:first-child {
-  background: #1D875F;
-  color: #FFF;
-}
-.breadcrumb-green a:first-child::after {
-  background: #1D875F;
-}
-.navbar-item-brown:hover {
-  background-color: #B39482;
-}
-.navbar-item-brown.is-active {
-  background-color: #B39482;
-}
-.navbar-item-brown {
+aside.menu .menu-label-brown {
   border-bottom-color: #B39482;
 }
-.breadcrumb-brown {
+aside.menu .menu-list-brown a.is-active {
   background-color: #B39482;
 }
-.breadcrumb-brown a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #B39482, 3px -3px 0 2px #B39482;
-          box-shadow: 2px -2px 0 2px #B39482, 3px -3px 0 2px #B39482;
+aside.menu .menu-list-brown a.is-active:hover {
+  background-color: #B39482;
 }
-.breadcrumb-brown a:first-child {
-  background: #B39482;
-  color: #FFF;
-}
-.breadcrumb-brown a:first-child::after {
-  background: #B39482;
-}
-.navbar-item-purple:hover {
-  background-color: #7E69B4;
-}
-.navbar-item-purple.is-active {
-  background-color: #7E69B4;
-}
-.navbar-item-purple {
+aside.menu .menu-label-purple {
   border-bottom-color: #7E69B4;
 }
-.breadcrumb-purple {
+aside.menu .menu-list-purple a.is-active {
   background-color: #7E69B4;
 }
-.breadcrumb-purple a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #7E69B4, 3px -3px 0 2px #7E69B4;
-          box-shadow: 2px -2px 0 2px #7E69B4, 3px -3px 0 2px #7E69B4;
+aside.menu .menu-list-purple a.is-active:hover {
+  background-color: #7E69B4;
 }
-.breadcrumb-purple a:first-child {
-  background: #7E69B4;
-  color: #FFF;
-}
-.breadcrumb-purple a:first-child::after {
-  background: #7E69B4;
-}
-.navbar-item-orange:hover {
-  background-color: #F8AA24;
-}
-.navbar-item-orange.is-active {
-  background-color: #F8AA24;
-}
-.navbar-item-orange {
+aside.menu .menu-label-orange {
   border-bottom-color: #F8AA24;
 }
-.breadcrumb-orange {
+aside.menu .menu-list-orange a.is-active {
   background-color: #F8AA24;
 }
-.breadcrumb-orange a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #F8AA24, 3px -3px 0 2px #F8AA24;
-          box-shadow: 2px -2px 0 2px #F8AA24, 3px -3px 0 2px #F8AA24;
+aside.menu .menu-list-orange a.is-active:hover {
+  background-color: #F8AA24;
 }
-.breadcrumb-orange a:first-child {
-  background: #F8AA24;
-  color: #FFF;
-}
-.breadcrumb-orange a:first-child::after {
-  background: #F8AA24;
-}
-.navbar-item-red:hover {
-  background-color: #E9362F;
-}
-.navbar-item-red.is-active {
-  background-color: #E9362F;
-}
-.navbar-item-red {
+aside.menu .menu-label-red {
   border-bottom-color: #E9362F;
 }
-.breadcrumb-red {
+aside.menu .menu-list-red a.is-active {
   background-color: #E9362F;
 }
-.breadcrumb-red a::after {
-  -webkit-box-shadow: 2px -2px 0 2px #E9362F, 3px -3px 0 2px #E9362F;
-          box-shadow: 2px -2px 0 2px #E9362F, 3px -3px 0 2px #E9362F;
+aside.menu .menu-list-red a.is-active:hover {
+  background-color: #E9362F;
 }
-.breadcrumb-red a:first-child {
-  background: #E9362F;
+aside.menu {
+  background-color: #212D3A;
+  padding: 1rem;
+}
+aside.menu .menu-label {
+  color: #FFF;
+  font-weight: bold;
+}
+aside.menu .menu-label {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+aside.menu .menu-list a {
   color: #FFF;
 }
-.breadcrumb-red a:first-child::after {
-  background: #E9362F;
+aside.menu .menu-list a:hover {
+  background-color: rgba(128, 128, 128, 0.4);
 }
-.is-sidebar-menu {
-  overflow-y: auto;
-  min-height: 20vh;
-  max-height: 65vh;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  background-color: #212D3A;
+aside.menu .menu-list .is-active-dropdown {
+  background-color: rgba(128, 128, 128, 0.4);
 }
-footer {
+aside.menu .menu-dropdown {
+  -webkit-transition: height;
+  transition: height;
+}
+aside.menu .menu-dropdown-enter,
+aside.menu .menu-dropdown-leave-to {
+  opacity: 0;
+}
+aside.menu .menu-dropdown-leave,
+aside.menu .menu-dropdown-enter-to {
+  opacity: 1;
+}
+aside.menu .menu-dropdown-enter-active,
+aside.menu .menu-dropdown-leave-active {
+  -webkit-transition: opacity 100ms ease-in-out;
+  transition: opacity 100ms ease-in-out;
+}
+aside.menu .menu-dropdown-enter-active {
+  -webkit-transition-delay: 100ms;
+          transition-delay: 100ms;
+}
+footer.section {
   background-color: #212D3A;
+  padding-bottom: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+footer .footer-container {
+  background-color: #212D3A;
+  padding-left: 10% !important;
+  padding-right: 10% !important;
   color: #FFF;
   font-size: 0.9rem;
 }
-footer a {
+footer .footer-container a {
   color: #FFF;
 }
-footer a:hover {
+footer .footer-container a:hover {
   color: #FFF;
-}
-footer .container {
-  margin-left: 10% !important;
-  margin-right: 10% !important;
-}
-footer .footer-menu .column {
-  border-top-width: 5px;
-  border-top-style: solid;
-}
-footer .footer-menu .column .footer-menu-title {
-  text-transform: uppercase;
-  font-weight: bold;
-}
-footer .footer-menu .column .footer-menu-list a:hover {
-  text-decoration: underline;
 }
 footer .footer-disclaimer {
   font-weight: bold;

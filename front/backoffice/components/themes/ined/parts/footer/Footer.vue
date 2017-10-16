@@ -1,13 +1,11 @@
 <template>
-<div>
-    <footer>
-        <div class="container is-fluid">
-            <div class="columns footer-disclaimer">
-                <p class="column">&copy; INED 2017</p>
-            </div>
+<footer class="section">
+    <div class="footer-container container is-fluid is-marginless">
+        <div class="columns footer-disclaimer">
+            <p class="column">&copy; INED 2017</p>
         </div>
-    </footer>
-</div>
+    </div>
+</footer>
 </template>
 
 <script>
