@@ -14,9 +14,23 @@
         }
     }
 
-    .clickable-card-@{name} {
+    .clickable-card-@{name}, .info-card-@{name} {
         .card-header {
             background-color: @@name;
+
+            .card-header-title {
+                color: @white !important;
+            }
+        }
+    }
+
+    .info-card-@{name} {
+        a {
+            color: @@name;
+        }
+        
+        a:hover {
+            color: @grey-3;
         }
     }
 
@@ -28,6 +42,10 @@
         font-weight: bold;
         color: @white !important;
         text-transform: uppercase;
+
+        .card-header-title {
+            color: @white !important;
+        }
     }
 
     .generate-colored-cards((@i - 1));
@@ -50,11 +68,10 @@
     }
 }
 
-.clickable-card {
+.clickable-card, .info-card {
     border-radius: 5px;
     box-shadow: 0 0 3px @black-shadow;
     padding: 0 2% 2% 2%;
-    cursor: pointer;
 
     .card-header {
         display: inline-block;
@@ -62,7 +79,12 @@
         color: @white;
         border-radius: 0 0 5px 5px;
         text-transform: uppercase;
+        border-bottom: none;
     }
+}
+
+.clickable-card {
+    cursor: pointer;
 }
 
 .has-card-gradient {

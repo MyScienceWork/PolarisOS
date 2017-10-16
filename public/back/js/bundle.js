@@ -128,7 +128,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-3f393a65", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-3f393a65", __vue__options__)
+    hotAPI.reload("data-v-3f393a65", __vue__options__)
   }
 })()}
 
@@ -155,7 +155,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-cef207e0", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-cef207e0", __vue__options__)
+    hotAPI.reload("data-v-cef207e0", __vue__options__)
   }
 })()}
 
@@ -188,7 +188,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-f903f060", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-f903f060", __vue__options__)
+    hotAPI.reload("data-v-f903f060", __vue__options__)
   }
 })()}
 
@@ -251,7 +251,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-3fe98e70", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-3fe98e70", __vue__options__)
+    hotAPI.reload("data-v-3fe98e70", __vue__options__)
   }
 })()}
 
@@ -298,7 +298,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-36c70957", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-36c70957", __vue__options__)
+    hotAPI.reload("data-v-36c70957", __vue__options__)
   }
 })()}
 
@@ -341,7 +341,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-524cd205", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-524cd205", __vue__options__)
+    hotAPI.reload("data-v-524cd205", __vue__options__)
   }
 })()}
 
@@ -384,7 +384,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-39802a85", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-39802a85", __vue__options__)
+    hotAPI.reload("data-v-39802a85", __vue__options__)
   }
 })()}
 
