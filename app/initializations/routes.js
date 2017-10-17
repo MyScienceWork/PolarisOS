@@ -10,6 +10,19 @@ function initialize_routes() {
         await ctx.render('front/views/front');
     });
 
+    router.get('/news', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/browse', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/deposit', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/help', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+
     router.get('/admin', async (ctx) => {
         await ctx.render('back/views/back');
     });
