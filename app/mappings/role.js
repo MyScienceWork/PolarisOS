@@ -1,7 +1,7 @@
 module.exports = {
     msw: {
         mappings: {
-            user: {
+            role: {
                 dynamic: 'false',
                 dynamic_date_formats: [],
                 properties: {
