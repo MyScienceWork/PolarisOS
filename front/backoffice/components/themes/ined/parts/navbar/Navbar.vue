@@ -5,7 +5,7 @@
         General
         </p>
         <ul class="menu-list menu-list-red">
-            <li><a class="is-active">Overview</a></li>
+            <li><router-link class="is-active" to="/admin">Overview</router-link></li>
             <li><a>Users</a></li>
             <li><a>Reviews</a></li>
         </ul>

@@ -1,7 +1,9 @@
+const _ = require('lodash');
 const Router = require('koa-router');
 const Send = require('koa-send');
 const Config = require('../config');
 const RouterUtils = require('../modules/utils/router');
+const BackRoutes = require('../../front/backoffice/routes');
 
 function initialize_routes() {
     const router = new Router();
@@ -23,8 +25,10 @@ function initialize_routes() {
         await ctx.render('front/views/front');
     });
 
-    router.get('/admin', async (ctx) => {
-        await ctx.render('back/views/back');
+    _.each(BackRoutes, route => {
+        router.get(route, async (ctx) => {
+            await ctx.render('back/views/back');
+        });
     });
 
     router.get('/public/*', async (ctx) => {

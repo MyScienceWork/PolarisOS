@@ -7,6 +7,8 @@ module.exports = {
     error: false,
     error_type: '',
     browserLanguage: BrowserUtils.normalizeBrowserLanguage(BrowserUtils.getFirstBrowserLanguage()),
-    reconnectionIntervalMs: 5000,
     interfaceLang: null,
+    forms: {
+        /* form_name: {error: {}, content: {}, update: false/true}*/
+    },
 };
