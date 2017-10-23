@@ -1,5 +1,5 @@
 <template>
-<div class="form-group"
+<div class="field"
     v-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
     >
     <label :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
@@ -7,28 +7,28 @@
         type="text"
         :placeholder="placeholder"
         :name="name"
-        class="form-control"
+        class="input"
         v-model="state.value"
     />
     <input v-else-if="type === 'number'" 
         type="number"
         :placeholder="placeholder"
         :name="name"
-        class="form-control"
+        class="input"
         v-model="state.value"
     />
     <input v-else-if="type === 'password'" 
         type="password"
         :placeholder="placeholder"
         :name="name"
-        class="form-control"
+        class="input"
         v-model="state.value"
     />
     <input v-else 
         type="email"
         :placeholder="placeholder"
         :name="name"
-        class="form-control"
+        class="input"
         v-model="state.value"
     />
     <div v-if="validations.length > 0">
@@ -38,10 +38,10 @@
     </div>
 </div>
 
-<div v-else-if="type === 'textarea'" class="form-group">
+<div v-else-if="type === 'textarea'" class="field">
     <label for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <textarea
-        class="form-control"
+        class="input"
         :placeholder="placeholder"
         :name="name"
         :rows="rows"
@@ -49,7 +49,7 @@
     />
 </div>
 
-<div v-else-if="type === 'radio'" class="form-group">
+<div v-else-if="type === 'radio'" class="field">
     <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
     <div>
         <label v-for="(btn, idx) in radioButtons" class="radio-inline" for="btn[0]">

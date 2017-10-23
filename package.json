@@ -72,6 +72,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-vue": "^2.1.0",
+    "eslint-plugin-react": "^6.4.1",
     "flow-bin": "^0.45.0",
     "flow-remove-types": "^1.2.1",
     "gulp": "^3.9.1",

@@ -81,6 +81,9 @@
 .is-pulled-bottom {
   margin-top: auto;
 }
+.redify {
+  color: #E9362F;
+}
 .msw-loader .primary-color {
   background-color: #E63A30;
 }
@@ -282,30 +285,84 @@
 .button-blue:hover {
   color: #1CBDC7;
 }
+.button-background-blue:hover {
+  color: #FFF;
+}
+.button-background-blue {
+  background-color: #1CBDC7;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
 .button-green:focus,
 .is-focused-green,
 .button-green:hover {
   color: #1D875F;
+}
+.button-background-green:hover {
+  color: #FFF;
+}
+.button-background-green {
+  background-color: #1D875F;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
 }
 .button-brown:focus,
 .is-focused-brown,
 .button-brown:hover {
   color: #B39482;
 }
+.button-background-brown:hover {
+  color: #FFF;
+}
+.button-background-brown {
+  background-color: #B39482;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
 .button-purple:focus,
 .is-focused-purple,
 .button-purple:hover {
   color: #7E69B4;
+}
+.button-background-purple:hover {
+  color: #FFF;
+}
+.button-background-purple {
+  background-color: #7E69B4;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
 }
 .button-orange:focus,
 .is-focused-orange,
 .button-orange:hover {
   color: #F8AA24;
 }
+.button-background-orange:hover {
+  color: #FFF;
+}
+.button-background-orange {
+  background-color: #F8AA24;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
 .button-red:focus,
 .is-focused-red,
 .button-red:hover {
   color: #E9362F;
+}
+.button-background-red:hover {
+  color: #FFF;
+}
+.button-background-red {
+  background-color: #E9362F;
+  color: #FFF !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
 }
 .has-button-gradient {
   background-image: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#EBEBEB));
@@ -580,6 +637,102 @@
 }
 .smart-widget.widget-light-grey .smart-widget-option a {
   color: #777;
+}
+.pagination.pagination-blue .pagination-list li a {
+  color: #1CBDC7;
+}
+.pagination.pagination-blue .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-blue .pagination-list li a.pagination-link.is-current {
+  background-color: #1CBDC7;
+  border-color: #1CBDC7;
+  color: #FFF;
+}
+.pagination.pagination-green .pagination-list li a {
+  color: #1D875F;
+}
+.pagination.pagination-green .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-green .pagination-list li a.pagination-link.is-current {
+  background-color: #1D875F;
+  border-color: #1D875F;
+  color: #FFF;
+}
+.pagination.pagination-brown .pagination-list li a {
+  color: #B39482;
+}
+.pagination.pagination-brown .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-brown .pagination-list li a.pagination-link.is-current {
+  background-color: #B39482;
+  border-color: #B39482;
+  color: #FFF;
+}
+.pagination.pagination-purple .pagination-list li a {
+  color: #7E69B4;
+}
+.pagination.pagination-purple .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-purple .pagination-list li a.pagination-link.is-current {
+  background-color: #7E69B4;
+  border-color: #7E69B4;
+  color: #FFF;
+}
+.pagination.pagination-orange .pagination-list li a {
+  color: #F8AA24;
+}
+.pagination.pagination-orange .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-orange .pagination-list li a.pagination-link.is-current {
+  background-color: #F8AA24;
+  border-color: #F8AA24;
+  color: #FFF;
+}
+.pagination.pagination-red .pagination-list li a {
+  color: #E9362F;
+}
+.pagination.pagination-red .pagination-list li a:hover {
+  border-color: #b5b5b5;
+  color: #363636;
+}
+.pagination.pagination-red .pagination-list li a.pagination-link.is-current {
+  background-color: #E9362F;
+  border-color: #E9362F;
+  color: #FFF;
+}
+.message.is-blue .message-body {
+  border-color: #1CBDC7;
+  color: #1CBDC7;
+}
+.message.is-green .message-body {
+  border-color: #1D875F;
+  color: #1D875F;
+}
+.message.is-brown .message-body {
+  border-color: #B39482;
+  color: #B39482;
+}
+.message.is-purple .message-body {
+  border-color: #7E69B4;
+  color: #7E69B4;
+}
+.message.is-orange .message-body {
+  border-color: #F8AA24;
+  color: #F8AA24;
+}
+.message.is-red .message-body {
+  border-color: #E9362F;
+  color: #E9362F;
 }
 .holy-grail {
   height: 100vh;

@@ -3,24 +3,59 @@
     <div class="container is-fluid">
         <div class="columns">
             <div class="column">
-                <div class="smart-widget">
-                    <div class="smart-widget-header">
-                        Title
-                        <span class="smart-widget-option">
-                            <span class="refresh-icon-animated" ref="spinIcon" style="display: 'none'">
-                                <i class="fa fa-circle-o-notch fa-spin"></i>
-                            </span>
-                            <a class="widget-toggle-hidden-option" href="#"><i class="fa fa-cog"></i></a> 
-                            <a class="widget-collapse-option" data-toggle="collapse" href="#" ref="collapseOption"><i class="fa fa-chevron-up" /></a> 
-                            <a class="widget-refresh-option" href="#"><i class="fa fa-refresh" ref="refreshOption" /></a> 
-                            <a class="widget-remove-option" href="#" onClick={this.props.onClickRemove} ref="removeOption"><i class="fa fa-times" /></a> 
-                        </span>
-                    </div>
-                    <div class="smart-widget-inner">
-                        <div class="smart-widget-body">
+                <widget>
+                    <span slot="title">List of users</span>
+                    <div slot="body">
+                        <div class="columns is-centered" v-for="row in readContent">
+                            <div v-for="content in row" class="column">
+                                <widget>
+                                    <span slot="title">
+                                        <action-button
+                                        class="button is-small button-background-blue"
+                                        @action-click="update(content)"
+                                        >
+                                        <i class="fa fa-pencil"></i>
+                                        </action-button>
+                                        <action-button
+                                        class="button is-small button-background-red"
+                                        confirmation="Are you sure?"
+                                        :two-steps="true"
+                                        @action-click="remove(content, 'organization')"
+                                        >
+                                        <i class="fa fa-times"></i>
+                                        </action-button>
+                                        {{content.firstname}} {{content.lastname}} 
+                                    </span>
+                                    <div slot="body">
+                                    </div>
+                                </widget>
+                            </div>
+                        </div>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <paginator class="pagination-purple" :skip="0" :number-of-items="200" :items-per-page="state.itemsPerPage" />
+                            </div>
                         </div>
                     </div>
-                </div>
+                </widget>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <widget>
+                    <span slot="title">Add or modify a user</span>
+                    <div slot="body">
+                        <fform 
+                            :name="state.cform" 
+                            :post_path="state.path" 
+                            :put_path="state.path"
+                        >
+                            <finput name="firstname" label="First name" :is-required="true" placeholder="User first name" type="text" :form="state.cform" />
+                            <finput name="lastname" label="Last name" :is-required="true" placeholder="User last name" type="text" :form="state.cform" />
+                            <finput name="email" label="Email address" :is-required="true" placeholder="User email address" type="email" :form="state.cform" />
+                        </fform>
+                    </div>
+                </widget>
             </div>
         </div>
     </div>
