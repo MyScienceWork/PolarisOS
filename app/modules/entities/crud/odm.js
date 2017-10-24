@@ -259,15 +259,21 @@ class ODM {
         }
     }
 
-    static async create(client: Object, body: Object): Promise<?ODM> {
+    static async _create_or_update(client: Object, body: Object, id: ?string = null): Promise<?ODM> {
         const [index, type] = this.extract_index_type();
         try {
-            const response = await client.index({
+            const content = {
                 index,
                 type,
                 body,
                 refresh: true,
-            });
+            };
+
+            if (id != null) {
+                content.id = id;
+            }
+
+            const response = await client.index(content);
             if ('created' in response && response.created) {
                 try {
                     const get_response = await client.get({
@@ -312,9 +318,12 @@ class ODM {
         }
     }
 
+    static async create(client: Object, body: Object): Promise<?ODM> {
+        return this._create_or_update(client, body);
+    }
 
-    async update(body: Object) {
-        const [index, type] = this.extract_index_type();
+    static async update(client: Object, body: Object, id: string): Promise<?ODM> {
+        return this._create_or_update(client, body, id);
     }
 
     toJSON(): Object {

@@ -51,25 +51,11 @@ function get(type: string, exists: boolean = false): Function {
 
 function put_with_action(type: string, action: Function, options: Object): Function {
     return async function func(ctx: Object): Promise<*> {
-        let right_enforcer = null;
-        if (ctx.__md != null) {
-            right_enforcer = ctx.__md.right_enforcer;
+        const obj = await EntitiesUtils.update(ctx.request.body, type);
+        if (obj == null) {
+            throw Errors.UnableToCreateEntity;
         }
 
-        let obj;
-        if (right_enforcer == null) {
-            const id = ctx.request.params.id;
-            obj = await EntitiesUtils.retrieve(id, type);
-            if (obj == null) {
-                throw Errors.InvalidEntity;
-            }
-        } else if (right_enforcer.has_right()) {
-            obj = right_enforcer.entity;
-        } else {
-            throw Errors.InvalidEntity;
-        }
-
-        await obj.update(ctx.request.body);
         await action(obj, options);
         ctx.body = WebUtils.forge_ok_response(obj, 'put');
     };

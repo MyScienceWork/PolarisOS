@@ -69,6 +69,19 @@ async function create(info: Object, type: string): Promise<*> {
     return response;
 }
 
+async function update(info: Object, type: string): Promise<*> {
+    const cls = get_cls_from_type(type);
+    if (cls == null) {
+        return null;
+    }
+
+    const id = info._id;
+    delete info._id;
+    const response = await cls.update(es_client, info, id);
+    return response;
+}
+
+
 async function count(type: string, body: Object): Promise<*> {
     if (type == null) {
         throw Errors.InvalidEntity;
@@ -184,6 +197,7 @@ exports.retrieve = retrieve;
 exports.get_info_from_type = get_info_from_type;
 exports.get_model_from_type = get_model_from_type;
 exports.create = create;
+exports.update = update;
 exports.count = count;
 exports.search = search;
 exports.remove = remove;
