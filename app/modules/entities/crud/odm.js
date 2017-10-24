@@ -115,6 +115,10 @@ class ODM {
         return this._id;
     }
 
+    get messages(): Object {
+        return this.constructor.model().Messages;
+    }
+
     /**
      * Get all information about an entity;
      * @public
@@ -255,8 +259,34 @@ class ODM {
         }
     }
 
-    static async create(body: Object): Promise<ODM> {
+    static async create(client: Object, body: Object): Promise<?ODM> {
         const [index, type] = this.extract_index_type();
+        try {
+            const response = await client.index({
+                index,
+                type,
+                body,
+                refresh: true,
+            });
+            if ('created' in response && response.created) {
+                try {
+                    const get_response = await client.get({
+                        index,
+                        type,
+                        id: response._id,
+                    });
+                    const odm = new this(client, response._id);
+                    odm.db = ODM.format_hit(get_response, get_response.found);
+                    console.log(odm);
+                    return odm;
+                } catch (err) {
+                    return null;
+                }
+            }
+            return null;
+        } catch (err) {
+            return null;
+        }
     }
 
     async read(opts: Object = {}) {

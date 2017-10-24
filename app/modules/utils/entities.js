@@ -11,6 +11,9 @@ const PublicationModel = require('../entities/publication/models/publications');
 const Citation = require('../entities/citation/citation');
 const CitationModel = require('../entities/citation/models/citations');
 
+const User = require('../entities/user/user');
+const UserModel = require('../entities/user/models/users');
+
 
 type ObjectList = {
     whitelist?: Set<string>,
@@ -25,6 +28,8 @@ function get_model_from_type(type: string): ?Object {
         return PublicationModel;
     case 'citation':
         return CitationModel;
+    case 'user':
+        return UserModel;
     default:
         return null;
     }
@@ -36,6 +41,8 @@ function get_cls_from_type(type: string): ?Object {
         return Publication;
     case 'citation':
         return Citation;
+    case 'user':
+        return User;
     default:
         return null;
     }
@@ -53,6 +60,13 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
 }
 
 async function create(info: Object, type: string): Promise<*> {
+    const cls = get_cls_from_type(type);
+    if (cls == null) {
+        return null;
+    }
+
+    const response = await cls.create(es_client, info);
+    return response;
 }
 
 async function count(type: string, body: Object): Promise<*> {

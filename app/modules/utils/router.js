@@ -36,7 +36,7 @@ function api_middlewares(type: string,
     const pass = 'pass' in opts ? opts.pass : false;
     return [ApiAccess.api_signature(pass),
         RateLimiter.limit(),
-        Access.access(type, access_type),
+        Access.access(type, access_type, pass),
         Access.enforce_right,
     ];
 }

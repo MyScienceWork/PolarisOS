@@ -25,7 +25,7 @@ function initialize_routes() {
         await ctx.render('front/views/front');
     });
 
-    _.each(BackRoutes, route => {
+    _.each(BackRoutes, (route) => {
         router.get(route, async (ctx) => {
             await ctx.render('back/views/back');
         });
@@ -35,7 +35,7 @@ function initialize_routes() {
         await Send(ctx, ctx.path, { root: Config.root });
     });
 
-    const entities = ['citation'];
+    const entities = ['citation', 'user'];
 
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);

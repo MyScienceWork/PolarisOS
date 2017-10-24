@@ -32,16 +32,18 @@ module.exports = {
             payload.response.content = [];
         }
 
+        if (!(form_name in state.forms)) {
+            state.forms[form_name] = create_form();
+        }
+
+        state.forms[form_name].loading = false;
+        state.forms[form_name].claims = 0;
+        state.forms[form_name].update = false;
+        state.forms[form_name].reclaim = false;
+        state.forms[form_name].cancel = false;
+        state.forms[form_name].validations = {};
+
         if (success) {
-            if (!(form_name in state.forms)) {
-                state.forms[form_name] = create_form();
-            }
-            state.forms[form_name].loading = false;
-            state.forms[form_name].claims = 0;
-            state.forms[form_name].update = false;
-            state.forms[form_name].reclaim = false;
-            state.forms[form_name].cancel = false;
-            state.forms[form_name].validations = {};
             if (payload.method === 'GET') {
                 state.forms[form_name].content = payload.response.content;
             } else if ('change' in payload.response.content
@@ -52,8 +54,6 @@ module.exports = {
             }
             state.forms[form_name].error = {};
         } else if (form_name in state.forms) {
-            state.forms[form_name].loading = false;
-            state.forms[form_name].claims = 0;
             state.forms[form_name].error = Object.assign({}, {
                 found: true, content: payload.response.content,
             });

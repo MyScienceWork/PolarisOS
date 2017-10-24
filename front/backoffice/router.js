@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const Vue = require('vue');
 const Router = require('vue-router');
 const Header = require('./components/themes/ined/parts/header/Header.vue');
@@ -9,7 +11,7 @@ Vue.use(Router);
 
 module.exports = new Router({
     mode: 'history',
-    routes: Menus.menu.map(menu => ({
+    routes: _.flatten(Menus.menu).map(menu => ({
         path: menu.routes[0],
         name: menu.key,
         components: {
@@ -18,6 +20,6 @@ module.exports = new Router({
             navbar: Navbar,
             default: menu.component,
         },
-        props: {sidebar: {menus: Menus.menu}}
+        props: { navbar: { menus: Menus.menu } },
     })),
 });

@@ -108,19 +108,19 @@ class Pipeline {
                 break;
             }
             case 'format': {
-                ctx.request.body = Formatter(body, model.Formatting);
+                ctx.request.body = await Formatter(body, model.Formatting);
                 await next();
                 break;
             }
             case 'complete': {
-                Completer(body, model.Completion);
+                ctx.request.body = await Completer(body, model.Completion);
                 await next();
                 break;
             }
             default:
             case 'validate': {
                 const errors = await validator
-                        .validate(body, model.Validation);
+                    .validate(body, model.Validation);
                 if (Object.keys(errors).length === 0) {
                     await next();
                 } else {

@@ -6,8 +6,12 @@ const RightEnforcer = require('./right_enforcer');
 const ODM = require('../entities/crud/odm');
 const EntitiesUtils = require('../utils/entities');
 
-function access(entity_name: string, a: string): Function {
+function access(entity_name: string, a: string, pass: boolean): Function {
     return async function func(ctx: Object, next: Function): Promise<*> {
+        if (pass) {
+            return await next();
+        }
+
         if (!('__md' in ctx)) {
             return await next();
         }
