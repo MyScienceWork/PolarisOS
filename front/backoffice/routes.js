@@ -11,4 +11,5 @@ module.exports = {
     export_format: '/admin/export_format',
     handle_id: '/admin/handle_id',
     api: '/admin/api',
+    config: '/admin/config',
 };

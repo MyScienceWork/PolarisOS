@@ -120,5 +120,14 @@ module.exports.menu = [
             submenu: [],
             component: Home,
         },
+        {
+            section: 'Advanced',
+            name: 'Config',
+            access: '',
+            key: 'config',
+            routes: [Routes.config],
+            submenu: [],
+            component: Home,
+        },
     ],
 ];
