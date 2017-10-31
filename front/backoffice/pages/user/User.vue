@@ -53,6 +53,7 @@
                             <finput name="firstname" label="First name" :is-required="true" placeholder="First name" type="text" :form="state.cform" />
                             <finput name="lastname" label="Last name" :is-required="true" placeholder="Last name" type="text" :form="state.cform" />
                             <finput name="email" label="Email address" :is-required="true" placeholder="Email address" type="email" :form="state.cform" />
+                            <finput name="address" label="Address" :is-required="true" placeholder="Address" type="text" :form="state.cform" />
                             <finput name="password" label="Password" :is-required="true" placeholder="Password" type="password" :form="state.cform" />
                             <finput name="retype_password" label="Retype Password" :is-required="true" placeholder="Retype your password" type="password" :form="state.cform" />
                         </fform>

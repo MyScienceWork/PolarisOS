@@ -30,7 +30,7 @@ module.exports = {
         this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form });
     },
     beforeDestroy() {
-        this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form });
+        this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form, name: this.name });
     },
     watch: {
         update_mode() {

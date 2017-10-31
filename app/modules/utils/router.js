@@ -102,7 +102,7 @@ function generate_entity_routes(router: KoaRouter,
 
 
     router.del(`${puprefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
-    router.put(`${puprefix}/${type}/:id`, compose([...put_mware, CrudController.put(type)]));
+    router.put(`${puprefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
     router.post(`${puprefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
 }
 

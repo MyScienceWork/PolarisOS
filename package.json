@@ -43,11 +43,11 @@
     "shortid": "^2.2.8",
     "superagent": "^3.3.1",
     "toastr": "^2.1.2",
-    "vue": "^2.4.2",
+    "vue": "^2.5.x",
     "vue-router": "^2.7.0",
     "vue-select": "github:sagalbot/vue-select",
     "vue-touch": "^2.0.0-beta.4",
-    "vuex": "^2.4.0",
+    "vuex": "^2.5.0",
     "winston": "^2.2.0",
     "winston-koa-logger": "0.0.2",
     "ws": "^2.3.1"
@@ -98,6 +98,6 @@
     "rewire": "^2.5.2",
     "unflowify": "^1.0.1",
     "vinyl-source-stream": "^1.1.0",
-    "vueify": "^9.4.1"
+    "vueify": "^9.x"
   }
 }

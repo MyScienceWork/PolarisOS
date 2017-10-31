@@ -7,6 +7,30 @@
                     <span slot="title">Global configuration</span>
                     <div slot="body">
                         <div class="columns is-centered" v-for="row in readContent">
+                            <div class="column" v-for="content in row">
+                                <widget>
+                                    <span slot="title">
+                                        <action-button
+                                        class="button is-small button-background-blue"
+                                        @action-click="update(content)"
+                                        >
+                                        <i class="fa fa-pencil"></i>
+                                        </action-button>
+                                        <action-button
+                                        class="button is-small button-background-red"
+                                        confirmation="Are you sure?"
+                                        :two-steps="true"
+                                        @action-click="remove(content, 'config')"
+                                        >
+                                        <i class="fa fa-times"></i>
+                                        </action-button>
+                                        {{content.environment}} 
+                                    </span>
+                                    <div slot="body">
+
+                                    </div>
+                                </widget>
+                            </div>
                         </div>
                     </div>
                 </widget>
@@ -22,11 +46,19 @@
                             :post_path="state.path" 
                             :put_path="state.path"
                         >
-                            <finput name="environment" label="First name" :is-required="true" placeholder="First name" type="text" :form="state.cform" />
-                            <finput name="lastname" label="Last name" :is-required="true" placeholder="Last name" type="text" :form="state.cform" />
-                            <finput name="email" label="Email address" :is-required="true" placeholder="Email address" type="email" :form="state.cform" />
-                            <finput name="password" label="Password" :is-required="true" placeholder="Password" type="password" :form="state.cform" />
-                            <finput name="retype_password" label="Retype Password" :is-required="true" placeholder="Retype your password" type="password" :form="state.cform" />
+                            <fselect 
+                                name="environment" label="Environment" 
+                                :is-required="true" 
+                                :form="state.cform" 
+                                :options="state.environments" 
+                            />
+                            <fselect 
+                                name="langs" label="Langs" 
+                                :is-required="true" 
+                                :form="state.cform" 
+                                :multi="true"
+                                :options="state.langs" 
+                            />
                         </fform>
                     </div>
                 </widget>

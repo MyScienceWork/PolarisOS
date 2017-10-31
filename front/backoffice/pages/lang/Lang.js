@@ -1,18 +1,23 @@
 const Utils = require('../../utils/utils');
 const APIRoutes = require('../../api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
+const LangMixin = require('../mixins/LangMixin');
+const Langs = require('../../lists/langs');
+const Quantities = require('../../lists/quantities');
 
 module.exports = {
-    mixins: [ReaderMixin],
+    mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('user', 'POST'),
-                rpath: APIRoutes.entity('user', 'GET'),
-                cform: 'user_creation',
-                rform: 'user_read',
-                itemsPerPage: 20,
-                itemsPerRow: 2,
+                path: APIRoutes.entity('lang', 'POST'),
+                rpath: APIRoutes.entity('lang', 'GET'),
+                cform: 'lang_creation',
+                rform: 'lang_read',
+                itemsPerPage: 50,
+                itemsPerRow: 3,
+                langs: Langs.LangsList,
+                quantities: Quantities,
             },
         };
     },

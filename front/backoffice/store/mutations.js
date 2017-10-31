@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Messages = require('../api/messages');
 const Utils = require('../utils/utils');
 
@@ -45,7 +46,12 @@ module.exports = {
 
         if (success) {
             if (payload.method === 'GET') {
-                state.forms[form_name].content = payload.response.content;
+                const content = payload.response.content;
+                if ('result' in content && 'hits' in content.result) {
+                    state.forms[form_name].content = content.result.hits.map(hit => _.merge({ _id: hit.id }, hit.source));
+                } else {
+                    state.forms[form_name].content = content;
+                }
             } else if ('change' in payload.response.content
                             && payload.response.content.change === 'Validation') {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
@@ -129,7 +135,7 @@ module.exports = {
             const path = name.split('.');
             const content = state.forms[form_name].content;
             const object = Utils.make_nested_object_from_path(path, info);
-            state.forms[form_name].content = Object.assign({}, content, object);
+            state.forms[form_name].content = _.merge({}, content, object);
             state.forms[form_name].claims += 1;
         }
     },
@@ -143,8 +149,16 @@ module.exports = {
 
     [Messages.REMOVE_FROM_FORM_POOL]: (state, payload) => {
         const form_name = payload.form;
+        const elt_name = payload.name;
         if (form_name in state.forms) {
             state.forms[form_name].pool -= 1;
+
+            const path = elt_name.split('.');
+            const last = path[path.length - 1];
+            const object = Utils.find_object_with_path(state.forms[form_name].content, path);
+            if (object) {
+                delete object[last];
+            }
         }
     },
 };

@@ -1,5 +1,5 @@
 // @flow
-
+const _ = require('lodash');
 const Errors = require('../exceptions/errors');
 const Validator = require('./validator/validator');
 const Completer = require('./completer/completer');
@@ -50,8 +50,7 @@ class Pipeline {
         if (entity == null) {
             return false;
         }
-
-        return true;
+        return entity.db.found;
     }
 
     /**
@@ -63,6 +62,7 @@ class Pipeline {
      * @return merged object
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
+        // TODO implement a satisfactory merging
         return input;
     }
 
@@ -102,7 +102,7 @@ class Pipeline {
             case 'merge': {
                 if (method === 'put') {
                     const entity = await EntitiesUtils.retrieve(body._id, type);
-                    ctx.request.body = Pipeline._merge_defaults(body, entity.db);
+                    ctx.request.body = Pipeline._merge_defaults(body, entity.db.source);
                 }
                 await next();
                 break;

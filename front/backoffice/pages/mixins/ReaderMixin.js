@@ -4,7 +4,7 @@ const Messages = require('../../api/messages');
 
 module.exports = {
     methods: {
-        update(obj) {
+        update(obj, entity) {
             this.$store.commit(Messages.CANCEL_FORM, {
                 form: this.state.cform,
             });
@@ -20,7 +20,7 @@ module.exports = {
         remove(obj, entity) {
             this.$store.dispatch('remove', {
                 form: this.state.rform,
-                path: APIRoutes.entity(entity, 'DEL', [], obj._id),
+                path: APIRoutes.entity(entity, 'DEL', false, obj._id),
             });
         },
     },
@@ -43,7 +43,7 @@ module.exports = {
         error(n) {
             if (n && Object.keys(n).length > 0) {
                 console.error(n.content.message);
-                //toastr.error(n.content.message);
+                // toastr.error(n.content.message);
             }
         },
     },

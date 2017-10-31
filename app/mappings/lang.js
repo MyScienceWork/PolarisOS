@@ -8,9 +8,17 @@ module.exports = {
                     key: {
                         type: 'keyword',
                     },
-                    value: {
-                        type: 'text',
-                        index: false,
+                    values: {
+                        type: 'nested',
+                        properties: {
+                            value: {
+                                type: 'text',
+                                index: false,
+                            },
+                            quantity: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     lang: {
                         type: 'keyword',

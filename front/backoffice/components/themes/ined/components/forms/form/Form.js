@@ -113,9 +113,6 @@ module.exports = {
             }
         },
         success(n) {
-            if (n !== '') {
-                toastr.success(n);
-            }
         },
     },
 };

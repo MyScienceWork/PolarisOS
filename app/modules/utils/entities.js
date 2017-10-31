@@ -14,6 +14,11 @@ const CitationModel = require('../entities/citation/models/citations');
 const User = require('../entities/user/user');
 const UserModel = require('../entities/user/models/users');
 
+const Config = require('../entities/config/config');
+const ConfigModel = require('../entities/config/models/configs');
+
+const Lang = require('../entities/lang/lang');
+const LangModel = require('../entities/lang/models/langs');
 
 type ObjectList = {
     whitelist?: Set<string>,
@@ -30,6 +35,10 @@ function get_model_from_type(type: string): ?Object {
         return CitationModel;
     case 'user':
         return UserModel;
+    case 'config':
+        return ConfigModel;
+    case 'lang':
+        return LangModel;
     default:
         return null;
     }
@@ -43,6 +52,10 @@ function get_cls_from_type(type: string): ?Object {
         return Citation;
     case 'user':
         return User;
+    case 'config':
+        return Config;
+    case 'lang':
+        return Lang;
     default:
         return null;
     }
@@ -54,6 +67,12 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Publication(es_client, id);
     case 'citation':
         return new Citation(es_client, id);
+    case 'config':
+        return new Config(es_client, id);
+    case 'user':
+        return new User(es_client, id);
+    case 'lang':
+        return new Lang(es_client, id);
     default:
         return null;
     }
@@ -174,9 +193,9 @@ async function retrieve(id: string, type: string,
     }
 
     if (_source === true) {
-        return odm.get(id);
+        return odm.read();
     }
-    return odm.get(id, { source: _source });
+    return odm.read({ source: _source });
 }
 
 async function remove(id: string, type: string): Promise<*> {

@@ -25,6 +25,8 @@ const Formatting: Array<any> = [];
 
 const Completion: Array<any> = [];
 
+const Defaults: Object = {};
+
 const Messages: Object = {
     set: 'User is successfully added',
     remove: 'User is successfully removed',
@@ -38,5 +40,6 @@ module.exports = {
     Formatting,
     Completion,
     Messages,
+    Defaults,
     Name: 'User',
 };

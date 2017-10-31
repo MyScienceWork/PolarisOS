@@ -2,6 +2,8 @@ module.exports = {};
 const Routes = require('./routes');
 const Home = require('./pages/home/Home.vue');
 const User = require('./pages/user/User.vue');
+const Config = require('./pages/config/Config.vue');
+const Lang = require('./pages/lang/Lang.vue');
 
 
 module.exports.menu = [
@@ -79,7 +81,7 @@ module.exports.menu = [
             key: 'lang',
             routes: [Routes.lang],
             submenu: [],
-            component: Home,
+            component: Lang,
         },
     ],
 
@@ -127,7 +129,7 @@ module.exports.menu = [
             key: 'config',
             routes: [Routes.config],
             submenu: [],
-            component: Home,
+            component: Config,
         },
     ],
 ];

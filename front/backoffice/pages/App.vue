@@ -1,5 +1,6 @@
 <template>
-<div id="app" class="holy-grail">
+<loader id="app" v-if="Object.keys($store.state.lang_content).length === 0"></loader>
+<div v-else id="app" class="holy-grail">
     <router-view name="header"></router-view>
     <div class="holy-grail-body">
         <router-view></router-view>
@@ -10,7 +11,5 @@
 </template>
 
 <script>
-module.exports = {
-  name: 'App'
-}
+module.exports = require('./App');
 </script>

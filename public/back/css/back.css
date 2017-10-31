@@ -84,6 +84,9 @@
 .redify {
   color: #E9362F;
 }
+.has-grey-borders {
+  border: 1px solid #4E5762;
+}
 .msw-loader .primary-color {
   background-color: #E63A30;
 }
@@ -385,6 +388,9 @@
   border-color: transparent;
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+.v-select .dropdown-toggle {
+  border: none !important;
 }
 .smart-widget {
   border: 1px solid #e6e6e6;

@@ -47,4 +47,68 @@ module.exports = {
         const response = await API.fetch(payload);
         ctx.commit(Messages.FETCH, { method: 'GET', response, form });
     },
+
+    search: async (ctx, { form, path, body }) => {
+        const payload = {
+            path,
+            method: 'POST',
+            commit: ctx.commit,
+            body,
+        };
+
+        ctx.commit(Messages.LOADING, { form });
+        const response = await API.fetch(payload);
+        ctx.commit(Messages.FETCH, { method: 'GET', response, form });
+    },
+
+    grab_config: async (ctx, { path, body }) => {
+        const payload = {
+            path,
+            method: 'POST',
+            commit: ctx.commit,
+            body,
+        };
+
+        const response = await API.fetch(payload);
+        // const success = response.type === Messages.SUCCESS;
+        if (response.content == null) {
+            response.content = {};
+        }
+
+        console.log(response.content);
+
+        const content = 'result' in response.content
+            && 'hits' in response.content.result ? response.content.result.hits : [];
+        if (content.length > 0) {
+            ctx.state.global_config = content[0].source;
+        }
+    },
+
+    grab_language: async (ctx, { path, body }) => {
+        const payload = {
+            path,
+            method: 'POST',
+            commit: ctx.commit,
+            body,
+        };
+
+        const response = await API.fetch(payload);
+        // const success = response.type === Messages.SUCCESS;
+        if (response.content == null) {
+            response.content = {};
+        }
+
+        const content = 'result' in response.content
+            && 'hits' in response.content.result ? response.content.result.hits : [];
+        ctx.state.lang_content = content.reduce((obj, src) => {
+            const l = src.source;
+            const lang = obj[l.lang] || {};
+            lang[l.key] = l.values.reduce((values, v) => {
+                values[v.quantity] = v.value;
+                return values;
+            }, {});
+            obj[l.lang] = lang;
+            return obj;
+        }, {});
+    },
 };

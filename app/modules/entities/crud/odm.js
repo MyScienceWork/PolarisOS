@@ -274,7 +274,8 @@ class ODM {
             }
 
             const response = await client.index(content);
-            if ('created' in response && response.created) {
+            if (('created' in response && response.created)
+                || ('result' in response && response.result === 'updated')) {
                 try {
                     const get_response = await client.get({
                         index,
@@ -295,14 +296,14 @@ class ODM {
         }
     }
 
-    async read(opts: Object = {}) {
+    async read(opts: Object = {}): ODM {
         const source = 'source' in opts ? opts.source : null;
         let src = true;
         if (source) {
             src = source.length > 0 ? source : false;
         }
 
-        const [index, type] = this.extract_index_type();
+        const [index, type] = this.constructor.extract_index_type();
         try {
             const response = await this._client.get({
                 index,
@@ -311,11 +312,12 @@ class ODM {
                 _source: src,
             });
 
-            this.db = this.format_hit(response, response.found);
+            this.db = this.constructor.format_hit(response, response.found);
         } catch (err) {
             const response = err.body;
-            this.db = this.format_hit(response, response.found);
+            this.db = this.constructor.format_hit(response, response.found);
         }
+        return this;
     }
 
     static async create(client: Object, body: Object): Promise<?ODM> {
@@ -323,6 +325,7 @@ class ODM {
     }
 
     static async update(client: Object, body: Object, id: string): Promise<?ODM> {
+        console.log('update', JSON.stringify(body));
         return this._create_or_update(client, body, id);
     }
 
