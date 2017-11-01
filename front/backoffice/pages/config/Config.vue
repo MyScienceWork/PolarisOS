@@ -18,7 +18,7 @@
                                         </action-button>
                                         <action-button
                                         class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
+                                        :confirmation="lang('b_sure')"
                                         :two-steps="true"
                                         @action-click="remove(content, 'config')"
                                         >
@@ -47,13 +47,13 @@
                             :put_path="state.path"
                         >
                             <fselect 
-                                name="environment" label="Environment" 
+                                name="environment" :label="lang('b_environment')" 
                                 :is-required="true" 
                                 :form="state.cform" 
                                 :options="state.environments" 
                             />
                             <fselect 
-                                name="langs" label="Langs" 
+                                :name="langs" :label="lang('b_lang',{}, 'other')" 
                                 :is-required="true" 
                                 :form="state.cform" 
                                 :multi="true"

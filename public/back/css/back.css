@@ -87,6 +87,12 @@
 .has-grey-borders {
   border: 1px solid #4E5762;
 }
+.has-no-top-margin {
+  margin-top: 0 !important;
+}
+.has-no-bottom-margin {
+  margin-bottom: 0 !important;
+}
 .msw-loader .primary-color {
   background-color: #E63A30;
 }

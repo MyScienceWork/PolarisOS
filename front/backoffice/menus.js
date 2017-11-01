@@ -4,6 +4,7 @@ const Home = require('./pages/home/Home.vue');
 const User = require('./pages/user/User.vue');
 const Config = require('./pages/config/Config.vue');
 const Lang = require('./pages/lang/Lang.vue');
+const Form = require('./pages/form/Form.vue');
 
 
 module.exports.menu = [
@@ -72,7 +73,7 @@ module.exports.menu = [
             key: 'form',
             routes: [Routes.form],
             submenu: [],
-            component: Home,
+            component: Form,
         },
         {
             section: 'Administration',

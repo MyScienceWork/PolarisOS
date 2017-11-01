@@ -1,11 +1,12 @@
 const Utils = require('../../utils/utils');
 const APIRoutes = require('../../api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
+const LangMixin = require('../mixins/LangMixin');
 const Environments = require('../../lists/environments');
 const Langs = require('../../lists/langs');
 
 module.exports = {
-    mixins: [ReaderMixin],
+    mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {

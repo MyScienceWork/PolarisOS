@@ -69,6 +69,7 @@ module.exports = {
         },
         onChange(val) {
             this.state.selected = val;
+            this.$emit('select-change', val);
         },
         extract_values(infos) {
             if (infos == null) {

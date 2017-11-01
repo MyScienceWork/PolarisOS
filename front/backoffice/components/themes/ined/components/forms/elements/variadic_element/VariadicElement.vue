@@ -2,9 +2,9 @@
     <div>
         <div class="columns is-marginless">
             <div class="column is-paddingless">
-                <span class="icon has-text-success" @click="add">
+                <a href='#' class="icon has-text-success" @click="add">
                     <i class="fa fa-plus"></i>
-                </span>
+                </a>
             </div>
         </div>
         <div v-for="(show, idx) in state.elements" class="columns" v-if="show" :key="idx">

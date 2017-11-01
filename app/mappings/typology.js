@@ -6,13 +6,13 @@ module.exports = {
                 dynamic_date_formats: [],
                 properties: {
                     label: {
-                        type: 'text',
+                        type: 'keyword',
                     },
                     children: {
                         type: 'nested',
                         properties: {
                             label: {
-                                type: 'text',
+                                type: 'keyword',
                             },
                         },
                     },
