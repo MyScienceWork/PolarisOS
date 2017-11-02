@@ -11,7 +11,11 @@ module.exports = {
             let text = key;
             // TODO finish implementation for few and many
             if (n == null) {
-                text = info['n/a'] || key;
+                if ('1' in info) {
+                    text = info['1'] || key;
+                } else {
+                    text = info['n/a'] || key;
+                }
             } else if (n === 0) {
                 text = info.zero || info['n/a'] || key;
             } else if (n === 1) {

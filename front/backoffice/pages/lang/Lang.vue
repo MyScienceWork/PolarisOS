@@ -49,6 +49,8 @@
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
+                            :get_path="state.rpath"
+                            :get_form="state.rform"
                         >
                             <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.cform" />
                             <finput name="part" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" type="text" :form="state.cform" />

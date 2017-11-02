@@ -1,7 +1,7 @@
 const API = require('../api');
 const Messages = require('../api/messages');
 
-async function create_or_update(ctx, { path, body, form }, up = false) {
+async function create_or_update(ctx, { path, body, form, rform, rpath }, up = false) {
     const method = up ? 'PUT' : 'POST';
     const payload = {
         path,
@@ -13,6 +13,10 @@ async function create_or_update(ctx, { path, body, form }, up = false) {
     ctx.commit(Messages.LOADING, { form });
     const response = await API.fetch(payload);
     ctx.commit(Messages.FETCH, { method, response, form });
+    ctx.dispatch('single_read', {
+        form: rform,
+        path: rpath,
+    });
 }
 
 module.exports = {
@@ -24,7 +28,7 @@ module.exports = {
         await create_or_update(ctx, payload, true);
     },
 
-    remove: async (ctx, { path, form }) => {
+    remove: async (ctx, { path, form, rpath, rform }) => {
         const payload = {
             path,
             method: 'DEL',
@@ -34,6 +38,10 @@ module.exports = {
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
         ctx.commit(Messages.FETCH, { method: 'DEL', response, form });
+        ctx.dispatch('single_read', {
+            form: rform,
+            path: rpath,
+        });
     },
 
     single_read: async (ctx, { form, path }) => {

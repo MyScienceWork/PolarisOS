@@ -21,6 +21,8 @@ module.exports = {
             this.$store.dispatch('remove', {
                 form: this.state.rform,
                 path: APIRoutes.entity(entity, 'DEL', false, obj._id),
+                rpath: this.state.rpath,
+                rform: this.state.rform,
             });
         },
     },
@@ -37,6 +39,16 @@ module.exports = {
                 return form.error;
             }
             return { };
+        },
+        content() {
+            if (this.state.rform in this.$store.state.forms) {
+                const form = this.$store.state.forms[this.state.rform];
+                return form.content || [];
+            }
+            return [];
+        },
+        contentLength() {
+            return this.content.length;
         },
     },
     watch: {

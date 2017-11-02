@@ -292,6 +292,7 @@ class ODM {
             }
             return null;
         } catch (err) {
+            console.log('creation or update error', err);
             return null;
         }
     }

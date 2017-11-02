@@ -76,6 +76,7 @@ class Pipeline {
     static _action(type: string, m: string): Function {
         const validator = new Validator();
         return async function afunc(ctx: Object, next: Function): Promise<*> {
+            console.log('validation: ', type, ' action:', m);
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = EntitiesUtils.get_model_from_type(type);

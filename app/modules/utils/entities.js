@@ -20,6 +20,12 @@ const ConfigModel = require('../entities/config/models/configs');
 const Lang = require('../entities/lang/lang');
 const LangModel = require('../entities/lang/models/langs');
 
+const DataTemplate = require('../entities/datatemplate/datatemplate');
+const DataTemplateModel = require('../entities/datatemplate/models/datatemplates');
+
+const Form = require('../entities/form/form');
+const FormModel = require('../entities/form/models/forms');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -39,6 +45,10 @@ function get_model_from_type(type: string): ?Object {
         return ConfigModel;
     case 'lang':
         return LangModel;
+    case 'datatemplate':
+        return DataTemplateModel;
+    case 'form':
+        return FormModel;
     default:
         return null;
     }
@@ -56,6 +66,10 @@ function get_cls_from_type(type: string): ?Object {
         return Config;
     case 'lang':
         return Lang;
+    case 'datatemplate':
+        return DataTemplate;
+    case 'form':
+        return Form;
     default:
         return null;
     }
@@ -73,6 +87,10 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new User(es_client, id);
     case 'lang':
         return new Lang(es_client, id);
+    case 'datatemplate':
+        return new DataTemplate(es_client, id);
+    case 'form':
+        return new Form(es_client, id);
     default:
         return null;
     }
@@ -85,6 +103,7 @@ async function create(info: Object, type: string): Promise<*> {
     }
 
     const response = await cls.create(es_client, info);
+    console.log('create', response);
     return response;
 }
 

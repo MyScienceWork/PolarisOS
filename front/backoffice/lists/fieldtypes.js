@@ -3,6 +3,8 @@ module.exports = [{ label: 'Text', value: 'text' },
     { label: 'Password', value: 'password' },
     { label: 'Phone', value: 'phone' },
     { label: 'Number', value: 'number' },
+    { label: 'Textarea', value: 'textarea' },
     { label: 'Checkbox', value: 'checkbox' },
     { label: 'Radio', value: 'radio' },
+    { label: 'Subform', value: 'subform' },
     { label: 'Select', value: 'select' }];

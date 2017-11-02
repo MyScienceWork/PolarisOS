@@ -41,7 +41,7 @@
 <div v-else-if="type === 'textarea'" class="field">
     <label for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <textarea
-        class="input"
+        class="input textarea"
         :placeholder="placeholder"
         :name="name"
         :rows="rows"

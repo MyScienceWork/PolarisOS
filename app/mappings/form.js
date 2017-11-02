@@ -8,6 +8,14 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
+                    label: {
+                        type: 'text',
+                        index: false,
+                    },
+                    description: {
+                        type: 'text',
+                        index: false,
+                    },
                     fields: {
                         type: 'nested',
                         properties: {
@@ -22,6 +30,10 @@ module.exports = {
                             type: {
                                 type: 'keyword',
                                 index: false,
+                            },
+                            subform: {
+                                type: 'keyword',
+                                index: true,
                             },
                             datasource: {
                                 type: 'nested',

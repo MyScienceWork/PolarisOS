@@ -45,6 +45,8 @@
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
+                            :get_path="state.rpath"
+                            :get_form="state.rform"
                         >
                             <fselect 
                                 name="environment" :label="lang('b_environment')" 

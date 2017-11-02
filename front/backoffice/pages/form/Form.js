@@ -35,25 +35,39 @@ module.exports = {
             form: this.state.rform,
             path: this.state.rpath,
         });
+        this.$store.dispatch('search', {
+            form: 'datatemplate_read',
+            path: APIRoutes.entity('datatemplate', 'POST', true),
+            body: {
+                projection: ['label', 'name'],
+                size: 10000,
+            },
+        });
     },
     computed: {
-        readContent() {
+        content() {
             if (this.state.rform in this.$store.state.forms) {
                 const form = this.$store.state.forms[this.state.rform];
-                return Utils.to_matrix(form.content instanceof Array ?
-                        form.content : [], this.state.itemsPerRow);
+                const content = form.content || [];
+                return content.map((c) => {
+                    c.label = this.lang(c.label);
+                    c.description = this.lang(c.description);
+                    return c;
+                });
             }
             return [];
         },
-        contentLength() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                return form.content.length;
-            }
-            return 0;
+        readContent() {
+            return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
         fieldtypes() {
             return FieldTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
+        },
+        datasources() {
+            if ('datatemplate_read' in this.$store.forms) {
+                return this.$store.forms.datatemplate_read.content;
+            }
+            return [];
         },
     },
 };

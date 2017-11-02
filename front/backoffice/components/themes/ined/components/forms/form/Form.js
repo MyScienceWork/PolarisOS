@@ -6,6 +6,8 @@ module.exports = {
         name: { default: 'default_form' },
         post_path: { type: String, required: true },
         put_path: { type: String, required: true },
+        get_path: { type: String, required: true },
+        get_form: { type: String, required: true },
     },
     data() {
         return {
@@ -101,6 +103,8 @@ module.exports = {
             if (n === form.pool) {
                 const payload = {
                     form: this.name,
+                    rpath: this.get_path,
+                    rform: this.get_form,
                     body: form.content,
                 };
                 if (this.state.update_mode) {

@@ -49,6 +49,8 @@
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
+                            :get_path="state.rpath"
+                            :get_form="state.rform"
                         >
                             <finput name="firstname" label="First name" :is-required="true" placeholder="First name" type="text" :form="state.cform" />
                             <finput name="lastname" label="Last name" :is-required="true" placeholder="Last name" type="text" :form="state.cform" />
