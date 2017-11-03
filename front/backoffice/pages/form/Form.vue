@@ -50,6 +50,7 @@
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
+                            :get_form="state.rform"
                             >
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.cform" />
                             <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.cform" />

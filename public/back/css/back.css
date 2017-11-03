@@ -747,7 +747,8 @@
   color: #E9362F;
 }
 .holy-grail {
-  height: 100vh;
+  min-height: 100%;
+  height: 100%;
 }
 .holy-grail,
 .holy-grail-body {

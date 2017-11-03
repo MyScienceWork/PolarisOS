@@ -2,47 +2,36 @@ const Utils = require('../../utils/utils');
 const APIRoutes = require('../../api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../mixins/LangMixin');
-const FieldTypes = require('../../lists/fieldtypes');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('form', 'POST'),
-                rpath: APIRoutes.entity('form', 'GET'),
-                cform: 'form_creation',
-                rform: 'form_read',
+                path: APIRoutes.entity('datainstance', 'POST'),
+                rpath: APIRoutes.entity('datainstance', 'GET'),
+                cform: 'datainstance_creation',
+                rform: 'datainstance_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
-                selected_types: {},
             },
         };
     },
     methods: {
-        type_change(val, idx) {
-            if (val == null) {
-                if (idx in this.state.selected_types) {
-                    delete this.state.selected_types[idx];
-                }
-            } else {
-                this.$set(this.state.selected_types, idx, val.value);
-            }
-        },
     },
     mounted() {
         this.$store.dispatch('single_read', {
             form: this.state.rform,
             path: this.state.rpath,
         });
-        this.$store.dispatch('search', {
-            form: 'datatemplate_read',
-            path: APIRoutes.entity('datatemplate', 'POST', true),
+        /* this.$store.dispatch('search', {
+            form: 'form_read',
+            path: APIRoutes.entity('', 'POST', true),
             body: {
                 projection: ['label', 'name'],
                 size: 10000,
             },
-        });
+        });*/
     },
     computed: {
         content() {
@@ -51,7 +40,6 @@ module.exports = {
                 const content = form.content || [];
                 return content.map((c) => {
                     c.label = this.lang(c.label);
-                    c.description = this.lang(c.description);
                     return c;
                 });
             }
@@ -59,15 +47,6 @@ module.exports = {
         },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
-        },
-        fieldtypes() {
-            return FieldTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
-        },
-        datasources() {
-            if ('datatemplate_read' in this.$store.state.forms) {
-                return this.$store.state.forms.datatemplate_read.content;
-            }
-            return [];
         },
     },
 };

@@ -5,6 +5,8 @@ const User = require('./pages/user/User.vue');
 const Config = require('./pages/config/Config.vue');
 const Lang = require('./pages/lang/Lang.vue');
 const Form = require('./pages/form/Form.vue');
+const Datasource = require('./pages/datasource/Datasource.vue');
+const Datainstance = require('./pages/datainstance/Datainstance.vue');
 
 
 module.exports.menu = [
@@ -46,7 +48,7 @@ module.exports.menu = [
             key: 'datasource',
             routes: [Routes.datasource],
             submenu: [],
-            component: Home,
+            component: Datasource,
         },
         {
             section: 'Administration',
@@ -133,4 +135,12 @@ module.exports.menu = [
             component: Config,
         },
     ],
+];
+
+module.exports.other = [
+    {
+        key: 'datasource_typology',
+        routes: [Routes.datasource_typology],
+        component: Datainstance,
+    },
 ];

@@ -34,7 +34,7 @@ module.exports = {
         }
 
         if (!(form_name in state.forms)) {
-            state.forms[form_name] = create_form();
+            state.forms = Object.assign({}, { [form_name]: create_form() });
         }
 
         state.forms[form_name].loading = false;

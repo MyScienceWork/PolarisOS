@@ -14,13 +14,15 @@ const Validation: Array<any> = [
 const Formatting: Array<any> = [
     {
         fields: async (fields) => {
+            let new_fields = [];
             if (fields instanceof Array) {
-                return fields.filter(v => v != null && Object.keys(v).length > 0);
+                new_fields = fields.filter(v => v != null && Object.keys(v).length > 0);
             }
             if (fields instanceof Object) {
-                return _.filter(fields, val => val != null && Object.keys(val).length > 0);
+                new_fields = _.filter(fields, val => val != null && Object.keys(val).length > 0);
             }
-            return [];
+            new_fields.sort((a, b) => a.order - b.order);
+            return new_fields;
         },
     },
 ];

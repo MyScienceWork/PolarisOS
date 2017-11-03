@@ -4,7 +4,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of users</span>
+                <span slot="title">{{lang('b_list_datasources')}}</span>
                     <div slot="body">
                         <div class="columns is-centered" v-for="row in readContent">
                             <div v-for="content in row" class="column">
@@ -18,13 +18,19 @@
                                         </action-button>
                                         <action-button
                                         class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
+                                        :confirmation="lang('b_are_sure')"
                                         :two-steps="true"
-                                        @action-click="remove(content, 'organization')"
+                                        @action-click="remove(content, 'datatemplate')"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.firstname}} {{content.lastname}} 
+                                        <router-link
+                                        class="button is-small button-background-green"
+                                        :to="`/admin/datasource/${content.name}`"
+                                        >
+                                        <i class="fa fa-eye"></i>
+                                        </router-link>
+                                        {{content.label}} ({{content.name}}) 
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -43,26 +49,27 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">Add or modify a user</span>
+                <span slot="title">{{lang('b_add_datasource')}}</span>
                     <div slot="body">
-                        <fform
-                            v-if="form != null"
+                        <fform 
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
                             :get_form="state.rform"
-                        >
-                            <template v-for="field in form.fields">
-                                    <finput 
-                                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
-                                    :label="lang(field.label || '')"
-                                    :name="field.name"
-                                    :placeholder="lang(field.placeholder || '')"
-                                    :type="field.type"
-                                    :form="state.cform"
-                                    />
-                            </template>
+                            >
+                            <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.cform" />
+                            <finput name="label" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.cform" />
+                            <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.cform" />
+                            <fselect 
+                                name="form" 
+                                :label="lang('b_form')" 
+                                :is-required="true" 
+                                :options="forms"
+                                :fieldLabel="label"
+                                :fieldValue="name"
+                                :form="state.cform" 
+                            />
                         </fform>
                     </div>
                 </widget>
@@ -71,7 +78,6 @@
     </div>
 </div>
 </template>
-
 <script>
-module.exports = require('./User');
+module.exports = require('./Datasource');
 </script>

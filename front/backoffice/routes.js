@@ -3,6 +3,7 @@ module.exports = {
     user: '/admin/user',
     review: '/admin/review',
     datasource: '/admin/datasource',
+    datasource_typology: '/admin/datasource/typology',
     publication: '/admin/publication',
     csl: '/admin/csl',
     form: '/admin/form',

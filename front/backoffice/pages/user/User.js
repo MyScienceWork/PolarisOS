@@ -1,9 +1,10 @@
 const Utils = require('../../utils/utils');
 const APIRoutes = require('../../api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
+const LangMixin = require('../mixins/LangMixin');
 
 module.exports = {
-    mixins: [ReaderMixin],
+    mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {
@@ -23,6 +24,16 @@ module.exports = {
             form: this.state.rform,
             path: this.state.rpath,
         });
+        this.$store.dispatch('search', {
+            form: 'form_read',
+            path: APIRoutes.entity('form', 'POST', true),
+            body: {
+                size: 10,
+                where: {
+                    $and: [{ name: 'user_form' }],
+                },
+            },
+        });
     },
     computed: {
         readContent() {
@@ -39,6 +50,13 @@ module.exports = {
                 return form.content.length;
             }
             return 0;
+        },
+        form() {
+            if ('form_read' in this.$store.state.forms) {
+                const form = this.$store.state.forms.form_read;
+                return form.content[0] || null;
+            }
+            return null;
         },
     },
 };

@@ -4,7 +4,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of users</span>
+                <span slot="title">{{lang('b_list_datainstances')}}</span>
                     <div slot="body">
                         <div class="columns is-centered" v-for="row in readContent">
                             <div v-for="content in row" class="column">
@@ -18,13 +18,12 @@
                                         </action-button>
                                         <action-button
                                         class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
+                                        :confirmation="lang('b_are_sure')"
                                         :two-steps="true"
-                                        @action-click="remove(content, 'organization')"
+                                        @action-click="remove(content, 'datainstance')"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.firstname}} {{content.lastname}} 
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -33,7 +32,7 @@
                         </div>
                         <div class="columns is-centered">
                             <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="200" :items-per-page="state.itemsPerPage" />
+                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
                             </div>
                         </div>
                     </div>
@@ -43,16 +42,15 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">Add or modify a user</span>
+                <span slot="title">{{lang('b_add_datainstance')}}</span>
                     <div slot="body">
                         <fform 
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
-                        >
-                            <finput name="firstname" label="First name" :is-required="true" placeholder="User first name" type="text" :form="state.cform" />
-                            <finput name="lastname" label="Last name" :is-required="true" placeholder="User last name" type="text" :form="state.cform" />
-                            <finput name="email" label="Email address" :is-required="true" placeholder="User email address" type="email" :form="state.cform" />
+                            :get_path="state.rpath"
+                            :get_form="state.rform"
+                            >
                         </fform>
                     </div>
                 </widget>
@@ -61,7 +59,6 @@
     </div>
 </div>
 </template>
-
 <script>
-module.exports = require('./Home');
+module.exports = require('./Datainstance');
 </script>

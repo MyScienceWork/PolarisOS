@@ -16,6 +16,18 @@ module.exports = {
                         type: 'text',
                         index: false,
                     },
+                    post_path: {
+                        type: 'keyword',
+                    },
+                    get_path: {
+                        type: 'keyword',
+                    },
+                    remove_path: {
+                        type: 'keyword',
+                    },
+                    put_path: {
+                        type: 'keyword',
+                    },
                     fields: {
                         type: 'nested',
                         properties: {
@@ -39,6 +51,14 @@ module.exports = {
                                 type: 'nested',
                                 properties: {
                                     name: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    label: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    value: {
                                         type: 'keyword',
                                         index: false,
                                     },

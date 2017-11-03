@@ -187,6 +187,8 @@ class ODM {
             query,
         };
 
+        console.log('search query', query);
+
         if (sort != null) {
             body.sort = sort;
         }
