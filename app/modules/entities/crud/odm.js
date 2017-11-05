@@ -263,6 +263,7 @@ class ODM {
 
     static async _create_or_update(client: Object, body: Object, id: ?string = null): Promise<?ODM> {
         const [index, type] = this.extract_index_type();
+        console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
                 index,

@@ -16,6 +16,12 @@ module.exports = {
                         type: 'text',
                         index: false,
                     },
+                    group: {
+                        type: 'keyword',
+                    },
+                    has_subforms: {
+                        type: 'boolean',
+                    },
                     post_path: {
                         type: 'keyword',
                     },
@@ -45,7 +51,6 @@ module.exports = {
                             },
                             subform: {
                                 type: 'keyword',
-                                index: true,
                             },
                             datasource: {
                                 type: 'nested',
@@ -99,6 +104,10 @@ module.exports = {
                             },
                             multiple: {
                                 type: 'boolean',
+                                index: false,
+                            },
+                            multiple_name: {
+                                type: 'keyword',
                                 index: false,
                             },
                         },

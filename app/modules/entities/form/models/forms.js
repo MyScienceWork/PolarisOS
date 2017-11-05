@@ -25,11 +25,16 @@ const Formatting: Array<any> = [
             return new_fields;
         },
     },
+    {
+        has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
+    },
 ];
 
 const Completion: Array<any> = [];
 
-const Defaults: Object = {};
+const Defaults: Object = {
+    has_subforms: false,
+};
 
 const Messages: Object = {
     set: 'Form is successfully added',

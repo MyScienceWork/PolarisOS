@@ -8,10 +8,10 @@ module.exports = {
     data() {
         return {
             state: {
-                path: APIRoutes.entity('datainstance', 'POST'),
-                rpath: APIRoutes.entity('datainstance', 'GET'),
-                cform: 'datainstance_creation',
-                rform: 'datainstance_read',
+                path: APIRoutes.entity(this.$route.params.datainstance, 'POST'),
+                rpath: APIRoutes.entity(this.$route.params.datainstance, 'GET'),
+                cform: `${this.$route.params.datainstance}_creation`,
+                rform: `${this.$route.params.datainstance}_read`,
                 itemsPerPage: 20,
                 itemsPerRow: 2,
             },
@@ -24,14 +24,16 @@ module.exports = {
             form: this.state.rform,
             path: this.state.rpath,
         });
-        /* this.$store.dispatch('search', {
-            form: 'form_read',
-            path: APIRoutes.entity('', 'POST', true),
+        this.$store.dispatch('search', {
+            form: 'datasource_read',
+            path: APIRoutes.entity('form', 'POST', true),
             body: {
-                projection: ['label', 'name'],
-                size: 10000,
+                size: 1,
+                where: {
+                    name: `${this.$route.params.datainstance}_form`,
+                },
             },
-        });*/
+        });
     },
     computed: {
         content() {

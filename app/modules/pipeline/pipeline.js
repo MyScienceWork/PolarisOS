@@ -63,6 +63,11 @@ class Pipeline {
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
         // TODO implement a satisfactory merging
+        return _.merge(defaults, input);
+    }
+
+    static _merge_put(input: Object, defaults: Object): Object {
+        // TODO implement a satisfactory merging
         return input;
     }
 
@@ -103,7 +108,7 @@ class Pipeline {
             case 'merge': {
                 if (method === 'put') {
                     const entity = await EntitiesUtils.retrieve(body._id, type);
-                    ctx.request.body = Pipeline._merge_defaults(body, entity.db.source);
+                    ctx.request.body = Pipeline._merge_put(body, entity.db.source);
                 }
                 await next();
                 break;

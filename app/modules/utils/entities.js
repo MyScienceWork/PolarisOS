@@ -26,6 +26,9 @@ const DataTemplateModel = require('../entities/datatemplate/models/datatemplates
 const Form = require('../entities/form/form');
 const FormModel = require('../entities/form/models/forms');
 
+const Typology = require('../entities/typology/typology');
+const TypologyModel = require('../entities/typology/models/typologies');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -49,6 +52,8 @@ function get_model_from_type(type: string): ?Object {
         return DataTemplateModel;
     case 'form':
         return FormModel;
+    case 'typology':
+        return TypologyModel;
     default:
         return null;
     }
@@ -70,6 +75,8 @@ function get_cls_from_type(type: string): ?Object {
         return DataTemplate;
     case 'form':
         return Form;
+    case 'typology':
+        return Typology;
     default:
         return null;
     }
@@ -91,6 +98,8 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new DataTemplate(es_client, id);
     case 'form':
         return new Form(es_client, id);
+    case 'typology':
+        return new Typology(es_client, id);
     default:
         return null;
     }

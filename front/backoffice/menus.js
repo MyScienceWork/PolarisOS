@@ -140,7 +140,7 @@ module.exports.menu = [
 module.exports.other = [
     {
         key: 'datasource_typology',
-        routes: [Routes.datasource_typology],
+        routes: [Routes.datainstance],
         component: Datainstance,
     },
 ];

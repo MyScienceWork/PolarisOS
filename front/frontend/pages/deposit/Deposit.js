@@ -1,16 +1,17 @@
+const FirstDepositStep = require('./first_step/FirstDepositStep.vue');
+const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
+
 module.exports = {
     data() {
         return {
             state: {
-                value: 'No',
             },
         };
     },
     methods: {
-        onKeyChange(val, e) {
-            console.log('update with', val);
-            e.preventDefault();
-            this.state.value += val;
-        },
+    },
+    components: {
+        'first-deposit-step': FirstDepositStep,
+        'second-deposit-step': SecondDepositStep,
     },
 };

@@ -10,6 +10,7 @@ const Form = require('./components/themes/ined/components/forms/form/Form.vue');
 const ActionButton = require('./components/themes/ined/components/action_button/ActionButton.vue');
 const Widget = require('./components/themes/ined/components/widget/Widget.vue');
 const Paginator = require('./components/themes/ined/components/paginator/Paginator.vue');
+const DynamicForm = require('./components/themes/ined/components/forms/dynamic_form/DynamicForm.vue');
 
 const App = require('./pages/App.vue');
 
@@ -21,6 +22,7 @@ Vue.component('fvariadic-element', VariadicElement);
 Vue.component('action-button', ActionButton);
 Vue.component('widget', Widget);
 Vue.component('paginator', Paginator);
+Vue.component('dynamic-form', DynamicForm);
 
 new Vue({
     el: '#app',

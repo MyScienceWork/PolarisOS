@@ -19,6 +19,7 @@ const htmlreplace = require('gulp-html-replace');
 const clean = require('gulp-clean');
 const uglify = require('gulp-uglify');
 const vueify = require('vueify');
+const unflowify = require('unflowify');
 
 class GulpFrontend {
     constructor(production) {
@@ -51,6 +52,7 @@ class GulpFrontend {
 
         this.vendors_css_files = [
             './node_modules/font-awesome/css/font-awesome.css',
+            './node_modules/vue2-dropzone/dist/vue2Dropzone.css',
         ];
 
         this.css_files = [
@@ -72,6 +74,7 @@ class GulpFrontend {
         });
 
         return appBundler
+        .transform(unflowify)
         .transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
@@ -167,7 +170,7 @@ class GulpFrontend {
     }
 
     copyImgs() {
-    return gulp.src([`${this.FRONT_LOCATIONS.imgs}/**/*`], { base: this.FRONT_LOCATIONS.imgs})
+        return gulp.src([`${this.FRONT_LOCATIONS.imgs}/**/*`], { base: this.FRONT_LOCATIONS.imgs })
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 

@@ -14,6 +14,23 @@ module.exports = {
                             label: {
                                 type: 'keyword',
                             },
+                            form: {
+                                type: 'keyword',
+                            },
+                            file: {
+                                type: 'boolean',
+                            },
+                            completable: {
+                                type: 'boolean',
+                            },
+                            ids: {
+                                type: 'nested',
+                                properties: {
+                                    value: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                         },
                     },
                 },

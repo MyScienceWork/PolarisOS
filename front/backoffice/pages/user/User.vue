@@ -46,23 +46,14 @@
                     <span slot="title">Add or modify a user</span>
                     <div slot="body">
                         <fform
-                            v-if="form != null"
+                            v-if="Object.keys(forms).length > 0"
                             :name="state.cform" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
                             :get_form="state.rform"
                         >
-                            <template v-for="field in form.fields">
-                                    <finput 
-                                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
-                                    :label="lang(field.label || '')"
-                                    :name="field.name"
-                                    :placeholder="lang(field.placeholder || '')"
-                                    :type="field.type"
-                                    :form="state.cform"
-                                    />
-                            </template>
+                        <dynamic-form :form="forms['user_form'] || {}" :cform="state.cform" />
                         </fform>
                     </div>
                 </widget>

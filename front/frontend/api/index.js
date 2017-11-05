@@ -4,7 +4,6 @@ const Messages = require('./messages');
 
 async function fetch(object) {
     const { method, path, body, commit } = object;
-    commit(Messages.LOADING);
 
     let super_request = Request[method.toLowerCase()](path)
         .set('Authorization', 'bfa3e803-217e-4f00-97ed-5f6417464484N1a-FmKtW:test');

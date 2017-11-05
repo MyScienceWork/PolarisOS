@@ -54,6 +54,7 @@
                             >
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.cform" />
                             <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.cform" />
+                            <finput name="group" :label="lang('b_group')" :placeholder="lang('b_group')" type="text" :form="state.cform" />
                             <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
                             <h3 class="title is-3 has-no-bottom-margin">{{lang('b_field', {}, 'other')}}</h3>
                             <hr class="has-no-top-margin" />
@@ -63,6 +64,7 @@
                                 <finput :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.cform" />
                                 <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.cform" />
                                 <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.cform" />
+                                <finput :name="`${props.fname}.${props.id}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.cform" />
                                 <fselect 
                                     :name="`${props.fname}.${props.id}.type`" 
                                     :label="lang('b_field_type')" 
@@ -87,10 +89,11 @@
                                     <div v-else-if="['subform'].indexOf(state.selected_types[props.id]) !== -1">
                                         <fselect 
                                         :name="`${props.fname}.${props.id}.subform`" 
-                                        :label="lang('b_subform')" :is-required="true"
+                                        :label="lang('b_subform')" 
+                                        :is-required="true"
                                         :options="content"
-                                        :fieldLabel="label"
-                                        :fieldValue="name"
+                                        fieldLabel="label"
+                                        fieldValue="name"
                                         :form="state.cform" />
                                     </div>
                                 </div>
