@@ -51,6 +51,7 @@
                             :get_path="state.rpath"
                             :get_form="state.rform"
                             >
+                            <dynamic-form :form="forms[`${$route.params.datainstance}_form`] || {}" :cform="state.cform" />
                         </fform>
                     </div>
                 </widget>

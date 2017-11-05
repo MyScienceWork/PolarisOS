@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Joi = require('joi');
 const TypologyMapping = require('../../../../mappings/typology');
 
@@ -11,6 +12,18 @@ const Validation: Array<any> = [
 ];
 
 const Formatting: Array<any> = [
+    {
+        children: async (children) => {
+            let new_fields = [];
+            if (children instanceof Array) {
+                new_fields = children.filter(v => v != null && Object.keys(v).length > 0);
+            }
+            if (children instanceof Object) {
+                new_fields = _.filter(children, val => val != null && Object.keys(val).length > 0);
+            }
+            return new_fields;
+        },
+    },
 ];
 
 const Completion: Array<any> = [];

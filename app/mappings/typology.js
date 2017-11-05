@@ -14,6 +14,9 @@ module.exports = {
                             label: {
                                 type: 'keyword',
                             },
+                            name: {
+                                type: 'keyword',
+                            },
                             form: {
                                 type: 'keyword',
                             },

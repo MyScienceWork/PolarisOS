@@ -2,9 +2,10 @@ const Utils = require('../../utils/utils');
 const APIRoutes = require('../../api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../mixins/LangMixin');
+const FormMixin = require('../mixins/FormMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin],
     data() {
         return {
             state: {
@@ -14,6 +15,10 @@ module.exports = {
                 rform: `${this.$route.params.datainstance}_read`,
                 itemsPerPage: 20,
                 itemsPerRow: 2,
+                forms: {
+                    name: `${this.$route.params.datainstance}_form`,
+                    group: 'typology',
+                },
             },
         };
     },
@@ -23,16 +28,6 @@ module.exports = {
         this.$store.dispatch('single_read', {
             form: this.state.rform,
             path: this.state.rpath,
-        });
-        this.$store.dispatch('search', {
-            form: 'datasource_read',
-            path: APIRoutes.entity('form', 'POST', true),
-            body: {
-                size: 1,
-                where: {
-                    name: `${this.$route.params.datainstance}_form`,
-                },
-            },
         });
     },
     computed: {
