@@ -255,8 +255,10 @@ class ODM {
                 id,
                 refresh: true,
             });
+            console.log(response);
             return response.found;
         } catch (err) {
+            console.log('remove error', err);
             return false;
         }
     }

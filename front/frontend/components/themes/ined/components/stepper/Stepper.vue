@@ -3,7 +3,7 @@
     <div class="steps">
         <div 
             v-for="step in Array(numberOfSteps).fill().map((_, i) => i)"
-            :class="{'step-item': true, 'is_completed': step > state.current_step, 'is-active': step === state.current_step}"
+            :class="{'step-item': true, [`is-${state.colors[step]}`]: true, 'is-completed': state.current_step > step, 'is-active': step === state.current_step}"
         >
             <div class="step-marker">
                 <slot 

@@ -8,6 +8,7 @@ const Input = require('./components/themes/ined/components/forms/elements/input/
 const Select = require('./components/themes/ined/components/forms/elements/select/Select.vue');
 const VariadicElement = require('./components/themes/ined/components/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('./components/themes/ined/components/forms/form/Form.vue');
+const DynamicForm = require('./components/themes/ined/components/forms/dynamic_form/DynamicForm.vue');
 
 const App = require('./pages/App.vue');
 
@@ -17,6 +18,7 @@ Vue.component('fform', Form);
 Vue.component('finput', Input);
 Vue.component('fselect', Select);
 Vue.component('fvariadic-element', VariadicElement);
+Vue.component('dynamic-form', DynamicForm);
 
 new Vue({
     el: '#app',

@@ -226,7 +226,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-3f393a65", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-3f393a65", __vue__options__)
+    hotAPI.reload("data-v-3f393a65", __vue__options__)
   }
 })()}
 
@@ -282,7 +282,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-05107876", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-05107876", __vue__options__)
+    hotAPI.reload("data-v-05107876", __vue__options__)
   }
 })()}
 
@@ -326,7 +326,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d624b2fe", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-d624b2fe", __vue__options__)
+    hotAPI.reload("data-v-d624b2fe", __vue__options__)
   }
 })()}
 
@@ -420,7 +420,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-78d43fd6", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-78d43fd6", __vue__options__)
+    hotAPI.reload("data-v-78d43fd6", __vue__options__)
   }
 })()}
 
@@ -583,7 +583,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-47e7a600", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-47e7a600", __vue__options__)
+    hotAPI.reload("data-v-47e7a600", __vue__options__)
   }
 })()}
 
@@ -680,7 +680,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1968ed29", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-1968ed29", __vue__options__)
+    hotAPI.reload("data-v-1968ed29", __vue__options__)
   }
 })()}
 
@@ -828,7 +828,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-25a50356", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-25a50356", __vue__options__)
+    hotAPI.reload("data-v-25a50356", __vue__options__)
   }
 })()}
 
@@ -939,7 +939,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d595684c", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-d595684c", __vue__options__)
+    hotAPI.reload("data-v-d595684c", __vue__options__)
   }
 })()}
 
@@ -1001,7 +1001,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-643c1236", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-643c1236", __vue__options__)
+    hotAPI.reload("data-v-643c1236", __vue__options__)
   }
 })()}
 
@@ -1028,7 +1028,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-cef207e0", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-cef207e0", __vue__options__)
+    hotAPI.reload("data-v-cef207e0", __vue__options__)
   }
 })()}
 
@@ -1061,7 +1061,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-f903f060", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-f903f060", __vue__options__)
+    hotAPI.reload("data-v-f903f060", __vue__options__)
   }
 })()}
 
@@ -1121,7 +1121,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-3fe98e70", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-3fe98e70", __vue__options__)
+    hotAPI.reload("data-v-3fe98e70", __vue__options__)
   }
 })()}
 
@@ -1587,7 +1587,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-36c70957", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-36c70957", __vue__options__)
+    hotAPI.reload("data-v-36c70957", __vue__options__)
   }
 })()}
 
@@ -1662,7 +1662,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-e0f00cb6", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-e0f00cb6", __vue__options__)
+    hotAPI.reload("data-v-e0f00cb6", __vue__options__)
   }
 })()}
 
@@ -1740,7 +1740,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-8e1dfbf6", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-8e1dfbf6", __vue__options__)
+    hotAPI.reload("data-v-8e1dfbf6", __vue__options__)
   }
 })()}
 
@@ -1832,7 +1832,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5c3dcd45", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5c3dcd45", __vue__options__)
+    hotAPI.reload("data-v-5c3dcd45", __vue__options__)
   }
 })()}
 
@@ -1939,7 +1939,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-39406925", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-39406925", __vue__options__)
+    hotAPI.reload("data-v-39406925", __vue__options__)
   }
 })()}
 
@@ -1982,7 +1982,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-524cd205", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-524cd205", __vue__options__)
+    hotAPI.reload("data-v-524cd205", __vue__options__)
   }
 })()}
 
@@ -2057,7 +2057,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-4a501936", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-4a501936", __vue__options__)
+    hotAPI.reload("data-v-4a501936", __vue__options__)
   }
 })()}
 
@@ -2313,7 +2313,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5b688585", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5b688585", __vue__options__)
+    hotAPI.reload("data-v-5b688585", __vue__options__)
   }
 })()}
 

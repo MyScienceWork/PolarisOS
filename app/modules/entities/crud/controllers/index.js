@@ -86,7 +86,7 @@ function del(type: string): Function {
         } else {
             throw Errors.InvalidEntity;
         }
-        ctx.body = WebUtils.forge_ok_response(obj, odm, 'delete');
+        ctx.body = WebUtils.forge_ok_response(odm, 'delete');
     };
 }
 

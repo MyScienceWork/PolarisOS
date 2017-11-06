@@ -236,7 +236,12 @@ async function remove(id: string, type: string): Promise<*> {
         return [null, null];
     }
 
-    const obj = await odm.remove(id);
+    const cls = get_cls_from_type(type);
+    if (cls == null) {
+        return [null, null];
+    }
+
+    const obj = await cls.remove(es_client, id);
     return [odm, obj];
 }
 

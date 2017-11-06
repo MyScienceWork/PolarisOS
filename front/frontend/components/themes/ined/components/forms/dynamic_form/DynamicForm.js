@@ -1,4 +1,4 @@
-const LangMixin = require('../../../../../../pages/mixins/LangMixin');
+const LangMixin = require('../../../../../../mixins/LangMixin');
 
 module.exports = {
     mixins: [LangMixin],

@@ -10,28 +10,27 @@
                                 {{lang('f_choose_document_type')}}
                             </label>
                             <div class="select">
-                                <select>
+                                <select v-model="state.chosen_doc_type">
                                     <option disabled>Type de document</option>
-                                    <optgroup label="Article dans une revue">
-                                        <option>Article dans des revues référencées par les instances d’évaluation</option>
-                                        <option>Article dans d’autres revues scientifiques</option>
-                                        <option>Article dans des revues de débat</option>
-                                        <option>Article de vulgarisation scientifique</option>
-                                    </optgroup>
+                                    <template v-for="(item, i) in typology">
+                                        <optgroup :label="item.label">
+                                            <option v-for="(child, j) in item.children" :value="`${i}.${j}`">{{child.label}}</option>
+                                        </optgroup>
+                                    </template>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div> 
-                <div class="columns is-centered">
-                    <div class="column is-6">
+                <div class="columns is-centered" v-if="state.chosen_doc_type != ''">
+                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).file">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
                                 <vue-dropzone class="dropzone-equal-height" id="dropzone" :options="dropzone" />
                             </div>
                         </div>
                     </div>
-                    <div class="column is-6">
+                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).completable">
                         <div class="card card-equal-height">
                             <div class="card-content">
                                 <div class="columns is-centered">
@@ -53,7 +52,7 @@
                                             </span>
                                             </p>
                                             <p class="control is-expanded">
-                                                <input class="input" type="text" placeholder="Amount of money">
+                                                <input class="input" type="text" :placeholder="lang('f_give_your_id')">
                                             </p>
                                         </div>
                                     </div>

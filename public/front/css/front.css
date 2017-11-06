@@ -441,107 +441,125 @@
   -webkit-box-shadow: none;
           box-shadow: none;
 }
-.stepper {
-  display: inline-block;
-  -webkit-box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  border-radius: 5px;
-  counter-reset: flag;
+.steps .step-item.is-blue::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #1CBDC7));
+  background: linear-gradient(to left, #DBDBDB 50%, #1CBDC7 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
 }
-.stepper a {
-  text-decoration: none;
-  outline: none;
-  display: block;
-  float: left;
-  font-size: 12px;
-  line-height: 36px;
-  color: white;
-  /*need more margin on the left of links to accomodate the numbers*/
-  padding: 0 10px 0 60px;
-  background: #666;
-  background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#333));
-  background: linear-gradient(#666, #333);
-  position: relative;
-  text-align: center;
+.steps .step-item.is-blue.is-active::before {
+  background-position: left bottom;
 }
-.stepper a:first-child {
-  padding-left: 46px;
-  border-radius: 5px 0 0 5px;
-  /*to match with the parent's radius*/
+.steps .step-item.is-blue.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #1CBDC7;
+  color: #1CBDC7;
 }
-.stepper a:first-child:before {
-  left: 14px;
+.steps .step-item.is-blue.is-completed::before {
+  background-position: left bottom;
 }
-.stepper a:last-child {
-  border-radius: 0 5px 5px 0;
-  /*this was to prevent glitches on hover*/
-  padding-right: 20px;
+.steps .step-item.is-blue.is-completed .step-marker {
+  background-color: #1CBDC7;
 }
-.stepper a.active,
-.breadcrumb a:hover {
-  background: #333;
-  background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000));
-  background: linear-gradient(#333, #000);
+.steps .step-item.is-green::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #1D875F));
+  background: linear-gradient(to left, #DBDBDB 50%, #1D875F 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
 }
-.breadcrumb a.active:after,
-.breadcrumb a:hover:after {
-  background: #333;
-  background: linear-gradient(135deg, #333, #000);
+.steps .step-item.is-green.is-active::before {
+  background-position: left bottom;
 }
-.stepper a:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -18px;
-  /*half of square's length*/
-  width: 36px;
-  height: 36px;
-  -webkit-transform: scale(0.707) rotate(45deg);
-          transform: scale(0.707) rotate(45deg);
-  z-index: 1;
-  background: #666;
-  background: linear-gradient(135deg, #666, #333);
-  -webkit-box-shadow: 2px -2px 0 2px rgba(0, 0, 0, 0.4), 3px -3px 0 2px rgba(255, 255, 255, 0.1);
-          box-shadow: 2px -2px 0 2px rgba(0, 0, 0, 0.4), 3px -3px 0 2px rgba(255, 255, 255, 0.1);
-  border-radius: 0 5px 0 50px;
+.steps .step-item.is-green.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #1D875F;
+  color: #1D875F;
 }
-.stepper a:last-child:after {
-  content: none;
+.steps .step-item.is-green.is-completed::before {
+  background-position: left bottom;
 }
-.stepper a:before {
-  content: counter(flag);
-  counter-increment: flag;
-  border-radius: 100%;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  margin: 8px 0;
-  position: absolute;
-  top: 0;
-  left: 30px;
-  background: #444;
-  background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#222));
-  background: linear-gradient(#444, #222);
-  font-weight: bold;
+.steps .step-item.is-green.is-completed .step-marker {
+  background-color: #1D875F;
 }
-.flat a,
-.flat a:after {
-  background: white;
-  color: black;
-  -webkit-transition: all 0.5s;
-  transition: all 0.5s;
+.steps .step-item.is-brown::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #B39482));
+  background: linear-gradient(to left, #DBDBDB 50%, #B39482 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
 }
-.flat a:before {
-  background: white;
-  -webkit-box-shadow: 0 0 0 1px #ccc;
-          box-shadow: 0 0 0 1px #ccc;
+.steps .step-item.is-brown.is-active::before {
+  background-position: left bottom;
 }
-.flat a:hover,
-.flat a.active,
-.flat a:hover:after,
-.flat a.active:after {
-  background: #9EEB62;
+.steps .step-item.is-brown.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #B39482;
+  color: #B39482;
+}
+.steps .step-item.is-brown.is-completed::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-brown.is-completed .step-marker {
+  background-color: #B39482;
+}
+.steps .step-item.is-purple::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #7E69B4));
+  background: linear-gradient(to left, #DBDBDB 50%, #7E69B4 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+}
+.steps .step-item.is-purple.is-active::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-purple.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #7E69B4;
+  color: #7E69B4;
+}
+.steps .step-item.is-purple.is-completed::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-purple.is-completed .step-marker {
+  background-color: #7E69B4;
+}
+.steps .step-item.is-orange::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #F8AA24));
+  background: linear-gradient(to left, #DBDBDB 50%, #F8AA24 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+}
+.steps .step-item.is-orange.is-active::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-orange.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #F8AA24;
+  color: #F8AA24;
+}
+.steps .step-item.is-orange.is-completed::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-orange.is-completed .step-marker {
+  background-color: #F8AA24;
+}
+.steps .step-item.is-red::before {
+  background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #E9362F));
+  background: linear-gradient(to left, #DBDBDB 50%, #E9362F 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+}
+.steps .step-item.is-red.is-active::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-red.is-active .step-marker {
+  background-color: #FFF;
+  border-color: #E9362F;
+  color: #E9362F;
+}
+.steps .step-item.is-red.is-completed::before {
+  background-position: left bottom;
+}
+.steps .step-item.is-red.is-completed .step-marker {
+  background-color: #E9362F;
 }
 .hero-head {
   background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
