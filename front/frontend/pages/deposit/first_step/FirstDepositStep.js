@@ -34,7 +34,15 @@ module.exports = {
     computed: {
         typology() {
             if (this.typologyForm in this.$store.state.forms) {
-                return this.$store.state.forms[this.typologyForm].content || [];
+                const form = this.$store.state.forms[this.typologyForm].content || [];
+                return form.map((t) => {
+                    t.label = this.lang(t.label);
+                    t.children = t.children.map((child) => {
+                        child.label = this.lang(child.label);
+                        return child;
+                    });
+                    return t;
+                });
             }
             return [];
         },

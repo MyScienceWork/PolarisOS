@@ -86,7 +86,6 @@ module.exports = {
                                 index: false,
                             },
                             validations: {
-                                type: 'nested',
                                 properties: {
                                     required: {
                                         type: 'boolean',
@@ -95,7 +94,6 @@ module.exports = {
                                         type: 'keyword',
                                         index: false,
                                     },
-
                                 },
                             },
                             order: {

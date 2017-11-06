@@ -4,6 +4,7 @@ module.exports = {
     mixins: [LangMixin],
     props: {
         form: { type: Object, required: true },
+        required: { type: Boolean, default: true },
     },
     data() {
         return {

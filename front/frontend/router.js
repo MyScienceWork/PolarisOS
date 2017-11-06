@@ -19,16 +19,16 @@ module.exports = new Router({
                 default: Home,
                 header: Header,
                 footer: Footer,
-            }
+            },
         },
         {
             path: '/news',
-            name: 'Actualités',
+            name: 'A propos',
             components: {
                 default: News,
                 header: Header,
                 footer: Footer,
-            }
+            },
         },
         {
             path: '/browse',
@@ -37,7 +37,7 @@ module.exports = new Router({
                 default: Browse,
                 header: Header,
                 footer: Footer,
-            }
+            },
         },
         {
             path: '/deposit',
@@ -46,16 +46,16 @@ module.exports = new Router({
                 default: Deposit,
                 header: Header,
                 footer: Footer,
-            }
+            },
         },
         {
             path: '/help',
             name: 'Besoin d\'aide ?',
             components: {
-                default: Home,
+                default: Deposit,
                 header: Header,
                 footer: Footer,
-            }
+            },
         },
     ],
 });

@@ -58,7 +58,7 @@
                             <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
                             <h3 class="title is-3 has-no-bottom-margin">{{lang('b_field', {}, 'other')}}</h3>
                             <hr class="has-no-top-margin" />
-                            <fvariadic-element name="fields" :form="state.cform">
+                            <fvariadic-element name="fields" :form="state.cform" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                 <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.cform" />
                                 <finput :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.cform" />
@@ -97,6 +97,14 @@
                                         :form="state.cform" />
                                     </div>
                                 </div>
+                                <h3 class="title is-3 has-no-bottom-margin">{{lang('b_form_validation', {}, 'other')}}</h3>
+                                <hr />
+                                <finput 
+                                    name="validations.required" 
+                                    type='checkbox' 
+                                    :label="lang('b_form_required')" 
+                                    :form="state.cform"
+                                />
                                 </template>
                             </fvariadic-element>
                         </fform>

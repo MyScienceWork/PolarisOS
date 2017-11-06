@@ -10,23 +10,28 @@ module.exports = {
         form: { required: true, type: String },
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
+        tabs: { type: Boolean, default: false },
     },
 
     data() {
         return {
             state: {
                 elements: [],
+                tab_active: this.isRequired ? 0 : -1,
             },
         };
     },
 
     methods: {
+        activate_tab(id, e) {
+            e.preventDefault();
+            this.state.tab_active = id;
+        },
         add(e) {
             e.preventDefault();
             this.state.elements.push(true);
         },
         remove(id, e) {
-            console.log(id);
             e.preventDefault();
             this.state.elements.splice(id, 1, false);
         },
