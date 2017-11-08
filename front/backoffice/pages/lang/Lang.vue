@@ -55,7 +55,7 @@
                             <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.cform" />
                             <finput name="part" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" type="text" :form="state.cform" />
                             <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.cform" />
-                            <fvariadic-element name="values" :form="state.cform">
+                            <fvariadic-element name="values" :form="state.cform" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                 <finput :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.cform" />
                                 <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.cform" />

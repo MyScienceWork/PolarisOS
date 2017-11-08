@@ -1,8 +1,8 @@
-const Utils = require('../../utils/utils');
-const APIRoutes = require('../../api/routes');
+const Utils = require('../../../common/utils/utils');
+const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
-const LangMixin = require('../mixins/LangMixin');
-const FormMixin = require('../mixins/FormMixin');
+const LangMixin = require('../../../common/mixins/LangMixin');
+const FormMixin = require('../../../common/mixins/FormMixin');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin, FormMixin],

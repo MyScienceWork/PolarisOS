@@ -117,7 +117,7 @@ class GulpFrontend {
     }
 
     watch() {
-        gulp.watch(['./front/backoffice/**/*.{vue,jsx,js}'], ['back-scripts']);
+        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
         gulp.watch(['./front/backoffice/styles/**/*.*'], ['back-styles']);
         gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
     }
@@ -169,7 +169,7 @@ class GulpFrontend {
     }
 
     copyImgs() {
-    return gulp.src([`${this.BACK_LOCATIONS.imgs}/**/*`], { base: this.BACK_LOCATIONS.imgs})
+        return gulp.src([`${this.BACK_LOCATIONS.imgs}/**/*`], { base: this.BACK_LOCATIONS.imgs })
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 

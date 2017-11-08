@@ -1,6 +1,6 @@
 const Vue = require('vue');
-const APIRoutes = require('../../api/routes');
-const Messages = require('../../api/messages');
+const APIRoutes = require('../../../common/api/routes');
+const Messages = require('../../../common/api/messages');
 
 module.exports = {
     methods: {

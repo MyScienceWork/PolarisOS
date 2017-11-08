@@ -1,4 +1,4 @@
-const StringUtils = require('../../utils/strings');
+const StringUtils = require('../utils/strings');
 
 module.exports = {
     methods: {

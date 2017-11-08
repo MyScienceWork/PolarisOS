@@ -1,4 +1,4 @@
-const Messages = require('../../../../../../api/messages');
+const Messages = require('../../../../api/messages');
 
 module.exports = {
     computed: {

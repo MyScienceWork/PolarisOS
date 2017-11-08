@@ -63,17 +63,16 @@
     </div>
 </div>
 
-<div class="field" v-else-if="type === 'checkbox'">
-    <div  class="checkbox">
-        <label :for="name">
-            <input
-            type="checkbox"
-            :name="name"
-            v-model="state.value"
-            />
-            {{label}}
-        </label>
-    </div>
+
+<div v-else-if="type === 'checkbox'" class="checkbox">
+    <label :for="name">
+        <input
+        type="checkbox"
+        :name="name"
+        v-model="state.value"
+        />
+        {{label}}
+    </label>
 </div>
 </template>
 

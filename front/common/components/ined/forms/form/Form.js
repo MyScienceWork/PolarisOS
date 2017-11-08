@@ -1,5 +1,5 @@
-const Messages = require('../../../../../../api/messages');
-const APIRoutes = require('../../../../../../api/routes');
+const Messages = require('../../../../api/messages');
+const APIRoutes = require('../../../../api/routes');
 
 module.exports = {
     props: {

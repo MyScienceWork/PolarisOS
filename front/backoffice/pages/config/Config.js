@@ -1,7 +1,7 @@
-const Utils = require('../../utils/utils');
-const APIRoutes = require('../../api/routes');
+const Utils = require('../../../common/utils/utils');
+const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
-const LangMixin = require('../mixins/LangMixin');
+const LangMixin = require('../../../common/mixins/LangMixin');
 const Environments = require('../../lists/environments');
 const Langs = require('../../lists/langs');
 

@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const Messages = require('../../../../../../../api/messages');
-const Utils = require('../../../../../../../utils/utils');
+const Messages = require('../../../../../api/messages');
+const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
 
 module.exports = {

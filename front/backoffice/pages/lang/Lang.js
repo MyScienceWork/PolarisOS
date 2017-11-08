@@ -1,7 +1,7 @@
-const Utils = require('../../utils/utils');
-const APIRoutes = require('../../api/routes');
+const Utils = require('../../../common/utils/utils');
+const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
-const LangMixin = require('../mixins/LangMixin');
+const LangMixin = require('../../../common/mixins/LangMixin');
 const Langs = require('../../lists/langs');
 const Quantities = require('../../lists/quantities');
 
@@ -33,17 +33,20 @@ module.exports = {
         readContent() {
             if (this.state.rform in this.$store.state.forms) {
                 const form = this.$store.state.forms[this.state.rform];
-                return Utils.to_matrix(form.content instanceof Array ?
-                        form.content : [], this.state.itemsPerRow);
+                const partitions = form.content.reduce((obj, info) => {
+                    if (info.lang in obj) {
+                        obj[info.lang].push(info);
+                    } else {
+                        obj[info.lang] = [info];
+                    }
+                    return obj;
+                }, {});
+                return Object.keys(partitions).reduce((obj, lang) => {
+                    obj[lang] = Utils.to_matrix(partitions[lang], this.state.itemsPerRow);
+                    return obj;
+                }, {});
             }
             return [];
-        },
-        contentLength() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                return form.content.length;
-            }
-            return 0;
         },
     },
 };

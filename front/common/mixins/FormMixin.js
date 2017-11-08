@@ -1,7 +1,9 @@
 const _ = require('lodash');
-const APIRoutes = require('../../api/routes');
+const APIRoutes = require('../api/routes');
+const LangMixin = require('./LangMixin');
 
 module.exports = {
+    mixins: [LangMixin],
     computed: {
         forms() {
             if (this.state.forms.name in this.$store.state.forms) {

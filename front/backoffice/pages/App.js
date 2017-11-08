@@ -1,6 +1,6 @@
 const Vue = require('vue');
-const Messages = require('../api/messages');
-const APIRoutes = require('../api/routes');
+const Messages = require('../../common/api/messages');
+const APIRoutes = require('../../common/api/routes');
 
 const ENV = process.env.NODE_ENV || 'local';
 

@@ -16,4 +16,12 @@ module.exports = {
             },
         };
     },
+    computed: {
+        final_form() {
+            if (this.required) {
+                form.fields.filter(f => f.validations.required);
+                return form;
+            }
+        },
+    },
 };

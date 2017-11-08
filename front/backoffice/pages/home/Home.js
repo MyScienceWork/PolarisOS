@@ -1,5 +1,5 @@
-const Utils = require('../../utils/utils');
-const APIRoutes = require('../../api/routes');
+const Utils = require('../../../common/utils/utils');
+const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 
 module.exports = {
