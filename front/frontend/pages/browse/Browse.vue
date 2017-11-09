@@ -24,6 +24,9 @@
                     </div>
                 </div>
             </div>
+            <div class="column">
+                <indexer class="indexer-red" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']"/>
+            </div>
         </div>
     </div>
 </div>

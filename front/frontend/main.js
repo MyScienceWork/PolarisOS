@@ -10,6 +10,8 @@ const VariadicElement = require('./components/themes/ined/components/forms/eleme
 const Form = require('./components/themes/ined/components/forms/form/Form.vue');
 const DynamicForm = require('./components/themes/ined/components/forms/dynamic_form/DynamicForm.vue');
 
+const Indexer = require('../common/components/ined/indexer/Indexer.vue');
+
 const App = require('./pages/App.vue');
 
 Vue.component('loader', Loader);
@@ -19,6 +21,7 @@ Vue.component('finput', Input);
 Vue.component('fselect', Select);
 Vue.component('fvariadic-element', VariadicElement);
 Vue.component('dynamic-form', DynamicForm);
+Vue.component('indexer', Indexer);
 
 new Vue({
     el: '#app',

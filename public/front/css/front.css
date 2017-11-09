@@ -561,6 +561,57 @@
 .steps .step-item.is-red.is-completed .step-marker {
   background-color: #E9362F;
 }
+nav.indexer {
+  background-color: transparent;
+}
+.indexer-blue a {
+  color: #1CBDC7;
+}
+.indexer-blue .pagination-link.is-current {
+  border-color: #1CBDC7;
+  color: #FFF;
+  background-color: #1CBDC7;
+}
+.indexer-green a {
+  color: #1D875F;
+}
+.indexer-green .pagination-link.is-current {
+  border-color: #1D875F;
+  color: #FFF;
+  background-color: #1D875F;
+}
+.indexer-brown a {
+  color: #B39482;
+}
+.indexer-brown .pagination-link.is-current {
+  border-color: #B39482;
+  color: #FFF;
+  background-color: #B39482;
+}
+.indexer-purple a {
+  color: #7E69B4;
+}
+.indexer-purple .pagination-link.is-current {
+  border-color: #7E69B4;
+  color: #FFF;
+  background-color: #7E69B4;
+}
+.indexer-orange a {
+  color: #F8AA24;
+}
+.indexer-orange .pagination-link.is-current {
+  border-color: #F8AA24;
+  color: #FFF;
+  background-color: #F8AA24;
+}
+.indexer-red a {
+  color: #E9362F;
+}
+.indexer-red .pagination-link.is-current {
+  border-color: #E9362F;
+  color: #FFF;
+  background-color: #E9362F;
+}
 .hero-head {
   background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
 }
