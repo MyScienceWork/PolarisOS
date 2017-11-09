@@ -41,10 +41,12 @@ module.exports = {
                     }
                     return obj;
                 }, {});
-                return Object.keys(partitions).reduce((obj, lang) => {
+
+                /* return Object.keys(partitions).reduce((obj, lang) => {
                     obj[lang] = Utils.to_matrix(partitions[lang], this.state.itemsPerRow);
                     return obj;
-                }, {});
+                }, {});*/
+                return [];
             }
             return [];
         },
