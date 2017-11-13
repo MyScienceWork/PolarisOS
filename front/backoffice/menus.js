@@ -5,6 +5,7 @@ const User = require('./pages/user/User.vue');
 const Config = require('./pages/config/Config.vue');
 const Lang = require('./pages/lang/Lang.vue');
 const Form = require('./pages/form/Form.vue');
+const MenuComponent = require('./pages/menu/Menu.vue');
 const Datasource = require('./pages/datasource/Datasource.vue');
 const Datainstance = require('./pages/datainstance/Datainstance.vue');
 
@@ -67,6 +68,15 @@ module.exports.menu = [
             routes: [Routes.csl],
             submenu: [],
             component: Home,
+        },
+        {
+            section: 'Administration',
+            name: 'Menus',
+            access: '',
+            key: 'menu',
+            routes: [Routes.menu],
+            submenu: [],
+            component: MenuComponent,
         },
         {
             section: 'Administration',
