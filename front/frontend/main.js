@@ -18,6 +18,7 @@ const BrowseWidget = require('./components/themes/ined/widgets/browse_widget/Bro
 const NavWidget = require('./components/themes/ined/widgets/nav_widget/NavWidget.vue');
 const TextWidget = require('./components/themes/ined/widgets/text_widget/TextWidget.vue');
 const ListWidget = require('./components/themes/ined/widgets/list_widget/ListWidget.vue');
+const StatsWidget = require('./components/themes/ined/widgets/stats_widget/StatsWidget.vue');
 
 
 const App = require('./pages/App.vue');
@@ -37,6 +38,7 @@ Vue.component('widget-browse', BrowseWidget);
 Vue.component('widget-nav', NavWidget);
 Vue.component('widget-text', TextWidget);
 Vue.component('widget-list', ListWidget);
+Vue.component('widget-stats', StatsWidget);
 
 new Vue({
     el: '#app',

@@ -139,6 +139,30 @@
 .card-equal-height .card-footer {
   margin-top: auto;
 }
+.stats-card {
+  padding: 0 !important;
+}
+.stats-card .columns {
+  margin: 0;
+}
+.stats-card .columns:first-child {
+  border-bottom: 1px solid rgba(219, 219, 219, 0.75);
+}
+.stats-card .column:first-child {
+  border-right: 1px solid rgba(219, 219, 219, 0.75);
+}
+.stats-card .column {
+  padding: 0;
+}
+.stats-card hr {
+  margin: 0.75rem 0;
+}
+.stats-card .card-content {
+  padding: 0.75rem;
+}
+.stats-card .media {
+  padding: 1rem;
+}
 .card-blue {
   background-color: #1CBDC7;
 }
@@ -614,6 +638,9 @@ nav.indexer {
 }
 .hero-head {
   background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
+}
+.has-header-top-margin {
+  margin-top: 0.75rem !important;
 }
 nav {
   margin-top: 2%;
