@@ -6,7 +6,27 @@
                     <p class="card-header-title" v-html="lang(title)"></p>
                 </header>
                 <div class="card-content">
-
+                    <div class="columns is-centered">
+                        <div class="column">
+                            <widget-nav :form="form" />
+                        </div>
+                    </div>
+                    <div class="columns is-centered">
+                        <div class="column">
+                            <article class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48">
+                                        <img src="/public/front/imgs/icons/si-glyph-book-open.svg" alt="Image" />
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p class="colored title is-4">Découvrir une collection</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
                 </div>
             </div>
         </template>

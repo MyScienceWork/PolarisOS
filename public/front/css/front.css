@@ -193,6 +193,9 @@
 .info-card-blue a:hover {
   color: #212D3A;
 }
+.info-card-blue p.colored {
+  color: #1CBDC7 !important;
+}
 .card-header-blue {
   background-color: #1CBDC7;
   border-radius: 5px 5px 0 0;
@@ -228,6 +231,9 @@
 }
 .info-card-green a:hover {
   color: #212D3A;
+}
+.info-card-green p.colored {
+  color: #1D875F !important;
 }
 .card-header-green {
   background-color: #1D875F;
@@ -265,6 +271,9 @@
 .info-card-brown a:hover {
   color: #212D3A;
 }
+.info-card-brown p.colored {
+  color: #B39482 !important;
+}
 .card-header-brown {
   background-color: #B39482;
   border-radius: 5px 5px 0 0;
@@ -300,6 +309,9 @@
 }
 .info-card-purple a:hover {
   color: #212D3A;
+}
+.info-card-purple p.colored {
+  color: #7E69B4 !important;
 }
 .card-header-purple {
   background-color: #7E69B4;
@@ -337,6 +349,9 @@
 .info-card-orange a:hover {
   color: #212D3A;
 }
+.info-card-orange p.colored {
+  color: #F8AA24 !important;
+}
 .card-header-orange {
   background-color: #F8AA24;
   border-radius: 5px 5px 0 0;
@@ -372,6 +387,9 @@
 }
 .info-card-red a:hover {
   color: #212D3A;
+}
+.info-card-red p.colored {
+  color: #E9362F !important;
 }
 .card-header-red {
   background-color: #E9362F;

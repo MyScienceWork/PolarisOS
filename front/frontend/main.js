@@ -9,6 +9,7 @@ const Select = require('../common/components/ined/forms/elements/select/Select.v
 const VariadicElement = require('../common/components/ined/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('../common/components/ined/forms/form/Form.vue');
 const DynamicForm = require('../common/components/ined/forms/dynamic_form/DynamicForm.vue');
+const Paginator = require('../common/components/ined/paginator/Paginator.vue');
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
 
@@ -31,6 +32,7 @@ Vue.component('fselect', Select);
 Vue.component('fvariadic-element', VariadicElement);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('indexer', Indexer);
+Vue.component('paginator', Paginator);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);
