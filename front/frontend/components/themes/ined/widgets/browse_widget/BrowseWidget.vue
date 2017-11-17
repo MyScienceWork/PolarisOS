@@ -22,7 +22,21 @@
                 >
                 </v-select>
             </div> 
-                <indexer class="indexer-red" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']"/>
+            <hr />
+            <div class="columns is-centered">
+                <div class="column">
+                    <indexer :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']"/>
+                </div>
+            </div>
+            <div class="columns is-centered">
+                <div class="column"> 
+                    <div class="field">
+                        <div class="control has-text-centered">
+                            <button :class="['button', ...extraClasses.split(' ').filter(c => c != '')]">{{lang('f_view_publications_button')}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
     </div>
 </template>

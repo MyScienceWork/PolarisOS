@@ -44,11 +44,14 @@
     <div class="columns is-centered">
         <div class="column">
             <div class="field is-grouped is-pulled-right">
-                <div class="control">
-                    <button @click="previous" class="button">Previous</button>
+                <div class="control" v-if="state.current_step > 0">
+                    <button @click="previous" class="button">{{lang('f_previous_button_step')}}</button>
                 </div>
-                <div class="control">
-                    <button @click="next" class="button">Next</button>
+                <div class="control" v-if="state.current_step < numberOfSteps-1">
+                    <button @click="next" class="button">{{lang('f_next_button_step')}}</button>
+                </div>
+                <div class="control" v-else>
+                    <button @click="next" class="button">{{lang('f_finish_button_step')}}</button>
                 </div>
             </div>
         </div>

@@ -18,6 +18,9 @@ function initialize_routes() {
     router.get('/browse', async (ctx) => {
         await ctx.render('front/views/front');
     });
+    router.get('/search', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
     router.get('/deposit', async (ctx) => {
         await ctx.render('front/views/front');
     });

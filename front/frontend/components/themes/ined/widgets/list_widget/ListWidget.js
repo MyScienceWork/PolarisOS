@@ -3,7 +3,7 @@ const WidgetMixin = require('../../../../../../common/mixins/WidgetMixin');
 module.exports = {
     mixins: [WidgetMixin],
     props: {
-        extraClasses: { required: false, default: [] },
+        extraClasses: { required: false, default: '', type: String },
         title: { default: '', type: String },
         boxed: { type: Boolean, default: false },
         type: { type: String, default: 'publication' },

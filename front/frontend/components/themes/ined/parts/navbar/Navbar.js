@@ -11,8 +11,20 @@ module.exports = {
     },
     computed: {
         active_idx() {
-            const index = _.findIndex(this.$router.options.routes, r => r.path !== '/' && this.$route.path === r.path) - 1;
-            return Math.max(-1, index);
+            const routes = this.$router.options.routes;
+            const index = _.findIndex(routes, r => r.path !== '/' && this.$route.path === r.path) - 1;
+
+            if (index === -1) {
+                return index;
+            }
+
+            const info = routes[index];
+            if (info) {
+                if (info.navbar) {
+                    return index;
+                }
+            }
+            return -1;
         },
     },
     mounted() {

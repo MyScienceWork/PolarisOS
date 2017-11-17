@@ -3,12 +3,7 @@
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-10">
-                <widget-nav form="test_form" />
-            </div>
-        </div>
-        <div class="columns is-centered">
-            <div class="column is-10">
-                <widget-browse form="test_form" extra-classes="indexer-purple button-purple" />
+                <widget-search form="test_form" />
             </div>
         </div>
         <div class="columns is-centered">
@@ -21,5 +16,5 @@
 </template>
 
 <script>
-module.exports = require('./Browse');
+module.exports = require('./Search');
 </script>

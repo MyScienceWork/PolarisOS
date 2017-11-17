@@ -1,6 +1,9 @@
 const _ = require('lodash');
 
+const LangMixin = require('../../../mixins/LangMixin');
+
 module.exports = {
+    mixins: [LangMixin],
     props: {
         numberOfSteps: {
             type: Number,

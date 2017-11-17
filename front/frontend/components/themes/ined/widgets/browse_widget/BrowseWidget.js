@@ -6,7 +6,7 @@ module.exports = {
     props: {
         boxed: { type: Boolean, default: false },
         title: { type: String, default: '' },
-        extraClasses: { default: [] },
+        extraClasses: { default: '', type: String },
     },
     components: {
         'v-select': VSelect,

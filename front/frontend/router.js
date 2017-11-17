@@ -5,6 +5,7 @@ const Footer = require('./components/themes/ined/parts/footer/Footer.vue');
 const Home = require('./pages/home/Home.vue');
 const Deposit = require('./pages/deposit/Deposit.vue');
 const Browse = require('./pages/browse/Browse.vue');
+const Search = require('./pages/search/Search.vue');
 const News = require('./pages/news/News.vue');
 
 Vue.use(Router);
@@ -15,6 +16,7 @@ module.exports = new Router({
         {
             path: '/',
             name: 'Home',
+            navbar: true,
             components: {
                 default: Home,
                 header: Header,
@@ -24,6 +26,7 @@ module.exports = new Router({
         {
             path: '/news',
             name: 'A propos',
+            navbar: true,
             components: {
                 default: News,
                 header: Header,
@@ -33,6 +36,7 @@ module.exports = new Router({
         {
             path: '/browse',
             name: 'Consulter',
+            navbar: true,
             components: {
                 default: Browse,
                 header: Header,
@@ -42,6 +46,7 @@ module.exports = new Router({
         {
             path: '/deposit',
             name: 'Déposer',
+            navbar: true,
             components: {
                 default: Deposit,
                 header: Header,
@@ -51,8 +56,19 @@ module.exports = new Router({
         {
             path: '/help',
             name: 'Besoin d\'aide ?',
+            navbar: true,
             components: {
                 default: Deposit,
+                header: Header,
+                footer: Footer,
+            },
+        },
+        {
+            path: '/search',
+            name: 'Recherche',
+            navbar: false,
+            components: {
+                default: Search,
                 header: Header,
                 footer: Footer,
             },

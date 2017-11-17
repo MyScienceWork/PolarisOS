@@ -1,0 +1,22 @@
+Page listing publications
+- Conserver le dépôt, pas de modifications inline
+- Possibilité d'éditer directement depuis la liste
+- Laisser les icônes sociaux
+- Import à droite en haut sous le menu
+- Filtrer:
+    -> barre de recherche sous le menu
+    -> Filtres à la google
+    -> Peut-être voir pour des selects en Ajax.
+
+Page profil utilisateur
+- Formulaires
+- Statistiques?
+- 
+
+Page gérer les recherches enregistrées
+- Star pour mettre en favoris sur la page de recherche
+    -> Donner un titre à la recherche
+    -> Created date
+    -> Last used time
+    -> Replay
+
