@@ -1,5 +1,5 @@
 const VueDropzone = require('vue2-dropzone');
-const LangMixin = require('../../../mixins/LangMixin');
+const LangMixin = require('../../../../common/mixins/LangMixin');
 
 module.exports = {
     props: {

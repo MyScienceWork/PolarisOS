@@ -10,7 +10,7 @@
             <div class="tile is-vertical is-parent">
                 <div class="columns is-centered is-child">
                     <div class="column is-10">
-                        <widget-stats form="test_form" />
+                        <widget-stats form="test_form" :infos="[]" />
                     </div>
                 </div>
             </div>

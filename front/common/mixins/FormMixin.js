@@ -26,6 +26,7 @@ module.exports = {
                     }, {});
                     return _.merge(sources, srcs);
                 }, {});
+                console.log('datasources to fetch', datasources);
                 this.$store.dispatch('grab_datasources', { datasources });
 
                 const forms = content.reduce((obj, form) => {

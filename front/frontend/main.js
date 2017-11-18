@@ -1,6 +1,6 @@
 const Vue = require('vue');
 const router = require('./router');
-const store = require('./store');
+const store = require('../common/store');
 
 const Loader = require('./components/loader/Loader.vue');
 const Stepper = require('../common/components/ined/stepper/Stepper.vue');

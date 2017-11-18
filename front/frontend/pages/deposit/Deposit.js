@@ -1,7 +1,7 @@
 const APIRoutes = require('../../api/routes');
 const FirstDepositStep = require('./first_step/FirstDepositStep.vue');
 const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
-const FormMixin = require('../../mixins/FormMixin');
+const FormMixin = require('../../../common/mixins/FormMixin');
 
 module.exports = {
     mixins: [FormMixin],
@@ -14,7 +14,7 @@ module.exports = {
                 rform: 'typology_read',
                 forms: {
                     name: 'typology_form',
-                    group: 'typology',
+                    fname: 'typology',
                 },
             },
         };
