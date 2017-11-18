@@ -16,6 +16,14 @@ module.exports = {
                         type: 'text',
                         index: false,
                     },
+                    parents: {
+                        type: 'nested',
+                        properties: {
+                            name: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     group: {
                         type: 'keyword',
                     },
@@ -66,6 +74,16 @@ module.exports = {
                                     value: {
                                         type: 'keyword',
                                         index: false,
+                                    },
+                                    ajax: {
+                                        type: 'boolean',
+                                        index: false,
+
+                                    },
+                                    translatable: {
+                                        type: 'boolean',
+                                        index: false,
+
                                     },
                                     add: {
                                         type: 'boolean',

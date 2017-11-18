@@ -10,6 +10,7 @@ module.exports = {
     interfaceLang: null,
     lang_content: {},
     global_config: {},
+    datasources: {},
     forms: {
         /* form_name: {error: {}, content: {}, update: false/true}*/
     },

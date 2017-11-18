@@ -11,6 +11,15 @@
                     :type="field.type"
                     :form="cform"
                     />
+                    <fselect 
+                    v-else-if="field.type === 'select'"
+                    :label="lang(field.label || '')"
+                    :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
+                    :form="cform"
+                    :fieldLabel="field.datasource.label"
+                    :fieldValue="field.datasource.value"
+                    :options="$store.state.datasources[field.datasource.name] || []"
+                    />
                     <dynamic-form 
                         :form="field.subform" 
                         :cform="cform"
@@ -28,6 +37,15 @@
                 :placeholder="lang(field.placeholder || '')"
                 :type="field.type"
                 :form="cform"
+                />
+                <fselect 
+                v-else-if="field.type === 'select'"
+                :label="lang(field.label || '')"
+                :name="get_name(field.name, null)"
+                :form="cform"
+                :fieldLabel="field.datasource.label"
+                :fieldValue="field.datasource.value"
+                :options="$store.state.datasources[field.datasource.name] || []"
                 />
                 <dynamic-form 
                     :form="field.subform" 

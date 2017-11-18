@@ -87,7 +87,7 @@ module.exports = {
             }
 
             this.state.options = this.options.map(o =>
-                ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
+                    ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
         },
     },
     watch: {

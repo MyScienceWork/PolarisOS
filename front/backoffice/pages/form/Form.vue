@@ -20,7 +20,7 @@
                                         class="button is-small button-background-red"
                                         confirmation="Are you sure?"
                                         :two-steps="true"
-                                        @action-click="remove(content, 'organization')"
+                                        @action-click="remove(content, 'form')"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
@@ -55,6 +55,15 @@
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.cform" />
                             <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.cform" />
                             <finput name="group" :label="lang('b_group')" :placeholder="lang('b_group')" type="text" :form="state.cform" />
+                            <fselect 
+                                name="parents" 
+                                :label="lang('b_parents')" 
+                                :is-required="true"
+                                :options="content"
+                                :multi="true"
+                                fieldLabel="label"
+                                fieldValue="name"
+                                :form="state.cform" />
                             <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
                             <tabber :tabs="[lang('b_fields', {}, 'other'), lang('b_form_validation', {}, 'other')]">
                                 <template slot="tabs" slot-scope="tprops">
@@ -78,10 +87,56 @@
                                                     <fselect 
                                                     :name="`${props.fname}.${props.id}.datasource.name`" 
                                                     :label="lang('b_datasource_name')" :is-required="true"
-                                                    :options="this.datasources"
-                                                    :fieldLabel="label"
-                                                    :fieldValue="name"
+                                                    :options="datasources"
+                                                    fieldLabel="label"
+                                                    fieldValue="name"
                                                     :form="state.cform" />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.label`" 
+                                                    :label="lang('b_datasource_label')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('b_datasource_label')"
+                                                    type="text"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.value`" 
+                                                    :label="lang('b_datasource_value')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('b_datasource_value')"
+                                                    type="text"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.ajax`" 
+                                                    :label="lang('b_datasource_ajax')"
+                                                    type="checkbox"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.translatable`" 
+                                                    :label="lang('b_datasource_translatable')"
+                                                    type="checkbox"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.add`" 
+                                                    :label="lang('b_datasource_add')"
+                                                    type="checkbox"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.modify`" 
+                                                    :label="lang('b_datasource_modify')"
+                                                    type="checkbox"
+                                                    :form="state.cform"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.remove`" 
+                                                    :label="lang('b_datasource_remove')"
+                                                    type="checkbox"
+                                                    :form="state.cform"
+                                                    />
                                                 </div>
                                                 <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
                                                     <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.cform" />

@@ -65,7 +65,7 @@ module.exports = {
         },
         cancel(n) {
             if (n) {
-                this.state.value = undefined;
+                this.state.elements = [];
             }
         },
     },

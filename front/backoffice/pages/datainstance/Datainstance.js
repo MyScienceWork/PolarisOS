@@ -17,7 +17,7 @@ module.exports = {
                 itemsPerRow: 2,
                 forms: {
                     name: `${this.$route.params.datainstance}_form`,
-                    group: 'typology',
+                    fname: this.$route.params.datainstance,
                 },
             },
         };

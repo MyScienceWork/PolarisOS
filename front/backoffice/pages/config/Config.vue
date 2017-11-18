@@ -55,11 +55,19 @@
                                 :options="state.environments" 
                             />
                             <fselect 
-                                :name="langs" :label="lang('b_lang',{}, 'other')" 
+                                name="langs" :label="lang('b_lang',{}, 'other')" 
                                 :is-required="true" 
                                 :form="state.cform" 
                                 :multi="true"
                                 :options="state.langs" 
+                            />
+                            <finput
+                                name="datasources.prefix" 
+                                :label="lang('b_datasources_prefix')" 
+                                :placeholder="lang('b_datasources_prefix')" 
+                                :is-required="true" 
+                                :form="state.cform" 
+                                type="text"
                             />
                         </fform>
                     </div>

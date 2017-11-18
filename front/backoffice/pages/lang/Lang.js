@@ -33,20 +33,8 @@ module.exports = {
         readContent() {
             if (this.state.rform in this.$store.state.forms) {
                 const form = this.$store.state.forms[this.state.rform];
-                const partitions = form.content.reduce((obj, info) => {
-                    if (info.lang in obj) {
-                        obj[info.lang].push(info);
-                    } else {
-                        obj[info.lang] = [info];
-                    }
-                    return obj;
-                }, {});
-
-                /* return Object.keys(partitions).reduce((obj, lang) => {
-                    obj[lang] = Utils.to_matrix(partitions[lang], this.state.itemsPerRow);
-                    return obj;
-                }, {});*/
-                return [];
+                return Utils.to_matrix(form.content instanceof Array ?
+                        form.content : [], this.state.itemsPerRow);
             }
             return [];
         },

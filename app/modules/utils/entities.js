@@ -29,6 +29,9 @@ const FormModel = require('../entities/form/models/forms');
 const Typology = require('../entities/typology/typology');
 const TypologyModel = require('../entities/typology/models/typologies');
 
+const LangRef = require('../entities/langref/langref');
+const LangRefModel = require('../entities/langref/models/langrefs');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -54,6 +57,8 @@ function get_model_from_type(type: string): ?Object {
         return FormModel;
     case 'typology':
         return TypologyModel;
+    case 'langref':
+        return LangRefModel;
     default:
         return null;
     }
@@ -77,6 +82,8 @@ function get_cls_from_type(type: string): ?Object {
         return Form;
     case 'typology':
         return Typology;
+    case 'langref':
+        return LangRef;
     default:
         return null;
     }
@@ -100,6 +107,8 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Form(es_client, id);
     case 'typology':
         return new Typology(es_client, id);
+    case 'langref':
+        return new LangRef(es_client, id);
     default:
         return null;
     }

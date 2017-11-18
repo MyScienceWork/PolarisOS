@@ -6,11 +6,13 @@ const config = require('./config');
 const datatemplate = require('./datatemplate');
 const widget = require('./widget');
 const menu = require('./menu');
+const langref = require('./langref');
 
 module.exports = {
     user: user.msw,
     form: form.msw,
     lang: lang.msw,
+    langref: langref.msw,
     typology: typology.msw,
     config: config.msw,
     datatemplate: datatemplate.msw,

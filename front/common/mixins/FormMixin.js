@@ -5,10 +5,29 @@ const LangMixin = require('./LangMixin');
 module.exports = {
     mixins: [LangMixin],
     computed: {
+        datasources() {
+            return this.$store.state.datasources;
+        },
         forms() {
             if (this.state.forms.name in this.$store.state.forms) {
                 const myform = this.$store.state.forms[this.state.forms.name];
                 const content = myform.content;
+
+                const datasources = content
+                .reduce((sources, form) => {
+                    const srcs = form.fields.reduce((obj, field) => {
+                        if (field.type === 'select' && !field.datasource.ajax) {
+                            obj[field.datasource.name] = {
+                                label: field.datasource.label,
+                                value: field.datasource.value,
+                            };
+                        }
+                        return obj;
+                    }, {});
+                    return _.merge(sources, srcs);
+                }, {});
+                this.$store.dispatch('grab_datasources', { datasources });
+
                 const forms = content.reduce((obj, form) => {
                     form.label = this.lang(form.label);
                     form.description = this.lang(form.description);
@@ -42,7 +61,7 @@ module.exports = {
             body: {
                 size: 1000,
                 where: {
-                    group: this.state.forms.group,
+                    $or: [{ name: this.state.forms.fname }, { 'parents.name': this.state.forms.fname }],
                 },
             },
         });

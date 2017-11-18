@@ -8,6 +8,14 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
+                    datasources: {
+                        properties: {
+                            prefix: {
+                                type: 'keyword',
+                                index: false,
+                            },
+                        },
+                    },
                     langs: {
                         type: 'nested',
                         properties: {
