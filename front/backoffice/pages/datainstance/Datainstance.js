@@ -25,10 +25,40 @@ module.exports = {
     methods: {
     },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.rform,
-            path: this.state.rpath,
-        });
+        const config = this.$store.state.global_config;
+        const instance = this.$route.param.datainstance;
+        if (instance.startsWith(config.datasources.prefix)) {
+            this.state.rpath = APIRoutes.entity('datainstance', 'POST', true);
+            this.state.path = APIRoutes.entity('datainstance', 'POST');
+            this.$store.dispatch('single_read', {
+                form: this.state.rform,
+                path: this.state.rpath,
+            });
+        } else if (instance.startsWith(config.keystores.prefix)) {
+            this.state.rpath = APIRoutes.entity('keystore', 'POST', true);
+            this.state.path = APIRoutes.entity('keystore', 'POST');
+            this.$store.dispatch('search', {
+                form: this.state.rform,
+                path: this.state.rpath,
+                body: {
+                    size: 10000,
+                    where: {
+                        type: instance,
+                    },
+                },
+            });
+        } else {
+            this.$store.dispatch('search', {
+                form: this.state.rform,
+                path: this.state.rpath,
+                body: {
+                    size: 10000,
+                    where: {
+                        type: instance,
+                    },
+                },
+            });
+        }
     },
     computed: {
         content() {

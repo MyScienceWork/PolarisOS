@@ -16,6 +16,14 @@ module.exports = {
                             },
                         },
                     },
+                    keystores: {
+                        properties: {
+                            prefix: {
+                                type: 'keyword',
+                                index: false,
+                            },
+                        },
+                    },
                     langs: {
                         type: 'nested',
                         properties: {

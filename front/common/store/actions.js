@@ -138,6 +138,20 @@ module.exports = {
                         projection: [ds.label, ds.value],
                     },
                 };
+            } else if (name.startsWith(ctx.state.global_config.keystores.prefix)) {
+                return {
+                    name,
+                    path: APIRoutes.entity('keystore', 'POST', true),
+                    method: 'POST',
+                    commit: ctx.commit,
+                    body: {
+                        size: 10000,
+                        where: {
+                            type: name,
+                        },
+                        projection: [ds.label, ds.value],
+                    },
+                };
             }
             return {
                 name,

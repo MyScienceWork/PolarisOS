@@ -69,6 +69,14 @@
                                 :form="state.cform" 
                                 type="text"
                             />
+                            <finput
+                                name="keystores.prefix" 
+                                :label="lang('b_keystores_prefix')" 
+                                :placeholder="lang('b_keystores_prefix')" 
+                                :is-required="true" 
+                                :form="state.cform" 
+                                type="text"
+                            />
                         </fform>
                     </div>
                 </widget>

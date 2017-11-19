@@ -35,6 +35,9 @@ const LangRefModel = require('../entities/langref/models/langrefs');
 const Journal = require('../entities/journal/journal');
 const JournalModel = require('../entities/journal/models/journals');
 
+const Keystore = require('../entities/keystore/keystore');
+const KeystoreModel = require('../entities/keystore/models/keystores');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -62,6 +65,8 @@ function get_model_from_type(type: string): ?Object {
         return TypologyModel;
     case 'langref':
         return LangRefModel;
+    case 'keystore':
+        return KeystoreModel;
     case 'journal':
         return JournalModel;
     default:
@@ -91,6 +96,8 @@ function get_cls_from_type(type: string): ?Object {
         return LangRef;
     case 'journal':
         return Journal;
+    case 'keystore':
+        return Keystore;
     default:
         return null;
     }
@@ -118,6 +125,8 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new LangRef(es_client, id);
     case 'journal':
         return new Journal(es_client, id);
+    case 'keystore':
+        return new Keystore(es_client, id);
     default:
         return null;
     }
