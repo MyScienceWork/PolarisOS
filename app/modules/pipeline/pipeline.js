@@ -5,6 +5,7 @@ const Validator = require('./validator/validator');
 const Completer = require('./completer/completer');
 const Formatter = require('./formatter/formatter');
 const EntitiesUtils = require('../utils/entities');
+const Utils = require('../utils/utils');
 
 /**
  * Completion and validation pipeline
@@ -62,13 +63,11 @@ class Pipeline {
      * @return merged object
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
-        // TODO implement a satisfactory merging
-        return _.merge(defaults, input);
+        return Utils.merge_with_replacement(defaults, input);
     }
 
     static _merge_put(input: Object, defaults: Object): Object {
-        // TODO implement a satisfactory merging
-        return input;
+        return Utils.merge_with_replacement(defaults, input);
     }
 
     /**

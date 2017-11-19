@@ -1,3 +1,5 @@
+const VSelect = require('vue-select').VueSelect;
+
 module.exports = {
     data() {
         return {
@@ -5,6 +7,9 @@ module.exports = {
                 value: 'No',
             },
         };
+    },
+    components: {
+        'v-select': VSelect,
     },
     methods: {
         onKeyChange(val, e) {

@@ -65,6 +65,12 @@
                                 fieldValue="name"
                                 :form="state.cform" />
                             <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
+                            <finput 
+                                name="addons" 
+                                :label="lang('b_has_addons')"
+                                type="checkbox"
+                                :form="state.cform"
+                            />
                             <tabber :tabs="[lang('b_fields', {}, 'other'), lang('b_form_validation', {}, 'other')]">
                                 <template slot="tabs" slot-scope="tprops">
                                     <fvariadic-element name="fields" :form="state.cform" :tabs="true" v-if="tprops.id === 0">
@@ -74,6 +80,12 @@
                                             <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.cform" />
                                             <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.cform" />
                                             <finput :name="`${props.fname}.${props.id}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.cform" />
+                                            <finput 
+                                                :name="`${props.fname}.${props.id}.single_multiple`" 
+                                                :label="lang('b_single_multiple')"
+                                                type="checkbox"
+                                                :form="state.cform"
+                                            />
                                             <fselect 
                                                 :name="`${props.fname}.${props.id}.type`" 
                                                 :label="lang('b_field_type')" 
@@ -84,6 +96,7 @@
                                             />
                                             <div v-if="props.id in state.selected_types"> 
                                                 <div v-if="state.selected_types[props.id] === 'select'">
+                                                    <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.cform" />
                                                     <fselect 
                                                     :name="`${props.fname}.${props.id}.datasource.name`" 
                                                     :label="lang('b_datasource_name')" :is-required="true"

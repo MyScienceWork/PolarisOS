@@ -92,6 +92,23 @@ function make_nested_object_from_path(path: Array<string>,
     }, obj);
 }
 
+function merge_with_replacement(object: Object, source: Object): Object {
+    return Object.keys(source).reduce((obj, key) => {
+        if (key in obj) {
+            if (obj[key] instanceof Array) {
+                obj[key] = source[key]; // Replace with new array
+            } else if (obj[key] instanceof Object) {
+                obj[key] = merge_with_replacement(obj[key], source[key]);
+            } else {
+                obj[key] = source[key];
+            }
+        } else {
+            obj[key] = source[key];
+        }
+        return obj;
+    }, object);
+}
+
 function to_matrix(content: Array<*>, rowLength: number = 2) {
     return content
         .reduce((rows, key, index) => (index % rowLength === 0 ? rows.push([key])
@@ -104,4 +121,5 @@ module.exports = {
     find_value_with_path,
     find_object_with_path,
     make_nested_object_from_path,
+    merge_with_replacement,
 };

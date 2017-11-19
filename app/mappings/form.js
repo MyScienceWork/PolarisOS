@@ -27,6 +27,10 @@ module.exports = {
                     group: {
                         type: 'keyword',
                     },
+                    addons: {
+                        type: 'boolean',
+                        index: false,
+                    },
                     has_subforms: {
                         type: 'boolean',
                     },
@@ -119,6 +123,10 @@ module.exports = {
                                 index: false,
                             },
                             multiple: {
+                                type: 'boolean',
+                                index: false,
+                            },
+                            single_multiple: {
                                 type: 'boolean',
                                 index: false,
                             },

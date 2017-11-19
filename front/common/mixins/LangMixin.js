@@ -35,7 +35,7 @@ module.exports = {
     },
     computed: {
         clang() {
-            return this.$store.state.lang_content[this.$store.state.interfaceLang];
+            return this.$store.state.lang_content[this.$store.state.interfaceLang] || {};
         },
     },
 };

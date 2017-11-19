@@ -11,6 +11,7 @@ module.exports = {
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
+        single: { type: Boolean, default: false },
     },
 
     data() {
@@ -37,12 +38,16 @@ module.exports = {
         },
         update() {
             const form = this.$store.state.forms[this.form];
-            if (form.update) {
+            if (form && form.update) {
                 const object = Utils.find_value_with_path(form.content, this.name.split('.'));
                 if (object instanceof Array) {
                     this.state.elements = object.map(() => true);
                 } else {
                     this.state.elements = _.map(object, () => true);
+                }
+
+                if (this.state.elements.length === 0 && this.single) {
+                    this.state.elements = [true];
                 }
             } else {
                 this.state.elements = this.isRequired ? [true] : [];

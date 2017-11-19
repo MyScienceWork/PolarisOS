@@ -6,7 +6,8 @@ const Messages = require('../../../../../api/messages');
 module.exports = {
     props: {
         name: { required: true, type: String },
-        label: { required: true, type: String },
+        label: { default: '', type: String },
+        placeholder: { default: '', type: String },
         isRequired: { default: false, type: Boolean },
         form: { required: true, type: String },
         multi: { default: false, type: Boolean },
@@ -64,7 +65,13 @@ module.exports = {
                         info = null;
                     }
                 }
-                this.state.selected = info;
+                if (info instanceof Array) {
+                    this.state.selected = info.map(o =>
+                        ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
+                } else {
+                    this.state.selected = { label: info[this.fieldLabel],
+                        value: info[this.fieldValue] };
+                }
             }
         },
         onChange(val) {
@@ -82,7 +89,7 @@ module.exports = {
             return infos.value;
         },
         format_options() {
-            if (this.fieldValue === 'value') {
+            if (this.fieldValue === 'value' && this.fieldLabel === 'label') {
                 this.state.options = this.options;
             }
 

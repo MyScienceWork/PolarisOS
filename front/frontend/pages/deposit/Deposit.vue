@@ -24,6 +24,17 @@
                                         <second-deposit-step 
                                             v-if="props.id === 1 && state.typology_child != null"
                                             :form="forms[state.typology_child.form]"
+                                            subform="required"
+                                        />
+                                        <second-deposit-step 
+                                            v-if="props.id === 2 && state.typology_child != null"
+                                            :form="forms[state.typology_child.form]"
+                                            subform="optional"
+                                        />
+                                        <second-deposit-step 
+                                            v-if="props.id === 3 && state.typology_child != null"
+                                            :form="forms[state.typology_child.form]"
+                                            subform="permission"
                                         />
                                     </template>
                                 </stepper>

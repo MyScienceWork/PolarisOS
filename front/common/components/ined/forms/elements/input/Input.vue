@@ -1,36 +1,42 @@
 <template>
-<div class="field"
+<div :class="[{'field': !isAddon}]"
     v-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
-    >
+>
     <label :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
-    <input v-if="type === 'text'" 
-        type="text"
-        :placeholder="placeholder"
-        :name="name"
-        class="input"
-        v-model="state.value"
-    />
-    <input v-else-if="type === 'number'" 
-        type="number"
-        :placeholder="placeholder"
-        :name="name"
-        class="input"
-        v-model="state.value"
-    />
-    <input v-else-if="type === 'password'" 
-        type="password"
-        :placeholder="placeholder"
-        :name="name"
-        class="input"
-        v-model="state.value"
-    />
-    <input v-else 
-        type="email"
-        :placeholder="placeholder"
-        :name="name"
-        class="input"
-        v-model="state.value"
-    />
+    <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
+        <div :class="['control', {'is-expanded': hasAddons}]">
+            <input v-if="type === 'text'" 
+                type="text"
+                :placeholder="placeholder"
+                :name="name"
+                class="input"
+                v-model="state.value"
+            />
+            <input v-else-if="type === 'number'" 
+                type="number"
+                :placeholder="placeholder"
+                :name="name"
+                class="input"
+                v-model="state.value"
+            />
+            <input v-else-if="type === 'password'" 
+                type="password"
+                :placeholder="placeholder"
+                :name="name"
+                class="input"
+                v-model="state.value"
+            />
+            <input v-else 
+                type="email"
+                :placeholder="placeholder"
+                :name="name"
+                class="input"
+                v-model="state.value"
+            />
+        </div>
+        <slot v-if="hasAddons" name="input-addons" />
+        </slot>
+    </div>
     <div v-if="validations.length > 0">
         <p v-for="text in validations" class="redify inline-block">
             {{text}}
@@ -40,13 +46,27 @@
 
 <div v-else-if="type === 'textarea'" class="field">
     <label for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
-    <textarea
-        class="input textarea"
-        :placeholder="placeholder"
-        :name="name"
-        :rows="rows"
-        v-model="state.value"
-    />
+    
+    <div :class="['field']">
+        <div class="control">
+            <textarea
+                class="input textarea"
+                :placeholder="placeholder"
+                :name="name"
+                :rows="rows"
+                v-model="state.value"
+            />
+        </div>
+        <div class="column is-half has-no-right-spaces has-no-left-spaces">
+            <slot v-if="hasAddons" name="input-addons" />
+            </slot>
+        </div>
+    </div>
+    <div v-if="validations.length > 0">
+        <p v-for="text in validations" class="redify inline-block">
+            {{text}}
+        </p>
+    </div>
 </div>
 
 <div v-else-if="type === 'radio'" class="field">
@@ -63,7 +83,17 @@
     </div>
 </div>
 
-<div class="field" v-else-if="type === 'checkbox'">
+<div class="control" v-else-if="type === 'checkbox' && isAddon">
+    <span class="button">
+        <input
+        type="checkbox"
+        :name="name"
+        v-model="state.value"
+        />
+    </span>
+</div>
+
+<div class="field" v-else-if="type === 'checkbox' && !isAddon">
     <div class="checkbox">
         <label :for="name">
             <input

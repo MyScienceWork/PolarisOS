@@ -20,7 +20,7 @@ module.exports = {
         const lang_body = {
             size: 10000,
             where: {
-                $and: [{ part: 'frontoffice' }],
+                $and: [{ 'parts.value': 'frontoffice' }],
             },
         };
 

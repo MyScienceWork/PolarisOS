@@ -53,7 +53,7 @@
                             :get_form="state.rform"
                         >
                             <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.cform" />
-                            <finput name="part" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" type="text" :form="state.cform" />
+                            <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.cform" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
                             <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.cform" />
                             <fvariadic-element name="values" :form="state.cform" :tabs="true">
                                 <template slot="variadic" slot-scope="props">

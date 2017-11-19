@@ -7,6 +7,7 @@ const datatemplate = require('./datatemplate');
 const widget = require('./widget');
 const menu = require('./menu');
 const langref = require('./langref');
+const journal = require('./journal');
 
 module.exports = {
     user: user.msw,
@@ -18,4 +19,5 @@ module.exports = {
     datatemplate: datatemplate.msw,
     widget: widget.msw,
     menu: menu.msw,
+    journal: journal.msw,
 };

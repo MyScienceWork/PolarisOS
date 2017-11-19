@@ -1,10 +1,11 @@
+const _ = require('lodash');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 
 module.exports = {
     mixins: [LangMixin],
     props: {
         form: { type: Object, required: true },
-        required: { type: Boolean, default: true },
+        subform: { type: String, default: 'required' },
     },
     data() {
         return {
@@ -18,10 +19,13 @@ module.exports = {
     },
     computed: {
         final_form() {
-            if (this.required) {
-                form.fields.filter(f => f.validations.required);
+            const results = this.form.fields.filter(f => f.name === this.subform && f.type === 'subform');
+            if (results.length > 0) {
+                const form = _.cloneDeep(this.form);
+                form.fields = results;
                 return form;
             }
+            return this.form;
         },
     },
 };

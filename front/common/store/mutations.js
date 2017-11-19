@@ -57,6 +57,7 @@ module.exports = {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
             } else {
                 state.forms[form_name].success = payload.response.content.message;
+                state.forms[form_name].cancel = true;
             }
             state.forms[form_name].error = {};
         } else if (form_name in state.forms) {
@@ -135,7 +136,7 @@ module.exports = {
             const path = name.split('.');
             const content = state.forms[form_name].content;
             const object = Utils.make_nested_object_from_path(path, info);
-            state.forms[form_name].content = _.merge({}, content, object);
+            state.forms[form_name].content = Utils.merge_with_replacement(content, object);
             state.forms[form_name].claims += 1;
         }
     },

@@ -25,6 +25,27 @@ const Formatting: Array<any> = [
             }
             return [];
         },
+        parts: async (parts) => {
+            if (parts == null) {
+                return [];
+            }
+            if (parts instanceof Array) {
+                return parts.filter(p => p != null && p !== '').map((p) => {
+                    if (typeof p === 'string') {
+                        return { value: p };
+                    }
+                    return p;
+                });
+            } else if (parts instanceof Object) {
+                return _.filter(parts, val => val != null && Object.keys(val).length > 0).map((p) => {
+                    if (typeof p === 'string') {
+                        return { value: p };
+                    }
+                    return p;
+                });
+            }
+            return [];
+        },
     },
 ];
 

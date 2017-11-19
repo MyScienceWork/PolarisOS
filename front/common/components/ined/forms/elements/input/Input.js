@@ -15,6 +15,8 @@ module.exports = {
         form: { required: true, type: String },
         rows: { default: 10 },
         radioButtons: { default: () => [], type: Array },
+        hasAddons: { default: false, type: Boolean },
+        isAddon: { default: false, type: Boolean },
     },
 
     data() {
@@ -26,6 +28,10 @@ module.exports = {
     },
 
     methods: {
+        action(a, e) {
+            e.preventDefault();
+            this.$emit('input-action-emit', { action: a });
+        },
         update() {
             const form = this.$store.state.forms[this.form];
             if (form.update) {

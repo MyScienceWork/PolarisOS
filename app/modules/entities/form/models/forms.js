@@ -37,7 +37,10 @@ const Formatting: Array<any> = [
         },
     },
     {
-        has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
+        has_subforms: async (has, object) => {
+            console.log(object.fields);
+            return object.fields.some(f => f.subform && f.subform !== '');
+        },
     },
 ];
 

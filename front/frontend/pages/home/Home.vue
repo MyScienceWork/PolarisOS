@@ -36,6 +36,29 @@
                     :small="true"
                 />
             </div>
+            <div class="column is-6">
+                <fvariadic-element name="test" form="test_form" :single="true" :is-required="true">
+                    <template slot="variadic" slot-scope="props">
+                        <finput label="test" placeholder="test" name="test" type="text" :has-addons="true" form="test_form">
+                            <template slot="input-addons">
+                                <fselect 
+                                    :options="[{label: 'French', value: 'FR'}, {label: 'English', value: 'EN'}]"
+                                    name="test2"
+                                    slot="input-addons"
+                                    placeholder="Choisissez une langue"
+                                    form="test_form"
+                                />
+                                <div class="control">
+                                    <a class="button is-info" @click="props.add">+</a>
+                                </div>
+                                <div class="control">
+                                    <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                </div>
+                            </template>
+                        </finput>
+                    </template>
+                </fvariadic-element>
+            </div>
         </div>
     </div>
 </div>

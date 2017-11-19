@@ -23,8 +23,13 @@ module.exports = {
                     lang: {
                         type: 'keyword',
                     },
-                    part: {
-                        type: 'keyword',
+                    parts: {
+                        type: 'nested',
+                        properties: {
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                 },
             },

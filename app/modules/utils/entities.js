@@ -32,6 +32,9 @@ const TypologyModel = require('../entities/typology/models/typologies');
 const LangRef = require('../entities/langref/langref');
 const LangRefModel = require('../entities/langref/models/langrefs');
 
+const Journal = require('../entities/journal/journal');
+const JournalModel = require('../entities/journal/models/journals');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -59,6 +62,8 @@ function get_model_from_type(type: string): ?Object {
         return TypologyModel;
     case 'langref':
         return LangRefModel;
+    case 'journal':
+        return JournalModel;
     default:
         return null;
     }
@@ -84,6 +89,8 @@ function get_cls_from_type(type: string): ?Object {
         return Typology;
     case 'langref':
         return LangRef;
+    case 'journal':
+        return Journal;
     default:
         return null;
     }
@@ -109,6 +116,8 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Typology(es_client, id);
     case 'langref':
         return new LangRef(es_client, id);
+    case 'journal':
+        return new Journal(es_client, id);
     default:
         return null;
     }

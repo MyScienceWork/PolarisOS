@@ -20,6 +20,7 @@ async function formatting(object: Object, func: Function, key: string) {
     if (result != null) {
         outer_object[last] = await func(result, object);
     }
+    return object;
 }
 
 /**
@@ -30,12 +31,11 @@ async function formatting(object: Object, func: Function, key: string) {
  * @returns formatted object
  */
 async function format(object: Object, formatters: Array<any>): Object {
-    const promises = formatters.map((formatter: any) => _.reduce(formatter,
-        (pr: Promise<*>, func: Function, key: string) => pr.then(
-            () => formatting(object, func, key)).catch(err => Logger.error(err)),
-        Promise.resolve()));
-
-    await Promise.all(promises);
+    for (const formatter of formatters) {
+        const promises = _.map(formatter,
+            (func: Function, key: string) => formatting(object, func, key));
+        await Promise.all(promises);
+    }
     return object;
 }
 

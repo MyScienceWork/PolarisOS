@@ -396,7 +396,14 @@
           box-shadow: none;
 }
 .v-select .dropdown-toggle {
+  width: 100%;
   border: none !important;
+}
+.v-select.single.open .selected-tag {
+  position: static !important;
+}
+.field.has-addons .control .button {
+  height: 100% !important;
 }
 .smart-widget {
   border: 1px solid #e6e6e6;
