@@ -7,6 +7,8 @@ const Deposit = require('./pages/deposit/Deposit.vue');
 const Browse = require('./pages/browse/Browse.vue');
 const Search = require('./pages/search/Search.vue');
 const News = require('./pages/news/News.vue');
+const UserProfile = require('./pages/user_profile/UserProfile.vue');
+const UserFavorites = require('./pages/user_favorites/UserFavorites.vue');
 
 Vue.use(Router);
 
@@ -69,6 +71,26 @@ module.exports = new Router({
             navbar: false,
             components: {
                 default: Search,
+                header: Header,
+                footer: Footer,
+            },
+        },
+        {
+            path: '/u/:id/profile',
+            name: 'User Profile',
+            navbar: false,
+            components: {
+                default: UserProfile,
+                header: Header,
+                footer: Footer,
+            },
+        },
+        {
+            path: '/u/:id/favorites',
+            name: 'User Favorites',
+            navbar: false,
+            components: {
+                default: UserFavorites,
                 header: Header,
                 footer: Footer,
             },

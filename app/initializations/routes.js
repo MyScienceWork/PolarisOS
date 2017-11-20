@@ -27,6 +27,12 @@ function initialize_routes() {
     router.get('/help', async (ctx) => {
         await ctx.render('front/views/front');
     });
+    router.get('/u/:id/profile', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/u/:id/favorites', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
 
     _.each(BackRoutes, (route) => {
         router.get(route, async (ctx) => {

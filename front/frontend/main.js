@@ -1,4 +1,5 @@
 const Vue = require('vue');
+const Buefy = require('buefy');
 const router = require('./router');
 const store = require('../common/store');
 
@@ -23,6 +24,10 @@ const StatsWidget = require('./components/themes/ined/widgets/stats_widget/Stats
 
 
 const App = require('./pages/App.vue');
+
+Vue.use(Buefy.default, {
+    defaultIconPack: 'fa',
+});
 
 Vue.component('loader', Loader);
 Vue.component('stepper', Stepper);

@@ -22,6 +22,7 @@
     "doc": "./node_modules/.bin/esdoc"
   },
   "dependencies": {
+    "buefy": "^0.6.1",
     "bulma": "^0.5.3",
     "bulma-steps": "github:Wikiki/bulma-steps#master",
     "elasticsearch": "^13.0.1",

@@ -16,7 +16,21 @@
             </div>
             <div class="tile is-parent is-2 is-vertical">
                 <p class="tile is-child">
-                <a href='#'>Log In / Sign In</a>
+                    <b-dropdown position="is-bottom-left">
+                        <a class="navbar-item" slot="trigger">
+                            <span>Corentin Ribeyre</span>
+                            <b-icon icon="caret-down"></b-icon>
+                        </a>
+
+                        <b-dropdown-item has-link>
+                            <router-link class="dropdown-item" to="/u/1/profile">{{lang('f_my_profile')}}</router-link>
+                        </b-dropdown-item>
+                        <b-dropdown-item has-link>
+                            <router-link class="dropdown-item" to="/u/1/deposits">{{lang('f_my_deposit', {}, 'other')}}</router-link>
+                        </b-dropdown-item>
+                        <b-dropdown-item>{{lang('f_registered_search', {}, 'other')}}</b-dropdown-item>
+                        <b-dropdown-item has-link>{{lang('f_logout')}}</b-dropdown-item>
+                    </b-dropdown>
                 </p>
                 <p class="tile is-child">
                 <a href='#'>FR</a>&nbsp;|&nbsp;<a href='#'>EN</a>
