@@ -4,6 +4,7 @@ const APIRoutes = require('../../../../api/routes');
 module.exports = {
     props: {
         name: { default: 'default_form' },
+        hasButtons: { default: true, type: Boolean },
         post_path: { type: String, required: true },
         put_path: { type: String, required: true },
         get_path: { type: String, required: true },

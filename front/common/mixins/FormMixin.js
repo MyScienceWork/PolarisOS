@@ -20,6 +20,7 @@ module.exports = {
                             obj[field.datasource.name] = {
                                 label: field.datasource.label,
                                 value: field.datasource.value,
+                                translatable: field.datasource.translatable,
                             };
                         }
                         return obj;

@@ -1,6 +1,11 @@
 <template>
+<input v-if="type === 'hidden'"
+    type="hidden"
+    :name="name"
+    v-model="state.value"
+></input>
 <div :class="[{'field': !isAddon}]"
-    v-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
+    v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
 >
     <label :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">

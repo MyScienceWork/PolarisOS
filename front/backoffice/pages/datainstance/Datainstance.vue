@@ -20,7 +20,7 @@
                                         class="button is-small button-background-red"
                                         :confirmation="lang('b_are_sure')"
                                         :two-steps="true"
-                                        @action-click="remove(content, 'datainstance')"
+                                        @action-click="remove(content, entity())"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>

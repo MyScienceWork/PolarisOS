@@ -36,6 +36,9 @@
                                             :form="forms[state.typology_child.form]"
                                             subform="permission"
                                         />
+                                        <review-deposit-step 
+                                            v-if="props.id === 4 && state.typology_child != null"
+                                        />
                                     </template>
                                 </stepper>
                             </div>

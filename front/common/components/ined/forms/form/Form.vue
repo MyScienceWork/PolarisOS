@@ -19,7 +19,7 @@
         </div>
     </div>
     <slot></slot>
-    <div class="field is-grouped">
+    <div v-if="hasButtons" class="field is-grouped">
         <div class="control">
             <button class="button button-background-blue" v-if="loading">
                 <i class="fa fa-spinner fa-spin m-right-xs"></i>

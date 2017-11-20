@@ -9,8 +9,8 @@ const Mapping: Object = LangMapping.msw
 const Validation: Array<any> = [
     Joi.object({
         key: Joi.string().required().label('Key'),
-        part: Joi.string().required().label('Part'),
         values: Joi.array().min(1).items(Joi.any().required()).label('Text/Quantity'),
+        parts: Joi.array().min(1).items(Joi.any().required()).label('Parts'),
     }),
 ];
 

@@ -26,6 +26,12 @@
                     <div class="column" v-if="grab_typology_child(state.chosen_doc_type).file">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
+                                <div class="columns is-centered">
+                                    <div class="column has-text-centered">
+                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}</h4>
+                                        <p v-html="lang('f_upload_deposit_file_help')"></p>
+                                    </div>
+                                </div>
                                 <vue-dropzone class="dropzone-equal-height" id="dropzone" :options="dropzone" />
                             </div>
                         </div>
@@ -36,7 +42,7 @@
                                 <div class="columns is-centered">
                                     <div class="column has-text-centered">
                                         <h4 class="title is-4">{{lang('f_auto_fill_metadata')}}</h4>
-                                        <p>{{lang('f_auto_fill_metadata_help')}}</p>
+                                        <p v-html="lang('f_auto_fill_metadata_help')"></p>
                                     </div>
                                 </div>
                                 <div class="columns is-centered">

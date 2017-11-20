@@ -9,8 +9,10 @@
             </div>
             <div class="tile is-vertical is-parent">
                 <div class="columns is-centered is-child">
-                    <div class="column is-10">
-                        <widget-stats form="test_form" :infos="[]" />
+                    <div class="column is-10 has-text-centered">
+                        <p class="title is-3">OpenINED</p>
+                        <p class="subtitle is-5">L'archive ouverte de l'Ined</p>
+                        <!--<widget-stats form="test_form" :infos="[]" />-->
                     </div>
                 </div>
             </div>
@@ -26,14 +28,27 @@
                             <router-link class="dropdown-item" to="/u/1/profile">{{lang('f_my_profile')}}</router-link>
                         </b-dropdown-item>
                         <b-dropdown-item has-link>
-                            <router-link class="dropdown-item" to="/u/1/deposits">{{lang('f_my_deposit', {}, 'other')}}</router-link>
+                            <router-link class="dropdown-item" to="/search?author=1">{{lang('f_my_deposit', {}, 'other')}}</router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item>{{lang('f_registered_search', {}, 'other')}}</b-dropdown-item>
-                        <b-dropdown-item has-link>{{lang('f_logout')}}</b-dropdown-item>
+                        <b-dropdown-item has-link>
+                            <router-link class="dropdown-item" to="/u/1/favorites">
+                                {{lang('f_registered_search', {}, 'other')}}
+                            </router-link>
+                        </b-dropdown-item>
+                        <b-dropdown-item has-link>
+                            <router-link class="dropdown-item" to="/logout">
+                                {{lang('f_logout')}}
+                            </router-link>
+                        </b-dropdown-item>
                     </b-dropdown>
                 </p>
                 <p class="tile is-child">
-                <a href='#'>FR</a>&nbsp;|&nbsp;<a href='#'>EN</a>
+                    <a class="navbar-item" slot="trigger">
+                        <span>FR</span>
+                    </a>
+                    <a class="navbar-item" slot="trigger">
+                        <span>EN</span>
+                    </a>
                 </p>
             </div>
         </div>

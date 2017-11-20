@@ -17,6 +17,7 @@ module.exports = {
         radioButtons: { default: () => [], type: Array },
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
+        hiddenValue: { default: '', type: String },
     },
 
     data() {
@@ -46,6 +47,8 @@ module.exports = {
         defaultValue() {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
+            } else if (this.type === 'hidden') {
+                return this.hiddenValue;
             }
             return undefined;
         },

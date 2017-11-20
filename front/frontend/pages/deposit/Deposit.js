@@ -1,6 +1,7 @@
 const APIRoutes = require('../../api/routes');
 const FirstDepositStep = require('./first_step/FirstDepositStep.vue');
 const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
+const ReviewStep = require('./review_step/ReviewStep.vue');
 const FormMixin = require('../../../common/mixins/FormMixin');
 
 module.exports = {
@@ -28,6 +29,7 @@ module.exports = {
     components: {
         'first-deposit-step': FirstDepositStep,
         'second-deposit-step': SecondDepositStep,
+        'review-deposit-step': ReviewStep,
     },
     mounted() {
         this.$store.dispatch('search', {

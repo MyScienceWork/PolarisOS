@@ -17,7 +17,7 @@ module.exports = new Router({
     routes: [
         {
             path: '/',
-            name: 'Home',
+            name: 'f_nav_home',
             navbar: true,
             components: {
                 default: Home,
@@ -27,7 +27,7 @@ module.exports = new Router({
         },
         {
             path: '/news',
-            name: 'A propos',
+            name: 'f_nav_about',
             navbar: true,
             components: {
                 default: News,
@@ -37,7 +37,7 @@ module.exports = new Router({
         },
         {
             path: '/browse',
-            name: 'Consulter',
+            name: 'f_nav_browse',
             navbar: true,
             components: {
                 default: Browse,
@@ -47,7 +47,7 @@ module.exports = new Router({
         },
         {
             path: '/deposit',
-            name: 'Déposer',
+            name: 'f_nav_deposit',
             navbar: true,
             components: {
                 default: Deposit,
@@ -57,7 +57,7 @@ module.exports = new Router({
         },
         {
             path: '/help',
-            name: 'Besoin d\'aide ?',
+            name: 'f_nav_help',
             navbar: true,
             components: {
                 default: Deposit,
@@ -67,7 +67,7 @@ module.exports = new Router({
         },
         {
             path: '/search',
-            name: 'Recherche',
+            name: 'f_nav_search',
             navbar: false,
             components: {
                 default: Search,
@@ -77,7 +77,7 @@ module.exports = new Router({
         },
         {
             path: '/u/:id/profile',
-            name: 'User Profile',
+            name: 'f_nav_user_profile',
             navbar: false,
             components: {
                 default: UserProfile,
@@ -87,7 +87,7 @@ module.exports = new Router({
         },
         {
             path: '/u/:id/favorites',
-            name: 'User Favorites',
+            name: 'f_nav_user_favorites',
             navbar: false,
             components: {
                 default: UserFavorites,

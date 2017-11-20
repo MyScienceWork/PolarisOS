@@ -53,6 +53,10 @@ module.exports = {
                                 type: 'keyword',
                                 index: false,
                             },
+                            hiddenValue: {
+                                type: 'keyword',
+                                index: false,
+                            },
                             placeholder: {
                                 type: 'keyword',
                                 index: false,

@@ -21,6 +21,14 @@
                     :form="cform"
                     :is-addon="true"
                     />
+                    <finput 
+                    v-else-if="['hidden'].indexOf(field.type) !== -1"
+                    :name="get_name(field.name, null)"
+                    :type="field.type"
+                    :form="cform"
+                    :is-addon="true"
+                    :hidden-value="field.hiddenValue"
+                    />
                     <fselect 
                     v-else-if="field.type === 'select'"
                     :label="lang(field.label || '')"
@@ -58,6 +66,14 @@
                         </div>
                     </template>
                 </finput>
+                <finput 
+                v-else-if="['hidden'].indexOf(field.type) !== -1"
+                :name="get_name(field.name, null)"
+                :type="field.type"
+                :form="cform"
+                :is-addon="true"
+                :hidden-value="field.hiddenValue"
+                />
                 <fselect 
                 v-else-if="field.type === 'select'"
                 :label="lang(field.label || '')"
@@ -94,6 +110,14 @@
             :placeholder="lang(field.placeholder || '')"
             :type="field.type"
             :form="cform"
+            />
+            <finput 
+            v-else-if="['hidden'].indexOf(field.type) !== -1"
+            :name="get_name(field.name, null)"
+            :type="field.type"
+            :form="cform"
+            :is-addon="true"
+            :hidden-value="field.hiddenValue"
             />
             <fselect 
             v-else-if="field.type === 'select'"

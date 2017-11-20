@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const StringUtils = require('../utils/strings');
 const API = require('../api');
 const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
@@ -124,45 +125,44 @@ module.exports = {
 
     grab_datasources: async (ctx, { datasources }) => {
         const payloads = _.map(datasources, (ds, name) => {
-            if (name.startsWith(ctx.state.global_config.datasources.prefix)) {
-                return {
-                    name,
-                    path: APIRoutes.entity('datainstance', 'POST', true),
-                    method: 'POST',
-                    commit: ctx.commit,
-                    body: {
-                        size: 10000,
-                        where: {
-                            type: name,
-                        },
-                        projection: [ds.label, ds.value],
-                    },
-                };
-            } else if (name.startsWith(ctx.state.global_config.keystores.prefix)) {
-                return {
-                    name,
-                    path: APIRoutes.entity('keystore', 'POST', true),
-                    method: 'POST',
-                    commit: ctx.commit,
-                    body: {
-                        size: 10000,
-                        where: {
-                            type: name,
-                        },
-                        projection: [ds.label, ds.value],
-                    },
-                };
-            }
-            return {
+            const base_payload = {
                 name,
-                path: APIRoutes.entity(name, 'POST', true),
+                label: ds.label,
+                translatable: ds.translatable,
                 method: 'POST',
                 commit: ctx.commit,
+            };
+
+            if (name.startsWith(ctx.state.global_config.datasources.prefix)) {
+                return _.merge({}, base_payload, {
+                    path: APIRoutes.entity('datainstance', 'POST', true),
+                    body: {
+                        size: 10000,
+                        where: {
+                            type: name,
+                        },
+                        projection: [ds.label, ds.value],
+                    },
+                });
+            } else if (name.startsWith(ctx.state.global_config.keystores.prefix)) {
+                return _.merge({}, base_payload, {
+                    path: APIRoutes.entity('keystore', 'POST', true),
+                    body: {
+                        size: 10000,
+                        where: {
+                            type: name,
+                        },
+                        projection: [ds.label, ds.value],
+                    },
+                });
+            }
+            return _.merge({}, base_payload, {
+                path: APIRoutes.entity(name, 'POST', true),
                 body: {
                     size: 10000,
                     projection: [ds.label, ds.value],
                 },
-            };
+            });
         });
 
         const responses = await Promise.all(payloads.map(payload => API.fetch(payload)));
@@ -171,7 +171,13 @@ module.exports = {
             obj[payload.name] = [];
             const response = responses[i];
             if ('result' in response.content && 'hits' in response.content.result) {
-                obj[payload.name] = response.content.result.hits.map(hit => hit.source);
+                obj[payload.name] = response.content.result.hits.map((hit) => {
+                    if (payload.translatable) {
+                        hit.source[payload.label] = StringUtils.lang(hit.source[payload.label],
+                            {}, 'n/a', ctx.state.lang_content[ctx.state.interfaceLang]);
+                    }
+                    return hit.source;
+                });
             }
             return obj;
         }, {});

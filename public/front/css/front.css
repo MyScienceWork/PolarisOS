@@ -183,7 +183,7 @@
   padding: 0.35rem;
 }
 .stats-card .media {
-  padding: 1rem;
+  padding: 0.5rem;
 }
 .stats-card .title,
 .stats-card .subtitle {
@@ -212,6 +212,12 @@
 }
 .info-card-blue a:hover {
   color: #212D3A;
+}
+.info-card-blue a.swap {
+  color: #212D3A;
+}
+.info-card-blue a.swap:hover {
+  color: #1CBDC7;
 }
 .info-card-blue p.colored {
   color: #1CBDC7 !important;
@@ -252,6 +258,12 @@
 .info-card-green a:hover {
   color: #212D3A;
 }
+.info-card-green a.swap {
+  color: #212D3A;
+}
+.info-card-green a.swap:hover {
+  color: #1D875F;
+}
 .info-card-green p.colored {
   color: #1D875F !important;
 }
@@ -290,6 +302,12 @@
 }
 .info-card-brown a:hover {
   color: #212D3A;
+}
+.info-card-brown a.swap {
+  color: #212D3A;
+}
+.info-card-brown a.swap:hover {
+  color: #B39482;
 }
 .info-card-brown p.colored {
   color: #B39482 !important;
@@ -330,6 +348,12 @@
 .info-card-purple a:hover {
   color: #212D3A;
 }
+.info-card-purple a.swap {
+  color: #212D3A;
+}
+.info-card-purple a.swap:hover {
+  color: #7E69B4;
+}
 .info-card-purple p.colored {
   color: #7E69B4 !important;
 }
@@ -369,6 +393,12 @@
 .info-card-orange a:hover {
   color: #212D3A;
 }
+.info-card-orange a.swap {
+  color: #212D3A;
+}
+.info-card-orange a.swap:hover {
+  color: #F8AA24;
+}
 .info-card-orange p.colored {
   color: #F8AA24 !important;
 }
@@ -407,6 +437,12 @@
 }
 .info-card-red a:hover {
   color: #212D3A;
+}
+.info-card-red a.swap {
+  color: #212D3A;
+}
+.info-card-red a.swap:hover {
+  color: #E9362F;
 }
 .info-card-red p.colored {
   color: #E9362F !important;
@@ -744,8 +780,9 @@ nav.indexer {
 .media-content-red .title {
   color: #E9362F !important;
 }
-.hero-head {
-  background: url("../imgs/headers/header_fili.svg") no-repeat 80% 0;
+.dropdown-menu {
+  right: 0;
+  left: auto;
 }
 .has-header-top-margin {
   margin-top: 0.75rem !important;

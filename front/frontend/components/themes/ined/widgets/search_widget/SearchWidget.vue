@@ -2,20 +2,20 @@
 <form @submit.prevent="trigger_click">
     <div class="field is-grouped">
         <p class="control has-icons-left is-expanded">
-            <input id="search-input" class="input is-medium" type="text" placeholder="Faire une recherche dans l'archive">
+            <input id="search-input" class="input is-medium" type="text" :placeholder="lang('f_search_in_archive')">
             <span class="icon is-left">
                 <i class="fa fa-search"></i>
             </span>
         </p>
         <p class="control">
-            <a class="icon has-text-warning is-large" alt="Mettre en favoris" title="Mettre en favoris">
+            <a class="icon has-text-warning is-large" :alt="lang('f_save_search')" :title="lang('f_save_search')">
                 <i class="fa fa-star-o fa-2x"></i>
             </a>
         </p>
     </div>
     <div class="field">
         <div class="control">
-            <a @click="state.more_options = !state.more_options" class="">Plus d'options</a>
+            <a @click="state.more_options = !state.more_options" class="swap">{{lang('f_advanced_search')}}</a>
         </div>
     </div>
     <div v-if="state.more_options">

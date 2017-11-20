@@ -9,6 +9,7 @@ const menu = require('./menu');
 const langref = require('./langref');
 const journal = require('./journal');
 const keystore = require('./keystore');
+const datainstance = require('./datainstance');
 
 module.exports = {
     user: user.msw,
@@ -22,4 +23,5 @@ module.exports = {
     menu: menu.msw,
     journal: journal.msw,
     keystore: keystore.msw,
+    datainstance: datainstance.msw,
 };

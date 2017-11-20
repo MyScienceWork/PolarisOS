@@ -44,7 +44,8 @@ function initialize_routes() {
         await Send(ctx, ctx.path, { root: Config.root });
     });
 
-    const entities = ['citation', 'user', 'config', 'lang', 'form', 'datatemplate', 'typology', 'langref', 'journal', 'keystore'];
+    const entities = ['citation', 'user', 'config', 'lang', 'form',
+        'datatemplate', 'typology', 'langref', 'journal', 'keystore', 'datainstance'];
 
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);

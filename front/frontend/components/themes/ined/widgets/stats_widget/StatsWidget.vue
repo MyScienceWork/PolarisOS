@@ -5,35 +5,35 @@
                 <div class="column">
                     <div class="media">
                         <div class="media-left">
-                            <figure class="image is-48x48">
+                            <figure class="image is-32x32">
                                 <span class="icon is-large">
                                     <i class="fa fa-file-text fa-2x"></i>
                                 </span>
                             </figure>
                         </div>
-                        <div class="media-content is-uppercase media-content-orange">
+                        <div class="media-content is-uppercase">
                             <p class="subtitle is-6">Nombre de dépôts</p>
-                            <p class="title is-5">12 000</p>
+                            <p class="title is-6">12 000</p>
                         </div>
                     </div>
                 </div>
                 <div class="column">
                     <div class="media">
                         <div class="media-left">
-                            <figure class="image is-48x48">
+                            <figure class="image is-32x32">
                                 <span class="icon is-large">
                                     <i class="fa fa-users fa-2x"></i>
                                 </span>
                             </figure>
                         </div>
-                        <div class="media-content is-uppercase media-content-red">
-                            <p class="subtitle is-6">Nombre d'auteurs</p>
-                            <p class="title is-5">300</p>
+                        <div class="media-content is-uppercase">
+                            <p class="subtitle is-6">Nombre de références </p>
+                            <p class="title is-6">300</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="columns is-centered">
+            <!--<div class="columns is-centered">
                 <div class="column">
                     <div class="media">
                         <div class="media-left">
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>

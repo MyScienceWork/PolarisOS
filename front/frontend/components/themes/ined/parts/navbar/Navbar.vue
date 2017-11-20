@@ -6,13 +6,13 @@
             v-if="item.navbar"
             :class="`column navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
         >
-            <router-link class="" :to='item.path'>{{item.name}}</router-link>
+            <router-link class="" :to='item.path'>{{lang(item.name)}}</router-link>
         </div>
     </div>
     <div v-if="active_idx !== -1" :class="`breadcrumb breadcrumb-${state.colors[active_idx]}`">
         <div class="breadcrumb-content">
             <router-link class="" to='/'><i class="fa fa-home"></i></router-link>
-            <a>{{state.routes[active_idx].name}}</a>
+            <a>{{lang(state.routes[active_idx].name)}}</a>
         </div>
     </div>
 </nav>
