@@ -9,6 +9,7 @@ const client = new elasticsearch.Client(config.elasticsearch);
 function create() {
     _.forEach(mappings, (mapping, name) => {
         let index = mapping;
+
         if (name in settings) {
             index = _.merge({}, mapping, settings[name]);
         } else {

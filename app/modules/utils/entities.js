@@ -41,6 +41,12 @@ const KeystoreModel = require('../entities/keystore/models/keystores');
 const DataInstance = require('../entities/datainstance/datainstance');
 const DataInstanceModel = require('../entities/datainstance/models/datainstances');
 
+const Pipeline = require('../entities/pipeline/pipeline');
+const PipelineModel = require('../entities/pipeline/models/pipelines');
+
+const DataSource = require('../entities/datasource/datasource');
+const DataSourceModel = require('../entities/datasource/models/datasources');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -74,6 +80,10 @@ function get_model_from_type(type: string): ?Object {
         return JournalModel;
     case 'datainstance':
         return DataInstanceModel;
+    case 'datasource':
+        return DataSourceModel;
+    case 'pipeline':
+        return PipelineModel;
     default:
         return null;
     }
@@ -105,6 +115,10 @@ function get_cls_from_type(type: string): ?Object {
         return Keystore;
     case 'datainstance':
         return DataInstance;
+    case 'aatasource':
+        return DataSource;
+    case 'pipeline':
+        return PipelineModel;
     default:
         return null;
     }
@@ -136,6 +150,10 @@ function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Keystore(es_client, id);
     case 'datainstance':
         return new DataInstance(es_client, id);
+    case 'datasource':
+        return new DataSource(es_client, id);
+    case 'pipeline':
+        return new Pipeline(es_client, id);
     default:
         return null;
     }

@@ -10,8 +10,7 @@ const Validation: Array<any> = [
     }),
 ];
 
-const Formatting: Array<any> = [
-];
+const Formatting: Array<any> = [];
 
 const Completion: Array<any> = [];
 

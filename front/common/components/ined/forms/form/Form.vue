@@ -34,6 +34,13 @@
             <button type="submit" @click="cancel" class="button button-background-red">Cancel</button>
         </div>
     </div>
+    <slot v-else
+        name="buttons" 
+        :cancel="cancel"
+        :submit="submit"
+        :update_mode="state.update_mode"
+    >
+    </slot>
     <div class="columns is-centered" v-if="error.found">
         <div class="column">
             <article class="message is-red">
