@@ -30,32 +30,32 @@ class ODM {
      * @return the underlying model of this entity
      * @see entity models for more details
      */
-    static model(): Object {
-        return {};
+    static get model(): Object {
+        return this.constructor.model;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch mapping of this entity
      */
-    static mapping(): Object {
-        return {};
+    static get mapping(): Object {
+        return this.constructor.mapping;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch index of this entity
      */
-    static index(): string {
-        return '';
+    static get index(): string {
+        return this.constructor.index;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch type of this entity
      */
-    static type(): string {
-        return '';
+    static get type(): string {
+        return this.constructor.type;
     }
 
     /**
@@ -94,7 +94,7 @@ class ODM {
      * @return: tuple of index, type.
      */
     static extract_index_type(): [string, string] {
-        return [this.index(), this.type()];
+        return [this.constructor.index, this.constructor.type];
     }
 
     /**
@@ -116,7 +116,7 @@ class ODM {
     }
 
     get messages(): Object {
-        return this.constructor.model().Messages;
+        return this.constructor.model.Messages;
     }
 
     /**
@@ -177,6 +177,7 @@ class ODM {
 
     static async search(client: Object, search: Search, opts: Object = {}): Promise<Object> {
         const [index, type] = this.extract_index_type();
+        console.log('index', index, 'type', type);
         const query = search.generate();
         const sort = search.sort();
         const aggs = search.aggs();

@@ -7,19 +7,19 @@ const Config_ = require('../../../config');
 const mapping = new Mapping(Model.Mapping);
 
 class Config extends ODM {
-    static model(): Object {
+    static get model(): Object {
         return Model;
     }
 
-    static mapping(): Object {
+    static get mapping(): Object {
         return mapping;
     }
 
-    static index(): string {
+    static get index(): string {
         return `${Config_.elasticsearch.index_prefix}_config`;
     }
 
-    static type(): string {
+    static get type(): string {
         return 'config';
     }
 }

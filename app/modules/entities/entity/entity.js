@@ -1,12 +1,12 @@
 // @flow
 const ODM = require('../crud/odm');
-const Model = require('./models/langs');
+const Model = require('./models/entities');
 const Mapping = require('../crud/mapping');
 const Config_ = require('../../../config');
 
 const mapping = new Mapping(Model.Mapping);
 
-class Lang extends ODM {
+class _Entity extends ODM {
     static get model(): Object {
         return Model;
     }
@@ -16,12 +16,12 @@ class Lang extends ODM {
     }
 
     static get index(): string {
-        return `${Config_.elasticsearch.index_prefix}_lang`;
+        return `${Config_.elasticsearch.index_prefix}_entity`;
     }
 
     static get type(): string {
-        return 'lang';
+        return 'entity';
     }
 }
 
-module.exports = Lang;
+module.exports = _Entity;

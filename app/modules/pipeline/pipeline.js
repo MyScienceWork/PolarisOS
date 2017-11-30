@@ -83,7 +83,7 @@ class Pipeline {
             console.log('validation: ', type, ' action:', m);
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
-            const model = EntitiesUtils.get_model_from_type(type);
+            const model = await EntitiesUtils.get_model_from_type(type);
 
             switch (m) {
             case 'check': {

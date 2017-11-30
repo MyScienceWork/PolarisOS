@@ -51,7 +51,7 @@ module.exports = {
                             input: {
                                 type: 'keyword',
                                 index: false,
-                            }
+                            },
                             rules: {
                                 type: 'nested',
                                 properties: {
@@ -62,8 +62,8 @@ module.exports = {
                                 type: 'keyword',
                                 index: 'false',
                             },
-                        }
-                    }
+                        },
+                    },
                 },
             },
         },
