@@ -5,9 +5,6 @@ module.exports = {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
                 properties: {
-                    index: {
-                        type: 'keyword',
-                    },
                     type: {
                         type: 'keyword',
                     },

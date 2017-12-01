@@ -12,17 +12,24 @@ const Mapping = require('./mapping');
  */
 class ODM {
     _client: Object;
+    _index: string;
+    _type: string;
     _db: Object;
+    _model: Object;
     _id: ?string;
 
     /**
      * @param client: ElasticSearch client;
      * @param id: id of the entity (could be null)
      */
-    constructor(client: Object, id: ?string) {
+    constructor(index: string, type: string, client: Object,
+        model: Object, id: ?string) {
         this._client = client;
         this._id = id;
         this._db = {};
+        this._index = index;
+        this._type = type;
+        this._model = model;
     }
 
     /**
@@ -30,32 +37,32 @@ class ODM {
      * @return the underlying model of this entity
      * @see entity models for more details
      */
-    static get model(): Object {
-        return this.constructor.model;
+    get model(): Object {
+        return this._model;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch mapping of this entity
      */
-    static get mapping(): Object {
-        return this.constructor.mapping;
+    get mapping(): Object {
+        return this._model.Mapping;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch index of this entity
      */
-    static get index(): string {
-        return this.constructor.index;
+    get index(): string {
+        return this._index;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch type of this entity
      */
-    static get type(): string {
-        return this.constructor.type;
+    get type(): string {
+        return this._type;
     }
 
     /**
@@ -89,15 +96,6 @@ class ODM {
     }
 
     /**
-     * Extract ElasticSearch index and type of a mapping
-     * @public
-     * @return: tuple of index, type.
-     */
-    static extract_index_type(): [string, string] {
-        return [this.constructor.index, this.constructor.type];
-    }
-
-    /**
      * Get name of the class (= entity)
      * @public
      * @return name of the class
@@ -116,7 +114,7 @@ class ODM {
     }
 
     get messages(): Object {
-        return this.constructor.model.Messages;
+        return this._model.Messages;
     }
 
     /**
@@ -137,7 +135,16 @@ class ODM {
         this._db = o;
     }
 
-    static read(client: Object, response: Object): Object {
+    static async fetch_mapping(index: string, type: string, client: Object) {
+        const mapping = await client.indices.getMapping({ index, type });
+        if (index in mapping && type in mapping[index].mappings) {
+            return mapping[index].mappings[type].properties;
+        }
+        return null;
+    }
+
+    static read(index: string, type: string,
+            client: Object, model: Object, response: Object): Object {
         const o = {};
 
         if ('_scroll_id' in response) {
@@ -159,7 +166,7 @@ class ODM {
         if ('hits' in response) {
             o.hits = response.hits.hits.map((hit) => {
                 const info = this.format_hit(hit);
-                const odm = new ODM(client, info.id);
+                const odm = new ODM(index, type, client, model, info.id);
                 odm.db = info;
                 return odm;
             });
@@ -175,9 +182,8 @@ class ODM {
         return o;
     }
 
-    static async search(client: Object, search: Search, opts: Object = {}): Promise<Object> {
-        const [index, type] = this.extract_index_type();
-        console.log('index', index, 'type', type);
+    static async search(index: string, type: string, client: Object, model: Object,
+            search: Search, opts: Object = {}): Promise<Object> {
         const query = search.generate();
         const sort = search.sort();
         const aggs = search.aggs();
@@ -218,11 +224,11 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(client, response);
+        return this.read(index, type, client, model, response);
     }
 
-    static async count(client: Object, search: Search): Promise<Object> {
-        const [index, type] = this.extract_index_type();
+    static async count(index: string, type: string, client: Object,
+            model: Object, search: Search): Promise<Object> {
         const query = search.generate();
         const response = await client.count({
             index,
@@ -231,11 +237,10 @@ class ODM {
                 query,
             },
         });
-        return this.read(client, response);
+        return this.read(index, type, client, model, response);
     }
 
-    static async deleteByQuery(client: Object, search: Search) {
-        const [index, type] = this.extract_index_type();
+    static async deleteByQuery(index: string, type: string, client: Object, search: Search) {
         const query = search.generate();
         await client.deleteByQuery({
             index,
@@ -247,8 +252,7 @@ class ODM {
         });
     }
 
-    static async remove(client: Object, id: string): Promise<boolean> {
-        const [index, type] = this.extract_index_type();
+    static async remove(index: string, type: string, client: Object, id: string): Promise<boolean> {
         try {
             const response = await client.delete({
                 index,
@@ -264,8 +268,8 @@ class ODM {
         }
     }
 
-    static async _create_or_update(client: Object, body: Object, id: ?string = null): Promise<?ODM> {
-        const [index, type] = this.extract_index_type();
+    static async _create_or_update(index: string, type: string,
+            client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
         console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
@@ -288,7 +292,7 @@ class ODM {
                         type,
                         id: response._id,
                     });
-                    const odm = new this(client, response._id);
+                    const odm = new this(index, type, client, model, response._id);
                     odm.db = ODM.format_hit(get_response, get_response.found);
                     console.log(odm);
                     return odm;
@@ -310,11 +314,10 @@ class ODM {
             src = source.length > 0 ? source : false;
         }
 
-        const [index, type] = this.constructor.extract_index_type();
         try {
             const response = await this._client.get({
-                index,
-                type,
+                index: this.index,
+                type: this.type,
                 id: this._id,
                 _source: src,
             });
@@ -327,13 +330,15 @@ class ODM {
         return this;
     }
 
-    static async create(client: Object, body: Object): Promise<?ODM> {
-        return this._create_or_update(client, body);
+    static async create(index: string, type: string, client: Object,
+            model: Object, body: Object): Promise<?ODM> {
+        return this._create_or_update(index, type, client, model, body);
     }
 
-    static async update(client: Object, body: Object, id: string): Promise<?ODM> {
+    static async update(index: string, type: string, client: Object,
+            model: Object, body: Object, id: string): Promise<?ODM> {
         console.log('update', JSON.stringify(body));
-        return this._create_or_update(client, body, id);
+        return this._create_or_update(index, type, client, model, body, id);
     }
 
     toJSON(): Object {

@@ -33,6 +33,10 @@ type ObjectList = {
 
 const es_client = new elasticsearch.Client(config.elasticsearch);
 
+function get_index(type) {
+    return `${config.elasticsearch.index_prefix}_${type}`;
+}
+
 function format_search(body: Object, cls: ODM): Object {
     let source = true;
     if ('projection' in body) {
@@ -79,19 +83,14 @@ function format_search(body: Object, cls: ODM): Object {
 
 async function grab_entity_from_type(type: string, mode: string = 'model'): ?Object {
     const response = format_search({ where: { type } }, _Entity);
-    const result = await _Entity.search(es_client, response.search, response.options);
+    const result = await _Entity.search(get_index(type), type, es_client,
+        response.search, response.options);
     if (result.hits.length === 0) {
         return null;
     }
-    const info = result.hits[0];
     if (mode === 'model') {
         return {};
     } else if (mode === 'class') {
-        console.log(info.db.source.index);
-        console.log(info.db.source.type);
-        ODM.index = info.db.source.index;
-        ODM.type = info.db.source.type;
-        console.log(ODM.index);
         return ODM;
     }
     return null;
@@ -119,69 +118,56 @@ async function get_model_from_type(type: string): ?Object {
     }
 }
 
-function get_cls_from_type(type: string): ?Object {
+async function get_info_from_type(type: string, id: ?string): ?ODM {
     switch (type) {
     case 'config':
-        return Config;
+        return new Config(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'user':
-        return User;
+        return new User(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'lang':
-        return Lang;
+        return new Lang(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'form':
-        return Form;
+        return new Form(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'datasource':
-        return DataSource;
+        return new DataSource(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'pipeline':
-        return Pipeline;
+        return new Pipeline(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'entity':
-        return _Entity;
-    default:
-        return grab_entity_from_type(type, 'class');
-        // return null;
+        return new _Entity(get_index(type), type, es_client, get_model_from_type(type), id);
+    default: {
+        const CLS = await grab_entity_from_type(type, 'class');
+        if (CLS == null) {
+            return null;
+        }
+        return new CLS(get_index(type), type, es_client, get_model_from_type(type), id);
     }
-}
-
-function get_info_from_type(type: string, id: ?string): ?ODM {
-    switch (type) {
-    case 'config':
-        return new Config(es_client, id);
-    case 'user':
-        return new User(es_client, id);
-    case 'lang':
-        return new Lang(es_client, id);
-    case 'form':
-        return new Form(es_client, id);
-    case 'datasource':
-        return new DataSource(es_client, id);
-    case 'pipeline':
-        return new Pipeline(es_client, id);
-    case 'entity':
-        return new _Entity(es_client, id);
-    default:
-        return null;
     }
 }
 
 async function create(info: Object, type: string): Promise<*> {
-    const cls = get_cls_from_type(type);
+    const cls = await get_info_from_type(type);
+    const model = await get_model_from_type(type);
     if (cls == null) {
         return null;
     }
 
-    const response = await cls.create(es_client, info);
+    const response = await cls.constructor.create(get_index(type), type, es_client,
+       model, info);
     console.log('create', response);
     return response;
 }
 
 async function update(info: Object, type: string): Promise<*> {
-    const cls = get_cls_from_type(type);
+    const cls = await get_info_from_type(type);
+    const model = await get_model_from_type(type);
     if (cls == null) {
         return null;
     }
 
     const id = info._id;
     delete info._id;
-    const response = await cls.update(es_client, info, id);
+    const response = await cls.constructor.update(get_index(type), type,
+        es_client, model, info, id);
     return response;
 }
 
@@ -191,13 +177,15 @@ async function count(type: string, body: Object): Promise<*> {
         throw Errors.InvalidEntity;
     }
 
-    const cls = get_cls_from_type(type);
+    const cls = await get_info_from_type(type);
+    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, count: 0 };
     }
 
     const s = Mapper.transform_to_search(body, cls.mapping);
-    const counting = await cls.count(es_client, s);
+    const counting = await cls.constructor.count(get_index(type), type,
+        es_client, model, s);
     return { entity: type, count: counting.count };
 }
 
@@ -206,12 +194,17 @@ async function search(type: string, body: Object): Promise<*> {
         throw Errors.InvalidEntity;
     }
 
-    const cls = await get_cls_from_type(type);
+    const cls = await get_info_from_type(type);
+    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, result: {} };
     }
+
+    console.log(cls);
     const response = format_search(body, cls);
-    const result = await cls.search(es_client, response.search, response.options);
+    const result = await cls.constructor.search(get_index(type), type, es_client,
+            model, response.search, response.options);
+    const mapping = await cls.constructor.fetch_mapping(get_index(type), type, es_client);
     return { entity: type, result };
 }
 
@@ -221,7 +214,7 @@ async function retrieve(id: string, type: string,
         return null;
     }
 
-    const odm = get_info_from_type(type, id);
+    const odm = await get_info_from_type(type, id);
 
     if (odm == null) {
         return null;
@@ -247,17 +240,12 @@ async function remove(id: string, type: string): Promise<*> {
         return [null, null];
     }
 
-    const odm = get_info_from_type(type);
+    const odm = await get_info_from_type(type);
     if (odm == null) {
         return [null, null];
     }
 
-    const cls = get_cls_from_type(type);
-    if (cls == null) {
-        return [null, null];
-    }
-
-    const obj = await cls.remove(es_client, id);
+    const obj = await odm.constructor.remove(get_index(type), type, es_client, id);
     return [odm, obj];
 }
 
