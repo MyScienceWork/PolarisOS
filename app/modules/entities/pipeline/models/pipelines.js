@@ -1,13 +1,17 @@
 // @flow
 const Joi = require('joi');
 const LRMapping = require('../../../../mappings/pipeline');
+const MMapping = require('../../crud/mapping');
+const ValFunctions = require('../../../pipeline/validator/valfunctions');
 
 const Mapping: Object = LRMapping.msw
     .mappings.pipeline.properties;
 
 const Validation: Array<any> = [
     Joi.object({
+        entity: Joi.string().required().label('Entity pipeline'),
     }),
+    ValFunctions.checks.is_unique('entity', 'pipeline'),
 ];
 
 const Formatting: Array<any> = [
@@ -24,7 +28,8 @@ const Messages: Object = {
 };
 
 module.exports = {
-    Mapping,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,

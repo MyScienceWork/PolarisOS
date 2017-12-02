@@ -37,7 +37,7 @@ function get_index(type) {
     return `${config.elasticsearch.index_prefix}_${type}`;
 }
 
-function format_search(body: Object, cls: ODM): Object {
+function format_search(body: Object, model: Object): Object {
     let source = true;
     if ('projection' in body) {
         if (body.projection === false || body.projection === 'false') {
@@ -59,9 +59,9 @@ function format_search(body: Object, cls: ODM): Object {
         options.from = body.from;
     }
 
-    const s = Mapper.transform_to_search(body, cls.mapping);
-    const sort = Mapper.transform_to_sort(body, cls.mapping);
-    const aggs = Mapper.transform_to_aggregation(body, cls.mapping);
+    const s = Mapper.transform_to_search(body, model.Mapping);
+    const sort = Mapper.transform_to_sort(body, model.Mapping);
+    const aggs = Mapper.transform_to_aggregation(body, model.Mapping);
 
     if (sort != null && sort.length > 0) {
         s.add_sort(sort);
@@ -82,14 +82,23 @@ function format_search(body: Object, cls: ODM): Object {
 }
 
 async function grab_entity_from_type(type: string, mode: string = 'model'): ?Object {
-    const response = format_search({ where: { type } }, _Entity);
-    const result = await _Entity.search(get_index(type), type, es_client,
-        response.search, response.options);
+    const response = format_search({ where: { type } }, EntityModel);
+    const result = await _Entity.search(get_index('entity'), 'entity', es_client,
+        EntityModel, response.search, response.options);
     if (result.hits.length === 0) {
         return null;
     }
+
     if (mode === 'model') {
-        return {};
+        const model_response = format_search({ where: { entity: type } }, PipelineModel);
+        const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline', es_client,
+            PipelineModel, model_response.search, model_response.options);
+        if (model_result.hits.length === 0) {
+            return null;
+        }
+        const pipeline = model_result.hits[0];
+        const model = await pipeline.generate_model(get_index(type), type);
+        return model;
     } else if (mode === 'class') {
         return ODM;
     }
@@ -200,11 +209,9 @@ async function search(type: string, body: Object): Promise<*> {
         return { entity: type, result: {} };
     }
 
-    console.log(cls);
-    const response = format_search(body, cls);
+    const response = format_search(body, model);
     const result = await cls.constructor.search(get_index(type), type, es_client,
             model, response.search, response.options);
-    const mapping = await cls.constructor.fetch_mapping(get_index(type), type, es_client);
     return { entity: type, result };
 }
 

@@ -166,7 +166,7 @@ class ODM {
         if ('hits' in response) {
             o.hits = response.hits.hits.map((hit) => {
                 const info = this.format_hit(hit);
-                const odm = new ODM(index, type, client, model, info.id);
+                const odm = new this(index, type, client, model, info.id);
                 odm.db = info;
                 return odm;
             });
@@ -293,7 +293,7 @@ class ODM {
                         id: response._id,
                     });
                     const odm = new this(index, type, client, model, response._id);
-                    odm.db = ODM.format_hit(get_response, get_response.found);
+                    odm.db = this.format_hit(get_response, get_response.found);
                     console.log(odm);
                     return odm;
                 } catch (err) {

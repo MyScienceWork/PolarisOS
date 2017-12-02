@@ -10,6 +10,7 @@ const langref = require('./langref');
 const journal = require('./journal');
 const keystore = require('./keystore');
 const entity = require('./entity');
+const pipeline = require('./pipeline');
 
 module.exports = {
     user: user.msw,
@@ -24,4 +25,5 @@ module.exports = {
     journal: journal.msw,
     keystore: keystore.msw,
     entity: entity.msw,
+    pipeline: pipeline.msw,
 };

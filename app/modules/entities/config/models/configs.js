@@ -1,9 +1,11 @@
 // @flow
 const Joi = require('joi');
 const ConfigMapping = require('../../../../mappings/config');
+const MMapping = require('../../crud/mapping');
 
 const Mapping: Object = ConfigMapping.msw
-    .mappings.config.properties;
+.mappings.config.properties;
+
 
 const Validation: Array<any> = [
     Joi.object({
@@ -31,7 +33,8 @@ const Messages: Object = {
 };
 
 module.exports = {
-    Mapping,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,

@@ -90,6 +90,10 @@ function del(type: string): Function {
     };
 }
 
+async function validate(ctx: Object): Promise<*> {
+    ctx.body = { ok: true };
+}
+
 function post_with_action(type: string, action: Function, options: Object): Function {
     return async function func(ctx: Object): Promise<*> {
         const obj = await EntitiesUtils.create(ctx.request.body, type);
@@ -116,4 +120,5 @@ module.exports = {
     post_with_action,
     count,
     search,
+    validate,
 };

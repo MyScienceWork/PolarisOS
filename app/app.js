@@ -29,9 +29,6 @@ koa.use(async (context, next) => {
 });
 
 koa.use(views(`${config.root}/public`));
-const koa_router = router();
-koa.use(koa_router.routes());
-koa.use(koa_router.allowedMethods());
 
 process.on('message', (message) => {
     if (message === 'shutdown') {
@@ -41,6 +38,9 @@ process.on('message', (message) => {
 });
 
 (async () => {
+    const koa_router = await router();
+    koa.use(koa_router.routes());
+    koa.use(koa_router.allowedMethods());
     logger.info('Starting koalication...');
     await koa.listen(config.port);
     logger.info(`Midstod started on port ${config.port}`);

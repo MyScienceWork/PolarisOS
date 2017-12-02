@@ -1,6 +1,7 @@
 // @flow
 const Joi = require('joi');
 const LRMapping = require('../../../../mappings/datasource');
+const MMapping = require('../../crud/mapping');
 
 const Mapping: Object = LRMapping.msw
     .mappings.datasource.properties;
@@ -24,7 +25,8 @@ const Messages: Object = {
 };
 
 module.exports = {
-    Mapping,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,

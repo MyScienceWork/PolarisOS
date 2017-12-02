@@ -2,6 +2,7 @@
 const Joi = require('joi');
 const Crypto = require('crypto');
 const UserMapping = require('../../../../mappings/user');
+const MMapping = require('../../crud/mapping');
 
 const Mapping: Object = UserMapping.msw.mappings.user.properties;
 
@@ -35,7 +36,8 @@ const Messages: Object = {
 
 
 module.exports = {
-    Mapping,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,

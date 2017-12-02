@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Joi = require('joi');
 const LangMapping = require('../../../../mappings/lang');
+const MMapping = require('../../crud/mapping');
 
 const Mapping: Object = LangMapping.msw
     .mappings.lang.properties;
@@ -60,7 +61,8 @@ const Messages: Object = {
 };
 
 module.exports = {
-    Mapping,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,

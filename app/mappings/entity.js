@@ -8,9 +8,6 @@ module.exports = {
                     type: {
                         type: 'keyword',
                     },
-                    model: {
-                        type: 'keyword',
-                    },
                 },
             },
         },
