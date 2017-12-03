@@ -46,7 +46,14 @@
                                         </a>
                                     </div>
                                 </div>
-                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                                <p><a href='#' @click="toggle(0, $event)">{{lang('f_see_more_details')}}</a></p>
+                                <div class="card info-card" v-if="0 in state.views">
+                                    <div class="card-content content">
+                                        <p><strong>{{lang('f_authors')}}</strong> Corentin Ribeyre</p>
+                                        <p><strong>{{lang('f_years')}}</strong> 2017</p>
+                                        <p><strong>{{lang('f_publication_types')}}</strong> Article de revue</p>
+                                    </div>
+                                </div>
                             </div>
                         </article>
                         <article class="media">
@@ -71,7 +78,14 @@
                                         </a>
                                     </div>
                                 </div>
-                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                                <p><a href='#' @click="toggle(1, $event)">{{lang('f_see_more_details')}}</a></p>
+                                <div class="card info-card" v-if="1 in state.views">
+                                    <div class="card-content content">
+                                        <p><strong>{{lang('f_authors')}}</strong> Corentin Ribeyre</p>
+                                        <p><strong>{{lang('f_years')}}</strong> 2016</p>
+                                        <p><strong>{{lang('f_publication_types')}}</strong> Article de revue</p>
+                                    </div>
+                                </div>
                             </div>
                         </article>
                         <article class="media">
@@ -96,7 +110,14 @@
                                         </a>
                                     </div>
                                 </div>
-                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                                <p><a href='#' @click="toggle(2, $event)">{{lang('f_see_more_details')}}</a></p>
+                                <div class="card info-card" v-if="2 in state.views">
+                                    <div class="card-content content">
+                                        <p><strong>{{lang('f_authors')}}</strong> Corentin Ribeyre</p>
+                                        <p><strong>{{lang('f_years')}}</strong> 2015</p>
+                                        <p><strong>{{lang('f_publication_types')}}</strong> Article de revue</p>
+                                    </div>
+                                </div>
                             </div>
                         </article>
                     </div>
