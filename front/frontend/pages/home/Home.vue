@@ -25,13 +25,21 @@
                         </div>
                     </div>
                 </div>
-                <widget-browse 
-                    :boxed="true"
-                    form="test_form"
-                    extra-classes="info-card-purple" 
-                    title="Découvrir nos collections"
-                />
-                <widget-stats form="test_form" :infos="[]" />
+                <div class="columns is-centered">
+                    <div class="column">
+                        <widget-browse 
+                            :boxed="true"
+                            form="test_form"
+                            extra-classes="info-card-purple" 
+                            title="Découvrir nos collections"
+                        />
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column">
+                        <widget-stats form="test_form" :infos="[]" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const VSelect = require('vue-select').VueSelect;
 const WidgetMixin = require('../../../../../../common/mixins/WidgetMixin');
 
@@ -14,7 +15,7 @@ module.exports = {
     data() {
         return {
             state: {
-                selected: undefined,
+                selected: [],
                 selected_indexer: undefined,
                 navigation: [
                     {
@@ -33,7 +34,7 @@ module.exports = {
                         template: undefined,
                     },
                     {
-                        type: 'type',
+                        type: 'types',
                         text: 'f_browse_by_type',
                         indexer: undefined,
                         select: true,
@@ -62,7 +63,23 @@ module.exports = {
             return {};
         },
         select_options() {
-            return [];
+            switch (this.current_nav.type) {
+            case 'authors':
+                return [];
+            case 'years':
+                return _.range(1900, 2018).map(y => ({ value: `${y}`, label: `${y}` }));
+            case 'types':
+                return [{ value: 'test', label: 'Test' }];
+            default:
+                return [];
+            }
+        },
+        search() {
+            if ('type' in this.current_nav) {
+                return this.state.selected.map(
+                    o => `${this.current_nav.type}=${encodeURIComponent(o.value)}`).join('&');
+            }
+            return '';
         },
     },
 };

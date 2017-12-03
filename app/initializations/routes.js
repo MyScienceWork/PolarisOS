@@ -28,6 +28,9 @@ async function initialize_routes() {
     router.get('/help', async (ctx) => {
         await ctx.render('front/views/front');
     });
+    router.get('/view/:id', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
     router.get('/u/:id/profile', async (ctx) => {
         await ctx.render('front/views/front');
     });

@@ -7,7 +7,7 @@
                     <div class="card-content">
                         <div class="columns is-centered">
                             <div class="column">
-                                <stepper :number-of-steps="5">
+                                <stepper :number-of-steps="5" v-on:step-change="next_step">
                                     <template slot="step-title" slot-scope="props">
                                         {{lang('f_deposit_step')}} {{props.id+1}}
                                     </template>

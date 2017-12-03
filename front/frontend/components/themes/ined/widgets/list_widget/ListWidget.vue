@@ -10,9 +10,9 @@
                         <p v-html="info.master_content" />
                         <div class="is-pulled-right level is-mobile">
                             <div class="level-left">
-                                <a class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')">
+                                <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${idx}`">
                                     <span class="icon is-small"><i class="fa fa-eye"></i></span>
-                                </a>
+                                </router-link>
                                 <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
                                     <span class="icon is-small"><i class="fa fa-file"></i></span>
                                 </a>
@@ -38,6 +38,63 @@
     <div v-else>
         <div :class="['card', 'info-card', ...extraClasses.split(' ').filter(c => c != '')]">
             <div class="card-content">
+                <nav class="navbar is-transparent">
+                    <div class="navbar-menu">
+                        <div class="navbar-end">
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link swap">
+                                    {{lang('f_export_publication')}}
+                                </a>
+
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item swap">
+                                        {{lang('f_export_csv')}}
+                                    </a>
+                                    <a class="navbar-item swap">
+                                        {{lang('f_export_endnote')}}
+                                    </a>
+                                    <a class="navbar-item swap">
+                                        {{lang('f_export_bibtex')}}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link swap">
+                                    {{lang('f_items_per_page')}}
+                                </a>
+
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item swap">
+                                        20
+                                    </a>
+                                    <a class="navbar-item swap">
+                                        50
+                                    </a>
+                                    <a class="navbar-item swap">
+                                       100 
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link swap">
+                                    {{lang('f_sort_by')}}
+                                </a>
+
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item swap">
+                                        {{lang('f_sort_by_year')}}
+                                    </a>
+                                    <a class="navbar-item swap">
+                                        {{lang('f_sort_by_publication_type')}}
+                                    </a>
+                                    <a class="navbar-item swap">
+                                        {{lang('f_sort_by_deposit_year')}} 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
                 <article class="media" v-for="(info, idx) in state.infos">
                     <div class="media-left">
                         <finput
@@ -52,9 +109,9 @@
                             <p v-html="info.master_content" />
                             <div class="is-pulled-right level is-mobile">
                                 <div class="level-left">
-                                    <a class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')">
+                                    <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${idx}`">
                                         <span class="icon is-small"><i class="fa fa-eye"></i></span>
-                                    </a>
+                                    </router-link>
                                     <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
                                         <span class="icon is-small"><i class="fa fa-file"></i></span>
                                     </a>

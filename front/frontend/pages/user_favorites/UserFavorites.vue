@@ -2,62 +2,96 @@
 <div class="hero-body">
     <div class="container is-fluid">
         <div class="columns is-centered">
-            <div class="column is-6">
-                <widget-text 
-                    form="test_form" 
-                    extra-classes="info-card-red"
-                    title="Bienvenue sur votre archive ouverte"
-                    content="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacus erat, pretium quis laoreet eu, aliquet a mauris. Proin nec urna nec turpis pellentesque molestie. Cras ultricies ligula sed congue posuere. Ut ante sapien, tempus at mollis in, commodo sed ex. Aenean cursus arcu nisi, vitae eleifend dolor suscipit non. Cras et vestibulum ex. Vivamus pharetra nisl eget viverra pellentesque. Fusce cursus sit amet quam sodales condimentum. Curabitur malesuada interdum cursus. Nulla quis nibh vulputate, fringilla justo vitae, pharetra nisi. Cras venenatis tincidunt nibh in auctor. Praesent congue ultrices dapibus.</p><p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla sed finibus metus. Aliquam erat volutpat. Ut pharetra tortor vel massa pretium hendrerit. Curabitur sed mattis lorem, eget finibus mauris. Morbi imperdiet sed tortor vitae pulvinar. Cras a facilisis arcu. Vestibulum id sapien accumsan, mattis lectus at, suscipit nibh.</p>"
-                >
-                </widget-text>
-            </div>
-            <div class="column is-6">
-                <div class="columns is-centered">
-                    <div class="column">
-                        <widget-search form="test_form" />
-                    </div>
-                </div>
-                <widget-browse 
-                    :boxed="true"
-                    form="test_form"
-                    extra-classes="info-card-purple" 
-                    title="Découvrir"
-                />
+            <div class="column has-text-centered is-8">
+                <h4 class="title is-4">{{lang('f_favorites')}}</h4>
+                <p v-html="lang('f_favorites_help')"></p>
             </div>
         </div>
-        <div class="columns">
-            <div class="column is-6">
-                <widget-list 
-                    form="test_form"
-                    extra-classes="info-card-orange"
-                    :boxed="true"
-                    title="Derniers dépôts"
-                    type="publication"
-                    :small="true"
-                />
+        <div class="columns is-centered">
+            <div class="column">
+                <nav class="navbar is-transparent">
+                    <div class="navbar-menu">
+                        <div class="navbar-end">
+                            <a class="swap icon navbar-item is-large">
+                                <i class="fa fa-trash fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
             </div>
-            <div class="column is-6">
-                <fvariadic-element name="test" form="test_form" :single="true" :is-required="true">
-                    <template slot="variadic" slot-scope="props">
-                        <finput label="test" placeholder="test" name="test" type="text" :has-addons="true" form="test_form">
-                            <template slot="input-addons">
-                                <fselect 
-                                    :options="[{label: 'French', value: 'FR'}, {label: 'English', value: 'EN'}]"
-                                    name="test2"
-                                    slot="input-addons"
-                                    placeholder="Choisissez une langue"
-                                    form="test_form"
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="card info-card info-card-red">
+                    <div class="card-content">
+                        <article class="media">
+                            <div class="media-left">
+                                <finput
+                                name=""
+                                type="checkbox"
+                                form="dummy-form"
+                                label=""
+                                placeholder=""
                                 />
-                                <div class="control">
-                                    <a class="button is-info" @click="props.add">+</a>
+                            </div>
+                            <div class="media-content">
+                                <p><strong>Publications de l'année 2017 dans les revues - Corentin Ribeyre</strong></p>
+                                <div class="is-pulled-right level is-mobile">
+                                    <div class="level-left">
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-trash"></i></span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="control">
-                                    <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                            </div>
+                        </article>
+                        <article class="media">
+                            <div class="media-left">
+                                <finput
+                                name=""
+                                type="checkbox"
+                                form="dummy-form"
+                                label=""
+                                placeholder=""
+                                />
+                            </div>
+                            <div class="media-content">
+                                <p><strong>Publications de l'année 2016 dans les revues - Corentin Ribeyre</strong></p>
+                                <div class="is-pulled-right level is-mobile">
+                                    <div class="level-left">
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-trash"></i></span>
+                                        </a>
+                                    </div>
                                 </div>
-                            </template>
-                        </finput>
-                    </template>
-                </fvariadic-element>
+                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                            </div>
+                        </article>
+                        <article class="media">
+                            <div class="media-left">
+                                <finput
+                                name=""
+                                type="checkbox"
+                                form="dummy-form"
+                                label=""
+                                placeholder=""
+                                />
+                            </div>
+                            <div class="media-content">
+                                <p><strong>Publications de l'année 2015 dans les revues - Corentin Ribeyre</strong></p>
+                                <div class="is-pulled-right level is-mobile">
+                                    <div class="level-left">
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-trash"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p><a href=''>{{lang('f_see_more_details')}}</a></p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

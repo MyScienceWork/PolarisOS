@@ -75,6 +75,24 @@
   .msw-loader .loader-last {
     margin-right: 0; }
 
+.hast-text-blue {
+  color: #1CBDC7;
+}
+.hast-text-green {
+  color: #1D875F;
+}
+.hast-text-brown {
+  color: #B39482;
+}
+.hast-text-purple {
+  color: #7E69B4;
+}
+.hast-text-orange {
+  color: #F8AA24;
+}
+.hast-text-red {
+  color: #E9362F;
+}
 .is-paddingless {
   padding: 0 !important;
 }
@@ -134,6 +152,18 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+}
+.facebook-color {
+  color: #3B5998 !important;
+}
+.twitter-color {
+  color: #55ACEE !important;
+}
+.linkedin-color {
+  color: #007BB5 !important;
+}
+.google-plus-color {
+  color: #DD4B39 !important;
 }
 .msw-loader .primary-color {
   background-color: #E63A30;
@@ -835,6 +865,29 @@ nav.indexer {
 .dropdown-menu {
   right: 0;
   left: auto;
+}
+ul.list-icon {
+  list-style: none;
+  padding: 0;
+}
+ul.list-icon li {
+  padding-left: 1.3em;
+}
+ul.list-icon li:before {
+  content: "";
+  font-family: "FontAwesome";
+  display: inline-block;
+  margin-left: -1.3em;
+  /* same as padding-left set on li */
+  width: 1.3em;
+  /* same as padding-left set on li */
+}
+ul.list-icon li.fa-bookmark:before {
+  content: "\f02e";
+  /* FontAwesome Unicode */
+}
+ul.list-icon li.fa-book:before {
+  content: "\f02d";
 }
 .has-header-top-margin {
   margin-top: 0.75rem !important;

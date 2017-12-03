@@ -11,9 +11,9 @@
                             <article class="media">
                                 <div class="media-content">
                                     <div class="content">
-                                        <ul>
-                                            <li><a href='#'>WP de l'INED</a></li>
-                                            <li><a href='#'>La fécondité en Allemagne en 1900</a></li>
+                                        <ul class="list-icon">
+                                            <li class="fa-bookmark"><a href='#'>WP de l'INED</a></li>
+                                            <li class="fa-bookmark"><a href='#'>La fécondité en Allemagne en 1900</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -42,9 +42,10 @@
             <div class="field is-grouped" v-if="current_nav.select">
                 <div class="control is-expanded">
                     <v-select
+                        :key="current_nav.type"
                         :multiple="true"
                         :options="select_options"
-                        :label="lang('b_browse_select')"
+                        :placeholder="lang('b_browse_select')"
                         :on-change="onChange"
                         :value="state.selected"
                         class="input"
@@ -52,9 +53,9 @@
                     </v-select>
                 </div> 
                 <div class="control">
-                    <a class="icon has-text-info is-medium" :alt="lang('f_search')" :title="lang('f_search')">
+                    <router-link class="icon has-text-info is-medium" :alt="lang('f_search')" :title="lang('f_search')" :to="`/browse?${search}`">
                         <i class="fa fa-search fa-2x"></i>
-                    </a>
+                    </router-link>
                 </div>
             </div>
             <hr v-if="current_nav.indexer != null" />

@@ -1,3 +1,17 @@
+//Mixins
+.generate-colored-texts(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .hast-text-@{name} {
+        color: @@name;
+    }
+    
+    .generate-colored-texts((@i - 1));
+}
+
+.generate-colored-texts();
+
+
 .is-paddingless {
     padding: 0 !important;
 }
@@ -62,4 +76,20 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.facebook-color {
+    color: @facebook !important;
+}
+
+.twitter-color {
+    color: @twitter !important;
+}
+
+.linkedin-color {
+    color: @linkedin !important;
+}
+
+.google-plus-color {
+    color: @google-plus !important;
 }

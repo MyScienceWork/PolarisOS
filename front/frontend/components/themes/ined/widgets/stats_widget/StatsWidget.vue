@@ -12,8 +12,8 @@
                             </figure>
                         </div>
                         <div class="media-content is-uppercase">
-                            <p class="subtitle is-6">Nombre de dépôts</p>
-                            <p class="title is-6">12 000</p>
+                            <p class="title is-6">Dépôts</p>
+                            <p class="subtitle is-6">12 000 références</p>
                         </div>
                     </div>
                 </div>
@@ -22,13 +22,13 @@
                         <div class="media-left">
                             <figure class="image is-32x32">
                                 <span class="icon is-large">
-                                    <i class="fa fa-users fa-2x"></i>
+                                    <i class="fa fa-unlock-alt fa-2x"></i>
                                 </span>
                             </figure>
                         </div>
                         <div class="media-content is-uppercase">
-                            <p class="subtitle is-6">Nombre de références </p>
-                            <p class="title is-6">300</p>
+                            <p class="title is-6">Libre accès</p>
+                            <p class="subtitle is-6">300 références</p>
                         </div>
                     </div>
                 </div>
