@@ -3,7 +3,7 @@
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column has-text-centered is-8">
-                <h4 class="title is-4">{{lang('f_favorites')}}</h4>
+                <h4 class="title is-4">{{lang('f_favorites', {}, 'other')}}</h4>
                 <p v-html="lang('f_favorites_help')"></p>
             </div>
         </div>
@@ -39,6 +39,9 @@
                                 <div class="is-pulled-right level is-mobile">
                                     <div class="level-left">
                                         <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+                                        </a>
+                                        <a class="level-item">
                                             <span class="icon is-small"><i class="fa fa-trash"></i></span>
                                         </a>
                                     </div>
@@ -61,6 +64,9 @@
                                 <div class="is-pulled-right level is-mobile">
                                     <div class="level-left">
                                         <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+                                        </a>
+                                        <a class="level-item">
                                             <span class="icon is-small"><i class="fa fa-trash"></i></span>
                                         </a>
                                     </div>
@@ -82,6 +88,9 @@
                                 <p><strong>Publications de l'année 2015 dans les revues - Corentin Ribeyre</strong></p>
                                 <div class="is-pulled-right level is-mobile">
                                     <div class="level-left">
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+                                        </a>
                                         <a class="level-item">
                                             <span class="icon is-small"><i class="fa fa-trash"></i></span>
                                         </a>
