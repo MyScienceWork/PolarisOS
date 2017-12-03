@@ -9,6 +9,7 @@
             :type="form.fields[0].type"
             :form="cform"
             :has-addons="form.addons"
+            :readonly="readonly"
         >
             <template slot="input-addons">
                 <template v-for="field in form.fields.slice(1)">
@@ -20,6 +21,7 @@
                     :type="field.type"
                     :form="cform"
                     :is-addon="true"
+                    :readonly="readonly"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -28,6 +30,7 @@
                     :form="cform"
                     :is-addon="true"
                     :hidden-value="field.hiddenValue"
+                    :readonly="readonly"
                     />
                     <fselect 
                     v-else-if="field.type === 'select'"
@@ -56,8 +59,9 @@
                 :type="field.type"
                 :form="cform"
                 :has-addons="field.single_multiple"
+                :readonly="readonly"
                 >
-                    <template v-if="field.single_multiple" slot="input-addons">
+                    <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
                             <a class="button is-info" @click="props.add">+</a>
                         </div>
@@ -73,6 +77,7 @@
                 :form="cform"
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
+                :readonly="readonly"
                 />
                 <fselect 
                 v-else-if="field.type === 'select'"
@@ -90,8 +95,9 @@
                     :prefix="`${props.fname}.${props.id}`"
                     v-else-if="field.type === 'subform' && field.subform != null"
                     :single="field.single_multiple"
+                    :readonly="readonly"
                 >
-                    <template v-if="field.single_multiple" slot="form-addons">
+                    <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="control">
                             <a class="button is-info" @click="props.add">+</a>
                         </div>
@@ -110,6 +116,7 @@
             :placeholder="lang(field.placeholder || '')"
             :type="field.type"
             :form="cform"
+            :readonly="readonly"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -118,6 +125,7 @@
             :form="cform"
             :is-addon="true"
             :hidden-value="field.hiddenValue"
+            :readonly="readonly"
             />
             <fselect 
             v-else-if="field.type === 'select'"
@@ -134,6 +142,7 @@
                 :cform="cform"
                 v-else-if="field.type === 'subform' && field.subform != null"
                 :single="field.single_multiple"
+                :readonly="readonly"
             >
             </dynamic-form>
         </template>

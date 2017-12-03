@@ -101,6 +101,40 @@
   margin-left: 0 !important;
   padding-left: 0 !important;
 }
+.text-with-line {
+  overflow: hidden;
+  text-align: center;
+}
+.text-with-line:before,
+.text-with-line:after {
+  background-color: #EBEBEB;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 25%;
+}
+.text-with-line:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+.text-with-line:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+.column.has-vertically-aligned-content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
 .msw-loader .primary-color {
   background-color: #E63A30;
 }
@@ -219,6 +253,9 @@
 .info-card-blue a.swap:hover {
   color: #1CBDC7;
 }
+.info-card-blue a.swap.is-active {
+  color: #1CBDC7;
+}
 .info-card-blue p.colored {
   color: #1CBDC7 !important;
 }
@@ -262,6 +299,9 @@
   color: #212D3A;
 }
 .info-card-green a.swap:hover {
+  color: #1D875F;
+}
+.info-card-green a.swap.is-active {
   color: #1D875F;
 }
 .info-card-green p.colored {
@@ -309,6 +349,9 @@
 .info-card-brown a.swap:hover {
   color: #B39482;
 }
+.info-card-brown a.swap.is-active {
+  color: #B39482;
+}
 .info-card-brown p.colored {
   color: #B39482 !important;
 }
@@ -352,6 +395,9 @@
   color: #212D3A;
 }
 .info-card-purple a.swap:hover {
+  color: #7E69B4;
+}
+.info-card-purple a.swap.is-active {
   color: #7E69B4;
 }
 .info-card-purple p.colored {
@@ -399,6 +445,9 @@
 .info-card-orange a.swap:hover {
   color: #F8AA24;
 }
+.info-card-orange a.swap.is-active {
+  color: #F8AA24;
+}
 .info-card-orange p.colored {
   color: #F8AA24 !important;
 }
@@ -442,6 +491,9 @@
   color: #212D3A;
 }
 .info-card-red a.swap:hover {
+  color: #E9362F;
+}
+.info-card-red a.swap.is-active {
   color: #E9362F;
 }
 .info-card-red p.colored {

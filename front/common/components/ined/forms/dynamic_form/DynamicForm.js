@@ -7,6 +7,7 @@ module.exports = {
         cform: { type: String, required: true },
         prefix: { type: String, default: '' },
         single: { type: Boolean, default: false },
+        readonly: { type: Boolean, default: false },
     },
     methods: {
         get_name(name) {

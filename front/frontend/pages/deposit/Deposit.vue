@@ -38,6 +38,7 @@
                                         />
                                         <review-deposit-step 
                                             v-if="props.id === 4 && state.typology_child != null"
+                                            :form="forms[state.typology_child.form]"
                                         />
                                     </template>
                                 </stepper>

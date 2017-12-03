@@ -2,6 +2,9 @@ const WidgetMixin = require('../../../../../../common/mixins/WidgetMixin');
 
 module.exports = {
     mixins: [WidgetMixin],
+    props: {
+        small: { default: false, type: Boolean },
+    },
     data() {
         return {
             state: {

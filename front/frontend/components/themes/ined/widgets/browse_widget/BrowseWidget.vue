@@ -6,19 +6,9 @@
                     <p class="card-header-title" v-html="lang(title)"></p>
                 </header>
                 <div class="card-content">
-                    <!--<div class="columns is-centered">
-                        <div class="column">
-                        <widget-nav :form="form" />
-                        </div>
-                    </div>-->
                     <div class="columns is-centered">
                         <div class="column">
                             <article class="media">
-                                <!--<div class="media-left">
-                                    <figure class="image is-48x48">
-                                        <img src="/public/front/imgs/icons/si-glyph-book-open.svg" alt="Image" />
-                                    </figure>
-                                </div>-->
                                 <div class="media-content">
                                     <div class="content">
                                         <ul>
@@ -34,29 +24,49 @@
             </div>
         </template>
         <template v-else>
-            <div class="control">
-                <v-select
-                    :multiple="true"
-                    :options="state.options"
-                    :label="lang('b_browse_select')"
-                    :on-change="onChange"
-                    :value="state.selected"
-                    class="input"
-                >
-                </v-select>
-            </div> 
-            <hr />
             <div class="columns is-centered">
-                <div class="column">
-                    <indexer :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']"/>
+                <div class="column has-text-centered is-8">
+                    <h4 class="title is-4">{{lang('f_browse_info')}}</h4>
+                    <p v-html="lang('f_browse_help')"></p>
                 </div>
             </div>
             <div class="columns is-centered">
-                <div class="column"> 
-                    <div class="field">
-                        <div class="control has-text-centered">
-                            <button :class="['button', ...extraClasses.split(' ').filter(c => c != '')]">{{lang('f_view_publications_button')}}</button>
+                <nav class="navbar is-transparent">
+                    <div class="navbar-menu">
+                        <div class="navbar-start">
+                            <router-link v-for="(obj, idx) in state.navigation" :class="['swap', 'navbar-item', {'is-active': current_nav.type === obj.type}]" :to="`/browse?b=${obj.type}&i=${idx}`">{{lang(obj.text)}}</router-link>
                         </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="field is-grouped" v-if="current_nav.select">
+                <div class="control is-expanded">
+                    <v-select
+                        :multiple="true"
+                        :options="select_options"
+                        :label="lang('b_browse_select')"
+                        :on-change="onChange"
+                        :value="state.selected"
+                        class="input"
+                    >
+                    </v-select>
+                </div> 
+                <div class="control">
+                    <a class="icon has-text-info is-medium" :alt="lang('f_search')" :title="lang('f_search')">
+                        <i class="fa fa-search fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+            <hr v-if="current_nav.indexer != null" />
+            <div class="columns is-centered" v-if="current_nav.indexer != null">
+                <div class="column">
+                    <indexer v-on:indexer-change="onIndexerChange" v-if="current_nav.indexer === 'alpha'" :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']"/>
+                    <indexer v-on:indexer-change="onIndexerChange" v-else-if="current_nav.indexer === 'numeric'" :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']"/>
+                </div>
+            </div>
+            <div class="columns is-centered" v-if="current_nav.indexer != null && state.selected_indexer in indexer_options">
+                <div class="columns is-centered" v-for="row in indexer_options">
+                    <div class="column" v-for="item in row">
                     </div>
                 </div>
             </div>

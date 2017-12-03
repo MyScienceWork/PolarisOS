@@ -4,7 +4,7 @@
             <p class="card-header-title" v-html="lang(title)"></p>
         </header>
         <div class="card-content">
-            <article class="media" v-for="info in state.infos">
+            <article class="media" v-for="(info, idx) in state.infos">
                 <div class="media-content">
                     <template v-if="type === 'publication'">
                         <p v-html="info.master_content" />
@@ -38,7 +38,15 @@
     <div v-else>
         <div :class="['card', 'info-card', ...extraClasses.split(' ').filter(c => c != '')]">
             <div class="card-content">
-                <article class="media" v-for="info in state.infos">
+                <article class="media" v-for="(info, idx) in state.infos">
+                    <div class="media-left">
+                        <finput
+                        :name="idx"
+                        type="checkbox"
+                        form="dummy-form"
+                        label=""
+                        />
+                    </div>
                     <div class="media-content">
                         <template v-if="type === 'publication'">
                             <p v-html="info.master_content" />

@@ -3,6 +3,7 @@
     type="hidden"
     :name="name"
     v-model="state.value"
+    :readonly="readonly"
 ></input>
 <div :class="[{'field': !isAddon}]"
     v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
@@ -16,6 +17,7 @@
                 :name="name"
                 class="input"
                 v-model="state.value"
+                :readonly="readonly"
             />
             <input v-else-if="type === 'number'" 
                 type="number"
@@ -23,6 +25,7 @@
                 :name="name"
                 class="input"
                 v-model="state.value"
+                :readonly="readonly"
             />
             <input v-else-if="type === 'password'" 
                 type="password"
@@ -30,6 +33,7 @@
                 :name="name"
                 class="input"
                 v-model="state.value"
+                :readonly="readonly"
             />
             <input v-else 
                 type="email"
@@ -37,6 +41,7 @@
                 :name="name"
                 class="input"
                 v-model="state.value"
+                :readonly="readonly"
             />
         </div>
         <slot v-if="hasAddons" name="input-addons" />
@@ -60,6 +65,7 @@
                 :name="name"
                 :rows="rows"
                 v-model="state.value"
+                :readonly="readonly"
             />
         </div>
         <div class="column is-half has-no-right-spaces has-no-left-spaces">
@@ -82,6 +88,7 @@
             type="radio"
             :name="name"
             v-model="state.value"
+            :disabled="readonly"
             />
             {{btn[1]}}
         </label>
@@ -94,6 +101,7 @@
         type="checkbox"
         :name="name"
         v-model="state.value"
+        :disabled="readonly"
         />
     </span>
 </div>
@@ -105,6 +113,7 @@
             type="checkbox"
             :name="name"
             v-model="state.value"
+            :disabled="readonly"
             />
             {{label}}
         </label>

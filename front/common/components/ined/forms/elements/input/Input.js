@@ -18,6 +18,7 @@ module.exports = {
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
+        readonly: { default: false, type: Boolean },
     },
 
     data() {

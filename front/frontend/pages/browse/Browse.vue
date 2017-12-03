@@ -1,16 +1,18 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns is-centered">
-            <div class="column is-10">
-                <widget-nav form="test_form" />
+        <widget-alternative :stacked="true">
+            <div slot="first-part" class="card card-equal-height info-card info-card-purple">
+                <div class="card-content">
+                    <widget-search form="test_form" />
+                </div>
             </div>
-        </div>
-        <div class="columns is-centered">
-            <div class="column is-10">
-                <widget-browse form="test_form" extra-classes="indexer-purple button-purple" />
+            <div slot="second-part" class="card card-equal-height info-card-purple info-card">
+                <div class="card-content">
+                    <widget-browse form="test_form" extra-classes="indexer-purple button-purple" />
+                </div>
             </div>
-        </div>
+        </widget-alternative>
         <div class="columns is-centered">
             <div class="column is-pulled-right">
                 <b-dropdown>
