@@ -1,14 +1,10 @@
 <template>
-    <nav class="navbar is-transparent">
-        <div class="navbar-menu">
-            <div class="navbar-start">
-                <a class="swap navbar-item" href="https://bulma.io/">Par auteur</a>
-                <a class="swap navbar-item" href="https://bulma.io/">Par année</a>
-                <a class="swap navbar-item" href="https://bulma.io/">Par type de publication</a>
-                <a class="swap navbar-item" href="https://bulma.io/">Par domaine</a>
-            </div>
-        </div>
-    </nav>
+<div>
+    <p><strong>{{lang('f_browse_info')}}</strong></p>
+    <ul class="list-icon">
+        <li class="fa-bookmark" v-for="(obj, idx) in state.navigation"><router-link :class="['swap']" :to="`/browse?b=${obj.type}&i=${idx}`">{{lang(obj.text)}}</router-link></li>
+    </ul>
+</div>
 </template>
 
 <script>

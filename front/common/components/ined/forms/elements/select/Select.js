@@ -11,6 +11,7 @@ module.exports = {
         isRequired: { default: false, type: Boolean },
         form: { required: true, type: String },
         multi: { default: false, type: Boolean },
+        readonly: { default: false, type: Boolean },
         options: { required: true, type: Array },
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
@@ -75,8 +76,12 @@ module.exports = {
             }
         },
         onChange(val) {
-            this.state.selected = val;
-            this.$emit('select-change', val);
+            if (this.readonly) {
+                // Noop
+            } else {
+                this.state.selected = val;
+                this.$emit('select-change', val);
+            }
         },
         extract_values(infos) {
             if (infos == null) {

@@ -8,7 +8,7 @@
 <div :class="[{'field': !isAddon}]"
     v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
 >
-    <label :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+    <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
         <div :class="['control', {'is-expanded': hasAddons}]">
             <input v-if="type === 'text'" 
@@ -55,7 +55,7 @@
 </div>
 
 <div v-else-if="type === 'textarea'" class="field">
-    <label for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+    <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     
     <div :class="['field']">
         <div class="control">

@@ -12,8 +12,8 @@
                                 <div class="media-content">
                                     <div class="content">
                                         <ul class="list-icon">
-                                            <li class="fa-bookmark"><a href='#'>WP de l'INED</a></li>
-                                            <li class="fa-bookmark"><a href='#'>La fécondité en Allemagne en 1900</a></li>
+                                            <li class="fa-book"><a href='#'>WP de l'INED</a></li>
+                                            <li class="fa-book"><a href='#'>La fécondité en Allemagne en 1900</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -61,14 +61,15 @@
             <hr v-if="current_nav.indexer != null" />
             <div class="columns is-centered" v-if="current_nav.indexer != null">
                 <div class="column">
-                    <indexer v-on:indexer-change="onIndexerChange" v-if="current_nav.indexer === 'alpha'" :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']"/>
+                    <indexer v-on:indexer-change="onIndexerChange" v-if="current_nav.indexer === 'alpha'" :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="Object.keys(indexer_options).sort()"/>
                     <indexer v-on:indexer-change="onIndexerChange" v-else-if="current_nav.indexer === 'numeric'" :class="extraClasses.split(' ').filter(c => c != '')" :alphabet="['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']"/>
                 </div>
             </div>
-            <div class="columns is-centered" v-if="current_nav.indexer != null && state.selected_indexer in indexer_options">
-                <div class="columns is-centered" v-for="row in indexer_options">
-                    <div class="column" v-for="item in row">
-                    </div>
+            <div class="columns is-multiline" v-if="current_nav.indexer != null && state.selected_indexer in indexer_options">
+                <div class="column is-6" v-for="item in indexer_options[state.selected_indexer]">
+                    <template v-if="current_nav.template === 'author-template'">
+                        <widget-media :info="item" />
+                    </template>
                 </div>
             </div>
         </template>

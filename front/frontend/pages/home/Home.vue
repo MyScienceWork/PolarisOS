@@ -21,6 +21,12 @@
                             </header>
                             <div class="card-content">
                                 <widget-search form="test_form" :small="true" />
+                                <hr />
+                                <div class="columns is-centered">
+                                    <div class="column">
+                                        <widget-nav form="test_form" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

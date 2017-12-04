@@ -637,6 +637,16 @@
 .field.has-addons .control .button {
   height: 100% !important;
 }
+textarea[readonly],
+input[readonly],
+.input.readonly {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  background-color: transparent;
+}
+label.readonly {
+  font-weight: bold;
+}
 .steps .step-item.is-blue::before {
   background: -webkit-gradient(linear, right top, left top, color-stop(50%, #DBDBDB), color-stop(50%, #1CBDC7));
   background: linear-gradient(to left, #DBDBDB 50%, #1CBDC7 50%);

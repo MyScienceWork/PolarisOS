@@ -1,13 +1,13 @@
 <template>
     <div class="field" v-if="label.trim().length > 0">
-        <label :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <div class="control">
             <v-select
                 :multiple="multi"
                 :options="state.options"
                 :on-change="onChange"
                 :value="state.selected"
-                class="input"
+                :class="['input', {'readonly': readonly}]"
             >
             </v-select>
         </div> 
@@ -24,7 +24,7 @@
             :on-change="onChange"
             :value="state.selected"
             :placeholder="placeholder"
-            class="input"
+            :class="['input', {'readonly': readonly}]"
         >
         </v-select>
     </div> 

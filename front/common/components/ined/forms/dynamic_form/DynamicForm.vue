@@ -42,6 +42,7 @@
                     :fieldValue="field.datasource.value"
                     :options="$store.state.datasources[field.datasource.name] || []"
                     :is-addon="true"
+                    :readonly="readonly"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -88,6 +89,7 @@
                 :fieldLabel="field.datasource.label"
                 :fieldValue="field.datasource.value"
                 :options="$store.state.datasources[field.datasource.name] || []"
+                :readonly="readonly"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -136,6 +138,7 @@
             :fieldLabel="field.datasource.label"
             :fieldValue="field.datasource.value"
             :options="$store.state.datasources[field.datasource.name] || []"
+            :readonly="readonly"
             />
             <dynamic-form 
                 :form="field.subform" 
