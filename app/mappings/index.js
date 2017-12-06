@@ -12,6 +12,7 @@ const keystore = require('./keystore');
 const datainstance = require('./datainstance');
 const entity = require('./entity');
 const pipeline = require('./pipeline');
+const pfunction = require('./function');
 
 module.exports = {
     user: user.msw,
@@ -28,4 +29,5 @@ module.exports = {
     datainstance: datainstance.msw,
     entity: entity.msw,
     pipeline: pipeline.msw,
+    function: pfunction.msw,
 };

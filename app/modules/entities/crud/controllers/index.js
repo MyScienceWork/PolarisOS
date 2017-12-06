@@ -22,6 +22,7 @@ function search(type: string): Function {
 
 function gets(type: string): Function {
     return async function func(ctx: Object) {
+        console.log('gets for type', type);
         if (!('scroll' in ctx.request.body)) {
             ctx.request.body.scroll = '10m';
         }

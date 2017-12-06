@@ -8,6 +8,8 @@ const Form = require('./pages/form/Form.vue');
 const MenuComponent = require('./pages/menu/Menu.vue');
 const Datasource = require('./pages/datasource/Datasource.vue');
 const Datainstance = require('./pages/datainstance/Datainstance.vue');
+const Pipeline = require('./pages/pipeline/Pipeline.vue');
+const PFunction = require('./pages/function/Function.vue');
 
 
 module.exports.menu = [
@@ -86,6 +88,24 @@ module.exports.menu = [
             routes: [Routes.form],
             submenu: [],
             component: Form,
+        },
+        {
+            section: 'Administration',
+            name: 'Functions',
+            access: '',
+            key: 'function',
+            routes: [Routes.function],
+            submenu: [],
+            component: PFunction,
+        },
+        {
+            section: 'Administration',
+            name: 'Pipelines',
+            access: '',
+            key: 'pipeline',
+            routes: [Routes.pipeline],
+            submenu: [],
+            component: Pipeline,
         },
         {
             section: 'Administration',

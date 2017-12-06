@@ -143,7 +143,7 @@ class ODM {
         return null;
     }
 
-    static read(index: string, type: string,
+    static async read(index: string, type: string,
             client: Object, model: Object, response: Object): Object {
         const o = {};
 
@@ -170,6 +170,10 @@ class ODM {
                 odm.db = info;
                 return odm;
             });
+
+            await o.hits.reduce((pr, hit) =>
+                pr.then(() => hit.post_read_hook()), Promise.resolve());
+
             o.total = response.hits.total;
             o.count = response.hits.total;
             o.max_score = response.hits.max_score;
@@ -307,7 +311,7 @@ class ODM {
         }
     }
 
-    async read(opts: Object = {}): ODM {
+    async read(opts: Object = {}): Promise<ODM> {
         const source = 'source' in opts ? opts.source : null;
         let src = true;
         if (source) {
@@ -323,9 +327,11 @@ class ODM {
             });
 
             this.db = this.constructor.format_hit(response, response.found);
+            await this.post_read_hook();
         } catch (err) {
             const response = err.body;
             this.db = this.constructor.format_hit(response, response.found);
+            await this.post_read_hook();
         }
         return this;
     }
@@ -345,6 +351,9 @@ class ODM {
         return this.db;
     }
 
+    async post_read_hook() {
+        // To be implemented in subclass (if needed)
+    }
 }
 
 module.exports = ODM;

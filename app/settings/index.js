@@ -11,6 +11,7 @@ const journal = require('./journal');
 const keystore = require('./keystore');
 const entity = require('./entity');
 const pipeline = require('./pipeline');
+const pfunction = require('./function');
 
 module.exports = {
     user: user.msw,
@@ -26,4 +27,5 @@ module.exports = {
     keystore: keystore.msw,
     entity: entity.msw,
     pipeline: pipeline.msw,
+    function: pfunction.msw,
 };

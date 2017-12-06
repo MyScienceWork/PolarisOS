@@ -12,46 +12,7 @@ module.exports = {
             if (this.state.forms.name in this.$store.state.forms) {
                 const myform = this.$store.state.forms[this.state.forms.name];
                 const content = myform.content;
-
-                const datasources = content
-                .reduce((sources, form) => {
-                    const srcs = form.fields.reduce((obj, field) => {
-                        if (field.type === 'select' && !field.datasource.ajax) {
-                            obj[field.datasource.name] = {
-                                label: field.datasource.label,
-                                value: field.datasource.value,
-                                translatable: field.datasource.translatable,
-                            };
-                        }
-                        return obj;
-                    }, {});
-                    return _.merge(sources, srcs);
-                }, {});
-                console.log('datasources to fetch', datasources);
-                this.$store.dispatch('grab_datasources', { datasources });
-
-                const forms = content.reduce((obj, form) => {
-                    form.label = this.lang(form.label);
-                    form.description = this.lang(form.description);
-                    form.fields = form.fields.map((field) => {
-                        field.label = this.lang(field.label);
-                        return field;
-                    });
-                    obj[form.name] = _.cloneDeep(form);
-                    return obj;
-                }, {});
-                return _.reduce(forms, (obj, form, name) => {
-                    if (form.has_subforms) {
-                        form.fields = form.fields.map((field) => {
-                            if (field.type === 'subform') {
-                                field.subform = forms[field.subform];
-                            }
-                            return field;
-                        });
-                    }
-                    obj[name] = form;
-                    return obj;
-                }, {});
+                return content;
             }
             return {};
         },

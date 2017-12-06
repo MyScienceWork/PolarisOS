@@ -1,6 +1,8 @@
 module.exports = {
     admin: '/admin',
     user: '/admin/user',
+    pipeline: '/admin/pipeline',
+    function: '/admin/function',
     review: '/admin/review',
     datasource: '/admin/datasource',
     datainstance: '/admin/datasource/:datainstance',

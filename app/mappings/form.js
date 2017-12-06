@@ -18,17 +18,6 @@ module.exports = {
                         type: 'text',
                         index: false,
                     },
-                    parents: {
-                        type: 'nested',
-                        properties: {
-                            name: {
-                                type: 'keyword',
-                            },
-                        },
-                    },
-                    group: {
-                        type: 'keyword',
-                    },
                     addons: {
                         type: 'boolean',
                         index: false,
@@ -100,17 +89,6 @@ module.exports = {
                             name: {
                                 type: 'keyword',
                                 index: false,
-                            },
-                            validations: {
-                                properties: {
-                                    required: {
-                                        type: 'boolean',
-                                    },
-                                    type: {
-                                        type: 'keyword',
-                                        index: false,
-                                    },
-                                },
                             },
                             order: {
                                 type: 'integer',

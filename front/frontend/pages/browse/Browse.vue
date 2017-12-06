@@ -1,7 +1,7 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <widget-alternative :stacked="true">
+        <widget-alternative :stacked="false">
             <div slot="first-part" class="card card-equal-height info-card info-card-purple">
                 <div class="card-content">
                     <widget-search form="test_form" />

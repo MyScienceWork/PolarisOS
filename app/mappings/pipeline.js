@@ -1,3 +1,27 @@
+const FunctionMapping = {
+    properties: {
+        name: {
+            type: 'keyword',
+            index: false,
+        },
+        arguments: {
+            type: 'nested',
+            properties: {
+                name: {
+                    type: 'keyword',
+                    index: false,
+
+                },
+                value: {
+                    type: 'keyword',
+                    index: false,
+
+                },
+            },
+        },
+    },
+};
+
 module.exports = {
     msw: {
         mappings: {
@@ -22,27 +46,13 @@ module.exports = {
                     formatters: {
                         type: 'nested',
                         properties: {
-                            function: {
-                                properties: {
-                                    name: {
-                                        type: 'keyword',
-                                        index: false,
-                                    },
-                                },
-                            },
+                            function: FunctionMapping,
                         },
                     },
                     completers: {
                         type: 'nested',
                         properties: {
-                            function: {
-                                properties: {
-                                    name: {
-                                        type: 'keyword',
-                                        index: false,
-                                    },
-                                },
-                            },
+                            function: FunctionMapping,
                         },
                     },
                     transformers: {

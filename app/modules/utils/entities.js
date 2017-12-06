@@ -26,6 +26,9 @@ const DataSourceModel = require('../entities/datasource/models/datasources');
 const _Entity = require('../entities/entity/entity');
 const EntityModel = require('../entities/entity/models/entities');
 
+const PFunction = require('../entities/function/function');
+const PFunctionModel = require('../entities/function/models/functions');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -121,6 +124,8 @@ async function get_model_from_type(type: string): ?Object {
         return PipelineModel;
     case 'entity':
         return EntityModel;
+    case 'function':
+        return PFunctionModel;
     default:
         return grab_entity_from_type(type, 'model');
         // return null;
@@ -143,6 +148,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Pipeline(get_index(type), type, es_client, get_model_from_type(type), id);
     case 'entity':
         return new _Entity(get_index(type), type, es_client, get_model_from_type(type), id);
+    case 'function':
+        return new PFunction(get_index(type), type, es_client, get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
@@ -264,3 +271,4 @@ exports.update = update;
 exports.count = count;
 exports.search = search;
 exports.remove = remove;
+exports.format_search = format_search;

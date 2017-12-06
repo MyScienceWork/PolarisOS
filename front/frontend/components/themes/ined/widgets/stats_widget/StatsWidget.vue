@@ -28,7 +28,7 @@
                         </div>
                         <div class="media-content is-uppercase">
                             <p class="title is-6">Libre accès</p>
-                            <p class="subtitle is-6">300 références</p>
+                            <p class="subtitle is-6">300 documents</p>
                         </div>
                     </div>
                 </div>

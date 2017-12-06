@@ -14,7 +14,7 @@
                                     <span class="icon is-small"><i class="fa fa-eye"></i></span>
                                 </router-link>
                                 <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
-                                    <span class="icon is-small"><i class="fa fa-file"></i></span>
+                                    <span class="icon is-small"><i class="fa fa-unlock-alt"></i></span>
                                 </a>
                                 <a class="level-item" :alt="lang('f_use_as_model')" :title="lang('f_use_as_model')">
                                     <span class="icon is-small"><i class="fa fa-book"></i></span>
@@ -113,7 +113,7 @@
                                         <span class="icon is-small"><i class="fa fa-eye"></i></span>
                                     </router-link>
                                     <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
-                                        <span class="icon is-small"><i class="fa fa-file"></i></span>
+                                        <span class="icon is-small"><i class="fa fa-unlock-alt"></i></span>
                                     </a>
                                     <a class="level-item" :alt="lang('f_use_as_model')" :title="lang('f_use_as_model')">
                                         <span class="icon is-small"><i class="fa fa-book"></i></span>
