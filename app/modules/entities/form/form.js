@@ -3,7 +3,7 @@ const ODM = require('../crud/odm');
 const EntitiesUtils = require('../../utils/entities');
 
 class Form extends ODM {
-    async post_read_hook() {
+    async post_read_hook(population: Array<String>) {
         console.log('run post read hook for form');
         const info = this.db;
         if (!info.source.has_subforms) {
@@ -41,7 +41,7 @@ class Form extends ODM {
             },
         };
 
-        const results = await EntitiesUtils.search('form', body);
+        const results = await EntitiesUtils.search(this.type, body);
         if ('hits' in results.result) {
             results.result.hits.forEach((h) => {
                 const indices = forms.forms[h.db.source.name];

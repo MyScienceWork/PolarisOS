@@ -135,16 +135,20 @@ class ODM {
         this._db = o;
     }
 
-    static async fetch_mapping(index: string, type: string, client: Object) {
+    static async fetch_mapping(index: string, type: string, client: Object, include_meta: boolean = false) {
         const mapping = await client.indices.getMapping({ index, type });
         if (index in mapping && type in mapping[index].mappings) {
+            if (include_meta) {
+                return mapping[index].mappings[type];
+            }
             return mapping[index].mappings[type].properties;
         }
         return null;
     }
 
     static async read(index: string, type: string,
-            client: Object, model: Object, response: Object): Object {
+            client: Object, model: Object, response: Object,
+            population: Array<String> = []): Object {
         const o = {};
 
         if ('_scroll_id' in response) {
@@ -172,7 +176,7 @@ class ODM {
             });
 
             await o.hits.reduce((pr, hit) =>
-                pr.then(() => hit.post_read_hook()), Promise.resolve());
+                pr.then(() => hit.post_read_hook(population)), Promise.resolve());
 
             o.total = response.hits.total;
             o.count = response.hits.total;
@@ -191,6 +195,7 @@ class ODM {
         const query = search.generate();
         const sort = search.sort();
         const aggs = search.aggs();
+        const population = 'population' in opts ? opts.population : [];
         const body = {
             from: 'from' in opts ? opts.from : 0,
             size: 'size' in opts ? opts.size : 1000,
@@ -228,7 +233,7 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(index, type, client, model, response);
+        return this.read(index, type, client, model, response, population);
     }
 
     static async count(index: string, type: string, client: Object,
@@ -312,6 +317,7 @@ class ODM {
     }
 
     async read(opts: Object = {}): Promise<ODM> {
+        const population = 'population' in opts ? opts.population : [];
         const source = 'source' in opts ? opts.source : null;
         let src = true;
         if (source) {
@@ -327,11 +333,11 @@ class ODM {
             });
 
             this.db = this.constructor.format_hit(response, response.found);
-            await this.post_read_hook();
+            await this.post_read_hook(population);
         } catch (err) {
             const response = err.body;
             this.db = this.constructor.format_hit(response, response.found);
-            await this.post_read_hook();
+            await this.post_read_hook(population);
         }
         return this;
     }
@@ -351,8 +357,25 @@ class ODM {
         return this.db;
     }
 
-    async post_read_hook() {
-        // To be implemented in subclass (if needed)
+    async post_read_hook(population: Array<String>) {
+        // To be re-implemented in subclass (if needed)
+        console.log(population);
+        const mapping = await this.constructor.fetch_mapping(this.index, this.type,
+                this._client, true);
+        if (!('_meta' in mapping)) {
+            return;
+        }
+
+        if (!('refs' in mapping._meta)) {
+            return;
+        }
+
+        const refs = mapping._meta.refs;
+        const info = this.db;
+
+        if (this.type === 'typology') {
+            console.log(mapping);
+        }
     }
 }
 

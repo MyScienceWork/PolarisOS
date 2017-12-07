@@ -89,16 +89,19 @@ function generate_entity_routes(router: KoaRouter,
 
     router.post(`${puprefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
 
-    router.get(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.get(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
 
-    router.post(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
 
     router.get(`${puprefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
 
-    router.get(`${puprefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${puprefix}/${type}/:id/:projection/:population`, compose([...get_mware, CrudController.get(type)]));
     router.get(`${puprefix}/${type}/:id/:projection`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${puprefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
 
 
     router.del(`${puprefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));

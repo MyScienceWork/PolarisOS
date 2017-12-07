@@ -4,6 +4,13 @@ module.exports = {
             typology: {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
+                _meta: {
+                    refs: {
+                        children: {
+                            form: 'form',
+                        },
+                    },
+                },
                 properties: {
                     label: {
                         type: 'keyword',

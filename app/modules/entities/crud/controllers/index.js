@@ -22,10 +22,21 @@ function search(type: string): Function {
 
 function gets(type: string): Function {
     return async function func(ctx: Object) {
-        console.log('gets for type', type);
         if (!('scroll' in ctx.request.body)) {
             ctx.request.body.scroll = '10m';
         }
+
+        const proj = ctx.params.projection || '';
+        const pop = ctx.params.population || '';
+
+        if (proj.trim() !== '') {
+            ctx.request.body.projection = proj.trim().split(',');
+        }
+
+        if (pop.trim() !== '') {
+            ctx.request.body.population = pop.trim().split(',');
+        }
+
         await search(type)(ctx);
     };
 }
@@ -34,7 +45,8 @@ function get(type: string, exists: boolean = false): Function {
     return async function func(ctx: Object): Promise<*> {
         const id = ctx.params.id;
         const proj = ctx.params.projection || '';
-        const entity = await EntitiesUtils.retrieve(id, type, proj);
+        const pop = ctx.params.population || '';
+        const entity = await EntitiesUtils.retrieve(id, type, proj, pop);
         if (entity == null) {
             if (exists) {
                 ctx.body = { exists: false };

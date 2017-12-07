@@ -53,6 +53,7 @@ function format_search(body: Object, model: Object): Object {
         }
     }
 
+
     const options = { source };
     if ('size' in body && !isNaN(parseInt(body.size, 10))) {
         options.size = body.size;
@@ -80,6 +81,15 @@ function format_search(body: Object, model: Object): Object {
 
     if ('scroll_id' in body) {
         options.scroll_id = body.scroll_id;
+    }
+
+    if ('population' in body) {
+        if (body.population instanceof String) {
+            options.population = body.population.split(',')
+                .map(p => p.trim()).filter(p => p != null && p !== '');
+        } else if (body.population instanceof Array) {
+            options.population = body.population.filter(p => p != null && p !== '');
+        }
     }
     return { search: s, options };
 }
@@ -223,7 +233,7 @@ async function search(type: string, body: Object): Promise<*> {
 }
 
 async function retrieve(id: string, type: string,
-        projection: string = ''): Promise<*> {
+        projection: string = '', population: string = ''): Promise<*> {
     if (type == null) {
         return null;
     }
@@ -240,13 +250,16 @@ async function retrieve(id: string, type: string,
     } else if (projection === 'false' || projection === false) {
         _source = false;
     } else {
-        _source = projection.split(',');
+        _source = projection.split(',').map(p => p.trim());
     }
 
+    const _population = population.split(',')
+        .map(p => p.trim()).filter(p => p != null && p !== '');
+
     if (_source === true) {
-        return odm.read();
+        return odm.read({ population: _population });
     }
-    return odm.read({ source: _source });
+    return odm.read({ source: _source, population: _population });
 }
 
 async function remove(id: string, type: string): Promise<*> {
