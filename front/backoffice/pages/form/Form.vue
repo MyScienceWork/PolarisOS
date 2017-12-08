@@ -54,15 +54,6 @@
                             >
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.cform" />
                             <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.cform" />
-                            <fselect 
-                                name="parents" 
-                                :label="lang('b_parents')" 
-                                :is-required="true"
-                                :options="content"
-                                :multi="true"
-                                fieldLabel="label"
-                                fieldValue="name"
-                                :form="state.cform" />
                             <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
                             <finput 
                                 name="addons" 
@@ -99,9 +90,9 @@
                                                     <fselect 
                                                     :name="`${props.fname}.${props.id}.datasource.name`" 
                                                     :label="lang('b_datasource_name')" :is-required="true"
-                                                    :options="datasources"
-                                                    fieldLabel="label"
-                                                    fieldValue="name"
+                                                    :options="entities"
+                                                    fieldLabel="type"
+                                                    fieldValue="type"
                                                     :form="state.cform" />
                                                     <finput 
                                                     :name="`${props.fname}.${props.id}.datasource.label`" 
@@ -163,7 +154,7 @@
                                                     :is-required="true"
                                                     :options="content"
                                                     fieldLabel="label"
-                                                    fieldValue="name"
+                                                    fieldValue="_id"
                                                     :form="state.cform" />
                                                 </div>
                                             </div>

@@ -80,10 +80,10 @@ class Pipeline {
     static _action(type: string, m: string): Function {
         const validator = new Validator();
         return async function afunc(ctx: Object, next: Function): Promise<*> {
-            console.log('validation: ', type, ' action:', m);
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = await EntitiesUtils.get_model_from_type(type);
+            console.log('validation: ', type, ' action:', m, ' method:', method);
 
             switch (m) {
             case 'check': {
@@ -125,7 +125,7 @@ class Pipeline {
             default:
             case 'validate': {
                 const errors = await validator
-                    .validate(body, model.Validation);
+                    .validate(body, model.Validation, method);
                 if (Object.keys(errors).length === 0) {
                     await next();
                 } else {

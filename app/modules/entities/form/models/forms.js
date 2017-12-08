@@ -25,23 +25,9 @@ const Formatting: Array<any> = [
             new_fields.sort((a, b) => a.order - b.order);
             return new_fields;
         },
-        parents: async (parents) => {
-            if (parents == null) {
-                return [];
-            }
-            return parents.map((p) => {
-                if (typeof p === 'string') {
-                    return { name: p };
-                }
-                return p;
-            });
-        },
     },
     {
-        has_subforms: async (has, object) => {
-            console.log(object.fields);
-            return object.fields.some(f => f.subform && f.subform !== '');
-        },
+        has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
     },
 ];
 

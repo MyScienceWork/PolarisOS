@@ -29,6 +29,9 @@ module.exports = {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
                 properties: {
+                    name: {
+                        type: 'keyword',
+                    },
                     entity: {
                         type: 'keyword',
                     },

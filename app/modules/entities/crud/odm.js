@@ -1,6 +1,8 @@
 // @flow
+const _ = require('lodash');
 const Search = require('./search');
 const Mapping = require('./mapping');
+const Utils = require('../../utils/utils');
 
 /**
  * Object Data Model
@@ -65,6 +67,10 @@ class ODM {
         return this._type;
     }
 
+    get source(): Object {
+        return this.db.source || {};
+    }
+
     /**
      * Process an entity and create an {ODM} object.
      *
@@ -83,6 +89,8 @@ class ODM {
         if ('score' in hit) {
             score = hit._score;
         }
+
+        source._id = id;
 
         return {
             id,
@@ -319,18 +327,15 @@ class ODM {
     async read(opts: Object = {}): Promise<ODM> {
         const population = 'population' in opts ? opts.population : [];
         const source = 'source' in opts ? opts.source : null;
-        let src = true;
-        if (source) {
-            src = source.length > 0 ? source : false;
-        }
 
         try {
             const response = await this._client.get({
                 index: this.index,
                 type: this.type,
                 id: this._id,
-                _source: src,
+                _source: source,
             });
+
 
             this.db = this.constructor.format_hit(response, response.found);
             await this.post_read_hook(population);
@@ -359,10 +364,14 @@ class ODM {
 
     async post_read_hook(population: Array<String>) {
         // To be re-implemented in subclass (if needed)
-        console.log(population);
+        await this._handle_population(population);
+    }
+
+    async _handle_population(population: Array<String>) {
+        const EntitiesUtils = require('../../utils/entities');
         const mapping = await this.constructor.fetch_mapping(this.index, this.type,
                 this._client, true);
-        if (!('_meta' in mapping)) {
+        if (mapping && !('_meta' in mapping)) {
             return;
         }
 
@@ -371,10 +380,23 @@ class ODM {
         }
 
         const refs = mapping._meta.refs;
-        const info = this.db;
+        const info = this._db.source;
 
-        if (this.type === 'typology') {
-            console.log(mapping);
+        for (const p of population) {
+            const path = p.split('.');
+            const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
+            let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
+
+            console.log(path, vals, ref);
+
+            if (ref.length > 0 && vals.length > 0) {
+                ref = ref[0];
+                const last = path[path.length - 1];
+                for (const v of vals) {
+                    const result = await EntitiesUtils.retrieve(v[last], ref);
+                    v[last] = result != null ? result.source : {};
+                }
+            }
         }
     }
 }

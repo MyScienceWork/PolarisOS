@@ -36,10 +36,10 @@ module.exports = {
             path: this.state.rpath,
         });
         this.$store.dispatch('search', {
-            form: 'datatemplate_read',
-            path: APIRoutes.entity('datatemplate', 'POST', true),
+            form: 'entities_read',
+            path: APIRoutes.entity('entity', 'POST', true),
             body: {
-                projection: ['label', 'name'],
+                projection: ['type'],
                 size: 10000,
             },
         });
@@ -63,9 +63,17 @@ module.exports = {
         fieldtypes() {
             return FieldTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
         },
-        datasources() {
-            if ('datatemplate_read' in this.$store.state.forms) {
-                return this.$store.state.forms.datatemplate_read.content;
+        entities() {
+            const fname = 'entities_read';
+            if (fname in this.$store.state.forms) {
+                const content = this.$store.state.forms[fname].content;
+
+                // TODO make this WAY cleaner;
+                content.push({ type: 'entity' });
+                content.push({ type: 'form' });
+                content.push({ type: 'pipeline' });
+
+                return content;
             }
             return [];
         },

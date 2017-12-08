@@ -5,7 +5,12 @@ const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
 
 function is_unique(path: string, type: string, error: ?Object): Function {
-    return async function func(object: Object): Promise<boolean> {
+    return async function func(object: Object, method: string): Promise<boolean> {
+        console.log(object, method);
+        if (method === 'put') {
+            return true;
+        }
+
         const p = path.split('.');
         const info = Utils.find_value_with_path(object, p);
         const result = await EntitiesUtils.search(type, { where: { [path]: info } });

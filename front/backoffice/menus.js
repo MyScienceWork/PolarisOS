@@ -7,9 +7,10 @@ const Lang = require('./pages/lang/Lang.vue');
 const Form = require('./pages/form/Form.vue');
 const MenuComponent = require('./pages/menu/Menu.vue');
 const Datasource = require('./pages/datasource/Datasource.vue');
-const Datainstance = require('./pages/datainstance/Datainstance.vue');
+const EntityView = require('./pages/entity_view/EntityView.vue');
 const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
+const PEntity = require('./pages/entity/Entity.vue');
 
 
 module.exports.menu = [
@@ -109,6 +110,15 @@ module.exports.menu = [
         },
         {
             section: 'Administration',
+            name: 'Entities',
+            access: '',
+            key: 'entity',
+            routes: [Routes.entity],
+            submenu: [],
+            component: PEntity,
+        },
+        {
+            section: 'Administration',
             name: 'Langs',
             access: '',
             key: 'lang',
@@ -169,8 +179,8 @@ module.exports.menu = [
 
 module.exports.other = [
     {
-        key: 'datasource_typology',
-        routes: [Routes.datainstance],
-        component: Datainstance,
+        key: 'entity_view',
+        routes: [Routes.entity_view],
+        component: EntityView,
     },
 ];

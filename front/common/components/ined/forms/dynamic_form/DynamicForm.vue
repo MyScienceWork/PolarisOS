@@ -40,7 +40,7 @@
                     :form="cform"
                     :fieldLabel="field.datasource.label"
                     :fieldValue="field.datasource.value"
-                    :options="$store.state.datasources[field.datasource.name] || []"
+                    :options="field.datasource.content || []"
                     :is-addon="true"
                     :readonly="readonly"
                     />
@@ -88,7 +88,7 @@
                 :form="cform"
                 :fieldLabel="field.datasource.label"
                 :fieldValue="field.datasource.value"
-                :options="$store.state.datasources[field.datasource.name] || []"
+                :options="field.datasource.content || []"
                 :readonly="readonly"
                 />
                 <dynamic-form 
@@ -137,7 +137,7 @@
             :form="cform"
             :fieldLabel="field.datasource.label"
             :fieldValue="field.datasource.value"
-            :options="$store.state.datasources[field.datasource.name] || []"
+            :options="field.datasource.content || []"
             :readonly="readonly"
             />
             <dynamic-form 

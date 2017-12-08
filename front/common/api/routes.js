@@ -9,6 +9,8 @@ module.exports = {
             let url = `${prefix}/${entity}`;
             if (id == null) {
                 url += 's';
+            } else {
+                url += `/${id}`;
             }
             return url;
         }

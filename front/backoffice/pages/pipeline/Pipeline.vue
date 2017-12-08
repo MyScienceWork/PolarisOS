@@ -52,6 +52,7 @@
                             :get_path="state.rpath"
                             :get_form="state.rform"
                         >
+                            <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.cform" />
                             <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.cform" />
                             <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
                                 <template slot="tabs" slot-scope="tprops">

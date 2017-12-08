@@ -76,6 +76,38 @@ function find_value_with_path(object: ? Object, path: Array<string>): any {
     return find_value_with_path(object[key], p.slice(1));
 }
 
+function* find_popvalue_with_path(object: ?Object, path: Array<string>, return_object: boolean = false): any {
+    const p = path;
+    if (p.length === 0) {
+        const info = _return_inner_object(object, !return_object);
+        if (return_object && info instanceof Array) {
+            yield* info;
+        } else {
+            yield info;
+        }
+    } else if (return_object && p.length === 1) {
+        yield* find_popvalue_with_path(object, p.slice(1), return_object);
+    } else {
+        let key = p[0];
+        const is_nan = isNaN(parseInt(key, 10));
+        if (!is_nan) {
+            key = parseInt(key, 10);
+        }
+
+        if (object instanceof Array) {
+            if (is_nan) {
+                for (const i in object) {
+                    yield* find_popvalue_with_path(object[i], p, return_object);
+                }
+            } else if (key < object.length) {
+                yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+            }
+        } else if (object != null && hasProperty(object, key)) {
+            yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+        }
+    }
+}
+
 
 function forge_whitelist_blacklist_query(lists: Object): Object {
     let {
@@ -139,4 +171,5 @@ module.exports = {
     find_object_with_path,
     forge_whitelist_blacklist_query,
     merge_with_replacement,
+    find_popvalue_with_path,
 };

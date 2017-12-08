@@ -6,6 +6,13 @@ module.exports = {
             form: {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
+                _meta: {
+                    refs: {
+                        fields: {
+                            subform: 'form',
+                        },
+                    },
+                },
                 properties: {
                     name: {
                         type: 'keyword',

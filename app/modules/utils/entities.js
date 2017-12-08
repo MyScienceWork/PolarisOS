@@ -1,4 +1,7 @@
 // @flow
+
+module.exports = {};
+
 const elasticsearch = require('elasticsearch');
 const Errors = require('../exceptions/errors');
 const config = require('../../config');
@@ -145,27 +148,27 @@ async function get_model_from_type(type: string): ?Object {
 async function get_info_from_type(type: string, id: ?string): ?ODM {
     switch (type) {
     case 'config':
-        return new Config(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new Config(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'user':
-        return new User(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new User(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'lang':
-        return new Lang(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new Lang(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'form':
-        return new Form(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new Form(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'datasource':
-        return new DataSource(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new DataSource(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'pipeline':
-        return new Pipeline(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new Pipeline(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'entity':
-        return new _Entity(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new _Entity(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'function':
-        return new PFunction(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new PFunction(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
             return null;
         }
-        return new CLS(get_index(type), type, es_client, get_model_from_type(type), id);
+        return new CLS(get_index(type), type, es_client, await get_model_from_type(type), id);
     }
     }
 }
@@ -193,7 +196,8 @@ async function update(info: Object, type: string): Promise<*> {
     const id = info._id;
     delete info._id;
     const response = await cls.constructor.update(get_index(type), type,
-        es_client, model, info, id);
+            es_client, model, info, id);
+    console.log(response);
     return response;
 }
 
@@ -251,15 +255,27 @@ async function retrieve(id: string, type: string,
         _source = false;
     } else {
         _source = projection.split(',').map(p => p.trim());
+        if (_source === '') {
+            _source = true;
+        }
     }
 
     const _population = population.split(',')
         .map(p => p.trim()).filter(p => p != null && p !== '');
 
     if (_source === true) {
-        return odm.read({ population: _population });
+        const info = await odm.read({ population: _population });
+        if (info.db.found) {
+            return info;
+        }
+        return null;
     }
-    return odm.read({ source: _source, population: _population });
+
+    const info = await odm.read({ source: _source, population: _population });
+    if (info.db.found) {
+        return info;
+    }
+    return null;
 }
 
 async function remove(id: string, type: string): Promise<*> {
@@ -276,12 +292,12 @@ async function remove(id: string, type: string): Promise<*> {
     return [odm, obj];
 }
 
-exports.retrieve = retrieve;
-exports.get_info_from_type = get_info_from_type;
-exports.get_model_from_type = get_model_from_type;
-exports.create = create;
-exports.update = update;
-exports.count = count;
-exports.search = search;
-exports.remove = remove;
-exports.format_search = format_search;
+module.exports.retrieve = retrieve;
+module.exports.get_info_from_type = get_info_from_type;
+module.exports.get_model_from_type = get_model_from_type;
+module.exports.create = create;
+module.exports.update = update;
+module.exports.count = count;
+module.exports.search = search;
+module.exports.remove = remove;
+module.exports.format_search = format_search;
