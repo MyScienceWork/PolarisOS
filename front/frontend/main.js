@@ -11,6 +11,7 @@ const VariadicElement = require('../common/components/ined/forms/elements/variad
 const Form = require('../common/components/ined/forms/form/Form.vue');
 const DynamicForm = require('../common/components/ined/forms/dynamic_form/DynamicForm.vue');
 const Paginator = require('../common/components/ined/paginator/Paginator.vue');
+const Dropzone = require('../common/components/ined/forms/dropzone/Dropzone.vue');
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
 
@@ -36,6 +37,7 @@ Vue.component('stepper', Stepper);
 Vue.component('fform', Form);
 Vue.component('finput', Input);
 Vue.component('fselect', Select);
+Vue.component('fdropzone', Dropzone);
 Vue.component('fvariadic-element', VariadicElement);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('indexer', Indexer);

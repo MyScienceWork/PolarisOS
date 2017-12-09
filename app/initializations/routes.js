@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const Router = require('koa-router');
 const Send = require('koa-send');
+const Compose = require('koa-compose');
 const Config = require('../config');
 const RouterUtils = require('../modules/utils/router');
 const BackRoutes = require('../../front/backoffice/routes');
 const EntitiesUtils = require('../modules/utils/entities');
+const UploadUtils = require('../modules/utils/uploads');
 
 async function initialize_routes() {
     const router = new Router();
@@ -51,11 +53,15 @@ async function initialize_routes() {
 
     const response = await EntitiesUtils.search('entity', { size: 10000 });
     const extra_entities = response.result.hits.map(e => e.db.source.type);
-    const entities = ['user', 'config', 'lang', 'form', 'function', 'entity', 'datasource', 'pipeline', ...extra_entities];
+    const entities = ['user', 'config', 'lang', 'form', 'function', 'entity', 'pipeline', ...extra_entities];
     console.log('entities for routes:', entities);
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);
     });
+
+    const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
+    router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',
+        `${Config.root}/public/uploads`), UploadUtils.add_single]));
     return router;
 }
 

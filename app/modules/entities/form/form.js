@@ -4,10 +4,14 @@ const EntitiesUtils = require('../../utils/entities');
 
 class Form extends ODM {
     async post_read_hook(population: Array<String>) {
-        await this._handle_population(population);
+        await this._handle_population(population, true);
 
         const info = this.source;
         if (!('fields' in info)) {
+            return;
+        }
+
+        if (!population.some(p => p.indexOf('datasource') !== -1)) {
             return;
         }
 

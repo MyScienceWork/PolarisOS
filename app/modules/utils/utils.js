@@ -82,7 +82,7 @@ function* find_popvalue_with_path(object: ?Object, path: Array<string>, return_o
         const info = _return_inner_object(object, !return_object);
         if (return_object && info instanceof Array) {
             yield* info;
-        } else {
+        } else if (info != null) {
             yield info;
         }
     } else {

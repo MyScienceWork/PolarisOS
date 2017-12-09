@@ -10,6 +10,8 @@ const obj = {
         street: '13 rue de la Bouillante',
         city: 'Dieulouard',
         zipcode: '54380',
+        zipcode_null: null,
+        zipcode_undefined: undefined,
         country: 'France',
         langs: [
             {
@@ -157,6 +159,16 @@ describe('Utils#find_popvalue_with_path', () => {
     it('should not return an array when the field does not exist', () => {
         const path = 'address.langs.2.title';
         const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+        results.should.be.empty;
+    });
+
+    it('should not return an empty generator when the field is null or undefined', () => {
+        const path = 'address.zipcode_null';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+        results.should.be.empty;
+
+        const path_2 = 'address.zipcode_undefined';
+        const results_2 = [...utils.find_popvalue_with_path(obj, path.split('.'))];
         results.should.be.empty;
     });
 });

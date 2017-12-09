@@ -4,6 +4,7 @@ const compose = require('koa-compose');
 const _ = require('lodash');
 const KoaBody = require('koa-body');
 const KoaRouter = require('koa-router');
+const Multer = require('koa-multer');
 const Config = require('../../config');
 const Access = require('../auth/access');
 const ApiAccess = require('../auth/api_access');
@@ -61,27 +62,57 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
     ];
 }
 
+function get_middlewares(type: string) {
+    return _.flatten([koa_middlewares({}),
+        api_middlewares(type, 'r', { pass: true }),
+    ]);
+}
+
+function del_middlewares(type: string) {
+    return _.flatten([koa_middlewares({}),
+        api_middlewares(type, 'd', { pass: true }),
+    ]);
+}
+
+function put_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        api_middlewares(type, 'u', { pass: true }),
+        app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function post_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        api_middlewares(type, 'c', { pass: true }),
+        app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function upload_middlewares(type: string, dest: string, emid: Array<Function>, model: ?Object) {
+    const upload = Multer({ dest });
+    return _.flatten([
+        [upload.single('file'),
+            async (ctx, next) => {
+                ctx.request.body = ctx.req.body;
+                ctx.request.file = ctx.req.file;
+                return next();
+            }],
+        api_middlewares(type, 'c', { pass: true }),
+        // app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+
 function generate_entity_routes(router: KoaRouter,
     type: string, emiddlewares: Array<Function>) {
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
 
-    const get_mware = _.flatten([koa_middlewares({}),
-        api_middlewares(type, 'r', { pass: true }),
-    ]);
-    const del_mware = _.flatten([koa_middlewares({}),
-        api_middlewares(type, 'd', { pass: true }),
-    ]);
-    const put_mware = _.flatten([
-        koa_middlewares({}),
-        api_middlewares(type, 'u', { pass: true }),
-        app_middlewares(type, { extra_middlewares: emiddlewares }),
-    ]);
-    const post_mware = _.flatten([
-        koa_middlewares({}),
-        api_middlewares(type, 'c', { pass: true }),
-        app_middlewares(type, { extra_middlewares: emiddlewares }),
-    ]);
-
+    const get_mware = get_middlewares(type);
+    const del_mware = del_middlewares(type);
+    const put_mware = put_middlewares(type, emiddlewares);
+    const post_mware = post_middlewares(type, emiddlewares);
 
     router.get(`${puprefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
 
@@ -115,3 +146,8 @@ exports.generate_entity_routes = generate_entity_routes;
 exports.koa_middlewares = koa_middlewares;
 exports.api_middlewares = api_middlewares;
 exports.app_middlewares = app_middlewares;
+exports.get_middlewares = get_middlewares;
+exports.del_middlewares = del_middlewares;
+exports.post_middlewares = post_middlewares;
+exports.put_middlewares = put_middlewares;
+exports.upload_middlewares = upload_middlewares;

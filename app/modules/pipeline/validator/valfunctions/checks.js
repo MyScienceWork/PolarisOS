@@ -6,7 +6,6 @@ const EntitiesUtils = require('../../../utils/entities');
 
 function is_unique(path: string, type: string, error: ?Object): Function {
     return async function func(object: Object, method: string): Promise<boolean> {
-        console.log(object, method);
         if (method === 'put') {
             return true;
         }
@@ -24,6 +23,49 @@ function is_unique(path: string, type: string, error: ?Object): Function {
     };
 }
 
+function if_exists(path: string, type: string, error: ?Object): Function {
+    return async function func(object: Object, method: string): Promise<boolean> {
+        const p = path.split('.');
+        const info = [...Utils.find_popvalue_with_path(object, p)];
+
+        if (info.length === 0) {
+            return true;
+        }
+        const result = await EntitiesUtils.search(type, { where: { $$ids: { values: info } } });
+        if (result && Object.keys(result).length > 0 && result.result.hits.length > 0) {
+            return true;
+        }
+        error = error == null ? Errors.InvalidEntity : error;
+        error.path = path;
+        throw error;
+    };
+}
+
+function is_valid_json(path: string, error: ?Object): Function {
+    return async function func(object: Object, method: string): Promise<boolean> {
+        const p = path.split('.');
+        const info = [...Utils.find_popvalue_with_path(object, p)];
+        if (info.length === 0) {
+            return true;
+        }
+
+        if (info[0] instanceof Object) {
+            return true;
+        }
+
+        try {
+            JSON.parse(info[0]);
+            return true;
+        } catch (err) {
+            error = error == null ? Errors.InvalidObject : error;
+            error.path = path;
+            throw error;
+        }
+    };
+}
+
 module.exports = {
     is_unique,
+    if_exists,
+    is_valid_json,
 };

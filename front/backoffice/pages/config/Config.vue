@@ -61,21 +61,20 @@
                                 :multi="true"
                                 :options="state.langs" 
                             />
+                            <h4 class="title is-4">Upload section</h4>
                             <finput
-                                name="datasources.prefix" 
-                                :label="lang('b_datasources_prefix')" 
-                                :placeholder="lang('b_datasources_prefix')" 
+                                name="upload.maxFileSizeInMB" 
+                                :label="lang('b_config_maxFileSizeInMB')" 
+                                :placeholder="lang('b_config_maxFileSizeInMB')" 
                                 :is-required="true" 
                                 :form="state.cform" 
                                 type="text"
                             />
                             <finput
-                                name="keystores.prefix" 
-                                :label="lang('b_keystores_prefix')" 
-                                :placeholder="lang('b_keystores_prefix')" 
-                                :is-required="true" 
+                                name="upload.allowRemoveFiles" 
+                                :label="lang('b_config_allowRemoveFiles')" 
                                 :form="state.cform" 
-                                type="text"
+                                type="checkbox"
                             />
                         </fform>
                     </div>

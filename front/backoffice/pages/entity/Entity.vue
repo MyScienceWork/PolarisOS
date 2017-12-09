@@ -77,6 +77,7 @@
                             fieldValue="_id"
                             :form="state.cform" 
                         />
+                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.cform" />
 
                         </fform>
                     </div>

@@ -8,17 +8,17 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
-                    datasources: {
+                    upload: {
                         properties: {
-                            prefix: {
-                                type: 'keyword',
+                            maxFileSizeInMB: {
+                                type: 'half_float',
                                 index: false,
                             },
-                        },
-                    },
-                    keystores: {
-                        properties: {
-                            prefix: {
+                            allowRemoveFiles: {
+                                type: 'boolean',
+                                index: false,
+                            },
+                            acceptedFileTypes: {
                                 type: 'keyword',
                                 index: false,
                             },

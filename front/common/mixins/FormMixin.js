@@ -18,7 +18,7 @@ module.exports = {
         fetch_form(id) {
             this.$store.dispatch('single_read', {
                 form: this.state.form_name,
-                path: APIRoutes.entity('form', 'GET', false, id),
+                path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),
             });
         },
     },

@@ -22,8 +22,10 @@
                         </div>
                     </div>
                 </div> 
-                <div class="columns is-centered" v-if="state.chosen_doc_type != ''">
-                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).file">
+                <!--<div class="columns is-centered" v-if="state.chosen_doc_type != ''">
+                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).file">-->
+                <div class="columns is-centered">
+                    <div class="column">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
                                 <div class="columns is-centered">
@@ -32,11 +34,11 @@
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
-                                <vue-dropzone class="dropzone-equal-height" id="dropzone" :options="dropzone" />
+                                <fdropzone />
                             </div>
                         </div>
                     </div>
-                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).completable">
+                    <!--<div class="column" v-if="grab_typology_child(state.chosen_doc_type).completable">
                         <div class="card card-equal-height">
                             <div class="card-content">
                                 <div class="columns is-centered">
@@ -65,7 +67,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

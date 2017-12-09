@@ -298,6 +298,15 @@ class ODM {
 
             if (id != null) {
                 content.id = id;
+                const ret = await this.pre_update_hook(index, type, client, model, body, id);
+                if (!ret) {
+                    return null;
+                }
+            } else {
+                const ret = await this.pre_create_hook(index, type, client, model, body);
+                if (!ret) {
+                    return null;
+                }
             }
 
             const response = await client.index(content);
@@ -311,6 +320,12 @@ class ODM {
                     });
                     const odm = new this(index, type, client, model, response._id);
                     odm.db = this.format_hit(get_response, get_response.found);
+                    if ('created' in response) {
+                        await odm.post_create_hook();
+                    } else {
+                        await odm.post_update_hook();
+                    }
+
                     console.log(odm);
                     return odm;
                 } catch (err) {
@@ -327,6 +342,8 @@ class ODM {
     async read(opts: Object = {}): Promise<ODM> {
         const population = 'population' in opts ? opts.population : [];
         const source = 'source' in opts ? opts.source : null;
+
+        await this.pre_read_hook(source, population);
 
         try {
             const response = await this._client.get({
@@ -362,12 +379,36 @@ class ODM {
         return this.db;
     }
 
+    async pre_read_hook() {
+        // TODO TBD
+    }
+
+    static async pre_create_hook(index: string, type: string,
+            client: Object, model: Object, body: Object): Promise<boolean> {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
+    static async pre_update_hook(index: string, type: string,
+            client: Object, model: Object, body: Object, id: string): Promise<boolean> {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
     async post_read_hook(population: Array<String>) {
         // To be re-implemented in subclass (if needed)
         await this._handle_population(population);
     }
 
-    async _handle_population(population: Array<String>) {
+    async post_create_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async post_update_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async _handle_population(population: Array<String>, propagate_population: boolean = false) {
         const EntitiesUtils = require('../../utils/entities');
         const mapping = await this.constructor.fetch_mapping(this.index, this.type,
                 this._client, true);
@@ -391,7 +432,8 @@ class ODM {
                 ref = ref[0];
                 const last = path[path.length - 1];
                 for (const v of vals) {
-                    const result = await EntitiesUtils.retrieve(v[last], ref);
+                    const result = await EntitiesUtils.retrieve(v[last],
+                        ref, '', propagate_population ? population.join(',') : '');
                     v[last] = result != null ? result.source : {};
                 }
             }

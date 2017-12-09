@@ -1,5 +1,5 @@
-const VueDropzone = require('vue2-dropzone');
 const LangMixin = require('../../../../common/mixins/LangMixin');
+const APIRoutes = require('../../../../common/api/routes');
 
 module.exports = {
     props: {
@@ -12,12 +12,6 @@ module.exports = {
             state: {
                 chosen_doc_type: this.documentType,
             },
-            dropzone: {
-                url: 'https://httpbin.org/post',
-                thumbnailWidth: 150,
-                maxFilesize: 0.5,
-                headers: { 'My-Awesome-Header': 'header value' },
-            },
         };
     },
     methods: {
@@ -27,9 +21,6 @@ module.exports = {
             this.$emit('typology-child-change', { child, path });
             return child;
         },
-    },
-    components: {
-        'vue-dropzone': VueDropzone,
     },
     computed: {
         typology() {

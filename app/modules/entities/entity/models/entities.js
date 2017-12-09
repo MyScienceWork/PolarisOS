@@ -10,8 +10,13 @@ const Mapping: Object = LRMapping.msw
 const Validation: Array<any> = [
     Joi.object({
         type: Joi.string().required().label('Entity type'),
+        mapping: Joi.string().required().label('Mapping'),
+        pipeline: Joi.string().required().label('Pipeline'),
     }),
     ValFunctions.checks.is_unique('type', 'entity'),
+    ValFunctions.checks.if_exists('form', 'form'),
+    ValFunctions.checks.if_exists('pipeline', 'pipeline'),
+    ValFunctions.checks.is_valid_json('mapping'),
 ];
 
 const Formatting: Array<any> = [
