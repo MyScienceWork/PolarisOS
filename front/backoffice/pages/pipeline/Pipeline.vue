@@ -87,14 +87,22 @@
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
+                                                <finput 
+                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :label="lang('b_field')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('b_field')" 
+                                                    type="text" 
+                                                    :form="state.cform" 
+                                                />
                                                 <fselect
-                                                    :name="`${props.fname}.${props.id}.name`" 
+                                                    :name="`${props.fname}.${props.id}.function.name`" 
                                                     :label="lang('b_function_name')" 
                                                     :is-required="true"
                                                     :options="functions.formatter || []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
-                                                    form="uisink_form" 
+                                                    :form="state.cform" 
                                                 />
                                             </template>
                                         </fvariadic-element>
@@ -113,7 +121,7 @@
                                                 :options="functions.completer || []"
                                                 fieldLabel="name"
                                                 fieldValue="name"
-                                                form="uisink_form" 
+                                                :form="state.cform" 
                                             />
                                             </template>
                                         </fvariadic-element>

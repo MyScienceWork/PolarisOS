@@ -412,6 +412,7 @@ class ODM {
         const EntitiesUtils = require('../../utils/entities');
         const mapping = await this.constructor.fetch_mapping(this.index, this.type,
                 this._client, true);
+
         if (mapping && !('_meta' in mapping)) {
             return;
         }
@@ -422,6 +423,7 @@ class ODM {
 
         const refs = mapping._meta.refs;
         const info = this._db.source;
+
 
         for (const p of population) {
             const path = p.split('.');

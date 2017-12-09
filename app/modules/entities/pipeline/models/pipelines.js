@@ -3,6 +3,7 @@ const Joi = require('joi');
 const LRMapping = require('../../../../mappings/pipeline');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
 const Mapping: Object = LRMapping.msw
     .mappings.pipeline.properties;
@@ -15,6 +16,10 @@ const Validation: Array<any> = [
 ];
 
 const Formatting: Array<any> = [
+    {
+        formatters: a => FormatFunctions.oarray_to_array(a),
+    },
+
 ];
 
 const Completion: Array<any> = [];

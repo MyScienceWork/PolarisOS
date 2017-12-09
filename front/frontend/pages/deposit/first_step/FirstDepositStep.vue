@@ -34,7 +34,7 @@
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
-                                <fdropzone />
+                                <fdropzone form="dummy_form" name="name" master="master" files="files" />
                             </div>
                         </div>
                     </div>

@@ -35,6 +35,7 @@ module.exports = {
                 let info = Utils.find_value_with_path(form.content, this.name.split('.'));
                 if (info == null) {
                     // Noop
+                    return;
                 } else if (info instanceof Array) {
                     info = info.map((o) => {
                         if (this.fieldLabel in o) {
@@ -66,6 +67,7 @@ module.exports = {
                         info = null;
                     }
                 }
+
                 if (info instanceof Array) {
                     this.state.selected = info.map(o =>
                         ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));

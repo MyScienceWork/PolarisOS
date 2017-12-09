@@ -32,10 +32,19 @@ function create() {
 
 function update() {
     _.forEach(mappings, (mapping, name) => {
+        const body = {
+            properties: mapping.mappings[name].properties,
+        };
+
+        if ('_meta' in mapping.mappings[name]) {
+            body._meta = mapping.mappings[name]._meta;
+        }
+
+
         const response = client.indices.putMapping({
             index: `${config.elasticsearch.index_prefix}_${name}`,
             type: name,
-            body: { properties: mapping.mappings[name].properties },
+            body,
         });
 
         response.then((result) => {

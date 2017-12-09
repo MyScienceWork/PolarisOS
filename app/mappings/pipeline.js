@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const FunctionMapping = {
     properties: {
         name: {
@@ -49,6 +51,10 @@ module.exports = {
                     formatters: {
                         type: 'nested',
                         properties: {
+                            field: {
+                                type: 'keyword',
+                                index: false,
+                            },
                             function: FunctionMapping,
                         },
                     },

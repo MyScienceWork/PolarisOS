@@ -5,9 +5,10 @@ const Config = require('../../../config');
 class _Entity extends ODM {
     static async _add_mapping(client: Object, name: string, mapping: Object) {
         try {
+            const m = JSON.parse(mapping);
             await client.indices.create({
                 index: `${Config.elasticsearch.index_prefix}_${name}`,
-                body: mapping,
+                body: m,
             });
             return true;
         } catch (err) {
@@ -17,10 +18,19 @@ class _Entity extends ODM {
 
     static async _update_mapping(client: Object, name: string, mapping: Object) {
         try {
+            const m = JSON.parse(mapping);
+            const body = {
+                properties: m.mappings[name].properties,
+            };
+
+            if ('_meta' in m.mappings[name]) {
+                body._meta = m.mappings[name]._meta;
+            }
+
             await client.indices.putMapping({
                 index: `${Config.elasticsearch.index_prefix}_${name}`,
                 type: name,
-                body: { properties: mapping.mappings[name].properties },
+                body,
             });
             return true;
         } catch (err) {

@@ -91,6 +91,13 @@
                 :options="field.datasource.content || []"
                 :readonly="readonly"
                 />
+                <fdropzone 
+                v-else-if="field.type === 'file'"
+                :form="cform"
+                :files="get_name(`${props.fname}.${props.id}.${field.name}`)"
+                :name="field.file_name"
+                :master="field.master_name"
+                />
                 <dynamic-form 
                     :form="field.subform" 
                     :cform="cform"
@@ -139,6 +146,13 @@
             :fieldValue="field.datasource.value"
             :options="field.datasource.content || []"
             :readonly="readonly"
+            />
+            <fdropzone 
+            v-else-if="field.type === 'file'"
+            :form="cform"
+            :files="get_name(field.name, null)"
+            :name="field.file_name"
+            :master="field.master_name"
             />
             <dynamic-form 
                 :form="field.subform" 

@@ -113,6 +113,18 @@ module.exports = {
                                 type: 'keyword',
                                 index: false,
                             },
+                            file: {
+                                properties: {
+                                    file_name: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    master_name: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                },
+                            },
                         },
                     },
                 },
