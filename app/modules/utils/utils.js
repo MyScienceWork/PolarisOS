@@ -85,8 +85,6 @@ function* find_popvalue_with_path(object: ?Object, path: Array<string>, return_o
         } else {
             yield info;
         }
-    } else if (return_object && p.length === 1) {
-        yield* find_popvalue_with_path(object, p.slice(1), return_object);
     } else {
         let key = p[0];
         const is_nan = isNaN(parseInt(key, 10));
@@ -100,10 +98,18 @@ function* find_popvalue_with_path(object: ?Object, path: Array<string>, return_o
                     yield* find_popvalue_with_path(object[i], p, return_object);
                 }
             } else if (key < object.length) {
-                yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+                if (return_object && p.length === 1) {
+                    yield* find_popvalue_with_path(object, p.slice(1), return_object);
+                } else {
+                    yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+                }
             }
         } else if (object != null && hasProperty(object, key)) {
-            yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+            if (return_object && p.length === 1) {
+                yield* find_popvalue_with_path(object, p.slice(1), return_object);
+            } else {
+                yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+            }
         }
     }
 }

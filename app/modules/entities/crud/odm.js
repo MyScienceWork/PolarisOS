@@ -387,8 +387,6 @@ class ODM {
             const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
             let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
 
-            console.log(path, vals, ref);
-
             if (ref.length > 0 && vals.length > 0) {
                 ref = ref[0];
                 const last = path[path.length - 1];

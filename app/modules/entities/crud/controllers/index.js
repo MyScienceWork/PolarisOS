@@ -30,11 +30,14 @@ function gets(type: string): Function {
         const pop = ctx.params.population || '';
 
         if (proj.trim() !== '') {
-            ctx.request.body.projection = proj.trim().split(',');
+            ctx.request.body.projection = proj.trim().split(',').filter(p => p != null && p !== '');
+            if (ctx.request.body.projection.length === 0) {
+                ctx.request.body.projection = true;
+            }
         }
 
         if (pop.trim() !== '') {
-            ctx.request.body.population = pop.trim().split(',');
+            ctx.request.body.population = pop.trim().split(',').filter(p => p != null && p !== '');
         }
 
         await search(type)(ctx);

@@ -98,12 +98,21 @@ describe('Utils#find_popvalue_with_path', () => {
         results.should.be.empty;
     });
 
-    it('should generate one element if array key is specified', () => {
+    it('should generate one element if array index is specified', () => {
         const path = 'address.langs.0.title';
         const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
 
         results.should.have.lengthOf(1);
         results[0].should.equal('French');
+    });
+
+    it('should generate one object if array index is specified', () => {
+        const path = 'address.langs.0';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+
+        results.should.have.lengthOf(1);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
     });
 
     it('should return the parent object when asked to', () => {
@@ -125,5 +134,29 @@ describe('Utils#find_popvalue_with_path', () => {
 
         results[1].should.have.property('title', 'German');
         results[1].should.have.property('code', 'DE');
+    });
+
+    it('should return the parent array when a correct index is given', () => {
+        const path = 'address.langs.1';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+
+        results.should.have.lengthOf(2);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
+
+        results[1].should.have.property('title', 'German');
+        results[1].should.have.property('code', 'DE');
+    });
+
+    it('should not return an object when the field does not exist', () => {
+        const path = 'address.langs.content';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+        results.should.be.empty;
+    });
+
+    it('should not return an array when the field does not exist', () => {
+        const path = 'address.langs.2.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+        results.should.be.empty;
     });
 });
