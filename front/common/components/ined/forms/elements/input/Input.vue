@@ -5,7 +5,7 @@
     v-model="state.value"
     :readonly="readonly"
 ></input>
-<div :class="[{'field': !isAddon}]"
+<div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
     v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
 >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
@@ -18,6 +18,7 @@
                 class="input"
                 v-model="state.value"
                 :readonly="readonly"
+
             />
             <input v-else-if="type === 'number'" 
                 type="number"
@@ -54,7 +55,7 @@
     </div>
 </div>
 
-<div v-else-if="type === 'textarea'" class="field">
+<div v-else-if="type === 'textarea'" :class="['field', {'is-hidden': readonly && emptyValue}]">
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     
     <div :class="['field']">
@@ -65,8 +66,9 @@
                 :name="name"
                 :rows="rows"
                 v-model="state.value"
-                :readonly="readonly"
+                v-if="!readonly"
             />
+            <p v-else>{{state.value}}</p>
         </div>
         <div class="column is-half has-no-right-spaces has-no-left-spaces">
             <slot v-if="hasAddons" name="input-addons" />

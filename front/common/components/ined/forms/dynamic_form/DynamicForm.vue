@@ -12,7 +12,7 @@
             :readonly="readonly"
         >
             <template slot="input-addons">
-                <template v-for="field in form.fields.slice(1)">
+                <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
                     v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
@@ -49,7 +49,7 @@
             </template>
         </finput>
     </template>
-    <template v-else v-for="field in form.fields">
+    <template v-else v-for="(field, i) in form.fields">
         <fvariadic-element class="field" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput 
@@ -98,6 +98,7 @@
                 :name="field.file.file_name"
                 :master="field.file.master_name"
                 :url="field.file.url_name"
+                :readonly="readonly"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -155,6 +156,7 @@
             :name="field.file.file_name"
             :master="field.file.master_name"
             :url="field.file.url_name"
+            :readonly="readonly"
             />
             <dynamic-form 
                 :form="field.subform" 

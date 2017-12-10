@@ -18,6 +18,7 @@ module.exports = {
                 return form.update;
             }
             return false;
+            vi;
         },
         reclaim() {
             if (this.form in this.$store.state.forms) {
@@ -36,7 +37,7 @@ module.exports = {
     },
     mounted() {
         this.update();
-        this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form });
+        this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form, name: this.name });
     },
     beforeDestroy() {
         this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form, name: this.name });

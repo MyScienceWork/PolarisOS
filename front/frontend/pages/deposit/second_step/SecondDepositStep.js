@@ -17,7 +17,7 @@ module.exports = {
                     return Object.assign({}, content,
                         { fields: content.fields.filter(field => field.name === this.subformName && field.type === 'subform') });
                 }
-                return content;
+                return {};
             }
             return {};
         },

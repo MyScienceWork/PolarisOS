@@ -9,16 +9,7 @@
                         <p v-html="lang('f_deposit_review_step_help')"></p>
                     </div>
                 </div>
-                <fform
-                    :name="state.cform" 
-                    :post_path="state.path" 
-                    :put_path="state.path"
-                    :get_path="state.rpath"
-                    :get_form="state.rform"
-                    :has-buttons="false"
-                >
-                    <dynamic-form :form="form" :cform="state.cform" :readonly="true" />
-                </fform>
+                <dynamic-form :form="form || {}" :cform="creationSink" :readonly="true" />
             </div>
         </div>
     </div>

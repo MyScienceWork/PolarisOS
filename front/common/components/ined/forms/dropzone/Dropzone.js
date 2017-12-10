@@ -14,6 +14,7 @@ module.exports = {
         files: { required: true, type: String },
         name: { required: true, type: String },
         url: { required: true, type: String },
+        readonly: { default: false, type: Boolean },
     },
     data() {
         return {

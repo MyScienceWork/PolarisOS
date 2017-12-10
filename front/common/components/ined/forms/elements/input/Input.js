@@ -36,7 +36,7 @@ module.exports = {
         },
         update() {
             const form = this.$store.state.forms[this.form];
-            if (form.update) {
+            if (form.update || this.readonly) {
                 this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
                 if (this.state.value == null) {
                     this.state.value = this.defaultValue();
@@ -62,6 +62,7 @@ module.exports = {
             }
         },
         reclaim(n) {
+            console.log('input reclaim watcher', n);
             if (n) {
                 this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
                     form: this.form,
@@ -77,5 +78,10 @@ module.exports = {
         },
     },
     computed: {
+        emptyValue() {
+            return this.state.value === null ||
+                this.state.value === undefined ||
+                (this.state.value instanceof String && this.state.value.trim() === '');
+        },
     },
 };

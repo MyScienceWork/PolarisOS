@@ -4,18 +4,23 @@ const LangMixin = require('../../../../common/mixins/LangMixin');
 module.exports = {
     mixins: [LangMixin],
     props: {
-        form: { type: Object, required: true },
+        publicationSpecs: { type: String, required: true },
+        creationSink: { type: String, required: true },
     },
     data() {
         return {
             state: {
-                cform: 'deposit_creation',
-                path: 'ok',
-                rpath: 'ok',
-                rform: 'deposit_read',
             },
         };
     },
     computed: {
+        form() {
+            if (this.publicationSpecs in this.$store.state.forms) {
+                const sink = this.$store.state.forms[this.publicationSpecs];
+                const content = sink.content || {};
+                return content;
+            }
+            return {};
+        },
     },
 };

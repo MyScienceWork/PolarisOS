@@ -107,7 +107,7 @@ function del(type: string): Function {
 }
 
 async function validate(ctx: Object): Promise<*> {
-    ctx.body = { ok: true };
+    ctx.body = ctx.request.body;
 }
 
 function post_with_action(type: string, action: Function, options: Object): Function {

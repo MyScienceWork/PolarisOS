@@ -27,6 +27,8 @@ module.exports = {
                     fname: 'typology',
                 },
                 current_step: 0,
+                next_step: 0,
+                total_steps: 5,
             },
         };
     },
@@ -39,8 +41,15 @@ module.exports = {
             const event = info.e;
 
             if (step > this.state.current_step) {
-                EventHub.$emit('form-click-on-validate', event);
+                if (step === this.state.total_steps) {
+                    EventHub.$emit('form-click-on-submit', event);
+                } else {
+                    this.state.next_step = step;
+                    EventHub.$emit('form-click-on-validate', event);
+                }
             } else {
+                this.state.next_step = step;
+                this.state.current_step = step;
                 this.$store.commit(Messages.UPDATE_MODE_FORM, {
                     form: this.state.publication.sink,
                     update: true,
@@ -62,7 +71,18 @@ module.exports = {
                 size: 10000,
             },
         });
+        EventHub.$on('form-is-ready-for-submission', () => {
+            this.state.current_step = this.state.next_step;
+        });
     },
     computed: {
+        unvalidated() {
+            let content = {};
+            if (this.state.publication.sink in this.$store.state.forms) {
+                content = this.$store.state.forms[this.state.publication.sink].content || {};
+            }
+            return this.state.next_step === 2
+                && Object.keys(content.validations || {}).length > 0;
+        },
     },
 };

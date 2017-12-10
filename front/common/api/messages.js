@@ -13,4 +13,5 @@ module.exports = {
     RECLAIM_FORM_ELEMENT: 'reclaim_form_element',
     ADD_TO_FORM_POOL: 'add_to_form_pool',
     REMOVE_FROM_FORM_POOL: 'remove_from_form_pool',
+    RECLAIM_SUCCESS: 'reclaim_success',
 };

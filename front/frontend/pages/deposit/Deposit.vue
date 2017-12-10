@@ -7,7 +7,7 @@
                     <div class="card-content">
                         <div class="columns is-centered">
                             <div class="column">
-                                <stepper :number-of-steps="5" v-on:step-change="next_step">
+                                <stepper :number-of-steps="state.total_steps" v-on:step-change="next_step">
                                     <template slot="step-title" slot-scope="props">
                                         {{lang('f_deposit_step')}} {{props.id+1}}
                                     </template>
@@ -27,30 +27,35 @@
                                             <first-deposit-step
                                                 :creation-sink="state.publication.sink"
                                                 :typology-sink="state.typology.sink"
-                                                v-show="props.id === 0"
+                                                v-if="state.current_step === 0"
+                                                :key="state.current_step"
                                                 @typology-change="update_typology_form"
                                                 :publication-specs="state.publication.specs"
-                                            />                                        
+                                            />
                                             <second-deposit-step 
-                                                v-show="props.id === 1"
+                                                v-if="state.current_step === 1"
                                                 :creation-sink="state.publication.sink"
                                                 :publication-specs="state.publication.specs"
+                                                :key="state.current_step"
                                                 subform-name="required"
                                             />
                                             <second-deposit-step 
-                                                v-show="props.id === 2"
+                                                v-if="state.current_step === 2 && !unvalidated"
                                                 :creation-sink="state.publication.sink"
                                                 :publication-specs="state.publication.specs"
+                                                :key="state.current_step"
                                                 subform-name="optional"
                                             />
                                             <second-deposit-step 
-                                                v-show="props.id === 3"
+                                                v-if="state.current_step === 3"
                                                 :creation-sink="state.publication.sink"
                                                 :publication-specs="state.publication.specs"
+                                                :key="state.current_step"
                                                 subform-name="permission"
                                             />
                                             <review-deposit-step 
-                                                v-show="props.id === 4"
+                                                v-if="state.current_step === 4"
+                                                :key="state.current_step"
                                                 :publication-specs="state.publication.specs"
                                                 :creation-sink="state.publication.sink"
                                             />

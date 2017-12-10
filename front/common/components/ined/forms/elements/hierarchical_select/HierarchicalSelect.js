@@ -64,5 +64,11 @@ module.exports = {
         },
     },
     computed: {
+        isHidden() {
+            return false;
+        },
+        readonlyValue() {
+            return this.state.value || '';
+        },
     },
 };

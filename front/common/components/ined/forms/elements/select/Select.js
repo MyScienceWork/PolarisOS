@@ -31,7 +31,7 @@ module.exports = {
     methods: {
         update() {
             const form = this.$store.state.forms[this.form];
-            if (form.update) {
+            if (form.update || this.readonly) {
                 let info = Utils.find_value_with_path(form.content, this.name.split('.'));
                 if (info == null) {
                     // Noop
@@ -125,5 +125,17 @@ module.exports = {
     },
     beforeMount() {
         this.format_options();
+    },
+    computed: {
+        isHidden() {
+            return this.readonly && (this.state.selected == null ||
+            (this.state.selected instanceof Array && this.state.selected.length === 0));
+        },
+        readonlyValue() {
+            if (this.state.selected instanceof Array) {
+                return this.state.selected.map(s => s[this.fieldLabel]);
+            }
+            return this.state.selected || '';
+        },
     },
 };

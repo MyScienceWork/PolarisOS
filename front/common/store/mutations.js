@@ -4,8 +4,8 @@ const Utils = require('../utils/utils');
 
 function create_form() {
     return {
-        pool: 0,
-        claims: 0,
+        pool: {},
+        claims: {},
         validations: {},
         error: {},
         loading: false,
@@ -40,7 +40,7 @@ module.exports = {
         }
 
         state.forms[form_name].loading = false;
-        state.forms[form_name].claims = 0;
+        state.forms[form_name].claims = {};
         state.forms[form_name].update = false;
         state.forms[form_name].reclaim = false;
         state.forms[form_name].partial = false;
@@ -52,7 +52,7 @@ module.exports = {
             if (payload.method === 'GET') {
                 const content = payload.response.content;
                 if ('result' in content && 'hits' in content.result) {
-                    state.forms[form_name].content = content.result.hits.map(hit => _.merge({ _id: hit.id }, hit.source));
+                    state.forms[form_name].content = content.result.hits.map(hit => hit.source);
                 } else {
                     state.forms[form_name].content = content;
                 }
@@ -61,7 +61,7 @@ module.exports = {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
             } else {
                 state.forms[form_name].success = payload.response.content.message;
-                state.forms[form_name].cancel = true;
+                // state.forms[form_name].cancel = true;
             }
             state.forms[form_name].error = {};
         } else if (form_name in state.forms) {
@@ -102,7 +102,7 @@ module.exports = {
             state.forms[form_name].validate = false;
             state.forms[form_name].content = {};
             state.forms[form_name].error = {};
-            state.forms[form_name].claims = 0;
+            state.forms[form_name].claims = {};
             state.forms[form_name].success = '';
             state.forms[form_name].validations = {};
         }
@@ -119,6 +119,7 @@ module.exports = {
             state.forms[form_name].cancel = false;
             state.forms[form_name].partial = false;
             state.forms[form_name].validate = false;
+            state.forms[form_name].reclaim = false;
             state.forms[form_name].content = Object.assign({}, payload.content || {});
             state.forms[form_name].error = {};
             state.forms[form_name].success = '';
@@ -138,6 +139,13 @@ module.exports = {
         }
     },
 
+    [Messages.RECLAIM_SUCCESS]: (state, payload) => {
+        const form_name = payload.form;
+        if (form_name in state.forms) {
+            state.forms[form_name].reclaim = false;
+        }
+    },
+
     [Messages.RECLAIM_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         const name = payload.name;
@@ -147,14 +155,16 @@ module.exports = {
             const content = state.forms[form_name].content;
             const object = Utils.make_nested_object_from_path(path, info);
             state.forms[form_name].content = Utils.merge_with_replacement(content, object);
-            state.forms[form_name].claims += 1;
+            const claims = state.forms[form_name].claims;
+            state.forms[form_name].claims = Object.assign({}, claims, { [payload.name]: 1 });
         }
     },
 
     [Messages.ADD_TO_FORM_POOL]: (state, payload) => {
         const form_name = payload.form;
         if (form_name in state.forms) {
-            state.forms[form_name].pool += 1;
+            const pool = state.forms[form_name].pool;
+            state.forms[form_name].pool = Object.assign({}, pool, { [payload.name]: 1 });
         }
     },
 
@@ -162,14 +172,14 @@ module.exports = {
         const form_name = payload.form;
         const elt_name = payload.name;
         if (form_name in state.forms) {
-            state.forms[form_name].pool -= 1;
+            delete state.forms[form_name].pool[payload.name];
 
-            const path = elt_name.split('.');
+            /* const path = elt_name.split('.');
             const last = path[path.length - 1];
             const object = Utils.find_object_with_path(state.forms[form_name].content, path);
             if (object) {
                 delete object[last];
-            }
+            }*/
         }
     },
 };

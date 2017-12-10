@@ -107,7 +107,7 @@ module.exports = {
                 const form = this.$store.state.forms[this.name];
                 return form.claims;
             }
-            return 0;
+            return new Set();
         },
         content() {
             if (this.name in this.$store.state.forms) {
@@ -131,7 +131,10 @@ module.exports = {
         },
         claims(n) {
             const form = this.$store.state.forms[this.name];
-            if (n === form.pool && !form.partial) {
+            const intersection = Object.keys(n).filter(x => x in form.pool);
+            console.log('claims', n, 'intersection', intersection);
+            if (intersection.length === Object.keys(form.pool).length && intersection.length > 0) {
+                this.$store.commit(Messages.RECLAIM_SUCCESS, { form: this.name });
                 const payload = {
                     form: this.name,
                     rpath: this.get_path,
@@ -153,6 +156,8 @@ module.exports = {
                     payload.path = this.post_path;
                     this.$store.dispatch('create', payload);
                 }
+
+                EventHub.$emit('form-is-ready-for-submission');
             }
         },
         success(n) {

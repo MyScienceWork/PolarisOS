@@ -13,14 +13,16 @@
         :options="dropzone" 
         :include-styling="false">
             <div slot="inside">
-                <div class="columns is-pulled-right">
+                <div class="columns is-pulled-right" v-if="!readonly">
                     <div class="column">
                         <div class="dz-message">
                             <a href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
                         </div>
                     </div>
                 </div>
-                <div class="responsive-table">
+                <div v-else class="dz-message" style="display:none">
+                </div>
+                <div class="responsive-table" v-if="!readonly">
                     <table v-if="state.files.order.length > 0" class="table is-striped is-fullwidth">
                         <thead>
                             <tr>
@@ -64,6 +66,9 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="responsive-table" v-else>
+                    <p>TBIL</p>
                 </div>
             </div>
         </vue-dropzone>
