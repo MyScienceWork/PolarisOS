@@ -29,13 +29,15 @@ module.exports = {
         previous(e) {
             this.go(this.state.current_step - 1, e);
         },
-        go(step, e) {
+        go(step, e, emit = true) {
             e.preventDefault();
             this.state.current_step = _.clamp(step, 0, this.numberOfSteps);
-            this.$emit('step-change', { step: this.state.current_step });
+            if (emit) {
+                this.$emit('step-change', { e, step: this.state.current_step });
+            }
         },
     },
     mounted() {
-        this.go(this.state.current_step, { preventDefault() {} });
+        this.go(this.state.current_step, { preventDefault() {} }, false);
     },
 };

@@ -1,41 +1,44 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
-const APIRoutes = require('../../../../common/api/routes');
 
 module.exports = {
     props: {
-        typologyForm: { required: true, type: String },
-        documentType: { default: '', type: String },
+        typologySink: { required: true, type: String },
+        creationSink: { required: true, type: String },
+        publicationSpecs: { required: true, type: String },
     },
     mixins: [LangMixin],
-    data() {
-        return {
-            state: {
-                chosen_doc_type: this.documentType,
-            },
-        };
-    },
     methods: {
-        grab_typology_child(path) {
-            const p = path.split('.').map(idx => parseInt(idx, 10));
-            const child = this.typology[p[0]].children[p[1]];
-            this.$emit('typology-child-change', { child, path });
-            return child;
+        grab_typology_form(form) {
+            this.$emit('typology-change', form);
         },
     },
     computed: {
-        typology() {
-            if (this.typologyForm in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.typologyForm].content || [];
-                return form.map((t) => {
+        typology_options() {
+            if (this.typologySink in this.$store.state.forms) {
+                const sink = this.$store.state.forms[this.typologySink];
+                const content = sink.content || [];
+                return content.map((t) => {
                     t.label = this.lang(t.label);
-                    t.children = t.children.map((child) => {
-                        child.label = this.lang(child.label);
-                        return child;
+                    t.children = t.children.map((ch) => {
+                        ch.label = this.lang(ch.label);
+                        return ch;
                     });
                     return t;
                 });
             }
             return [];
+        },
+        upload_form() {
+            if (this.publicationSpecs in this.$store.state.forms) {
+                const sink = this.$store.state.forms[this.publicationSpecs];
+                const content = sink.content || {};
+                if ('fields' in content) {
+                    return Object.assign({}, content, { fields: content.fields.filter(field =>
+                        field.name === 'upload' && field.type === 'subform') });
+                }
+                return content;
+            }
+            return {};
         },
     },
 };

@@ -158,6 +158,7 @@
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.file.file_name`" :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.cform" />
                                             <finput :name="`${props.fname}.${props.id}.file.master_name`" :label="lang('b_master_fieldname')" :is-required="true" :placeholder="lang('b_master_fieldname')" type="text" :form="state.cform" />
+                                            <finput :name="`${props.fname}.${props.id}.file.url_name`" :label="lang('b_url_fieldname')" :is-required="true" :placeholder="lang('b_url_fieldname')" type="text" :form="state.cform" />
                                         </div>
                                     </div>
                                 </template>

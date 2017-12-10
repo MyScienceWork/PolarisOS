@@ -12,6 +12,8 @@ function create_form() {
         update: false,
         reclaim: false,
         cancel: false,
+        partial: false,
+        validate: false,
         success: '',
         content: [],
     };
@@ -41,6 +43,8 @@ module.exports = {
         state.forms[form_name].claims = 0;
         state.forms[form_name].update = false;
         state.forms[form_name].reclaim = false;
+        state.forms[form_name].partial = false;
+        state.forms[form_name].validate = false;
         state.forms[form_name].cancel = false;
         state.forms[form_name].validations = {};
 
@@ -94,6 +98,8 @@ module.exports = {
         if (form_name in state.forms) {
             state.forms[form_name].cancel = true;
             state.forms[form_name].update = false;
+            state.forms[form_name].partial = false;
+            state.forms[form_name].validate = false;
             state.forms[form_name].content = {};
             state.forms[form_name].error = {};
             state.forms[form_name].claims = 0;
@@ -111,6 +117,8 @@ module.exports = {
         if (form_name in state.forms) {
             state.forms[form_name].update = payload.update || false;
             state.forms[form_name].cancel = false;
+            state.forms[form_name].partial = false;
+            state.forms[form_name].validate = false;
             state.forms[form_name].content = Object.assign({}, payload.content || {});
             state.forms[form_name].error = {};
             state.forms[form_name].success = '';
@@ -124,6 +132,8 @@ module.exports = {
             state.forms[form_name].reclaim = 'reclaim' in payload ?
                 payload.reclaim : !state.forms[form_name].reclaim;
             state.forms[form_name].cancel = false;
+            state.forms[form_name].partial = 'partial' in payload ? payload.partial : false;
+            state.forms[form_name].validate = 'validate' in payload ? payload.validate : false;
             state.forms[form_name].error = {};
         }
     },

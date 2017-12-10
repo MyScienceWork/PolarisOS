@@ -5,6 +5,8 @@ const prefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
 module.exports = {
     entity(entity, method, search = false, id = null, projection = '', population = '') {
         switch (method) {
+        case 'VALIDATE':
+            return `${prefix}/${entity}/validate`;
         case 'UPLOAD': {
             const url = `${prefix}/single_upload`;
             return url;

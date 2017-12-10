@@ -119,6 +119,10 @@ module.exports = {
                                         type: 'keyword',
                                         index: false,
                                     },
+                                    url_name: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                     master_name: {
                                         type: 'keyword',
                                         index: false,

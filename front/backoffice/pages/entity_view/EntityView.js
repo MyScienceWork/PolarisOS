@@ -16,7 +16,7 @@ module.exports = {
                 itemsPerPage: 20,
                 itemsPerRow: 2,
                 rform_entity: 'entity_read',
-                form_name: `${this.$route.params.datainstance}_form`,
+                entity_form_sink: `${this.$route.params.datainstance}_form`,
             },
         };
     },
@@ -32,6 +32,11 @@ module.exports = {
         },
     },
     mounted() {
+        this.$store.dispatch('single_read', {
+            form: this.state.rform,
+            path: this.state.rpath,
+        });
+
         const entity_promise = this.$store.dispatch('search', {
             form: this.state.rform_entity,
             path: APIRoutes.entity('entity', 'POST', true),
@@ -47,7 +52,7 @@ module.exports = {
                 const form = this.$store.state.forms[this.state.rform_entity];
                 const content = form.content || [];
                 if (content.length > 0) {
-                    this.fetch_form(content[0].form);
+                    this.fetch_form(content[0].form, this.state.entity_form_sink);
                 }
             }
         }).catch((err) => { console.error(err); });

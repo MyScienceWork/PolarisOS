@@ -4,8 +4,9 @@ const API = require('../api');
 const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
 
-async function create_or_update(ctx, { path, body, form, rform, rpath }, up = false) {
-    const method = up ? 'PUT' : 'POST';
+async function create_or_update_or_validate(ctx, { path, body, form, rform, rpath }, action = 'create') {
+    const method = action === 'update' ? 'PUT' : 'POST';
+
     const payload = {
         path,
         method,
@@ -16,19 +17,26 @@ async function create_or_update(ctx, { path, body, form, rform, rpath }, up = fa
     ctx.commit(Messages.LOADING, { form });
     const response = await API.fetch(payload);
     ctx.commit(Messages.FETCH, { method, response, form });
-    ctx.dispatch('single_read', {
-        form: rform,
-        path: rpath,
-    });
+
+    if (action !== 'validate') {
+        ctx.dispatch('single_read', {
+            form: rform,
+            path: rpath,
+        });
+    }
 }
 
 module.exports = {
     create: async (ctx, payload) => {
-        await create_or_update(ctx, payload, false);
+        await create_or_update_or_validate(ctx, payload, 'create');
     },
 
     update: async (ctx, payload) => {
-        await create_or_update(ctx, payload, true);
+        await create_or_update_or_validate(ctx, payload, 'update');
+    },
+
+    validate: async (ctx, payload) => {
+        await create_or_update_or_validate(ctx, payload, 'validate');
     },
 
     remove: async (ctx, { path, form, rpath, rform }) => {

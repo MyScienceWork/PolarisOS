@@ -23,9 +23,6 @@ const FormModel = require('../entities/form/models/forms');
 const Pipeline = require('../entities/pipeline/pipeline');
 const PipelineModel = require('../entities/pipeline/models/pipelines');
 
-const DataSource = require('../entities/datasource/datasource');
-const DataSourceModel = require('../entities/datasource/models/datasources');
-
 const _Entity = require('../entities/entity/entity');
 const EntityModel = require('../entities/entity/models/entities');
 
@@ -108,7 +105,7 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
     if (mode === 'model') {
         const model_response = format_search({ where: { entity: type } }, PipelineModel);
         const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline', es_client,
-            PipelineModel, model_response.search, model_response.options);
+                PipelineModel, model_response.search, model_response.options);
         if (model_result.hits.length === 0) {
             return null;
         }
@@ -131,8 +128,6 @@ async function get_model_from_type(type: string): ?Object {
         return LangModel;
     case 'form':
         return FormModel;
-    case 'datasource':
-        return DataSourceModel;
     case 'pipeline':
         return PipelineModel;
     case 'entity':
@@ -155,8 +150,6 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Lang(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'form':
         return new Form(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'datasource':
-        return new DataSource(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'pipeline':
         return new Pipeline(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'entity':

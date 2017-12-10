@@ -37,6 +37,12 @@
                                 <td>{{state.files.content[filename].name}}</td>
                                 <td>
                                     <finput :name="`${files}.${i}.${name}`" label="" type="text" :placeholder="lang('dropzone_file_deposit_name')" :form="form" />
+                                    <finput 
+                                        :name="`${files}.${i}.${url}`" 
+                                        label="" type="hidden" 
+                                        :form="form" 
+                                        :hidden-value="state.files.content[filename].pathOnServer || ''" 
+                                    />
                                 </td>
                                 <td v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
                                     <progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>

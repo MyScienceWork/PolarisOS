@@ -51,7 +51,7 @@
                             :get_path="state.rpath"
                             :get_form="state.rform"
                             >
-                            <dynamic-form :form="form || {}" :cform="state.cform" />
+                            <dynamic-form :form="form(state.entity_form_sink) || {}" :cform="state.cform" />
                         </fform>
                     </div>
                 </widget>

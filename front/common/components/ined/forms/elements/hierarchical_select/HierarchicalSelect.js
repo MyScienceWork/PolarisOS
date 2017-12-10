@@ -7,18 +7,15 @@ module.exports = {
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
-        placeholder: { required: false, type: String },
         isRequired: { default: false, type: Boolean },
-        type: { required: true, type: String },
-        read: { default: false, type: Boolean },
-        hidden: { default: false, type: Boolean },
         form: { required: true, type: String },
-        rows: { default: 10 },
-        radioButtons: { default: () => [], type: Array },
-        hasAddons: { default: false, type: Boolean },
-        isAddon: { default: false, type: Boolean },
-        hiddenValue: { default: '', type: String },
         readonly: { default: false, type: Boolean },
+        options: { type: Array, required: true },
+        title: { type: String, default: '' },
+        fieldLabel: { type: String, default: 'label' },
+        fieldChildLabel: { type: String, default: 'label' },
+        fieldChildren: { type: String, default: 'children' },
+        fieldValue: { type: String, default: 'value' },
     },
 
     data() {
@@ -30,9 +27,9 @@ module.exports = {
     },
 
     methods: {
-        action(a, e) {
+        onChange(e) {
             e.preventDefault();
-            this.$emit('input-action-emit', { action: a });
+            this.$emit('hierarchical-select-change', this.state.value);
         },
         update() {
             const form = this.$store.state.forms[this.form];
@@ -46,21 +43,11 @@ module.exports = {
             }
         },
         defaultValue() {
-            if (this.type === 'checkbox' || this.type === 'radio') {
-                return false;
-            } else if (this.type === 'hidden') {
-                return this.hiddenValue;
-            }
             return undefined;
         },
     },
 
     watch: {
-        hiddenValue(n) {
-            if (this.type === 'hidden' && this.state.value !== n) {
-                this.update();
-            }
-        },
         reclaim(n) {
             if (n) {
                 this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {

@@ -5,27 +5,21 @@
             <div class="card-content">
                 <div class="columns is-centered">
                     <div class="column">
-                        <div class="field has-text-centered">
-                            <label class="label">
-                                {{lang('f_choose_document_type')}}
-                            </label>
-                            <div class="select">
-                                <select v-model="state.chosen_doc_type">
-                                    <option disabled>Type de document</option>
-                                    <template v-for="(item, i) in typology">
-                                        <optgroup :label="item.label">
-                                            <option v-for="(child, j) in item.children" :value="`${i}.${j}`">{{child.label}}</option>
-                                        </optgroup>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
+                        <fhselect 
+                            :label="lang('f_choose_document_type')"
+                            :is-required="true"
+                            :title="lang('f_type_of_document')"
+                            :options="typology_options"
+                            :form="creationSink"
+                            name="type"
+                            class="has-text-centered"
+                            fieldValue="form"
+                            @hierarchical-select-change="grab_typology_form"
+                        />
                     </div>
                 </div> 
-                <!--<div class="columns is-centered" v-if="state.chosen_doc_type != ''">
-                    <div class="column" v-if="grab_typology_child(state.chosen_doc_type).file">-->
-                <div class="columns is-centered">
-                    <div class="column">
+                <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0">
+                    <div class="column" v-if="Object.keys(upload_form).length > 0">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
                                 <div class="columns is-centered">
@@ -34,7 +28,8 @@
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
-                                <fdropzone form="dummy_form" name="name" master="master" files="files" />
+                                <dynamic-form :form="upload_form" :cform="creationSink"/>
+                                <!--<fdropzone form="dummy_form" name="name" master="master" files="files" />-->
                             </div>
                         </div>
                     </div>

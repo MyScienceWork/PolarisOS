@@ -13,6 +13,7 @@ module.exports = {
         master: { required: true, type: String },
         files: { required: true, type: String },
         name: { required: true, type: String },
+        url: { required: true, type: String },
     },
     data() {
         return {
@@ -37,16 +38,26 @@ module.exports = {
             this.state.files.content[name] = file;
         },
         dropzone_complete(file) {
-            this.state.files.content = Object.assign({}, this.state.files.content, { [name]: file });
+            const name = `${file.name}_${file.lastModified}`;
+            this.state.files.content = Object.assign({},
+                this.state.files.content, { [name]: file });
         },
         dropzone_error(file, message, xhr) {
+            const name = `${file.name}_${file.lastModified}`;
             file.errorMessage = message;
-            this.state.files.content = Object.assign({}, this.state.files.content, { [name]: file });
+            this.state.files.content = Object.assign({},
+                this.state.files.content, { [name]: file });
         },
         dropzone_success(file, response) {
+            const name = `${file.name}_${file.lastModified}`;
+            file.pathOnServer = response.file;
+            this.state.files.content = Object.assign({},
+                this.state.files.content, { [name]: file });
         },
         dropzone_progress(file, progress, bytesSent) {
-            this.state.files.content = Object.assign({}, this.state.files.content, { [name]: file });
+            const name = `${file.name}_${file.lastModified}`;
+            this.state.files.content = Object.assign({},
+                this.state.files.content, { [name]: file });
         },
         dropzone_remove(file, error, xhr) {
             const name = `${file.name}_${file.lastModified}`;

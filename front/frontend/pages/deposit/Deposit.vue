@@ -15,31 +15,46 @@
                                         {{lang('f_deposit_step_details_' + props.id)}} 
                                     </template>
                                     <template slot="step-content" slot-scope="props">
-                                        <first-deposit-step 
-                                            :typology-form="state.rform"
-                                            :documentType="state.typology_child_path"
-                                            v-if="props.id === 0"
-                                            @typology-child-change="update_typology_child"
-                                        />                                        
-                                        <second-deposit-step 
-                                            v-if="props.id === 1 && state.typology_child != null"
-                                            :form="forms[state.typology_child.form]"
-                                            subform="required"
-                                        />
-                                        <second-deposit-step 
-                                            v-if="props.id === 2 && state.typology_child != null"
-                                            :form="forms[state.typology_child.form]"
-                                            subform="optional"
-                                        />
-                                        <second-deposit-step 
-                                            v-if="props.id === 3 && state.typology_child != null"
-                                            :form="forms[state.typology_child.form]"
-                                            subform="permission"
-                                        />
-                                        <review-deposit-step 
-                                            v-if="props.id === 4 && state.typology_child != null"
-                                            :form="forms[state.typology_child.form]"
-                                        />
+                                        <fform
+                                            :name="state.publication.sink" 
+                                            :post_path="state.publication.path" 
+                                            :put_path="state.publication.path"
+                                            :get_path="state.publication.read_path"
+                                            :validate_path="state.publication.validate_path"
+                                            :has-buttons="false"
+                                            get_form="dummy_sink"
+                                        >
+                                            <first-deposit-step
+                                                :creation-sink="state.publication.sink"
+                                                :typology-sink="state.typology.sink"
+                                                v-show="props.id === 0"
+                                                @typology-change="update_typology_form"
+                                                :publication-specs="state.publication.specs"
+                                            />                                        
+                                            <second-deposit-step 
+                                                v-show="props.id === 1"
+                                                :creation-sink="state.publication.sink"
+                                                :publication-specs="state.publication.specs"
+                                                subform-name="required"
+                                            />
+                                            <second-deposit-step 
+                                                v-show="props.id === 2"
+                                                :creation-sink="state.publication.sink"
+                                                :publication-specs="state.publication.specs"
+                                                subform-name="optional"
+                                            />
+                                            <second-deposit-step 
+                                                v-show="props.id === 3"
+                                                :creation-sink="state.publication.sink"
+                                                :publication-specs="state.publication.specs"
+                                                subform-name="permission"
+                                            />
+                                            <review-deposit-step 
+                                                v-show="props.id === 4"
+                                                :publication-specs="state.publication.specs"
+                                                :creation-sink="state.publication.sink"
+                                            />
+                                        </fform>
                                     </template>
                                 </stepper>
                             </div>

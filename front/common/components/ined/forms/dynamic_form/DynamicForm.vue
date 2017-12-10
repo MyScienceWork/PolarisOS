@@ -95,8 +95,9 @@
                 v-else-if="field.type === 'file'"
                 :form="cform"
                 :files="get_name(`${props.fname}.${props.id}.${field.name}`)"
-                :name="field.file_name"
-                :master="field.master_name"
+                :name="field.file.file_name"
+                :master="field.file.master_name"
+                :url="field.file.url_name"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -151,8 +152,9 @@
             v-else-if="field.type === 'file'"
             :form="cform"
             :files="get_name(field.name, null)"
-            :name="field.file_name"
-            :master="field.master_name"
+            :name="field.file.file_name"
+            :master="field.file.master_name"
+            :url="field.file.url_name"
             />
             <dynamic-form 
                 :form="field.subform" 

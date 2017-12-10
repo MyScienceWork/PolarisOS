@@ -23,7 +23,7 @@ class Pipeline extends ODM {
                 this._client);
         const formatters = await this.generate_formatters();
 
-        return {
+        const pipe = {
             Defaults: {},
             Mapping: mapping,
             Messages: {
@@ -36,6 +36,9 @@ class Pipeline extends ODM {
             Completion: [],
             Name: type,
         };
+
+        console.log(pipe);
+        return pipe;
     }
 }
 

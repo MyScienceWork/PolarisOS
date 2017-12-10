@@ -5,20 +5,11 @@
             <div class="card-content">
                 <div class="columns is-centered">
                     <div class="column has-text-centered is-8">
-                        <h4 class="title is-4">{{lang('f_deposit_'+subform+'_step')}}</h4>
-                        <p v-html="lang('f_deposit_'+subform+'_step_help')"></p>
+                        <h4 class="title is-4">{{lang('f_deposit_'+subformName+'_step')}}</h4>
+                        <p v-html="lang('f_deposit_'+subformName+'_step_help')"></p>
                     </div>
                 </div>
-                <fform
-                    :name="state.cform" 
-                    :post_path="state.path" 
-                    :put_path="state.path"
-                    :get_path="state.rpath"
-                    :get_form="state.rform"
-                    :has-buttons="false"
-                >
-                    <dynamic-form :form="final_form" :cform="state.cform" />
-                </fform>
+                <dynamic-form :form="subform" :cform="creationSink" />
             </div>
         </div>
     </div>
