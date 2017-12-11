@@ -40,9 +40,6 @@ module.exports = {
             path: APIRoutes.entity('form', 'POST', true),
             body: {
                 projection: ['name'],
-                where: {
-                    has_subforms: true,
-                },
                 size: 10000,
             },
         });

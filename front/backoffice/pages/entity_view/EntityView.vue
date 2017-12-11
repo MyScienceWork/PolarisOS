@@ -24,6 +24,7 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
+                                        {{content.label || content.name}}
                                     </span>
                                     <div slot="body">
                                     </div>
