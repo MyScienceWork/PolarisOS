@@ -11,6 +11,7 @@ module.exports = {
         get_path: { type: String, required: true },
         validate_path: { type: String, required: false },
         get_form: { type: String, required: true },
+        showErrors: { type: Boolean, default: true },
     },
     data() {
         return {

@@ -1,6 +1,6 @@
 <template>
 <form @submit.prevent="submit">
-    <div class="columns is-centered" v-if="error.found">
+    <div class="columns is-centered" v-if="error.found && showErrors">
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
@@ -9,7 +9,7 @@
             </article>
         </div>
     </div>
-    <div class="columns is-centered" v-else-if="success != null && success.length > 0">
+    <div class="columns is-centered" v-else-if="success != null && success.length > 0 && showErrors">
         <div class="column">
             <article class="message is-green">
                 <div class="message-body">
@@ -41,7 +41,7 @@
         :update_mode="state.update_mode"
     >
     </slot>
-    <div class="columns is-centered" v-if="error.found">
+    <div class="columns is-centered" v-if="error.found && showErrors">
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
@@ -50,7 +50,7 @@
             </article>
         </div>
     </div>
-    <div class="columns is-centered" v-else-if="success != null && success.length > 0">
+    <div class="columns is-centered" v-else-if="success != null && success.length > 0 && showErrors">
         <div class="column">
             <article class="message is-green">
                 <div class="message-body">

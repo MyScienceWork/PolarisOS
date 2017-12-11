@@ -6,6 +6,7 @@ module.exports = {
     props: {
         publicationSpecs: { type: String, required: true },
         creationSink: { type: String, required: true },
+        success: { type: Boolean, default: false },
     },
     data() {
         return {

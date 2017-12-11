@@ -36,26 +36,34 @@ module.exports = {
         update_typology_form(form) {
             this.fetch_form(form, this.state.publication.specs);
         },
-        next_step(info) {
-            const step = info.step;
-            const event = info.e;
+        validate(e) {
+            EventHub.$emit('form-click-on-validate', e);
+        },
+        next(func, step, total, e) {
+            e.preventDefault();
 
-            if (step > this.state.current_step) {
-                if (step === this.state.total_steps) {
-                    EventHub.$emit('form-click-on-submit', event);
-                } else {
-                    this.state.next_step = step;
-                    EventHub.$emit('form-click-on-validate', event);
-                }
-            } else {
-                this.state.next_step = step;
-                this.state.current_step = step;
-                this.$store.commit(Messages.UPDATE_MODE_FORM, {
-                    form: this.state.publication.sink,
-                    update: true,
-                    content: this.$store.state.forms[this.state.publication.sink].content,
-                });
+            if (this.unvalidated) {
+                return;
             }
+
+            if (step === total - 1) {
+                EventHub.$emit('form-click-on-submit', e);
+            } else {
+                this.state.next_step = step + 1;
+                this.validate(e);
+            }
+            func(e);
+        },
+        previous(func, step, total, e) {
+            e.preventDefault();
+            this.state.next_step = step;
+            this.state.current_step = step - 1;
+            this.$store.commit(Messages.UPDATE_MODE_FORM, {
+                form: this.state.publication.sink,
+                update: true,
+                content: this.$store.state.forms[this.state.publication.sink].content,
+            });
+            func(e);
         },
     },
     components: {
@@ -77,12 +85,24 @@ module.exports = {
     },
     computed: {
         unvalidated() {
-            let content = {};
+            let form = {};
             if (this.state.publication.sink in this.$store.state.forms) {
-                content = this.$store.state.forms[this.state.publication.sink].content || {};
+                form = this.$store.state.forms[this.state.publication.sink] || {};
             }
-            return this.state.next_step === 2
-                && Object.keys(content.validations || {}).length > 0;
+            return Object.keys(form.validations || {}).length > 0;
+        },
+        success() {
+            if (this.state.publication.sink in this.$store.state.forms) {
+                const form = this.$store.state.forms[this.state.publication.sink];
+                if (form.success) {
+                    if (form.success instanceof String) {
+                        return form.success.trim() !== '';
+                    }
+                    return true;
+                }
+                return false;
+            }
+            return false;
         },
     },
 };

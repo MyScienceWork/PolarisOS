@@ -83,6 +83,24 @@ module.exports = {
                             },
                         },
                     },
+                    validators: {
+                        type: 'nested',
+                        properties: {
+                            field: {
+                                type: 'keyword',
+                                index: false,
+                            },
+                            type: {
+                                type: 'keyword',
+                                index: false,
+                            },
+                            required: {
+                                type: 'boolean',
+                                index: false,
+                            },
+                            function: FunctionMapping,
+                        },
+                    },
                 },
             },
         },

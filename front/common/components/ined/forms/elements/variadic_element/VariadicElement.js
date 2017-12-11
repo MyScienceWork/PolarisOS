@@ -64,7 +64,7 @@ module.exports = {
                 this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
-                    info: this.state.value,
+                    info: {},
                 });
             }
         },

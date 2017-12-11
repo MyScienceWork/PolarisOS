@@ -22,6 +22,7 @@
                     :form="cform"
                     :is-addon="true"
                     :readonly="readonly"
+                    :is-required="field.required"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -31,6 +32,7 @@
                     :is-addon="true"
                     :hidden-value="field.hiddenValue"
                     :readonly="readonly"
+                    :is-required="field.required"
                     />
                     <fselect 
                     v-else-if="field.type === 'select'"
@@ -43,6 +45,7 @@
                     :options="field.datasource.content || []"
                     :is-addon="true"
                     :readonly="readonly"
+                    :is-required="field.required"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -61,6 +64,7 @@
                 :form="cform"
                 :has-addons="field.single_multiple"
                 :readonly="readonly"
+                :is-required="field.required"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -79,6 +83,7 @@
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
                 :readonly="readonly"
+                :is-required="field.required"
                 />
                 <fselect 
                 v-else-if="field.type === 'select'"
@@ -90,6 +95,7 @@
                 :fieldValue="field.datasource.value"
                 :options="field.datasource.content || []"
                 :readonly="readonly"
+                :is-required="field.required"
                 />
                 <fdropzone 
                 v-else-if="field.type === 'file'"
@@ -128,6 +134,7 @@
             :type="field.type"
             :form="cform"
             :readonly="readonly"
+            :is-required="field.required"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -137,6 +144,7 @@
             :is-addon="true"
             :hidden-value="field.hiddenValue"
             :readonly="readonly"
+            :is-required="field.required"
             />
             <fselect 
             v-else-if="field.type === 'select'"
@@ -148,6 +156,7 @@
             :fieldValue="field.datasource.value"
             :options="field.datasource.content || []"
             :readonly="readonly"
+            :is-required="field.required"
             />
             <fdropzone 
             v-else-if="field.type === 'file'"

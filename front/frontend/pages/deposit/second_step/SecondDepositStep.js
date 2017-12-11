@@ -7,6 +7,7 @@ module.exports = {
         publicationSpecs: { type: String, required: true },
         creationSink: { type: String, required: true },
         subformName: { type: String, default: 'required' },
+        validated: { type: Boolean, default: true },
     },
     computed: {
         subform() {

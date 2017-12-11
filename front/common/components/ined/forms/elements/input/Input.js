@@ -62,7 +62,6 @@ module.exports = {
             }
         },
         reclaim(n) {
-            console.log('input reclaim watcher', n);
             if (n) {
                 this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
                     form: this.form,

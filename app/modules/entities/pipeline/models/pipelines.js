@@ -18,6 +18,10 @@ const Validation: Array<any> = [
 const Formatting: Array<any> = [
     {
         formatters: a => FormatFunctions.oarray_to_array(a),
+        completers: a => FormatFunctions.oarray_to_array(a),
+        transformers: a => FormatFunctions.oarray_to_array(a),
+        validators: a => FormatFunctions.oarray_to_array(a),
+        defaults: a => FormatFunctions.oarray_to_array(a),
     },
 
 ];

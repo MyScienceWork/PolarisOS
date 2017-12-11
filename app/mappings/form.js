@@ -129,6 +129,10 @@ module.exports = {
                                     },
                                 },
                             },
+                            required: {
+                                type: 'boolean',
+                                index: false,
+                            },
                         },
                     },
                 },

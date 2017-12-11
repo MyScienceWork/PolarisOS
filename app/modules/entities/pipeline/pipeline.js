@@ -1,5 +1,6 @@
 // @flow
 const ODM = require('../crud/odm');
+const Joi = require('joi');
 const FormatFunctions = require('../../pipeline/formatter/formatfunctions');
 
 class Pipeline extends ODM {
@@ -18,26 +19,58 @@ class Pipeline extends ODM {
         return [];
     }
 
+    async generate_validators(): Promise<Array<any>> {
+        const info = this.source;
+        const validators = [];
+        if ('validators' in info && info.validators.length > 0) {
+            const partitions = info.validators.reduce((obj, v) => {
+                if (v.type === 'function') {
+                    obj.functions.push(v);
+                } else {
+                    obj.joi.push(v);
+                }
+                return obj;
+            }, { joi: [], functions: [] });
+
+            validators.push(Joi.object(partitions.joi.reduce((obj, v) => {
+                switch (v.type) {
+                default:
+                case 'string':
+                    obj[v.field] = Joi.string();
+                    break;
+                }
+
+                if (v.required) {
+                    obj[v.field] = obj[v.field].required();
+                } else {
+                    obj[v.field] = obj[v.field].optional().empty('');
+                }
+                return obj;
+            }, {})));
+        }
+        return validators;
+    }
+
     async generate_model(index: string, type: string): Object {
         const mapping = await this.constructor.fetch_mapping(index, type,
                 this._client);
         const formatters = await this.generate_formatters();
+        const validators = await this.generate_validators();
 
         const pipe = {
             Defaults: {},
             Mapping: mapping,
             Messages: {
-                set: '',
-                remove: '',
-                modify: '',
+                set: 'Set',
+                remove: 'Remove',
+                modify: 'Modify',
             },
-            Validation: [],
+            Validation: validators,
             Formatting: formatters,
             Completion: [],
             Name: type,
         };
 
-        console.log(pipe);
         return pipe;
     }
 }

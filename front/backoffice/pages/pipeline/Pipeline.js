@@ -2,6 +2,7 @@ const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const ValTypes = require('../../../common/lists/valtypes');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -35,6 +36,9 @@ module.exports = {
         });
     },
     computed: {
+        valtypes() {
+            return ValTypes || [];
+        },
         content() {
             if (this.state.rform in this.$store.state.forms) {
                 const form = this.$store.state.forms[this.state.rform];

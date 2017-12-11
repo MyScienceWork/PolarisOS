@@ -136,6 +136,38 @@
                                             </template>
                                         </fvariadic-element>
                                     </template>
+                                    <template v-else-if="tprops.id === 4">
+                                        <fvariadic-element 
+                                            name="validators" 
+                                            :form="state.cform" 
+                                            :tabs="true"
+                                            :key="tprops.id">
+                                            <template slot="variadic" slot-scope="props">
+                                                <finput 
+                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :label="lang('b_field')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('b_field')" 
+                                                    type="text" 
+                                                    :form="state.cform" 
+                                                />
+                                                <fselect
+                                                    :name="`${props.fname}.${props.id}.type`" 
+                                                    :label="lang('b_validator_type')" 
+                                                    :placeholder="lang('b_validator_type')"
+                                                    :is-required="true"
+                                                    :options="valtypes|| []"
+                                                    :form="state.cform" 
+                                                />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.id}.required`" 
+                                                    :label="lang('b_field_required')" 
+                                                    type="checkbox" 
+                                                    :form="state.cform" 
+                                                />
+                                            </template>
+                                        </fvariadic-element>
+                                    </template>
                                 </template>
                             </tabber>
                         </fform>
