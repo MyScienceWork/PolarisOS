@@ -1,21 +1,28 @@
-const VSelect = require('vue-select').VueSelect;
+const LangMixin = require('../../../common/mixins/LangMixin');
+const APIRoutes = require('../../../common/api/routes');
 
 module.exports = {
+    mixins: [LangMixin],
     data() {
         return {
             state: {
-                value: 'No',
+                psink: 'publication_sink',
+                pread_path: APIRoutes.entity('publication', 'POST', true),
             },
         };
     },
     components: {
-        'v-select': VSelect,
     },
     methods: {
-        onKeyChange(val, e) {
-            console.log('update with', val);
-            e.preventDefault();
-            this.state.value += val;
-        },
+
+    },
+    mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.psink,
+            path: this.state.pread_path,
+            body: {
+                size: 3,
+            },
+        });
     },
 };
