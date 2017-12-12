@@ -15,10 +15,14 @@ const Logger = require('../../../logger');
 async function formatting(object: Object, func: Function, key: string) {
     const path = key.split('.');
     const last = path[path.length - 1];
-    const result = Utils.find_value_with_path(object, path);
-    const outer_object = Utils.find_object_with_path(object, path);
-    if (result != null) {
-        outer_object[last] = await func(result, object);
+    const results = [...Utils.find_popvalue_with_path(object, path)];
+    const outer_objects = [...Utils.find_popvalue_with_path(object, path, true)];
+    if (results.length > 0) {
+        for (const i in results) {
+            const result = results[i];
+            const outer_object = outer_objects[i];
+            outer_object[last] = await func(result, object);
+        }
     }
     return object;
 }

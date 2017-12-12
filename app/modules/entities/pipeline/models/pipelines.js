@@ -23,6 +23,10 @@ const Formatting: Array<any> = [
         validators: a => FormatFunctions.oarray_to_array(a),
         defaults: a => FormatFunctions.oarray_to_array(a),
     },
+    {
+        'formatters.function.arguments': a => FormatFunctions.oarray_to_array(a),
+        'completers.function.arguments': a => FormatFunctions.oarray_to_array(a),
+    },
 
 ];
 

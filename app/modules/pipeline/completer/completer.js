@@ -15,11 +15,8 @@ const Logger = require('../../../logger');
 async function complete(object: Object, completers: Array<any>, info: ?Object): Promise<Object> {
     const final_promise = completers.reduce((promise, completer: any) => promise.then((obj) => {
         const subobjects_promises = _.map(completer, (func: Function, path: string) => {
-            const result = Utils.find_value_with_path(object, path.split('.'));
-            if (result == null) {
-                return func(obj, path, info);
-            }
-            return Promise.resolve({});
+            console.log(obj, path, info);
+            return func(obj, path, info);
         });
 
         return new Promise((resolve, reject) => {

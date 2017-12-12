@@ -10,12 +10,19 @@
                             :is-required="true"
                             :title="lang('f_type_of_document')"
                             :options="typology_options"
-                            :form="creationSink"
+                            form="dummy_sink"
                             name="type"
                             class="has-text-centered"
-                            fieldValue="form"
+                            fieldValue="path"
                             @hierarchical-select-change="grab_typology_form"
-                        />
+                            />
+                            <finput
+                                type="hidden"
+                                label='dummy'
+                                :hidden-value="state.typology.name"
+                                :form="creationSink"
+                                name="type"
+                            />
                     </div>
                 </div> 
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0">

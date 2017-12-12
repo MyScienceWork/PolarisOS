@@ -61,6 +61,10 @@ module.exports = {
                     completers: {
                         type: 'nested',
                         properties: {
+                            field: {
+                                type: 'keyword',
+                                index: false,
+                            },
                             function: FunctionMapping,
                         },
                     },

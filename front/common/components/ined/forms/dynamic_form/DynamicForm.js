@@ -17,4 +17,22 @@ module.exports = {
             return name;
         },
     },
+    computed: {
+        datasource() {
+            return (field) => {
+                if (field.type !== 'select' && field.type !== 'multi-select') {
+                    return [];
+                }
+
+                const content = field.datasource.content || [];
+                if (field.datasource.translatable) {
+                    return content.map((dc) => {
+                        dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
+                        return dc;
+                    });
+                }
+                return content;
+            };
+        },
+    },
 };

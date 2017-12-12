@@ -1,6 +1,11 @@
 const Messages = require('../../../../api/messages');
+const LangMixin = require('../../../../mixins/LangMixin');
 
 module.exports = {
+    mixins: [LangMixin],
+    props: {
+        no_contribution: { default: false, type: Boolean },
+    },
     computed: {
         validations() {
             if (this.form in this.$store.state.forms) {
@@ -37,10 +42,14 @@ module.exports = {
     },
     mounted() {
         this.update();
-        this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form, name: this.name });
+        if (!this.no_contribution) {
+            this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form, name: this.name });
+        }
     },
     beforeDestroy() {
-        this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form, name: this.name });
+        if (!this.no_contribution) {
+            this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form, name: this.name });
+        }
     },
     watch: {
         update_mode() {

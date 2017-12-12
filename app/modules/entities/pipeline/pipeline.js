@@ -2,6 +2,7 @@
 const ODM = require('../crud/odm');
 const Joi = require('joi');
 const FormatFunctions = require('../../pipeline/formatter/formatfunctions');
+const ComplFunctions = require('../../pipeline/completer/complfunctions');
 
 class Pipeline extends ODM {
     async generate_formatters(): Promise<Array<any>> {
@@ -11,6 +12,21 @@ class Pipeline extends ODM {
                 switch (f.function.name) {
                 case 'oarray_to_array':
                     return { [f.field]: a => FormatFunctions.oarray_to_array(a) };
+                default:
+                    return null;
+                }
+            }).filter(f => f != null);
+        }
+        return [];
+    }
+
+    async generate_completers(): Promise<Array<any>> {
+        const info = this.source;
+        if ('completers' in info && info.completers.length > 0) {
+            return info.completers.map((f) => {
+                switch (f.function.name) {
+                case 'generic_complete':
+                    return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(f.function.arguments[0].value)(o, p, i) };
                 default:
                     return null;
                 }
@@ -55,6 +71,7 @@ class Pipeline extends ODM {
         const mapping = await this.constructor.fetch_mapping(index, type,
                 this._client);
         const formatters = await this.generate_formatters();
+        const completers = await this.generate_completers();
         const validators = await this.generate_validators();
 
         const pipe = {
@@ -67,10 +84,10 @@ class Pipeline extends ODM {
             },
             Validation: validators,
             Formatting: formatters,
-            Completion: [],
+            Completion: completers,
             Name: type,
         };
-
+        console.log(completers);
         return pipe;
     }
 }

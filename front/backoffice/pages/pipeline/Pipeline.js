@@ -15,11 +15,26 @@ module.exports = {
                 rform: 'pipeline_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
-                selected_types: {},
+                selected_functions: {
+                    completer: {},
+                    formatter: {},
+                },
             },
         };
     },
     methods: {
+        function_change(val, part, idx) {
+            if (val == null) {
+                if (part in this.state.selected_functions
+                        && idx in this.state.selected_functions[part]) {
+                    delete this.state.selected_types[part][idx];
+                }
+            } else {
+                this.state.selected_functions[part] = Object.assign({},
+                    this.state.selected_functions[part],
+                    { [idx]: this.functions[part][val.value] });
+            }
+        },
     },
     mounted() {
         this.$store.dispatch('single_read', {
@@ -30,7 +45,6 @@ module.exports = {
             form: 'function_read',
             path: APIRoutes.entity('function', 'POST', true),
             body: {
-                projection: ['name', 'type'],
                 size: 10000,
             },
         });
@@ -56,9 +70,9 @@ module.exports = {
                 const content = form.content || [];
                 return content.reduce((obj, func) => {
                     if (!(func.type in obj)) {
-                        obj[func.type] = [];
+                        obj[func.type] = {};
                     }
-                    obj[func.type].push(func);
+                    obj[func.type][func.name] = func;
                     return obj;
                 }, {});
             }

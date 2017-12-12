@@ -12,7 +12,9 @@ module.exports = {
         isRequired: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
+        no_contribution: { type: Boolean, default: true },
     },
+
 
     data() {
         return {
@@ -60,13 +62,13 @@ module.exports = {
 
     watch: {
         reclaim(n) {
-            if (n) {
+            /* if (n) {
                 this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: {},
                 });
-            }
+            }*/
         },
         cancel(n) {
             if (n) {

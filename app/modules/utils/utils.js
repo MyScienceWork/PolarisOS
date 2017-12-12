@@ -171,6 +171,20 @@ function merge_with_replacement(object: Object, source: Object): Object {
     }, object);
 }
 
+function make_nested_object_from_path(path: Array<string>,
+    value: any, obj: Object = {}): Object {
+    const rpath = _.reverse(path);
+    return rpath.reduce((acc, field) => {
+        if (Object.keys(acc).length === 0) {
+            acc[field] = value;
+            return acc;
+        }
+        const my_obj = {};
+        my_obj[field] = acc;
+        return my_obj;
+    }, obj);
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -178,4 +192,5 @@ module.exports = {
     forge_whitelist_blacklist_query,
     merge_with_replacement,
     find_popvalue_with_path,
+    make_nested_object_from_path,
 };

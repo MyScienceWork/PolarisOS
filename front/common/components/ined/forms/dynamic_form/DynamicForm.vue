@@ -4,7 +4,7 @@
         <finput 
             v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
-            :name="get_name(form.fields[0].name, null)"
+            :name="get_name(form.fields[0].name)"
             :placeholder="lang(form.fields[0].placeholder || '')"
             :type="form.fields[0].type"
             :form="cform"
@@ -16,36 +16,40 @@
                     <finput 
                     v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
-                    :name="get_name(field.name, null)"
+                    :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
                     :type="field.type"
                     :form="cform"
                     :is-addon="true"
                     :readonly="readonly"
                     :is-required="field.required"
+                    :key="i"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
-                    :name="get_name(field.name, null)"
+                    :name="get_name(field.name)"
                     :type="field.type"
                     :form="cform"
                     :is-addon="true"
                     :hidden-value="field.hiddenValue"
                     :readonly="readonly"
                     :is-required="field.required"
+                    :key="i"
                     />
                     <fselect 
-                    v-else-if="field.type === 'select'"
+                    v-else-if="field.type === 'select' || field.type === 'multi-select'"
                     :label="lang(field.label || '')"
                     :placeholder="lang(field.placeholder || '')"
-                    :name="get_name(field.name, null)"
+                    :name="get_name(field.name)"
                     :form="cform"
                     :fieldLabel="field.datasource.label"
                     :fieldValue="field.datasource.value"
-                    :options="field.datasource.content || []"
+                    :options="datasource(field)"
                     :is-addon="true"
                     :readonly="readonly"
                     :is-required="field.required"
+                    :key="i"
+                    :multi="field.type === 'multi-select'"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -65,6 +69,7 @@
                 :has-addons="field.single_multiple"
                 :readonly="readonly"
                 :is-required="field.required"
+                :key="i"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -77,26 +82,39 @@
                 </finput>
                 <finput 
                 v-else-if="['hidden'].indexOf(field.type) !== -1"
-                :name="get_name(field.name, null)"
+                :name="get_name(field.name)"
                 :type="field.type"
                 :form="cform"
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
                 :readonly="readonly"
                 :is-required="field.required"
+                :key="i"
                 />
                 <fselect 
-                v-else-if="field.type === 'select'"
+                v-else-if="field.type === 'select' || field.type === 'multi-select'"
                 :label="lang(field.label || '')"
                 :placeholder="lang(field.placeholder || '')"
                 :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
                 :form="cform"
                 :fieldLabel="field.datasource.label"
                 :fieldValue="field.datasource.value"
-                :options="field.datasource.content || []"
+                :options="datasource(field)"
                 :readonly="readonly"
                 :is-required="field.required"
-                />
+                :has-addons="field.single_multiple"
+                :key="i"
+                :multi="field.type === 'multi-select'"
+                >
+                    <template v-if="field.single_multiple && !readonly" slot="input-addons">
+                        <div class="control">
+                            <a class="button is-info" @click="props.add">+</a>
+                        </div>
+                        <div class="control">
+                            <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                        </div>
+                    </template>
+                </fselect>
                 <fdropzone 
                 v-else-if="field.type === 'file'"
                 :form="cform"
@@ -105,6 +123,7 @@
                 :master="field.file.master_name"
                 :url="field.file.url_name"
                 :readonly="readonly"
+                :key="i"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -113,6 +132,7 @@
                     v-else-if="field.type === 'subform' && field.subform != null"
                     :single="field.single_multiple"
                     :readonly="readonly"
+                    :key="i"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="control">
@@ -129,7 +149,7 @@
             <finput 
             v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
-            :name="get_name(field.name, null)"
+            :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
             :type="field.type"
             :form="cform"
@@ -138,7 +158,7 @@
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
-            :name="get_name(field.name, null)"
+            :name="get_name(field.name)"
             :type="field.type"
             :form="cform"
             :is-addon="true"
@@ -147,21 +167,22 @@
             :is-required="field.required"
             />
             <fselect 
-            v-else-if="field.type === 'select'"
+            v-else-if="field.type === 'select' || field.type === 'multi-select'"
             :label="lang(field.label || '')"
             :placeholder="lang(field.placeholder || '')"
-            :name="get_name(field.name, null)"
+            :name="get_name(field.name)"
             :form="cform"
             :fieldLabel="field.datasource.label"
             :fieldValue="field.datasource.value"
-            :options="field.datasource.content || []"
+            :options="datasource(field)"
             :readonly="readonly"
             :is-required="field.required"
+            :multi="field.type === 'multi-select'"
             />
             <fdropzone 
             v-else-if="field.type === 'file'"
             :form="cform"
-            :files="get_name(field.name, null)"
+            :files="get_name(field.name)"
             :name="field.file.file_name"
             :master="field.file.master_name"
             :url="field.file.url_name"

@@ -84,7 +84,7 @@
                                         v-on:select-change="(val) => {type_change(val, props.id)}"
                                     />
                                     <div v-if="props.id in state.selected_types"> 
-                                        <div v-if="state.selected_types[props.id] === 'select'">
+                                        <div v-if="['select', 'multi-select'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.cform" />
                                             <fselect 
                                             :name="`${props.fname}.${props.id}.datasource.name`" 

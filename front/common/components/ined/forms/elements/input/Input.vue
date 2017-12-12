@@ -50,7 +50,7 @@
     </div>
     <div v-if="validations.length > 0">
         <p v-for="text in validations" class="redify inline-block">
-            {{text}}
+            {{lang(text)}}
         </p>
     </div>
 </div>
@@ -77,7 +77,7 @@
     </div>
     <div v-if="validations.length > 0">
         <p v-for="text in validations" class="redify inline-block">
-            {{text}}
+            {{lang(text)}}
         </p>
     </div>
 </div>

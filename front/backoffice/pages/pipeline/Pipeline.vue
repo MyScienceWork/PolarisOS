@@ -57,7 +57,8 @@
                             <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
                                 <template slot="tabs" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
-                                        <fvariadic-element 
+                                        <fvariadic-element
+                                            :key="tprops.id"
                                             name="defaults" 
                                             :form="state.cform" 
                                             :tabs="true">
@@ -99,11 +100,30 @@
                                                     :name="`${props.fname}.${props.id}.function.name`" 
                                                     :label="lang('b_function_name')" 
                                                     :is-required="true"
-                                                    :options="functions.formatter || []"
+                                                    :options="functions.formatter ? Object.values(functions.formatter) : []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
                                                     :form="state.cform" 
+                                                    v-on:select-change="(val) => {function_change(val, 'formatter', props.id)}"
                                                 />
+                                                
+                                                <div v-if="props.id in state.selected_functions.formatter">
+                                                    <template v-for="(arg, i) in state.selected_functions.formatter[props.id].arguments">
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.value`" 
+                                                            :label="`${arg.name} (${arg.type})`" 
+                                                            :placeholder="`${arg.name} (${arg.type})`" 
+                                                            type="text" 
+                                                            :form="state.cform" 
+                                                        /> 
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
+                                                            type="hidden"
+                                                            :hidden-value="arg.name"
+                                                            :form="state.cform" 
+                                                        />
+                                                    </template>
+                                                </div>
                                             </template>
                                         </fvariadic-element>
                                     </template>
@@ -114,15 +134,41 @@
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
-                                            <fselect
-                                                :name="`${props.fname}.${props.id}.name`" 
-                                                :label="lang('b_function_name')" 
-                                                :is-required="true"
-                                                :options="functions.completer || []"
-                                                fieldLabel="name"
-                                                fieldValue="name"
-                                                :form="state.cform" 
-                                            />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :label="lang('b_field')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('b_field')" 
+                                                    type="text" 
+                                                    :form="state.cform" 
+                                                />
+                                                <fselect
+                                                    :name="`${props.fname}.${props.id}.function.name`" 
+                                                    :label="lang('b_function_name')" 
+                                                    :is-required="true"
+                                                    :options="functions.completer ? Object.values(functions.completer) : []"
+                                                    fieldLabel="name"
+                                                    fieldValue="name"
+                                                    :form="state.cform" 
+                                                    v-on:select-change="(val) => {function_change(val, 'completer', props.id)}"
+                                                />
+                                                <div v-if="props.id in state.selected_functions.completer">
+                                                    <template v-for="(arg, i) in state.selected_functions.completer[props.id].arguments">
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.value`" 
+                                                            :label="`${arg.name} (${arg.type})`" 
+                                                            :placeholder="`${arg.name} (${arg.type})`" 
+                                                            type="text" 
+                                                            :form="state.cform" 
+                                                        /> 
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
+                                                            type="hidden"
+                                                            :hidden-value="arg.name"
+                                                            :form="state.cform" 
+                                                        />
+                                                    </template>
+                                                </div>
                                             </template>
                                         </fvariadic-element>
                                     </template>

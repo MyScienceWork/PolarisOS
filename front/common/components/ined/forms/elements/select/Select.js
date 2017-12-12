@@ -15,6 +15,7 @@ module.exports = {
         options: { required: true, type: Array },
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
+        hasAddons: { default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -91,7 +92,7 @@ module.exports = {
             }
 
             if (infos instanceof Array) {
-                return infos.map(o => o.value);
+                return infos.map(o => ({ [this.fieldValue]: o.value }));
             }
             return infos.value;
         },
@@ -133,7 +134,7 @@ module.exports = {
         },
         readonlyValue() {
             if (this.state.selected instanceof Array) {
-                return this.state.selected.map(s => s[this.fieldLabel]);
+                return this.state.selected.map(s => s.label);
             }
             return this.state.selected || '';
         },

@@ -33,7 +33,7 @@ module.exports = {
         };
     },
     methods: {
-        update_typology_form(form) {
+        update_typology_form(form, name) {
             this.fetch_form(form, this.state.publication.specs);
         },
         validate(e) {

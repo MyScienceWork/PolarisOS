@@ -28,6 +28,7 @@
     "elasticsearch": "^13.0.1",
     "enumify": "^1.0.4",
     "font-awesome": "^4.7.0",
+    "handlebars": "^4.0.11",
     "joi": "^10.4.1",
     "kcors": "^2.2.0",
     "koa": "^2.0.0",
