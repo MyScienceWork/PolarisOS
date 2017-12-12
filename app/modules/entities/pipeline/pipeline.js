@@ -1,10 +1,25 @@
 // @flow
 const ODM = require('../crud/odm');
 const Joi = require('joi');
+const Handlebars = require('../../utils/templating');
+const Utils = require('../../utils/utils');
 const FormatFunctions = require('../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../pipeline/completer/complfunctions');
 
 class Pipeline extends ODM {
+    async generate_defaults(): Promise<Object> {
+        const info = this.source;
+        if ('defaults' in info) {
+            return info.defaults.reduce((obj, d) => {
+                const t = Handlebars.compile(d.value)({});
+                const small = Utils.make_nested_object_from_path(d.key, t);
+                obj = Utils.merge_with_replacement(obj, small);
+                return obj;
+            }, {});
+        }
+        return {};
+    }
+
     async generate_formatters(): Promise<Array<any>> {
         const info = this.source;
         if ('formatters' in info && info.formatters.length > 0) {
@@ -68,14 +83,16 @@ class Pipeline extends ODM {
     }
 
     async generate_model(index: string, type: string): Object {
+        console.log('gen model', index, type);
         const mapping = await this.constructor.fetch_mapping(index, type,
                 this._client);
+        const defaults = await this.generate_defaults();
         const formatters = await this.generate_formatters();
         const completers = await this.generate_completers();
         const validators = await this.generate_validators();
 
         const pipe = {
-            Defaults: {},
+            Defaults: defaults,
             Mapping: mapping,
             Messages: {
                 set: 'Set',
@@ -87,7 +104,7 @@ class Pipeline extends ODM {
             Completion: completers,
             Name: type,
         };
-        console.log(completers);
+        console.log(defaults);
         return pipe;
     }
 }

@@ -68,7 +68,6 @@
                     </table>
                 </div>
                 <div class="responsive-table" v-else>
-                    <p>TBIL</p>
                 </div>
             </div>
         </vue-dropzone>

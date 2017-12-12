@@ -136,7 +136,7 @@ module.exports = {
             if (this.state.selected instanceof Array) {
                 return this.state.selected.map(s => s.label);
             }
-            return this.state.selected || '';
+            return this.state.selected ? this.state.selected.label : '';
         },
     },
 };

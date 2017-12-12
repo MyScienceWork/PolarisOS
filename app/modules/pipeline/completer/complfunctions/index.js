@@ -1,5 +1,5 @@
 // @flow
-const Handlebars = require('handlebars');
+const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
 
 function generic_complete(template: string): Function {

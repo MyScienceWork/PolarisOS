@@ -223,7 +223,6 @@ async function search(type: string, body: Object): Promise<*> {
         return { entity: type, result: {} };
     }
 
-    console.log(body);
     const response = format_search(body, model);
     const result = await cls.constructor.search(get_index(type), type, es_client,
             model, response.search, response.options);

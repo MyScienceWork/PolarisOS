@@ -60,6 +60,7 @@ module.exports = {
                             && payload.response.content.change === 'Validation') {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
             } else {
+                // state.forms[form_name].cancel = true;
                 state.forms[form_name].success = payload.response.content.message;
                 // state.forms[form_name].cancel = true;
             }
@@ -96,8 +97,16 @@ module.exports = {
     [Messages.CANCEL_FORM]: (state, payload) => {
         const form_name = payload.form;
         if (form_name in state.forms) {
-            const form = state.forms[form_name];
-            state.forms[form_name] = Object.assign({}, create_form(), { pool: form.pool });
+            state.forms[form_name].update = false;
+            state.forms[form_name].cancel = false;
+            state.forms[form_name].partial = false;
+            state.forms[form_name].validate = false;
+            state.forms[form_name].reclaim = false;
+            state.forms[form_name].loading = false;
+            state.forms[form_name].content = {};
+            state.forms[form_name].error = {};
+            state.forms[form_name].success = '';
+            state.forms[form_name].validations = {};
         }
     },
 

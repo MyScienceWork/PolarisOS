@@ -5,12 +5,11 @@ const User = require('./pages/user/User.vue');
 const Config = require('./pages/config/Config.vue');
 const Lang = require('./pages/lang/Lang.vue');
 const Form = require('./pages/form/Form.vue');
-const MenuComponent = require('./pages/menu/Menu.vue');
-const Datasource = require('./pages/datasource/Datasource.vue');
 const EntityView = require('./pages/entity_view/EntityView.vue');
 const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
+const Review = require('./pages/review/Review.vue');
 
 
 module.exports.menu = [
@@ -40,64 +39,19 @@ module.exports.menu = [
             key: 'review',
             routes: [Routes.review],
             submenu: [],
-            component: Home,
+            component: Review,
         },
     ],
 
     [
         {
             section: 'Administration',
-            name: 'Data sources',
+            name: 'Entities',
             access: '',
-            key: 'datasource',
-            routes: [Routes.datasource],
+            key: 'entity',
+            routes: [Routes.entity],
             submenu: [],
-            component: Datasource,
-        },
-        {
-            section: 'Administration',
-            name: 'Publications',
-            access: '',
-            key: 'publication',
-            routes: [Routes.publication],
-            submenu: [],
-            component: Home,
-        },
-        {
-            section: 'Administration',
-            name: 'CSL Management',
-            access: '',
-            key: 'csl',
-            routes: [Routes.csl],
-            submenu: [],
-            component: Home,
-        },
-        {
-            section: 'Administration',
-            name: 'Menus',
-            access: '',
-            key: 'menu',
-            routes: [Routes.menu],
-            submenu: [],
-            component: MenuComponent,
-        },
-        {
-            section: 'Administration',
-            name: 'Forms',
-            access: '',
-            key: 'form',
-            routes: [Routes.form],
-            submenu: [],
-            component: Form,
-        },
-        {
-            section: 'Administration',
-            name: 'Functions',
-            access: '',
-            key: 'function',
-            routes: [Routes.function],
-            submenu: [],
-            component: PFunction,
+            component: PEntity,
         },
         {
             section: 'Administration',
@@ -110,12 +64,12 @@ module.exports.menu = [
         },
         {
             section: 'Administration',
-            name: 'Entities',
+            name: 'Forms',
             access: '',
-            key: 'entity',
-            routes: [Routes.entity],
+            key: 'form',
+            routes: [Routes.form],
             submenu: [],
-            component: PEntity,
+            component: Form,
         },
         {
             section: 'Administration',
@@ -131,30 +85,12 @@ module.exports.menu = [
     [
         {
             section: 'Advanced',
-            name: 'External repositories',
+            name: 'Functions',
             access: '',
-            key: 'external-repo',
-            routes: [Routes.external_repo],
+            key: 'function',
+            routes: [Routes.function],
             submenu: [],
-            component: Home,
-        },
-        {
-            section: 'Advanced',
-            name: 'Export formats',
-            access: '',
-            key: 'export-format',
-            routes: [Routes.export_format],
-            submenu: [],
-            component: Home,
-        },
-        {
-            section: 'Advanced',
-            name: 'Handle ID Management',
-            access: '',
-            key: 'handleid',
-            routes: [Routes.handle_id],
-            submenu: [],
-            component: Home,
+            component: PFunction,
         },
         {
             section: 'Advanced',
