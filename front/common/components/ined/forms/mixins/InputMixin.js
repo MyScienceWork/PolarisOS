@@ -1,10 +1,10 @@
 const Messages = require('../../../../api/messages');
-const LangMixin = require('../../../../mixins/LangMixin');
+const FormMixin = require('../../../../mixins/FormMixin');
 
 module.exports = {
-    mixins: [LangMixin],
+    mixins: [FormMixin],
     props: {
-        no_contribution: { default: false, type: Boolean },
+        form: { required: true, type: String },
     },
     computed: {
         validations() {
@@ -17,43 +17,11 @@ module.exports = {
             }
             return [];
         },
-        update_mode() {
-            if (this.form in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.form];
-                return form.update;
-            }
-            return false;
-            vi;
-        },
-        reclaim() {
-            if (this.form in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.form];
-                return form.reclaim;
-            }
-            return false;
-        },
-        cancel() {
-            if (this.form in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.form];
-                return form.cancel;
-            }
-            return false;
-        },
     },
     mounted() {
-        this.update();
-        if (!this.no_contribution) {
-            this.$store.commit(Messages.ADD_TO_FORM_POOL, { form: this.form, name: this.name });
-        }
+        this.$store.commit(Messages.REGISTER_FORM_ELEMENT, { form: this.form, name: this.name });
     },
     beforeDestroy() {
-        if (!this.no_contribution) {
-            this.$store.commit(Messages.REMOVE_FROM_FORM_POOL, { form: this.form, name: this.name });
-        }
-    },
-    watch: {
-        update_mode() {
-            this.update();
-        },
+        this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, { form: this.form, name: this.name });
     },
 };

@@ -16,7 +16,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
 
     ctx.commit(Messages.LOADING, { form });
     const response = await API.fetch(payload);
-    ctx.commit(Messages.FETCH, { method, response, form });
+    ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
 
     if (action !== 'validate') {
         ctx.dispatch('single_read', {
@@ -48,7 +48,7 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'DEL', response, form });
+        ctx.commit(Messages.FETCH, { method: 'DEL', response, form, action: 'delete', commit: ctx.commit });
         ctx.dispatch('single_read', {
             form: rform,
             path: rpath,
@@ -64,7 +64,7 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'GET', response, form });
+        ctx.commit(Messages.FETCH, { method: 'GET', response, form, action: 'read', commit: ctx.commit });
     },
 
     search: async (ctx, { form, path, body }) => {
@@ -77,7 +77,7 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'GET', response, form });
+        ctx.commit(Messages.FETCH, { method: 'GET', response, form, action: 'read', commit: ctx.commit });
     },
 
     grab_config: async (ctx, { path, body }) => {

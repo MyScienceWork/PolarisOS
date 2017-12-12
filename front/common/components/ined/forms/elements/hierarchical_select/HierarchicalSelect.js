@@ -8,7 +8,7 @@ module.exports = {
         name: { required: true, type: String },
         label: { required: true, type: String },
         isRequired: { default: false, type: Boolean },
-        form: { required: true, type: String },
+        // form: { required: true, type: String }, //InputMixin
         readonly: { default: false, type: Boolean },
         options: { type: Array, required: true },
         title: { type: String, default: '' },
@@ -31,16 +31,19 @@ module.exports = {
             e.preventDefault();
             this.$emit('hierarchical-select-change', this.state.value);
         },
-        update() {
+        initialize() {
             const form = this.$store.state.forms[this.form];
-            if (form.update) {
-                this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
-                if (this.state.value == null) {
-                    this.state.value = this.defaultValue();
-                }
-            } else {
+            this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (this.state.value == null) {
                 this.state.value = this.defaultValue();
             }
+        },
+        start_collection() {
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info: this.state.value,
+            });
         },
         defaultValue() {
             return undefined;
@@ -48,22 +51,14 @@ module.exports = {
     },
 
     watch: {
-        reclaim(n) {
-            if (n) {
-                this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info: this.state.value,
-                });
-            }
-        },
-        cancel(n) {
-            if (n) {
-                this.state.value = this.defaultValue();
-            }
+        current_state(s) {
+            this.dispatch(s, this);
         },
     },
     computed: {
+        current_state() {
+            return this.fstate(this.form);
+        },
         isHidden() {
             return false;
         },

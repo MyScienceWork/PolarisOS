@@ -12,7 +12,7 @@ module.exports = {
         type: { required: true, type: String },
         read: { default: false, type: Boolean },
         hidden: { default: false, type: Boolean },
-        form: { required: true, type: String },
+        // form: { required: true, type: String }, //InputMixin
         rows: { default: 10 },
         radioButtons: { default: () => [], type: Array },
         hasAddons: { default: false, type: Boolean },
@@ -34,16 +34,19 @@ module.exports = {
             e.preventDefault();
             this.$emit('input-action-emit', { action: a });
         },
-        update() {
+        initialize() {
             const form = this.$store.state.forms[this.form];
-            if (form.update || this.readonly) {
-                this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
-                if (this.state.value == null) {
-                    this.state.value = this.defaultValue();
-                }
-            } else {
+            this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (this.state.value == null) {
                 this.state.value = this.defaultValue();
             }
+        },
+        start_collection() {
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info: this.state.value,
+            });
         },
         defaultValue() {
             if (this.type === 'checkbox' || this.type === 'radio') {
@@ -61,19 +64,8 @@ module.exports = {
                 this.update();
             }
         },
-        reclaim(n) {
-            if (n) {
-                this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info: this.state.value,
-                });
-            }
-        },
-        cancel(n) {
-            if (n) {
-                this.state.value = this.defaultValue();
-            }
+        current_state(s) {
+            this.dispatch(s, this);
         },
     },
     computed: {
@@ -81,6 +73,9 @@ module.exports = {
             return this.state.value === null ||
                 this.state.value === undefined ||
                 (this.state.value instanceof String && this.state.value.trim() === '');
+        },
+        current_state() {
+            return this.fstate(this.form);
         },
     },
 };

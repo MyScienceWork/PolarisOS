@@ -2,90 +2,144 @@ const _ = require('lodash');
 const Messages = require('../api/messages');
 const Utils = require('../utils/utils');
 
-function create_form() {
-    return {
-        pool: {},
-        claims: {},
-        validations: {},
-        error: {},
-        loading: false,
-        update: false,
-        reclaim: false,
-        cancel: false,
-        partial: false,
-        validate: false,
-        success: '',
-        content: [],
-    };
+function create_form_if_needed(state, name) {
+    if (!(name in state.forms)) {
+        state.forms = Object.assign({ [name]: {
+            elements: {},
+            claims: {},
+            validations: {},
+            error: {},
+            state: 'initial',
+            success: '',
+            content: [],
+        } }, state.forms);
+    }
 }
 
 module.exports = {
+    [Messages.INITIALIZE]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+
+        state.forms[form_name].state = 'initial';
+        state.forms[form_name].claims = {};
+        state.forms[form_name].validations = {};
+        state.forms[form_name].error = {};
+        state.forms[form_name].success = '';
+        state.forms[form_name].content = [];
+    },
+
     [Messages.LOADING]: (state, payload) => {
         const form_name = payload.form;
-        if (form_name in state.forms) {
-            state.forms[form_name].loading = true;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'loading';
+    },
+
+    [Messages.READ]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].content = payload.content;
+        state.forms[form_name].state = 'update';
+    },
+
+    [Messages.COMPLETE_FORM_ELEMENT]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+
+        const name = payload.name;
+        const info = payload.info;
+        const form = state.forms[form_name];
+
+        const path = name.split('.');
+        const content = state.forms[form_name].content;
+        const object = Utils.make_nested_object_from_path(path, info);
+        form.content = Utils.merge_with_replacement(content, object);
+        const claims = state.forms[form_name].claims;
+        form.claims = Object.assign({}, claims, { [payload.name]: 1 });
+
+
+        const intersection = Object.keys(form.claims).filter(x => x in form.elements);
+        if (intersection.length === Object.keys(form.elements).length && intersection.length > 0) {
+            form.state = 'completed';
         }
+    },
+
+    [Messages.COLLECT]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'collect';
+    },
+
+    [Messages.COMPLETED]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'completed';
+    },
+
+    [Messages.SUCCESS]: (state, payload) => {
+        const form_name = payload.form;
+        const type = payload.type;
+        create_form_if_needed(state, form_name);
+
+        state.forms[form_name].state = `success_${type}`;
+        state.forms[form_name].validations = {};
+        state.forms[form_name].error = {};
+        state.forms[form_name].claims = {};
+    },
+
+    [Messages.ERROR]: (state, payload) => {
+        const form_name = payload.form;
+        const type = payload.type;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = `error_${type}`;
+
+        if (type === 'validate') {
+            state.forms[form_name].error = {};
+        } else {
+            state.forms[form_name].validations = {};
+        }
+        state.forms[form_name].claims = {};
+        state.forms[form_name].success = '';
     },
 
     [Messages.FETCH]: (state, payload) => {
         const success = payload.response.type === Messages.SUCCESS;
         const form_name = payload.form;
+        const action = payload.action;
+        create_form_if_needed(state, form_name);
 
         if (payload.response.content == null) {
             payload.response.content = [];
         }
 
-        if (!(form_name in state.forms)) {
-            state.forms = Object.assign({}, state.forms, { [form_name]: create_form() });
-        }
-
-        state.forms[form_name].loading = false;
-        state.forms[form_name].claims = {};
-        state.forms[form_name].update = false;
-        state.forms[form_name].reclaim = false;
-        state.forms[form_name].partial = false;
-        state.forms[form_name].validate = false;
-        state.forms[form_name].cancel = false;
-        state.forms[form_name].validations = {};
 
         if (success) {
-            if (payload.method === 'GET') {
+            if (payload.action === 'read') {
                 const content = payload.response.content;
                 if ('result' in content && 'hits' in content.result) {
                     state.forms[form_name].content = content.result.hits.map(hit => hit.source);
                 } else {
                     state.forms[form_name].content = content;
                 }
+                payload.commit(Messages.SUCCESS, { type: action, form: form_name });
             } else if ('change' in payload.response.content
                             && payload.response.content.change === 'Validation') {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
+                payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
+            } else if (action === 'validate' || action === 'delete') {
+                // Noop
             } else {
-                // state.forms[form_name].cancel = true;
                 state.forms[form_name].success = payload.response.content.message;
-                // state.forms[form_name].cancel = true;
+                payload.commit(Messages.SUCCESS, { type: 'create', form: form_name });
             }
-            state.forms[form_name].error = {};
         } else if (form_name in state.forms) {
             state.forms[form_name].error = Object.assign({}, {
                 found: true, content: payload.response.content,
             });
-            state.forms[form_name].validations = {};
+            payload.commit(Messages.ERROR, { type: 'generic', form: form_name });
         }
     },
 
-    [Messages.ERROR]: (state, payload) => {
-        state.error = true;
-        state.error_type = payload.error_type;
-    },
-
-    [Messages.CREATE_FORM]: (state, payload) => {
-        const form_name = payload.form;
-        const content = payload.content || {};
-        state.forms = Object.assign({}, state.forms, {
-            [form_name]: create_form(),
-        });
-        state.forms[form_name].content = content;
-    },
 
     [Messages.REMOVE_FORM]: (state, payload) => {
         const form_name = payload.form;
@@ -94,94 +148,20 @@ module.exports = {
         }
     },
 
-    [Messages.CANCEL_FORM]: (state, payload) => {
-        const form_name = payload.form;
-        if (form_name in state.forms) {
-            state.forms[form_name].update = false;
-            state.forms[form_name].cancel = false;
-            state.forms[form_name].partial = false;
-            state.forms[form_name].validate = false;
-            state.forms[form_name].reclaim = false;
-            state.forms[form_name].loading = false;
-            state.forms[form_name].content = {};
-            state.forms[form_name].error = {};
-            state.forms[form_name].success = '';
-            state.forms[form_name].validations = {};
-        }
-    },
-
     [Messages.REMOVE_ALL_FORMS]: (state) => {
         state.forms = {};
     },
 
-    [Messages.UPDATE_MODE_FORM]: (state, payload) => {
+    [Messages.REGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
-        if (form_name in state.forms) {
-            state.forms[form_name].update = payload.update || false;
-            state.forms[form_name].cancel = false;
-            state.forms[form_name].partial = false;
-            state.forms[form_name].validate = false;
-            state.forms[form_name].reclaim = false;
-            state.forms[form_name].content = Object.assign({}, payload.content || {});
-            state.forms[form_name].error = {};
-            state.forms[form_name].success = '';
-            state.forms[form_name].validations = {};
-        }
+        create_form_if_needed(state, form_name);
+        const pool = state.forms[form_name].elements;
+        state.forms[form_name].elements = Object.assign({}, pool, { [payload.name]: 1 });
     },
 
-    [Messages.TOGGLE_RECLAIM_FORM]: (state, payload) => {
+    [Messages.UNREGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
-        if (form_name in state.forms) {
-            state.forms[form_name].reclaim = 'reclaim' in payload ?
-                payload.reclaim : !state.forms[form_name].reclaim;
-            state.forms[form_name].cancel = false;
-            state.forms[form_name].partial = 'partial' in payload ? payload.partial : false;
-            state.forms[form_name].validate = 'validate' in payload ? payload.validate : false;
-            state.forms[form_name].error = {};
-        }
-    },
-
-    [Messages.RECLAIM_SUCCESS]: (state, payload) => {
-        const form_name = payload.form;
-        if (form_name in state.forms) {
-            state.forms[form_name].reclaim = false;
-        }
-    },
-
-    [Messages.RECLAIM_FORM_ELEMENT]: (state, payload) => {
-        const form_name = payload.form;
-        const name = payload.name;
-        const info = payload.info;
-        if (form_name in state.forms) {
-            const path = name.split('.');
-            const content = state.forms[form_name].content;
-            const object = Utils.make_nested_object_from_path(path, info);
-            state.forms[form_name].content = Utils.merge_with_replacement(content, object);
-            const claims = state.forms[form_name].claims;
-            state.forms[form_name].claims = Object.assign({}, claims, { [payload.name]: 1 });
-        }
-    },
-
-    [Messages.ADD_TO_FORM_POOL]: (state, payload) => {
-        const form_name = payload.form;
-        if (form_name in state.forms) {
-            const pool = state.forms[form_name].pool;
-            state.forms[form_name].pool = Object.assign({}, pool, { [payload.name]: 1 });
-        }
-    },
-
-    [Messages.REMOVE_FROM_FORM_POOL]: (state, payload) => {
-        const form_name = payload.form;
-        const elt_name = payload.name;
-        if (form_name in state.forms) {
-            delete state.forms[form_name].pool[payload.name];
-
-            /* const path = elt_name.split('.');
-            const last = path[path.length - 1];
-            const object = Utils.find_object_with_path(state.forms[form_name].content, path);
-            if (object) {
-                delete object[last];
-            }*/
-        }
+        create_form_if_needed(state, form_name);
+        delete state.forms[form_name].pool[payload.name];
     },
 };

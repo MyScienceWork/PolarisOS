@@ -7,12 +7,11 @@ module.exports = {
     mixins: [InputMixin],
     props: {
         name: { required: true, type: String },
-        form: { required: true, type: String },
+              // form: { required: true, type: String }, //InputMixin
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
-        no_contribution: { type: Boolean, default: true },
     },
 
 
@@ -38,41 +37,21 @@ module.exports = {
             e.preventDefault();
             this.state.elements.splice(id, 1, false);
         },
-        update() {
+        initialize() {
             const form = this.$store.state.forms[this.form];
-            if (form && form.update) {
-                const object = Utils.find_value_with_path(form.content, this.name.split('.'));
-                if (object instanceof Array) {
-                    this.state.elements = object.map(() => true);
-                } else {
-                    this.state.elements = _.map(object, () => true);
-                }
-
-                if (this.state.elements.length === 0 && this.single) {
-                    this.state.elements = [true];
-                }
+            const object = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (object instanceof Array) {
+                this.state.elements = object.map(() => true);
             } else {
-                this.state.elements = this.isRequired ? [true] : [];
+                this.state.elements = _.map(object, () => true);
             }
-        },
-    },
 
-    computed: {
-    },
-
-    watch: {
-        reclaim(n) {
-            /* if (n) {
-                this.$store.commit(Messages.RECLAIM_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info: {},
-                });
-            }*/
-        },
-        cancel(n) {
-            if (n) {
-                this.state.elements = [];
+            if (this.state.elements.length === 0) {
+                if (this.single || this.isRequired) {
+                    this.state.elements = [true];
+                } else {
+                    this.state.elements = [];
+                }
             }
         },
     },

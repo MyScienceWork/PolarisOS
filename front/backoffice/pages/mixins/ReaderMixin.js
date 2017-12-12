@@ -5,44 +5,31 @@ const Messages = require('../../../common/api/messages');
 module.exports = {
     methods: {
         update(obj, entity) {
-            this.$store.commit(Messages.CANCEL_FORM, {
-                form: this.state.cform,
-            });
-
-            Vue.nextTick(() => {
-                this.$store.commit(Messages.UPDATE_MODE_FORM, {
-                    form: this.state.cform,
-                    update: true,
-                    content: obj,
-                });
+            this.$store.commit(Messages.READ, {
+                form: this.state.forms.csink,
+                content: obj,
             });
         },
         remove(obj, entity) {
             this.$store.dispatch('remove', {
-                form: this.state.rform,
+                form: this.state.forms.rsink,
                 path: APIRoutes.entity(entity, 'DEL', false, obj._id),
                 rpath: this.state.rpath,
-                rform: this.state.rform,
+                rform: this.state.forms.rsink,
             });
         },
     },
-    beforeMount() {
-        this.$store.commit(Messages.CREATE_FORM, {
-            form: this.state.rform,
-            content: [],
-        });
-    },
     computed: {
         error() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
+            if (this.state.forms.rsink in this.$store.state.forms) {
+                const form = this.$store.state.forms[this.state.forms.rsink];
                 return form.error;
             }
             return { };
         },
         content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
+            if (this.state.forms.rsink in this.$store.state.forms) {
+                const form = this.$store.state.forms[this.state.forms.rsink];
                 return form.content || [];
             }
             return [];

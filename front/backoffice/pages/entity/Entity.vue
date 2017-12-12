@@ -52,13 +52,13 @@
                     <span slot="title"></span>
                     <div slot="body">
                         <fform
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                         >
-                        <finput name="type" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.cform" />
+                        <finput name="type" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.forms.csink" />
                         <fselect
                             name="form" 
                             :label="lang('b_form_name')" 
@@ -66,7 +66,7 @@
                             :options="forms || []"
                             fieldLabel="name"
                             fieldValue="_id"
-                            :form="state.cform" 
+                            :form="state.forms.csink" 
                         />
                         <fselect
                             name="pipeline" 
@@ -75,9 +75,9 @@
                             :options="pipelines || []"
                             fieldLabel="name"
                             fieldValue="_id"
-                            :form="state.cform" 
+                            :form="state.forms.csink" 
                         />
-                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.cform" />
+                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.forms.csink" />
 
                         </fform>
                     </div>

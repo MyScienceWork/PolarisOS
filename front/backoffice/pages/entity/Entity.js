@@ -2,6 +2,7 @@ const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const Messages = require('../../../common/api/messages');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -10,11 +11,15 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('entity', 'POST'),
                 rpath: APIRoutes.entity('entity', 'GET'),
-                cform: 'entity_creation',
-                rform: 'entity_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
                 selected_types: {},
+                forms: {
+                    csink: 'entity_creation',
+                    rsink: 'entity_read',
+                    rpipeline: 'pipeline_read',
+                    rform: 'form_read',
+                },
             },
         };
     },
@@ -22,12 +27,12 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
 
         this.$store.dispatch('search', {
-            form: 'pipeline_read',
+            form: this.state.forms.rpipeline,
             path: APIRoutes.entity('pipeline', 'POST', true),
             body: {
                 projection: ['name'],
@@ -36,7 +41,7 @@ module.exports = {
         });
 
         this.$store.dispatch('search', {
-            form: 'form_read',
+            form: this.state.forms.rform,
             path: APIRoutes.entity('form', 'POST', true),
             body: {
                 projection: ['name'],
@@ -45,19 +50,11 @@ module.exports = {
         });
     },
     computed: {
-        content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
-        },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
         forms() {
-            const fname = 'form_read';
+            const fname = this.state.forms.rform;
             if (fname in this.$store.state.forms) {
                 const form = this.$store.state.forms[fname];
                 const content = form.content || [];
@@ -66,7 +63,7 @@ module.exports = {
             return [];
         },
         pipelines() {
-            const fname = 'pipeline_read';
+            const fname = this.state.forms.rpipeline;
             if (fname in this.$store.state.forms) {
                 const form = this.$store.state.forms[fname];
                 const content = form.content || [];
