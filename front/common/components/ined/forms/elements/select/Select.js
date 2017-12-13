@@ -34,7 +34,7 @@ module.exports = {
             const form = this.$store.state.forms[this.form];
             let info = Utils.find_value_with_path(form.content, this.name.split('.'));
             if (info == null) {
-                // Noop
+                this.state.selected = null;
                 return;
             } else if (info instanceof Array) {
                 info = info.map((o) => {

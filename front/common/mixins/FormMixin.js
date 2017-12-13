@@ -55,7 +55,6 @@ module.exports = {
 
         },
         dispatch(s, self) {
-            console.log('dispatch', s, self);
             switch (s) {
             default:
             case 'update':

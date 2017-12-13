@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const Messages = require('../../../../api/messages');
 const APIRoutes = require('../../../../api/routes');
 const EventHub = require('../../../../store/event_hub');
@@ -33,7 +34,32 @@ module.exports = {
             e.preventDefault();
             this.$store.commit(Messages.INITIALIZE, { form: this.name });
         },
-
+        send_information() {
+            if (this.state.update_mode) {
+                this.$store.dispatch('update', {
+                    path: this.put_path,
+                    rpath: this.get_path,
+                    rform: this.get_form,
+                    form: this.name,
+                    body: this.content,
+                });
+            } else {
+                this.$store.dispatch('create', {
+                    path: this.post_path,
+                    rpath: this.get_path,
+                    rform: this.get_form,
+                    form: this.name,
+                    body: this.content,
+                });
+            }
+        },
+        show_success() {
+            setTimeout(() => {
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.name,
+                });
+            }, 5000);
+        },
     },
     beforeMount() {
         EventHub.$on('form-click-on-submit', this.submit);
@@ -75,15 +101,16 @@ module.exports = {
 
     watch: {
         content(n) {
-            if (n instanceof Array && n.length > 0) {
-                this.state.update_mode = true;
-            } else if (n instanceof Object && Object.keys(n).length > 0) {
+            if (n instanceof Object && '_id' in n && n._id != null && n._id !== '') {
                 this.state.update_mode = true;
             } else {
                 this.state.update_mode = false;
             }
         },
         success(n) {
+        },
+        current_state(s) {
+            this.dispatch(s, this);
         },
     },
 };
