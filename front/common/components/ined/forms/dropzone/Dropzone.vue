@@ -22,7 +22,7 @@
                 </div>
                 <div v-else class="dz-message" style="display:none">
                 </div>
-                <div class="responsive-table" v-if="!readonly">
+                <div class="responsive-table">
                     <table v-if="state.files.order.length > 0" class="table is-striped is-fullwidth">
                         <thead>
                             <tr>
@@ -31,14 +31,14 @@
                                 <th>{{lang('b_file_status')}}</th>
                                 <th>{{lang('b_file_size')}}</th>
                                 <th>{{lang('b_file_master')}}</th>
-                                <th v-if="$store.state.global_config.upload.allowRemoveFiles"></th>
+                                <th v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(filename, i) in state.files.order">
                                 <td>{{state.files.content[filename].name}}</td>
                                 <td>
-                                    <finput :name="`${files}.${i}.${name}`" label="" type="text" :placeholder="lang('dropzone_file_deposit_name')" :form="form" />
+                                    <finput :readonly="readonly" :name="`${files}.${i}.${name}`" label="" type="text" :placeholder="lang('dropzone_file_deposit_name')" :form="form" />
                                     <finput 
                                         :name="`${files}.${i}.${url}`" 
                                         label="" type="hidden" 
@@ -56,9 +56,10 @@
                                 </td>
                                 <td>
                                     <finput
+                                    :readonly="readonly"
                                     :name="`${files}.${i}.${master}`" label="" type="checkbox" :form="form" />
                                 </td>
-                                <td v-if="$store.state.global_config.upload.allowRemoveFiles">
+                                <td v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
                                     <a class="has-text-danger" @click="removeFile(filename, $event)">
                                         <span class="icon"><i class="fa fa-trash"></i></span>
                                     </a>
@@ -66,8 +67,6 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="responsive-table" v-else>
                 </div>
             </div>
         </vue-dropzone>

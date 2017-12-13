@@ -72,7 +72,6 @@ module.exports = {
             }
         },
         show_success_validate() {
-            console.log('show success deposit');
             this.state.current_step = this.state.next_step;
             this.state.stepper.next(this.state.stepper.e);
             this.$store.commit(Messages.INITIALIZE, {
@@ -146,10 +145,6 @@ module.exports = {
     },
     beforeDestroy() {
         // Destroy all forms
-        [this.state.publication.sink, this.state.publication.specs, this.state.typology.sink].forEach((c) => {
-            this.$store.commit(Messages.INITIALIZE, {
-                form: c,
-            });
-        });
+        this.$store.commit(Messages.REMOVE_ALL_FORMS, {});
     },
 };

@@ -4,7 +4,7 @@ const Utils = require('../utils/utils');
 
 function create_form_if_needed(state, name) {
     if (!(name in state.forms)) {
-        state.forms = Object.assign({ [name]: {
+        state.forms = Object.assign({}, state.forms, { [name]: {
             elements: {},
             claims: {},
             validations: {},
@@ -12,7 +12,7 @@ function create_form_if_needed(state, name) {
             state: 'initial',
             success: '',
             content: {},
-        } }, state.forms);
+        } });
     }
 }
 
@@ -57,7 +57,6 @@ module.exports = {
         const content = state.forms[form_name].content;
         const object = Utils.make_nested_object_from_path(path, info);
         form.content = Utils.merge_with_replacement(content, object);
-        console.log('form content', form.content);
         const claims = state.forms[form_name].claims;
         form.claims = Object.assign({}, claims, { [payload.name]: 1 });
 

@@ -127,6 +127,18 @@ module.exports = {
                                         type: 'keyword',
                                         index: false,
                                     },
+                                    keep: {
+                                        type: 'boolean',
+                                        index: false,
+                                    },
+                                    restore: {
+                                        type: 'boolean',
+                                        index: false,
+                                    },
+                                    keeper_sink: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                 },
                             },
                             required: {

@@ -160,6 +160,11 @@
                                             <finput :name="`${props.fname}.${props.id}.file.file_name`" :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.forms.csink" />
                                             <finput :name="`${props.fname}.${props.id}.file.master_name`" :label="lang('b_master_fieldname')" :is-required="true" :placeholder="lang('b_master_fieldname')" type="text" :form="state.forms.csink" />
                                             <finput :name="`${props.fname}.${props.id}.file.url_name`" :label="lang('b_url_fieldname')" :is-required="true" :placeholder="lang('b_url_fieldname')" type="text" :form="state.forms.csink" />
+                                            <finput :name="`${props.fname}.${props.id}.file.keeper_sink`" :label="lang('b_keeper_sink')" :placeholder="lang('b_keeper_sink')" type="text" :form="state.forms.csink" />
+                                            <finput :name="`${props.fname}.${props.id}.file.keep`" 
+                                                :label="lang('b_keep_files_across_components')" type="checkbox" :form="state.forms.csink" />
+                                            <finput :name="`${props.fname}.${props.id}.file.restore`" 
+                                                :label="lang('b_restore_files_across_components')" type="checkbox" :form="state.forms.csink" />
                                         </div>
                                     </div>
                                 </template>

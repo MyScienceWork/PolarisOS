@@ -2,6 +2,7 @@ const _ = require('lodash');
 const VueDropzone = require('vue2-dropzone');
 const APIRoutes = require('../../../../api/routes');
 const LangMixin = require('../../../../mixins/LangMixin');
+const Messages = require('../../../../api/messages');
 
 module.exports = {
     mixins: [LangMixin],
@@ -15,6 +16,9 @@ module.exports = {
         name: { required: true, type: String },
         url: { required: true, type: String },
         readonly: { default: false, type: Boolean },
+        keeper: { default: 'keeper_sink', type: String },
+        keep_files: { default: false, type: Boolean },
+        restore_files: { default: false, type: Boolean },
     },
     data() {
         return {
@@ -72,12 +76,38 @@ module.exports = {
         removeFile(filename, e) {
             e.preventDefault();
             this.$refs.dropzone.removeFile(this.state.files.content[filename]);
+            const idx = _.findIndex(this.state.files.order, n => n === name);
+            if (idx !== -1) {
+                this.state.files.order.splice(idx, 1);
+                delete this.state.files.content[filename];
+            }
         },
     },
-
-    computed: {
+    mounted() {
+        console.log('keeper content', this.keeperContent);
+        if (this.restore_files && Object.keys(this.keeperContent).length > 0) {
+            this.state.files = this.keeperContent;
+        }
     },
-
+    beforeDestroy() {
+        if (this.keep_files) {
+            this.$store.commit(Messages.READ, {
+                form: this.keeper,
+                content: _.cloneDeep(this.state.files),
+            });
+        }
+    },
+    computed: {
+        keeperContent() {
+            if (this.keeper in this.$store.state.forms) {
+                return this.$store.state.forms[this.keeper].content;
+            }
+            return {};
+        },
+    },
     watch: {
+        keeperContent(kc) {
+            this.state.files = kc;
+        },
     },
 };

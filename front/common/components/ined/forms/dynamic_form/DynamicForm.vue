@@ -124,6 +124,9 @@
                 :url="field.file.url_name"
                 :readonly="readonly"
                 :key="i"
+                :keeper_sink="field.file.keeper_sink"
+                :restore_files="field.file.restore"
+                :keep_files="field.file.keep"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -187,6 +190,9 @@
             :master="field.file.master_name"
             :url="field.file.url_name"
             :readonly="readonly"
+            :keeper_sink="field.file.keeper_sink"
+            :restore_files="field.file.restore"
+            :keep_files="field.file.keep"
             />
             <dynamic-form 
                 :form="field.subform" 
