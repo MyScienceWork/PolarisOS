@@ -20,7 +20,7 @@
                                 <p class="card-header-title">Rechercher</p>
                             </header>
                             <div class="card-content">
-                                <widget-search form="test_form" :small="true" />
+                                <widget-search form="test_form" mode="small" />
                                 <hr />
                                 <div class="columns is-centered">
                                     <div class="column">

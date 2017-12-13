@@ -1,6 +1,6 @@
 <template>
-<div>
-    <div class="columns is-centered" v-if="!small">
+<div v-if="mode === 'all' || mode === 'small'">
+    <div class="columns is-centered" v-if="mode !== 'small'">
         <div class="column has-text-centered is-8">
             <h4 class="title is-4">{{lang('f_search_info')}}</h4>
             <p v-html="lang('f_search_help')"></p>
@@ -49,6 +49,23 @@
             </form>
         </div>
     </div>
+</div>
+<div v-else-if="mode === 'on-side'">
+    <form @submit.prevent="trigger_click">
+        <div class="field has-addons">
+            <p class="control has-icons-left is-expanded">
+                <input id="search-input" class="input is-medium" type="text" :placeholder="lang('f_search_in_archive')">
+                <span class="icon is-left">
+                    <i class="fa fa-search"></i>
+                </span>
+                </p>
+            <p class="control">
+                <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')">
+                    <i class="fa fa-search fa-2x"></i>
+                </a>
+            </p>
+        </div>
+    </form>
 </div>
 </template>
 
