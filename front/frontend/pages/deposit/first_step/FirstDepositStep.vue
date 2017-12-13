@@ -10,10 +10,10 @@
                             :is-required="true"
                             :title="lang('f_type_of_document')"
                             :options="typology_options"
-                            form="dummy_sink"
+                            :form="creationSink"
                             name="type"
                             class="has-text-centered"
-                            fieldValue="path"
+                            fieldValue="form"
                             @hierarchical-select-change="grab_typology_form"
                             />
                             <finput

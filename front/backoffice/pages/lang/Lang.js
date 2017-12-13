@@ -12,12 +12,14 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('lang', 'POST'),
                 rpath: APIRoutes.entity('lang', 'GET'),
-                cform: 'lang_creation',
-                rform: 'lang_read',
                 itemsPerPage: 50,
                 itemsPerRow: 3,
                 langs: Langs.LangsList,
                 quantities: Quantities,
+                forms: {
+                    csink: 'lang_creation',
+                    rsink: 'lang_read',
+                },
             },
         };
     },
@@ -25,18 +27,13 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
     },
     computed: {
         readContent() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                return Utils.to_matrix(form.content instanceof Array ?
-                        form.content : [], this.state.itemsPerRow);
-            }
-            return [];
+            return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
     },
 };

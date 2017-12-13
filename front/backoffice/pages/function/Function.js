@@ -10,11 +10,13 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('function', 'POST'),
                 rpath: APIRoutes.entity('function', 'GET'),
-                cform: 'function_creation',
-                rform: 'function_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
                 selected_types: {},
+                forms: {
+                    csink: 'function_creation',
+                    rsink: 'function_read',
+                },
             },
         };
     },
@@ -22,19 +24,11 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
     },
     computed: {
-        content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
-        },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },

@@ -11,11 +11,14 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('form', 'POST'),
                 rpath: APIRoutes.entity('form', 'GET'),
-                cform: 'form_creation',
-                rform: 'form_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
                 selected_types: {},
+                forms: {
+                    csink: 'form_creation',
+                    rsink: 'form_read',
+                    rsink_entity: 'entities_read',
+                },
             },
         };
     },
@@ -32,11 +35,11 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
         this.$store.dispatch('search', {
-            form: 'entities_read',
+            form: this.state.forms.rsink_entity,
             path: APIRoutes.entity('entity', 'POST', true),
             body: {
                 projection: ['type'],
@@ -46,16 +49,12 @@ module.exports = {
     },
     computed: {
         content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content.map((c) => {
-                    c.label = this.lang(c.label);
-                    c.description = this.lang(c.description);
-                    return c;
-                });
-            }
-            return [];
+            const content = this.mcontent(this.state.forms.rsink);
+            return content.map((c) => {
+                c.label = this.lang(c.label);
+                c.description = this.lang(c.description);
+                return c;
+            });
         },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
@@ -64,18 +63,12 @@ module.exports = {
             return FieldTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
         },
         entities() {
-            const fname = 'entities_read';
-            if (fname in this.$store.state.forms) {
-                const content = this.$store.state.forms[fname].content;
-
-                // TODO make this WAY cleaner;
-                content.push({ type: 'entity' });
-                content.push({ type: 'form' });
-                content.push({ type: 'pipeline' });
-
-                return content;
-            }
-            return [];
+            const content = this.mcontent(this.state.forms.rsink_entity);
+            // TODO make this WAY cleaner;
+            content.push({ type: 'entity' });
+            content.push({ type: 'form' });
+            content.push({ type: 'pipeline' });
+            return content;
         },
     },
 };

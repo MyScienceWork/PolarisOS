@@ -11,10 +11,13 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('pipeline', 'POST'),
                 rpath: APIRoutes.entity('pipeline', 'GET'),
-                cform: 'pipeline_creation',
-                rform: 'pipeline_read',
                 itemsPerPage: 20,
                 itemsPerRow: 2,
+                forms: {
+                    csink: 'pipeline_creation',
+                    rsink: 'pipeline_read',
+                    rsink_function: 'function_read',
+                },
                 selected_functions: {
                     completer: {},
                     formatter: {},
@@ -38,11 +41,11 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
         this.$store.dispatch('search', {
-            form: 'function_read',
+            form: this.state.forms.rsink_function,
             path: APIRoutes.entity('function', 'POST', true),
             body: {
                 size: 10000,
@@ -53,29 +56,18 @@ module.exports = {
         valtypes() {
             return ValTypes || [];
         },
-        content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
-        },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
         functions() {
-            if ('function_read' in this.$store.state.forms) {
-                const form = this.$store.state.forms.function_read;
-                const content = form.content || [];
-                return content.reduce((obj, func) => {
-                    if (!(func.type in obj)) {
-                        obj[func.type] = {};
-                    }
-                    obj[func.type][func.name] = func;
-                    return obj;
-                }, {});
-            }
+            const content = this.mcontent(this.state.forms.rsink_function);
+            return content.reduce((obj, func) => {
+                if (!(func.type in obj)) {
+                    obj[func.type] = {};
+                }
+                obj[func.type][func.name] = func;
+                return obj;
+            }, {});
             return {};
         },
     },

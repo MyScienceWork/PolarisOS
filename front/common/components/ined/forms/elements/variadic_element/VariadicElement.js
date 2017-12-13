@@ -55,4 +55,20 @@ module.exports = {
             }
         },
     },
+
+    mounted() {
+        this.initialize();
+    },
+
+    computed: {
+        current_state() {
+            return this.fstate(this.form);
+        },
+    },
+
+    watch: {
+        current_state(s) {
+            this.dispatch(s, this);
+        },
+    },
 };

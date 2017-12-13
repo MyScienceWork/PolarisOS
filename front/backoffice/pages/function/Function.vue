@@ -46,19 +46,19 @@
                     <span slot="title"></span>
                     <div slot="body">
                         <fform
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                             >
-                                <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.cform" />
-                                <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.cform" />
+                                <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
+                                <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.forms.csink" />
                                 <h4 class="title is-3">{{lang('b_function_argument', {}, 'other')}}</h4>
                                 <hr />
                                 <fvariadic-element 
                                     name="arguments" 
-                                    :form="state.cform" 
+                                    :form="state.forms.csink" 
                                     :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
@@ -67,7 +67,7 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_name')" 
                                             type="text" 
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                         />
                                         <finput 
                                             :name="`${props.fname}.${props.id}.type`"
@@ -75,7 +75,7 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_type')" 
                                             type="text" 
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                         />
                                         <finput 
                                             :name="`${props.fname}.${props.id}.default`"
@@ -83,7 +83,7 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_default_value')" 
                                             type="text" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                         />
                                     </template>
                                 </fvariadic-element>

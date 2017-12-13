@@ -46,19 +46,19 @@
                     <span slot="title">Add or modify a language item</span>
                     <div slot="body">
                         <fform 
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                         >
-                            <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.cform" />
-                            <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.cform" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
-                            <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.cform" />
-                            <fvariadic-element name="values" :form="state.cform" :tabs="true">
+                            <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.forms.csink" />
+                            <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.forms.csink" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
+                            <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.forms.csink" />
+                            <fvariadic-element name="values" :form="state.forms.csink" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
-                                <finput :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.cform" />
-                                <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.cform" />
+                                <finput :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.forms.csink" />
+                                <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.forms.csink" />
                                 </template>
                             </fvariadic-element>
                         </fform>

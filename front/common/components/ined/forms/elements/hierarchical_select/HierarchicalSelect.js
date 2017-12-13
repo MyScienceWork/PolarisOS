@@ -1,9 +1,10 @@
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
+const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 
 module.exports = {
-    mixins: [InputMixin],
+    mixins: [RegisterMixin, InputMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -65,5 +66,8 @@ module.exports = {
         readonlyValue() {
             return this.state.value || '';
         },
+    },
+    mounted() {
+        this.initialize();
     },
 };

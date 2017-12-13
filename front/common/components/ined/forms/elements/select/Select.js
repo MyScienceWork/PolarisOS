@@ -2,6 +2,7 @@ const VSelect = require('vue-select').VueSelect;
 const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
+const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 
 module.exports = {
     props: {
@@ -20,7 +21,7 @@ module.exports = {
     components: {
         'v-select': VSelect,
     },
-    mixins: [InputMixin],
+    mixins: [RegisterMixin, InputMixin],
     data() {
         return {
             state: {
@@ -120,6 +121,9 @@ module.exports = {
     },
     beforeMount() {
         this.format_options();
+    },
+    mounted() {
+        this.initialize();
     },
     computed: {
         isHidden() {

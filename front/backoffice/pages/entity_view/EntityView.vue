@@ -46,13 +46,13 @@
                 <span slot="title">{{lang('b_add_entity')}}</span>
                     <div slot="body">
                         <fform 
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                             >
-                            <dynamic-form :form="form(state.entity_form_sink) || {}" :cform="state.cform" />
+                            <dynamic-form :form="fform(state.forms.rsink_entity_form) || {}" :cform="state.forms.csink" />
                         </fform>
                     </div>
                 </widget>

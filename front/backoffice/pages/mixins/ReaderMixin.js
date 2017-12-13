@@ -18,6 +18,19 @@ module.exports = {
                 rform: this.state.forms.rsink,
             });
         },
+        mcontent(sink) {
+            if (sink in this.$store.state.forms) {
+                const form = this.$store.state.forms[sink];
+                if (!(form.content instanceof Array)) {
+                    return [];
+                }
+                return form.content || [];
+            }
+            return [];
+        },
+        mlength(sink) {
+            return this.mcontent(sink).length;
+        },
     },
     computed: {
         error() {
@@ -28,14 +41,10 @@ module.exports = {
             return { };
         },
         content() {
-            if (this.state.forms.rsink in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.forms.rsink];
-                return form.content || [];
-            }
-            return [];
+            return this.mcontent(this.state.forms.rsink);
         },
         contentLength() {
-            return this.content.length;
+            return this.mlength(this.state.forms.rsink);
         },
     },
     watch: {

@@ -48,6 +48,9 @@ module.exports = {
         show_success() {
 
         },
+        show_success_validate() {
+
+        },
         show_validation() {
 
         },
@@ -72,6 +75,9 @@ module.exports = {
                 break;
             case 'success_create':
                 self.show_success();
+                break;
+            case 'success_validate':
+                self.show_success_validate();
                 break;
             case 'error_validate':
                 self.show_validation();

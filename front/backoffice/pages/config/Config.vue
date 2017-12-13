@@ -42,22 +42,22 @@
                     <span slot="title">Add or modify the global configuration</span>
                     <div slot="body">
                         <fform 
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                         >
                             <fselect 
                                 name="environment" :label="lang('b_environment')" 
                                 :is-required="true" 
-                                :form="state.cform" 
+                                :form="state.forms.csink" 
                                 :options="state.environments" 
                             />
                             <fselect 
                                 name="langs" :label="lang('b_lang',{}, 'other')" 
                                 :is-required="true" 
-                                :form="state.cform" 
+                                :form="state.forms.csink" 
                                 :multi="true"
                                 :options="state.langs" 
                             />
@@ -67,13 +67,13 @@
                                 :label="lang('b_config_maxFileSizeInMB')" 
                                 :placeholder="lang('b_config_maxFileSizeInMB')" 
                                 :is-required="true" 
-                                :form="state.cform" 
+                                :form="state.forms.csink" 
                                 type="text"
                             />
                             <finput
                                 name="upload.allowRemoveFiles" 
                                 :label="lang('b_config_allowRemoveFiles')" 
-                                :form="state.cform" 
+                                :form="state.forms.csink" 
                                 type="checkbox"
                             />
                         </fform>

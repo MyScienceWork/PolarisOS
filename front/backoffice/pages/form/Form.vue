@@ -46,60 +46,60 @@
                     <span slot="title">Add or modify a user</span>
                     <div slot="body">
                         <fform 
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                             >
-                            <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.cform" />
-                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.cform" />
-                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.cform" />
+                            <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.forms.csink" />
+                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" />
+                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.forms.csink" />
                             <finput 
                                 name="addons" 
                                 :label="lang('b_has_addons')"
                                 type="checkbox"
-                                :form="state.cform"
+                                :form="state.forms.csink"
                             />
-                            <fvariadic-element name="fields" :form="state.cform" :tabs="true">
+                            <fvariadic-element name="fields" :form="state.forms.csink" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
-                                    <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.cform" />
-                                    <finput :name="`${props.fname}.${props.id}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.cform" />
-                                    <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.cform" />
-                                    <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.cform" />
-                                    <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.cform" />
-                                    <finput :name="`${props.fname}.${props.id}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.cform" />
+                                    <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
+                                    <finput :name="`${props.fname}.${props.id}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.forms.csink" />
+                                    <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" />
+                                    <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.forms.csink" />
+                                    <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.forms.csink" />
+                                    <finput :name="`${props.fname}.${props.id}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.forms.csink" />
                                     <finput 
                                         :name="`${props.fname}.${props.id}.single_multiple`" 
                                         :label="lang('b_single_multiple')"
                                         type="checkbox"
-                                        :form="state.cform"
+                                        :form="state.forms.csink"
                                     />
                                     <fselect 
                                         :name="`${props.fname}.${props.id}.type`" 
                                         :label="lang('b_field_type')" 
                                         :is-required="true" 
                                         :options="fieldtypes" 
-                                        :form="state.cform" 
+                                        :form="state.forms.csink" 
                                         v-on:select-change="(val) => {type_change(val, props.id)}"
                                     />
                                     <div v-if="props.id in state.selected_types"> 
                                         <div v-if="['select', 'multi-select'].indexOf(state.selected_types[props.id]) !== -1">
-                                            <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.cform" />
+                                            <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
                                             <fselect 
                                             :name="`${props.fname}.${props.id}.datasource.name`" 
                                             :label="lang('b_datasource_name')" :is-required="true"
                                             :options="entities"
                                             fieldLabel="type"
                                             fieldValue="type"
-                                            :form="state.cform" />
+                                            :form="state.forms.csink" />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.label`" 
                                             :label="lang('b_datasource_label')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_label')"
                                             type="text"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.value`" 
@@ -107,44 +107,44 @@
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_value')"
                                             type="text"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.ajax`" 
                                             :label="lang('b_datasource_ajax')"
                                             type="checkbox"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.translatable`" 
                                             :label="lang('b_datasource_translatable')"
                                             type="checkbox"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.add`" 
                                             :label="lang('b_datasource_add')"
                                             type="checkbox"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.modify`" 
                                             :label="lang('b_datasource_modify')"
                                             type="checkbox"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.remove`" 
                                             :label="lang('b_datasource_remove')"
                                             type="checkbox"
-                                            :form="state.cform"
+                                            :form="state.forms.csink"
                                             />
                                         </div>
                                         <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
-                                            <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.cform" />
+                                            <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">
-                                            <finput :name="`${props.fname}.${props.id}.hiddenValue`" :label="lang('b_hidden_value')" :is-required="true" :placeholder="lang('b_hidden_value')" type="text" :form="state.cform" />
+                                            <finput :name="`${props.fname}.${props.id}.hiddenValue`" :label="lang('b_hidden_value')" :is-required="true" :placeholder="lang('b_hidden_value')" type="text" :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['subform'].indexOf(state.selected_types[props.id]) !== -1">
                                             <fselect 
@@ -154,12 +154,12 @@
                                             :options="content"
                                             fieldLabel="label"
                                             fieldValue="_id"
-                                            :form="state.cform" />
+                                            :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">
-                                            <finput :name="`${props.fname}.${props.id}.file.file_name`" :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.cform" />
-                                            <finput :name="`${props.fname}.${props.id}.file.master_name`" :label="lang('b_master_fieldname')" :is-required="true" :placeholder="lang('b_master_fieldname')" type="text" :form="state.cform" />
-                                            <finput :name="`${props.fname}.${props.id}.file.url_name`" :label="lang('b_url_fieldname')" :is-required="true" :placeholder="lang('b_url_fieldname')" type="text" :form="state.cform" />
+                                            <finput :name="`${props.fname}.${props.id}.file.file_name`" :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.forms.csink" />
+                                            <finput :name="`${props.fname}.${props.id}.file.master_name`" :label="lang('b_master_fieldname')" :is-required="true" :placeholder="lang('b_master_fieldname')" type="text" :form="state.forms.csink" />
+                                            <finput :name="`${props.fname}.${props.id}.file.url_name`" :label="lang('b_url_fieldname')" :is-required="true" :placeholder="lang('b_url_fieldname')" type="text" :form="state.forms.csink" />
                                         </div>
                                     </div>
                                 </template>

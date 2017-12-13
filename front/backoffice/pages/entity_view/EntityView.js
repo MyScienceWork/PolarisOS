@@ -11,12 +11,14 @@ module.exports = {
             state: {
                 path: APIRoutes.entity(this.entity(), 'POST'),
                 rpath: APIRoutes.entity(this.entity(), 'GET'),
-                cform: `${this.$route.params.datainstance}_creation`,
-                rform: `${this.$route.params.datainstance}_read`,
+                forms: {
+                    csink: `${this.$route.params.datainstance}_creation`,
+                    rsink: `${this.$route.params.datainstance}_read`,
+                    rsink_entity: 'entity_read',
+                    rsink_entity_form: `${this.$route.params.datainstance}_form`,
+                },
                 itemsPerPage: 20,
                 itemsPerRow: 2,
-                rform_entity: 'entity_read',
-                entity_form_sink: `${this.$route.params.datainstance}_form`,
             },
         };
     },
@@ -33,12 +35,12 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
 
         const entity_promise = this.$store.dispatch('search', {
-            form: this.state.rform_entity,
+            form: this.state.forms.rsink_entity,
             path: APIRoutes.entity('entity', 'POST', true),
             body: {
                 where: {
@@ -48,24 +50,16 @@ module.exports = {
         });
 
         entity_promise.then(() => {
-            if (this.state.rform_entity in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform_entity];
+            if (this.state.forms.rsink_entity in this.$store.state.forms) {
+                const form = this.$store.state.forms[this.state.forms.rsink_entity];
                 const content = form.content || [];
                 if (content.length > 0) {
-                    this.fetch_form(content[0].form, this.state.entity_form_sink);
+                    this.fetch_form(content[0].form, this.state.forms.rsink_entity_form);
                 }
             }
         }).catch((err) => { console.error(err); });
     },
     computed: {
-        content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
-        },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },

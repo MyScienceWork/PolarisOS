@@ -12,10 +12,12 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('config', 'POST'),
                 rpath: APIRoutes.entity('config', 'GET'),
-                cform: 'config_creation',
-                rform: 'config_read',
                 itemsPerPage: 10,
                 itemsPerRow: 2,
+                forms: {
+                    csink: 'config_creation',
+                    rsink: 'config_read',
+                },
                 langs: Langs.LangsList,
                 environments: Environments,
             },
@@ -25,25 +27,13 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('single_read', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
         });
     },
     computed: {
         readContent() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                return Utils.to_matrix(form.content instanceof Array ?
-                        form.content : [], this.state.itemsPerRow);
-            }
-            return [];
-        },
-        contentLength() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                return form.content.length;
-            }
-            return 0;
+            return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
     },
 };

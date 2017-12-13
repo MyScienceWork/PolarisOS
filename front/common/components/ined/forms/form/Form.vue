@@ -4,7 +4,7 @@
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
-                    <p><strong>An error occured -</strong> {{error.content.message}}</p>
+                    <p><strong>{{lang('b_error_occured')}}</strong> {{error.content.message}}</p>
                 </div>
             </article>
         </div>
@@ -23,15 +23,15 @@
         <div class="control">
             <button class="button button-background-blue" v-if="current_state === 'loading'">
                 <i class="fa fa-spinner fa-spin m-right-xs"></i>
-                Loading
+                {{lang('b_loading')}}
             </button>
             <button v-else
                 type="submit" @click="submit"
                 class="button button-background-blue"
-                >{{state.update_mode ? 'Modify' : 'Save'}}</button>
+                >{{mode_text}}</button>
         </div>
         <div class="control">
-            <button type="submit" @click="cancel" class="button button-background-red">Cancel</button>
+            <button type="submit" @click="cancel" class="button button-background-red">{{lang('b_cancel')}}</button>
         </div>
     </div>
     <slot v-else
@@ -45,7 +45,7 @@
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
-                    <p><strong>An error occured -</strong> {{error.content.message}}</p>
+                    <p><strong>{{lang('b_error_occured')}}</strong> {{error.content.message}}</p>
                 </div>
             </article>
         </div>

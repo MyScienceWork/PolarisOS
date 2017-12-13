@@ -9,7 +9,9 @@ module.exports = {
         return {
             state: {
                 rpath: APIRoutes.entity('publication', 'POST', true),
-                rform: 'publication_read',
+                forms: {
+                    rsink: 'publication_read',
+                },
                 itemsPerPage: 200,
                 itemsPerRow: 1,
             },
@@ -19,7 +21,7 @@ module.exports = {
     },
     mounted() {
         this.$store.dispatch('search', {
-            form: this.state.rform,
+            form: this.state.forms.rsink,
             path: this.state.rpath,
             body: {
                 size: 200,
@@ -28,14 +30,6 @@ module.exports = {
         });
     },
     computed: {
-        content() {
-            if (this.state.rform in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.rform];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
-        },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },

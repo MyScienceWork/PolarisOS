@@ -29,6 +29,10 @@ module.exports = {
                 current_step: 0,
                 next_step: 0,
                 total_steps: 5,
+                stepper: {
+                    next: undefined,
+                    e: undefined,
+                },
             },
         };
     },
@@ -36,34 +40,45 @@ module.exports = {
         update_typology_form(form, name) {
             this.fetch_form(form, this.state.publication.specs);
         },
-        validate(e) {
-            EventHub.$emit('form-click-on-validate', e);
-        },
         next(func, step, total, e) {
             e.preventDefault();
 
-            if (this.unvalidated) {
-                return;
-            }
+            this.$store.commit(Messages.COLLECT, {
+                form: this.state.publication.sink,
+            });
 
-            if (step === total - 1) {
-                EventHub.$emit('form-click-on-submit', e);
-            } else {
-                this.state.next_step = step + 1;
-                this.validate(e);
-            }
-            func(e);
+            this.state.next_step = step + 1;
+            this.state.stepper.next = func;
+            this.state.stepper.e = e;
         },
         previous(func, step, total, e) {
             e.preventDefault();
             this.state.next_step = step;
             this.state.current_step = step - 1;
-            this.$store.commit(Messages.UPDATE_MODE_FORM, {
-                form: this.state.publication.sink,
-                update: true,
-                content: this.$store.state.forms[this.state.publication.sink].content,
-            });
             func(e);
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.publication.sink,
+                keep_content: true,
+            });
+        },
+        send_information() {
+            if (this.state.current_step === 0) {
+                this.state.current_step = this.state.next_step;
+                this.state.stepper.next(this.state.stepper.e);
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.publication.sink,
+                    keep_content: true,
+                });
+            }
+        },
+        show_success_validate() {
+            console.log('show success deposit');
+            this.state.current_step = this.state.next_step;
+            this.state.stepper.next(this.state.stepper.e);
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.publication.sink,
+                keep_content: true,
+            });
         },
     },
     components: {
@@ -79,11 +94,27 @@ module.exports = {
                 size: 10000,
             },
         });
-        EventHub.$on('form-is-ready-for-submission', () => {
-            this.state.current_step = this.state.next_step;
-        });
     },
     computed: {
+        form_mode() {
+            if (this.state.current_step === 0) {
+                return 'default';
+            } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
+                return 'validate';
+            }
+            return 'default';
+        },
+        path() {
+            if (this.state.current_step === 0) {
+                return '';
+            } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
+                return this.state.publication.validate_path;
+            }
+            return this.state.publication.path;
+        },
+        current_state() {
+            return this.fstate(this.state.publication.sink);
+        },
         unvalidated() {
             let form = {};
             if (this.state.publication.sink in this.$store.state.forms) {
@@ -104,5 +135,21 @@ module.exports = {
             }
             return false;
         },
+    },
+    watch: {
+        current_state(s) {
+            this.dispatch(s, this);
+        },
+        mode(nm) {
+            this.state.mode = nm;
+        },
+    },
+    beforeDestroy() {
+        // Destroy all forms
+        [this.state.publication.sink, this.state.publication.specs, this.state.typology.sink].forEach((c) => {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: c,
+            });
+        });
     },
 };

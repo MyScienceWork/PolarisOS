@@ -1,9 +1,10 @@
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
+const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 
 module.exports = {
-    mixins: [InputMixin],
+    mixins: [RegisterMixin, InputMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -61,7 +62,7 @@ module.exports = {
     watch: {
         hiddenValue(n) {
             if (this.type === 'hidden' && this.state.value !== n) {
-                this.update();
+                this.initialize();
             }
         },
         current_state(s) {
@@ -77,5 +78,8 @@ module.exports = {
         current_state() {
             return this.fstate(this.form);
         },
+    },
+    mounted() {
+        this.initialize();
     },
 };

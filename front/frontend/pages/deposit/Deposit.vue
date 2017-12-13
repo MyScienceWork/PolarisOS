@@ -17,13 +17,14 @@
                                     <template slot="step-content" slot-scope="props">
                                         <fform
                                             :name="state.publication.sink" 
-                                            :post_path="state.publication.path" 
-                                            :put_path="state.publication.path"
+                                            :post_path="path" 
+                                            :put_path="path" 
                                             :get_path="state.publication.read_path"
-                                            :validate_path="state.publication.validate_path"
                                             :has-buttons="false"
                                             get_form="dummy_sink"
                                             :show-errors="false"
+                                            :mode="form_mode"
+                                            :no_reinitialize_after_success="true"
                                         >
                                             <first-deposit-step
                                                 :creation-sink="state.publication.sink"

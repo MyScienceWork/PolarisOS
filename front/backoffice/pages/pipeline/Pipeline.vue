@@ -46,21 +46,21 @@
                     <span slot="title"></span>
                     <div slot="body">
                         <fform
-                            :name="state.cform" 
+                            :name="state.forms.csink" 
                             :post_path="state.path" 
                             :put_path="state.path"
                             :get_path="state.rpath"
-                            :get_form="state.rform"
+                            :get_form="state.forms.rsink"
                         >
-                            <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.cform" />
-                            <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.cform" />
+                            <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.forms.csink" />
+                            <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.forms.csink" />
                             <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
                                 <template slot="tabs" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
                                         <fvariadic-element
                                             :key="tprops.id"
                                             name="defaults" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                             :tabs="true">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput :name="`${props.fname}.${props.id}.key`" 
@@ -68,7 +68,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_name')" 
                                                     type="text" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                                 <finput 
                                                     :name="`${props.fname}.${props.id}.value`" 
@@ -76,7 +76,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_value')" 
                                                     type="text" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                             </template>
                                         </fvariadic-element>
@@ -84,7 +84,7 @@
                                     <template v-else-if="tprops.id === 1">
                                         <fvariadic-element 
                                             name="formatters" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -94,7 +94,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.function.name`" 
@@ -103,7 +103,7 @@
                                                     :options="functions.formatter ? Object.values(functions.formatter) : []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                     v-on:select-change="(val) => {function_change(val, 'formatter', props.id)}"
                                                 />
                                                 
@@ -114,13 +114,13 @@
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
-                                                            :form="state.cform" 
+                                                            :form="state.forms.csink" 
                                                         /> 
                                                         <finput
                                                             :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
-                                                            :form="state.cform" 
+                                                            :form="state.forms.csink" 
                                                         />
                                                     </template>
                                                 </div>
@@ -130,7 +130,7 @@
                                     <template v-else-if="tprops.id === 2">
                                         <fvariadic-element 
                                             name="completers" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -140,7 +140,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.function.name`" 
@@ -149,7 +149,7 @@
                                                     :options="functions.completer ? Object.values(functions.completer) : []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                     v-on:select-change="(val) => {function_change(val, 'completer', props.id)}"
                                                 />
                                                 <div v-if="props.id in state.selected_functions.completer">
@@ -159,13 +159,13 @@
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
-                                                            :form="state.cform" 
+                                                            :form="state.forms.csink" 
                                                         /> 
                                                         <finput
                                                             :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
-                                                            :form="state.cform" 
+                                                            :form="state.forms.csink" 
                                                         />
                                                     </template>
                                                 </div>
@@ -175,7 +175,7 @@
                                     <template v-else-if="tprops.id === 3">
                                         <fvariadic-element 
                                             name="transformers" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -185,7 +185,7 @@
                                     <template v-else-if="tprops.id === 4">
                                         <fvariadic-element 
                                             name="validators" 
-                                            :form="state.cform" 
+                                            :form="state.forms.csink" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -195,7 +195,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.type`" 
@@ -203,13 +203,13 @@
                                                     :placeholder="lang('b_validator_type')"
                                                     :is-required="true"
                                                     :options="valtypes|| []"
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                                 <finput 
                                                     :name="`${props.fname}.${props.id}.required`" 
                                                     :label="lang('b_field_required')" 
                                                     type="checkbox" 
-                                                    :form="state.cform" 
+                                                    :form="state.forms.csink" 
                                                 />
                                             </template>
                                         </fvariadic-element>

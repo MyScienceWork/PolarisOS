@@ -11,7 +11,7 @@ function create_form_if_needed(state, name) {
             error: {},
             state: 'initial',
             success: '',
-            content: [],
+            content: {},
         } }, state.forms);
     }
 }
@@ -19,6 +19,7 @@ function create_form_if_needed(state, name) {
 module.exports = {
     [Messages.INITIALIZE]: (state, payload) => {
         const form_name = payload.form;
+        const keep_content = payload.keep_content;
         create_form_if_needed(state, form_name);
 
         state.forms[form_name].state = 'initial';
@@ -26,7 +27,9 @@ module.exports = {
         state.forms[form_name].validations = {};
         state.forms[form_name].error = {};
         state.forms[form_name].success = '';
-        state.forms[form_name].content = [];
+        if (!keep_content) {
+            state.forms[form_name].content = [];
+        }
     },
 
     [Messages.LOADING]: (state, payload) => {
@@ -54,6 +57,7 @@ module.exports = {
         const content = state.forms[form_name].content;
         const object = Utils.make_nested_object_from_path(path, info);
         form.content = Utils.merge_with_replacement(content, object);
+        console.log('form content', form.content);
         const claims = state.forms[form_name].claims;
         form.claims = Object.assign({}, claims, { [payload.name]: 1 });
 
@@ -126,7 +130,9 @@ module.exports = {
                             && payload.response.content.change === 'Validation') {
                 state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
                 payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
-            } else if (action === 'validate' || action === 'delete') {
+            } else if (action === 'validate') {
+                payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
+            } else if (action === 'delete') {
                 // Noop
             } else {
                 state.forms[form_name].success = payload.response.content.message;
@@ -162,6 +168,6 @@ module.exports = {
     [Messages.UNREGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
-        delete state.forms[form_name].pool[payload.name];
+        delete state.forms[form_name].elements[payload.name];
     },
 };

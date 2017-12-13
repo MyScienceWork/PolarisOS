@@ -18,19 +18,20 @@ module.exports = {
         };
     },
     methods: {
-        grab_typology_form(path) {
-            const parts = path.split('.').map(p => parseInt(p, 10));
-            const info = this.typology_options[parts[0]].children[parts[1]];
-            this.state.typology.name = info.name;
-            this.state.typology.form = info.form;
-            this.$emit('typology-change', info.form, info.name);
+        grab_typology_form(form) {
+            this.state.typology.form = form;
+            this.$emit('typology-change', form, undefined);
         },
     },
     computed: {
         typology_options() {
             if (this.typologySink in this.$store.state.forms) {
                 const sink = this.$store.state.forms[this.typologySink];
-                const content = sink.content || [];
+                let content = sink.content || [];
+                if (!(content instanceof Array)) {
+                    content = [];
+                }
+
                 return content.map((t, i) => {
                     t.label = this.lang(t.label);
                     t.children = t.children.map((ch, j) => {

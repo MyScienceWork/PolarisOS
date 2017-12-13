@@ -55,21 +55,11 @@ module.exports = {
         },
         forms() {
             const fname = this.state.forms.rform;
-            if (fname in this.$store.state.forms) {
-                const form = this.$store.state.forms[fname];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
+            return this.mcontent(fname);
         },
         pipelines() {
             const fname = this.state.forms.rpipeline;
-            if (fname in this.$store.state.forms) {
-                const form = this.$store.state.forms[fname];
-                const content = form.content || [];
-                return content;
-            }
-            return [];
+            return this.mcontent(fname);
         },
     },
 };
