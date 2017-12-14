@@ -8,6 +8,11 @@ module.exports = {
         return {
             state: {
                 pread_path: APIRoutes.entity('publication', 'POST', true),
+                aread_path: APIRoutes.entity('author', 'POST', true),
+                forms: {
+                    asink: 'authors_sink',
+                    arsink: 'authors_read_sink',
+                },
             },
         };
     },
