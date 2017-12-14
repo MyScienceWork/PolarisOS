@@ -11,9 +11,11 @@ class Pipeline extends ODM {
         const info = this.source;
         if ('defaults' in info) {
             return info.defaults.reduce((obj, d) => {
-                const t = Handlebars.compile(d.value)({});
-                const small = Utils.make_nested_object_from_path(d.key, t);
-                obj = Utils.merge_with_replacement(obj, small);
+                if (d.value != null && d.key != null) {
+                    const t = Handlebars.compile(d.value)({});
+                    const small = Utils.make_nested_object_from_path(d.key, t);
+                    obj = Utils.merge_with_replacement(obj, small);
+                }
                 return obj;
             }, {});
         }
