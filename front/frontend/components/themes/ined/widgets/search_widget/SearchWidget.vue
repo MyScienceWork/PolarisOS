@@ -11,13 +11,13 @@
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
-                        <input id="search-input" class="input is-medium" type="text" :placeholder="lang('f_search_in_archive')">
+                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.forms.ssink" label="" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
                         </p>
                     <p class="control">
-                        <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')">
+                        <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')" @click="trigger_click">
                             <i class="fa fa-search fa-2x"></i>
                         </a>
                     </p>
@@ -54,15 +54,15 @@
     <form @submit.prevent="trigger_click">
         <div class="field has-addons">
             <p class="control has-icons-left is-expanded">
-                <input id="search-input" class="input is-medium" type="text" :placeholder="lang('f_search_in_archive')">
+                <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.forms.ssink" label="" />
                 <span class="icon is-left">
                     <i class="fa fa-search"></i>
                 </span>
                 </p>
-            <p class="control">
-                <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')">
-                    <i class="fa fa-search fa-2x"></i>
-                </a>
+                <p class="control">
+                    <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')" @click="trigger_click">
+                        <i class="fa fa-search fa-2x"></i>
+                    </a>
             </p>
         </div>
     </form>

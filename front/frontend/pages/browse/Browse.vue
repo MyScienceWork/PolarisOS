@@ -3,7 +3,10 @@
     <div class="container is-fluid">
         <div class="columns">
             <div class="column">
-                <widget-search class="is-pulled-right" form="test_form" mode="on-side" />
+                <widget-search class="is-pulled-right" 
+                    :search_url="this.state.pread_path"
+                    :redirect_to_search="true"
+                    form="test_form" mode="on-side" />
             </div>
         </div>
         <div class="columns is-centered">

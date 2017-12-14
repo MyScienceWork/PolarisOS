@@ -215,7 +215,7 @@ class ODM {
             query,
         };
 
-        console.log('search query', query);
+        console.log('search query', JSON.stringify(query));
 
         if (sort != null) {
             body.sort = sort;

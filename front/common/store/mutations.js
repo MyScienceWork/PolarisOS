@@ -77,6 +77,7 @@ module.exports = {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'completed';
+        state.forms[form_name].claims = {};
     },
 
     [Messages.SUCCESS]: (state, payload) => {

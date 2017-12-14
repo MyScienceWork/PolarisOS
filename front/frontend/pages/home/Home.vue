@@ -10,6 +10,7 @@
                     title="Derniers dépôts"
                     type="publication"
                     :small="true"
+                    :items="items"
                 />
             </div>
             <div class="column">
@@ -20,7 +21,12 @@
                                 <p class="card-header-title">Rechercher</p>
                             </header>
                             <div class="card-content">
-                                <widget-search form="test_form" mode="small" />
+                                <widget-search 
+                                form="test_form" 
+                                mode="small" 
+                                :search_url="this.state.pread_path"
+                                :redirect_to_search="true"
+                                />
                                 <hr />
                                 <div class="columns is-centered">
                                     <div class="column">

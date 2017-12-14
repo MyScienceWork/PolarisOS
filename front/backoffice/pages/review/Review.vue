@@ -19,8 +19,8 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="row in content">
-                                            <td>{{row.titles[0].content}}</td>
-                                            <td>{{row.authors.map(a => a._id.fullname).join(', ')}}</td>
+                                            <td>{{row.titles ? row.titles[0].content : ''}}</td>
+                                            <td>{{row.authors ? row.authors.map(a => a._id.fullname).join(', ') : ''}}</td>
                                             <td>{{row.status}}</td>
                                             <td>
                                                 <a

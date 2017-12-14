@@ -4,10 +4,10 @@
             <p class="card-header-title" v-html="lang(title)"></p>
         </header>
         <div class="card-content">
-            <article class="media" v-for="(info, idx) in state.infos">
+            <article class="media" v-for="(info, idx) in items">
                 <div class="media-content">
                     <template v-if="type === 'publication'">
-                        <p v-html="info.master_content" />
+                        <p v-html="info.html" />
                         <div class="is-pulled-right level is-mobile">
                             <div class="level-left">
                                 <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${idx}`">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                 </nav>
-                <article class="media" v-for="(info, idx) in state.infos">
+                <article class="media" v-for="(info, idx) in items">
                     <div class="media-left">
                         <finput
                         :name="idx"
@@ -106,7 +106,7 @@
                     </div>
                     <div class="media-content">
                         <template v-if="type === 'publication'">
-                            <p v-html="info.master_content" />
+                            <p v-html="info.html" />
                             <div class="is-pulled-right level is-mobile">
                                 <div class="level-left">
                                     <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${idx}`">

@@ -5,6 +5,7 @@ const Handlebars = require('../../utils/templating');
 const Utils = require('../../utils/utils');
 const FormatFunctions = require('../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../pipeline/completer/complfunctions');
+const MMapping = require('../crud/mapping');
 
 class Pipeline extends ODM {
     async generate_defaults(): Promise<Object> {
@@ -95,7 +96,8 @@ class Pipeline extends ODM {
 
         const pipe = {
             Defaults: defaults,
-            Mapping: mapping,
+            RawMapping: mapping,
+            Mapping: new MMapping(mapping),
             Messages: {
                 set: 'Set',
                 remove: 'Remove',

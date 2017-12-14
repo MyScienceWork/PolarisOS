@@ -8,6 +8,7 @@ module.exports = {
         boxed: { type: Boolean, default: false },
         type: { type: String, default: 'publication' },
         small: { type: Boolean, default: false },
+        items: { type: Array, default: () => [] },
     },
     data() {
         return {
