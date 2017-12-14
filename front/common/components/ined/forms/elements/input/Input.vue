@@ -1,5 +1,5 @@
 <template>
-<input v-if="type === 'hidden'"
+<input v-else-if="type === 'hidden'"
     type="hidden"
     :name="name"
     v-model="state.value"

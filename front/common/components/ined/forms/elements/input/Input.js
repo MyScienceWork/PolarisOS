@@ -2,6 +2,7 @@ const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
+const moment = require('moment');
 
 module.exports = {
     mixins: [RegisterMixin, InputMixin],
@@ -43,15 +44,22 @@ module.exports = {
             }
         },
         start_collection() {
+            let info = this.state.value;
+            if (this.type === 'date') {
+                info = moment(this.state.value).toISOString();
+            }
+
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.form,
                 name: this.name,
-                info: this.state.value,
+                info,
             });
         },
         defaultValue() {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
+            } else if (this.type === 'date') {
+                return moment().toDate();
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             }
