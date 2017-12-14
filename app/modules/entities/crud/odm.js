@@ -80,6 +80,10 @@ class ODM {
      * @return content of the hit
      */
     static format_hit(hit: Object, found: boolean = true): Object {
+        if (hit == null) {
+            return {};
+        }
+
         let score = 0;
         const index = hit._index;
         const type = hit._type;
@@ -358,7 +362,7 @@ class ODM {
             await this.post_read_hook(population);
         } catch (err) {
             const response = err.body;
-            this.db = this.constructor.format_hit(response, response.found);
+            this.db = this.constructor.format_hit(response, response ? response.found : false);
             await this.post_read_hook(population);
         }
         return this;
