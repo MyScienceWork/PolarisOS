@@ -1,4 +1,6 @@
 const LangMixin = require('../../../../mixins/LangMixin');
+const Messages = require('../../../../api/messages');
+const Routes = require('../../../../api/routes');
 
 module.exports = {
     mixins: [LangMixin],
@@ -16,22 +18,48 @@ module.exports = {
             }
             return name;
         },
+        get_datasource_options(field, ajax) {
+            return (search, loading) => {
+                if (!ajax) {
+                    return;
+                }
+
+                this.$store.commit(Messages.INITIALIZE, {
+                    keep_content: false,
+                    form: `datasource_${field}_read`,
+                });
+
+                this.$store.dispath('search', {
+                    path: Routes.entity(field.datasource.name, 'POST', true),
+                    form: `datasource_${field}_read`,
+                    body: {
+                        size: 500,
+                        projection: [field.datasource.label, field.datasource.value],
+                        $where: {
+                            [field.datasource.label]: search,
+                        },
+                    },
+                });
+            };
+        },
     },
     computed: {
         datasource() {
-            return (field) => {
+            return (field, ajax) => {
                 if (field.type !== 'select' && field.type !== 'multi-select') {
                     return [];
                 }
 
-                const content = field.datasource.content || [];
-                if (field.datasource.translatable) {
-                    return content.map((dc) => {
-                        dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
-                        return dc;
-                    });
+                if (!ajax) {
+                    const content = field.datasource.content || [];
+                    if (field.datasource.translatable) {
+                        return content.map((dc) => {
+                            dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
+                            return dc;
+                        });
+                    }
+                    return content;
                 }
-                return content;
             };
         },
     },

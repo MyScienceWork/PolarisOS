@@ -17,4 +17,5 @@ module.exports = {
     handle_id: '/admin/handle_id',
     api: '/admin/api',
     config: '/admin/config',
+    login: '/admin/login',
 };

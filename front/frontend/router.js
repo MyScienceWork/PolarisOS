@@ -10,10 +10,12 @@ const News = require('./pages/news/News.vue');
 const View = require('./pages/view/View.vue');
 const UserProfile = require('./pages/user_profile/UserProfile.vue');
 const UserFavorites = require('./pages/user_favorites/UserFavorites.vue');
+const Auth = require('../common/utils/auth');
+const LoginView = require('./pages/login/Login.vue');
 
 Vue.use(Router);
 
-module.exports = new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -25,6 +27,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: false, access: '', subaccess: [] },
         },
         {
             path: '/news',
@@ -35,6 +38,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: false, access: '', subaccess: [] },
         },
         {
             path: '/browse',
@@ -45,6 +49,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: false, access: '', subaccess: [] },
         },
         {
             path: '/deposit',
@@ -55,6 +60,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: true, access: 'item', subaccess: ['c', 'u', 'd'] },
         },
         {
             path: '/help',
@@ -65,6 +71,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: false, access: '', subaccess: [] },
         },
         {
             path: '/search',
@@ -75,6 +82,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: true, access: 'item', subaccess: ['r'] },
         },
         {
             path: '/u/:id/profile',
@@ -85,6 +93,7 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: true, access: 'user_profile', subaccess: ['c', 'r', 'u', 'd'] },
         },
         {
             path: '/u/:id/favorites',
@@ -94,6 +103,7 @@ module.exports = new Router({
                 default: UserFavorites,
                 header: Header,
                 footer: Footer,
+                meta: { requiresAuth: true, access: 'user_favorite', subaccess: ['c', 'r', 'u', 'd'] },
             },
         },
         {
@@ -105,6 +115,41 @@ module.exports = new Router({
                 header: Header,
                 footer: Footer,
             },
+            meta: { requiresAuth: true, access: 'item', subaccess: ['r'] },
+        },
+        {
+            path: '/login',
+            name: 'f_nav_login',
+            navbar: false,
+            components: {
+                default: LoginView,
+            },
+            meta: { requiresAuth: false, access: '', subaccess: [] },
         },
     ],
 });
+
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        Auth.loggedIn(to.meta.access, to.meta.subaccess).then((ok) => {
+            if (ok) {
+                next();
+            } else {
+                next({
+                    path: '/login',
+                    query: { redirect: to.fullPath },
+                });
+            }
+        }).catch(() => {
+            next({
+                path: '/login',
+                query: { redirect: to.fullPath },
+            });
+        });
+    } else {
+        next(); // make sure to always call next()!
+    }
+});
+
+module.exports = router;

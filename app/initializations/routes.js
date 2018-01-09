@@ -39,6 +39,9 @@ async function initialize_routes() {
     router.get('/u/:id/favorites', async (ctx) => {
         await ctx.render('front/views/front');
     });
+    router.get('/login', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
 
     _.each(BackRoutes, (route) => {
         router.get(route, async (ctx) => {

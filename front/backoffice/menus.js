@@ -10,14 +10,15 @@ const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
 const Review = require('./pages/review/Review.vue');
-
+const Login = require('./pages/login/Login.vue');
 
 module.exports.menu = [
     [
         {
             section: 'General',
             name: 'Overview',
-            access: '',
+            access: 'overview',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'admin',
             routes: [Routes.admin],
             submenu: [],
@@ -26,7 +27,8 @@ module.exports.menu = [
         {
             section: 'General',
             name: 'Users',
-            access: '',
+            access: 'user',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'user',
             routes: [Routes.user],
             submenu: [],
@@ -35,7 +37,8 @@ module.exports.menu = [
         {
             section: 'General',
             name: 'Reviews',
-            access: '',
+            access: 'item',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'review',
             routes: [Routes.review],
             submenu: [],
@@ -47,7 +50,8 @@ module.exports.menu = [
         {
             section: 'Administration',
             name: 'Entities',
-            access: '',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'entity',
             routes: [Routes.entity],
             submenu: [],
@@ -56,7 +60,8 @@ module.exports.menu = [
         {
             section: 'Administration',
             name: 'Pipelines',
-            access: '',
+            access: 'pipeline',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'pipeline',
             routes: [Routes.pipeline],
             submenu: [],
@@ -65,7 +70,8 @@ module.exports.menu = [
         {
             section: 'Administration',
             name: 'Forms',
-            access: '',
+            access: 'form',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'form',
             routes: [Routes.form],
             submenu: [],
@@ -74,7 +80,8 @@ module.exports.menu = [
         {
             section: 'Administration',
             name: 'Langs',
-            access: '',
+            access: 'lang',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'lang',
             routes: [Routes.lang],
             submenu: [],
@@ -86,7 +93,8 @@ module.exports.menu = [
         {
             section: 'Advanced',
             name: 'Functions',
-            access: '',
+            access: 'function',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'function',
             routes: [Routes.function],
             submenu: [],
@@ -104,7 +112,8 @@ module.exports.menu = [
         {
             section: 'Advanced',
             name: 'Config',
-            access: '',
+            access: 'config',
+            subaccess: ['c', 'r', 'u', 'd'],
             key: 'config',
             routes: [Routes.config],
             submenu: [],
@@ -118,5 +127,17 @@ module.exports.other = [
         key: 'entity_view',
         routes: [Routes.entity_view],
         component: EntityView,
+        access: 'entity',
+        subaccess: ['c', 'r', 'u', 'd'],
+    },
+];
+
+module.exports.plain = [
+    {
+        access: '',
+        subaccess: [],
+        key: 'login',
+        routes: [Routes.login],
+        component: Login,
     },
 ];
