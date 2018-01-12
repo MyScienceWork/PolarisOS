@@ -8,13 +8,13 @@ module.exports = {
     data() {
         return {
             state: {
-                path: APIRoutes.entity('user', 'POST'),
-                rpath: APIRoutes.entity('user', 'GET'),
-                rpath_roles: APIRoutes.entity('role', 'GET'),
+                path: APIRoutes.entity('role', 'POST'),
+                rpath: APIRoutes.entity('role', 'GET'),
+                rpath_entities: APIRoutes.entity('entity', 'GET'),
                 forms: {
-                    csink: 'user_creation',
-                    rsink: 'user_read',
-                    rsink_roles: 'role_read',
+                    csink: 'role_creation',
+                    rsink: 'role_read',
+                    rsink_entities: 'entity_read',
                 },
                 itemsPerPage: 20,
                 itemsPerRow: 2,
@@ -30,10 +30,10 @@ module.exports = {
         });
 
         this.$store.dispatch('search', {
-            form: this.state.forms.rsink_roles,
-            path: APIRoutes.entity('role', 'POST', true),
+            form: this.state.forms.rsink_entities,
+            path: APIRoutes.entity('entity', 'POST', true),
             body: {
-                projection: ['name'],
+                projection: ['type'],
                 size: 10000,
             },
         });
@@ -42,8 +42,16 @@ module.exports = {
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);
         },
-        roles() {
-            const content = this.mcontent(this.state.forms.rsink_roles);
+        entities() {
+            const content = this.mcontent(this.state.forms.rsink_entities);
+            content.sort((a, b) => (a.type > b.type) - (a.type < b.type));
+            // TODO make this WAY cleaner;
+            content.push({ type: 'entity' });
+            content.push({ type: 'form' });
+            content.push({ type: 'pipeline' });
+            content.push({ type: 'user' });
+            content.push({ type: 'role' });
+            content.push({ type: 'function' });
             return content;
         },
     },

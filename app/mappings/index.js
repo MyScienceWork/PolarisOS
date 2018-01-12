@@ -1,4 +1,5 @@
 const user = require('./user');
+const role = require('./role');
 const form = require('./form');
 const lang = require('./lang');
 const config = require('./config');
@@ -10,6 +11,7 @@ const pfunction = require('./function');
 
 module.exports = {
     user: user.msw,
+    role: role.msw,
     form: form.msw,
     lang: lang.msw,
     config: config.msw,

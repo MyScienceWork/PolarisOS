@@ -2,6 +2,7 @@ module.exports = {};
 const Routes = require('./routes');
 const Home = require('./pages/home/Home.vue');
 const User = require('./pages/user/User.vue');
+const Role = require('./pages/role/Role.vue');
 const Config = require('./pages/config/Config.vue');
 const Lang = require('./pages/lang/Lang.vue');
 const Form = require('./pages/form/Form.vue');
@@ -27,12 +28,22 @@ module.exports.menu = [
         {
             section: 'General',
             name: 'Users',
-            access: 'user',
+            access: '',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'user',
             routes: [Routes.user],
             submenu: [],
             component: User,
+        },
+        {
+            section: 'General',
+            name: 'Roles',
+            access: '',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'role',
+            routes: [Routes.role],
+            submenu: [],
+            component: Role,
         },
         {
             section: 'General',
@@ -93,7 +104,7 @@ module.exports.menu = [
         {
             section: 'Advanced',
             name: 'Functions',
-            access: 'function',
+            access: '',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'function',
             routes: [Routes.function],

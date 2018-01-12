@@ -1,12 +1,21 @@
 // @flow
 const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
+const CryptoUtils = require('../../../utils/crypto');
 
 function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
         const t = Handlebars.compile(template)({ object, info });
         return Utils.make_nested_object_from_path(path.split('.'), t);
     };
+}
+
+async function key_complete(object: Object, path: string, info: Object = {}) {
+    return Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_key(''));
+}
+
+async function secret_complete(object: Object, path: string, info: Object = {}) {
+    return Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_secret());
 }
 
 /* function denormalization(mapping: String): Function {
@@ -48,4 +57,6 @@ function generic_complete(template: string): Function {
 
 module.exports = {
     generic_complete,
+    key_complete,
+    secret_complete,
 };

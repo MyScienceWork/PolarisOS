@@ -8,6 +8,9 @@ module.exports = {
                     created_at: {
                         type: 'date',
                     },
+                    updated_at: {
+                        type: 'date',
+                    },
                     emails: {
                         type: 'nested',
                         properties: {
@@ -21,17 +24,6 @@ module.exports = {
                     },
                     enabled: {
                         type: 'boolean',
-                    },
-                    social_ids: {
-                        type: 'nested',
-                        properties: {
-                            type: {
-                                type: 'keyword',
-                            },
-                            value: {
-                                type: 'keyword',
-                            },
-                        },
                     },
                     firstname: {
                         type: 'text',
@@ -66,8 +58,62 @@ module.exports = {
                         },
                         fielddata: true,
                     },
-                    updated_at: {
-                        type: 'date',
+                    authentication: {
+                        properties: {
+                            key: {
+                                type: 'keyword',
+                            },
+                            secret: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    rights: {
+                        type: 'nested',
+                        properties: {
+                            entity: {
+                                type: 'keyword',
+                            },
+                            c: {
+                                type: 'boolean',
+                            },
+                            r: {
+                                type: 'boolean',
+                            },
+                            u: {
+                                type: 'boolean',
+                            },
+                            d: {
+                                type: 'boolean',
+                            },
+                        },
+                    },
+                    access: {
+                        type: 'nested',
+                        properties: {
+                            whitelists: {
+                                type: 'nested',
+                                properties: {
+                                    entity: {
+                                        type: 'keyword',
+                                    },
+                                    id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            blacklists: {
+                                type: 'nested',
+                                properties: {
+                                    entity: {
+                                        type: 'keyword',
+                                    },
+                                    id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },

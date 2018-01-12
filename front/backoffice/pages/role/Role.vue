@@ -24,7 +24,7 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.firstname}} {{content.lastname}} 
+                                        {{content.name}} 
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -52,24 +52,18 @@
                             :get_path="state.rpath"
                             :get_form="state.forms.rsink"
                         >
-                            <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.forms.csink" />
-                            <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.forms.csink" />
-                            <fvariadic-element name="emails" :form="state.forms.csink" :tabs="true">
-                                <template slot="variadic" slot-scope="props">
-                                    <finput :name="`${props.fname}.${props.id}.email`" :label="lang('b_email')" :is-required="true" :placeholder="lang('b_email')" type="email" :form="state.forms.csink" />
-                                    <finput :name="`${props.fname}.${props.id}.master`" :label="lang('b_principal_email')" placeholder="" type="checkbox" :form="state.forms.csink" />
-                                </template>
-                            </fvariadic-element>
-                            <fselect 
-                                name="roles" 
-                                :label="lang('b_role', {}, 'other')" 
-                                :is-required="true" 
-                                :options="roles" 
-                                :form="state.forms.csink"
-                                :fieldValue="_id"
-                                :fieldLabel="name"
-                                :multi="true"
-                            />
+                            <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
+                            <p class="title is-3">{{lang('b_rights')}}</p>
+                            <div class="columns" v-for="(entity, i) in entities">
+                                <div class="column">
+                                    <p class="title is-5">{{lang('b_accessing')}} {{entity.type}}</p>
+                                    <finput :name="`rights.${i}.entity`" label="" placeholder="" type="hidden" :form="state.forms.csink" :hiddenValue="entity.type" />
+                                    <finput :name="`rights.${i}.c`" :label="lang('b_create')" placeholder="" type="checkbox" :form="state.forms.csink" />
+                                    <finput :name="`rights.${i}.r`" :label="lang('b_read')" placeholder="" type="checkbox" :form="state.forms.csink" />
+                                    <finput :name="`rights.${i}.u`" :label="lang('b_update')" placeholder="" type="checkbox" :form="state.forms.csink" />
+                                    <finput :name="`rights.${i}.d`" :label="lang('b_delete')" placeholder="" type="checkbox" :form="state.forms.csink" />
+                                </div>
+                            </div>
                         </fform>
                     </div>
                 </widget>
@@ -80,5 +74,5 @@
 </template>
 
 <script>
-module.exports = require('./User');
+module.exports = require('./Role');
 </script>

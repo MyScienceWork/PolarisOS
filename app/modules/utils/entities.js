@@ -11,6 +11,9 @@ const Mapper = require('../entities/crud/mapper');
 const User = require('../entities/user/user');
 const UserModel = require('../entities/user/models/users');
 
+const Role = require('../entities/role/role');
+const RoleModel = require('../entities/role/models/roles');
+
 const Config = require('../entities/config/config');
 const ConfigModel = require('../entities/config/models/configs');
 
@@ -124,6 +127,8 @@ async function get_model_from_type(type: string): ?Object {
         return ConfigModel;
     case 'user':
         return UserModel;
+    case 'role':
+        return RoleModel;
     case 'lang':
         return LangModel;
     case 'form':
@@ -146,6 +151,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Config(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'user':
         return new User(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'role':
+        return new Role(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'lang':
         return new Lang(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'form':

@@ -44,6 +44,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.17.0",
     "moment-timezone": "^0.5.13",
+    "node-uuid": "^1.4.8",
     "shortid": "^2.2.8",
     "superagent": "^3.3.1",
     "toastr": "^2.1.2",

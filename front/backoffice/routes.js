@@ -1,6 +1,7 @@
 module.exports = {
     admin: '/admin',
     user: '/admin/user',
+    role: '/admin/role',
     pipeline: '/admin/pipeline',
     entity: '/admin/entity',
     function: '/admin/function',

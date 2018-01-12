@@ -45,6 +45,10 @@ class Pipeline extends ODM {
                 switch (f.function.name) {
                 case 'generic_complete':
                     return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(f.function.arguments[0].value)(o, p, i) };
+                case 'key_complete':
+                    return { [f.field]: (o, p, i) => ComplFunctions.key_complete(o, p, i) };
+                case 'secret_complete':
+                    return { [f.field]: (o, p, i) => ComplFunctions.secret_complete(o, p, i) };
                 default:
                     return null;
                 }

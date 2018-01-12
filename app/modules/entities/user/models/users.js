@@ -3,6 +3,8 @@ const Joi = require('joi');
 const Crypto = require('crypto');
 const UserMapping = require('../../../../mappings/user');
 const MMapping = require('../../crud/mapping');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
+const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
 const Mapping: Object = UserMapping.msw.mappings.user.properties;
 
@@ -22,9 +24,16 @@ const Validation: Array<any> = [
     }),
 ];
 
-const Formatting: Array<any> = [];
+const Formatting: Array<any> = [
+    {
+        emails: a => FormatFunctions.oarray_to_array(a),
+    },
+];
 
-const Completion: Array<any> = [];
+const Completion: Array<any> = [{
+    'authentication.key': (o, i, p) => ComplFunctions.key_complete(o, i, p),
+    'authentication.secret': (o, i, p) => ComplFunctions.secret_complete(o, i, p),
+}];
 
 const Defaults: Object = {};
 
