@@ -11,11 +11,13 @@ function generic_complete(template: string): Function {
 }
 
 async function key_complete(object: Object, path: string, info: Object = {}) {
-    return Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_key(''));
+    const result = Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_key(''));
+    return result;
 }
 
 async function secret_complete(object: Object, path: string, info: Object = {}) {
-    return Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_secret());
+    const result = Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_secret());
+    return result;
 }
 
 /* function denormalization(mapping: String): Function {

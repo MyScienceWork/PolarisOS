@@ -6,7 +6,7 @@
     :readonly="readonly"
 ></input>
 <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
-    v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'email'"
+    v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' || type === 'email'"
 >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
@@ -28,7 +28,7 @@
                 v-model="state.value"
                 :readonly="readonly"
             />
-            <input v-else-if="type === 'password'" 
+            <input v-else-if="type === 'password' || type === 'password-sha1'" 
                 type="password"
                 :placeholder="placeholder"
                 :name="name"

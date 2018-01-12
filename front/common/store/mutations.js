@@ -170,4 +170,9 @@ module.exports = {
         create_form_if_needed(state, form_name);
         delete state.forms[form_name].elements[payload.name];
     },
+
+    [Messages.LOGIN_PASS]: (state, payload) => {
+        const status = payload.status;
+        state.login_status = status || 'fail';
+    },
 };

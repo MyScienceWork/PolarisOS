@@ -12,32 +12,42 @@ async function authenticate(ctx: Object) {
 
     // const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
 
-    const info = await EntitiesUtils.retrieve(email, 'user', '', '', { field: 'email' });
+    const info = await EntitiesUtils.search('user', {
+        $where: {
+            'emails.email': email,
+        },
+    });
 
-    if (info == null) {
+    if (info == null || info.result == null ||
+        info.result.hits.length === 0) {
         ctx.body = { ok: false, user: {} };
         return;
     }
 
-    if (info.get('locked')) {
+    const db = info.result.hits[0].source;
+
+    if (db.locked) {
         throw Errors.AccountIsLocked;
     }
 
-    let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
+    // let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
 
-    hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex');
+    let hpassword = Crypto.createHash('sha1').update(password).digest('hex');
+    // HACK TODO
+    hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex'); // As the formatter is called twice, we need to apply the hashing twice...
 
-    if (hpassword === info.get('hpassword')) {
-        info.set('force_deconnection', false);
-        await info.update();
+
+    if (hpassword === db.password) {
+        // info.set('force_deconnection', false);
+        // await info.update();
 
         ctx.body = { ok: true,
-            user: { firstname: info.get('firstname'),
-                lastname: info.get('lastname'),
-                email: info.get('email'),
-                access: info.get('access'),
-                key: info.get('key'),
-                secret: info.get('secret'),
+            user: { firstname: db.firstname,
+                lastname: db.lastname,
+                emails: db.emails,
+                roles: db.roles,
+                key: db.authentication.key,
+                secret: db.authentication.secret,
             } };
         return;
     }
@@ -57,39 +67,84 @@ async function access(ctx: Object) {
         return;
     }
 
-    const user = await EntitiesUtils.retrieve(key, 'user', '', '', { field: 'key' });
-    if (user == null) {
+    const info = await EntitiesUtils.search('user', {
+        $where: {
+            'authentication.key': key,
+        },
+        population: ['roles._id'],
+    });
+
+    if (info == null || info.result == null ||
+        info.result.hits.length === 0) {
         ctx.body = { ok: false };
         return;
     }
 
-    const papi = ctx.__fv.papi;
+    const user = info.result.hits[0].source;
+    const papi = ctx.__md.papi;
 
-    if (papi == null || papi.name !== 'user'
-        || papi.get('email') !== user.get('email')
-        || papi.get('key') !== user.get('key')
-        || papi.get('secret') !== user.get('secret')) {
+    if (papi == null || papi.authentication.key !== user.authentication.key
+        || papi.authentication.secret !== user.authentication.secret) {
         ctx.body = { ok: false };
         return;
     }
 
-    if (user.get('locked')) {
+    if (user.locked) {
         throw Errors.AccountIsLocked;
     }
 
-    if (user.get('force_deconnection')) {
+    // TODO
+    // Reimplement later
+    /* if (user.force_deconnection) {
+        ctx.body = { ok: false };
+        return;
+    }*/
+
+    const roles = user.roles;
+
+    let role = roles.reduce((obj, _role) => {
+        const rights = _role._id.rights;
+        if (Object.keys(obj).length === 0) {
+            return rights;
+        }
+
+        for (const right of rights) {
+            for (const fright of obj) {
+                if (fright.entity !== right.entity) {
+                    continue;
+                }
+
+                if (right.c === true) {
+                    fright.c = true;
+                }
+
+                if (right.r === true) {
+                    fright.r = true;
+                }
+
+                if (right.u === true) {
+                    fright.u = true;
+                }
+
+                if (right.d === true) {
+                    fright.d = true;
+                }
+            }
+        }
+        return obj;
+    }, {});
+
+    role = role.reduce((obj, _role) => {
+        obj[_role.entity] = _role;
+        return obj;
+    }, {});
+
+    if (!(part in role)) {
         ctx.body = { ok: false };
         return;
     }
 
-    const myaccess = user.get('access.rights');
-
-    if (!(part in myaccess)) {
-        ctx.body = { ok: false };
-        return;
-    }
-
-    const existing_types = types.filter(t => myaccess[part][t]);
+    const existing_types = types.filter(t => role[part][t]);
     if (existing_types.length === 0) {
         ctx.body = { ok: false };
         return;

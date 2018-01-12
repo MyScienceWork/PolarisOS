@@ -52,6 +52,9 @@ module.exports = {
             content.push({ type: 'user' });
             content.push({ type: 'role' });
             content.push({ type: 'function' });
+            content.push({ type: 'lang' });
+            content.push({ type: 'config' });
+            content.push({ type: 'overview' });
             return content;
         },
     },

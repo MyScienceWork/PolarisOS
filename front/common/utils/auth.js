@@ -43,7 +43,7 @@ class Auth {
         const user = Auth.get('user');
 
         if (user == null) {
-            return 'Default User';
+            return null;
         }
         return `${user.firstname} ${user.lastname}`;
     }
@@ -79,7 +79,7 @@ class Auth {
         try {
             const res = await Request.post(route)
             .set('Authorization', `${signature.key}:${signature.sign}`)
-            .set('X-POS-TIMESTAMP', signature.timestamp)
+            .set('X-MD-TIMESTAMP', signature.timestamp)
             .send({
                 key: user.key,
                 part,
@@ -150,7 +150,7 @@ class Auth {
 
     static get_api_headers(method, path) {
         const user = Auth.get('user');
-        if (user.key == null || user.secret == null) {
+        if (user == null || user.key == null || user.secret == null) {
             return {};
         }
 

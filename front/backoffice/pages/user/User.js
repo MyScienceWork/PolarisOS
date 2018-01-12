@@ -10,7 +10,6 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('user', 'POST'),
                 rpath: APIRoutes.entity('user', 'GET'),
-                rpath_roles: APIRoutes.entity('role', 'GET'),
                 forms: {
                     csink: 'user_creation',
                     rsink: 'user_read',
@@ -44,7 +43,10 @@ module.exports = {
         },
         roles() {
             const content = this.mcontent(this.state.forms.rsink_roles);
-            return content;
+            return content.map((c) => {
+                c.name = this.lang(c.name);
+                return c;
+            });
         },
     },
 };

@@ -3,6 +3,7 @@ const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const moment = require('moment');
+const Crypto = require('crypto');
 
 module.exports = {
     mixins: [RegisterMixin, InputMixin],
@@ -47,6 +48,8 @@ module.exports = {
             let info = this.state.value;
             if (this.type === 'date') {
                 info = moment(this.state.value).toISOString();
+            } else if (this.type === 'password-sha1' && this.state.value != null && this.state.value.trim() !== '') {
+                info = Crypto.createHash('sha1').update(this.state.value).digest('hex');
             }
 
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {

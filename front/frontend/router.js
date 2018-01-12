@@ -60,7 +60,7 @@ const router = new Router({
                 header: Header,
                 footer: Footer,
             },
-            meta: { requiresAuth: true, access: 'item', subaccess: ['c', 'u', 'd'] },
+            meta: { requiresAuth: true, access: 'publication', subaccess: ['c', 'u', 'd'] },
         },
         {
             path: '/help',

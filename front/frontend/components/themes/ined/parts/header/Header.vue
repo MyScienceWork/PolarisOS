@@ -17,10 +17,10 @@
                 </div>
             </div>
             <div class="tile is-parent is-2 is-vertical">
-                <p class="tile is-child">
+                <p class="tile is-child" v-if="fullname != null">
                     <b-dropdown position="is-bottom-left">
                         <a class="navbar-item" slot="trigger">
-                            <span>Corentin Ribeyre</span>
+                            <span>{{fullname}}</span>
                             <b-icon icon="caret-down"></b-icon>
                         </a>
 
@@ -36,11 +36,16 @@
                             </router-link>
                         </b-dropdown-item>
                         <b-dropdown-item has-link>
-                            <router-link class="dropdown-item" to="/logout">
+                            <a class="dropdown-item" @click="logout">
                                 {{lang('f_logout')}}
-                            </router-link>
+                            </a>
                         </b-dropdown-item>
                     </b-dropdown>
+                </p>
+                <p v-else class="tile is-child">
+                    <router-link class="navbar-item" slot="trigger" to="/login?redirect=%2F">
+                        <span>Log in</span>
+                    </router-link>
                 </p>
                 <p class="tile is-child">
                     <a class="navbar-item" slot="trigger">

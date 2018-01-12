@@ -4,6 +4,13 @@ module.exports = {
             user: {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
+                _meta: {
+                    refs: {
+                        roles: {
+                            _id: 'role',
+                        },
+                    },
+                },
                 properties: {
                     created_at: {
                         type: 'date',
@@ -24,6 +31,15 @@ module.exports = {
                     },
                     enabled: {
                         type: 'boolean',
+                    },
+                    locked: {
+                        type: 'boolean',
+                    },
+                    force_deconnection: {
+                        type: 'boolean',
+                    },
+                    password: {
+                        type: 'keyword',
                     },
                     firstname: {
                         type: 'text',
@@ -68,23 +84,11 @@ module.exports = {
                             },
                         },
                     },
-                    rights: {
+                    roles: {
                         type: 'nested',
                         properties: {
-                            entity: {
+                            _id: {
                                 type: 'keyword',
-                            },
-                            c: {
-                                type: 'boolean',
-                            },
-                            r: {
-                                type: 'boolean',
-                            },
-                            u: {
-                                type: 'boolean',
-                            },
-                            d: {
-                                type: 'boolean',
                             },
                         },
                     },

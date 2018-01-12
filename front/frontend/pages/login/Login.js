@@ -1,17 +1,43 @@
-const APIRoutes = require('../../../common/api/routes');
+const Messages = require('../../../common/api/messages');
+const LangMixin = require('../../../common/mixins/LangMixin');
 
 module.exports = {
-    mixins: [],
-    methods: {
+    mixins: [LangMixin],
+    data() {
+        return {
+            state: {
+                email: undefined,
+                password: undefined,
+            },
+        };
     },
-    components: {
+    methods: {
+        authenticate(e) {
+            e.preventDefault();
+            this.$store.dispatch('authenticate', {
+                email: this.state.email,
+                password: this.state.password,
+            });
+        },
     },
     mounted() {
-    },
-    computed: {
+        this.$store.commit(Messages.LOGIN_PASS, { status: 'na' });
     },
     watch: {
+        login_status(ns) {
+            if (ns === 'success') {
+                const redirect = this.$route.query.redirect;
+                if (redirect == null) {
+                    this.$router.push({ path: '/admin' });
+                } else {
+                    this.$router.push({ path: redirect });
+                }
+            }
+        },
     },
-    beforeDestroy() {
+    computed: {
+        login_status() {
+            return this.$store.state.login_status;
+        },
     },
 };

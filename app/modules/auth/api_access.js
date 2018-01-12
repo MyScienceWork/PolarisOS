@@ -9,22 +9,38 @@ const ODM = require('../entities/crud/odm');
 const EntitiesUtils = require('../utils/entities');
 
 async function _find_info(key: string): Promise<?ODM> {
-    let info: ? ODM = await EntitiesUtils.retrieve(key, 'apiuser', '', '', {
-        field: 'key',
+    let info = await EntitiesUtils.search('apiuser', {
+        $where: {
+            key,
+        },
     });
-    if (info == null) {
-        info = await EntitiesUtils.retrieve(key, 'user', '', '', {
-            field: 'key',
-        });
+
+    if (info == null || info.result == null ||
+        info.result.hits == null ||
+        info.result.hits.length === 0) {
+        info = null;
     }
 
-    return info;
+    if (info == null) {
+        info = await EntitiesUtils.search('user', {
+            $where: {
+                'authentication.key': key,
+            },
+        });
+
+        if (info == null || info.result == null ||
+            info.result.hits == null ||
+            info.result.hits.length === 0) {
+            return null;
+        }
+    }
+    return info.result.hits[0].source;
 }
 
 function api_signature(deactivated: boolean = false): Function {
     return async function func(ctx: Object, next: Function): Promise<*> {
-        if (deactivated) {
-            return await next();
+        if (ctx.__md == null) {
+            ctx.__md = {};
         }
 
         const authorization: ? string = ctx.request.headers.authorization;
@@ -44,9 +60,6 @@ function api_signature(deactivated: boolean = false): Function {
             throw Errors.InvalidAPIKey;
         }
 
-        if (ctx.__md == null) {
-            ctx.__md = {};
-        }
         ctx.__md.papi = api_info;
 
         if (deactivated) {

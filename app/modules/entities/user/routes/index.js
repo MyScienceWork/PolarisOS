@@ -6,7 +6,7 @@ const RouterUtils = require('../../../utils/router');
 const MyController = require('../controllers');
 const Middlewares = require('../middlewares').M;
 
-function routes(app: any, router: KoaRouter) {
+function routes(router: KoaRouter) {
     const type = 'user';
     const puprefix = `${config.api.public.prefix}/${config.api.public.version}`;
 

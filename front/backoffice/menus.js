@@ -48,7 +48,7 @@ module.exports.menu = [
         {
             section: 'General',
             name: 'Reviews',
-            access: 'item',
+            access: 'publication',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'review',
             routes: [Routes.review],

@@ -14,4 +14,5 @@ module.exports = {
     forms: {
         /* form_name: {error: {}, content: {}, update: false/true}*/
     },
+    login_status: 'na',
 };

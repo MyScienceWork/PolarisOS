@@ -7,6 +7,7 @@ const RouterUtils = require('../modules/utils/router');
 const BackRoutes = require('../../front/backoffice/routes');
 const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
+const UserRoutes = require('../modules/entities/user/routes');
 
 async function initialize_routes() {
     const router = new Router();
@@ -61,6 +62,9 @@ async function initialize_routes() {
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);
     });
+
+
+    UserRoutes(router);
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',

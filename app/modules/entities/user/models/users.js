@@ -10,15 +10,6 @@ const Mapping: Object = UserMapping.msw.mappings.user.properties;
 
 const Validation: Array<any> = [
     Joi.object().keys({
-        email: Joi.string().required().email().label('Email address'),
-        password: Joi.string().required().label('Password'),
-        retype_password: Joi.string().required().valid(Joi.ref('password')).label('Password').options({
-            language: {
-                any: {
-                    allowOnly: '!!Passwords do not match',
-                },
-            },
-        }),
         firstname: Joi.string().required().label('Firstname'),
         lastname: Joi.string().required().label('Lastname'),
     }),
@@ -27,6 +18,8 @@ const Validation: Array<any> = [
 const Formatting: Array<any> = [
     {
         emails: a => FormatFunctions.oarray_to_array(a),
+        roles: a => FormatFunctions.oarray_to_array(a),
+        password: a => Crypto.createHash('sha1').update(a).digest('hex'),
     },
 ];
 
@@ -35,7 +28,11 @@ const Completion: Array<any> = [{
     'authentication.secret': (o, i, p) => ComplFunctions.secret_complete(o, i, p),
 }];
 
-const Defaults: Object = {};
+const Defaults: Object = {
+    locked: false,
+    enabled: true,
+    force_deconnection: true,
+};
 
 const Messages: Object = {
     set: 'User is successfully added',

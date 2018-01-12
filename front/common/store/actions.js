@@ -3,6 +3,7 @@ const StringUtils = require('../utils/strings');
 const API = require('../api');
 const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
+const Auth = require('../utils/auth');
 
 async function create_or_update_or_validate(ctx, { path, body, form, rform, rpath }, action = 'create') {
     const method = action === 'update' ? 'PUT' : 'POST';
@@ -12,6 +13,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
         method,
         body,
         commit: ctx.commit,
+        signature: Auth.get_api_headers(method, path),
     };
 
     ctx.commit(Messages.LOADING, { form });
@@ -44,6 +46,7 @@ module.exports = {
             path,
             method: 'DEL',
             commit: ctx.commit,
+            signature: Auth.get_api_headers('DEL', path),
         };
 
         ctx.commit(Messages.LOADING, { form });
@@ -60,6 +63,7 @@ module.exports = {
             path,
             method: 'GET',
             commit: ctx.commit,
+            signature: Auth.get_api_headers('GET', path),
         };
 
         ctx.commit(Messages.LOADING, { form });
@@ -73,6 +77,7 @@ module.exports = {
             method: 'POST',
             commit: ctx.commit,
             body,
+            signature: Auth.get_api_headers('POST', path),
         };
 
         ctx.commit(Messages.LOADING, { form });
@@ -86,6 +91,7 @@ module.exports = {
             method: 'POST',
             commit: ctx.commit,
             body,
+            signature: Auth.get_api_headers('POST', path),
         };
 
         const response = await API.fetch(payload);
@@ -109,6 +115,7 @@ module.exports = {
             method: 'POST',
             commit: ctx.commit,
             body,
+            signature: Auth.get_api_headers('POST', path),
         };
 
         const response = await API.fetch(payload);
@@ -129,5 +136,11 @@ module.exports = {
             obj[l.lang] = lang;
             return obj;
         }, {});
+    },
+
+    authenticate: async (ctx, { email, password }) => {
+        const ok = await Auth.authenticate(email, password);
+        const status = ok ? 'success' : 'fail';
+        ctx.commit(Messages.LOGIN_PASS, { status });
     },
 };

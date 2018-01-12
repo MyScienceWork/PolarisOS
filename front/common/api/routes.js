@@ -43,4 +43,12 @@ module.exports = {
             return '';
         }
     },
+
+    access() {
+        return `${prefix}/iuser/access`;
+    },
+
+    authenticate() {
+        return `${prefix}/authenticate`;
+    },
 };

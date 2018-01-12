@@ -3,10 +3,11 @@ const Messages = require('./messages');
 
 
 async function fetch(object) {
-    const { method, path, body, commit } = object;
+    const { method, path, body, commit, signature } = object;
 
     let super_request = Request[method.toLowerCase()](path)
-        .set('Authorization', 'bfa3e803-217e-4f00-97ed-5f6417464484N1a-FmKtW:test');
+        .set('Authorization', `${signature.key}:${signature.sign}`)
+        .set('X-MD-TIMESTAMP', signature.timestamp);
     if (body != null && Object.keys(body).length > 0) {
         super_request = super_request.send(object.body);
     }

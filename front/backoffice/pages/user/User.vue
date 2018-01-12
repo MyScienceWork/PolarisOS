@@ -60,14 +60,15 @@
                                     <finput :name="`${props.fname}.${props.id}.master`" :label="lang('b_principal_email')" placeholder="" type="checkbox" :form="state.forms.csink" />
                                 </template>
                             </fvariadic-element>
+                            <finput name="password" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.forms.csink" />
                             <fselect 
                                 name="roles" 
                                 :label="lang('b_role', {}, 'other')" 
                                 :is-required="true" 
                                 :options="roles" 
                                 :form="state.forms.csink"
-                                :fieldValue="_id"
-                                :fieldLabel="name"
+                                fieldValue="_id"
+                                fieldLabel="name"
                                 :multi="true"
                             />
                         </fform>
