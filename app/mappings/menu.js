@@ -17,6 +17,9 @@ module.exports = {
                     part: {
                         type: 'keyword',
                     },
+                    page: {
+                        type: 'keyword',
+                    },
                     submenus: {
                         type: 'nested',
                         properties: {
@@ -27,6 +30,9 @@ module.exports = {
                                 type: 'keyword',
                             },
                             icon: {
+                                type: 'keyword',
+                            },
+                            page: {
                                 type: 'keyword',
                             },
                         },
