@@ -14,6 +14,10 @@ const menu = require('./menu');
 const template = require('./template');
 const page = require('./page');
 
+const importer = require('./importer');
+const exporter = require('./exporter');
+const connector = require('./connector');
+
 module.exports = {
     user: user.msw,
     role: role.msw,
@@ -30,4 +34,8 @@ module.exports = {
     menu: menu.msw,
     template: template.msw,
     page: page.msw,
+
+    importer: importer.msw,
+    exporter: exporter.msw,
+    connector: connector.msw,
 };

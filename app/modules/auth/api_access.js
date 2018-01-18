@@ -43,6 +43,10 @@ function api_signature(deactivated: boolean = false): Function {
             ctx.__md = {};
         }
 
+        if (deactivated) {
+            return await next();
+        }
+
         const authorization: ? string = ctx.request.headers.authorization;
         if (authorization == null) {
             throw Errors.NoAuthorizationHeaderError;

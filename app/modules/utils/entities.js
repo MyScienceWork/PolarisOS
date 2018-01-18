@@ -32,6 +32,15 @@ const EntityModel = require('../entities/entity/models/entities');
 const PFunction = require('../entities/function/function');
 const PFunctionModel = require('../entities/function/models/functions');
 
+const Importer = require('../entities/importer/importer');
+const ImporterModel = require('../entities/importer/models/importers');
+
+const Exporter = require('../entities/exporter/exporter');
+const ExporterModel = require('../entities/exporter/models/exporters');
+
+const Connector = require('../entities/connector/connector');
+const ConnectorModel = require('../entities/connector/models/connectors');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -139,6 +148,12 @@ async function get_model_from_type(type: string): ?Object {
         return EntityModel;
     case 'function':
         return PFunctionModel;
+    case 'importer':
+        return ImporterModel;
+    case 'exporter':
+        return ExporterModel;
+    case 'connector':
+        return ConnectorModel;
     default:
         return grab_entity_from_type(type, 'model');
         // return null;
@@ -163,6 +178,12 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new _Entity(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'function':
         return new PFunction(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'importer':
+        return new Importer(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'exporter':
+        return new Exporter(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'connector':
+        return new Connector(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
