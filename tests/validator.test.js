@@ -1,7 +1,7 @@
 const chai = require('chai');
 const Joi = require('joi');
 const GExcp = require('../build/modules/exceptions/generic');
-const Validator = require('../build/modules/validator/validator');
+const Validator = require('../build/modules/pipeline/validator/validator');
 const utils = require('../build/modules/utils/utils');
 
 const should = chai.should();

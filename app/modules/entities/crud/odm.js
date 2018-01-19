@@ -1,6 +1,8 @@
 // @flow
+const _ = require('lodash');
 const Search = require('./search');
 const Mapping = require('./mapping');
+const Utils = require('../../utils/utils');
 
 /**
  * Object Data Model
@@ -12,17 +14,24 @@ const Mapping = require('./mapping');
  */
 class ODM {
     _client: Object;
+    _index: string;
+    _type: string;
     _db: Object;
+    _model: Object;
     _id: ?string;
 
     /**
      * @param client: ElasticSearch client;
      * @param id: id of the entity (could be null)
      */
-    constructor(client: Object, id: ?string) {
+    constructor(index: string, type: string, client: Object,
+        model: Object, id: ?string) {
         this._client = client;
         this._id = id;
         this._db = {};
+        this._index = index;
+        this._type = type;
+        this._model = model;
     }
 
     /**
@@ -30,32 +39,36 @@ class ODM {
      * @return the underlying model of this entity
      * @see entity models for more details
      */
-    static model(): Object {
-        return {};
+    get model(): Object {
+        return this._model;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch mapping of this entity
      */
-    static mapping(): Object {
-        return {};
+    get mapping(): Object {
+        return this._model.Mapping;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch index of this entity
      */
-    static index(): string {
-        return '';
+    get index(): string {
+        return this._index;
     }
 
     /**
      * @public
      * @return the underlying ElasticSearch type of this entity
      */
-    static type(): string {
-        return '';
+    get type(): string {
+        return this._type;
+    }
+
+    get source(): Object {
+        return this.db.source || {};
     }
 
     /**
@@ -67,6 +80,10 @@ class ODM {
      * @return content of the hit
      */
     static format_hit(hit: Object, found: boolean = true): Object {
+        if (hit == null) {
+            return {};
+        }
+
         let score = 0;
         const index = hit._index;
         const type = hit._type;
@@ -77,6 +94,8 @@ class ODM {
             score = hit._score;
         }
 
+        source._id = id;
+
         return {
             id,
             type,
@@ -86,15 +105,6 @@ class ODM {
             sort,
             found,
         };
-    }
-
-    /**
-     * Extract ElasticSearch index and type of a mapping
-     * @public
-     * @return: tuple of index, type.
-     */
-    static extract_index_type(): [string, string] {
-        return [this.index(), this.type()];
     }
 
     /**
@@ -115,6 +125,10 @@ class ODM {
         return this._id;
     }
 
+    get messages(): Object {
+        return this._model.Messages;
+    }
+
     /**
      * Get all information about an entity;
      * @public
@@ -133,7 +147,20 @@ class ODM {
         this._db = o;
     }
 
-    static read(client: Object, response: Object): Object {
+    static async fetch_mapping(index: string, type: string, client: Object, include_meta: boolean = false) {
+        const mapping = await client.indices.getMapping({ index, type });
+        if (index in mapping && type in mapping[index].mappings) {
+            if (include_meta) {
+                return mapping[index].mappings[type];
+            }
+            return mapping[index].mappings[type].properties;
+        }
+        return null;
+    }
+
+    static async read(index: string, type: string,
+            client: Object, model: Object, response: Object,
+            population: Array<String> = []): Object {
         const o = {};
 
         if ('_scroll_id' in response) {
@@ -155,10 +182,14 @@ class ODM {
         if ('hits' in response) {
             o.hits = response.hits.hits.map((hit) => {
                 const info = this.format_hit(hit);
-                const odm = new ODM(client, info.id);
+                const odm = new this(index, type, client, model, info.id);
                 odm.db = info;
                 return odm;
             });
+
+            await o.hits.reduce((pr, hit) =>
+                pr.then(() => hit.post_read_hook(population)), Promise.resolve());
+
             o.total = response.hits.total;
             o.count = response.hits.total;
             o.max_score = response.hits.max_score;
@@ -171,17 +202,20 @@ class ODM {
         return o;
     }
 
-    static async search(client: Object, search: Search, opts: Object = {}): Promise<Object> {
-        const [index, type] = this.extract_index_type();
+    static async search(index: string, type: string, client: Object, model: Object,
+            search: Search, opts: Object = {}): Promise<Object> {
         const query = search.generate();
         const sort = search.sort();
         const aggs = search.aggs();
+        const population = 'population' in opts ? opts.population : [];
         const body = {
             from: 'from' in opts ? opts.from : 0,
             size: 'size' in opts ? opts.size : 1000,
             _source: 'source' in opts ? opts.source : true,
             query,
         };
+
+        console.log('search query', JSON.stringify(query));
 
         if (sort != null) {
             body.sort = sort;
@@ -211,11 +245,11 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(client, response);
+        return this.read(index, type, client, model, response, population);
     }
 
-    static async count(client: Object, search: Search): Promise<Object> {
-        const [index, type] = this.extract_index_type();
+    static async count(index: string, type: string, client: Object,
+            model: Object, search: Search): Promise<Object> {
         const query = search.generate();
         const response = await client.count({
             index,
@@ -224,11 +258,10 @@ class ODM {
                 query,
             },
         });
-        return this.read(client, response);
+        return this.read(index, type, client, model, response);
     }
 
-    static async deleteByQuery(client: Object, search: Search) {
-        const [index, type] = this.extract_index_type();
+    static async deleteByQuery(index: string, type: string, client: Object, search: Search) {
         const query = search.generate();
         await client.deleteByQuery({
             index,
@@ -240,8 +273,7 @@ class ODM {
         });
     }
 
-    static async remove(client: Object, id: string): Promise<boolean> {
-        const [index, type] = this.extract_index_type();
+    static async remove(index: string, type: string, client: Object, id: string): Promise<boolean> {
         try {
             const response = await client.delete({
                 index,
@@ -249,48 +281,170 @@ class ODM {
                 id,
                 refresh: true,
             });
+            console.log(response);
             return response.found;
         } catch (err) {
+            console.log('remove error', err);
             return false;
         }
     }
 
-    static async create(body: Object): Promise<ODM> {
-        const [index, type] = this.extract_index_type();
-    }
-
-    async read(opts: Object = {}) {
-        const source = 'source' in opts ? opts.source : null;
-        let src = true;
-        if (source) {
-            src = source.length > 0 ? source : false;
-        }
-
-        const [index, type] = this.extract_index_type();
+    static async _create_or_update(index: string, type: string,
+            client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
+        console.log('create or update body', JSON.stringify(body));
         try {
-            const response = await this._client.get({
+            const content = {
                 index,
                 type,
-                id: this._id,
-                _source: src,
-            });
+                body,
+                refresh: true,
+            };
 
-            this.db = this.format_hit(response, response.found);
+            if (id != null) {
+                content.id = id;
+                const ret = await this.pre_update_hook(index, type, client, model, body, id);
+                if (!ret) {
+                    return null;
+                }
+            } else {
+                const ret = await this.pre_create_hook(index, type, client, model, body);
+                if (!ret) {
+                    return null;
+                }
+            }
+
+            const response = await client.index(content);
+            if (('created' in response && response.created)
+                || ('result' in response && response.result === 'updated')) {
+                try {
+                    const get_response = await client.get({
+                        index,
+                        type,
+                        id: response._id,
+                    });
+                    const odm = new this(index, type, client, model, response._id);
+                    odm.db = this.format_hit(get_response, get_response.found);
+                    if ('created' in response) {
+                        await odm.post_create_hook();
+                    } else {
+                        await odm.post_update_hook();
+                    }
+
+                    console.log(odm);
+                    return odm;
+                } catch (err) {
+                    return null;
+                }
+            }
+            return null;
         } catch (err) {
-            const response = err.body;
-            this.db = this.format_hit(response, response.found);
+            console.log('creation or update error', err);
+            return null;
         }
     }
 
+    async read(opts: Object = {}): Promise<ODM> {
+        const population = 'population' in opts ? opts.population : [];
+        const source = 'source' in opts ? opts.source : null;
 
-    async update(body: Object) {
-        const [index, type] = this.extract_index_type();
+        await this.pre_read_hook(source, population);
+
+        try {
+            const response = await this._client.get({
+                index: this.index,
+                type: this.type,
+                id: this._id,
+                _source: source,
+            });
+
+
+            this.db = this.constructor.format_hit(response, response.found);
+            await this.post_read_hook(population);
+        } catch (err) {
+            const response = err.body;
+            this.db = this.constructor.format_hit(response, response ? response.found : false);
+            await this.post_read_hook(population);
+        }
+        return this;
+    }
+
+    static async create(index: string, type: string, client: Object,
+            model: Object, body: Object): Promise<?ODM> {
+        return this._create_or_update(index, type, client, model, body);
+    }
+
+    static async update(index: string, type: string, client: Object,
+            model: Object, body: Object, id: string): Promise<?ODM> {
+        console.log('update', JSON.stringify(body));
+        return this._create_or_update(index, type, client, model, body, id);
     }
 
     toJSON(): Object {
         return this.db;
     }
 
+    async pre_read_hook() {
+        // TODO TBD
+    }
+
+    static async pre_create_hook(index: string, type: string,
+            client: Object, model: Object, body: Object): Promise<boolean> {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
+    static async pre_update_hook(index: string, type: string,
+            client: Object, model: Object, body: Object, id: string): Promise<boolean> {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
+    async post_read_hook(population: Array<String>) {
+        // To be re-implemented in subclass (if needed)
+        await this._handle_population(population);
+    }
+
+    async post_create_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async post_update_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async _handle_population(population: Array<String>, propagate_population: boolean = false) {
+        const EntitiesUtils = require('../../utils/entities');
+        const mapping = await this.constructor.fetch_mapping(this.index, this.type,
+                this._client, true);
+
+        if (mapping && !('_meta' in mapping)) {
+            return;
+        }
+
+        if (!('refs' in mapping._meta)) {
+            return;
+        }
+
+        const refs = mapping._meta.refs;
+        const info = this._db.source;
+
+
+        for (const p of population) {
+            const path = p.split('.');
+            const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
+            let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
+
+            if (ref.length > 0 && vals.length > 0) {
+                ref = ref[0];
+                const last = path[path.length - 1];
+                for (const v of vals) {
+                    const result = await EntitiesUtils.retrieve(v[last],
+                        ref, '', propagate_population ? population.join(',') : '');
+                    v[last] = result != null ? result.source : {};
+                }
+            }
+        }
+    }
 }
 
 module.exports = ODM;

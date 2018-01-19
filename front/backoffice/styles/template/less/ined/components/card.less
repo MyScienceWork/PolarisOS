@@ -1,0 +1,72 @@
+//Mixins
+.generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .card-@{name} {
+        background-color: @@name;
+    }
+
+    .clickable-card-@{name}:hover {
+        background-color: @@name;
+        .card-header {
+            background-color: @grey-3;
+            color: @white;
+        }
+    }
+
+    .clickable-card-@{name} {
+        .card-header {
+            background-color: @@name;
+        }
+    }
+
+    .card-header-@{name} {
+        background-color: @@name;
+        border-radius: 5px 5px 0 0;
+        padding: 1%;
+        border-bottom: 0px solid @white !important;
+        font-weight: bold;
+        color: @white !important;
+        text-transform: uppercase;
+    }
+
+    .generate-colored-cards((@i - 1));
+}
+
+.card {
+    padding: 1%;
+    border: 1px solid @white;
+    border-radius: 5px;
+    box-shadow: 0 0 3px @black-shadow;
+
+    .card-header {
+        box-shadow: none;
+        border-bottom: 1px solid @black-shadow;
+        color: @grey-3;
+    }
+
+    .card-footer {
+        border-top: none;
+    }
+}
+
+.clickable-card {
+    border-radius: 5px;
+    box-shadow: 0 0 3px @black-shadow;
+    padding: 0 2% 2% 2%;
+    cursor: pointer;
+
+    .card-header {
+        display: inline-block;
+        padding: 0px 10px;
+        color: @white;
+        border-radius: 0 0 5px 5px;
+        text-transform: uppercase;
+    }
+}
+
+.has-card-gradient {
+    background: linear-gradient(to bottom, @grey-gradient,@white);
+}
+
+.generate-colored-cards();

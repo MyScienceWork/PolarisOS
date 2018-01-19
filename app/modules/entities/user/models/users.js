@@ -1,68 +1,38 @@
 // @flow
-const mongoose = require('mongoose');
 const Joi = require('joi');
 const Crypto = require('crypto');
-const AccessSchema = require('../../../auth/access_schema');
-const CryptoUtils = require('../../../utils/crypto');
+const UserMapping = require('../../../../mappings/user');
+const MMapping = require('../../crud/mapping');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
+const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Schema = mongoose.Schema;
-
-const MySchema: mongoose.Schema = new Schema({
-    key: { type: String, index: true, default: CryptoUtils.generate_key },
-    secret: { type: String, default: CryptoUtils.generate_secret },
-    email: { type: String, index: true },
-    firstname: { type: String },
-    lastname: { type: String, index: true },
-    hpassword: { type: String },
-    salt: { type: String },
-    access: AccessSchema,
-});
-
-MySchema.methods = {
-    authenticate(plainText) {
-        return this.encryptPassword(plainText) === this.hashed_password;
-    },
-
-    makeSalt() {
-        return `${Math.round((new Date().valueOf() * Math.random()))}`;
-    },
-
-    encryptPassword(password) {
-        if (!password) return '';
-        let encrypred;
-        try {
-            encrypred = Crypto.createHmac('sha256', this.salt).update(password).digest('hex');
-            return encrypred;
-        } catch (err) {
-            return '';
-        }
-    },
-};
-
-MySchema
-.virtual('password')
-.set((password) => {
-    this._password = password;
-    if (password && password.length) {
-        this.salt = this.makeSalt();
-        this.hpassword = this.encryptPassword(password);
-    } else {
-        this.hpassword = '';
-    }
-})
-.get(() => this._password);
-
+const Mapping: Object = UserMapping.msw.mappings.user.properties;
 
 const Validation: Array<any> = [
     Joi.object().keys({
-        email: Joi.string().email().label('Email address'),
-        password: Joi.string().label('Password'),
+        firstname: Joi.string().required().label('Firstname'),
+        lastname: Joi.string().required().label('Lastname'),
     }),
 ];
 
-const Formatting: Array<any> = [];
+const Formatting: Array<any> = [
+    {
+        emails: a => FormatFunctions.oarray_to_array(a),
+        roles: a => FormatFunctions.oarray_to_array(a),
+        password: a => Crypto.createHash('sha1').update(a).digest('hex'),
+    },
+];
 
-const Completion: Array<any> = [];
+const Completion: Array<any> = [{
+    'authentication.key': (o, i, p) => ComplFunctions.key_complete(o, i, p),
+    'authentication.secret': (o, i, p) => ComplFunctions.secret_complete(o, i, p),
+}];
+
+const Defaults: Object = {
+    locked: false,
+    enabled: true,
+    force_deconnection: true,
+};
 
 const Messages: Object = {
     set: 'User is successfully added',
@@ -70,13 +40,14 @@ const Messages: Object = {
     modify: 'User is successfully modified',
 };
 
-const Model: mongoose.Model = mongoose.model('User', MySchema);
 
 module.exports = {
-    Model,
+    RawMapping: Mapping,
+    Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
     Completion,
     Messages,
+    Defaults,
     Name: 'User',
 };

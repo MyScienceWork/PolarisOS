@@ -76,6 +76,44 @@ function find_value_with_path(object: ? Object, path: Array<string>): any {
     return find_value_with_path(object[key], p.slice(1));
 }
 
+function* find_popvalue_with_path(object: ?Object, path: Array<string>, return_object: boolean = false): any {
+    const p = path;
+    if (p.length === 0) {
+        const info = _return_inner_object(object, !return_object);
+        if (return_object && info instanceof Array) {
+            yield* info;
+        } else if (info != null) {
+            yield info;
+        }
+    } else {
+        let key = p[0];
+        const is_nan = isNaN(parseInt(key, 10));
+        if (!is_nan) {
+            key = parseInt(key, 10);
+        }
+
+        if (object instanceof Array) {
+            if (is_nan) {
+                for (const i in object) {
+                    yield* find_popvalue_with_path(object[i], p, return_object);
+                }
+            } else if (key < object.length) {
+                if (return_object && p.length === 1) {
+                    yield* find_popvalue_with_path(object, p.slice(1), return_object);
+                } else {
+                    yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+                }
+            }
+        } else if (object != null && hasProperty(object, key)) {
+            if (return_object && p.length === 1) {
+                yield* find_popvalue_with_path(object, p.slice(1), return_object);
+            } else {
+                yield* find_popvalue_with_path(object[key], p.slice(1), return_object);
+            }
+        }
+    }
+}
+
 
 function forge_whitelist_blacklist_query(lists: Object): Object {
     let {
@@ -115,9 +153,44 @@ function forge_whitelist_blacklist_query(lists: Object): Object {
     return query;
 }
 
+
+function merge_with_replacement(object: Object, source: Object): Object {
+    return Object.keys(source).reduce((obj, key) => {
+        if (key in obj) {
+            if (obj[key] instanceof Array) {
+                obj[key] = source[key]; // Replace with new array
+            } else if (obj[key] instanceof Object) {
+                obj[key] = merge_with_replacement(obj[key], source[key]);
+            } else {
+                obj[key] = source[key];
+            }
+        } else {
+            obj[key] = source[key];
+        }
+        return obj;
+    }, object);
+}
+
+function make_nested_object_from_path(path: Array<string>,
+    value: any, obj: Object = {}): Object {
+    const rpath = _.reverse(path);
+    return rpath.reduce((acc, field) => {
+        if (Object.keys(acc).length === 0) {
+            acc[field] = value;
+            return acc;
+        }
+        const my_obj = {};
+        my_obj[field] = acc;
+        return my_obj;
+    }, obj);
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
     find_object_with_path,
     forge_whitelist_blacklist_query,
+    merge_with_replacement,
+    find_popvalue_with_path,
+    make_nested_object_from_path,
 };

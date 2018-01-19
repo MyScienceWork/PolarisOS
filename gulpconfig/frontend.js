@@ -19,6 +19,7 @@ const htmlreplace = require('gulp-html-replace');
 const clean = require('gulp-clean');
 const uglify = require('gulp-uglify');
 const vueify = require('vueify');
+const unflowify = require('unflowify');
 
 class GulpFrontend {
     constructor(production) {
@@ -35,6 +36,7 @@ class GulpFrontend {
 
         this.FRONT_LOCATIONS = {
             fonts: './front/frontend/fonts',
+            imgs: './front/frontend/imgs',
         };
 
         this.dependencies = [
@@ -42,6 +44,7 @@ class GulpFrontend {
             'vuex',
             'vue-router',
             'lodash',
+            'moment',
         ];
 
         this.external_dependencies = [
@@ -49,6 +52,7 @@ class GulpFrontend {
 
         this.vendors_css_files = [
             './node_modules/font-awesome/css/font-awesome.css',
+            './node_modules/vue2-dropzone/dist/vue2Dropzone.css',
         ];
 
         this.css_files = [
@@ -70,6 +74,7 @@ class GulpFrontend {
         });
 
         return appBundler
+        .transform(unflowify)
         .transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
@@ -113,7 +118,7 @@ class GulpFrontend {
     }
 
     watch() {
-        gulp.watch(['./front/frontend/**/*.{vue,jsx,js}'], ['front-scripts']);
+        gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], ['front-scripts']);
         gulp.watch(['./front/frontend/styles/**/*.*'], ['front-styles']);
         gulp.watch(['./front/frontend/views/*.*'], ['front-views']);
     }
@@ -162,6 +167,11 @@ class GulpFrontend {
         gulp.src([
             './front/frontend/views/front.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
+    }
+
+    copyImgs() {
+        return gulp.src([`${this.FRONT_LOCATIONS.imgs}/**/*`], { base: this.FRONT_LOCATIONS.imgs })
+            .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
     revisionClean() {

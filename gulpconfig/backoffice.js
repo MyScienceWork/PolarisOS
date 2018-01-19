@@ -3,6 +3,7 @@
 const fs = require('fs');
 const gulp = require('gulp');
 const browserify = require('browserify');
+const envify = require('envify/custom');
 const source = require('vinyl-source-stream');
 const gutil = require('gulp-util');
 const gulpif = require('gulp-if');
@@ -17,12 +18,15 @@ const gzip = require('gulp-gzip');
 const htmlreplace = require('gulp-html-replace');
 const clean = require('gulp-clean');
 const uglify = require('gulp-uglify');
+const vueify = require('vueify');
+const unflowify = require('unflowify');
 
-class GulpBackoffice {
+class GulpFrontend {
     constructor(production) {
         this.isProduction = production;
+        console.log(this.isProduction);
+
         this.PUB_LOCATIONS = {
-            global: 'public/back',
             js: 'public/back/js',
             css: 'public/back/css',
             fonts: 'public/back/fonts',
@@ -30,36 +34,37 @@ class GulpBackoffice {
             views: 'public/back/views',
         };
 
+        this.BACK_LOCATIONS = {
+            fonts: './front/backoffice/fonts',
+            imgs: './front/backoffice/imgs',
+        };
+
         this.dependencies = [
-            'react',
-            'react-dom',
-            'react-router',
-            'react-router-dom',
-            'react-bootstrap',
-            'prop-types',
+            'vue',
+            'vuex',
+            'vue-router',
             'lodash',
             'moment',
         ];
 
         this.external_dependencies = [
-            './node_modules/jquery/dist/jquery.js',
-            './node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
-            './node_modules/toastr/toastr.js',
         ];
 
         this.vendors_css_files = [
             './node_modules/font-awesome/css/font-awesome.css',
-            './node_modules/react-select/dist/react-select.css',
         ];
 
         this.css_files = [
         ];
+
+        this.scriptsCount = 0;
     }
 
     bundleApp() {
+        this.scriptsCount += 1;
         const appBundler = browserify({
-            entries: './front/backoffice/main.jsx',
-            extensions: ['.js', '.jsx'],
+            entries: './front/backoffice/main.js',
+            extensions: ['.js', '.vue'],
             debug: true,
         });
 
@@ -68,8 +73,13 @@ class GulpBackoffice {
         });
 
         return appBundler
+        .transform(unflowify)
+        .transform(envify({
+            NODE_ENV: process.env.NODE_ENV || 'development',
+        }))
+        .transform(vueify)
         .transform('babelify', {
-            presets: ['es2015', 'react'],
+            presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
         .bundle()
@@ -84,8 +94,11 @@ class GulpBackoffice {
             require: this.dependencies,
             debug: true,
         })
+        .transform(envify({
+            NODE_ENV: process.env.NODE_ENV || 'development',
+        }))
         .transform('babelify', {
-            presets: ['es2015', 'react'],
+            presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
         .bundle()
@@ -104,14 +117,15 @@ class GulpBackoffice {
     }
 
     watch() {
-        gulp.watch(['./front/backoffice/**/*.{js,jsx}'], ['back-scripts']);
+        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
         gulp.watch(['./front/backoffice/styles/**/*.*'], ['back-styles']);
         gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
     }
 
     createVendorStyles() {
         gulp
-        .src(['./front/backoffice/styles/vendors.scss', './front/backoffice/styles/vendors.less', ...this.vendors_css_files])
+        .src(['./front/backoffice/styles/vendors.scss',
+            './front/backoffice/styles/vendors.less', ...this.vendors_css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
         .pipe(gulpif('*.scss', sass()))
@@ -123,11 +137,11 @@ class GulpBackoffice {
 
     createStyles() {
         gulp
-        .src(['./front/backoffice/styles/admin.less', ...this.css_files])
+        .src(['./front/backoffice/styles/back.less', './front/backoffice/styles/back.scss', ...this.css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
         .pipe(gulpif('*.scss', sass()))
-        .pipe(concat('admin.css'))
+        .pipe(concat('back.css'))
         .pipe(autoprefixer())
         .pipe(gulpif(this.isProduction, cssmin()))
         .pipe(gulp.dest(this.PUB_LOCATIONS.css));
@@ -135,25 +149,28 @@ class GulpBackoffice {
 
     copyFonts() {
         const font_awesome = './node_modules/font-awesome/fonts';
-        const font_glyphicon = './node_modules/bootstrap-sass/assets/fonts/bootstrap';
-        const font_ionicon = './node_modules/ionicons/dist/fonts';
-            // var font_roboto    = 'bower_components/materialize/font';
-            // var font_interstate = '3rdparty/fonts_interstate';
         return gulp.src([
             `${font_awesome}/fontawesome-webfont.*`,
             `${font_awesome}/FontAwesome.otf`,
-            `${font_glyphicon}/glyphicons-halflings-regular.*`,
-            `${font_ionicon}/ionicons.*`,
-            // `${font_roboto}/material-design-icons/Material-Design-Icons.*`,
-            // `${font_roboto}/roboto/Roboto-*`,
-            //`${font_interstate}/Interstate-B*Condensed.*`,
-        ]).pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
+        ])
+        .pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
+    }
+
+    copyCustomersFont() {
+        const interstate = `${this.BACK_LOCATIONS.fonts}/interstate`;
+        return gulp.src([`${interstate}/*`], { base: this.BACK_LOCATIONS.fonts })
+            .pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
     }
 
     copyViews() {
         gulp.src([
-            './front/backoffice/views/admin.html',
+            './front/backoffice/views/back.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
+    }
+
+    copyImgs() {
+        return gulp.src([`${this.BACK_LOCATIONS.imgs}/**/*`], { base: this.BACK_LOCATIONS.imgs })
+            .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
     revisionClean() {
@@ -182,6 +199,7 @@ class GulpBackoffice {
         if (!this.isProduction) {
             return null;
         }
+
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`, `${this.PUB_LOCATIONS.js}/**/*.js`])
             .pipe(revision())
             .pipe(gulpif('*.css', gulp.dest(this.PUB_LOCATIONS.css)))
@@ -213,7 +231,7 @@ class GulpBackoffice {
         js.sort();
         js.reverse();
 
-        return gulp.src(`${this.PUB_LOCATIONS.views}/admin.html`)
+        return gulp.src(`${this.PUB_LOCATIONS.views}/back.html`)
         .pipe(htmlreplace({ css, js }))
         .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
@@ -229,7 +247,6 @@ class GulpBackoffice {
             .pipe(gulpif('*.js.gz', gulp.dest(this.PUB_LOCATIONS.js)))
             .pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
     }
-
 }
 
-module.exports = GulpBackoffice;
+module.exports = GulpFrontend;

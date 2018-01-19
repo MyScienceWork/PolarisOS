@@ -4,6 +4,7 @@ const compose = require('koa-compose');
 const _ = require('lodash');
 const KoaBody = require('koa-body');
 const KoaRouter = require('koa-router');
+const Multer = require('koa-multer');
 const Config = require('../../config');
 const Access = require('../auth/access');
 const ApiAccess = require('../auth/api_access');
@@ -36,7 +37,7 @@ function api_middlewares(type: string,
     const pass = 'pass' in opts ? opts.pass : false;
     return [ApiAccess.api_signature(pass),
         RateLimiter.limit(),
-        Access.access(type, access_type),
+        Access.access(type, access_type, pass),
         Access.enforce_right,
     ];
 }
@@ -54,6 +55,7 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
         Pipeline.check(type),
         Pipeline.merge(type),
         Pipeline.defaults(type),
+        Pipeline.format(type),
         Pipeline.complete(type),
         Pipeline.format(type),
         ...emiddlewares,
@@ -61,27 +63,57 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
     ];
 }
 
+function get_middlewares(type: string) {
+    return _.flatten([koa_middlewares({}),
+        api_middlewares(type, 'r', { pass: true }),
+    ]);
+}
+
+function del_middlewares(type: string) {
+    return _.flatten([koa_middlewares({}),
+        api_middlewares(type, 'd', { pass: true }),
+    ]);
+}
+
+function put_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        api_middlewares(type, 'u', { pass: true }),
+        app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function post_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        api_middlewares(type, 'c', { pass: true }),
+        app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function upload_middlewares(type: string, dest: string, emid: Array<Function>, model: ?Object) {
+    const upload = Multer({ dest });
+    return _.flatten([
+        [upload.single('file'),
+            async (ctx, next) => {
+                ctx.request.body = ctx.req.body;
+                ctx.request.file = ctx.req.file;
+                return next();
+            }],
+        api_middlewares(type, 'c', { pass: true }),
+        // app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+
 function generate_entity_routes(router: KoaRouter,
     type: string, emiddlewares: Array<Function>) {
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
 
-    const get_mware = _.flatten([koa_middlewares({}),
-        api_middlewares(type, 'r', { pass: true }),
-    ]);
-    const del_mware = _.flatten([koa_middlewares({}),
-        api_middlewares(type, 'd', { pass: true }),
-    ]);
-    const put_mware = _.flatten([
-        koa_middlewares({}),
-        api_middlewares(type, 'u', { pass: true }),
-        app_middlewares(type, { extra_middlewares: emiddlewares }),
-    ]);
-    const post_mware = _.flatten([
-        koa_middlewares({}),
-        api_middlewares(type, 'c', { pass: true }),
-        app_middlewares(type, { extra_middlewares: emiddlewares }),
-    ]);
-
+    const get_mware = get_middlewares(type);
+    const del_mware = del_middlewares(type);
+    const put_mware = put_middlewares(type, emiddlewares);
+    const post_mware = post_middlewares(type, emiddlewares);
 
     router.get(`${puprefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
 
@@ -89,24 +121,34 @@ function generate_entity_routes(router: KoaRouter,
 
     router.post(`${puprefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
 
-    router.get(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.get(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
 
-    router.post(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
 
     router.get(`${puprefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
 
-    router.get(`${puprefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${puprefix}/${type}/:id/:projection/:population`, compose([...get_mware, CrudController.get(type)]));
     router.get(`${puprefix}/${type}/:id/:projection`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${puprefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
 
 
     router.del(`${puprefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
-    router.put(`${puprefix}/${type}/:id`, compose([...put_mware, CrudController.put(type)]));
+    router.put(`${puprefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
     router.post(`${puprefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
+    router.put(`${puprefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
+    router.post(`${puprefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
 }
 
 exports.generate_entity_routes = generate_entity_routes;
 exports.koa_middlewares = koa_middlewares;
 exports.api_middlewares = api_middlewares;
 exports.app_middlewares = app_middlewares;
+exports.get_middlewares = get_middlewares;
+exports.del_middlewares = del_middlewares;
+exports.post_middlewares = post_middlewares;
+exports.put_middlewares = put_middlewares;
+exports.upload_middlewares = upload_middlewares;

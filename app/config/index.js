@@ -6,7 +6,8 @@ let tmp;
 try {
   tmp = require(`./${env}.js`); // eslint-disable-line
 } catch (error) {
-    process.exit(1);
+    tmp = {};
+    // process.exit(1);
 }
 
 const config = _.merge(baseConfig, tmp);

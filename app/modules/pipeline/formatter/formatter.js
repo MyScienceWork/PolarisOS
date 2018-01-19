@@ -15,11 +15,16 @@ const Logger = require('../../../logger');
 async function formatting(object: Object, func: Function, key: string) {
     const path = key.split('.');
     const last = path[path.length - 1];
-    const result = Utils.find_value_with_path(object, path);
-    const outer_object = Utils.find_object_with_path(object, path);
-    if (result != null) {
-        outer_object[last] = await func(result, object);
+    const results = [...Utils.find_popvalue_with_path(object, path)];
+    const outer_objects = [...Utils.find_popvalue_with_path(object, path, true)];
+    if (results.length > 0) {
+        for (const i in results) {
+            const result = results[i];
+            const outer_object = outer_objects[i];
+            outer_object[last] = await func(result, object);
+        }
     }
+    return object;
 }
 
 /**
@@ -30,12 +35,11 @@ async function formatting(object: Object, func: Function, key: string) {
  * @returns formatted object
  */
 async function format(object: Object, formatters: Array<any>): Object {
-    const promises = formatters.map((formatter: any) => _.reduce(formatter,
-        (pr: Promise<*>, func: Function, key: string) => pr.then(
-            () => formatting(object, func, key)).catch(err => Logger.error(err)),
-        Promise.resolve()));
-
-    await Promise.all(promises);
+    for (const formatter of formatters) {
+        const promises = _.map(formatter,
+            (func: Function, key: string) => formatting(object, func, key));
+        await Promise.all(promises);
+    }
     return object;
 }
 

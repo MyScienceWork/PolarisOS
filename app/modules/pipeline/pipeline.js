@@ -1,10 +1,11 @@
 // @flow
-
+const _ = require('lodash');
 const Errors = require('../exceptions/errors');
 const Validator = require('./validator/validator');
 const Completer = require('./completer/completer');
 const Formatter = require('./formatter/formatter');
 const EntitiesUtils = require('../utils/entities');
+const Utils = require('../utils/utils');
 
 /**
  * Completion and validation pipeline
@@ -50,8 +51,7 @@ class Pipeline {
         if (entity == null) {
             return false;
         }
-
-        return true;
+        return entity.db.found;
     }
 
     /**
@@ -63,7 +63,11 @@ class Pipeline {
      * @return merged object
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
-        return input;
+        return Utils.merge_with_replacement(defaults, input);
+    }
+
+    static _merge_put(input: Object, defaults: Object): Object {
+        return Utils.merge_with_replacement(defaults, input);
     }
 
     /**
@@ -78,7 +82,8 @@ class Pipeline {
         return async function afunc(ctx: Object, next: Function): Promise<*> {
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
-            const model = EntitiesUtils.get_model_from_type(type);
+            const model = await EntitiesUtils.get_model_from_type(type);
+            console.log('validation: ', type, ' action:', m, ' method:', method);
 
             switch (m) {
             case 'check': {
@@ -102,25 +107,25 @@ class Pipeline {
             case 'merge': {
                 if (method === 'put') {
                     const entity = await EntitiesUtils.retrieve(body._id, type);
-                    ctx.request.body = Pipeline._merge_defaults(body, entity.db);
+                    ctx.request.body = Pipeline._merge_put(body, entity.db.source);
                 }
                 await next();
                 break;
             }
             case 'format': {
-                ctx.request.body = Formatter(body, model.Formatting);
+                ctx.request.body = await Formatter(body, model.Formatting);
                 await next();
                 break;
             }
             case 'complete': {
-                Completer(body, model.Completion);
+                ctx.request.body = await Completer(body, model.Completion);
                 await next();
                 break;
             }
             default:
             case 'validate': {
                 const errors = await validator
-                        .validate(body, model.Validation);
+                    .validate(body, model.Validation, method);
                 if (Object.keys(errors).length === 0) {
                     await next();
                 } else {

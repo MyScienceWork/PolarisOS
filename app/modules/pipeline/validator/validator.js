@@ -66,7 +66,7 @@ class Validator {
         });
     }
 
-    async _validate_with_validator(object: Object, errors: Object,
+    async _validate_with_validator(method: string, object: Object, errors: Object,
         validator: Function, key: ?string): Object {
         if (Validator._isJoi(validator)) {
             const val = Joi.validate(object, validator, this._options.joi);
@@ -75,7 +75,7 @@ class Validator {
             }
         } else {
             try {
-                await validator(object);
+                await validator(object, method);
             } catch (err) {
                 Validator._compose_custom_errors(errors, [err], key);
             }
@@ -84,20 +84,20 @@ class Validator {
     }
 
     async validate(object: Object,
-            validators: Array<Object | Function>): Promise<*> {
+            validators: Array<Object | Function>, method: string = 'post'): Promise<*> {
         let errors = {};
         for (const validator of validators) {
             if (_.isPlainObject(validator)) {
                 for (const key in validator) {
                     const subvalidator = validator[key];
                     if (key in object) {
-                        errors = await this._validate_with_validator(object[key], errors, subvalidator, key);
+                        errors = await this._validate_with_validator(method, object[key], errors, subvalidator, key);
                     } else {
-                        errors = await this._validate_with_validator(object[key], errors, no_subobject(key));
+                        errors = await this._validate_with_validator(method, object[key], errors, no_subobject(key));
                     }
                 }
             } else {
-                errors = await this._validate_with_validator(object,
+                errors = await this._validate_with_validator(method, object,
                             errors, validator);
             }
         }

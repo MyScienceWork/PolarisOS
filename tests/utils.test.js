@@ -10,6 +10,8 @@ const obj = {
         street: '13 rue de la Bouillante',
         city: 'Dieulouard',
         zipcode: '54380',
+        zipcode_null: null,
+        zipcode_undefined: undefined,
         country: 'France',
         langs: [
             {
@@ -81,30 +83,92 @@ describe('Utils#find_object_with_path', () => {
     });
 });
 
-describe('Utils#null_or_undef', () => {
-    it('should return true when null', () => {
-        utils.null_or_undef(null).should.equal(true);
+describe('Utils#find_popvalue_with_path', () => {
+    it('should generate as many paths as necessary for unexplicited array', () => {
+        const path = 'address.langs.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+
+        results.should.have.lengthOf(2);
+        results[0].should.equal('French');
+        results[1].should.equal('German');
     });
 
-    it('should return true when undefined', () => {
-        utils.null_or_undef(undefined).should.equal(true);
+    it('should be empty when path is inexact', () => {
+        const path = 'address.langs.title.test';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+
+        results.should.be.empty;
     });
 
-    it('should return false when false', () => {
-        utils.null_or_undef(false).should.equal(false);
+    it('should generate one element if array index is specified', () => {
+        const path = 'address.langs.0.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+
+        results.should.have.lengthOf(1);
+        results[0].should.equal('French');
     });
-});
 
-describe('Utils#falsy', () => {
-    it('should return true when null, undefined, false, empty string and 0', () => {
-        utils.falsy(null).should.equal(true);
-        utils.falsy(undefined).should.equal(true);
-        utils.falsy(false).should.equal(true);
-        utils.falsy('').should.equal(true);
-        utils.falsy(0).should.equal(true);
+    it('should generate one object if array index is specified', () => {
+        const path = 'address.langs.0';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
 
-        utils.falsy([1, 2]).should.equal(false);
-        utils.falsy('test').should.equal(false);
-        utils.falsy(1).should.equal(false);
+        results.should.have.lengthOf(1);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
+    });
+
+    it('should return the parent object when asked to', () => {
+        const path = 'address.langs.0.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+
+        results.should.have.lengthOf(1);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
+    });
+
+    it('should return the parent object when asked to and take into account unexplicited arrays', () => {
+        const path = 'address.langs.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+
+        results.should.have.lengthOf(2);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
+
+        results[1].should.have.property('title', 'German');
+        results[1].should.have.property('code', 'DE');
+    });
+
+    it('should return the parent array when a correct index is given', () => {
+        const path = 'address.langs.1';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+
+        results.should.have.lengthOf(2);
+        results[0].should.have.property('title', 'French');
+        results[0].should.have.property('code', 'FR');
+
+        results[1].should.have.property('title', 'German');
+        results[1].should.have.property('code', 'DE');
+    });
+
+    it('should not return an object when the field does not exist', () => {
+        const path = 'address.langs.content';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+        results.should.be.empty;
+    });
+
+    it('should not return an array when the field does not exist', () => {
+        const path = 'address.langs.2.title';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), true)];
+        results.should.be.empty;
+    });
+
+    it('should not return an empty generator when the field is null or undefined', () => {
+        const path = 'address.zipcode_null';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+        results.should.be.empty;
+
+        const path_2 = 'address.zipcode_undefined';
+        const results_2 = [...utils.find_popvalue_with_path(obj, path.split('.'))];
+        results.should.be.empty;
     });
 });

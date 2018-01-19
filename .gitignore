@@ -8,9 +8,7 @@ bower_components/
 *.log
 coverage/
 build/
-public/js/
-public/css/
-public/fonts/
-public/views/
+public/back/
+public/front/
 doc/
 package-lock.json

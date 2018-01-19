@@ -131,6 +131,36 @@ class DisMax extends Query {}
 class Filtered extends Query {}
 class Indices extends Query {}
 
+class Ids extends Query {
+    constructor(object: Object = {}) {
+        super(object);
+    }
+
+    values(ids: Array<string>): Ids {
+        this._object.values = ids;
+        return this;
+    }
+
+    type(type: string | Array<string>): Ids {
+        this._object.type = type;
+        return this;
+    }
+
+    generate() {
+        const info = {
+            ids: {
+                values: this._object.values || [],
+            },
+        };
+
+        if (this._object.type) {
+            info.ids.type = this._object.type;
+        }
+
+        return info;
+    }
+}
+
 class Nested extends Query {
     _path: string
     _nested_query: ?Query;
@@ -349,6 +379,7 @@ class Terms extends Query {
 module.exports = {
     RawQuery,
     Query,
+    Ids,
     Bool,
     ConstantScore,
     DisMax,

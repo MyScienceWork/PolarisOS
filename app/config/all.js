@@ -2,6 +2,9 @@ const path = require('path');
 
 const all = {
     root: path.resolve(path.join(__dirname, '..')),
+    elasticsearch: {
+        index_prefix: 'pos',
+    },
     logger: {
         logFile: 'midstod.log',
     },
@@ -17,21 +20,21 @@ const all = {
         interval: [120000, 120000],
     },
     entities: [{
-            name: 'citation',
-            text: 'Citation'
-        },
-        {
-            name: 'apiuser',
-            text: 'User of API'
-        },
-        {
-            name: 'user',
-            text: 'User'
-        },
-        {
-            name: 'institution',
-            text: 'Institution'
-        },
+        name: 'citation',
+        text: 'Citation',
+    },
+    {
+        name: 'apiuser',
+        text: 'User of API',
+    },
+    {
+        name: 'user',
+        text: 'User',
+    },
+    {
+        name: 'institution',
+        text: 'Institution',
+    },
     ],
 };
 
