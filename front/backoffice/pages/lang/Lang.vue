@@ -6,10 +6,24 @@
                 <widget>
                     <span slot="title">List of language items</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in readContent">
-                            <div v-for="content in row" class="column">
-                                <widget>
-                                    <span slot="title">
+                        <div class="columns is-centered">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <td>{{lang('b_lang')}}</td>
+                                        <td>{{lang('b_key')}}</td>
+                                        <td>{{lang('b_translation_na')}}</td>
+                                        <td>{{lang('b_translation_one')}}</td>
+                                        <td>{{lang('b_translation_other')}}</td>
+                                        <td>{{lang('b_translation_two')}}</td>
+                                        <td>{{lang('b_translation_few')}}</td>
+                                        <td>{{lang('b_translation_many')}}</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="row in content">
+                                        <td>
                                         <action-button
                                         class="button is-small button-background-blue"
                                         @action-click="update(content, 'lang')"
@@ -24,12 +38,18 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.key}} ({{content.lang}})
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
+                                        </td>
+                                        <td>{{row.lang}}</td>
+                                        <td>{{row.key}}</td>
+                                        <td>{{grab_quantity(row.values, 'n/a')}}</td>
+                                        <td>{{grab_quantity(row.values, '1')}}</td>
+                                        <td>{{grab_quantity(row.values, 'other')}}</td>
+                                        <td>{{grab_quantity(row.values, '2')}}</td>
+                                        <td>{{grab_quantity(row.values, 'few')}}</td>
+                                        <td>{{grab_quantity(row.values, 'many')}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="columns is-centered">
                             <div class="column">

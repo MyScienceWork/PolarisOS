@@ -12,8 +12,8 @@ module.exports = {
             state: {
                 path: APIRoutes.entity('lang', 'POST'),
                 rpath: APIRoutes.entity('lang', 'GET'),
-                itemsPerPage: 50,
-                itemsPerRow: 3,
+                itemsPerPage: 1000,
+                itemsPerRow: 1,
                 langs: Langs.LangsList,
                 quantities: Quantities,
                 forms: {
@@ -24,6 +24,13 @@ module.exports = {
         };
     },
     methods: {
+        grab_quantity(arr, quantity) {
+            const values = arr.filter(a => a.quantity === quantity);
+            if (values.length === 0) {
+                return '';
+            }
+            return values[0].value;
+        },
     },
     mounted() {
         this.$store.dispatch('single_read', {

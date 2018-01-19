@@ -1,11 +1,12 @@
 
-// TODO make it more generic by removing the reference to 'public'
-async function add_single(ctx) {
-    const file = ctx.request.file;
-    console.log(ctx.request.file);
-    const p = file.path.indexOf('public');
-    const path = file.path.slice(p);
-    ctx.body = { file: path };
+function add_single(end_of_path) {
+    return async function func(ctx) {
+        const file = ctx.request.file;
+        console.log(ctx.request.file);
+        const p = file.path.indexOf(end_of_path);
+        const path = file.path.slice(p);
+        ctx.body = { file: path };
+    };
 }
 
 module.exports = {

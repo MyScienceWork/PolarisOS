@@ -43,17 +43,19 @@ function api_signature(deactivated: boolean = false): Function {
             ctx.__md = {};
         }
 
-        if (deactivated) {
-            return await next();
-        }
-
         const authorization: ? string = ctx.request.headers.authorization;
         if (authorization == null) {
+            if (deactivated) {
+                return await next();
+            }
             throw Errors.NoAuthorizationHeaderError;
         }
 
         const two_part_auth: Array<string> = authorization.split(':');
         if (two_part_auth.length !== 2) {
+            if (deactivated) {
+                return await next();
+            }
             throw new Errors.NoTwoPartAuthorizationError();
         }
 
@@ -61,6 +63,9 @@ function api_signature(deactivated: boolean = false): Function {
         const sign: string = two_part_auth[1];
         const api_info = await _find_info(api_key);
         if (api_info == null) {
+            if (deactivated) {
+                return await next();
+            }
             throw Errors.InvalidAPIKey;
         }
 
