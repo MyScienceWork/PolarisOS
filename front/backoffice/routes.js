@@ -4,6 +4,7 @@ module.exports = {
     role: '/admin/role',
     pipeline: '/admin/pipeline',
     entity: '/admin/entity',
+    page: '/admin/page',
     function: '/admin/function',
     review: '/admin/review',
     datasource: '/admin/datasource',

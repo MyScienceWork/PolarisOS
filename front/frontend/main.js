@@ -13,6 +13,7 @@ const DynamicForm = require('../common/components/ined/forms/dynamic_form/Dynami
 const Paginator = require('../common/components/ined/paginator/Paginator.vue');
 const Dropzone = require('../common/components/ined/forms/dropzone/Dropzone.vue');
 const HierarchicalSelect = require('../common/components/ined/forms/elements/hierarchical_select/HierarchicalSelect.vue');
+const Card = require('../common/components/ined/card/Card.vue');
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
 
@@ -47,6 +48,7 @@ Vue.component('dynamic-form', DynamicForm);
 Vue.component('indexer', Indexer);
 Vue.component('paginator', Paginator);
 Vue.component('hierarchical-structure', HierarchicalStructure);
+Vue.component('card', Card);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);

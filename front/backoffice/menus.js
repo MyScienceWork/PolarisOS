@@ -12,6 +12,7 @@ const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
 const Review = require('./pages/review/Review.vue');
 const Login = require('./pages/login/Login.vue');
+const Page = require('./pages/page/Page.vue');
 
 module.exports.menu = [
     [
@@ -97,6 +98,19 @@ module.exports.menu = [
             routes: [Routes.lang],
             submenu: [],
             component: Lang,
+        },
+    ],
+
+    [
+        {
+            section: 'UI / UX',
+            name: 'Pages',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'page',
+            routes: [Routes.page],
+            submenu: [],
+            component: Page,
         },
     ],
 
