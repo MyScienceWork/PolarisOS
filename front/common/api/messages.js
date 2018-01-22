@@ -13,5 +13,6 @@ module.exports = {
     COMPLETE_FORM_ELEMENT: 'complete_form_element',
     REGISTER_FORM_ELEMENT: 'register_form_element',
     UNREGISTER_FORM_ELEMENT: 'unregister_form_element',
+    UNREGISTER_FORM_ELEMENTS: 'unregister_form_elements',
     LOGIN_PASS: 'login_pass',
 };

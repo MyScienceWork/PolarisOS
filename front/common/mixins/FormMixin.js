@@ -15,6 +15,15 @@ module.exports = {
                 return {};
             };
         },
+        fcontent() {
+            return (sink) => {
+                const myform = this.fform(sink);
+                if (Object.keys(myform).length > 0) {
+                    return myform.content;
+                }
+                return {};
+            };
+        },
         fstate() {
             return (sink) => {
                 if (sink in this.$store.state.forms) {
@@ -33,28 +42,31 @@ module.exports = {
                 path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),
             });
         },
-        initialize() {
+        initialize(form) {
 
         },
-        switch_to_loading() {
+        switch_to_loading(form) {
 
         },
-        start_collection() {
+        start_collection(form) {
 
         },
-        send_information() {
+        send_information(form) {
 
         },
-        show_success() {
+        show_success(form) {
 
         },
-        show_success_validate() {
+        show_success_validate(form) {
 
         },
-        show_validation() {
+        show_validation(form) {
 
         },
-        show_error() {
+        show_error(form) {
+
+        },
+        show_success_read(form) {
 
         },
         dispatch(s, self) {
@@ -78,6 +90,9 @@ module.exports = {
                 break;
             case 'success_validate':
                 self.show_success_validate();
+                break;
+            case 'success_read':
+                self.show_success_read(form);
                 break;
             case 'error_validate':
                 self.show_validation();

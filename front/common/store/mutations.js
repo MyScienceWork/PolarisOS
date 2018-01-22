@@ -28,7 +28,7 @@ module.exports = {
         state.forms[form_name].error = {};
         state.forms[form_name].success = '';
         if (!keep_content) {
-            state.forms[form_name].content = [];
+            state.forms[form_name].content = {};
         }
     },
 
@@ -146,7 +146,6 @@ module.exports = {
         }
     },
 
-
     [Messages.REMOVE_FORM]: (state, payload) => {
         const form_name = payload.form;
         if (form_name in state.forms) {
@@ -170,6 +169,7 @@ module.exports = {
         create_form_if_needed(state, form_name);
         delete state.forms[form_name].elements[payload.name];
     },
+
 
     [Messages.LOGIN_PASS]: (state, payload) => {
         const status = payload.status;

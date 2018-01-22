@@ -11,6 +11,7 @@ module.exports = {
     lang_content: {},
     global_config: {},
     datasources: {},
+    requests: [],
     forms: {
         /* form_name: {error: {}, content: {}, update: false/true}*/
     },
