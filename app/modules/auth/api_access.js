@@ -23,7 +23,7 @@ async function _find_info(key: string): Promise<?ODM> {
 
     if (info == null) {
         info = await EntitiesUtils.search('user', {
-            $where: {
+            where: {
                 'authentication.key': key,
             },
         });
