@@ -2,9 +2,9 @@
 .generate-colored-buttons(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
-  .button-@{name}:focus, 
+  .button-ined-@{name}:focus, 
   .is-focused-@{name}, 
-  .button-@{name}:hover {
+  .button-ined-@{name}:hover {
     color: @@name;
   }
 
@@ -13,7 +13,7 @@
 }
 
 //Styles
-.button {
+.button-ined {
     border-radius: 5px;
     padding: 0px 7px 0px 7px;
     border: solid 1px @white;
@@ -28,12 +28,12 @@
     height: auto;
 }
 
-.button:focus:not(:active), 
-.button.is-focused:not(:active) {
+.button-ined:focus:not(:active), 
+.button-ined.is-focused:not(:active) {
     box-shadow: none;
 }
 
-.button:focus, .button.is-focused {
+.button-ined:focus, .button-ined.is-focused {
     border-color: transparent;
 }
 

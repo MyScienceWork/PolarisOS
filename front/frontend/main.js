@@ -16,6 +16,8 @@ const HierarchicalSelect = require('../common/components/ined/forms/elements/hie
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
 
+const HierarchicalStructure = require('../common/components/ined/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
+
 // Widgets
 const SearchWidget = require('./components/themes/ined/widgets/search_widget/SearchWidget.vue');
 const BrowseWidget = require('./components/themes/ined/widgets/browse_widget/BrowseWidget.vue');
@@ -44,6 +46,7 @@ Vue.component('fvariadic-element', VariadicElement);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('indexer', Indexer);
 Vue.component('paginator', Paginator);
+Vue.component('hierarchical-structure', HierarchicalStructure);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);

@@ -52,6 +52,11 @@
                         <widget-stats form="test_form" :infos="[]" />
                     </div>
                 </div>
+                <div class="columns is-centered">
+                    <div class="column">
+                        <hierarchical-structure /> 
+                    </div>
+                </div>
             </div>
         </div>
     </div>

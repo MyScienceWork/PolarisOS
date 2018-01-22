@@ -92,16 +92,16 @@ function del(type: string): Function {
         let obj = null;
         let odm = null;
 
-        if (right_enforcer == null) {
-            [odm, obj] = await EntitiesUtils.remove(id, type);
-            if (obj == null) {
-                throw Errors.InvalidEntity;
-            }
-        } else if (right_enforcer.has_right()) {
+        // if (right_enforcer == null) {
+        [odm, obj] = await EntitiesUtils.remove(id, type);
+        if (obj == null) {
+            throw Errors.InvalidEntity;
+        }
+            /* } else if (right_enforcer.has_right()) {
             [odm, obj] = await EntitiesUtils.remove(id, type);
         } else {
             throw Errors.InvalidEntity;
-        }
+            }*/
         ctx.body = WebUtils.forge_ok_response(odm, 'delete');
     };
 }
