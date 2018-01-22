@@ -1,6 +1,6 @@
 // @flow
 const ODM = require('../crud/odm');
-const Model = require('./models/users');
+const Model = require('./models/roles');
 const Mapping = require('../crud/mapping');
 const Config = require('../../../config');
 
@@ -20,7 +20,7 @@ class Role extends ODM {
     }
 
     static get type(): string {
-        return 'user';
+        return 'role';
     }
 }
 
