@@ -57,34 +57,7 @@
                                 <span slot="title">{{lang('l_header')}}</span>
                                 <div slot="body">
                                     <finput name="header.has_header" :label="lang('l_has_header')" :is-required="true" placeholder="" type="checkbox" :form="state.forms.csink" />
-                                    <grid-layout
-                                        :layout="state.layout"
-                                        :col-num="12"
-                                        :row-height="30"
-                                        :is-draggable="true"
-                                        :is-resizable="true"
-                                        :is-mirrored="false"
-                                        :vertical-compact="true"
-                                        :margin="[10, 10]"
-                                        :use-css-transforms="true"
-                                    >
-                                        <grid-item 
-                                            v-for="item in state.layout"
-                                            :x="item.x"
-                                            :y="item.y"
-                                            :w="item.w"
-                                            :h="item.h"
-                                            :i="item.i"
-                                            class="card"
-                                        >
-                                            <div class="columns is-centered">
-                                                <div class="column">
-                                                        <fselect name="template" :label="lang('l_template')" :is-required="true" 
-                                                        :placeholder="lang('l_template')" :form="state.forms.csink" :options="[]" />
-                                                </div>
-                                            </div>
-                                        </grid-item>
-                                    </grid-layout>
+                                    <fgrid></fgrid>
                                 </div>
                             </widget>
                             <widget>
