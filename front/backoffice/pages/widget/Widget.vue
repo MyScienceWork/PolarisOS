@@ -6,13 +6,13 @@
                 <widget>
                 <span slot="title">{{lang('l_list_of_widgets')}}</span>
                     <div slot="body">
-                        <div v-for="row in content" class="columns is-centered">
-                            <div class="column">
+                        <div v-for="row in read_content_widget" class="columns is-centered">
+                            <div v-for="info in row" class="column">
                                 <widget>
-                                    <span slot="title">{{row.name}} 
+                                    <span slot="title">{{info.name}} 
                                         <action-button
                                         class="button is-small button-background-blue"
-                                        @action-click="update(row, 'widget')"
+                                        @action-click="update(info, 'widget')"
                                         >
                                         <i class="fa fa-pencil"></i>
                                         </action-button>
@@ -20,7 +20,7 @@
                                         class="button is-small button-background-red"
                                         confirmation="Are you sure?"
                                         :two-steps="true"
-                                        @action-click="remove(row, 'widget')"
+                                        @action-click="remove(info, 'widget')"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="columns is-centered">
                             <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
+                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_widget" :items-per-page="state.itemsPerPage" />
                             </div>
                         </div>
                     </div>

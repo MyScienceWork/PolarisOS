@@ -86,19 +86,33 @@
         </div>
     </div>
     <b-modal :active.sync="state.isWidgetModelActive">
-        <div class="card">
-            <fselect 
-            name="widget" 
-            :label="lang('b_select_widget')" 
-            :is-required="true" 
-            :placeholder="lang('b_select_widget')"
-            fieldLabel="name"
-            fieldValue="_id"
-            :options="[]" 
-            form="test"
-            @select-change="widget_change"
-            />
-            <subpage form="test" />
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">{{lang('l_setup_the_widget')}}</p>
+                <button class="delete" aria-label="close" @click.prevent="state.isWidgetModelActive = false"></button>
+            </header>
+            <div class="modal-card-body">
+                <div class="columns is-centered">
+                    <div class="column">
+                        <fselect 
+                        name="widget" 
+                        :label="lang('b_select_widget')" 
+                        :is-required="true" 
+                        :placeholder="lang('b_select_widget')"
+                        fieldLabel="name"
+                        fieldValue="_id"
+                        :options="widgets" 
+                        form="test"
+                        @select-change="widget_change"
+                        />
+                        <subpage form="test" :widget="state.current_widget" prefix="row.0"/>
+                    </div>
+                </div>
+            </div>
+            <footer class="modal-card-foot">
+                <button class="button is-success">{{lang('b_validate')}}</button>
+                <button class="button" @click.prevent="state.isWidgetModelActive = false">{{lang('b_cancel')}}</button>
+            </footer>
         </div>
     </b-modal>
 </div>

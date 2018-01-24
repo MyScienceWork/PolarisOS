@@ -18,6 +18,12 @@ module.exports = {
         Subpage,
     },
 
+    props: {
+        widgets: {
+            type: Array, required: true,
+        },
+    },
+
     data() {
         return {
             state: {
@@ -29,10 +35,19 @@ module.exports = {
                 row_constraints: {
 
                 },
+                current_widget: null,
             },
         };
     },
     methods: {
+        widget_change(val) {
+            if (val == null) {
+                this.state.current_widget = null;
+            }
+
+            const id = val.value;
+            this.state.current_widget = this.widgets.filter(w => w._id === id)[0];
+        },
         find_ideal_place(row) {
             const widgets = this.state.elements.filter(elt => elt.row === row);
             widgets.sort((w1, w2) => w1.x - w2.x);

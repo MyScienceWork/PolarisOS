@@ -11,9 +11,24 @@
                 </li>
             </ul>
         </div>
+        <template v-if="variadic">
+            <div 
+                v-for="(text, idx) in tabs"
+                v-show="state.current === idx"
+            >
+                <slot
+                    :id="idx"
+                    :length="tabs.length"
+                    name="body"
+                >
+                </slot>
+            </div>
+        </template>
         <slot
-            name="tabs" 
+            v-else
+            :length="tabs.length"
             :id="state.current"
+            name="body"
         >
         </slot>
     </div>

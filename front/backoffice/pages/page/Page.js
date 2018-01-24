@@ -1,61 +1,105 @@
 const Utils = require('../../../common/utils/utils');
+const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
-const VueGridLayout = require('vue-grid-layout');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 
-const GridLayout = VueGridLayout.GridLayout;
-const GridItem = VueGridLayout.GridItem;
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('lang', 'POST'),
-                rpath: APIRoutes.entity('lang', 'GET'),
                 itemsPerPage: 1000,
                 itemsPerRow: 1,
-                forms: {
-                    csink: 'lang_creation',
-                    rsink: 'lang_read',
+                paths: {
+                    creations: {
+                        page: APIRoutes.entity('page', 'POST'),
+                    },
+                    reads: {
+                        widget: APIRoutes.entity('widget', 'GET'),
+                        page: APIRoutes.entity('page', 'GET'),
+                    },
                 },
-                layout: [
-                    { x: 0, y: 0, w: 2, h: 2, i: '0' },
-                    { x: 2, y: 0, w: 2, h: 4, i: '1' },
-                    { x: 4, y: 0, w: 2, h: 5, i: '2' },
-                    { x: 6, y: 0, w: 2, h: 3, i: '3' },
-                    { x: 8, y: 0, w: 2, h: 3, i: '4' },
-                    { x: 10, y: 0, w: 2, h: 3, i: '5' },
-                    { x: 0, y: 5, w: 2, h: 5, i: '6' },
-                    { x: 2, y: 5, w: 2, h: 5, i: '7' },
-                    { x: 4, y: 5, w: 2, h: 5, i: '8' },
-                    { x: 6, y: 4, w: 2, h: 4, i: '9' },
-                    { x: 8, y: 4, w: 2, h: 4, i: '10' },
-                    { x: 10, y: 4, w: 2, h: 4, i: '11' },
-                    { x: 0, y: 10, w: 2, h: 5, i: '12' },
-                    { x: 2, y: 10, w: 2, h: 5, i: '13' },
-                    { x: 4, y: 8, w: 2, h: 4, i: '14' },
-                    { x: 6, y: 8, w: 2, h: 4, i: '15' },
-                    { x: 8, y: 10, w: 2, h: 5, i: '16' },
-                    { x: 10, y: 4, w: 2, h: 2, i: '17' },
-                    { x: 0, y: 9, w: 2, h: 3, i: '18' },
-                    { x: 2, y: 6, w: 2, h: 2, i: '19' },
-                ],
+                sinks: {
+                    reads: {
+                        widget: 'widget_read',
+                        page: 'page_read',
+                    },
+                    creations: {
+                        page: 'page_creation',
+                    },
+                },
             },
         };
     },
-    components: {
-        GridLayout,
-        GridItem,
-    },
-    methods: {
-    },
     mounted() {
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.page,
+            keepContent: false,
+        });
+
+        this.$store.state.requests.push({
+            name: 'single_read',
+            content: {
+                form: this.state.sinks.reads.page,
+                path: this.state.paths.reads.page,
+            },
+        });
+
+        this.$store.state.requests.push({
+            name: 'single_read',
+            content: {
+                form: this.state.sinks.reads.widget,
+                path: this.state.paths.reads.widget,
+            },
+        });
+    },
+    watch: {
+        error_widget(n) {
+            return this.mwerror(this.state.sinks.reads.widget)(n);
+        },
+        current_read_state_widget(s) {
+            return this.mwcurrent_read_state(this.state.sinks.reads.widget)(s);
+        },
+        error_page(n) {
+            return this.mwerror(this.state.sinks.reads.page)(n);
+        },
+        current_read_state_page(s) {
+            return this.mwcurrent_read_state(this.state.sinks.reads.page)(s);
+        },
     },
     computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
+        content_page() {
+            const content = this.mcontent(this.state.sinks.reads.page);
+            return content;
+        },
+        length_page() {
+            return this.mlength(this.state.sinks.reads.page);
+        },
+        read_content_page() {
+            const content = this.content_page;
+            return Utils.to_matrix(content, this.state.itemsPerRow);
+        },
+        error_page() {
+            return this.merror(this.state.sinks.reads.page);
+        },
+        current_read_state_page() {
+            return this.mcurrent_read_state(this.state.sinks.reads.page);
+        },
+
+        content_widget() {
+            const content = this.mcontent(this.state.sinks.reads.widget);
+            return content;
+        },
+        length_widget() {
+            return this.mlength(this.state.sinks.reads.widget);
+        },
+        error_widget() {
+            return this.merror(this.state.sinks.reads.widget);
+        },
+        current_read_state_widget() {
+            return this.mcurrent_read_state(this.state.sinks.reads.widget);
         },
     },
 };

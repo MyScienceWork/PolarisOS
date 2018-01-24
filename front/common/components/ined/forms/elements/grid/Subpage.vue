@@ -1,11 +1,11 @@
 <template>
-    <tabs :tabs="['Texts', 'Variables']" v-if="widget">
+    <tabber :tabs="['Texts', 'Variables']" v-if="widget">
         <template slot="body" slot-scope="props">
-            <tabs key="texts" :variadic="true" v-show="texts.length > 0 && props.id === 0" :tabs="texts.map(i => i.name)" :is-vertical="true"> 
+            <tabber key="texts" :variadic="true" v-show="texts.length > 0 && props.id === 0" :tabs="texts.map(i => i.name)"> 
                 <template slot="body" slot-scope="vprops">
                     <finput
-                        :key="`${widgetType}.texts.${vprops.id}.content`"
-                        :name="`${widgetType}.texts.${vprops.id}.content`"
+                        :key="`${prefix}.texts.${vprops.id}.content`"
+                        :name="`${prefix}.texts.${vprops.id}.content`"
                         :label="`Content`" 
                         :is-required="true"
                         placeholder="Text's content" 
@@ -14,12 +14,12 @@
                         :unregister="false"
                     />
                 </template>
-            </tabs>
-            <tabs key="variables" :variadic="true" v-show="variables.length > 0 && props.id === 1" :tabs="variables.map(i => i.name)" :is-vertical="true"> 
+            </tabber>
+            <tabber key="variables" :variadic="true" v-show="variables.length > 0 && props.id === 1" :tabs="variables.map(i => i.name)"> 
                 <template slot="body" slot-scope="vprops">
                     <finput 
-                        :key="`${widgetType}.variables.${vprops.id}.value`"
-                        :name="`${widgetType}.variables.${vprops.id}.value`"
+                        :key="`${prefix}.variables.${vprops.id}.value`"
+                        :name="`${prefix}.variables.${vprops.id}.value`"
                         label="Value" 
                         placeholder="Value" 
                         type="text" 
@@ -27,9 +27,9 @@
                         :unregister="false"
                     />
                 </template>
-            </tabs>
+            </tabber>
         </template>
-    </tabs>
+    </tabber>
 </template>
 
 <script>
