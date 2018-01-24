@@ -5,6 +5,8 @@ module.exports = {
     pipeline: '/admin/pipeline',
     entity: '/admin/entity',
     page: '/admin/page',
+    menu: '/admin/menu',
+    widget: '/admin/widget',
     function: '/admin/function',
     review: '/admin/review',
     datasource: '/admin/datasource',

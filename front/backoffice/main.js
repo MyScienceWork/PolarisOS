@@ -1,4 +1,5 @@
 const Vue = require('vue');
+const Buefy = require('buefy');
 const router = require('./router');
 const store = require('../common/store');
 
@@ -16,6 +17,10 @@ const ActionButton = require('./components/themes/ined/components/action_button/
 const Widget = require('./components/themes/ined/components/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
+
+Vue.use(Buefy.default, {
+    defaultIconPack: 'fa',
+});
 
 Vue.component('loader', Loader);
 Vue.component('fform', Form);

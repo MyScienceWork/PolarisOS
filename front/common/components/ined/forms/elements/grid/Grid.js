@@ -3,6 +3,7 @@ const VueGridLayout = require('vue-grid-layout');
 const Draggable = require('vuedraggable');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const FormMixin = require('../../../../../mixins/FormMixin');
+const Subpage = require('./Subpage.vue');
 
 const GridLayout = VueGridLayout.GridLayout;
 const GridItem = VueGridLayout.GridItem;
@@ -14,11 +15,13 @@ module.exports = {
         GridLayout,
         GridItem,
         Draggable,
+        Subpage,
     },
 
     data() {
         return {
             state: {
+                isWidgetModelActive: false,
                 minW: 2,
                 colNum: 12,
                 rows: [],
@@ -123,6 +126,11 @@ module.exports = {
             const widget = _widget[0];
             this.state.row_constraints[widget.row].total -= widget.w;
             this.state.elements = this.state.elements.filter(elt => elt.i !== w);
+        },
+        edit_widget(w, e) {
+            e.preventDefault();
+            this.state.isWidgetModelActive = true;
+            console.log('edit', w);
         },
         grid_resized_event(i, newH, newW) {
             const _widget = this.state.elements.filter(elt => elt.i === i);

@@ -8,9 +8,6 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
-                    route: {
-                        type: 'keyword',
-                    },
                     icon: {
                         type: 'keyword',
                     },
@@ -24,9 +21,6 @@ module.exports = {
                         type: 'nested',
                         properties: {
                             name: {
-                                type: 'keyword',
-                            },
-                            route: {
                                 type: 'keyword',
                             },
                             icon: {

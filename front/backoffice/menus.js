@@ -13,6 +13,8 @@ const PEntity = require('./pages/entity/Entity.vue');
 const Review = require('./pages/review/Review.vue');
 const Login = require('./pages/login/Login.vue');
 const Page = require('./pages/page/Page.vue');
+const Menu = require('./pages/menu/Menu.vue');
+const Widget = require('./pages/widget/Widget.vue');
 
 module.exports.menu = [
     [
@@ -102,6 +104,26 @@ module.exports.menu = [
     ],
 
     [
+        {
+            section: 'UI / UX',
+            name: 'Menus',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'menu',
+            routes: [Routes.menu],
+            submenu: [],
+            component: Menu,
+        },
+        {
+            section: 'UI / UX',
+            name: 'Widgets',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'widget',
+            routes: [Routes.widget],
+            submenu: [],
+            component: Widget,
+        },
         {
             section: 'UI / UX',
             name: 'Pages',

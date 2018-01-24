@@ -7,7 +7,7 @@
     </div>
     <div class="columns">
         <div class="column">
-            <draggable v-model="state.rows" @start="drag=true" @end="drag=false" :options="{handle: '.handle'}">
+            <draggable v-model="state.rows" @start="drag=true" @end="drag=false" :options="{handle: '.handle', forceFallback: true}">
                 <div v-for="row in state.rows" :key="row.i" class="columns is-centered">
                     <div class="column is-2">
                         <div class="field has-addons">
@@ -63,7 +63,7 @@
                             >
                                 <div class="field has-addons">
                                     <p class="control">
-                                        <button class="button is-info">
+                                        <button class="button is-info" @click.prevent="edit_widget(widget.i, $event)">
                                             <span class="icon">
                                                 <i class="fa fa-pencil"></i>
                                             </span>
@@ -85,6 +85,22 @@
             </draggable>
         </div>
     </div>
+    <b-modal :active.sync="state.isWidgetModelActive">
+        <div class="card">
+            <fselect 
+            name="widget" 
+            :label="lang('b_select_widget')" 
+            :is-required="true" 
+            :placeholder="lang('b_select_widget')"
+            fieldLabel="name"
+            fieldValue="_id"
+            :options="[]" 
+            form="test"
+            @select-change="widget_change"
+            />
+            <subpage form="test" />
+        </div>
+    </b-modal>
 </div>
 </template>
 

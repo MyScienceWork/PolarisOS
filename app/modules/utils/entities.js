@@ -41,6 +41,15 @@ const ExporterModel = require('../entities/exporter/models/exporters');
 const Connector = require('../entities/connector/connector');
 const ConnectorModel = require('../entities/connector/models/connectors');
 
+const Widget = require('../entities/widget/widget');
+const WidgetModel = require('../entities/widget/models/widgets');
+
+const Page = require('../entities/page/page');
+const PageModel = require('../entities/page/models/pages');
+
+const Menu = require('../entities/menu/menu');
+const MenuModel = require('../entities/menu/models/menus');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -154,6 +163,12 @@ async function get_model_from_type(type: string): ?Object {
         return ExporterModel;
     case 'connector':
         return ConnectorModel;
+    case 'widget':
+        return WidgetModel;
+    case 'page':
+        return PageModel;
+    case 'menu':
+        return MenuModel;
     default:
         return grab_entity_from_type(type, 'model');
         // return null;
@@ -184,6 +199,12 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Exporter(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'connector':
         return new Connector(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'widget':
+        return new Widget(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'menu':
+        return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'page':
+        return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
