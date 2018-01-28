@@ -8,6 +8,7 @@ const BackRoutes = require('../../front/backoffice/routes');
 const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
 const UserRoutes = require('../modules/entities/user/routes');
+const EntityRoutes = require('../modules/entities/entity/routes');
 
 async function initialize_routes() {
     const router = new Router();
@@ -57,16 +58,15 @@ async function initialize_routes() {
 
     const response = await EntitiesUtils.search('entity', { size: 10000 });
     const extra_entities = response.result.hits.map(e => e.db.source.type);
-    const entities = ['user', 'role', 'config', 'lang', 'form', 'function', 'entity',
+    const entities = ['user', 'role', 'config', 'lang', 'form', 'function',
         'pipeline', 'widget', 'page', 'template', 'menu',
         'importer', 'exporter', 'connector', ...extra_entities];
 
-    console.log('entities for routes:', entities);
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);
     });
 
-
+    EntityRoutes(router);
     UserRoutes(router);
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;

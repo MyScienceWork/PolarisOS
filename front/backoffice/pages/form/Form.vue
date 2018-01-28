@@ -4,7 +4,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of users</span>
+                <span slot="title">{{lang('l_list_of_forms')}}</span>
                     <div slot="body">
                         <div class="columns is-centered" v-for="row in readContent">
                             <div v-for="content in row" class="column">
@@ -43,7 +43,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">Add or modify a user</span>
+                <span slot="title">{{lang('l_add_or_modify_form')}}</span>
                     <div slot="body">
                         <fform 
                             :name="state.forms.csink" 
@@ -53,8 +53,8 @@
                             :get_form="state.forms.rsink"
                             >
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.forms.csink" />
-                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" />
-                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.forms.csink" />
+                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" :is-required="true" />
+                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description')" type="textarea" :form="state.forms.csink" />
                             <finput 
                                 name="addons" 
                                 :label="lang('b_has_addons')"
