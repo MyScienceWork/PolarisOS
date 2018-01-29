@@ -2,14 +2,15 @@ const Slot = {
     rows: {
         type: 'nested',
         properties: {
-            begin_span: {
-                type: 'byte',
-            },
-            end_span: {
-                type: 'byte',
-            },
-            widget: {
+            widgets: {
+                type: 'nested',
                 properties: {
+                    begin_span: {
+                        type: 'byte',
+                    },
+                    end_span: {
+                        type: 'byte',
+                    },
                     _id: {
                         type: 'keyword',
                     },

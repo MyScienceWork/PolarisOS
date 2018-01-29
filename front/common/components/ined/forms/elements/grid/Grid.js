@@ -4,13 +4,14 @@ const Draggable = require('vuedraggable');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const FormMixin = require('../../../../../mixins/FormMixin');
 const Subpage = require('./Subpage.vue');
+const Messages = require('../../../../../api/messages');
 
 const GridLayout = VueGridLayout.GridLayout;
 const GridItem = VueGridLayout.GridItem;
 
 
 module.exports = {
-    mixins: [LangMixin/* , FormMixin*/],
+    mixins: [LangMixin, FormMixin],
     components: {
         GridLayout,
         GridItem,
@@ -36,6 +37,9 @@ module.exports = {
 
                 },
                 current_widget: null,
+                current_row_idx: 0,
+                current_widget_idx: 0,
+                modal_form: 'part_widget_creation',
             },
         };
     },
@@ -47,6 +51,18 @@ module.exports = {
 
             const id = val.value;
             this.state.current_widget = this.widgets.filter(w => w._id === id)[0];
+        },
+        collect_widget(e) {
+            e.preventDefault();
+            this.$store.commit(Messages.COLLECT, {
+                form: this.state.part_widget_creation,
+            });
+        },
+        send_information(form) {
+            if (form !== this.state.form) {
+                return;
+            }
+            this.state.isWidgetModelActive = false;
         },
         find_ideal_place(row) {
             const widgets = this.state.elements.filter(elt => elt.row === row);
@@ -142,10 +158,11 @@ module.exports = {
             this.state.row_constraints[widget.row].total -= widget.w;
             this.state.elements = this.state.elements.filter(elt => elt.i !== w);
         },
-        edit_widget(w, e) {
+        edit_widget(r, w, e) {
             e.preventDefault();
             this.state.isWidgetModelActive = true;
-            console.log('edit', w);
+            this.state.current_row_idx = r;
+            this.state.current_widget_idx = w;
         },
         grid_resized_event(i, newH, newW) {
             const _widget = this.state.elements.filter(elt => elt.i === i);

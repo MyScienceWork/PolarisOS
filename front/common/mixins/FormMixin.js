@@ -34,6 +34,12 @@ module.exports = {
         },
     },
     methods: {
+        fetch_form(id, sink) {
+            this.$store.dispatch('single_read', {
+                form: sink,
+                path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),
+            });
+        },
         initialize(form) {
 
         },

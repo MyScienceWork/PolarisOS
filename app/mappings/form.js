@@ -91,6 +91,22 @@ module.exports = {
                                         type: 'boolean',
                                         index: false,
                                     },
+                                    form: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    action_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    help_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    header_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
                                 },
                             },
                             name: {

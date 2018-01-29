@@ -110,6 +110,30 @@
                                             :form="state.forms.csink"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.action_text`" 
+                                            :label="lang('b_datasource_action_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_action_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.header_text`" 
+                                            :label="lang('b_datasource_header_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_header_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.help_text`" 
+                                            :label="lang('b_datasource_help_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_help_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.ajax`" 
                                             :label="lang('b_datasource_ajax')"
                                             type="checkbox"
@@ -139,6 +163,14 @@
                                             type="checkbox"
                                             :form="state.forms.csink"
                                             />
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.datasource.form`" 
+                                            :label="lang('b_form')" 
+                                            :is-required="true"
+                                            :options="content"
+                                            fieldLabel="label"
+                                            fieldValue="_id"
+                                            :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />

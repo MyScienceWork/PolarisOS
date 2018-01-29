@@ -115,6 +115,13 @@
                         </div>
                     </template>
                 </fselect>
+                <crud-form 
+                    :text="field.datasource.action_text"
+                    :header="field.datasource.header_text"
+                    :help="field.datasource.help_text"
+                    :form="field.datasource.form"
+                    v-if="field.datasource && (field.datasource.add || field.datasource.modify)" 
+                />
                 <fdropzone 
                 v-else-if="field.type === 'file'"
                 :form="cform"
@@ -181,6 +188,13 @@
             :readonly="readonly"
             :is-required="field.required"
             :multi="field.type === 'multi-select'"
+            />
+            <crud-form 
+                :text="field.datasource.action_text"
+                :header="field.datasource.header_text"
+                :help="field.datasource.help_text"
+                :form="field.datasource.form"
+                v-if="field.datasource && (field.datasource.add || field.datasource.modify)" 
             />
             <fdropzone 
             v-else-if="field.type === 'file'"

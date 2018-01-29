@@ -63,7 +63,7 @@
                             >
                                 <div class="field has-addons">
                                     <p class="control">
-                                        <button class="button is-info" @click.prevent="edit_widget(widget.i, $event)">
+                                        <button class="button is-info" @click.prevent="edit_widget(row.i, widget.i, $event)">
                                             <span class="icon">
                                                 <i class="fa fa-pencil"></i>
                                             </span>
@@ -105,12 +105,13 @@
                         form="test"
                         @select-change="widget_change"
                         />
-                        <subpage form="test" :widget="state.current_widget" prefix="row.0"/>
+                        <subpage :form="state.modal_form" :widget="state.current_widget" 
+                        :prefix="`rows.${state.current_row_idx}.widgets.${state.current_widget_idx}`"/>
                     </div>
                 </div>
             </div>
             <footer class="modal-card-foot">
-                <button class="button is-success">{{lang('b_validate')}}</button>
+                <button class="button is-success" @click="collect_widget">{{lang('b_validate')}}</button>
                 <button class="button" @click.prevent="state.isWidgetModelActive = false">{{lang('b_cancel')}}</button>
             </footer>
         </div>
