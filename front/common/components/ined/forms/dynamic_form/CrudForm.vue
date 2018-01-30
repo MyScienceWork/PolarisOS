@@ -18,10 +18,18 @@
                         <div class="column" v-html="lang(help)">
                         </div>
                     </div>
-                    <dynamic-form
-                    :form="$store.state.forms[state.specs].content || {}"
-                    :cform="state.cform"
-                    />
+                    <fform
+                        :name="state.cform" 
+                        :post_path="state.path" 
+                        :put_path="state.path"
+                        get_path=""
+                        get_form=""
+                    >
+                        <dynamic-form
+                        :form="$store.state.forms[state.specs].content || {}"
+                        :cform="state.cform"
+                        />
+                    </fform>
                 </div>
             </div>
         </div>
