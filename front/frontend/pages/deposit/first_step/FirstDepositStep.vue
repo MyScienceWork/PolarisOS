@@ -25,7 +25,7 @@
                             />
                     </div>
                 </div> 
-                <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0">
+                <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
                     <div class="column" v-if="Object.keys(upload_form).length > 0">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
@@ -40,36 +40,32 @@
                             </div>
                         </div>
                     </div>
-                    <!--<div class="column" v-if="grab_typology_child(state.chosen_doc_type).completable">
+                    <div class="column" v-if="Object.keys(import_form).length > 0">
                         <div class="card card-equal-height">
-                            <div class="card-content">
+                            <div class="card-content card-equal-height">
                                 <div class="columns is-centered">
                                     <div class="column has-text-centered">
-                                        <h4 class="title is-4">{{lang('f_auto_fill_metadata')}}</h4>
-                                        <p v-html="lang('f_auto_fill_metadata_help')"></p>
+                                        <h4 class="title is-4">{{lang('f_import_from_id')}}</h4>
+                                        <p v-html="lang('f_import_from_id_help')"></p>
                                     </div>
                                 </div>
                                 <div class="columns is-centered">
                                     <div class="column">
                                         <div class="field has-addons">
-                                            <p class="control">
-                                            <span class="select">
-                                                <select>
-                                                    <option>DOI</option>
-                                                    <option>INED</option>
-                                                    <option>ISBN</option>
-                                                </select>
-                                            </span>
-                                            </p>
-                                            <p class="control is-expanded">
-                                                <input class="input" type="text" :placeholder="lang('f_give_your_id')">
-                                            </p>
+                                            <div class="control is-expanded">
+                                                <input v-model="state.search_id" class="input" type="text" :placeholder="lang('f_complete_publication_using_doi')">
+                                            </div>
+                                            <div class="control">
+                                                <a class="button is-info" @click="import_from_id">
+                                                    {{lang('f_search')}} 
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>-->
+                    </div>
                 </div>
             </div>
         </div>

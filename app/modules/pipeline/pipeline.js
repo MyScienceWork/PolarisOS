@@ -3,6 +3,7 @@ const _ = require('lodash');
 const Errors = require('../exceptions/errors');
 const Validator = require('./validator/validator');
 const Completer = require('./completer/completer');
+const Transformer = require('./transformer/transformer');
 const Formatter = require('./formatter/formatter');
 const EntitiesUtils = require('../utils/entities');
 const Utils = require('../utils/utils');
@@ -99,6 +100,11 @@ class Pipeline {
                 }
                 break;
             }
+            case 'transform': {
+                ctx.request.body = await Transformer(body, model.Transforming || []);
+                await next();
+                break;
+            }
             case 'defaults': {
                 ctx.request.body = Pipeline._merge_defaults(body, model.Defaults);
                 await next();
@@ -166,6 +172,16 @@ class Pipeline {
      */
     static complete(type: string): Function {
         return Pipeline._action(type, 'complete');
+    }
+
+    /**
+     * Invoke the dispatcher to transform the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static transform(type: string): Function {
+        return Pipeline._action(type, 'transform');
     }
 
     /**

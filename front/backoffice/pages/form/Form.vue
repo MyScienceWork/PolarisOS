@@ -198,6 +198,16 @@
                                             <finput :name="`${props.fname}.${props.id}.file.restore`" 
                                                 :label="lang('b_restore_files_across_components')" type="checkbox" :form="state.forms.csink" />
                                         </div>
+                                        <div v-else-if="['importer'].indexOf(state.selected_types[props.id]) !== -1">
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.importer`" 
+                                            :label="lang('b_importer')" 
+                                            :is-required="true"
+                                            :options="importers"
+                                            fieldLabel="name"
+                                            fieldValue="_id"
+                                            :form="state.forms.csink" />
+                                        </div>
                                     </div>
                                 </template>
                             </fvariadic-element>

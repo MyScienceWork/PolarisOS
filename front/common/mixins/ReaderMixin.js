@@ -46,7 +46,7 @@ module.exports = {
         remove(obj, entity) {
             this.$store.dispatch('remove', {
                 form: this.state.sinks.reads[entity],
-                path: APIRoutes.entity(entity, 'DEL', obj._id),
+                path: APIRoutes.entity(entity, 'DEL', false, obj._id),
                 rpath: this.state.paths.reads[entity],
                 rform: this.state.sinks.reads[entity],
             });

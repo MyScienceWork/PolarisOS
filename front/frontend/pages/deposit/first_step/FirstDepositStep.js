@@ -1,4 +1,5 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
+const APIRoutes = require('../../../../common/api/routes');
 
 module.exports = {
     props: {
@@ -14,6 +15,7 @@ module.exports = {
                     name: '',
                     form: '',
                 },
+                search_id: '',
             },
         };
     },
@@ -21,6 +23,17 @@ module.exports = {
         grab_typology_form(form) {
             this.state.typology.form = form;
             this.$emit('typology-change', form, undefined);
+        },
+        import_from_id(e) {
+            e.preventDefault();
+            this.$store.dispatch('create', {
+                path: APIRoutes.import(),
+                body: {
+                    // TODO remove hack
+                    importer: this.import_form.fields[0].subform.fields[1].importer,
+                    doi: this.state.search_id,
+                },
+            });
         },
     },
     computed: {
@@ -51,6 +64,18 @@ module.exports = {
                 if ('fields' in content) {
                     return Object.assign({}, content, { fields: content.fields.filter(field =>
                         field.name === 'upload' && field.type === 'subform') });
+                }
+                return content;
+            }
+            return {};
+        },
+        import_form() {
+            if (this.publicationSpecs in this.$store.state.forms) {
+                const sink = this.$store.state.forms[this.publicationSpecs];
+                const content = sink.content || {};
+                if ('fields' in content) {
+                    return Object.assign({}, content, { fields: content.fields.filter(field =>
+                        field.name === 'import' && field.type === 'subform') });
                 }
                 return content;
             }

@@ -10,6 +10,7 @@ module.exports = {
                     refs: {
                         fields: {
                             subform: 'form',
+                            importer: 'importer',
                         },
                     },
                 },
@@ -52,6 +53,9 @@ module.exports = {
                                 index: false,
                             },
                             subform: {
+                                type: 'keyword',
+                            },
+                            importer: {
                                 type: 'keyword',
                             },
                             datasource: {

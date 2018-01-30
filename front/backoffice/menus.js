@@ -15,6 +15,8 @@ const Login = require('./pages/login/Login.vue');
 const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
+const Connector = require('./pages/connector/Connector.vue');
+const Importer = require('./pages/importer/Importer.vue');
 
 module.exports.menu = [
     [
@@ -133,6 +135,39 @@ module.exports.menu = [
             routes: [Routes.page],
             submenu: [],
             component: Page,
+        },
+    ],
+
+    [
+        {
+            section: 'Import / Export',
+            name: 'Connectors',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'connector',
+            routes: [Routes.connector],
+            submenu: [],
+            component: Connector,
+        },
+        {
+            section: 'Import / Export',
+            name: 'Importers',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'importer',
+            routes: [Routes.importer],
+            submenu: [],
+            component: Importer,
+        },
+        {
+            section: 'Import / Export',
+            name: 'Exporters',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'exporter',
+            routes: [Routes.exporter],
+            submenu: [],
+            component: Widget,
         },
     ],
 

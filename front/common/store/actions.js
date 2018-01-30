@@ -20,7 +20,9 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
     const response = await API.fetch(payload);
     ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
 
-    if (action !== 'validate') {
+    if (action !== 'validate'
+        && rform !== '' && rpath !== ''
+        && rform != null && rpath != null) {
         ctx.dispatch('single_read', {
             form: rform,
             path: rpath,

@@ -22,4 +22,7 @@ module.exports = {
     api: '/admin/api',
     config: '/admin/config',
     login: '/admin/login',
+    connector: '/admin/connector',
+    importer: '/admin/importer',
+    exporter: '/admin/exporter',
 };

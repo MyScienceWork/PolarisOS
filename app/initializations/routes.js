@@ -9,6 +9,7 @@ const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
 const UserRoutes = require('../modules/entities/user/routes');
 const EntityRoutes = require('../modules/entities/entity/routes');
+const ImporterRoutes = require('../modules/entities/importer/routes');
 
 async function initialize_routes() {
     const router = new Router();
@@ -68,6 +69,7 @@ async function initialize_routes() {
 
     EntityRoutes(router);
     UserRoutes(router);
+    ImporterRoutes(router);
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',

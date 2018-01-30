@@ -8,6 +8,7 @@ module.exports = [{ label: 'Text', value: 'text' },
     { label: 'Checkbox', value: 'checkbox' },
     { label: 'Radio', value: 'radio' },
     { label: 'Subform', value: 'subform' },
+    { label: 'Importer', value: 'importer' },
     { label: 'Select', value: 'select' },
     { label: 'MultiSelect', value: 'multi-select' },
     { label: 'File', value: 'file' }];
