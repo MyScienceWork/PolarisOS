@@ -12,7 +12,8 @@ const Validation: Array<any> = [];
 
 const Formatting: Array<any> = [
     {
-        submenus: a => FormatFunctions.oarray_to_array(a),
+        elements: a => FormatFunctions.oarray_to_array(a),
+        'elements.submenus': a => FormatFunctions.oarray_to_array(a),
     },
 ];
 

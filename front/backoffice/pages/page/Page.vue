@@ -51,8 +51,15 @@
                             :get_path="state.paths.reads.page" 
                             :get_form="state.sinks.reads.page"
                         >
-                            <fselect name="template" :label="lang('l_template')" :is-required="true" 
-                            :placeholder="lang('l_template')" :form="state.sinks.creations.page" :options="[]" />
+                            <fselect 
+                                name="template" :label="lang('l_template')" :is-required="true" 
+                                :placeholder="lang('l_template')" 
+                                :form="state.sinks.creations.page" 
+                                :options="content_template"
+                                fieldLabel="name"
+                                fieldValue="_id"
+                            />
+                            <finput name="has_menu" :label="lang('l_has_menu')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
                             <widget>
                                 <span slot="title">{{lang('l_header')}}</span>
                                 <div slot="body">
@@ -61,20 +68,18 @@
                                 </div>
                             </widget>
                             <widget>
-                                <span slot="title">{{lang('l_menu')}}</span>
-                                <div slot="body">
-                                    <finput name="has_menu" :label="lang('l_has_menu')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
-                                </div>
-                            </widget>
-                            <widget>
                                 <span slot="title">{{lang('l_main')}}</span>
                                 <div slot="body">
+                                <div slot="body">
+                                    <fgrid :widgets="content_widget"></fgrid>
+                                </div>
                                 </div>
                             </widget>
                             <widget>
                                 <span slot="title">{{lang('l_footer')}}</span>
                                 <div slot="body">
                                     <finput name="footer.has_footer" :label="lang('l_has_footer')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                                    <fgrid :widgets="content_widget"></fgrid>
                                 </div>
                             </widget>
                         </fform>

@@ -18,12 +18,14 @@ module.exports = {
                     },
                     reads: {
                         widget: APIRoutes.entity('widget', 'GET'),
+                        template: APIRoutes.entity('template', 'GET'),
                         page: APIRoutes.entity('page', 'GET'),
                     },
                 },
                 sinks: {
                     reads: {
                         widget: 'widget_read',
+                        template: 'template_read',
                         page: 'page_read',
                     },
                     creations: {
@@ -34,25 +36,21 @@ module.exports = {
         };
     },
     mounted() {
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.page,
-            keepContent: false,
+        Object.keys(this.state.sinks.reads).forEach((sink) => {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads[sink],
+                keepContent: false,
+            });
         });
 
-        this.$store.state.requests.push({
-            name: 'single_read',
-            content: {
-                form: this.state.sinks.reads.page,
-                path: this.state.paths.reads.page,
-            },
-        });
-
-        this.$store.state.requests.push({
-            name: 'single_read',
-            content: {
-                form: this.state.sinks.reads.widget,
-                path: this.state.paths.reads.widget,
-            },
+        Object.keys(this.state.sinks.reads).forEach((sink) => {
+            this.$store.state.requests.push({
+                name: 'single_read',
+                content: {
+                    form: this.state.sinks.reads[sink],
+                    path: this.state.paths.reads[sink],
+                },
+            });
         });
     },
     watch: {
@@ -67,6 +65,12 @@ module.exports = {
         },
         current_read_state_page(s) {
             return this.mwcurrent_read_state(this.state.sinks.reads.page)(s);
+        },
+        error_template(n) {
+            return this.mwerror(this.state.sinks.reads.template)(n);
+        },
+        current_read_state_template(s) {
+            return this.mwcurrent_read_state(this.state.sinks.reads.template)(s);
         },
     },
     computed: {
@@ -100,6 +104,20 @@ module.exports = {
         },
         current_read_state_widget() {
             return this.mcurrent_read_state(this.state.sinks.reads.widget);
+        },
+
+        content_template() {
+            const content = this.mcontent(this.state.sinks.reads.template);
+            return content;
+        },
+        length_template() {
+            return this.mlength(this.state.sinks.reads.template);
+        },
+        error_template() {
+            return this.merror(this.state.sinks.reads.template);
+        },
+        current_read_state_template() {
+            return this.mcurrent_read_state(this.state.sinks.reads.template);
         },
     },
 };

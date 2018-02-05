@@ -15,6 +15,7 @@ const Login = require('./pages/login/Login.vue');
 const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
+const Template = require('./pages/template/Template.vue');
 const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
 
@@ -115,6 +116,16 @@ module.exports.menu = [
             routes: [Routes.menu],
             submenu: [],
             component: Menu,
+        },
+        {
+            section: 'UI / UX',
+            name: 'Templates',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'template',
+            routes: [Routes.template],
+            submenu: [],
+            component: Template,
         },
         {
             section: 'UI / UX',

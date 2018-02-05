@@ -1,12 +1,12 @@
 // @flow
 const ODM = require('../crud/odm');
-const Model = require('./models/widgets');
+const Model = require('./models/templates');
 const Mapping = require('../crud/mapping');
 const Config = require('../../../config');
 
 const mapping = new Mapping(Model.Mapping);
 
-class Widget extends ODM {
+class Template extends ODM {
     static get model(): Object {
         return Model;
     }
@@ -16,12 +16,12 @@ class Widget extends ODM {
     }
 
     static get index(): string {
-        return `${Config.elasticsearch.index_prefix}_widget`;
+        return `${Config.elasticsearch.index_prefix}_template`;
     }
 
     static get type(): string {
-        return 'widget';
+        return 'template';
     }
 }
 
-module.exports = Widget;
+module.exports = Template;

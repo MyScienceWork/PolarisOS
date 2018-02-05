@@ -1,22 +1,16 @@
 // @flow
 const Joi = require('joi');
 const Crypto = require('crypto');
-const WidgetMapping = require('../../../../mappings/widget');
+const TemplateMapping = require('../../../../mappings/template');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = WidgetMapping.msw.mappings.widget.properties;
+const Mapping: Object = TemplateMapping.msw.mappings.template.properties;
 
 const Validation: Array<any> = [];
 
-const Formatting: Array<any> = [
-    {
-        texts: a => FormatFunctions.oarray_to_array(a),
-        variables: a => FormatFunctions.oarray_to_array(a),
-        events: a => FormatFunctions.oarray_to_array(a),
-    },
-];
+const Formatting: Array<any> = [];
 
 const Completion: Array<any> = [];
 
@@ -24,9 +18,9 @@ const Defaults: Object = {
 };
 
 const Messages: Object = {
-    set: 'Widget is successfully added',
-    remove: 'Widget is successfully removed',
-    modify: 'Widget is successfully modified',
+    set: 'Template is successfully added',
+    remove: 'Template is successfully removed',
+    modify: 'Template is successfully modified',
 };
 
 
@@ -38,5 +32,5 @@ module.exports = {
     Completion,
     Messages,
     Defaults,
-    Name: 'Widget',
+    Name: 'Template',
 };

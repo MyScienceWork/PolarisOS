@@ -8,16 +8,7 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
-                    icon: {
-                        type: 'keyword',
-                    },
-                    part: {
-                        type: 'keyword',
-                    },
-                    page: {
-                        type: 'keyword',
-                    },
-                    submenus: {
+                    elements: {
                         type: 'nested',
                         properties: {
                             name: {
@@ -26,8 +17,25 @@ module.exports = {
                             icon: {
                                 type: 'keyword',
                             },
+                            part: {
+                                type: 'keyword',
+                            },
                             page: {
                                 type: 'keyword',
+                            },
+                            submenus: {
+                                type: 'nested',
+                                properties: {
+                                    name: {
+                                        type: 'keyword',
+                                    },
+                                    icon: {
+                                        type: 'keyword',
+                                    },
+                                    page: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
                     },

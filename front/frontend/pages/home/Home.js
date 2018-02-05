@@ -31,7 +31,7 @@ module.exports = {
     },
     computed: {
         content() {
-            return this.fform(this.state.forms.psink);
+            return this.fcontent(this.state.forms.psink);
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {

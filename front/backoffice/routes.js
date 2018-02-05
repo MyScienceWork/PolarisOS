@@ -7,6 +7,7 @@ module.exports = {
     page: '/admin/page',
     menu: '/admin/menu',
     widget: '/admin/widget',
+    template: '/admin/template',
     function: '/admin/function',
     review: '/admin/review',
     datasource: '/admin/datasource',

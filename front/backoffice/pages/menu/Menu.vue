@@ -52,14 +52,21 @@
                             :get_form="state.forms.rsink"
                         >
                             <finput name="name" :label="lang('l_menu_name')" :is-required="true" :placeholder="lang('l_menu_name')" type="text" :form="state.forms.csink" />
-                            <finput name="icon" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.forms.csink" />
                             <fselect name="part" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.forms.csink" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
-                            <fselect name="page" :label="lang('l_page')" :placeholder="lang('l_page')" :form="state.forms.csink" :options="[]"/>
-                            <fvariadic-element name="submenus" :form="state.forms.csink" :tabs="true" :is-required="false">
-                                <template slot="variadic" slot-scope="props">
-                                    <finput :name="`${props.fname}.${props.id}.name`" :label="lang('l_menu_name')" :is-required="true" :placeholder="lang('l_menu_name')" type="text" :form="state.forms.csink" />
-                                    <finput :name="`${props.fname}.${props.id}.icon`" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.forms.csink" />
-                                    <fselect :name="`${props.fname}.${props.id}.page`" :label="lang('l_page')" :is-required="true" :placeholder="lang('l_page')" :form="state.forms.csink" :options="[]"/>
+                            <fvariadic-element name="elements" :form="state.forms.csink" :is-required="true" :draggable="true">
+                                <template slot="variadic" slot-scope="fprops">
+                                    <div class="card">
+                                        <finput :name="`${fprops.fname}.${fprops.id}.name`" :label="lang('l_menu_element_name')" :is-required="true" :placeholder="lang('l_menu_element_name')" type="text" :form="state.forms.csink" />
+                                        <finput :name="`${fprops.fname}.${fprops.id}.icon`" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.forms.csink" />
+                                        <fselect :name="`${fprops.fname}.${fprops.id}.page`" :label="lang('l_page')" :placeholder="lang('l_page')" :form="state.forms.csink" :options="[]" :is-required="true"/>
+                                        <fvariadic-element :name="`${fprops.fname}.${fprops.id}.submenus`" :form="state.forms.csink" :tabs="true" :is-required="false">
+                                            <template slot="variadic" slot-scope="props">
+                                                <finput :name="`${props.fname}.${props.id}.name`" :label="lang('l_menu_name')" :is-required="true" :placeholder="lang('l_menu_name')" type="text" :form="state.forms.csink" />
+                                                <finput :name="`${props.fname}.${props.id}.icon`" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.forms.csink" />
+                                                <fselect :name="`${props.fname}.${props.id}.page`" :label="lang('l_page')" :is-required="true" :placeholder="lang('l_page')" :form="state.forms.csink" :options="[]"/>
+                                            </template>
+                                        </fvariadic-element>
+                                    </div>
                                 </template>
                             </fvariadic-element>
                         </fform>

@@ -19,7 +19,7 @@ module.exports = {
     },
     computed: {
         content() {
-            return this.fform(this.state.forms.collector_sink);
+            return this.fcontent(this.state.forms.collector_sink);
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {

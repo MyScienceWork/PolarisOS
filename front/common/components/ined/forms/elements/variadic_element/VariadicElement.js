@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Draggable = require('vuedraggable');
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
@@ -7,13 +8,17 @@ module.exports = {
     mixins: [InputMixin],
     props: {
         name: { required: true, type: String },
-              // form: { required: true, type: String }, //InputMixin
+      // form: { required: true, type: String }, //InputMixin
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
+        draggable: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
     },
 
+    components: {
+        Draggable,
+    },
 
     data() {
         return {

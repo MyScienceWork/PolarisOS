@@ -47,6 +47,9 @@ const WidgetModel = require('../entities/widget/models/widgets');
 const Page = require('../entities/page/page');
 const PageModel = require('../entities/page/models/pages');
 
+const Template = require('../entities/template/template');
+const TemplateModel = require('../entities/template/models/templates');
+
 const Menu = require('../entities/menu/menu');
 const MenuModel = require('../entities/menu/models/menus');
 
@@ -165,6 +168,8 @@ async function get_model_from_type(type: string): ?Object {
         return ConnectorModel;
     case 'widget':
         return WidgetModel;
+    case 'template':
+        return TemplateModel;
     case 'page':
         return PageModel;
     case 'menu':
@@ -201,6 +206,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Connector(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'widget':
         return new Widget(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'template':
+        return new Template(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'menu':
         return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'page':

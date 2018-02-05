@@ -58,7 +58,7 @@ module.exports = {
     mounted() {
         Object.keys(this.state.sinks.reads).forEach((sink) => {
             this.$store.commit(Messages.INITIALIZE, {
-                form: sink,
+                form: this.state.sinks.reads[sink],
                 keepContent: false,
             });
         });

@@ -37,8 +37,9 @@ module.exports = {
 
                 },
                 current_widget: null,
-                current_row_idx: 0,
-                current_widget_idx: 0,
+                current_row_idx: -1,
+                current_widget_idx: -1,
+                current_element: null,
                 modal_form: 'part_widget_creation',
             },
         };
@@ -55,14 +56,26 @@ module.exports = {
         collect_widget(e) {
             e.preventDefault();
             this.$store.commit(Messages.COLLECT, {
-                form: this.state.part_widget_creation,
+                form: this.state.modal_form,
             });
         },
         send_information(form) {
-            if (form !== this.state.form) {
+            if (form !== this.state.modal_form) {
                 return;
             }
             this.state.isWidgetModelActive = false;
+
+            const elt = this.state.current_element;
+            elt.widget = _.cloneDeep(this.fcontent(this.state.modal_form));
+
+            this.state.current_widget = null;
+            this.state.current_row_idx = -1;
+            this.state.current_widget_idx = -1;
+            this.state.current_element = null;
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.modal_form,
+                keepContent: false,
+            });
         },
         find_ideal_place(row) {
             const widgets = this.state.elements.filter(elt => elt.row === row);
@@ -78,8 +91,6 @@ module.exports = {
                 }
                 return f;
             }, filled);
-
-            console.log(filled);
 
             let k = 0;
             let j = 0;
@@ -143,6 +154,7 @@ module.exports = {
                 h: 1,
                 row,
                 i: `${this.state.elements.length}`,
+                widget: {},
             });
 
             constraints.total += this.state.minW;
@@ -163,6 +175,7 @@ module.exports = {
             this.state.isWidgetModelActive = true;
             this.state.current_row_idx = r;
             this.state.current_widget_idx = w;
+            this.state.current_element = this.state.elements.filter(elt => elt.i === w)[0];
         },
         grid_resized_event(i, newH, newW) {
             const _widget = this.state.elements.filter(elt => elt.i === i);
@@ -184,6 +197,16 @@ module.exports = {
         },
         grid_moved_event(i, newX, newY) {
 
+        },
+    },
+    watch: {
+        current_modal_form_state(s) {
+            return this.dispatch(s, this, this.state.modal_form);
+        },
+    },
+    computed: {
+        current_modal_form_state() {
+            return this.fstate(this.state.modal_form);
         },
     },
 };
