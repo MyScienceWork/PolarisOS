@@ -175,4 +175,8 @@ module.exports = {
         const status = payload.status;
         state.login_status = status || 'fail';
     },
+
+    [Messages.SET_PAGES]: (state, payload) => {
+        state.interface.pages = payload.pages;
+    },
 };

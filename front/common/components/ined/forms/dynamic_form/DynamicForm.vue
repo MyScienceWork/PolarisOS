@@ -14,7 +14,7 @@
             <template slot="input-addons">
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -60,7 +60,7 @@
         <fvariadic-element class="field" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput 
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -157,7 +157,7 @@
         </fvariadic-element>
         <template v-else>
             <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"

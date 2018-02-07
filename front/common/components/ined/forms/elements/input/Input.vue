@@ -6,7 +6,8 @@
     :readonly="readonly"
 ></input>
 <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
-    v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' || type === 'email'"
+    v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' 
+    || type === 'email' || type === 'date' || type === 'time'"
 >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
     <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
@@ -36,6 +37,18 @@
                 v-model="state.value"
                 :readonly="readonly"
             />
+            <b-datepicker
+                v-else-if="type === 'date'"
+                v-model="state.value"
+                :first-day-of-week="1"
+                :readonly="readonly"
+                :placeholder="placeholder" />
+            <b-timepicker
+                v-else-if="type === 'time'"
+                :placeholder="placeholder"
+                v-model="state.value"
+                :readonly="readonly"
+                icon="clock-o" />
             <input v-else 
                 type="email"
                 :placeholder="placeholder"

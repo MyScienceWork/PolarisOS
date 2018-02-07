@@ -350,3 +350,4 @@ module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
+module.exports.get_index = get_index;

@@ -7,7 +7,7 @@
                     form="test_form"
                     extra-classes="info-card-orange"
                     :boxed="true"
-                    title="Derniers dépôts"
+                    :title="lang('l_last_deposits')"
                     type="publication"
                     :small="true"
                     :items="items"
@@ -18,7 +18,7 @@
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
-                                <p class="card-header-title">Rechercher</p>
+                            <p class="card-header-title">{{lang('l_search')}}</p>
                             </header>
                             <div class="card-content">
                                 <widget-search 
@@ -50,11 +50,6 @@
                 <div class="columns is-centered">
                     <div class="column">
                         <widget-stats form="test_form" :infos="[]" />
-                    </div>
-                </div>
-                <div class="columns is-centered">
-                    <div class="column">
-                        <hierarchical-structure /> 
                     </div>
                 </div>
             </div>

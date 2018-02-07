@@ -51,6 +51,14 @@
                             :get_path="state.paths.reads.page" 
                             :get_form="state.sinks.reads.page"
                         >
+                            <finput 
+                                name="name" 
+                                :label="lang('b_name')" 
+                                :is-required="true" 
+                                :placeholder="lang('b_name')" 
+                                type="text" 
+                                :form="state.sinks.creations.page" 
+                            />
                             <fselect 
                                 name="template" :label="lang('l_template')" :is-required="true" 
                                 :placeholder="lang('l_template')" 
@@ -59,11 +67,64 @@
                                 fieldLabel="name"
                                 fieldValue="_id"
                             />
+                            <finput 
+                                name="route" 
+                                :label="lang('l_route')" 
+                                :is-required="true" 
+                                :placeholder="lang('l_route')" 
+                                type="text" 
+                                :form="state.sinks.creations.page" 
+                            />
                             <finput name="has_menu" :label="lang('l_has_menu')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                            <widget>
+                                <span slot="title">{{lang('l_global_page_access')}}</span>
+                                <div slot="body">
+                                    <finput 
+                                        name="global_access.access" 
+                                        :label="lang('l_global_access_name')" 
+                                        :is-required="true" 
+                                        :placeholder="lang('l_global_access_name')" 
+                                        type="text" 
+                                        :form="state.sinks.creations.page" 
+                                    />
+                                    <finput 
+                                        name="global_access.subaccess.c" 
+                                        :label="lang('l_create_access')" 
+                                        :is-required="true" 
+                                        placeholder="" 
+                                        type="checkbox" 
+                                        :form="state.sinks.creations.page" 
+                                    />
+                                    <finput 
+                                        name="global_access.subaccess.r" 
+                                        :label="lang('l_read_access')" 
+                                        :is-required="true" 
+                                        placeholder="" 
+                                        type="checkbox" 
+                                        :form="state.sinks.creations.page" 
+                                    />
+                                    <finput 
+                                        name="global_access.subaccess.u" 
+                                        :label="lang('l_update_access')" 
+                                        :is-required="true" 
+                                        placeholder="" 
+                                        type="checkbox" 
+                                        :form="state.sinks.creations.page" 
+                                    />
+                                    <finput 
+                                        name="global_access.subaccess.d" 
+                                        :label="lang('l_delete_access')" 
+                                        :is-required="true" 
+                                        placeholder="" 
+                                        type="checkbox" 
+                                        :form="state.sinks.creations.page" 
+                                    />
+                                </div>
+                            </widget>
                             <widget>
                                 <span slot="title">{{lang('l_header')}}</span>
                                 <div slot="body">
-                                    <finput name="header.has_header" :label="lang('l_has_header')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                                    <finput name="header.enabled" :label="lang('l_has_header')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
                                     <fgrid :widgets="content_widget"></fgrid>
                                 </div>
                             </widget>
@@ -78,7 +139,7 @@
                             <widget>
                                 <span slot="title">{{lang('l_footer')}}</span>
                                 <div slot="body">
-                                    <finput name="footer.has_footer" :label="lang('l_has_footer')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                                    <finput name="footer.enabled" :label="lang('l_has_footer')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
                                     <fgrid :widgets="content_widget"></fgrid>
                                 </div>
                             </widget>

@@ -14,7 +14,7 @@
                 <a href='#'>Log In / Sign In</a>
                 </p>
                 <p class="tile is-child">
-                <a href='#'>FR</a>&nbsp;|&nbsp;<a href='#'>EN</a>
+                <!--<a href='#'>FR</a>&nbsp;|&nbsp;<a href='#'>EN</a>-->
                 </p>
             </div>
         </div>

@@ -12,8 +12,8 @@
                             </figure>
                         </div>
                         <div class="media-content is-uppercase">
-                            <p class="title is-6">Dépôts</p>
-                            <p class="subtitle is-6">12 000 références</p>
+                            <p class="title is-6">{{lang('l_deposit', {}, 'other')}}</p>
+                            <p class="subtitle is-6">12 000 {{lang('l_reference', {}, 'other')}}</p>
                         </div>
                     </div>
                 </div>
@@ -27,8 +27,8 @@
                             </figure>
                         </div>
                         <div class="media-content is-uppercase">
-                            <p class="title is-6">Libre accès</p>
-                            <p class="subtitle is-6">300 documents</p>
+                            <p class="title is-6">{{lang('l_open_access')}}</p>
+                            <p class="subtitle is-6">300 {{lang('l_reference', {}, 'other')}}</p>
                         </div>
                     </div>
                 </div>

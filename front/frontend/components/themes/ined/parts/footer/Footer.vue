@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="columns footer-disclaimer">
-            <p class="column">&copy; INED 2017</p>
+            <p class="column">&copy; Ined 2018</p>
         </div>
     </div>
     </footer>

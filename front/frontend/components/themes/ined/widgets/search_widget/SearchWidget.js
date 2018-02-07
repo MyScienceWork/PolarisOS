@@ -7,6 +7,7 @@ module.exports = {
     props: {
         mode: { default: 'all', type: String },
         search_url: { required: true, type: String },
+        searchBody: { required: false, type: Object },
         redirect_to_search: { default: false, type: Boolean },
     },
     data() {

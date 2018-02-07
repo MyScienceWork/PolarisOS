@@ -31,6 +31,9 @@
                             </div>
                         </div>
                     </template>
+                    <template v-else-if="type === 'project'">
+                        <p v-html="info.html" />
+                    </template>
                 </div>
             </article>
         </div>
@@ -129,6 +132,9 @@
                                     </a>
                                 </div>
                             </div>
+                        </template>
+                        <template v-else-if="type === 'project'">
+                            <p v-html="info.html" />
                         </template>
                     </div>
                 </article>

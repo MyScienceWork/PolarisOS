@@ -27,22 +27,6 @@ module.exports = {
                     pipeline: {
                         type: 'keyword',
                     },
-                    multi: {
-                        type: 'boolean',
-                    },
-                    scheduler: {
-                        properties: {
-                            type: {
-                                type: 'keyword',
-                            },
-                            differed_date: {
-                                type: 'date',
-                            },
-                            cron_format: {
-                                type: 'keyword',
-                            },
-                        },
-                    },
                 },
             },
         },
