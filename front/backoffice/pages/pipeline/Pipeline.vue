@@ -4,15 +4,15 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of users</span>
+                <span slot="title">{{lang('l_list_of_pipelines')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in readContent">
+                        <div class="columns is-centered" v-for="row in read_content_pipeline">
                             <div v-for="content in row" class="column">
                                 <widget>
                                     <span slot="title">
                                         <action-button
                                         class="button is-small button-background-blue"
-                                        @action-click="update(content)"
+                                        @action-click="update(content, 'pipeline')"
                                         >
                                         <i class="fa fa-pencil"></i>
                                         </action-button>
@@ -24,7 +24,7 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.entity}} 
+                                        {{content.name}} ({{content.entity}}) 
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -33,7 +33,7 @@
                         </div>
                         <div class="columns is-centered">
                             <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
+                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_pipeline" :items-per-page="state.itemsPerPage" />
                             </div>
                         </div>
                     </div>
@@ -43,24 +43,24 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title"></span>
+                <span slot="title">{{lang('l_add_or_modify_pipeline')}}</span>
                     <div slot="body">
                         <fform
-                            :name="state.forms.csink" 
-                            :post_path="state.path" 
-                            :put_path="state.path"
-                            :get_path="state.rpath"
-                            :get_form="state.forms.rsink"
+                            :name="state.sinks.creations.pipeline" 
+                            :post_path="state.paths.creations.pipeline" 
+                            :put_path="state.paths.creations.pipeline" 
+                            :get_path="state.paths.reads.pipeline"
+                            :get_form="state.sinks.reads.pipeline"
                         >
-                            <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.forms.csink" />
-                            <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.forms.csink" />
+                            <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.sinks.creations.pipeline" />
+                            <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.sinks.creations.pipeline" />
                             <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
-                                <template slot="tabs" slot-scope="tprops">
+                                <template slot="body" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
                                         <fvariadic-element
                                             :key="tprops.id"
                                             name="defaults" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.pipeline" 
                                             :tabs="true">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput :name="`${props.fname}.${props.id}.key`" 
@@ -68,7 +68,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_name')" 
                                                     type="text" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <finput 
                                                     :name="`${props.fname}.${props.id}.value`" 
@@ -76,7 +76,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_value')" 
                                                     type="text" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                             </template>
                                         </fvariadic-element>
@@ -84,7 +84,7 @@
                                     <template v-else-if="tprops.id === 1">
                                         <fvariadic-element 
                                             name="formatters" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -94,7 +94,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.function.name`" 
@@ -103,7 +103,7 @@
                                                     :options="functions.formatter ? Object.values(functions.formatter) : []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                     v-on:select-change="(val) => {function_change(val, 'formatter', props.id)}"
                                                 />
                                                 
@@ -114,13 +114,13 @@
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
-                                                            :form="state.forms.csink" 
+                                                            :form="state.sinks.creations.pipeline" 
                                                         /> 
                                                         <finput
                                                             :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
-                                                            :form="state.forms.csink" 
+                                                            :form="state.sinks.creations.pipeline" 
                                                         />
                                                     </template>
                                                 </div>
@@ -130,7 +130,7 @@
                                     <template v-else-if="tprops.id === 2">
                                         <fvariadic-element 
                                             name="completers" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -140,7 +140,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.function.name`" 
@@ -149,7 +149,7 @@
                                                     :options="functions.completer ? Object.values(functions.completer) : []"
                                                     fieldLabel="name"
                                                     fieldValue="name"
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                     v-on:select-change="(val) => {function_change(val, 'completer', props.id)}"
                                                 />
                                                 <div v-if="props.id in state.selected_functions.completer">
@@ -159,13 +159,13 @@
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
-                                                            :form="state.forms.csink" 
+                                                            :form="state.sinks.creations.pipeline" 
                                                         /> 
                                                         <finput
                                                             :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
-                                                            :form="state.forms.csink" 
+                                                            :form="state.sinks.creations.pipeline" 
                                                         />
                                                     </template>
                                                 </div>
@@ -175,7 +175,7 @@
                                     <template v-else-if="tprops.id === 3">
                                         <fvariadic-element 
                                             name="transformers" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -185,7 +185,7 @@
                                     <template v-else-if="tprops.id === 4">
                                         <fvariadic-element 
                                             name="validators" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
@@ -195,7 +195,7 @@
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
                                                     type="text" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
                                                     :name="`${props.fname}.${props.id}.type`" 
@@ -203,13 +203,13 @@
                                                     :placeholder="lang('b_validator_type')"
                                                     :is-required="true"
                                                     :options="valtypes|| []"
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <finput 
                                                     :name="`${props.fname}.${props.id}.required`" 
                                                     :label="lang('b_field_required')" 
                                                     type="checkbox" 
-                                                    :form="state.forms.csink" 
+                                                    :form="state.sinks.creations.pipeline" 
                                                 />
                                             </template>
                                         </fvariadic-element>
