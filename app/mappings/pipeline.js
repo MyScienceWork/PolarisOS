@@ -34,9 +34,6 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
-                    entity: {
-                        type: 'keyword',
-                    },
                     defaults: {
                         type: 'nested',
                         properties: {

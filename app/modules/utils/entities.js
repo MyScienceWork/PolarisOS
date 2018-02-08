@@ -127,7 +127,7 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
     }
 
     if (mode === 'model') {
-        const model_response = format_search({ where: { entity: type } }, PipelineModel);
+        const model_response = format_search({ where: { $$term: { _id: result.hits[0].source.pipeline } } }, PipelineModel);
         const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline', es_client,
                 PipelineModel, model_response.search, model_response.options);
         if (model_result.hits.length === 0) {

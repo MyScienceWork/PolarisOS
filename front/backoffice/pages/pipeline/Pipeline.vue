@@ -24,7 +24,7 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.name}} ({{content.entity}}) 
+                                        {{content.name}}
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -53,7 +53,6 @@
                             :get_form="state.sinks.reads.pipeline"
                         >
                             <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.sinks.creations.pipeline" />
-                            <finput name="entity" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.sinks.creations.pipeline" />
                             <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
                                 <template slot="body" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
