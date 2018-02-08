@@ -11,6 +11,7 @@ module.exports = {
     data() {
         return {
             state: {
+                query: this.$route.query || {},
                 sinks: {
                     creations: {
                         browse: 'browsing_creation',
@@ -24,8 +25,10 @@ module.exports = {
         };
     },
     mounted() {
-        const query = this.$route.query;
-        this.make_request(query);
+        if (Object.keys(this.state.query).length === 0) {
+            this.state.query = { b: 'authors._id', i: 0, entity: 'author' };
+        }
+        this.make_request(this.state.query);
     },
     methods: {
         browse(e) {
@@ -39,6 +42,11 @@ module.exports = {
             if (entity == null || entity.trim() === '') {
 
             } else {
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.sinks.creations.browse,
+                    keepContent: false,
+                });
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.browse,
                     path: APIRoutes.entity(entity, 'POST', true),
@@ -73,6 +81,7 @@ module.exports = {
     },
     watch: {
         query(q) {
+            this.state.query = q;
             this.make_request(q);
         },
         current_state(s) {
@@ -84,7 +93,7 @@ module.exports = {
             return this.$route.query;
         },
         current_nav() {
-            const query = this.$route.query;
+            const query = this.state.query;
             return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
         },
         options() {
