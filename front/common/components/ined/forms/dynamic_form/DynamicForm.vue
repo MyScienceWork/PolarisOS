@@ -15,6 +15,7 @@
             :is-required="form.fields[0].required"
         >
             <template slot="input-addons">
+                <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
                     v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
@@ -162,11 +163,13 @@
                     :key="i"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
-                        <div class="control">
-                            <a class="button is-info" @click="props.add">+</a>
-                        </div>
-                        <div class="control">
-                            <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                        <div class="field has-addons">
+                            <div class="control">
+                                <a class="button is-info" @click="props.add">+</a>
+                            </div>
+                            <div class="control">
+                                <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                            </div>
                         </div>
                     </template>
                 </dynamic-form>
