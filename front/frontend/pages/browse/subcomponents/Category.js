@@ -92,7 +92,11 @@ module.exports = {
             if (!(content instanceof Array)) {
                 return [];
             }
-            return content;
+
+            return content.map((c) => {
+                c[this.label] = this.lang(c[this.label]);
+                return c;
+            });
         },
         label() {
             if (this.options.length > 0) {
