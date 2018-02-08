@@ -5,10 +5,12 @@
                 <slot name="card-title">
                 </slot>
             </p>
-        </header>
-        <slot class="card-content" name="card-content">
+            </header>
+            <div class="card-content">
+                <slot name="card-content">
 
-        </slot>
+                </slot>
+            </div>
         </div>
     </div>
 </template>

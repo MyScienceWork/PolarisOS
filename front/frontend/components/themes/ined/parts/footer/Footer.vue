@@ -2,7 +2,7 @@
 <div class="hero-foot">
     <footer>
     <div class="container is-fluid">
-        <div class="columns footer-menu">
+        <!--<div class="columns footer-menu">
             <div class="column footer-menu-red">
                 <p class="footer-menu-title">L'institut</p>
                 <ul class="footer-menu-list">
@@ -57,7 +57,7 @@
                     <li><a href='#'>Test</a></li>
                 </ul>
             </div>
-        </div>
+        </div>-->
         <div class="columns footer-disclaimer">
             <p class="column">&copy; Ined 2018</p>
         </div>

@@ -57,6 +57,6 @@ module.exports = {
     },
 
     export() {
-        return `${prefix}/import`;
+        return `${prefix}/export`;
     },
 };

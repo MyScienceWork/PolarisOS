@@ -2,6 +2,10 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 
+const Discovery = require('./subcomponents/Discovery.vue');
+const LastDeposits = require('./subcomponents/LastDeposits.vue');
+const BrowsingList = require('../../lists/browse');
+
 module.exports = {
     mixins: [LangMixin, FormMixin],
     data() {
@@ -15,6 +19,8 @@ module.exports = {
         };
     },
     components: {
+        LastDeposits,
+        Discovery,
     },
     methods: {
 
@@ -44,6 +50,9 @@ module.exports = {
                 return items;
             }
             return [];
+        },
+        navs() {
+            return BrowsingList;
         },
     },
 };
