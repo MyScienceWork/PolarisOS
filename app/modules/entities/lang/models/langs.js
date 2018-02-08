@@ -12,6 +12,7 @@ const Validation: Array<any> = [
         key: Joi.string().required().label('Key'),
         values: Joi.array().min(1).items(Joi.any().required()).label('Text/Quantity'),
         parts: Joi.array().min(1).items(Joi.any().required()).label('Parts'),
+        lang: Joi.string().required().label('Lang'),
     }),
 ];
 

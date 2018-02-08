@@ -24,7 +24,7 @@
   "dependencies": {
     "buefy": "^0.6.1",
     "bulma": "^0.5.3",
-    "bulma-steps": "github:Wikiki/bulma-steps#master",
+    "bulma-steps": "github:Cocophotos/bulma-steps#master",
     "elasticsearch": "^13.0.1",
     "enumify": "^1.0.4",
     "font-awesome": "^4.7.0",
