@@ -112,7 +112,7 @@ async function render_router(part) {
             },
             navbar: menu_item !== -1,
             components: {
-                default: Meta, // get_default_component(page),
+                default: /* Meta,*/ get_default_component(page),
                 header: Header,
                 footer: Footer,
             },
