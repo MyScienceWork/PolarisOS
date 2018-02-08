@@ -94,7 +94,8 @@ module.exports = {
             }
 
             return content.map((c) => {
-                c[this.label] = this.lang(c[this.label]);
+                const label = Object.keys(c).filter(k => k !== '_id')[0];
+                c[label] = this.lang(c[label]);
                 return c;
             });
         },
