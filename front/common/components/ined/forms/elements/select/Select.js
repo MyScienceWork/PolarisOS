@@ -17,6 +17,8 @@ module.exports = {
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
         hasAddons: { default: false, type: Boolean },
+        modal_help: { default: false, type: Boolean },
+        help: { required: false, default: '', type: String },
     },
     components: {
         'v-select': VSelect,
@@ -27,10 +29,17 @@ module.exports = {
             state: {
                 selected: null,
                 options: [],
+                showHelpModal: false,
             },
         };
     },
     methods: {
+        toggleHelpModal(e) {
+            e.preventDefault();
+            if (this.modal_help) {
+                this.state.showHelpModal = !this.state.showHelpModal;
+            }
+        },
         initialize() {
             const form = this.$store.state.forms[this.form];
             let info = Utils.find_value_with_path(form.content, this.name.split('.'));

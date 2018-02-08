@@ -22,17 +22,26 @@ module.exports = {
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
         readonly: { default: false, type: Boolean },
+        modal_help: { default: false, type: Boolean },
+        help: { required: false, type: String, default: '' },
     },
 
     data() {
         return {
             state: {
                 value: this.defaultValue(),
+                showHelpModal: false,
             },
         };
     },
 
     methods: {
+        toggleHelpModal(e) {
+            e.preventDefault();
+            if (this.modal_help) {
+                this.state.showHelpModal = !this.state.showHelpModal;
+            }
+        },
         action(a, e) {
             e.preventDefault();
             this.$emit('input-action-emit', { action: a });

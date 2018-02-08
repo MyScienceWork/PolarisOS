@@ -165,6 +165,17 @@ module.exports = {
                                 type: 'boolean',
                                 index: false,
                             },
+                            help: {
+                                properties: {
+                                    content: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    use_modal: {
+                                        type: 'boolean',
+                                    },
+                                },
+                            },
                         },
                     },
                 },

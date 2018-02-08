@@ -19,6 +19,7 @@ const Validation: Array<any> = [
 const Formatting: Array<any> = [
     {
         key: async key => key.trim(),
+        lang: async key => key.trim(),
         values: async (values) => {
             if (values instanceof Array) {
                 return values.filter(v => v != null && Object.keys(v).length > 0);

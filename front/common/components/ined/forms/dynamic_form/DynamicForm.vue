@@ -10,6 +10,9 @@
             :form="cform"
             :has-addons="form.addons"
             :readonly="readonly"
+            :help="form.fields[0].help ? form.fields[0].help.content : ''"
+            :modal_help="form.fields[0].help ? form.fields[0].help.use_modal : false"
+            :is-required="form.fields[0].required"
         >
             <template slot="input-addons">
                 <template v-for="(field, i) in form.fields.slice(1)">
@@ -24,6 +27,8 @@
                     :readonly="readonly"
                     :is-required="field.required"
                     :key="i"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -35,6 +40,8 @@
                     :readonly="readonly"
                     :is-required="field.required"
                     :key="i"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
                     />
                     <fselect 
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -50,6 +57,8 @@
                     :is-required="field.required"
                     :key="i"
                     :multi="field.type === 'multi-select'"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -70,6 +79,8 @@
                 :readonly="readonly"
                 :is-required="field.required"
                 :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -90,6 +101,8 @@
                 :readonly="readonly"
                 :is-required="field.required"
                 :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
                 />
                 <fselect 
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -105,6 +118,8 @@
                 :has-addons="field.single_multiple"
                 :key="i"
                 :multi="field.type === 'multi-select'"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -134,6 +149,8 @@
                 :keeper_sink="field.file.keeper_sink"
                 :restore_files="field.file.restore"
                 :keep_files="field.file.keep"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -165,6 +182,8 @@
             :form="cform"
             :readonly="readonly"
             :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -175,6 +194,8 @@
             :hidden-value="field.hiddenValue"
             :readonly="readonly"
             :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
             />
             <fselect 
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -188,6 +209,8 @@
             :readonly="readonly"
             :is-required="field.required"
             :multi="field.type === 'multi-select'"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
             />
             <crud-form 
                 :text="field.datasource.action_text"
@@ -207,6 +230,8 @@
             :keeper_sink="field.file.keeper_sink"
             :restore_files="field.file.restore"
             :keep_files="field.file.keep"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
             />
             <dynamic-form 
                 :form="field.subform" 
