@@ -4,15 +4,13 @@
         <div class="tile is-ancestor has-header-top-margin">
             <div class="tile is-parent is-2 is-vertical is-hidden-touch">
                 <div class="image tile is-child">
-                    <router-link to="/"><img src='/public/front/imgs/logo/logo.svg' alt='Logo' title='App Logo' /></router-link>
+                    <router-link to="/"><img src='/public/front/imgs/logo/logo_msw.png' alt='Logo' title='App Logo' /></router-link>
                 </div>
             </div>
             <div class="tile is-vertical is-parent">
                 <div class="columns is-centered is-child">
                     <div class="column is-10 has-text-centered">
-                        <p class="title is-3">OpenINED</p>
-                        <p class="subtitle is-5">L'archive ouverte de l'Ined</p>
-                        <!--<widget-stats form="test_form" :infos="[]" />-->
+                        <widget-stats form="test_form" :infos="[]" />
                     </div>
                 </div>
             </div>

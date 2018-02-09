@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="field">
     <b-modal :active.sync="state.showHelpModal">
         <div class="modal-card">
             <header class="modal-card-head">

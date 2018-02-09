@@ -1,5 +1,5 @@
 const development = {
-    port: 4002,
+    port: 4012,
     elasticsearch: {
         hosts: [
             'http://localhost:9200',

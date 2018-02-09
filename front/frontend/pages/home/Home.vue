@@ -13,25 +13,12 @@
             <div class="column is-6">
                 <card color="red" class="card-equal-height">
                     <template slot="card-title">
-                        {{lang('l_search')}}
-                    </template>
-                    <search slot="card-content" />
-                </card>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column is-offset-6">
-                <card color="purple">
-                    <template slot="card-title">
                         {{lang('l_discover')}}
                     </template>
+                    <search slot="card-content" />
+                    <hr />
                     <discovery :nav-items="navs" slot="card-content" />
                 </card>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column is-offset-6">
-                <widget-stats form="test_form" :infos="[]" />
             </div>
         </div>
     </div>
