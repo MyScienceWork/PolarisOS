@@ -10,7 +10,17 @@
                     <last-deposits :items="items" slot="card-content" />
                 </card>
             </div>
-            <div class="column">
+            <div class="column is-6">
+                <card color="red">
+                    <template slot="card-title">
+                        {{lang('l_search')}}
+                    </template>
+                    <search slot="card-content" />
+                </card>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-offset-6">
                 <card color="purple">
                     <template slot="card-title">
                         {{lang('l_discover')}}

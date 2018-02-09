@@ -4,6 +4,7 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 
 const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
+const Search = require('./subcomponents/Search.vue');
 const BrowsingList = require('../../lists/browse');
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
     components: {
         LastDeposits,
         Discovery,
+        Search,
     },
     methods: {
 
