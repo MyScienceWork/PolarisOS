@@ -37,7 +37,7 @@
                     type="text"
                     :placeholder="placeholder"
                     :name="name"
-                    class="input"
+                    :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     v-model="state.value"
                     :readonly="readonly"
 
@@ -46,7 +46,7 @@
                     type="number"
                     :placeholder="placeholder"
                     :name="name"
-                    class="input"
+                    :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     v-model="state.value"
                     :readonly="readonly"
                 />
@@ -54,7 +54,7 @@
                     type="password"
                     :placeholder="placeholder"
                     :name="name"
-                    class="input"
+                    :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     v-model="state.value"
                     :readonly="readonly"
                 />
@@ -64,6 +64,7 @@
                     :first-day-of-week="1"
                     :readonly="readonly"
                     :placeholder="placeholder"
+                    :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     />
                 <p v-else-if="type === 'date' && readonly">{{readonlyValue}}</p>
                 <b-timepicker
@@ -71,13 +72,14 @@
                     :placeholder="placeholder"
                     v-model="state.value"
                     :readonly="readonly"
+                    :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     icon="clock-o" />
                 <p v-else-if="type === 'time' && readonly">{{readonlyValue}}</p>
                 <input v-else 
                     type="email"
                     :placeholder="placeholder"
                     :name="name"
-                    class="input"
+                    :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     v-model="state.value"
                     :readonly="readonly"
                 />
@@ -85,7 +87,7 @@
             <slot v-if="hasAddons" name="input-addons" />
             </slot>
         </div>
-        <div v-if="validations.length > 0">
+        <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
                 {{lang(text)}}
             </p>
@@ -103,7 +105,7 @@
         <div :class="['field']">
             <div class="control">
                 <textarea
-                    class="input textarea"
+                    :class="['input textarea', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :placeholder="placeholder"
                     :name="name"
                     :rows="rows"
@@ -117,7 +119,7 @@
                 </slot>
             </div>
         </div>
-        <div v-if="validations.length > 0">
+        <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
                 {{lang(text)}}
             </p>

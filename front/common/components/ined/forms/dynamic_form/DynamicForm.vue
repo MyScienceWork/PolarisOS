@@ -13,6 +13,7 @@
             :help="form.fields[0].help ? form.fields[0].help.content : ''"
             :modal_help="form.fields[0].help ? form.fields[0].help.use_modal : false"
             :is-required="form.fields[0].required"
+            :view-validation-texts="false"
         >
             <template slot="input-addons">
                 <slot name="top-form-addons"></slot>
@@ -30,6 +31,7 @@
                     :key="i"
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -43,6 +45,7 @@
                     :key="i"
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                     <fselect 
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -60,6 +63,7 @@
                     :multi="field.type === 'multi-select'"
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -82,6 +86,7 @@
                 :key="i"
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -104,6 +109,7 @@
                 :key="i"
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 />
                 <fselect 
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -121,6 +127,7 @@
                 :multi="field.type === 'multi-select'"
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -187,6 +194,7 @@
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -199,6 +207,7 @@
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
             />
             <fselect 
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -214,6 +223,7 @@
             :multi="field.type === 'multi-select'"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
             />
             <crud-form 
                 :text="field.datasource.action_text"

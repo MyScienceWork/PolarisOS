@@ -75,7 +75,8 @@
                                                     @click="previous(props.previous, props.step, props.numberOfSteps, $event)" class="button">{{lang('f_previous_button_step')}}</button>
                                             </div>
                                             <div class="control" v-if="unvalidated">
-                                                <button @click="validate" 
+                                                <button 
+                                                    @click="next(props.next, props.step, props.numberOfSteps, $event)"
                                                     :disabled="success"
                                                     class="button">{{lang('f_validate_button_step')}}</button>
                                             </div>

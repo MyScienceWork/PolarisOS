@@ -20,14 +20,14 @@
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
-                    :class="['input', {'readonly': readonly}]"
+                    :class="['input', {'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                 </v-select>
             </div> 
             <slot v-if="hasAddons" name="input-addons" />
             </slot>
         </div>
-        <div v-if="validations.length > 0">
+        <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
                 {{lang(text)}}
             </p>

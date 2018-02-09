@@ -9,6 +9,15 @@ const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
 const Validation: Array<any> = [
+    {
+        title: Joi.object({
+            content: Joi.string().required().label('title'),
+            lang: Joi.string().required().label('lang'),
+        }),
+    },
+    Joi.object({
+        authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
+    }),
 ];
 
 const Formatting: Array<any> = [

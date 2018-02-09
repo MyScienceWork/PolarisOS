@@ -24,6 +24,7 @@ module.exports = {
         readonly: { default: false, type: Boolean },
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
+        viewValidationTexts: { required: false, type: Boolean, default: true },
     },
 
     data() {
