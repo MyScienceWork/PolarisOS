@@ -42,7 +42,7 @@ module.exports = {
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
                 const items = this.content.map((c) => {
-                    const title = c.titles && c.titles.length > 0 && c.titles[0].content ? c.titles[0].content : '';
+                    const title = c.title && c.title.content ? c.title.content : '';
                     const authors = c.authors ? c.authors.map(a => a._id.fullname) : [];
                     const journal = c.journal ? c.journal.name : '';
                     return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.` };
