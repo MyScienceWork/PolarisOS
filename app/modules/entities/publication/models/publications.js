@@ -25,7 +25,6 @@ const Formatting: Array<any> = [
         resources: a => FormatFunctions.oarray_to_array(a),
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
-        titles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
     },
     {

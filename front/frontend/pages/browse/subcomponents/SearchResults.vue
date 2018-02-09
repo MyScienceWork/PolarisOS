@@ -78,7 +78,7 @@
             />
         </div>
         <div class="media-content">
-            <p>{{info.titles[0].content}}</p>
+            <p>{{info.title.content}}</p>
             <div class="is-pulled-right level is-mobile">
                 <div class="level-left">
                     <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${info._id}`">
