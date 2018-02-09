@@ -3,7 +3,7 @@
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-6">
-                <card color="orange">
+                <card color="orange" class="card-equal-height">
                     <template slot="card-title">
                         {{lang('l_last_deposits')}}
                     </template>
@@ -11,7 +11,7 @@
                 </card>
             </div>
             <div class="column is-6">
-                <card color="red">
+                <card color="red" class="card-equal-height">
                     <template slot="card-title">
                         {{lang('l_search')}}
                     </template>
