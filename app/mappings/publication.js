@@ -409,8 +409,7 @@ module.exports = {
                             },
                         },
                     },
-                    titles: {
-                        type: 'nested',
+                    title: {
                         properties: {
                             content: {
                                 type: 'text',
