@@ -1,10 +1,59 @@
 // @flow
 const EntitiesUtils = require('../../../utils/entities');
+const request = require('superagent');
 
+function import_crossref(doi: string): Promise<any> {
+    const url = `https://api.crossref.org/works/${doi}`;
+    return request.get(url).set('Accept', 'application/json');
+}
 
 async function import_information(ctx: Object): Promise<any> {
     const body = ctx.request.body;
-    let importer = null;
+
+    if (!('doi' in body)) {
+        ctx.body = {};
+        return;
+    }
+
+    let doi = body.doi;
+    doi = doi.trim();
+
+    if (doi === '') {
+        ctx.body = {};
+        return;
+    }
+
+    const crossref = await import_crossref(doi);
+    const information = crossref.body;
+    if (information.status && information.status === 'ok') {
+        const message = information.message;
+        console.log(message);
+        console.log(message.issued);
+        ctx.body = {
+            number: message.issue || '',
+            volume: message.volume || '',
+            pagination: message.page || '',
+        };
+
+        if (message.title && message.title.length > 0) {
+            ctx.body.title = { content: message.title[0] };
+        }
+
+        if (message.subtitle && message.subtitle.length > 0) {
+            ctx.body.subtitles = [{ content: message.subtitle[0] }];
+        }
+
+        if (message.issued && message.issued['date-parts']
+            && message.issued['date-parts'].length > 0) {
+            const issued = message.issued['date-parts'][0].filter(i => i != null);
+            ctx.body.dates = { publication: issued.join('-') };
+        }
+        return;
+    }
+    ctx.body = {};
+
+
+    /* let importer = null;
     let importer_id = null;
     let connector_id = null;
     let connector = null;
@@ -45,7 +94,7 @@ async function import_information(ctx: Object): Promise<any> {
         console.log(model);
     }
 
-    ctx.body = {};
+    ctx.body = {};*/
 }
 
 module.exports = {

@@ -179,4 +179,12 @@ module.exports = {
     [Messages.SET_PAGES]: (state, payload) => {
         state.interface.pages = payload.pages;
     },
+
+    [Messages.TRANSFERT_INTO_FORM]: (state, payload) => {
+        const form_name = payload.form;
+        const object = payload.body;
+        create_form_if_needed(state, form_name);
+        const form = state.forms[form_name];
+        form.content = Utils.merge_with_replacement(form.content, object);
+    },
 };

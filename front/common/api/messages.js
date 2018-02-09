@@ -16,4 +16,5 @@ module.exports = {
     UNREGISTER_FORM_ELEMENTS: 'unregister_form_elements',
     LOGIN_PASS: 'login_pass',
     SET_PAGES: 'set_pages',
+    TRANSFERT_INTO_FORM: 'transfert_into_form',
 };

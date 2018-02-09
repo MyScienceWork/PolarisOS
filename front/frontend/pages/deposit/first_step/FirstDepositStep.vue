@@ -63,6 +63,13 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="columns is-centered">
+                                    <div class="column">
+                                        <p v-if="state.import_state === 'loading'">{{lang('l_import_in_progress')}}</p>
+                                        <p v-else-if="state.import_state === 'fail'">{{lang('l_import_failed')}}</p>
+                                        <p v-else-if="state.import_state === 'success'">{{lang('l_import_succeeded')}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
