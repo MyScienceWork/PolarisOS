@@ -81,8 +81,14 @@ module.exports = {
         },
         computeReadonlyValue(v) {
             if (this.type === 'date') {
+                if (typeof v === 'string') {
+                    return v;
+                }
                 return moment(v.toISOString()).format('YYYY-MM-DD');
             } else if (this.type === 'time') {
+                if (typeof v === 'string') {
+                    return v;
+                }
                 return moment(v.toISOString()).format('HH:mm');
             }
             return v;
