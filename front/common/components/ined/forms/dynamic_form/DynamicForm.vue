@@ -136,7 +136,7 @@
                     :header="field.datasource.header_text"
                     :help="field.datasource.help_text"
                     :form="field.datasource.form"
-                    v-if="field.datasource && (field.datasource.add || field.datasource.modify)" 
+                    v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
                 />
                 <fdropzone 
                 v-else-if="field.type === 'file'"
@@ -220,7 +220,7 @@
                 :header="field.datasource.header_text"
                 :help="field.datasource.help_text"
                 :form="field.datasource.form"
-                v-if="field.datasource && (field.datasource.add || field.datasource.modify)" 
+                v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
             />
             <fdropzone 
             v-else-if="field.type === 'file'"

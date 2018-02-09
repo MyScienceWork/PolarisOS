@@ -59,17 +59,20 @@
                     :readonly="readonly"
                 />
                 <b-datepicker
-                    v-else-if="type === 'date'"
+                    v-else-if="type === 'date' && !readonly"
                     v-model="state.value"
                     :first-day-of-week="1"
                     :readonly="readonly"
-                    :placeholder="placeholder" />
+                    :placeholder="placeholder"
+                    />
+                <p v-else-if="type === 'date' && readonly">{{readonlyValue}}</p>
                 <b-timepicker
-                    v-else-if="type === 'time'"
+                    v-else-if="type === 'time' && !readonly"
                     :placeholder="placeholder"
                     v-model="state.value"
                     :readonly="readonly"
                     icon="clock-o" />
+                <p v-else-if="type === 'time' && readonly">{{readonlyValue}}</p>
                 <input v-else 
                     type="email"
                     :placeholder="placeholder"

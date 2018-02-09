@@ -109,7 +109,7 @@ class Pipeline extends ODM {
     }
 
     async generate_model(index: string, type: string): Object {
-        console.log('gen model', index, type);
+        // console.log('gen model', index, type);
         const mapping = await this.constructor.fetch_mapping(index, type,
                 this._client);
         const defaults = await this.generate_defaults();
@@ -133,7 +133,7 @@ class Pipeline extends ODM {
             Transforming: transformers,
             Name: type,
         };
-        console.log(defaults);
+        // console.log(defaults);
         return pipe;
     }
 }

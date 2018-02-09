@@ -2,6 +2,7 @@
 const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
 const CryptoUtils = require('../../../utils/crypto');
+const EntitiesUtils = require('../../../utils/entities');
 
 function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
@@ -18,6 +19,50 @@ async function key_complete(object: Object, path: string, info: Object = {}) {
 async function secret_complete(object: Object, path: string, info: Object = {}) {
     const result = Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_secret());
     return result;
+}
+
+function denormalization(from_entity: string, from_path: string, entity_path: string, flatten: boolean): Function {
+    return async (object: Object, path: string, info: Object = {}) => {
+        const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'))];
+        if (fentity_ids.length === 0) {
+            return {};
+        }
+
+        let fentitys = await Promise.all(fentity_ids.map(id => EntitiesUtils.retrieve(id, from_entity)));
+        fentitys = fentitys.filter(e => e != null);
+        if (fentitys.length === 0) {
+            return {};
+        }
+
+        const entity_segments = entity_path.split('.');
+        const values = fentitys.map((e) => {
+            const eobj = Utils.find_object_with_path(e.source, entity_segments);
+            if (eobj == null) {
+                return eobj;
+            }
+            const last = entity_segments[entity_segments.length - 1];
+            if (flatten) {
+                return eobj[last];
+            }
+            return { [last]: eobj[last] };
+        }).filter(v => v != null && Object.keys(v).length > 0);
+
+        if (values.length === 0) {
+            return {};
+        }
+
+        let result = {};
+        if (values.length === 1) {
+            if (flatten) {
+                result = Utils.make_nested_object_from_path(path.split('.'), values[0]);
+            } else {
+                result = Utils.make_nested_object_from_path(path.split('.'), values);
+            }
+        } else {
+            result = Utils.make_nested_object_from_path(path.split('.'), values);
+        }
+        return result;
+    };
 }
 
 /* function denormalization(mapping: String): Function {
@@ -61,4 +106,5 @@ module.exports = {
     generic_complete,
     key_complete,
     secret_complete,
+    denormalization,
 };
