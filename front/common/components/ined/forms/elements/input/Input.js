@@ -56,9 +56,13 @@ module.exports = {
         start_collection() {
             let info = this.state.value;
             if (this.type === 'date') {
-                info = moment(this.state.value.toISOString()).format('YYYY-MM-dd');
+                if (typeof info !== 'string') {
+                    info = moment(info.toISOString()).format('YYYY-MM-DD');
+                }
             } else if (this.type === 'time') {
-                info = moment(this.state.value.toISOString()).format('HH:mm');
+                if (typeof info !== 'string') {
+                    info = moment(info.toISOString()).format('HH:mm');
+                }
             } else if (this.type === 'password-sha1' && this.state.value != null && this.state.value.trim() !== '') {
                 info = Crypto.createHash('sha1').update(this.state.value).digest('hex');
             }
