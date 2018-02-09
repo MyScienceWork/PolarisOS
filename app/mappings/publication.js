@@ -129,7 +129,7 @@ module.exports = {
                                     projects: {
                                         type: 'nested',
                                         properties: {
-                                            label: {
+                                            name: {
                                                 type: 'text',
                                                 fields: {
                                                     raw: {
@@ -142,7 +142,7 @@ module.exports = {
                                     surveys: {
                                         type: 'nested',
                                         properties: {
-                                            label: {
+                                            name: {
                                                 type: 'text',
                                                 fields: {
                                                     raw: {
