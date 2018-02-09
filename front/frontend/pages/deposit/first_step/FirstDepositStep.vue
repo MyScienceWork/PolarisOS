@@ -5,16 +5,16 @@
             <div class="card-content">
                 <div class="columns is-centered">
                     <div class="column">
-                        <fhselect 
+                        <fselect 
                             :label="lang('f_choose_document_type')"
                             :is-required="true"
-                            :title="lang('f_type_of_document')"
                             :options="typology_options"
                             :form="creationSink"
                             name="type"
                             class="has-text-centered"
-                            fieldValue="form"
-                            @hierarchical-select-change="grab_typology_form"
+                            fieldLabel="label"
+                            fieldValue="_id"
+                            @select-change="grab_typology_form"
                             />
                             <finput
                                 type="hidden"
