@@ -5,18 +5,22 @@
             <div class="column is-8">
                 <div class="card card-equal-height">
                     <div class="card-content content">
-                        <h3 class="title is-3">Deeper syntax for better semantic parsing</h3>
-                        <p><strong>Olivier Michalon<sup>1</sup></strong>, <strong>Corentin Ribeyre<sup>2</sup></strong>, <strong>Marie Candito<sup>3</sup></strong>, <strong>Alexis Nasr<sup>1</sup></strong></p>
-                        <ol>
+                        <h3 class="title is-3">{{content_item.title.content}}</h3>
+                        <p>
+                        <strong>Olivier Michalon<sup>1</sup></strong>, 
+                        <strong>Corentin Ribeyre<sup>2</sup></strong>, 
+                        <strong>Marie Candito<sup>3</sup></strong>, 
+                        <strong>Alexis Nasr<sup>1</sup></strong>
+                        </p>
+                        <!--<ol>
                             <li>LIF - Laboratoire d'informatique fondamentale de Marseille</li>
                             <li>Département de Linguistique - Université de Genève</li>
                             <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
-                        </ol>
+                        </ol>-->
                         <div class="card">
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
                                 <p>
-                                    Syntax plays an important role in the task of predicting the semantic structure of a sentence. But syntactic phenomena such as alternations, control and raising tend to obfuscate the relation between syntax and semantics. In this paper we predict the semantic structure of a sentence using a deeper syntax than what is usually done. This deep syntactic representation abstracts away from purely syntactic phenomena and proposes a structural organization of the sentence that is closer to the semantic representation. Experiments conducted on a French corpus annotated with semantic frames showed that a semantic parser reaches better performances with such a deep syntactic input. 
                                 </p>
                             </div>
                         </div>

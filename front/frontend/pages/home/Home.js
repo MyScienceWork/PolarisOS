@@ -47,7 +47,7 @@ module.exports = {
                     const title = c.title && c.title.content ? c.title.content : '';
                     const authors = c.authors ? c.authors.map(a => a._id.fullname) : [];
                     const journal = c.journal ? c.journal.name : '';
-                    return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.` };
+                    return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.`, _id: c._id };
                 });
                 return items;
             }

@@ -49,7 +49,9 @@ const Completion: Array<any> = [
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection._id', 'label', false),
+        'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', false),
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
+        'denormalization.type.label': ComplFunctions.denormalization('type', 'type', 'label', true),
     },
 ];
 
