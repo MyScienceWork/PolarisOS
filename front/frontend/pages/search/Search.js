@@ -2,8 +2,15 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 
+const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const SearchBar = require('../browse/subcomponents/SearchBar.vue');
+
 module.exports = {
     mixins: [LangMixin, FormMixin],
+    components: {
+        SearchBar,
+        SearchResults,
+    },
     data() {
         return {
             state: {
