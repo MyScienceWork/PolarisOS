@@ -4,7 +4,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of users</span>
+                <span slot="title">{{lang('l_list_of_forms')}}</span>
                     <div slot="body">
                         <div class="columns is-centered" v-for="row in readContent">
                             <div v-for="content in row" class="column">
@@ -43,7 +43,7 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">Add or modify a user</span>
+                <span slot="title">{{lang('l_add_or_modify_form')}}</span>
                     <div slot="body">
                         <fform 
                             :name="state.forms.csink" 
@@ -53,8 +53,8 @@
                             :get_form="state.forms.rsink"
                             >
                             <finput name="name" :label="lang('b_form_name')" :is-required="true" :placeholder="lang('b_form_name')" type="text" :form="state.forms.csink" />
-                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" />
-                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description_placeholder')" type="textarea" :form="state.forms.csink" />
+                            <finput name="label" :label="lang('b_label')" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" :is-required="true" />
+                            <finput rows="5" name="description" :label="lang('b_form_description')" :placeholder="lang('b_form_description')" type="textarea" :form="state.forms.csink" />
                             <finput 
                                 name="addons" 
                                 :label="lang('b_has_addons')"
@@ -65,6 +65,8 @@
                                 <template slot="variadic" slot-scope="props">
                                     <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
                                     <finput :name="`${props.fname}.${props.id}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.forms.csink" />
+                                    <finput :name="`${props.fname}.${props.id}.help.content`" :label="lang('l_help')" :placeholder="lang('l_help')" type="text" :form="state.forms.csink" :is-required="true" />
+                                    <finput :name="`${props.fname}.${props.id}.help.use_modal`" :label="lang('l_show_help_as_modal')" :placeholder="lang('l_show_help_as_modal')" type="checkbox" :form="state.forms.csink" :is-required="true" />
                                     <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.forms.csink" />
                                     <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.forms.csink" />
                                     <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.forms.csink" />
@@ -110,6 +112,30 @@
                                             :form="state.forms.csink"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.action_text`" 
+                                            :label="lang('b_datasource_action_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_action_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.header_text`" 
+                                            :label="lang('b_datasource_header_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_header_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.help_text`" 
+                                            :label="lang('b_datasource_help_text')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_datasource_help_text')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.ajax`" 
                                             :label="lang('b_datasource_ajax')"
                                             type="checkbox"
@@ -139,6 +165,14 @@
                                             type="checkbox"
                                             :form="state.forms.csink"
                                             />
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.datasource.form`" 
+                                            :label="lang('b_form')" 
+                                            :is-required="true"
+                                            :options="content"
+                                            fieldLabel="label"
+                                            fieldValue="_id"
+                                            :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
@@ -165,6 +199,16 @@
                                                 :label="lang('b_keep_files_across_components')" type="checkbox" :form="state.forms.csink" />
                                             <finput :name="`${props.fname}.${props.id}.file.restore`" 
                                                 :label="lang('b_restore_files_across_components')" type="checkbox" :form="state.forms.csink" />
+                                        </div>
+                                        <div v-else-if="['importer'].indexOf(state.selected_types[props.id]) !== -1">
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.importer`" 
+                                            :label="lang('b_importer')" 
+                                            :is-required="true"
+                                            :options="importers"
+                                            fieldLabel="name"
+                                            fieldValue="_id"
+                                            :form="state.forms.csink" />
                                         </div>
                                     </div>
                                 </template>

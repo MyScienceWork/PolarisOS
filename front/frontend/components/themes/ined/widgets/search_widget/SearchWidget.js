@@ -7,6 +7,7 @@ module.exports = {
     props: {
         mode: { default: 'all', type: String },
         search_url: { required: true, type: String },
+        searchBody: { required: false, type: Object },
         redirect_to_search: { default: false, type: Boolean },
     },
     data() {
@@ -34,7 +35,7 @@ module.exports = {
             this.send_information();
         },
         send_information() {
-            const content = this.fform(this.state.forms.ssink);
+            const content = this.fcontent(this.state.forms.ssink);
             let search = '';
             if (!('search' in content)) {
                 return;
@@ -72,7 +73,7 @@ module.exports = {
     },
     watch: {
         current_state(s) {
-            this.dispatch(s, this);
+            this.dispatch(s, this, this.state.forms.ssink);
         },
     },
     mounted() {

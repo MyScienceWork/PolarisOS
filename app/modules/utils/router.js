@@ -53,6 +53,7 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
     return [
         Pipeline.check(type),
+        Pipeline.transform(type),
         Pipeline.merge(type),
         Pipeline.defaults(type),
         Pipeline.format(type),
@@ -105,45 +106,62 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
     ]);
 }
 
+function generate_get_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const get_mware = get_middlewares(type);
+
+    router.get(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
+
+    router.post(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
+
+    router.post(`${prefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
+
+    router.get(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.get(`${prefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+
+    router.post(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
+    router.post(`${prefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+
+    router.get(`${prefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
+
+    router.get(`${prefix}/${type}/:id/:projection/:population`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${prefix}/${type}/:id/:projection`, compose([...get_mware, CrudController.get(type)]));
+    router.get(`${prefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
+}
+
+function generate_del_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const del_mware = del_middlewares(type);
+    router.del(`${prefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
+}
+
+function generate_put_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const put_mware = put_middlewares(type, emiddlewares);
+    router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
+    router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
+}
+
+function generate_post_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const post_mware = post_middlewares(type, emiddlewares);
+
+    router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
+    router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
+}
 
 function generate_entity_routes(router: KoaRouter,
     type: string, emiddlewares: Array<Function>) {
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
-
-    const get_mware = get_middlewares(type);
-    const del_mware = del_middlewares(type);
-    const put_mware = put_middlewares(type, emiddlewares);
-    const post_mware = post_middlewares(type, emiddlewares);
-
-    router.get(`${puprefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
-
-    router.post(`${puprefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
-
-    router.post(`${puprefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
-
-    router.get(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
-    router.get(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
-    router.get(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
-
-    router.post(`${puprefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
-    router.post(`${puprefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
-    router.post(`${puprefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
-
-    router.get(`${puprefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
-
-    router.get(`${puprefix}/${type}/:id/:projection/:population`, compose([...get_mware, CrudController.get(type)]));
-    router.get(`${puprefix}/${type}/:id/:projection`, compose([...get_mware, CrudController.get(type)]));
-    router.get(`${puprefix}/${type}/:id`, compose([...get_mware, CrudController.get(type)]));
-
-
-    router.del(`${puprefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
-    router.put(`${puprefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
-    router.post(`${puprefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
-    router.put(`${puprefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
-    router.post(`${puprefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
+    generate_get_routes(router, puprefix, type, emiddlewares);
+    generate_del_routes(router, puprefix, type, emiddlewares);
+    generate_post_routes(router, puprefix, type, emiddlewares);
+    generate_put_routes(router, puprefix, type, emiddlewares);
 }
 
 exports.generate_entity_routes = generate_entity_routes;
+exports.generate_get_routes = generate_get_routes;
+exports.generate_del_routes = generate_del_routes;
+exports.generate_post_routes = generate_post_routes;
+exports.generate_put_routes = generate_put_routes;
 exports.koa_middlewares = koa_middlewares;
 exports.api_middlewares = api_middlewares;
 exports.app_middlewares = app_middlewares;

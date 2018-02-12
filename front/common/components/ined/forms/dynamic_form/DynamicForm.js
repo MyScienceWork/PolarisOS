@@ -1,6 +1,7 @@
 const LangMixin = require('../../../../mixins/LangMixin');
 const Messages = require('../../../../api/messages');
 const Routes = require('../../../../api/routes');
+const CrudForm = require('./CrudForm.vue');
 
 module.exports = {
     mixins: [LangMixin],
@@ -10,6 +11,9 @@ module.exports = {
         prefix: { type: String, default: '' },
         single: { type: Boolean, default: false },
         readonly: { type: Boolean, default: false },
+    },
+    components: {
+        CrudForm,
     },
     methods: {
         get_name(name) {

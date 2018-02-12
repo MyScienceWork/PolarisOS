@@ -6,32 +6,29 @@ module.exports = {
     data() {
         return {
             state: {
-                routes: this.$router.options.routes.filter(r => r.path !== '/'),
+                routes: this.$router.options.routes.filter(r => r.navbar),
                 colors: ['red', 'purple', 'orange', 'blue', 'brown', 'green'],
             },
         };
     },
     computed: {
         active_idx() {
-            const routes = this.$router.options.routes;
-            const index = _.findIndex(routes, r => r.path !== '/' && this.$route.path === r.path) - 1;
+            const index = _.findIndex(this.state.routes, r => this.$route.path === r.path);
 
             if (index === -1) {
                 return index;
             }
 
-            const info = routes[index];
+            const info = this.state.routes[index];
             if (info) {
-                if (info.navbar) {
-                    return index;
-                }
+                return index;
             }
             return -1;
         },
     },
     mounted() {
-        console.log(this.$route);
+        /* console.log(this.$route);
         console.log(this.$router.options.routes);
-        console.log(this.active_idx, this.state.colors);
+        console.log(this.active_idx, this.state.colors);*/
     },
 };

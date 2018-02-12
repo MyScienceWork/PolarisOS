@@ -6,27 +6,13 @@
                 <widget>
                     <span slot="title">List of language items</span>
                     <div slot="body">
-                        <div class="columns is-centered">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <td></td>
-                                        <td>{{lang('b_lang')}}</td>
-                                        <td>{{lang('b_key')}}</td>
-                                        <td>{{lang('b_translation_na')}}</td>
-                                        <td>{{lang('b_translation_one')}}</td>
-                                        <td>{{lang('b_translation_other')}}</td>
-                                        <td>{{lang('b_translation_two')}}</td>
-                                        <td>{{lang('b_translation_few')}}</td>
-                                        <td>{{lang('b_translation_many')}}</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="row in content">
-                                        <td>
+                        <div v-for="row in content" class="columns is-centered">
+                            <div class="column">
+                                <widget>
+                                    <span slot="title">{{row.key}} ({{row.lang}})
                                         <action-button
                                         class="button is-small button-background-blue"
-                                        @action-click="update(content, 'lang')"
+                                        @action-click="update(row, 'lang')"
                                         >
                                         <i class="fa fa-pencil"></i>
                                         </action-button>
@@ -34,22 +20,22 @@
                                         class="button is-small button-background-red"
                                         confirmation="Are you sure?"
                                         :two-steps="true"
-                                        @action-click="remove(content, 'lang')"
+                                        @action-click="remove(row, 'lang')"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        </td>
-                                        <td>{{row.lang}}</td>
-                                        <td>{{row.key}}</td>
-                                        <td>{{grab_quantity(row.values, 'n/a')}}</td>
-                                        <td>{{grab_quantity(row.values, '1')}}</td>
-                                        <td>{{grab_quantity(row.values, 'other')}}</td>
-                                        <td>{{grab_quantity(row.values, '2')}}</td>
-                                        <td>{{grab_quantity(row.values, 'few')}}</td>
-                                        <td>{{grab_quantity(row.values, 'many')}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                    </span>
+                                    <div slot="body">
+                                        <h4>{{row.key}} ({{row.lang}})</h4>
+                                        <p><strong>N/A</strong> : {{grab_quantity(row.values, 'n/a')}}</p>
+                                        <p><strong>1</strong> : {{grab_quantity(row.values, '1')}}</p>
+                                        <p><strong>{{lang('b_lang_other')}}</strong> : {{grab_quantity(row.values, 'other')}}</p>
+                                        <p><strong>2</strong> : {{grab_quantity(row.values, '2')}}</p>
+                                        <p><strong>{{lang('b_lang_few')}}</strong> : {{grab_quantity(row.values, 'few')}}</p>
+                                        <p><strong>{{lang('b_lang_many')}}</strong> : {{grab_quantity(row.values, 'many')}}</p>
+                                    </div>
+                                </widget>
+                            </div>
                         </div>
                         <div class="columns is-centered">
                             <div class="column">

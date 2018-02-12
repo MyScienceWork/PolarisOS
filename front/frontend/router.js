@@ -15,7 +15,7 @@ const LoginView = require('./pages/login/Login.vue');
 
 Vue.use(Router);
 
-const router = new Router({
+/* const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -82,7 +82,7 @@ const router = new Router({
                 header: Header,
                 footer: Footer,
             },
-            meta: { requiresAuth: true, access: 'item', subaccess: ['r'] },
+            meta: { requiresAuth: true, access: 'publication', subaccess: ['r'] },
         },
         {
             path: '/u/:id/profile',
@@ -127,29 +127,38 @@ const router = new Router({
             meta: { requiresAuth: false, access: '', subaccess: [] },
         },
     ],
-});
+});*/
 
 
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        Auth.loggedIn(to.meta.access, to.meta.subaccess).then((ok) => {
-            if (ok) {
-                next();
-            } else {
+function my_router(routes) {
+    const router = new Router({
+        mode: 'history',
+        routes,
+    });
+
+    router.beforeEach((to, from, next) => {
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+            Auth.loggedIn(to.meta.access, to.meta.subaccess).then((ok) => {
+                if (ok) {
+                    next();
+                } else {
+                    next({
+                        path: '/login',
+                        query: { redirect: to.fullPath },
+                    });
+                }
+            }).catch(() => {
                 next({
                     path: '/login',
                     query: { redirect: to.fullPath },
                 });
-            }
-        }).catch(() => {
-            next({
-                path: '/login',
-                query: { redirect: to.fullPath },
             });
-        });
-    } else {
-        next(); // make sure to always call next()!
-    }
-});
+        } else {
+            next(); // make sure to always call next()!
+        }
+    });
+    return router;
+}
 
-module.exports = router;
+
+module.exports = my_router;

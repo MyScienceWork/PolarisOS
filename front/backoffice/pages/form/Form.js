@@ -18,6 +18,7 @@ module.exports = {
                     csink: 'form_creation',
                     rsink: 'form_read',
                     rsink_entity: 'entities_read',
+                    rsink_importer: 'importers_read',
                 },
             },
         };
@@ -46,6 +47,15 @@ module.exports = {
                 size: 10000,
             },
         });
+
+        this.$store.dispatch('search', {
+            form: this.state.forms.rsink_importer,
+            path: APIRoutes.entity('importer', 'POST', true),
+            body: {
+                projection: ['name'],
+                size: 10000,
+            },
+        });
     },
     computed: {
         content() {
@@ -55,6 +65,10 @@ module.exports = {
                 c.description = this.lang(c.description);
                 return c;
             });
+        },
+        importers() {
+            const content = this.mcontent(this.state.forms.rsink_importer);
+            return content || [];
         },
         readContent() {
             return Utils.to_matrix(this.content, this.state.itemsPerRow);

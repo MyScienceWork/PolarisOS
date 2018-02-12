@@ -2,6 +2,7 @@
 module.exports = {
     props: {
         tabs: { required: true, type: Array },
+        variadic: { default: false, type: Boolean },
     },
     data() {
         return {

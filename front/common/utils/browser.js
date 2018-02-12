@@ -21,7 +21,25 @@ function normalizeBrowserLanguage(lang) {
     return lang.split('-')[0].toUpperCase();
 }
 
+function localSet(name, value) {
+    if (value instanceof Object) {
+        localStorage.setItem(name, JSON.stringify(value));
+    } else {
+        localStorage.setItem(name, value);
+    }
+}
+
+function localGet(name) {
+    try {
+        return JSON.parse(localStorage.getItem(name));
+    } catch (err) {
+        return localStorage.getItem(name);
+    }
+}
+
 module.exports = {
     getFirstBrowserLanguage,
     normalizeBrowserLanguage,
+    localGet,
+    localSet,
 };

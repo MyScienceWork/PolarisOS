@@ -1,6 +1,7 @@
 const Navbar = require('../navbar/Navbar.vue');
 const LangMixin = require('../../../../../../common/mixins/LangMixin');
 const Auth = require('../../../../../../common/utils/auth');
+const Browser = require('../../../../../../common/utils/browser');
 
 module.exports = {
     mixins: [LangMixin],
@@ -11,6 +12,11 @@ module.exports = {
         logout() {
             Auth.logout();
             this.$router.push({ path: '/' });
+        },
+        change_language(lang, e) {
+            e.preventDefault();
+            Browser.localSet('default_lang', lang);
+            location.reload();
         },
     },
     computed: {

@@ -28,7 +28,7 @@ module.exports = {
         state.forms[form_name].error = {};
         state.forms[form_name].success = '';
         if (!keep_content) {
-            state.forms[form_name].content = [];
+            state.forms[form_name].content = {};
         }
     },
 
@@ -146,7 +146,6 @@ module.exports = {
         }
     },
 
-
     [Messages.REMOVE_FORM]: (state, payload) => {
         const form_name = payload.form;
         if (form_name in state.forms) {
@@ -171,8 +170,21 @@ module.exports = {
         delete state.forms[form_name].elements[payload.name];
     },
 
+
     [Messages.LOGIN_PASS]: (state, payload) => {
         const status = payload.status;
         state.login_status = status || 'fail';
+    },
+
+    [Messages.SET_PAGES]: (state, payload) => {
+        state.interface.pages = payload.pages;
+    },
+
+    [Messages.TRANSFERT_INTO_FORM]: (state, payload) => {
+        const form_name = payload.form;
+        const object = payload.body;
+        create_form_if_needed(state, form_name);
+        const form = state.forms[form_name];
+        form.content = Utils.merge_with_replacement(form.content, object);
     },
 };

@@ -20,7 +20,9 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
     const response = await API.fetch(payload);
     ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
 
-    if (action !== 'validate') {
+    if (action !== 'validate'
+        && rform !== '' && rpath !== ''
+        && rform != null && rpath != null) {
         ctx.dispatch('single_read', {
             form: rform,
             path: rpath,
@@ -29,6 +31,20 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
 }
 
 module.exports = {
+    fetch: async (ctx, { path, method, body, action, form }) => {
+        const payload = {
+            path,
+            method,
+            body,
+            commit: ctx.commit,
+            signature: Auth.get_api_headers(method, path),
+        };
+
+        ctx.commit(Messages.LOADING, { form });
+        const response = await API.fetch(payload);
+        ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
+    },
+
     create: async (ctx, payload) => {
         await create_or_update_or_validate(ctx, payload, 'create');
     },

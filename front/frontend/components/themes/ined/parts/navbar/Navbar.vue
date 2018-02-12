@@ -2,8 +2,7 @@
 <nav role="navigation" aria-label="main navigation" class="navigation-menu">
     <div class="columns is-centered">
         <div
-            v-for="(item, i) in state.routes"
-            v-if="item.navbar"
+            v-for="(item, i) in state.routes.filter(it => it.navbar)"
             :class="`column navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
         >
             <router-link class="" :to='item.path'>{{lang(item.name)}}</router-link>

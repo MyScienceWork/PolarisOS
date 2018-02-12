@@ -2,6 +2,11 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 
+const Discovery = require('./subcomponents/Discovery.vue');
+const LastDeposits = require('./subcomponents/LastDeposits.vue');
+const Search = require('./subcomponents/Search.vue');
+const BrowsingList = require('../../lists/browse');
+
 module.exports = {
     mixins: [LangMixin, FormMixin],
     data() {
@@ -15,6 +20,9 @@ module.exports = {
         };
     },
     components: {
+        LastDeposits,
+        Discovery,
+        Search,
     },
     methods: {
 
@@ -31,19 +39,22 @@ module.exports = {
     },
     computed: {
         content() {
-            return this.fform(this.state.forms.psink);
+            return this.fcontent(this.state.forms.psink);
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
                 const items = this.content.map((c) => {
-                    const title = c.titles && c.titles.length > 0 && c.titles[0].content ? c.titles[0].content : '';
+                    const title = c.title && c.title.content ? c.title.content : '';
                     const authors = c.authors ? c.authors.map(a => a._id.fullname) : [];
                     const journal = c.journal ? c.journal.name : '';
-                    return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.` };
+                    return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.`, _id: c._id };
                 });
                 return items;
             }
             return [];
+        },
+        navs() {
+            return BrowsingList;
         },
     },
 };

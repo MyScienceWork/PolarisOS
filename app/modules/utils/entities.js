@@ -41,6 +41,21 @@ const ExporterModel = require('../entities/exporter/models/exporters');
 const Connector = require('../entities/connector/connector');
 const ConnectorModel = require('../entities/connector/models/connectors');
 
+const Widget = require('../entities/widget/widget');
+const WidgetModel = require('../entities/widget/models/widgets');
+
+const Page = require('../entities/page/page');
+const PageModel = require('../entities/page/models/pages');
+
+const Template = require('../entities/template/template');
+const TemplateModel = require('../entities/template/models/templates');
+
+const Menu = require('../entities/menu/menu');
+const MenuModel = require('../entities/menu/models/menus');
+
+const Publication = require('../entities/publication/publication');
+const PublicationModel = require('../entities/publication/models/publications');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -115,7 +130,7 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
     }
 
     if (mode === 'model') {
-        const model_response = format_search({ where: { entity: type } }, PipelineModel);
+        const model_response = format_search({ where: { $$term: { _id: result.hits[0].source.pipeline } } }, PipelineModel);
         const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline', es_client,
                 PipelineModel, model_response.search, model_response.options);
         if (model_result.hits.length === 0) {
@@ -154,6 +169,16 @@ async function get_model_from_type(type: string): ?Object {
         return ExporterModel;
     case 'connector':
         return ConnectorModel;
+    case 'widget':
+        return WidgetModel;
+    case 'template':
+        return TemplateModel;
+    case 'page':
+        return PageModel;
+    case 'menu':
+        return MenuModel;
+    case 'publication':
+        return PublicationModel;
     default:
         return grab_entity_from_type(type, 'model');
         // return null;
@@ -184,6 +209,16 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Exporter(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'connector':
         return new Connector(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'widget':
+        return new Widget(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'template':
+        return new Template(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'menu':
+        return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'page':
+        return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'publication':
+        return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
@@ -203,7 +238,7 @@ async function create(info: Object, type: string): Promise<*> {
 
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
-    console.log('create', response);
+    // console.log('create', response);
     return response;
 }
 
@@ -218,7 +253,7 @@ async function update(info: Object, type: string): Promise<*> {
     delete info._id;
     const response = await cls.constructor.update(get_index(type), type,
             es_client, model, info, id);
-    console.log(response);
+    // console.log(response);
     return response;
 }
 
@@ -322,3 +357,4 @@ module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
+module.exports.get_index = get_index;

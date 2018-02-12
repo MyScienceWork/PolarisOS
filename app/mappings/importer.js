@@ -6,16 +6,19 @@ module.exports = {
                 dynamic_date_formats: [],
                 _meta: {
                     refs: {
-                        form: 'form',
                         entity: 'entity',
                         pipeline: 'pipeline',
+                        connector: 'connector',
                     },
                 },
                 properties: {
-                    form: {
+                    name: {
                         type: 'keyword',
                     },
                     type: {
+                        type: 'keyword',
+                    },
+                    connector: {
                         type: 'keyword',
                     },
                     entity: {
@@ -23,6 +26,22 @@ module.exports = {
                     },
                     pipeline: {
                         type: 'keyword',
+                    },
+                    multi: {
+                        type: 'boolean',
+                    },
+                    scheduler: {
+                        properties: {
+                            type: {
+                                type: 'keyword',
+                            },
+                            differed_date: {
+                                type: 'date',
+                            },
+                            cron_format: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                 },
             },

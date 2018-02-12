@@ -13,7 +13,7 @@ async function authenticate(ctx: Object) {
     // const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
 
     const info = await EntitiesUtils.search('user', {
-        $where: {
+        where: {
             'emails.email': email,
         },
     });
@@ -35,7 +35,6 @@ async function authenticate(ctx: Object) {
     let hpassword = Crypto.createHash('sha1').update(password).digest('hex');
     // HACK TODO
     hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex'); // As the formatter is called twice, we need to apply the hashing twice...
-
 
     if (hpassword === db.password) {
         // info.set('force_deconnection', false);
@@ -68,7 +67,7 @@ async function access(ctx: Object) {
     }
 
     const info = await EntitiesUtils.search('user', {
-        $where: {
+        where: {
             'authentication.key': key,
         },
         population: ['roles._id'],

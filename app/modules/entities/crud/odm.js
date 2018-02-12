@@ -215,7 +215,7 @@ class ODM {
             query,
         };
 
-        console.log('search query', JSON.stringify(query));
+        // console.log('search query', JSON.stringify(query));
 
         if (sort != null) {
             body.sort = sort;
@@ -281,7 +281,7 @@ class ODM {
                 id,
                 refresh: true,
             });
-            console.log(response);
+            // console.log(response);
             return response.found;
         } catch (err) {
             console.log('remove error', err);
@@ -330,7 +330,7 @@ class ODM {
                         await odm.post_update_hook();
                     }
 
-                    console.log(odm);
+                    // console.log(odm);
                     return odm;
                 } catch (err) {
                     return null;
@@ -375,7 +375,7 @@ class ODM {
 
     static async update(index: string, type: string, client: Object,
             model: Object, body: Object, id: string): Promise<?ODM> {
-        console.log('update', JSON.stringify(body));
+        // console.log('update', JSON.stringify(body));
         return this._create_or_update(index, type, client, model, body, id);
     }
 

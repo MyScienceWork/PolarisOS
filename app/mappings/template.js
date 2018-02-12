@@ -11,6 +11,9 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
+                    image: {
+                        type: 'keyword',
+                    },
                 },
             },
         },

@@ -35,7 +35,7 @@ module.exports = {
                 return;
             }
             let default_lang = config.langs.find(
-                v => v.value.toLowerCase() === this.$store.state.browserLanguage);
+                v => v.value.toLowerCase() === this.$store.state.browserLanguage.toLowerCase());
             if (default_lang === undefined) {
                 default_lang = config.langs[0].value;
             } else {

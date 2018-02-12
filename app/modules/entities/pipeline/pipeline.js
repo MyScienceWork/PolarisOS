@@ -5,6 +5,7 @@ const Handlebars = require('../../utils/templating');
 const Utils = require('../../utils/utils');
 const FormatFunctions = require('../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../pipeline/completer/complfunctions');
+const TransFunctions = require('../../pipeline/transformer/transfunctions');
 const MMapping = require('../crud/mapping');
 
 class Pipeline extends ODM {
@@ -57,6 +58,24 @@ class Pipeline extends ODM {
         return [];
     }
 
+    async generate_transformers(): Promise<Array<any>> {
+        const info = this.source;
+        if (!('transformers' in info)) {
+            return [];
+        }
+
+        if (info.transformers.length === 0) {
+            return [];
+        }
+
+        return info.transformers.map((f) => {
+            switch (f.function.name) {
+            default:
+                return null;
+            }
+        }).filter(f => f != null);
+    }
+
     async generate_validators(): Promise<Array<any>> {
         const info = this.source;
         const validators = [];
@@ -90,13 +109,14 @@ class Pipeline extends ODM {
     }
 
     async generate_model(index: string, type: string): Object {
-        console.log('gen model', index, type);
+        // console.log('gen model', index, type);
         const mapping = await this.constructor.fetch_mapping(index, type,
                 this._client);
         const defaults = await this.generate_defaults();
         const formatters = await this.generate_formatters();
         const completers = await this.generate_completers();
         const validators = await this.generate_validators();
+        const transformers = await this.generate_transformers();
 
         const pipe = {
             Defaults: defaults,
@@ -110,9 +130,10 @@ class Pipeline extends ODM {
             Validation: validators,
             Formatting: formatters,
             Completion: completers,
+            Transforming: transformers,
             Name: type,
         };
-        console.log(defaults);
+        // console.log(defaults);
         return pipe;
     }
 }

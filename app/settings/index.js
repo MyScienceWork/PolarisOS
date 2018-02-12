@@ -18,6 +18,8 @@ const importer = require('./importer');
 const exporter = require('./exporter');
 const connector = require('./connector');
 
+const publication = require('./publication');
+
 module.exports = {
     user: user.msw,
     role: role.msw,
@@ -38,4 +40,6 @@ module.exports = {
     importer: importer.msw,
     exporter: exporter.msw,
     connector: connector.msw,
+
+    publication: publication.msw,
 };

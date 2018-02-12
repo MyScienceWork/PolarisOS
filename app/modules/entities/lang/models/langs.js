@@ -12,11 +12,14 @@ const Validation: Array<any> = [
         key: Joi.string().required().label('Key'),
         values: Joi.array().min(1).items(Joi.any().required()).label('Text/Quantity'),
         parts: Joi.array().min(1).items(Joi.any().required()).label('Parts'),
+        lang: Joi.string().required().label('Lang'),
     }),
 ];
 
 const Formatting: Array<any> = [
     {
+        key: async key => key.trim(),
+        lang: async key => key.trim(),
         values: async (values) => {
             if (values instanceof Array) {
                 return values.filter(v => v != null && Object.keys(v).length > 0);

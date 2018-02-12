@@ -6,13 +6,13 @@
                 <widget>
                 <span slot="title">{{lang('b_list_datainstances')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in readContent">
+                        <div class="columns is-centered" v-for="row in read_content_datainstance">
                             <div v-for="content in row" class="column">
                                 <widget>
                                     <span slot="title">
                                         <action-button
                                         class="button is-small button-background-blue"
-                                        @action-click="update(content)"
+                                        @action-click="update(content, entity())"
                                         >
                                         <i class="fa fa-pencil"></i>
                                         </action-button>
@@ -24,7 +24,7 @@
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
-                                        {{content.label || content.name}}
+                                        {{content.label || content.name || content.title}}
                                     </span>
                                     <div slot="body">
                                     </div>
@@ -33,7 +33,7 @@
                         </div>
                         <div class="columns is-centered">
                             <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
+                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_datainstance" :items-per-page="state.itemsPerPage" />
                             </div>
                         </div>
                     </div>
@@ -46,13 +46,13 @@
                 <span slot="title">{{lang('b_add_entity')}}</span>
                     <div slot="body">
                         <fform 
-                            :name="state.forms.csink" 
-                            :post_path="state.path" 
-                            :put_path="state.path"
-                            :get_path="state.rpath"
-                            :get_form="state.forms.rsink"
+                            :name="state.sinks.creations[entity()]" 
+                            :post_path="state.paths.creations[entity()]" 
+                            :put_path="state.paths.creations[entity()]"
+                            :get_path="state.paths.reads[entity()]"
+                            :get_form="state.sinks.reads[entity()]"
                             >
-                            <dynamic-form :form="fform(state.forms.rsink_entity_form) || {}" :cform="state.forms.csink" />
+                            <dynamic-form :form="fform(state.sinks.reads.form).content || {}" :cform="state.sinks.creations[entity()]" />
                         </fform>
                     </div>
                 </widget>

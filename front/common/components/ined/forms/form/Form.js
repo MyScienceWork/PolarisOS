@@ -15,7 +15,7 @@ module.exports = {
         get_form: { type: String, required: true },
         showErrors: { type: Boolean, default: true },
         mode: { type: String, default: 'default' },
-        no_reinitialize_after_success: { type: Boolean, default: false },
+        noReinitializeAfterSuccess: { type: Boolean, default: false },
     },
     data() {
         return {
@@ -49,7 +49,7 @@ module.exports = {
             });
         },
         show_success() {
-            if (this.state.method !== 'validate' || this.no_reinitialize_after_success) {
+            if (this.state.method !== 'validate' || this.noReinitializeAfterSuccess) {
                 setTimeout(() => {
                     this.$store.commit(Messages.INITIALIZE, {
                         form: this.name,

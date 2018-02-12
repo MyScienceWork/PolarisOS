@@ -1,22 +1,34 @@
-const Utils = require('../../../common/utils/utils');
-const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
-const LangMixin = require('../../../common/mixins/LangMixin');
 const ValTypes = require('../../../common/lists/valtypes');
+const Utils = require('../../../common/utils/utils');
+const Messages = require('../../../common/api/messages');
+const APIRoutes = require('../../../common/api/routes');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const LangMixin = require('../../../common/mixins/LangMixin');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('pipeline', 'POST'),
-                rpath: APIRoutes.entity('pipeline', 'GET'),
                 itemsPerPage: 20,
                 itemsPerRow: 2,
-                forms: {
-                    csink: 'pipeline_creation',
-                    rsink: 'pipeline_read',
-                    rsink_function: 'function_read',
+                paths: {
+                    creations: {
+                        pipeline: APIRoutes.entity('pipeline', 'POST'),
+                    },
+                    reads: {
+                        pipeline: APIRoutes.entity('pipeline', 'GET'),
+                        function: APIRoutes.entity('pipeline', 'POST', true),
+                    },
+                },
+                sinks: {
+                    reads: {
+                        pipeline: 'pipeline_read',
+                        function: 'function_read',
+                    },
+                    creations: {
+                        pipeline: 'pipeline_creation',
+                    },
                 },
                 selected_functions: {
                     completer: {},
@@ -40,24 +52,78 @@ module.exports = {
         },
     },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.function,
+            keepContent: false,
         });
+
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.pipeline,
+            keepContent: false,
+        });
+
+        this.$store.state.requests.push({
+            name: 'single_read',
+            content: {
+                form: this.state.sinks.reads.pipeline,
+                path: this.state.paths.reads.pipeline,
+            },
+        });
+
         this.$store.dispatch('search', {
-            form: this.state.forms.rsink_function,
-            path: APIRoutes.entity('function', 'POST', true),
+            form: this.state.sinks.reads.function,
+            path: this.state.paths.reads.function,
             body: {
                 size: 10000,
             },
         });
     },
+    watch: {
+        error_pipeline(n) {
+            return this.mwerror(this.state.sinks.reads.pipeline)(n);
+        },
+        current_read_state_pipeline(s) {
+            return this.mwcurrent_read_state(this.state.sinks.reads.pipeline)(s);
+        },
+
+        error_function(n) {
+            return this.mwerror(this.state.sinks.reads.function)(n);
+        },
+        current_read_state_function(s) {
+            return this.mwcurrent_read_state(this.state.sinks.reads.function)(s);
+        },
+    },
     computed: {
         valtypes() {
             return ValTypes || [];
         },
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
+
+        content_pipeline() {
+            const content = this.mcontent(this.state.sinks.reads.pipeline);
+            return content;
+        },
+        length_pipeline() {
+            return this.mlength(this.state.sinks.reads.pipeline);
+        },
+        read_content_pipeline() {
+            const content = this.content_pipeline;
+            return Utils.to_matrix(content, this.state.itemsPerRow);
+        },
+        error_pipeline() {
+            return this.merror(this.state.sinks.reads.pipeline);
+        },
+        current_read_state_pipeline() {
+            return this.mcurrent_read_state(this.state.sinks.reads.pipeline);
+        },
+
+        length_function() {
+            return this.mlength(this.state.sinks.reads.function);
+        },
+        error_function() {
+            return this.merror(this.state.sinks.reads.function);
+        },
+        current_read_state_function() {
+            return this.mcurrent_read_state(this.state.sinks.reads.function);
         },
         functions() {
             const content = this.mcontent(this.state.forms.rsink_function);

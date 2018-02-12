@@ -22,17 +22,27 @@ module.exports = {
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
         readonly: { default: false, type: Boolean },
+        modal_help: { default: false, type: Boolean },
+        help: { required: false, type: String, default: '' },
+        viewValidationTexts: { required: false, type: Boolean, default: true },
     },
 
     data() {
         return {
             state: {
                 value: this.defaultValue(),
+                showHelpModal: false,
             },
         };
     },
 
     methods: {
+        toggleHelpModal(e) {
+            e.preventDefault();
+            if (this.modal_help) {
+                this.state.showHelpModal = !this.state.showHelpModal;
+            }
+        },
         action(a, e) {
             e.preventDefault();
             this.$emit('input-action-emit', { action: a });
@@ -47,7 +57,13 @@ module.exports = {
         start_collection() {
             let info = this.state.value;
             if (this.type === 'date') {
-                info = moment(this.state.value).toISOString();
+                if (typeof info !== 'string') {
+                    info = moment(info.toISOString()).format('YYYY-MM-DD');
+                }
+            } else if (this.type === 'time') {
+                if (typeof info !== 'string') {
+                    info = moment(info.toISOString()).format('HH:mm');
+                }
             } else if (this.type === 'password-sha1' && this.state.value != null && this.state.value.trim() !== '') {
                 info = Crypto.createHash('sha1').update(this.state.value).digest('hex');
             }
@@ -68,6 +84,20 @@ module.exports = {
             }
             return undefined;
         },
+        computeReadonlyValue(v) {
+            if (this.type === 'date') {
+                if (typeof v === 'string') {
+                    return v;
+                }
+                return moment(v.toISOString()).format('YYYY-MM-DD');
+            } else if (this.type === 'time') {
+                if (typeof v === 'string') {
+                    return v;
+                }
+                return moment(v.toISOString()).format('HH:mm');
+            }
+            return v;
+        },
     },
 
     watch: {
@@ -79,6 +109,9 @@ module.exports = {
         current_state(s) {
             this.dispatch(s, this);
         },
+        readonlyValue(v) {
+            return this.computeReadonlyValue(v);
+        },
     },
     computed: {
         emptyValue() {
@@ -88,6 +121,9 @@ module.exports = {
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        readonlyValue() {
+            return this.computeReadonlyValue(this.state.value);
         },
     },
     mounted() {

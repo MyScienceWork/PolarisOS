@@ -10,11 +10,16 @@
             :form="cform"
             :has-addons="form.addons"
             :readonly="readonly"
+            :help="form.fields[0].help ? form.fields[0].help.content : ''"
+            :modal_help="form.fields[0].help ? form.fields[0].help.use_modal : false"
+            :is-required="form.fields[0].required"
+            :view-validation-texts="false"
         >
             <template slot="input-addons">
+                <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -24,6 +29,9 @@
                     :readonly="readonly"
                     :is-required="field.required"
                     :key="i"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -35,6 +43,9 @@
                     :readonly="readonly"
                     :is-required="field.required"
                     :key="i"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                     <fselect 
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -50,6 +61,9 @@
                     :is-required="field.required"
                     :key="i"
                     :multi="field.type === 'multi-select'"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
+                    :view-validation-texts="false"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -60,7 +74,7 @@
         <fvariadic-element class="field" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput 
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -70,6 +84,9 @@
                 :readonly="readonly"
                 :is-required="field.required"
                 :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -90,6 +107,9 @@
                 :readonly="readonly"
                 :is-required="field.required"
                 :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 />
                 <fselect 
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -105,6 +125,9 @@
                 :has-addons="field.single_multiple"
                 :key="i"
                 :multi="field.type === 'multi-select'"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -115,6 +138,13 @@
                         </div>
                     </template>
                 </fselect>
+                <crud-form 
+                    :text="field.datasource.action_text"
+                    :header="field.datasource.header_text"
+                    :help="field.datasource.help_text"
+                    :form="field.datasource.form"
+                    v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
+                />
                 <fdropzone 
                 v-else-if="field.type === 'file'"
                 :form="cform"
@@ -127,6 +157,8 @@
                 :keeper_sink="field.file.keeper_sink"
                 :restore_files="field.file.restore"
                 :keep_files="field.file.keep"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -138,11 +170,13 @@
                     :key="i"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
-                        <div class="control">
-                            <a class="button is-info" @click="props.add">+</a>
-                        </div>
-                        <div class="control">
-                            <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                        <div class="field has-addons">
+                            <div class="control">
+                                <a class="button is-info" @click="props.add">+</a>
+                            </div>
+                            <div class="control">
+                                <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                            </div>
                         </div>
                     </template>
                 </dynamic-form>
@@ -150,7 +184,7 @@
         </fvariadic-element>
         <template v-else>
             <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -158,6 +192,9 @@
             :form="cform"
             :readonly="readonly"
             :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -168,6 +205,9 @@
             :hidden-value="field.hiddenValue"
             :readonly="readonly"
             :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
             />
             <fselect 
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -181,6 +221,16 @@
             :readonly="readonly"
             :is-required="field.required"
             :multi="field.type === 'multi-select'"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
+            />
+            <crud-form 
+                :text="field.datasource.action_text"
+                :header="field.datasource.header_text"
+                :help="field.datasource.help_text"
+                :form="field.datasource.form"
+                v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
             />
             <fdropzone 
             v-else-if="field.type === 'file'"
@@ -193,6 +243,8 @@
             :keeper_sink="field.file.keeper_sink"
             :restore_files="field.file.restore"
             :keep_files="field.file.keep"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
             />
             <dynamic-form 
                 :form="field.subform" 

@@ -4,6 +4,10 @@ module.exports = {
     role: '/admin/role',
     pipeline: '/admin/pipeline',
     entity: '/admin/entity',
+    page: '/admin/page',
+    menu: '/admin/menu',
+    widget: '/admin/widget',
+    template: '/admin/template',
     function: '/admin/function',
     review: '/admin/review',
     datasource: '/admin/datasource',
@@ -19,4 +23,7 @@ module.exports = {
     api: '/admin/api',
     config: '/admin/config',
     login: '/admin/login',
+    connector: '/admin/connector',
+    importer: '/admin/importer',
+    exporter: '/admin/exporter',
 };

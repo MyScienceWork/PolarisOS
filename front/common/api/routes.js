@@ -51,4 +51,12 @@ module.exports = {
     authenticate() {
         return `${prefix}/authenticate`;
     },
+
+    import() {
+        return `${prefix}/import`;
+    },
+
+    export() {
+        return `${prefix}/export`;
+    },
 };

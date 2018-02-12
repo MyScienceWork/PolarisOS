@@ -7,7 +7,7 @@ const limit = new RateLimiter({
     windowMs: 60 * 1000,
     delayAfter: 0,
     delayMs: 0,
-    max: 1 * 60, // 1 per sec
+    max: 10 * 60, // 1 per sec
     headers: true,
     /* keyGenerator(ctx) {
         return ctx.__fv.papi.get('key');

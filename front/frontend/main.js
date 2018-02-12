@@ -1,5 +1,6 @@
 const Vue = require('vue');
 const Buefy = require('buefy');
+const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
 
@@ -13,8 +14,11 @@ const DynamicForm = require('../common/components/ined/forms/dynamic_form/Dynami
 const Paginator = require('../common/components/ined/paginator/Paginator.vue');
 const Dropzone = require('../common/components/ined/forms/dropzone/Dropzone.vue');
 const HierarchicalSelect = require('../common/components/ined/forms/elements/hierarchical_select/HierarchicalSelect.vue');
+const Card = require('../common/components/ined/card/Card.vue');
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
+
+const HierarchicalStructure = require('../common/components/ined/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
 
 // Widgets
 const SearchWidget = require('./components/themes/ined/widgets/search_widget/SearchWidget.vue');
@@ -44,6 +48,8 @@ Vue.component('fvariadic-element', VariadicElement);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('indexer', Indexer);
 Vue.component('paginator', Paginator);
+Vue.component('hierarchical-structure', HierarchicalStructure);
+Vue.component('card', Card);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);
@@ -55,9 +61,18 @@ Vue.component('widget-stats', StatsWidget);
 Vue.component('widget-alternative', AlternativeWidget);
 Vue.component('widget-media', MediaWidget);
 
-new Vue({
-    el: '#app',
-    store,
-    router,
-    render: h => h(App),
-});
+
+RouterRenderer.render_router('frontoffice').then((result) => {
+    new Vue({
+        el: '#app',
+        store,
+        router: router(result.routes),
+        render: h => h(App, {
+            props: {
+                pages: result.pages,
+            },
+        }),
+    });
+})
+.catch(err => console.error(err));
+// rrouter.render_router('frontoffice').then(result => console.log(result)).catch(err => console.error(err));

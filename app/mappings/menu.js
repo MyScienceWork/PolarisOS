@@ -8,32 +8,34 @@ module.exports = {
                     name: {
                         type: 'keyword',
                     },
-                    route: {
-                        type: 'keyword',
-                    },
-                    icon: {
-                        type: 'keyword',
-                    },
-                    part: {
-                        type: 'keyword',
-                    },
-                    page: {
-                        type: 'keyword',
-                    },
-                    submenus: {
+                    elements: {
                         type: 'nested',
                         properties: {
                             name: {
                                 type: 'keyword',
                             },
-                            route: {
+                            icon: {
                                 type: 'keyword',
                             },
-                            icon: {
+                            part: {
                                 type: 'keyword',
                             },
                             page: {
                                 type: 'keyword',
+                            },
+                            submenus: {
+                                type: 'nested',
+                                properties: {
+                                    name: {
+                                        type: 'keyword',
+                                    },
+                                    icon: {
+                                        type: 'keyword',
+                                    },
+                                    page: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
                     },

@@ -13,14 +13,16 @@
             <div class="column">
                 <div class="card card-equal-height info-card-purple info-card">
                     <div class="card-content">
-                        <widget-browse form="test_form" extra-classes="indexer-purple button-purple" />
+                        <category :nav-items="navs" /> 
                     </div>
                 </div>
             </div>
         </div>
         <div class="columns is-centered">
             <div class="column">
-                <widget-list extra-classes="info-card-purple" form="test_form" type="publication" :boxed="false" />
+                <div class="card info-card-purple">
+                    <search-results />
+                </div>
             </div>
         </div>
     </div>

@@ -47,13 +47,8 @@
                         <span>Log in</span>
                     </router-link>
                 </p>
-                <p class="tile is-child">
-                    <a class="navbar-item" slot="trigger">
-                        <span>FR</span>
-                    </a>
-                    <a class="navbar-item" slot="trigger">
-                        <span>EN</span>
-                    </a>
+                <p class="tile is-child has-text-centered">
+                    <a class="swap" @click.prevent="change_language('FR', $event)">FR</a> | <a class="swap" @click.prevent="change_language('EN', $event)">EN</a>
                 </p>
             </div>
         </div>

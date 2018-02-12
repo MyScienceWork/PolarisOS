@@ -10,6 +10,7 @@ module.exports = {
                     refs: {
                         fields: {
                             subform: 'form',
+                            importer: 'importer',
                         },
                     },
                 },
@@ -54,6 +55,9 @@ module.exports = {
                             subform: {
                                 type: 'keyword',
                             },
+                            importer: {
+                                type: 'keyword',
+                            },
                             datasource: {
                                 type: 'nested',
                                 properties: {
@@ -89,6 +93,22 @@ module.exports = {
                                     },
                                     remove: {
                                         type: 'boolean',
+                                        index: false,
+                                    },
+                                    form: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    action_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    help_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    header_text: {
+                                        type: 'text',
                                         index: false,
                                     },
                                 },
@@ -144,6 +164,17 @@ module.exports = {
                             required: {
                                 type: 'boolean',
                                 index: false,
+                            },
+                            help: {
+                                properties: {
+                                    content: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    use_modal: {
+                                        type: 'boolean',
+                                    },
+                                },
                             },
                         },
                     },
