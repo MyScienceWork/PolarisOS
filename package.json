@@ -15,7 +15,7 @@
     "build-watch": "flow-remove-types app/ -d build/ && rm -rf ./build/public && cp -r ./public build/",
     "dev": "npm run build && node build/app.js",
     "dev-watch": "npm run build-watch && node build/app.js",
-    "start": "NODE_ENV=production npm run build && NODE_ENV=production node build/app.js",
+    "start": "NODE_ENV=production npm run build && NODE_ENV=production NODE_PORT=5555 ES_HOSTS='http://test:9200' node build/app.js",
     "watch": "./node_modules/.bin/nodemon -e js,jsx,less,css,scss,vue -w 'app/**/*.*' -w 'public/**/*.*' -x 'npm run dev-watch'",
     "flow": "flow",
     "clean-public": "rm -rf ./public/front/{css,js,fonts,views}/* && rm -rf ./public/back/{css,js,fonts,views}/*",
