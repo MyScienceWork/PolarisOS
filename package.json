@@ -12,6 +12,7 @@
     "test": "npm run build-watch && NODE_ENV=testing ./node_modules/.bin/mocha './tests/**/*.@(js)' --reporter spec",
     "cover": "npm run build && NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha -- ./tests/**/*.test.js",
     "build": "npm run clean-public && flow-remove-types app/ -d build/ && gulp build && rm -rf ./build/public && cp -r ./public build/",
+    "build-prod": "NODE_ENV=production npm run build",
     "build-watch": "flow-remove-types app/ -d build/ && rm -rf ./build/public && cp -r ./public build/",
     "dev": "npm run build && node build/app.js",
     "dev-watch": "npm run build-watch && node build/app.js",
