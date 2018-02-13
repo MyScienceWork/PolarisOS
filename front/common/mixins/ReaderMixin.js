@@ -2,9 +2,10 @@ const _ = require('lodash');
 const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
 const FormMixin = require('./FormMixin');
+const RequestsMixin = require('./RequestsMixin');
 
 module.exports = {
-    mixins: [FormMixin],
+    mixins: [RequestsMixin, FormMixin],
     methods: {
         mcontent(sink) {
             const content = this.fcontent(sink);
@@ -51,18 +52,6 @@ module.exports = {
                 rform: this.state.sinks.reads[entity],
             });
         },
-        show_success_read(form) {
-            const requests = this.$store.state.requests;
-            if (requests.length === 0) {
-                return;
-            }
-
-            const req = requests[0];
-            this.$store.state.requests = requests.slice(1);
-            // Need to update req.content with information coming from form
-            // TODO
-            this.$store.dispatch(req.name, req.content);
-        },
     },
     computed: {
         requests() {
@@ -79,17 +68,13 @@ module.exports = {
 
             const req = requests[0];
             this.$store.state.requests = requests.slice(1);
-            this.$store.dispatch(req.name, req.content);
+            if (req.type === 'commit') {
+                this.$store.commit(req.name, req.content);
+            } else {
+                this.$store.dispatch(req.name, req.content);
+            }
         },
     },
     mounted() {
-        const requests = this.$store.state.requests;
-        if (requests.length === 0) {
-            return;
-        }
-
-        const req = requests[0];
-        this.$store.state.requests = requests.slice(1);
-        this.$store.dispatch(req.name, req.content);
     },
 };

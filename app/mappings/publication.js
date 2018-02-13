@@ -125,7 +125,7 @@ module.exports = {
                                     },
                                 },
                             },
-                            type: {
+                            subtype: {
                                 type: 'text',
                                 fields: {
                                     raw: {
@@ -133,7 +133,10 @@ module.exports = {
                                     },
                                 },
                             },
-                            subtype: {
+                            template: {
+                                type: 'text',
+                            },
+                            type: {
                                 type: 'text',
                                 fields: {
                                     raw: {

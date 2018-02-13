@@ -20,6 +20,7 @@
                             fieldLabel="label"
                             fieldValue="_id"
                             @select-change="grab_typology_form"
+                            :view-validation-texts="false"
                             />
                     </div>
                 </div> 
@@ -70,6 +71,11 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div v-if="!validated" class="columns is-centered">
+                    <div class="column has-text-centered is-8 redify">
+                        <p v-html="lang('f_step_not_validated')"></p>
                     </div>
                 </div>
             </div>

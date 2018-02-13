@@ -9,6 +9,7 @@ module.exports = {
         creationSink: { required: true, type: String },
         publicationSpecs: { required: true, type: String },
         review: { default: false, type: Boolean },
+        validated: { default: false, type: Boolean },
     },
     mixins: [LangMixin, FormMixin],
     data() {
