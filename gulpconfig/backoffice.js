@@ -52,6 +52,8 @@ class GulpFrontend {
 
         this.vendors_css_files = [
             './node_modules/font-awesome/css/font-awesome.css',
+            './node_modules/vue2-dropzone/dist/vue2Dropzone.css',
+            './node_modules/vue-wysiwyg/dist/vueWysiwyg.css',
         ];
 
         this.css_files = [

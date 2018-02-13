@@ -9,10 +9,6 @@ const Mapping: Object = LRMapping.msw
     .mappings.pipeline.properties;
 
 const Validation: Array<any> = [
-    Joi.object({
-        entity: Joi.string().required().label('Entity pipeline'),
-    }),
-    ValFunctions.checks.is_unique('entity', 'pipeline'),
 ];
 
 const Formatting: Array<any> = [

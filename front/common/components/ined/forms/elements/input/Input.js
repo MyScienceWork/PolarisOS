@@ -21,6 +21,7 @@ module.exports = {
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
+        default: { default: null },
         readonly: { default: false, type: Boolean },
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
@@ -34,6 +35,9 @@ module.exports = {
                 showHelpModal: false,
             },
         };
+    },
+
+    components: {
     },
 
     methods: {
@@ -75,6 +79,10 @@ module.exports = {
             });
         },
         defaultValue() {
+            if (this.default != null) {
+                return this.default;
+            }
+
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {

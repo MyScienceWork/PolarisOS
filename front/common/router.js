@@ -8,14 +8,18 @@ const Footer = require('../frontend/components/themes/ined/parts/footer/Footer.v
 const Meta = require('./meta/Meta.vue');
 
 const Home = require('../frontend/pages/home/Home.vue');
+
 const Deposit = require('../frontend/pages/deposit/Deposit.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
 const Search = require('../frontend/pages/search/Search.vue');
 const View = require('../frontend/pages/view/View.vue');
+const Project = require('../frontend/pages/project/Project.vue');
+const About = require('../frontend/pages/about/About.vue');
+const Help = require('../frontend/pages/help/Help.vue');
+
 const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
-const Project = require('../frontend/pages/project/Project.vue');
 
 function fetch_page() {
     const method = 'GET';
@@ -77,6 +81,10 @@ function get_default_component(page) {
         return View;
     case '/deposit':
         return Deposit;
+    case '/about':
+        return About;
+    case '/help':
+        return Help;
     }
 }
 

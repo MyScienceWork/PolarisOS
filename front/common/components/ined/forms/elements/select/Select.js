@@ -20,6 +20,7 @@ module.exports = {
         modal_help: { default: false, type: Boolean },
         help: { required: false, default: '', type: String },
         viewValidationTexts: { required: false, default: true, type: Boolean },
+        isAddon: { required: false, default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
