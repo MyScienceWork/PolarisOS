@@ -23,6 +23,7 @@ const Validation: Array<any> = [
     Joi.object({
         authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
         lang: Joi.string().required().label('lang'),
+        type: Joi.string().required().label('type'),
         // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
@@ -42,7 +43,6 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
-        status: a => 'pending',
     },
     {
 
@@ -59,7 +59,9 @@ const Completion: Array<any> = [
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection._id', 'label', false),
         'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', false),
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
-        'denormalization.type.label': ComplFunctions.denormalization('type', 'type', 'label', true),
+        'denormalization.type': ComplFunctions.denormalization('typology', 'type', 'label', true),
+        'denormalization.template': ComplFunctions.denormalization('typology', 'type', 'children.0.template', true),
+        status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
     },
 ];
 

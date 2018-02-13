@@ -31,6 +31,7 @@
                                                 :typology-sink="state.typology.sink"
                                                 v-if="state.current_step === 0"
                                                 :key="state.current_step"
+                                                :validated="!unvalidated"
                                                 @typology-change="update_typology_form"
                                                 :publication-specs="state.publication.specs"
                                                 :deposit-form="state.deposit_form_name"

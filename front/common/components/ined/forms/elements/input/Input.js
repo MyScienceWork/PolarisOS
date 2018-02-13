@@ -53,9 +53,13 @@ module.exports = {
         },
         initialize() {
             const form = this.$store.state.forms[this.form];
-            this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
-            if (this.state.value == null) {
+            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (value == null) {
                 this.state.value = this.defaultValue();
+            } else if (this.type === 'date') {
+                this.state.value = moment(value).toDate();
+            } else {
+                this.state.value = value;
             }
         },
         start_collection() {
