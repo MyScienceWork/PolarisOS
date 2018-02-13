@@ -1,5 +1,5 @@
 <template>
-    <div :class="['field', {'is-hidden': isHidden}]">
+    <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
         <label 
             v-if="label.trim().length > 0"
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
@@ -8,7 +8,7 @@
               <i class="fa fa-question-circle"></i>
           </span>
         </a>
-        <div :class="['field', {'has-addons': hasAddons}]">
+        <div :class="{'field': !isAddon, 'has-addons': hasAddons}">
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li> 

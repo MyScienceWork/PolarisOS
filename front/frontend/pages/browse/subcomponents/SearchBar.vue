@@ -1,10 +1,11 @@
 <template>
+<div>
     <div class="columns is-centered">
         <div class="column">
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
-                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.sinks.creations.search" label="" />
+                        <finput :default="query_search" type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.sinks.creations.search" label="" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
@@ -25,9 +26,10 @@
     </div>
     <div class="columns">
         <div class="column">
-
+            <a href='' @click.prevent="state.showAdvanced = !state.showAdvanced" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
         </div>
     </div>
+</div>
 </template>
 
 <script>

@@ -1,5 +1,6 @@
 const Vue = require('vue');
 const Buefy = require('buefy');
+const VueWysiwyg = require('vue-wysiwyg');
 const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
@@ -15,6 +16,7 @@ const Paginator = require('../common/components/ined/paginator/Paginator.vue');
 const Dropzone = require('../common/components/ined/forms/dropzone/Dropzone.vue');
 const HierarchicalSelect = require('../common/components/ined/forms/elements/hierarchical_select/HierarchicalSelect.vue');
 const Card = require('../common/components/ined/card/Card.vue');
+const Widget = require('../common/components/ined/widget/Widget.vue');
 
 const Indexer = require('../common/components/ined/indexer/Indexer.vue');
 
@@ -37,6 +39,10 @@ Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
 });
 
+Vue.use(VueWysiwyg.default, {
+    hideModules: { image: true },
+});
+
 Vue.component('loader', Loader);
 Vue.component('stepper', Stepper);
 Vue.component('fform', Form);
@@ -50,6 +56,7 @@ Vue.component('indexer', Indexer);
 Vue.component('paginator', Paginator);
 Vue.component('hierarchical-structure', HierarchicalStructure);
 Vue.component('card', Card);
+Vue.component('widget', Widget);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);

@@ -174,7 +174,7 @@
                                             fieldValue="_id"
                                             :form="state.forms.csink" />
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">

@@ -12,6 +12,7 @@ module.exports = {
     data() {
         return {
             state: {
+                showAdvanced: false,
                 paths: {
                     creations: {
                         search: APIRoutes.entity('publication', 'POST', true),
@@ -31,7 +32,7 @@ module.exports = {
     methods: {
         search() {
             this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.creations.reads,
+                form: this.state.sinks.creations.search,
             });
         },
         send_information(sink) {
@@ -41,7 +42,8 @@ module.exports = {
 
             const content = this.fcontent(sink);
             this.$store.dispatch('search', {
-                path: this.state.paths.reads.search,
+                path: this.state.paths.creations.search,
+                form: this.state.sinks.reads.search,
                 body: {
                     where: JSON.parse(Handlebars.compile(this.searchQuery)(content)),
                 },
@@ -57,5 +59,40 @@ module.exports = {
         current_state_search() {
             return this.fstate(this.state.sinks.creations.search);
         },
+        query_search() {
+            const query = this.$route.query;
+
+            if (!query) {
+                return null;
+            }
+
+            const search = query.s;
+            if (!search) {
+                return null;
+            }
+
+            return search.trim();
+        },
+    },
+    mounted() {
+        const query = this.$route.query;
+
+        if (!query) {
+            return;
+        }
+
+        const search = query.s;
+        if (!search) {
+            return;
+        }
+
+        this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+            form: this.state.sinks.creations.search,
+            body: {
+                search,
+            },
+        });
+
+        this.send_information(this.state.sinks.creations.search);
     },
 };

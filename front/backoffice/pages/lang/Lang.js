@@ -10,6 +10,7 @@ module.exports = {
     data() {
         return {
             state: {
+                need_html_editor: false,
                 path: APIRoutes.entity('lang', 'POST'),
                 rpath: APIRoutes.entity('lang', 'GET'),
                 itemsPerPage: 1000,

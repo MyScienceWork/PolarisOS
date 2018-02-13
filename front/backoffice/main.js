@@ -1,5 +1,6 @@
 const Vue = require('vue');
 const Buefy = require('buefy');
+const VueWysiwyg = require('vue-wysiwyg');
 const router = require('./router');
 const store = require('../common/store');
 
@@ -15,12 +16,16 @@ const Grid = require('../common/components/ined/forms/elements/grid/Grid.vue');
 const Card = require('../common/components/ined/card/Card.vue');
 
 const ActionButton = require('./components/themes/ined/components/action_button/ActionButton.vue');
-const Widget = require('./components/themes/ined/components/widget/Widget.vue');
+const Widget = require('../common/components/ined/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
+});
+
+Vue.use(VueWysiwyg.default, {
+    hideModules: { image: true },
 });
 
 Vue.component('loader', Loader);

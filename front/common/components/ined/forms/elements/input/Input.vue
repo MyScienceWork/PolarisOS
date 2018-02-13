@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="field">
     <b-modal :active.sync="state.showHelpModal">
         <div class="modal-card">
             <header class="modal-card-head">
@@ -21,6 +21,12 @@
         v-model="state.value"
         :readonly="readonly"
     ></input>
+    <div :class="[{'field': !isAddon}]" v-else-if="type === 'html-editor'">
+        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <div :class="['control', {'is-expanded': hasAddons}]">
+            <wysiwyg v-model="state.value" :placeholder="placeholder"  />
+        </div>
+    </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
         v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' 
         || type === 'email' || type === 'date' || type === 'time'"

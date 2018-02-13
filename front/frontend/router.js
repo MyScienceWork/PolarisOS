@@ -6,7 +6,6 @@ const Home = require('./pages/home/Home.vue');
 const Deposit = require('./pages/deposit/Deposit.vue');
 const Browse = require('./pages/browse/Browse.vue');
 const Search = require('./pages/search/Search.vue');
-const News = require('./pages/news/News.vue');
 const View = require('./pages/view/View.vue');
 const UserProfile = require('./pages/user_profile/UserProfile.vue');
 const UserFavorites = require('./pages/user_favorites/UserFavorites.vue');
