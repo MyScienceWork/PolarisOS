@@ -123,9 +123,9 @@ class Pipeline extends ODM {
             RawMapping: mapping,
             Mapping: new MMapping(mapping),
             Messages: {
-                set: 'Set',
-                remove: 'Remove',
-                modify: 'Modify',
+                set: `l_message_set_entity_${type}`,
+                remove: `l_message_remove_entity_${type}`,
+                modify: `l_message_modify_entity_${type}`,
             },
             Validation: validators,
             Formatting: formatters,

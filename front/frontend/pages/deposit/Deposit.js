@@ -15,6 +15,7 @@ module.exports = {
                     sink: 'publication_creation',
                     specs: 'publication_specs',
                     path: APIRoutes.entity('publication', 'POST'),
+                    put_path: APIRoutes.entity('publication', 'PUT'),
                     read_path: APIRoutes.entity('publication', 'GET'),
                     validate_path: APIRoutes.entity('publication', 'VALIDATE'),
                 },
@@ -33,11 +34,13 @@ module.exports = {
                     next: undefined,
                     e: undefined,
                 },
+                deposit_form_name: undefined,
             },
         };
     },
     methods: {
         update_typology_form(form, name) {
+            this.state.deposit_form_name = form;
             this.fetch_form(form, this.state.publication.specs);
         },
         next(func, step, total, e) {
@@ -93,6 +96,39 @@ module.exports = {
                 size: 10000,
             },
         });
+
+
+        const query = this.$route.query;
+
+        if (!query) {
+            return;
+        }
+
+        const type = query.type;
+        const id = query._id;
+
+        if (!id || !type) {
+            return;
+        }
+
+        switch (type) {
+        default:
+        case 'review':
+        case 'model':
+            const pr = this.$store.dispatch('single_read', {
+                form: this.state.publication.sink,
+                path: APIRoutes.entity('publication', 'GET', false, id),
+            });
+            pr.then(() => {
+                setTimeout(() => {
+                    this.$store.commit(Messages.INITIALIZE, {
+                        form: this.state.publication.sink,
+                        keep_content: true,
+                    });
+                }, 5000);
+            });
+            break;
+        }
     },
     computed: {
         form_mode() {
@@ -108,6 +144,10 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return this.state.publication.validate_path;
+            }
+
+            if (this.is_review_mode) {
+                return this.state.publication.put_path;
             }
             return this.state.publication.path;
         },
@@ -133,6 +173,9 @@ module.exports = {
                 return false;
             }
             return false;
+        },
+        is_review_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'review';
         },
     },
     watch: {

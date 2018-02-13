@@ -3,6 +3,11 @@
     <div class="column">
         <div class="card">
             <div class="card-content">
+                <div class="columns is-centered" v-if="review">
+                    <div class="column">
+                        <p v-html="lang('l_review_mode_enabled')" />
+                    </div>
+                </div>
                 <div class="columns is-centered">
                     <div class="column">
                         <fselect 
@@ -15,13 +20,6 @@
                             fieldLabel="label"
                             fieldValue="_id"
                             @select-change="grab_typology_form"
-                            />
-                            <finput
-                                type="hidden"
-                                label='dummy'
-                                :hidden-value="state.typology.name"
-                                :form="creationSink"
-                                name="type"
                             />
                     </div>
                 </div> 

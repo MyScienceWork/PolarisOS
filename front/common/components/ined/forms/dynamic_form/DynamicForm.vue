@@ -146,6 +146,7 @@
                     :get-path="field.datasource.form_paths.get"
                     :put-path="field.datasource.form_paths.put"
                     :post-path="field.datasource.form_paths.post"
+                    @crud-form-change="crud_form_change"
                     v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
                 />
                 <fdropzone 
@@ -171,6 +172,7 @@
                     :single="field.single_multiple"
                     :readonly="readonly"
                     :key="i"
+                    @crud-form-change="crud_form_change"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="field has-addons">
@@ -236,6 +238,7 @@
                 :get-path="field.datasource.form_paths.get"
                 :put-path="field.datasource.form_paths.put"
                 :post-path="field.datasource.form_paths.post"
+                @crud-form-change="crud_form_change"
                 v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
             />
             <fdropzone 
@@ -258,6 +261,7 @@
                 v-else-if="field.type === 'subform' && field.subform != null"
                 :single="field.single_multiple"
                 :readonly="readonly"
+                @crud-form-change="crud_form_change"
             >
             </dynamic-form>
         </template>

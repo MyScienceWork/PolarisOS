@@ -33,6 +33,8 @@
                                                 :key="state.current_step"
                                                 @typology-change="update_typology_form"
                                                 :publication-specs="state.publication.specs"
+                                                :deposit-form="state.deposit_form_name"
+                                                :review="is_review_mode"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 1"
@@ -41,6 +43,8 @@
                                                 :key="state.current_step"
                                                 subform-name="required"
                                                 :validated="!unvalidated"
+                                                :deposit-form="state.deposit_form_name"
+                                                :review="is_review_mode"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 2 && !unvalidated"
@@ -49,6 +53,8 @@
                                                 :key="state.current_step"
                                                 subform-name="optional"
                                                 :validated="!unvalidated"
+                                                :deposit-form="state.deposit_form_name"
+                                                :review="is_review_mode"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 3"
@@ -57,6 +63,8 @@
                                                 :key="state.current_step"
                                                 subform-name="permission"
                                                 :validated="!unvalidated"
+                                                :deposit-form="state.deposit_form_name"
+                                                :review="is_review_mode"
                                             />
                                             <review-deposit-step 
                                                 v-if="state.current_step === 4"
@@ -64,6 +72,7 @@
                                                 :publication-specs="state.publication.specs"
                                                 :creation-sink="state.publication.sink"
                                                 :success="success"
+                                                :review="is_review_mode"
                                             />
                                         </fform>
                                     </template>

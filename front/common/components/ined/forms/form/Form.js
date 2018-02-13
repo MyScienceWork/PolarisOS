@@ -34,6 +34,7 @@ module.exports = {
         cancel(e) {
             e.preventDefault();
             this.$store.commit(Messages.INITIALIZE, { form: this.name });
+            this.$emit('form-cancel');
         },
         send_information() {
             if (this.path === '') {
@@ -54,6 +55,7 @@ module.exports = {
                     this.$store.commit(Messages.INITIALIZE, {
                         form: this.name,
                     });
+                    this.$emit('form-success-reset');
                 }, 5000);
             }
         },

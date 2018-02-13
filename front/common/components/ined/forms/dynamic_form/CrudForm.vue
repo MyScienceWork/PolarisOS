@@ -24,6 +24,8 @@
                         :put_path="putPath"
                         :get_path="getPath"
                         get_form="dummy_form"
+                        @form-cancel="state.showForm = false"
+                        @form-success-reset="reload_form"
                     >
                         <dynamic-form
                         :form="$store.state.forms[state.specs].content || {}"
