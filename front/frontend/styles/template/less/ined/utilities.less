@@ -2,8 +2,22 @@
 .generate-colored-texts(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
-    .hast-text-@{name} {
+    .has-text-@{name} {
         color: @@name;
+    }
+
+    a.has-text-@{name}{
+        color: @@name;
+        &:hover {
+            color: @black;
+        }
+    }
+
+    a.swap.has-text-@{name}{
+        color: @black;
+        &:hover {
+            color: @@name;
+        }
     }
     
     .generate-colored-texts((@i - 1));

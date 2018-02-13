@@ -16,6 +16,9 @@ module.exports = {
         CrudForm,
     },
     methods: {
+        crud_form_change(val) {
+            this.$emit('crud-form-change', val);
+        },
         get_name(name) {
             if (this.prefix !== '') {
                 return `${this.prefix}.${name}`;

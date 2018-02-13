@@ -9,6 +9,9 @@ module.exports = {
         header: { default: '', type: String },
         help: { default: '', type: String },
         form: { required: true, type: String },
+        postPath: { required: true, type: String },
+        putPath: { required: true, type: String },
+        getPath: { required: true, type: String },
     },
     data() {
         return {
@@ -29,6 +32,13 @@ module.exports = {
 
             this.fetch_form(this.form, this.state.specs);
             this.state.showForm = true;
+        },
+        reload_form() {
+            this.state.showForm = false;
+            this.$emit('crud-form-change', {
+                spec: this.state.specs,
+                sink: this.state.cform,
+            });
         },
     },
     computed: {

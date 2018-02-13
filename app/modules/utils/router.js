@@ -11,6 +11,9 @@ const ApiAccess = require('../auth/api_access');
 const RateLimiter = require('../rate_limit/limit');
 const CrudController = require('../entities/crud/controllers');
 const Pipeline = require('./../pipeline/pipeline');
+const FS = require('fs');
+const Mime = require('mime');
+const Crypto = require('crypto');
 
 /**
  * Generate default Koa middlewares
@@ -93,7 +96,22 @@ function post_middlewares(type: string, emid: Array<Function>, model: ?Object) {
 }
 
 function upload_middlewares(type: string, dest: string, emid: Array<Function>, model: ?Object) {
-    const upload = Multer({ dest });
+    try {
+        FS.mkdirSync(dest);
+    } catch (err) {
+    }
+
+    const storage = Multer.diskStorage({
+        destination(req, file, cb) {
+            cb(null, dest);
+        },
+        filename(req, file, cb) {
+            Crypto.pseudoRandomBytes(16, (err, raw) => {
+                cb(null, `${raw.toString('hex') + Date.now()}.${Mime.getExtension(file.mimetype)}`);
+            });
+        },
+    });
+    const upload = Multer({ storage });
     return _.flatten([
         [upload.single('file'),
             async (ctx, next) => {

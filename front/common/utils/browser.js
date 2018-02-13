@@ -37,9 +37,14 @@ function localGet(name) {
     }
 }
 
+function getURLHost(location) {
+    return `${location.protocol}//${location.hostname}${location.port ? `:${location.port}` : ''}`;
+}
+
 module.exports = {
     getFirstBrowserLanguage,
     normalizeBrowserLanguage,
     localGet,
     localSet,
+    getURLHost,
 };

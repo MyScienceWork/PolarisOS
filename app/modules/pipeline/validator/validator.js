@@ -90,10 +90,11 @@ class Validator {
             if (_.isPlainObject(validator)) {
                 for (const key in validator) {
                     const subvalidator = validator[key];
-                    if (key in object) {
-                        errors = await this._validate_with_validator(method, object[key], errors, subvalidator, key);
+                    const information = utils.find_value_with_path(object, key.split('.'));
+                    if (information) {
+                        errors = await this._validate_with_validator(method, information, errors, subvalidator, key);
                     } else {
-                        errors = await this._validate_with_validator(method, object[key], errors, no_subobject(key));
+                        errors = await this._validate_with_validator(method, information, errors, no_subobject(key));
                     }
                 }
             } else {

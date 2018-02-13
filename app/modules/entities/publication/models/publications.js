@@ -12,11 +12,18 @@ const Validation: Array<any> = [
     {
         title: Joi.object({
             content: Joi.string().required().label('title'),
-            lang: Joi.string().required().label('lang'),
         }),
+        dates: Joi.object({
+            publication: Joi.string().required().label('dates.publication'),
+        }),
+        /* 'diffusion.rights': Joi.object({
+            access: Joi.string().required().label('diffusion.rights.access'),
+        }),*/
     },
     Joi.object({
         authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
+        lang: Joi.string().required().label('lang'),
+        // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
 
@@ -35,6 +42,7 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
+        status: a => 'pending',
     },
     {
 

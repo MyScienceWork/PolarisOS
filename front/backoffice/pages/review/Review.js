@@ -3,6 +3,7 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const BrowserUtils = require('../../../common/utils/browser');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -49,6 +50,9 @@ module.exports = {
         },
     },
     computed: {
+        host() {
+            return BrowserUtils.getURLHost(window.location);
+        },
         content_publication() {
             const content = this.mcontent(this.state.sinks.reads.publication);
             return content;

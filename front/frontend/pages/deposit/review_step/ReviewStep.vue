@@ -13,7 +13,9 @@
             </div>
             <div class="card-content" v-else>
                 <div class="columns is-centered">
-                    <div class="column has-text-centered" v-html="lang('f_deposit_success')">
+                    <div class="column has-text-centered" v-html="lang('f_deposit_success')" v-if="!review">
+                    </div>
+                    <div class="column has-text-centered" v-html="lang('f_review_success')" v-else>
                     </div>
                 </div>
             </div>

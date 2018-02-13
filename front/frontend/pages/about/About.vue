@@ -20,8 +20,7 @@
                     <div slot="card-content">
                         <p v-html="lang('l_aoi_about')" />
                     </div>
-                    </card>
-                    <finput type="html-editor" name="test" form="test" placeholder="" label="Test HTML editor" />
+                </card>
             </div>
         </div>
     </div>
