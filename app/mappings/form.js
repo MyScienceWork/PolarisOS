@@ -76,12 +76,14 @@ module.exports = {
                                     ajax: {
                                         type: 'boolean',
                                         index: false,
-
+                                    },
+                                    ajax_path: {
+                                        type: 'keyword',
+                                        index: false,
                                     },
                                     translatable: {
                                         type: 'boolean',
                                         index: false,
-
                                     },
                                     add: {
                                         type: 'boolean',
@@ -98,6 +100,26 @@ module.exports = {
                                     form: {
                                         type: 'keyword',
                                         index: false,
+                                    },
+                                    form_paths: {
+                                        properties: {
+                                            get: {
+                                                type: 'keyword',
+                                                index: false,
+                                            },
+                                            delete: {
+                                                type: 'keyword',
+                                                index: false,
+                                            },
+                                            post: {
+                                                type: 'keyword',
+                                                index: false,
+                                            },
+                                            put: {
+                                                type: 'keyword',
+                                                index: false,
+                                            },
+                                        },
                                     },
                                     action_text: {
                                         type: 'text',

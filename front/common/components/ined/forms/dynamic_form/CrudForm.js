@@ -9,6 +9,9 @@ module.exports = {
         header: { default: '', type: String },
         help: { default: '', type: String },
         form: { required: true, type: String },
+        postPath: { required: true, type: String },
+        putPath: { required: true, type: String },
+        getPath: { required: true, type: String },
     },
     data() {
         return {

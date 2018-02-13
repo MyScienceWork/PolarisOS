@@ -143,6 +143,9 @@
                     :header="field.datasource.header_text"
                     :help="field.datasource.help_text"
                     :form="field.datasource.form"
+                    :get-path="field.datasource.form_paths.get"
+                    :put-path="field.datasource.form_paths.put"
+                    :post-path="field.datasource.form_paths.post"
                     v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
                 />
                 <fdropzone 
@@ -230,6 +233,9 @@
                 :header="field.datasource.header_text"
                 :help="field.datasource.help_text"
                 :form="field.datasource.form"
+                :get-path="field.datasource.form_paths.get"
+                :put-path="field.datasource.form_paths.put"
+                :post-path="field.datasource.form_paths.post"
                 v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
             />
             <fdropzone 

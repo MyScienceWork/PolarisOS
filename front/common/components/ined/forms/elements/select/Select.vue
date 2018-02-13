@@ -20,6 +20,7 @@
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
+                    :placeholder="placeholder"
                     :class="['input', {'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                 </v-select>

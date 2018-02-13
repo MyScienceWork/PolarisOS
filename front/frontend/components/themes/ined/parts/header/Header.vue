@@ -48,7 +48,10 @@
                     </router-link>
                 </p>
                 <p class="tile is-child has-text-centered">
-                    <a class="swap" @click.prevent="change_language('FR', $event)">FR</a> | <a class="swap" @click.prevent="change_language('EN', $event)">EN</a>
+                    <a class="has-text-red swap" @click.prevent="change_language('FR', $event)">FR</a> | <a class="has-text-red swap" @click.prevent="change_language('EN', $event)">EN</a>
+                </p>
+                <p class="tile is-child has-text-centered">
+                    <a class="has-text-red swap" href='https://www.ined.fr' title='www.ined.fr'>{{lang('l_go_to_ined_website')}}</a>
                 </p>
             </div>
         </div>

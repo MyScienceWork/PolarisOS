@@ -23,18 +23,20 @@ module.exports = {
     computed: {
         query() {
             return JSON.stringify({
-                'title.content': '{{search}}',
-                'abstracts.content': '{{search}}',
-                'denormalization.authors.fullname': '{{search}}',
-                'denormalization.classifications.label': '{{search}}',
-                'denormalization.contributors.fullname': '{{search}}',
-                'denormalization.diffusion.internal_collection': '{{search}}',
-                'denormalization.diffusion.projects.name': '{{search}}',
-                'denormalization.diffusion.research_team': '{{search}}',
-                'denormalization.diffusion.surveys.name': '{{search}}',
-                'denormalization.journal': '{{search}}',
-                'denormalization.type': '{{search}}',
-                'denormalization.subtype': '{{search}}',
+                $or: [
+                    { 'title.content': '{{search}}' },
+                    { 'abstracts.content': '{{search}}' },
+                    { 'denormalization.authors.fullname': '{{search}}' },
+                    { 'denormalization.classifications.label': '{{search}}' },
+                    { 'denormalization.contributors.fullname': '{{search}}' },
+                    { 'denormalization.diffusion.internal_collection': '{{search}}' },
+                    { 'denormalization.diffusion.projects.name': '{{search}}' },
+                    { 'denormalization.diffusion.research_team': '{{search}}' },
+                    { 'denormalization.diffusion.surveys.name': '{{search}}' },
+                    { 'denormalization.journal': '{{search}}' },
+                    { 'denormalization.type': '{{search}}' },
+                    { 'denormalization.subtype': '{{search}}' },
+                ],
             });
         },
     },
