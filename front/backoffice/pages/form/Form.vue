@@ -142,6 +142,13 @@
                                             :form="state.forms.csink"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.ajax_path`" 
+                                            :label="lang('b_datasource_ajax_path')"
+                                            :placeholder="lang('b_datasource_ajax_path')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.translatable`" 
                                             :label="lang('b_datasource_translatable')"
                                             type="checkbox"
@@ -173,8 +180,40 @@
                                             fieldLabel="label"
                                             fieldValue="_id"
                                             :form="state.forms.csink" />
+                                            <card>
+                                                <div slot="card-content">
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.get`" 
+                                                    :label="lang('b_datasource_get_path')"
+                                                    :placeholder="lang('b_datasource_get_path')"
+                                                    type="text"
+                                                    :form="state.forms.csink"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.delete`" 
+                                                    :label="lang('b_datasource_remove_path')"
+                                                    :placeholder="lang('b_datasource_remove_path')"
+                                                    type="text"
+                                                    :form="state.forms.csink"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.post`" 
+                                                    :label="lang('b_datasource_post_path')"
+                                                    :placeholder="lang('b_datasource_post_path')"
+                                                    type="text"
+                                                    :form="state.forms.csink"
+                                                    />
+                                                    <finput 
+                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.put`" 
+                                                    :label="lang('b_datasource_put_path')"
+                                                    :placeholder="lang('b_datasource_put_path')"
+                                                    type="text"
+                                                    :form="state.forms.csink"
+                                                    />
+                                                </div>
+                                            </card>
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">

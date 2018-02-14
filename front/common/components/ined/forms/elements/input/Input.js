@@ -21,6 +21,7 @@ module.exports = {
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
+        default: { default: null },
         readonly: { default: false, type: Boolean },
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
@@ -36,6 +37,9 @@ module.exports = {
         };
     },
 
+    components: {
+    },
+
     methods: {
         toggleHelpModal(e) {
             e.preventDefault();
@@ -49,9 +53,13 @@ module.exports = {
         },
         initialize() {
             const form = this.$store.state.forms[this.form];
-            this.state.value = Utils.find_value_with_path(form.content, this.name.split('.'));
-            if (this.state.value == null) {
+            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (value == null) {
                 this.state.value = this.defaultValue();
+            } else if (this.type === 'date') {
+                this.state.value = moment(value).toDate();
+            } else {
+                this.state.value = value;
             }
         },
         start_collection() {
@@ -75,6 +83,10 @@ module.exports = {
             });
         },
         defaultValue() {
+            if (this.default != null) {
+                return this.default;
+            }
+
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {

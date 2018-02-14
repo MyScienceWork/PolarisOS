@@ -1,13 +1,21 @@
 const _ = require('lodash');
 const LangMixin = require('../../../../common/mixins/LangMixin');
+const FormMixin = require('../../../../common/mixins/FormMixin');
 
 module.exports = {
-    mixins: [LangMixin],
+    mixins: [LangMixin, FormMixin],
     props: {
         publicationSpecs: { type: String, required: true },
         creationSink: { type: String, required: true },
+        depositForm: { type: String, required: true },
         subformName: { type: String, default: 'required' },
         validated: { type: Boolean, default: true },
+    },
+    methods: {
+        refetch_form(val) {
+            console.log('fetch form');
+            this.fetch_form(this.depositForm, this.publicationSpecs);
+        },
     },
     computed: {
         subform() {

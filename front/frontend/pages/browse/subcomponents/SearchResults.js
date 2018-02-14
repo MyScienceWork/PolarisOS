@@ -2,6 +2,8 @@ const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const Auth = require('../../../../common/utils/auth');
+const Handlerbars = require('../../../../../app/modules/utils/templating');
 
 module.exports = {
     mixins: [LangMixin, FormMixin],
@@ -11,6 +13,7 @@ module.exports = {
     data() {
         return {
             state: {
+                loggedIn: false,
                 export_type: '',
                 sinks: {
                     reads: {
@@ -60,10 +63,19 @@ module.exports = {
             if (!(content instanceof Array)) {
                 return [];
             }
-            return content;
+
+            return content.map((c) => {
+                c.html = Handlerbars.compile(c.denormalization.template)(c);
+                return c;
+            });
         },
         current_state_export() {
             return this.fstate(this.state.sinks.reads.export);
         },
+    },
+    beforeMount() {
+        Auth.loggedIn('publication', ['c', 'u']).then((ok) => {
+            this.state.loggedIn = ok;
+        }).catch(err => console.error(err));
     },
 };

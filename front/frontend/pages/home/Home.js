@@ -1,6 +1,7 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const Handlebars = require('../../../../app/modules/utils/templating');
 
 const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
@@ -43,12 +44,7 @@ module.exports = {
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
-                const items = this.content.map((c) => {
-                    const title = c.title && c.title.content ? c.title.content : '';
-                    const authors = c.authors ? c.authors.map(a => a._id.fullname) : [];
-                    const journal = c.journal ? c.journal.name : '';
-                    return { html: `${authors.join(', ')}. <b>${title}</b>. ${journal}.` };
-                });
+                const items = this.content.map(c => ({ html: Handlebars.compile(c.denormalization.template || '')(c), _id: c._id }));
                 return items;
             }
             return [];

@@ -45,6 +45,18 @@ module.exports = {
                 properties: {
                     denormalization: {
                         properties: {
+                            type: {
+                                properties: {
+                                    label: {
+                                        type: 'text',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
                             authors: {
                                 type: 'nested',
                                 properties: {
@@ -53,6 +65,27 @@ module.exports = {
                                         fields: {
                                             raw: {
                                                 type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    affiliations: {
+                                        type: 'nested',
+                                        properties: {
+                                            name: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            ined_status: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -92,7 +125,7 @@ module.exports = {
                                     },
                                 },
                             },
-                            type: {
+                            subtype: {
                                 type: 'text',
                                 fields: {
                                     raw: {
@@ -100,7 +133,10 @@ module.exports = {
                                     },
                                 },
                             },
-                            subtype: {
+                            template: {
+                                type: 'text',
+                            },
+                            type: {
                                 type: 'text',
                                 fields: {
                                     raw: {

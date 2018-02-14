@@ -9,7 +9,7 @@
                         <p v-html="lang('f_deposit_'+subformName+'_step_help')"></p>
                     </div>
                 </div>
-                <dynamic-form :form="subform" :cform="creationSink" />
+                <dynamic-form :form="subform" :cform="creationSink" @crud-form-change="refetch_form" />
                 <div v-if="!validated" class="columns is-centered">
                     <div class="column has-text-centered is-8 redify">
                         <p v-html="lang('f_step_not_validated')"></p>

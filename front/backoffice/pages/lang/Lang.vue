@@ -62,8 +62,21 @@
                             <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.forms.csink" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
                             <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.forms.csink" />
                             <fvariadic-element name="values" :form="state.forms.csink" :tabs="true">
-                                <template slot="variadic" slot-scope="props">
-                                <finput :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.forms.csink" />
+                            <template slot="variadic" slot-scope="props">
+                                <div class="field">
+                                    <div class="checkbox">
+                                        <label for="dont-care">
+                                            <input
+                                            type="checkbox"
+                                            name="dont-care"
+                                            v-model="state.need_html_editor"
+                                            />
+                                            {{lang('l_need_html_editor')}} 
+                                        </label>
+                                    </div>
+                                </div>
+                                <finput v-if="!state.need_html_editor" :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.forms.csink" />
+                                <finput v-else :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="html-editor" :form="state.forms.csink" />
                                 <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.forms.csink" />
                                 </template>
                             </fvariadic-element>

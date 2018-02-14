@@ -1,14 +1,19 @@
 <template>
-    <div :class="['field', {'is-hidden': isHidden}]">
+    <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
         <label 
             v-if="label.trim().length > 0"
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
-        <a href='#' @click.prevent="toggleHelpModal" :title="lang(help)" :alt="lang(help)" v-if="help != null && help.trim() !== ''">
-            <span class="icon has-text-info">
-              <i class="fa fa-question-circle"></i>
-          </span>
-        </a>
-        <div :class="['field', {'has-addons': hasAddons}]">
+
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== ''"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
+        <div :class="{'field': !isAddon, 'has-addons': hasAddons}">
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li> 
@@ -20,6 +25,7 @@
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
+                    :placeholder="placeholder"
                     :class="['input', {'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                 </v-select>

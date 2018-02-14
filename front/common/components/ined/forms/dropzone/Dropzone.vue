@@ -7,7 +7,7 @@
         v-on:vdropzone-success="dropzone_success"
         v-on:vdropzone-upload-progress="dropzone_progress"
         v-on:vdropzone-removed-file="dropzone_remove"
-        class="dropzone pos-dropzone" 
+        class="pos-dropzone" 
         id="dropzone" 
         ref="dropzone" 
         :options="dropzone" 

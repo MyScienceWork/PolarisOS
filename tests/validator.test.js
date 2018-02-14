@@ -2,6 +2,8 @@ const chai = require('chai');
 const Joi = require('joi');
 const GExcp = require('../build/modules/exceptions/generic');
 const Validator = require('../build/modules/pipeline/validator/validator');
+const Formatter = require('../build/modules/pipeline/formatter/formatter');
+const Completer = require('../build/modules/pipeline/completer/completer');
 const utils = require('../build/modules/utils/utils');
 
 const should = chai.should();
@@ -161,15 +163,14 @@ describe('Validator#validate', () => {
     });
 });
 
-describe('Validator#format', () => {
+describe('Formatter#format', () => {
     it('should transform the object following formatters', async () => {
         let obj = {
             name: 'TEST',
             address: 'test',
         };
 
-        const validator = new Validator();
-        obj = await validator.format(obj, formats);
+        obj = await Formatter(obj, formats);
 
         obj.should.have.property('name', 'test');
         obj.should.have.property('address', 'TEST');
@@ -182,22 +183,20 @@ describe('Validator#format', () => {
             display: '',
         };
 
-        const validator = new Validator();
-        obj = await validator.format(obj, formats);
+        obj = await Formatter(obj, formats);
 
         obj.should.have.property('name', 'test');
         obj.should.have.property('display', 'M. TEST');
     });
 });
 
-describe('Validator#complete', () => {
+describe('Completer#complete', () => {
     it('should complete the object following completers only when key does not exist', async () => {
         let obj = {
             name: 'TEST',
         };
 
-        const validator = new Validator();
-        obj = await validator.complete(obj, completes);
+        obj = await Completer(obj, completes);
 
         obj.should.have.property('name', 'TEST');
     });
@@ -206,8 +205,7 @@ describe('Validator#complete', () => {
         let obj = {
         };
 
-        const validator = new Validator();
-        obj = await validator.complete(obj, completes);
+        obj = await Completer(obj, completes);
         obj.should.have.property('name', 'New name');
     });
 
@@ -215,8 +213,7 @@ describe('Validator#complete', () => {
         let obj = {
         };
 
-        const validator = new Validator();
-        obj = await validator.complete(obj, completes, { key: 'my-fabulous-key' });
+        obj = await Completer(obj, completes, { key: 'my-fabulous-key' });
         obj.should.have.property('api_key', 'my-fabulous-key');
     });
 
@@ -224,8 +221,7 @@ describe('Validator#complete', () => {
         let obj = {
         };
 
-        const validator = new Validator();
-        obj = await validator.complete(obj, completes, { key: 'my-fabulous-key' });
+        obj = await Completer(obj, completes, { key: 'my-fabulous-key' });
         obj.should.have.property('title_name', 'Ms New name');
     });
 });

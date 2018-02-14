@@ -3,11 +3,12 @@ const FirstDepositStep = require('./first_step/FirstDepositStep.vue');
 const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
 const ReviewStep = require('./review_step/ReviewStep.vue');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const Messages = require('../../../common/api/messages');
 const EventHub = require('../../../common/store/event_hub');
 
 module.exports = {
-    mixins: [FormMixin],
+    mixins: [FormMixin, RequestsMixin],
     data() {
         return {
             state: {
@@ -15,6 +16,7 @@ module.exports = {
                     sink: 'publication_creation',
                     specs: 'publication_specs',
                     path: APIRoutes.entity('publication', 'POST'),
+                    put_path: APIRoutes.entity('publication', 'PUT'),
                     read_path: APIRoutes.entity('publication', 'GET'),
                     validate_path: APIRoutes.entity('publication', 'VALIDATE'),
                 },
@@ -33,11 +35,13 @@ module.exports = {
                     next: undefined,
                     e: undefined,
                 },
+                deposit_form_name: undefined,
             },
         };
     },
     methods: {
         update_typology_form(form, name) {
+            this.state.deposit_form_name = form;
             this.fetch_form(form, this.state.publication.specs);
         },
         next(func, step, total, e) {
@@ -63,8 +67,11 @@ module.exports = {
         },
         send_information() {
             if (this.state.current_step === 0) {
-                this.state.current_step = this.state.next_step;
-                this.state.stepper.next(this.state.stepper.e);
+                if (this.state.deposit_form_name) {
+                    this.state.current_step = this.state.next_step;
+                    this.state.stepper.next(this.state.stepper.e);
+                }
+
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.publication.sink,
                     keep_content: true,
@@ -86,18 +93,62 @@ module.exports = {
         'review-deposit-step': ReviewStep,
     },
     mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.typology.sink,
-            path: this.state.typology.path,
-            body: {
-                size: 10000,
+        this.$store.state.requests.push({
+            name: 'search',
+            type: 'dispatch',
+            content: {
+                form: this.state.typology.sink,
+                path: this.state.typology.path,
+                body: {
+                    size: 10000,
+                },
             },
         });
+
+        const query = this.$route.query;
+
+        if (!query) {
+            this.execute_requests().then(() => {}).catch(err => console.error(err));
+            return;
+        }
+
+        const type = query.type;
+        const id = query._id;
+
+        if (!id || !type) {
+            this.execute_requests().then(() => {}).catch(err => console.error(err));
+            return;
+        }
+
+        switch (type) {
+        default:
+        case 'review':
+        case 'model':
+        case 'modify':
+            this.$store.state.requests.push({
+                name: 'single_read',
+                type: 'dispatch',
+                content: {
+                    form: this.state.publication.sink,
+                    path: APIRoutes.entity('publication', 'GET', false, id),
+                },
+            });
+            this.$store.state.requests.push({
+                name: Messages.INITIALIZE,
+                type: 'commit',
+                content: {
+                    form: this.state.publication.sink,
+                    keep_content: true,
+                },
+            });
+            break;
+        }
+        this.execute_requests().then(() => {}).catch(err => console.error(err));
     },
     computed: {
         form_mode() {
             if (this.state.current_step === 0) {
-                return 'default';
+                return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return 'validate';
             }
@@ -109,12 +160,20 @@ module.exports = {
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return this.state.publication.validate_path;
             }
+
+            if (this.is_review_mode) {
+                return this.state.publication.put_path;
+            }
             return this.state.publication.path;
         },
         current_state() {
             return this.fstate(this.state.publication.sink);
         },
         unvalidated() {
+            if (!this.state.deposit_form_name) {
+                return true;
+            }
+
             let form = {};
             if (this.state.publication.sink in this.$store.state.forms) {
                 form = this.$store.state.forms[this.state.publication.sink] || {};
@@ -133,6 +192,18 @@ module.exports = {
                 return false;
             }
             return false;
+        },
+        is_review_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'review';
+        },
+        is_modification_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'modify';
+        },
+        publication_id() {
+            if (this.$route.query && this.$route.query._id) {
+                return this.$route.query._id;
+            }
+            return '';
         },
     },
     watch: {

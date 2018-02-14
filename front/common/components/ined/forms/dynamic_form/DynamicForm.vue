@@ -1,8 +1,8 @@
 <template>
-<div class="field">
+<div>
     <template v-if="form.addons && form.fields.length > 0">
         <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea'].indexOf(form.fields[0].type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'html-editor'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
             :name="get_name(form.fields[0].name)"
             :placeholder="lang(form.fields[0].placeholder || '')"
@@ -19,7 +19,7 @@
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -74,7 +74,7 @@
         <fvariadic-element class="field" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput 
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -143,6 +143,10 @@
                     :header="field.datasource.header_text"
                     :help="field.datasource.help_text"
                     :form="field.datasource.form"
+                    :get-path="field.datasource.form_paths.get"
+                    :put-path="field.datasource.form_paths.put"
+                    :post-path="field.datasource.form_paths.post"
+                    @crud-form-change="crud_form_change"
                     v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
                 />
                 <fdropzone 
@@ -168,6 +172,7 @@
                     :single="field.single_multiple"
                     :readonly="readonly"
                     :key="i"
+                    @crud-form-change="crud_form_change"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="field has-addons">
@@ -184,7 +189,7 @@
         </fvariadic-element>
         <template v-else>
             <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -230,6 +235,10 @@
                 :header="field.datasource.header_text"
                 :help="field.datasource.help_text"
                 :form="field.datasource.form"
+                :get-path="field.datasource.form_paths.get"
+                :put-path="field.datasource.form_paths.put"
+                :post-path="field.datasource.form_paths.post"
+                @crud-form-change="crud_form_change"
                 v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
             />
             <fdropzone 
@@ -252,6 +261,7 @@
                 v-else-if="field.type === 'subform' && field.subform != null"
                 :single="field.single_multiple"
                 :readonly="readonly"
+                @crud-form-change="crud_form_change"
             >
             </dynamic-form>
         </template>

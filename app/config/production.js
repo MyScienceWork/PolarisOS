@@ -1,10 +1,16 @@
+const env = process.env;
+
+let hosts = ['http://localhost:9200'];
+const port = env.NODE_PORT || 5556;
+
+if (env.ES_HOSTS != null) {
+    hosts = env.ES_HOSTS.split(',');
+}
+
 const production = {
-    port: 5556,
+    port,
     elasticsearch: {
-        hosts: [
-            'http://ao-prod.ined.fr:9200',
-            'http://ao-dev.ined.fr:9200',
-        ],
+        hosts,
         version: '5.2',
     },
     logger: {

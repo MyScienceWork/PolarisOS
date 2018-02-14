@@ -20,6 +20,7 @@ module.exports = {
         modal_help: { default: false, type: Boolean },
         help: { required: false, default: '', type: String },
         viewValidationTexts: { required: false, default: true, type: Boolean },
+        isAddon: { required: false, default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -44,6 +45,7 @@ module.exports = {
         initialize() {
             const form = this.$store.state.forms[this.form];
             let info = Utils.find_value_with_path(form.content, this.name.split('.'));
+
             if (info == null) {
                 this.state.selected = null;
                 return;
@@ -68,6 +70,8 @@ module.exports = {
                 } else {
                     info = null;
                 }
+
+                console.log(missing);
             } else {
                 const missing = this.options.filter(o =>
                     info[this.fieldValue] === o[this.fieldValue]);
@@ -79,7 +83,9 @@ module.exports = {
                 }
             }
 
-            if (info instanceof Array) {
+            if (info == null) {
+                this.state.selected = null;
+            } else if (info instanceof Array) {
                 this.state.selected = info.map(o =>
                     ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
             } else {

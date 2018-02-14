@@ -5,6 +5,20 @@
     .has-text-@{name} {
         color: @@name;
     }
+
+    a.has-text-@{name}{
+        color: @@name;
+        &:hover {
+            color: @black;
+        }
+    }
+
+    a.swap.has-text-@{name}{
+        color: @black;
+        &:hover {
+            color: @@name;
+        }
+    }
     
     .generate-colored-texts((@i - 1));
 }

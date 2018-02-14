@@ -3,6 +3,11 @@
     <div class="column">
         <div class="card">
             <div class="card-content">
+                <div class="columns is-centered" v-if="review">
+                    <div class="column">
+                        <p v-html="lang('l_review_mode_enabled')" />
+                    </div>
+                </div>
                 <div class="columns is-centered">
                     <div class="column">
                         <fselect 
@@ -15,14 +20,17 @@
                             fieldLabel="label"
                             fieldValue="_id"
                             @select-change="grab_typology_form"
+                            :view-validation-texts="false"
                             />
-                            <finput
-                                type="hidden"
-                                label='dummy'
-                                :hidden-value="state.typology.name"
-                                :form="creationSink"
-                                name="type"
-                            />
+                        <finput
+                            type='hidden'
+                            placeholder=''
+                            label=''
+                            :hiddenValue="parentPublication"
+                            name="parent"
+                            :form="creationSink"
+                            v-if="modification"
+                        />
                     </div>
                 </div> 
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
@@ -72,6 +80,11 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div v-if="!validated" class="columns is-centered">
+                    <div class="column has-text-centered is-8 redify">
+                        <p v-html="lang('f_step_not_validated')"></p>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ const PubMapping = require('../../../../mappings/publication');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
+const EntitiesUtils = require('../../../utils/entities');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -12,11 +13,19 @@ const Validation: Array<any> = [
     {
         title: Joi.object({
             content: Joi.string().required().label('title'),
-            lang: Joi.string().required().label('lang'),
         }),
+        dates: Joi.object({
+            publication: Joi.string().required().label('dates.publication'),
+        }),
+        /* 'diffusion.rights': Joi.object({
+            access: Joi.string().required().label('diffusion.rights.access'),
+        }),*/
     },
     Joi.object({
         authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
+        lang: Joi.string().required().label('lang'),
+        type: Joi.string().required().label('type'),
+        // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
 
@@ -49,7 +58,23 @@ const Completion: Array<any> = [
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection._id', 'label', false),
+        'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', false),
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
+        'denormalization.type': ComplFunctions.denormalization('typology', 'type', 'label', true),
+        'denormalization.template': ComplFunctions.denormalization('typology', 'type', 'children.0.template', true),
+        status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
+        version: async (obj, path, info) => {
+            if (!('parent' in obj)) {
+                return { version: 1 };
+            }
+
+            const parent = await EntitiesUtils.retrieve(obj.parent, 'publication');
+            if (parent) {
+                const src = parent.source;
+                return { version: src.version + 1 };
+            }
+            return { version: 1 };
+        },
     },
 ];
 

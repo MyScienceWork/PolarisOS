@@ -90,10 +90,10 @@ class Auth {
             if ('ok' in res.body && res.body.ok) {
                 return true;
             }
-            Auth.remove('user');
+            // Auth.remove('user');
             return false;
         } catch (err) {
-            Auth.remove('user');
+            // Auth.remove('user');
             return false;
         }
     }

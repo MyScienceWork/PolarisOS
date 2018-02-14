@@ -20,14 +20,17 @@
                     </div>
                     <fform
                         :name="state.cform" 
-                        :post_path="state.path" 
-                        :put_path="state.path"
-                        get_path=""
-                        get_form=""
+                        :post_path="postPath" 
+                        :put_path="putPath"
+                        :get_path="getPath"
+                        get_form="dummy_form"
+                        @form-cancel="state.showForm = false"
+                        @form-success-reset="reload_form"
                     >
                         <dynamic-form
                         :form="$store.state.forms[state.specs].content || {}"
                         :cform="state.cform"
+                        class="field"
                         />
                     </fform>
                 </div>
