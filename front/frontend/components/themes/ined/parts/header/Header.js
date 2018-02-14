@@ -12,6 +12,7 @@ module.exports = {
         logout() {
             Auth.logout();
             this.$router.push({ path: '/' });
+            location.reload();
         },
         change_language(lang, e) {
             e.preventDefault();

@@ -124,6 +124,7 @@ module.exports = {
         default:
         case 'review':
         case 'model':
+        case 'modify':
             this.$store.state.requests.push({
                 name: 'single_read',
                 type: 'dispatch',
@@ -194,6 +195,15 @@ module.exports = {
         },
         is_review_mode() {
             return this.$route.query && this.$route.query.type && this.$route.query.type === 'review';
+        },
+        is_modification_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'modify';
+        },
+        publication_id() {
+            if (this.$route.query && this.$route.query._id) {
+                return this.$route.query._id;
+            }
+            return '';
         },
     },
     watch: {

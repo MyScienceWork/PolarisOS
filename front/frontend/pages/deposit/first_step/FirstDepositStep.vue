@@ -22,6 +22,15 @@
                             @select-change="grab_typology_form"
                             :view-validation-texts="false"
                             />
+                        <finput
+                            type='hidden'
+                            placeholder=''
+                            label=''
+                            :hiddenValue="parentPublication"
+                            name="parent"
+                            :form="creationSink"
+                            v-if="modification"
+                        />
                     </div>
                 </div> 
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
