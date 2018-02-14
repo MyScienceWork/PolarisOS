@@ -5,6 +5,7 @@ const PubMapping = require('../../../../mappings/publication');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
+const EntitiesUtils = require('../../../utils/entities');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -62,6 +63,18 @@ const Completion: Array<any> = [
         'denormalization.type': ComplFunctions.denormalization('typology', 'type', 'label', true),
         'denormalization.template': ComplFunctions.denormalization('typology', 'type', 'children.0.template', true),
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
+        version: async (obj, path, info) => {
+            if (!('parent' in obj)) {
+                return { version: 1 };
+            }
+
+            const parent = await EntitiesUtils.retrieve(obj.parent, 'publication');
+            if (parent) {
+                const src = parent.source;
+                return { version: src.version + 1 };
+            }
+            return { version: 1 };
+        },
     },
 ];
 

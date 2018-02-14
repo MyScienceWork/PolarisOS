@@ -36,6 +36,8 @@
                                                 :publication-specs="state.publication.specs"
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="is_review_mode"
+                                                :modification="is_modification_mode"
+                                                :parent-publication="publication_id"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 1"

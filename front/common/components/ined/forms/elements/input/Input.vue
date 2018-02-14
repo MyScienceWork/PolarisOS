@@ -31,12 +31,16 @@
         v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' 
         || type === 'email' || type === 'date' || type === 'time'"
     >
-        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
-        <a href='#' @click.prevent="toggleHelpModal" :title="lang(help)" :alt="lang(help)" v-if="help != null && help.trim() !== ''">
-            <span class="icon has-text-info">
-              <i class="fa fa-question-circle"></i>
-          </span>
-        </a>
+    <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== ''"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
         <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <input v-if="type === 'text'" 
@@ -102,11 +106,16 @@
 
     <div v-else-if="type === 'textarea'" :class="['field', {'is-hidden': readonly && emptyValue}]">
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
-        <a href='#' @click.prevent="toggleHelpModal" :title="lang(help)" :alt="lang(help)" v-if="help != null && help.trim() !== ''">
-            <span class="icon has-text-info">
-              <i class="fa fa-question-circle"></i>
-          </span>
-        </a>
+
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== ''"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
         
         <div :class="['field']">
             <div class="control">
@@ -134,11 +143,15 @@
 
     <div v-else-if="type === 'radio'" class="field">
         <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
-        <a href='#' @click.prevent="toggleHelpModal" :title="lang(help)" :alt="lang(help)" v-if="help != null && help.trim() !== ''">
-            <span class="icon has-text-info">
-              <i class="fa fa-question-circle"></i>
-          </span>
-        </a>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== ''"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
         <div>
             <label v-for="(btn, idx) in radioButtons" class="radio-inline" for="btn[0]">
                 <input
@@ -175,11 +188,15 @@
                 {{label}}
             </label>
         </div>
-        <a href='#' @click.prevent="toggleHelpModal" :title="lang(help)" :alt="lang(help)" v-if="help != null && help.trim() !== ''">
-            <span class="icon has-text-info">
-              <i class="fa fa-question-circle"></i>
-          </span>
-        </a>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== ''"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+      </b-tooltip>
     </div>
 </div>
 </template>

@@ -10,6 +10,8 @@ module.exports = {
         publicationSpecs: { required: true, type: String },
         review: { default: false, type: Boolean },
         validated: { default: false, type: Boolean },
+        modification: { default: false, type: Boolean },
+        parentPublication: { default: '', type: String },
     },
     mixins: [LangMixin, FormMixin],
     data() {

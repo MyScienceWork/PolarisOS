@@ -1,7 +1,7 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns">
+        <div class="columns" v-if="content_item && Object.keys(content_item).length > 0">
             <div class="column is-8">
                 <div class="card card-equal-height">
                     <div class="card-content content">
@@ -21,11 +21,12 @@
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
                                 <p>
+                                {{abstract(content_item.lang)}}
                                 </p>
                             </div>
                         </div>
                         <p></p>
-                        <p><strong v-html="lang('f_publication_type')"></strong> Communication dans un congrès</p>
+                        <p><strong v-html="lang('f_publication_type')"></strong> {{lang(content_item.denormalization.type)}}</p>
                         <p>Coling 2016 - 26th International Conference on Computational Linguistics, Dec 2016, Osaka, Japan. The 26th International Conference on Computational Linguistics Proceedings of COLING 2016: Technical Papers, 2016</p>
                         <p><strong v-html="lang('f_publication_id')"></strong> ark:tt:12342432fezfe</p>
                         <p><a class="has-text-info" href=''>{{lang('f_see_more_metadata')}}</a></p>
@@ -46,13 +47,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="columns is-centered">
+                <div class="columns is-centered" v-if="content_item.denormalization.license">
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_license')}}</p>
                             </header>
                             <div class="card-content">
+                                <p>{{lang(content_item.denormalization.license)}}</p>
                             </div>
                         </div>
                     </div>
@@ -64,7 +66,7 @@
                                 <p class="card-header-title">{{lang('f_publication_citation')}}</p>
                             </header>
                             <div class="card-content">
-                                <p>Olivier Michalon, Corentin Ribeyre, Marie Candito, Alexis Nasr. <strong>Deeper syntax for better semantic parsing</strong>. <i>Coling 2016 - 26th International Conference on Computational Linguistics, Dec 2016, Osaka, Japan.</i> The 26th International Conference on Computational Linguistics Proceedings of COLING 2016: Technical Papers, 2016.</p>
+                                <p>{{content_item.html}}</p>
                             </div>
                         </div>
                     </div>
@@ -92,6 +94,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="columns is-centered" v-else>
+            <div class="column is-8">
+                <p v-html="lang('l_unexisting_item_view')"></p>
             </div>
         </div>
     </div>
