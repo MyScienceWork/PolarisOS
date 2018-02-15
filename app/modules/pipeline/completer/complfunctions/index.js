@@ -3,6 +3,7 @@ const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
 const CryptoUtils = require('../../../utils/crypto');
 const EntitiesUtils = require('../../../utils/entities');
+const LangUtils = require('../../../utils/lang');
 
 function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
@@ -37,19 +38,10 @@ function denormalization(from_entity: string, from_path: string,
             return {};
         }
 
-        let config = null;
+        /* let config = null;
         if (translatable) {
-            const configs = await EntitiesUtils.search('config', {
-                size: 1,
-                where: {
-                    environment: ENV,
-                },
-            });
-
-            if ('result' in configs && 'hits' in configs.result && configs.result.hits.length > 0) {
-                config = configs.result.hits[0].source;
-            }
-        }
+            config = await LangUtils.get_config(ENV);
+            }*/
 
         const entity_segments = entity_path.split('.');
         const values = fentitys.map((e) => {
@@ -58,10 +50,11 @@ function denormalization(from_entity: string, from_path: string,
                 return eobj;
             }
             const last = entity_segments[entity_segments.length - 1];
+            const value = eobj[last];
             if (flatten) {
-                return eobj[last];
+                return value;
             }
-            return { [last]: eobj[last] };
+            return { [last]: value };
         }).filter(v => v != null && Object.keys(v).length > 0);
 
         if (values.length === 0) {
