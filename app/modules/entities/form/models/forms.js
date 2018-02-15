@@ -39,7 +39,7 @@ const Formatting: Array<any> = [
 
 const Completion: Array<any> = [
     {
-        'fields.range.step': async () => ({ step: 1 }),
+        // 'fields.range.step': async () => ({ step: 1 }),
     },
 ];
 
