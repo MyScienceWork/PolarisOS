@@ -119,7 +119,7 @@
                 :form="cform"
                 :fieldLabel="generate_select_label(field)"
                 :fieldValue="generate_select_value(field)"
-                :options="genrate_select_options(field)"
+                :options="generate_select_options(field)"
                 :readonly="readonly"
                 :is-required="field.required"
                 :has-addons="field.single_multiple"

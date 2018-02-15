@@ -13,6 +13,7 @@ module.exports = {
                         contributors: {
                             _id: 'contributor',
                         },
+                        conference: 'conference',
                         editor: 'editor',
                         classification: {
                             _id: 'classification',
@@ -237,10 +238,7 @@ module.exports = {
                         type: 'keyword',
                     },
                     conference: {
-                        type: 'text',
-                        fields: {
-                            raw: { type: 'keyword' },
-                        },
+                        type: 'keyword',
                     },
                     contributors: {
                         type: 'nested',
