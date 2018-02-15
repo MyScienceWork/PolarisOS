@@ -3,6 +3,7 @@ const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
 const CryptoUtils = require('../../../utils/crypto');
 const EntitiesUtils = require('../../../utils/entities');
+const LangUtils = require('../../../utils/lang');
 
 function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
@@ -21,7 +22,10 @@ async function secret_complete(object: Object, path: string, info: Object = {}) 
     return result;
 }
 
-function denormalization(from_entity: string, from_path: string, entity_path: string, flatten: boolean): Function {
+function denormalization(from_entity: string, from_path: string,
+        entity_path: string, flatten: boolean, translatable: boolean): Function {
+    const ENV = process.env.NODE_ENV || 'local';
+
     return async (object: Object, path: string, info: Object = {}) => {
         const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'))];
         if (fentity_ids.length === 0) {
@@ -34,6 +38,11 @@ function denormalization(from_entity: string, from_path: string, entity_path: st
             return {};
         }
 
+        /* let config = null;
+        if (translatable) {
+            config = await LangUtils.get_config(ENV);
+            }*/
+
         const entity_segments = entity_path.split('.');
         const values = fentitys.map((e) => {
             const eobj = Utils.find_object_with_path(e.source, entity_segments);
@@ -41,10 +50,11 @@ function denormalization(from_entity: string, from_path: string, entity_path: st
                 return eobj;
             }
             const last = entity_segments[entity_segments.length - 1];
+            const value = eobj[last];
             if (flatten) {
-                return eobj[last];
+                return value;
             }
-            return { [last]: eobj[last] };
+            return { [last]: value };
         }).filter(v => v != null && Object.keys(v).length > 0);
 
         if (values.length === 0) {

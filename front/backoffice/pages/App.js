@@ -1,6 +1,6 @@
-const Vue = require('vue');
 const Messages = require('../../common/api/messages');
 const APIRoutes = require('../../common/api/routes');
+const LangUtils = require('../../common/utils/lang');
 
 const ENV = process.env.NODE_ENV || 'local';
 
@@ -8,7 +8,6 @@ module.exports = {
     name: 'App',
     beforeMount() {
         const config_path = APIRoutes.entity('config', 'POST', true);
-        console.log(ENV);
         const config_body = {
             size: 1,
             where: {
@@ -34,14 +33,7 @@ module.exports = {
             if (!('langs' in config)) {
                 return;
             }
-            let default_lang = config.langs.find(
-                v => v.value.toLowerCase() === this.$store.state.browserLanguage.toLowerCase());
-            if (default_lang === undefined) {
-                default_lang = config.langs[0].value;
-            } else {
-                default_lang = default_lang.value;
-            }
-
+            const default_lang = LangUtils.selectLanguage(config);
             lang_body.where.$and.push({ lang: default_lang });
             this.$store.state.interfaceLang = default_lang;
             this.$store.dispatch('grab_language', {

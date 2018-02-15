@@ -7,7 +7,6 @@ module.exports = {
                     refs: {
                         type: 'typology',
                         journal: 'journal',
-                        conference: 'conference',
                         authors: {
                             _id: 'author',
                         },
@@ -188,6 +187,18 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    rights: {
+                                        properties: {
+                                            license: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -226,12 +237,21 @@ module.exports = {
                         type: 'keyword',
                     },
                     conference: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: { type: 'keyword' },
+                        },
                     },
                     contributors: {
                         type: 'nested',
                         properties: {
-                            _id: {
+                            label: {
+                                type: 'text',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            role: {
                                 type: 'keyword',
                             },
                         },
@@ -266,13 +286,7 @@ module.exports = {
                     },
                     diffusion: {
                         properties: {
-                            internal_collection: {
-                                properties: {
-                                    _id: {
-                                        type: 'keyword',
-                                    },
-                                },
-                            },
+                            internal_collection: { type: 'keyword' },
                             projects: {
                                 type: 'nested',
                                 properties: {
@@ -281,13 +295,7 @@ module.exports = {
                                     },
                                 },
                             },
-                            research_team: {
-                                properties: {
-                                    _id: {
-                                        type: 'keyword',
-                                    },
-                                },
-                            },
+                            research_team: { type: 'keyword' },
                             rights: {
                                 properties: {
                                     access: {
@@ -476,6 +484,9 @@ module.exports = {
                         type: 'integer',
                     },
                     volume: {
+                        type: 'keyword',
+                    },
+                    url: {
                         type: 'keyword',
                     },
                 },

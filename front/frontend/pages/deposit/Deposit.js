@@ -42,7 +42,14 @@ module.exports = {
     methods: {
         update_typology_form(form, name) {
             this.state.deposit_form_name = form;
-            this.fetch_form(form, this.state.publication.specs);
+            if (form !== '') {
+                this.fetch_form(form, this.state.publication.specs);
+            } else {
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.publication.specs,
+                    keep_content: false,
+                });
+            }
         },
         next(func, step, total, e) {
             e.preventDefault();

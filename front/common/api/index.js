@@ -1,5 +1,6 @@
 const Request = require('superagent');
 const Messages = require('./messages');
+const LangUtils = require('../utils/lang');
 
 
 async function fetch(object) {
@@ -7,7 +8,9 @@ async function fetch(object) {
 
     let super_request = Request[method.toLowerCase()](path)
         .set('Authorization', `${signature.key}:${signature.sign}`)
-        .set('X-MD-TIMESTAMP', signature.timestamp);
+        .set('X-MD-TIMESTAMP', signature.timestamp)
+        .set('X-MD-LANG', LangUtils.grabLanguageFromLocalStorage());
+
     if (body != null && Object.keys(body).length > 0) {
         super_request = super_request.send(object.body);
     }

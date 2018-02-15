@@ -3,12 +3,15 @@ const _ = require('lodash');
 const Joi = require('joi');
 const FormMapping = require('../../../../mappings/form');
 const MMapping = require('../../crud/mapping');
+const Handlebars = require('../../../utils/templating');
+const Utils = require('../../../utils/utils');
 
 const Mapping: Object = FormMapping.msw
     .mappings.form.properties;
 
 const Validation: Array<any> = [
     Joi.object({
+
     }),
 ];
 
@@ -25,13 +28,20 @@ const Formatting: Array<any> = [
             new_fields.sort((a, b) => a.order - b.order);
             return new_fields;
         },
+        'fields.range.start': async start => parseInt(Handlebars.compile(start)({})),
+        'fields.range.end': async end => parseInt(Handlebars.compile(end)({})),
+        'fields.range.step': async step => parseInt(Handlebars.compile(step)({})),
     },
     {
         has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
     },
 ];
 
-const Completion: Array<any> = [];
+const Completion: Array<any> = [
+    {
+        'fields.range.step': async () => ({ step: 1 }),
+    },
+];
 
 const Defaults: Object = {
     has_subforms: false,

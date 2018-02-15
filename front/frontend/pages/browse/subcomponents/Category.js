@@ -1,3 +1,6 @@
+const _ = require('lodash');
+const moment = require('moment');
+
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 const Messages = require('../../../../common/api/messages');
@@ -39,14 +42,14 @@ module.exports = {
         },
         make_request(query) {
             const entity = query.entity;
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.browse,
+                keep_content: false,
+            });
+
             if (entity == null || entity.trim() === '') {
 
             } else {
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.sinks.creations.browse,
-                    keepContent: false,
-                });
-
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.browse,
                     path: APIRoutes.entity(entity, 'POST', true),
@@ -97,6 +100,13 @@ module.exports = {
             return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
         },
         options() {
+            const entity = this.state.query.entity;
+            if (entity == null || entity.trim() === '') {
+                const r = _.range(1700, parseInt(moment().format('YYYY'), 10) + 1);
+                r.sort((a, b) => b - a);
+                return r.map(a => ({ label: `${a}`, _id: `${a}` }));
+            }
+
             const content = this.fcontent(this.state.sinks.creations.browse);
             if (!(content instanceof Array)) {
                 return [];
