@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const LangMixin = require('../../../../mixins/LangMixin');
 const Messages = require('../../../../api/messages');
 const Routes = require('../../../../api/routes');
@@ -48,6 +49,24 @@ module.exports = {
                     },
                 });
             };
+        },
+        generate_select_label(field) {
+            if (field.range.enabled) {
+                return 'label';
+            }
+            return field.datasource.label;
+        },
+        generate_select_value(field) {
+            if (field.range.enabled) {
+                return 'value';
+            }
+            return field.datasource.value;
+        },
+        generate_select_options(field) {
+            if (field.range.enabled) {
+                return _.range(field.range.start, field.range.end, field.range.step);
+            }
+            return datasource(field, field.datasource.ajax);
         },
     },
     computed: {

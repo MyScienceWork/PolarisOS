@@ -88,6 +88,39 @@
                                     <div v-if="props.id in state.selected_types"> 
                                         <div v-if="['select', 'multi-select'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput :name="`${props.fname}.${props.id}.placeholder`" :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
+                                            <hr />
+                                            <h4 class="title h4">{{lang('l_use_range')}}</h4>
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.range.enabled`" 
+                                            :label="lang('l_range_enabled')"
+                                            type="checkbox"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.range.start`" 
+                                            :label="lang('l_range_start')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_range_start')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.range.end`" 
+                                            :label="lang('l_range_end')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_range_end')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.range.step`" 
+                                            :label="lang('l_range_step')"
+                                            :placeholder="lang('l_range_step')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            </hr>
+                                            <h4 class="title h4">{{lang('l_use_datasource')}}</h4>
                                             <fselect 
                                             :name="`${props.fname}.${props.id}.datasource.name`" 
                                             :label="lang('b_datasource_name')" :is-required="true"

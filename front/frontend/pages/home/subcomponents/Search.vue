@@ -11,7 +11,7 @@
                         </span>
                         </p>
                     <p class="control">
-                        <a class="icon has-text-info is-large" :alt="lang('f_search')" :title="lang('f_search')" @click="trigger_click">
+                        <a class="icon has-text-red swap is-large" :alt="lang('f_search')" :title="lang('f_search')" @click="trigger_click">
                             <i class="fa fa-search fa-2x"></i>
                         </a>
                     </p>

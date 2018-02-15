@@ -42,6 +42,7 @@ function api_signature(deactivated: boolean = false): Function {
         if (ctx.__md == null) {
             ctx.__md = {};
         }
+        ctx.__md.lang = ctx.request.headers['x-md-lang'];
 
         const authorization: ? string = ctx.request.headers.authorization;
         if (authorization == null) {
