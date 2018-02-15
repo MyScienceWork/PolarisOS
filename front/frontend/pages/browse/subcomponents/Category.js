@@ -100,9 +100,11 @@ module.exports = {
             return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
         },
         options() {
-            const entity = query.entity;
+            const entity = this.state.query.entity;
             if (entity == null || entity.trim() === '') {
-                return _.range(1700, parseInt(moment().format('YYYY')) + 1).map(a => ({ label: a, value: a }));
+                const r = _.range(1700, parseInt(moment().format('YYYY'), 10) + 1);
+                r.sort((a, b) => b - a);
+                return r.map(a => ({ label: `${a}`, _id: `${a}` }));
             }
 
             const content = this.fcontent(this.state.sinks.creations.browse);

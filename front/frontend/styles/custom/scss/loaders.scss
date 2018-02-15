@@ -72,13 +72,15 @@ $topenter: -10px;
   }
 }
 
-
-.msw-loader{
+.msw-loader.is-absolute {
     position: absolute;
     left: 50%;
     top: 50%;
     margin-left: - $loaderw / 2;
     margin-top: - $loaderh / 2;
+}
+
+.msw-loader{
 
     .loader-square{
         width: $squarew;

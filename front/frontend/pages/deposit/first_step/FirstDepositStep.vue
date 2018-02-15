@@ -82,6 +82,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="columns is-centered" 
+                    v-else-if="Object.keys(upload_form).length === 0 && Object.keys(import_form).length === 0 && state.typology.form !== ''">
+                    <loader />
+                </div>
                 <div v-if="!validated" class="columns is-centered">
                     <div class="column has-text-centered is-8 redify">
                         <p v-html="lang('f_step_not_validated')"></p>

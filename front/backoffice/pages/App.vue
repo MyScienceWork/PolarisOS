@@ -1,5 +1,5 @@
 <template>
-<loader id="app" v-if="Object.keys($store.state.global_config).length === 0"></loader>
+<loader class="is-absolute" id="app" v-if="Object.keys($store.state.global_config).length === 0"></loader>
 <div v-else id="app" class="holy-grail">
     <router-view name="header"></router-view>
     <div class="holy-grail-body">

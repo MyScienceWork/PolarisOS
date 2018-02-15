@@ -64,9 +64,9 @@ module.exports = {
         },
         generate_select_options(field) {
             if (field.range.enabled) {
-                return _.range(field.range.start, field.range.end, field.range.step);
+                return _.range(field.range.start, field.range.end, field.range.step).map(v => ({ label: `${v}`, value: `${v}` }));
             }
-            return datasource(field, field.datasource.ajax);
+            return this.datasource(field, field.datasource.ajax);
         },
     },
     computed: {

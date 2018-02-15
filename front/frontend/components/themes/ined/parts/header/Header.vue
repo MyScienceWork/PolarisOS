@@ -19,7 +19,7 @@
             <div class="tile is-parent is-2 is-vertical">
                 <p class="tile is-child" v-if="fullname != null">
                     <b-dropdown position="is-bottom-left">
-                        <a class="navbar-item" slot="trigger">
+                        <a class="navbar-item is-justify-center" slot="trigger">
                             <span>{{fullname}}</span>
                             <b-icon icon="caret-down"></b-icon>
                         </a>
@@ -43,7 +43,7 @@
                     </b-dropdown>
                 </p>
                 <p v-else class="tile is-child">
-                    <router-link class="navbar-item" slot="trigger" to="/login?redirect=%2F">
+                    <router-link class="navbar-item is-justify-center" slot="trigger" to="/login?redirect=%2F">
                         <span>Log in</span>
                     </router-link>
                 </p>

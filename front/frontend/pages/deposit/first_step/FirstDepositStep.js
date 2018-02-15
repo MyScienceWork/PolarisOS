@@ -34,6 +34,12 @@ module.exports = {
     },
     methods: {
         grab_typology_form(form) {
+            if (form == null) {
+                this.state.typology.form = '';
+                this.$emit('typology-change', this.state.typology.form, undefined);
+                return;
+            }
+
             const _id = form.value;
             const typology = this.typology_options.filter(t => t._id === _id);
             this.state.typology.form = typology[0].children[0].form;
