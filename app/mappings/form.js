@@ -58,6 +58,22 @@ module.exports = {
                             importer: {
                                 type: 'keyword',
                             },
+                            range: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    start: {
+                                        type: 'integer',
+                                    },
+                                    end: {
+                                        type: 'integer',
+                                    },
+                                    step: {
+                                        type: 'integer',
+                                    },
+                                },
+                            },
                             datasource: {
                                 type: 'nested',
                                 properties: {
@@ -130,6 +146,10 @@ module.exports = {
                                         index: false,
                                     },
                                     header_text: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    sort: {
                                         type: 'text',
                                         index: false,
                                     },

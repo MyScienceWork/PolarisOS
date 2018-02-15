@@ -1,7 +1,6 @@
-const Vue = require('vue');
 const Messages = require('../../common/api/messages');
 const APIRoutes = require('../../common/api/routes');
-const Browser = require('../../common/utils/browser');
+const LangUtils = require('../../common/utils/lang');
 
 const ENV = process.env.NODE_ENV || 'local';
 
@@ -33,21 +32,7 @@ function configure_app($store) {
         if (!('langs' in config)) {
             return;
         }
-
-
-        let default_lang = Browser.localGet('default_lang');
-
-        if (default_lang == null) {
-            default_lang = config.langs.find(
-                    v => v.value.toLowerCase() === $store.state.browserLanguage.toLowerCase());
-
-            if (default_lang === undefined) {
-                default_lang = config.langs[0].value;
-            } else {
-                default_lang = default_lang.value;
-            }
-        }
-
+        const default_lang = LangUtils.selectLanguage(config);
         lang_body.where.$and.push({ lang: default_lang });
         $store.state.interfaceLang = default_lang;
         $store.dispatch('grab_language', {

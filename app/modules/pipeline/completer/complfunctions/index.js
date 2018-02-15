@@ -21,7 +21,10 @@ async function secret_complete(object: Object, path: string, info: Object = {}) 
     return result;
 }
 
-function denormalization(from_entity: string, from_path: string, entity_path: string, flatten: boolean): Function {
+function denormalization(from_entity: string, from_path: string,
+        entity_path: string, flatten: boolean, translatable: boolean): Function {
+    const ENV = process.env.NODE_ENV || 'local';
+
     return async (object: Object, path: string, info: Object = {}) => {
         const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'))];
         if (fentity_ids.length === 0) {
@@ -32,6 +35,20 @@ function denormalization(from_entity: string, from_path: string, entity_path: st
         fentitys = fentitys.filter(e => e != null);
         if (fentitys.length === 0) {
             return {};
+        }
+
+        let config = null;
+        if (translatable) {
+            const configs = await EntitiesUtils.search('config', {
+                size: 1,
+                where: {
+                    environment: ENV,
+                },
+            });
+
+            if ('result' in configs && 'hits' in configs.result && configs.result.hits.length > 0) {
+                config = configs.result.hits[0].source;
+            }
         }
 
         const entity_segments = entity_path.split('.');

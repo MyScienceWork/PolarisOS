@@ -1,6 +1,6 @@
 module.exports = {};
 const Routes = require('./routes');
-const Home = require('./pages/home/Home.vue');
+const Overview = require('./pages/overview/Overview.vue');
 const User = require('./pages/user/User.vue');
 const Role = require('./pages/role/Role.vue');
 const Config = require('./pages/config/Config.vue');
@@ -29,7 +29,7 @@ module.exports.menu = [
             key: 'admin',
             routes: [Routes.admin],
             submenu: [],
-            component: Home,
+            component: Overview,
         },
         {
             section: 'General',
@@ -200,7 +200,7 @@ module.exports.menu = [
             key: 'api',
             routes: [Routes.api],
             submenu: [],
-            component: Home,
+            component: Overview,
         },
         {
             section: 'Advanced',
