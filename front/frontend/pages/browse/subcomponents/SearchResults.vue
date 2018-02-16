@@ -57,14 +57,32 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.publication'}]" @click.prevent="sort('dates.publication', 'asc')">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.publication'}]" @click.prevent="sort('dates.publication', get_order('dates.publication'))">
                             {{lang('f_sort_by_year')}}
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'dates.publication'">
+                                    <i v-if="get_order('dates.publication') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('dates.publication') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
-                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'type'}]" @click.prevent="sort('type', 'asc')">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'type'}]" @click.prevent="sort('type', get_order(('type')))">
                             {{lang('f_sort_by_publication_type')}}
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'type'">
+                                    <i v-if="get_order('type') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('type') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
-                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', 'asc')">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', get_order('dates.deposit'))">
                             {{lang('f_sort_by_deposit_year')}} 
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'dates.deposit'">
+                                    <i v-if="get_order('dates.deposit') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('dates.deposit') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
                     </div>
                 </div>

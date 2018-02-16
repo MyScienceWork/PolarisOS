@@ -33,6 +33,15 @@ module.exports = {
 
             return query[opt];
         },
+        get_order(type) {
+            if (this.state.seso.sort === type) {
+                if (this.state.seso.order === 'asc') {
+                    return 'desc';
+                }
+                return 'asc';
+            }
+            return 'asc';
+        },
         sort(type, order) {
             const q = _.merge({}, this.$route.query, { seso_sort: type, seso_order: order });
 
