@@ -230,11 +230,13 @@ class ODM {
                 body.search_after = opts.search_after;
             } else if ('search_before' in opts) {
                 body.sort = body.sort.map(s => _.reduce(s, (obj, value, key) => {
-                    obj[key] = value === 'asc' ? 'desc' : 'asc';
+                    obj[key] = value.order === 'asc' ? { order: 'desc' } : { order: 'asc' };
                     return obj;
                 }, {}));
 
                 body.search_after = opts.search_before;
+
+                console.log(JSON.stringify(body));
             }
         }
 

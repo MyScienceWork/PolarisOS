@@ -34,13 +34,14 @@ module.exports = {
             return query[opt];
         },
         sort(type, order) {
-            const q = _.merge({}, this.$route.query, { seso_sort: type, seso_order: order, seso_current: 1 });
+            const q = _.merge({}, this.$route.query, { seso_sort: type, seso_order: order });
 
             // Reset pagination;
             this.currentPage = 1;
             if ('seso_paginate' in q) {
                 delete q.seso_paginate;
             }
+            q.seso_current = 1;
             this.state.seso.paginate = undefined;
             //
 
@@ -50,6 +51,16 @@ module.exports = {
         },
         size(number) {
             const q = _.merge({}, this.$route.query, { seso_size: number });
+
+            // Reset pagination;
+            this.currentPage = 1;
+            if ('seso_paginate' in q) {
+                delete q.seso_paginate;
+            }
+            q.seso_current = 1;
+            this.state.seso.paginate = undefined;
+            //
+
             this.state.seso = Object.assign({}, this.update_state(q));
             this.$router.push({ query: q });
             this.send_information(this.searchSink);
@@ -58,8 +69,6 @@ module.exports = {
             this.state.seso.current = np;
             const obj = { seso_current: np };
 
-            console.log('new page', np, 'old page', op);
-
             const content = this.fcontent(this.resultSink);
             const result = this.formatPaginate(content, this.state.seso, np < op);
             obj.seso_paginate = result;
@@ -67,7 +76,6 @@ module.exports = {
             const q = _.merge({}, this.$route.query, obj);
             this.state.seso = Object.assign({}, this.update_state(q));
 
-            console.log(this.state.seso);
             this.$router.push({ query: q });
             this.send_information(this.searchSink);
         },

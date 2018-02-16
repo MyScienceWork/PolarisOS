@@ -45,7 +45,6 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
-        'dates.deposit': () => +moment(),
     },
     {
 
@@ -77,6 +76,7 @@ const Completion: Array<any> = [
             }
             return { version: 1 };
         },
+        'dates.deposit': () => ({ dates: { deposit: +moment() } }),
     },
 ];
 
