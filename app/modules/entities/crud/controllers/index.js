@@ -13,9 +13,9 @@ function count(type: string): Function {
 function search(type: string): Function {
     return async function func(ctx: Object) {
         const body = ctx.request.body;
-        if (!('scroll' in body)) {
+        /* if (!('scroll' in body)) {
             body.scroll = '10m';
-        }
+        }*/
         ctx.body = await EntitiesUtils.search(type, body);
     };
 }

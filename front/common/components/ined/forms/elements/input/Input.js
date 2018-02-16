@@ -26,6 +26,7 @@ module.exports = {
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
+        dateFormat: { required: false, default: 'YYYY-MM-DD' },
     },
 
     data() {
@@ -66,7 +67,7 @@ module.exports = {
             let info = this.state.value;
             if (this.type === 'date') {
                 if (typeof info !== 'string') {
-                    info = moment(info.toISOString()).format('YYYY-MM-DD');
+                    info = +moment(info.toISOString());
                 }
             } else if (this.type === 'time') {
                 if (typeof info !== 'string') {
@@ -101,7 +102,7 @@ module.exports = {
                 if (typeof v === 'string') {
                     return v;
                 }
-                return moment(v.toISOString()).format('YYYY-MM-DD');
+                return moment(v.toISOString()).format(this.dateFormat);
             } else if (this.type === 'time') {
                 if (typeof v === 'string') {
                     return v;

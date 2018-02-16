@@ -12,6 +12,7 @@ function create_form_if_needed(state, name) {
             state: 'initial',
             success: '',
             content: {},
+            total: 0,
         } });
     }
 }
@@ -124,6 +125,7 @@ module.exports = {
                 const content = payload.response.content;
                 if ('result' in content && 'hits' in content.result) {
                     state.forms[form_name].content = content.result.hits.map(hit => hit.source);
+                    state.forms[form_name].total = content.result.total;
                 } else {
                     state.forms[form_name].content = content;
                 }

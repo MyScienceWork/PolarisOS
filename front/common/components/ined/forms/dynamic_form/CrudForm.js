@@ -33,6 +33,9 @@ module.exports = {
             this.fetch_form(this.form, this.state.specs);
             this.state.showForm = true;
         },
+        refetch_form() {
+            this.fetch_form(this.form, this.state.specs);
+        },
         reload_form() {
             this.state.showForm = false;
             this.$emit('crud-form-change', {

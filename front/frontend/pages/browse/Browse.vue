@@ -21,7 +21,11 @@
         <div class="columns is-centered">
             <div class="column">
                 <div class="card info-card-purple">
-                    <search-results />
+                    <search-results 
+                        :search-sink="state.sinks.reads.search"
+                        :search-path="state.paths.reads.search"
+                        :search-query="state.queries.reads.search"
+                    />
                 </div>
             </div>
         </div>
