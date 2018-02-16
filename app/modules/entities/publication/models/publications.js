@@ -6,6 +6,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
+const moment = require('moment');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -15,7 +16,7 @@ const Validation: Array<any> = [
             content: Joi.string().required().label('title'),
         }),
         dates: Joi.object({
-            publication: Joi.string().required().label('dates.publication'),
+            publication: Joi.number().required().label('dates.publication'),
         }),
         /* 'diffusion.rights': Joi.object({
             access: Joi.string().required().label('diffusion.rights.access'),
@@ -44,6 +45,7 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
+        'dates.deposit': () => +moment(),
     },
     {
 
