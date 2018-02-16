@@ -118,6 +118,13 @@ function format_search(body: Object, model: Object): Object {
             options.population = body.population.filter(p => p != null && p !== '');
         }
     }
+
+    if ('search_after' in body) {
+        options.search_after = body.search_after;
+    } else if ('search_before' in body) {
+        options.search_before = body.search_before;
+    }
+
     return { search: s, options };
 }
 

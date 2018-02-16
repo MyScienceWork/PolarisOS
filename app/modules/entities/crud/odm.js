@@ -160,7 +160,7 @@ class ODM {
 
     static async read(index: string, type: string,
             client: Object, model: Object, response: Object,
-            population: Array<String> = []): Object {
+            population: Array<String> = [], backward: boolean = false): Object {
         const o = {};
 
         if ('_scroll_id' in response) {
@@ -186,6 +186,10 @@ class ODM {
                 odm.db = info;
                 return odm;
             });
+
+            if (backward) {
+                _.reverse(o.hits);
+            }
 
             await o.hits.reduce((pr, hit) =>
                 pr.then(() => hit.post_read_hook(population)), Promise.resolve());
@@ -216,10 +220,22 @@ class ODM {
             query,
         };
 
+
         // console.log('search query', JSON.stringify(query));
 
         if (sort != null) {
             body.sort = sort;
+            if ('search_after' in opts) {
+                body.from = 0;
+                body.search_after = opts.search_after;
+            } else if ('search_before' in opts) {
+                body.sort = body.sort.map(s => _.reduce(s, (obj, value, key) => {
+                    obj[key] = value === 'asc' ? 'desc' : 'asc';
+                    return obj;
+                }, {}));
+
+                body.search_after = opts.search_before;
+            }
         }
 
         if (aggs != null) {
@@ -246,7 +262,7 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(index, type, client, model, response, population);
+        return this.read(index, type, client, model, response, population, 'search_before' in opts);
     }
 
     static async count(index: string, type: string, client: Object,

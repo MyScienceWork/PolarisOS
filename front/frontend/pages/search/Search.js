@@ -14,6 +14,19 @@ module.exports = {
     data() {
         return {
             state: {
+                paths: {
+                    creations: {
+                        search: APIRoutes.entity('publication', 'POST', true),
+                    },
+                },
+                sinks: {
+                    reads: {
+                        search: 'search_read',
+                    },
+                    creations: {
+                        search: 'search_creation',
+                    },
+                },
             },
         };
     },
@@ -38,6 +51,9 @@ module.exports = {
                     { 'denormalization.subtype': '{{search}}' },
                 ],
             });
+        },
+        query_search() {
+            return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
         },
     },
 };

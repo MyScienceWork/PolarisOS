@@ -37,13 +37,16 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 2}]" @click.prevent="size(2)">
+                            2 
+                        </a>
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 20}]" @click.prevent="size(20)">
                             20
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 50}]" @click.prevent="size(50)">
                             50
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active':state.seso.size === 100}]" @click.prevent="size(100)">
                             100 
                         </a>
                     </div>
@@ -54,13 +57,13 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.publication'}]" @click.prevent="sort('dates.publication', 'asc')">
                             {{lang('f_sort_by_year')}}
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'type'}]" @click.prevent="sort('type', 'asc')">
                             {{lang('f_sort_by_publication_type')}}
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', 'asc')">
                             {{lang('f_sort_by_deposit_year')}} 
                         </a>
                     </div>
@@ -115,6 +118,14 @@
             </div>
         </div>
         </article>
+        <b-pagination
+            v-if="total > state.seso.size"
+            :total="total"
+            :current.sync="currentPage"
+            :simple="true"
+            :rounded="false"
+            :per-page="state.seso.size">
+        </b-pagination>
     </div>
 </template>
 

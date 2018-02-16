@@ -2,10 +2,10 @@
 <div>
     <div class="columns is-centered">
         <div class="column">
-            <form @submit.prevent="trigger_click">
+            <form @submit.prevent="search">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
-                        <finput :default="query_search" type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.sinks.creations.search" label="" />
+                        <finput :default="defaultSearch" type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="searchSink" label="" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>

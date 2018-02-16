@@ -36,7 +36,7 @@ class Form extends ODM {
         const all_datasources = await Promise.all(Object.keys(datasources)
         .map(ds => EntitiesUtils.search(ds, {
             projection: Array.from(datasources[ds].projection),
-            size: 500,
+            size: 800,
         })));
 
         all_datasources.forEach((datasource) => {
