@@ -19,6 +19,16 @@
             color: @@name;
         }
     }
+
+    .tabs.is-toggle li.is-active.is-@{name} a {
+        background-color: @@name;
+        border-color: @@name;
+        color: @white;
+    }
+
+    .tabs li.is-active.is-@{name} a {
+        color: @@name;
+    }
     
     .generate-colored-texts((@i - 1));
 }
@@ -114,4 +124,9 @@
 
 .is-justify-center {
     justify-content: center;
+}
+
+.is-vcentered {
+    display: flex;
+    align-items: center;
 }

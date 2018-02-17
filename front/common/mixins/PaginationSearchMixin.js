@@ -12,6 +12,7 @@ module.exports = {
         resultSink: { required: true, type: String },
         searchQuery: { required: true, type: String },
         searchType: { required: true, type: String },
+        defaultQueryMatchAll: { default: false, type: Boolean }, // Run match_all when typed_search is empty?
     },
     data() {
         return {
@@ -126,11 +127,19 @@ module.exports = {
         },
         run_search(sink) {
             const content = this.fcontent(sink);
+
             const body = {
-                where: JSON.parse(Handlebars.compile(this.searchQuery)(content)),
                 size: this.state.seso.size,
                 sort: [],
             };
+
+            if ((!content.search || content.search.trim() === '')) {
+                if (!this.defaultQueryMatchAll) {
+                    body.where = JSON.parse(Handlebars.compile(this.searchQuery)({}));
+                }
+            } else {
+                body.where = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+            }
 
             if (content.search) {
                 const q = _.merge({}, this.$route.query, { s: content.search });
@@ -208,7 +217,7 @@ module.exports = {
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
 
-        if (search === '') {
+        if (search === '' && !this.defaultQueryMatchAll) {
             return;
         }
 

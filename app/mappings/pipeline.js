@@ -32,7 +32,12 @@ module.exports = {
                 dynamic_date_formats: [],
                 properties: {
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     defaults: {
                         type: 'nested',

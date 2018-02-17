@@ -6,42 +6,42 @@
                 <widget>
                     <span slot="title">List of language items</span>
                     <div slot="body">
-                        <div v-for="row in content" class="columns is-centered">
-                            <div class="column">
-                                <widget>
-                                    <span slot="title">{{row.key}} ({{row.lang}})
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(row, 'lang')"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(row, 'lang')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                    </span>
-                                    <div slot="body">
-                                        <h4>{{row.key}} ({{row.lang}})</h4>
-                                        <p><strong>N/A</strong> : {{grab_quantity(row.values, 'n/a')}}</p>
-                                        <p><strong>1</strong> : {{grab_quantity(row.values, '1')}}</p>
-                                        <p><strong>{{lang('b_lang_other')}}</strong> : {{grab_quantity(row.values, 'other')}}</p>
-                                        <p><strong>2</strong> : {{grab_quantity(row.values, '2')}}</p>
-                                        <p><strong>{{lang('b_lang_few')}}</strong> : {{grab_quantity(row.values, 'few')}}</p>
-                                        <p><strong>{{lang('b_lang_many')}}</strong> : {{grab_quantity(row.values, 'many')}}</p>
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.forms.rsink"
+                            :search-path="state.rpath"
+                            :search-query="search_query"
+                            :default-query-match-all="true"
+                            search-type="lang"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">{{props.info.key}} ({{props.info.lang}})
+                                    <action-button
+                                    class="button is-small button-background-blue"
+                                    @action-click="update(props.info, 'lang')"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="button is-small button-background-red"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'lang')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                </span>
+                                <div slot="body">
+                                    <h4>{{props.info.key}} ({{props.info.lang}})</h4>
+                                    <p><strong>N/A</strong> : {{grab_quantity(props.info.values, 'n/a')}}</p>
+                                    <p><strong>1</strong> : {{grab_quantity(props.info.values, '1')}}</p>
+                                    <p><strong>{{lang('b_lang_other')}}</strong> : {{grab_quantity(props.info.values, 'other')}}</p>
+                                    <p><strong>2</strong> : {{grab_quantity(props.info.values, '2')}}</p>
+                                    <p><strong>{{lang('b_lang_few')}}</strong> : {{grab_quantity(props.info.values, 'few')}}</p>
+                                    <p><strong>{{lang('b_lang_many')}}</strong> : {{grab_quantity(props.info.values, 'many')}}</p>
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>

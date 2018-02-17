@@ -5,9 +5,15 @@ const Messages = require('../../../common/api/messages');
 module.exports = {
     methods: {
         update(obj, entity) {
-            this.$store.commit(Messages.READ, {
+            this.$store.commit(Messages.NOOP, {
                 form: this.state.forms.csink,
-                content: obj,
+            });
+
+            Vue.nextTick(() => {
+                this.$store.commit(Messages.READ, {
+                    form: this.state.forms.csink,
+                    content: obj,
+                });
             });
         },
         remove(obj, entity) {

@@ -48,6 +48,16 @@ class Auth {
         return `${user.firstname} ${user.lastname}`;
     }
 
+    static user_id() {
+        const user = Auth.get('user');
+
+        if (user == null) {
+            return '';
+        }
+
+        return user.key;
+    }
+
     static async authenticate(email, password) {
         const route = APIRoutes.authenticate();
         try {

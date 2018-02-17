@@ -53,6 +53,7 @@ module.exports = {
             this.$emit('input-action-emit', { action: a });
         },
         initialize() {
+            console.log('initialize input');
             const form = this.$store.state.forms[this.form];
             const value = Utils.find_value_with_path(form.content, this.name.split('.'));
             if (value == null) {

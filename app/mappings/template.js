@@ -9,7 +9,12 @@ module.exports = {
                         type: 'keyword',
                     },
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     image: {
                         type: 'keyword',

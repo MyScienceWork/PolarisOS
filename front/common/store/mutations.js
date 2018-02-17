@@ -41,9 +41,16 @@ module.exports = {
 
     [Messages.READ]: (state, payload) => {
         const form_name = payload.form;
+        state.forms[form_name].state = 'noop'; // In case of multiple updates...
         create_form_if_needed(state, form_name);
         state.forms[form_name].content = payload.content;
         state.forms[form_name].state = 'update';
+    },
+
+    [Messages.NOOP]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'noop';
     },
 
     [Messages.COMPLETE_FORM_ELEMENT]: (state, payload) => {

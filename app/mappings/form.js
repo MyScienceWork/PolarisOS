@@ -16,11 +16,20 @@ module.exports = {
                 },
                 properties: {
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     label: {
                         type: 'text',
-                        index: false,
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     description: {
                         type: 'text',

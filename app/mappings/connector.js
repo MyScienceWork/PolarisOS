@@ -8,7 +8,12 @@ module.exports = {
                 },
                 properties: {
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     api: {
                         properties: {

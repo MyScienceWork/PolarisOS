@@ -5,6 +5,7 @@ module.exports = {
     FETCH: 'fetch',
     ERROR: 'error',
     READ: 'read',
+    NOOP: 'noop',
     COMPLETED: 'completed',
     INITIALIZE: 'initialize',
     REMOVE_FORM: 'remove_form',
