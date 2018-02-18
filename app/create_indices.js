@@ -2,11 +2,34 @@ const elasticsearch = require('elasticsearch');
 const _ = require('lodash');
 const config = require('./config');
 const mappings = require('./mappings');
+// const mappings = require('/Users/Cocophotos/Desktop/mappings');
 const settings = require('./settings');
 
 const client = new elasticsearch.Client(config.elasticsearch);
 
 function create() {
+    /* Object.keys(mappings).forEach((name) => {
+        let index = mappings[name];
+
+        if (name in settings) {
+            index = _.merge({}, mapping, settings[name]);
+        } else {
+            console.warn(`No settings for mapping ${name}`);
+        }
+        const response = client.indices.create({
+            index: name, // `${config.elasticsearch.index_prefix}_${name}`,
+            body: index,
+        });
+
+        response.then((result) => {
+            console.log(`Success when creating index for ${name}`);
+            console.log(result);
+        }).catch((err) => {
+            console.error(`Error when creating index for ${name}`);
+            console.error(err);
+        });
+    });*/
+
     _.forEach(mappings, (mapping, name) => {
         let index = mapping;
 

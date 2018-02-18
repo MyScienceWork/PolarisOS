@@ -25,13 +25,13 @@
                         </a>
 
                         <b-dropdown-item has-link>
-                            <router-link class="dropdown-item" to="/u/1/profile">{{lang('f_my_profile')}}</router-link>
+                            <router-link class="dropdown-item" :to="`/u/${user_id}/profile`">{{lang('f_my_profile')}}</router-link>
                         </b-dropdown-item>
                         <b-dropdown-item has-link>
-                            <router-link class="dropdown-item" to="/search?author=1">{{lang('f_my_deposit', {}, 'other')}}</router-link>
+                            <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=2`">{{lang('f_my_deposit', {}, 'other')}}</router-link>
                         </b-dropdown-item>
                         <b-dropdown-item has-link>
-                            <router-link class="dropdown-item" to="/u/1/favorites">
+                            <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=3`">
                                 {{lang('f_registered_search', {}, 'other')}}
                             </router-link>
                         </b-dropdown-item>

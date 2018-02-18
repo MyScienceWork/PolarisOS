@@ -12,12 +12,14 @@ const FunctionMapping = {
                 name: {
                     type: 'keyword',
                     index: false,
-
                 },
                 value: {
                     type: 'keyword',
                     index: false,
-
+                },
+                type: {
+                    type: 'keyword',
+                    index: false,
                 },
             },
         },
@@ -32,7 +34,12 @@ module.exports = {
                 dynamic_date_formats: [],
                 properties: {
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     defaults: {
                         type: 'nested',

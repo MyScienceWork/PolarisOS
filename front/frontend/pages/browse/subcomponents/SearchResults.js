@@ -37,6 +37,7 @@ module.exports = {
             });
         },
         send_information(sink) {
+            console.log('send information', sink);
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {

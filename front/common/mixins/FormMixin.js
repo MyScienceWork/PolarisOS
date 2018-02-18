@@ -70,6 +70,8 @@ module.exports = {
         dispatch(s, self, form) {
             switch (s) {
             default:
+            case 'noop':
+                break;
             case 'update':
             case 'initial':
                 self.initialize(form);

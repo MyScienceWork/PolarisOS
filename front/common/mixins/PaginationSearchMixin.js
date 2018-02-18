@@ -12,6 +12,8 @@ module.exports = {
         resultSink: { required: true, type: String },
         searchQuery: { required: true, type: String },
         searchType: { required: true, type: String },
+        useDefaultQuery: { default: false, type: Boolean }, // Run default query when typed_search === '' ?
+        defaultQuery: { default: '{}', type: String, required: false },
     },
     data() {
         return {
@@ -119,18 +121,22 @@ module.exports = {
             sa.push(`${this.searchType}#${_id}`);
             return sa;
         },
-        search() {
-            this.$store.commit(Messages.COLLECT, {
-                form: this.searchSink,
-            });
-        },
         run_search(sink) {
             const content = this.fcontent(sink);
+
             const body = {
-                where: JSON.parse(Handlebars.compile(this.searchQuery)(content)),
                 size: this.state.seso.size,
                 sort: [],
             };
+
+            if ((!content.search || content.search.trim() === '')) {
+                if (!this.useDefaultQuery) {
+                    return;
+                }
+                body.where = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
+            } else {
+                body.where = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+            }
 
             if (content.search) {
                 const q = _.merge({}, this.$route.query, { s: content.search });
@@ -208,7 +214,7 @@ module.exports = {
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
 
-        if (search === '') {
+        if (search === '' && !this.useDefaultQuery) {
             return;
         }
 

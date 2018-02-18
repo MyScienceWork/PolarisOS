@@ -14,6 +14,7 @@ const Paginator = require('../common/components/ined/paginator/Paginator.vue');
 const Tabber = require('../common/components/ined/tabber/Tabber.vue');
 const Grid = require('../common/components/ined/forms/elements/grid/Grid.vue');
 const Card = require('../common/components/ined/card/Card.vue');
+const Searching = require('../common/components/ined/forms/searching/Searching.vue');
 
 const ActionButton = require('./components/themes/ined/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/ined/widget/Widget.vue');
@@ -39,6 +40,7 @@ Vue.component('widget', Widget);
 Vue.component('paginator', Paginator);
 Vue.component('tabber', Tabber);
 Vue.component('card', Card);
+Vue.component('fsearching', Searching);
 Vue.component('dynamic-form', DynamicForm);
 
 new Vue({

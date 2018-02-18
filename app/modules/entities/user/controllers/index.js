@@ -41,13 +41,7 @@ async function authenticate(ctx: Object) {
         // await info.update();
 
         ctx.body = { ok: true,
-            user: { firstname: db.firstname,
-                lastname: db.lastname,
-                emails: db.emails,
-                roles: db.roles,
-                key: db.authentication.key,
-                secret: db.authentication.secret,
-            } };
+            user: db };
         return;
     }
 

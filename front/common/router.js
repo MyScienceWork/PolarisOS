@@ -79,6 +79,8 @@ function get_default_component(page) {
         return Project;
     case '/view/:id':
         return View;
+    case '/u/:id/profile':
+        return UserProfile;
     case '/deposit':
         return Deposit;
     case '/about':

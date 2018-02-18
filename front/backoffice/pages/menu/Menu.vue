@@ -56,14 +56,71 @@
                             <fvariadic-element name="elements" :form="state.sinks.creations.menu" :is-required="true" :draggable="true">
                                 <template slot="variadic" slot-scope="fprops">
                                     <div class="card">
-                                        <finput :name="`${fprops.fname}.${fprops.id}.name`" :label="lang('l_menu_element_name')" :is-required="true" :placeholder="lang('l_menu_element_name')" type="text" :form="state.sinks.creations.menu" />
-                                        <finput :name="`${fprops.fname}.${fprops.id}.icon`" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.sinks.creations.menu" />
-                                        <fselect :name="`${fprops.fname}.${fprops.id}.page`" :label="lang('l_page')" :placeholder="lang('l_page')" :form="state.sinks.creations.menu" :options="content_page" :is-required="true" fieldLabel="route" fieldValue="_id" />
-                                        <fvariadic-element :name="`${fprops.fname}.${fprops.id}.submenus`" :form="state.sinks.creations.menu" :tabs="true" :is-required="false">
+                                        <finput 
+                                            :name="`${fprops.fname}.${fprops.order}.name`" 
+                                            :label="lang('l_menu_element_name')" 
+                                            :is-required="true" 
+                                            :placeholder="lang('l_menu_element_name')" 
+                                            type="text" 
+                                            :form="state.sinks.creations.menu"
+                                            :key="`${fprops.fname}.${fprops.id}.name`"
+                                        />
+                                        <finput 
+                                            :name="`${fprops.fname}.${fprops.order}.icon`" 
+                                            :key="`${fprops.fname}.${fprops.id}.icon`" 
+                                            :label="lang('l_menu_icon')" 
+                                            :is-required="true" 
+                                            :placeholder="lang('l_menu_icon')" type="text" 
+                                            :form="state.sinks.creations.menu"
+                                        />
+                                        <fselect 
+                                            :name="`${fprops.fname}.${fprops.order}.page`" 
+                                            :key="`${fprops.fname}.${fprops.id}.page`" 
+                                            :label="lang('l_page')" 
+                                            :placeholder="lang('l_page')" 
+                                            :form="state.sinks.creations.menu" 
+                                            :options="content_page" 
+                                            :is-required="true"
+                                            fieldLabel="route" 
+                                            fieldValue="_id"
+                                        />
+                                        <fvariadic-element 
+                                            :name="`${fprops.fname}.${fprops.order}.submenus`" 
+                                            :key="`${fprops.fname}.${fprops.id}.submenus`" 
+                                            :form="state.sinks.creations.menu" 
+                                            :draggable="true" 
+                                            :is-required="false"
+                                        >
                                             <template slot="variadic" slot-scope="props">
-                                                <finput :name="`${props.fname}.${props.id}.name`" :label="lang('l_menu_name')" :is-required="true" :placeholder="lang('l_menu_name')" type="text" :form="state.sinks.creations.menu" />
-                                                <finput :name="`${props.fname}.${props.id}.icon`" :label="lang('l_menu_icon')" :is-required="true" :placeholder="lang('l_menu_icon')" type="text" :form="state.sinks.creations.menu" />
-                                                <fselect :name="`${props.fname}.${props.id}.page`" :label="lang('l_page')" :is-required="true" :placeholder="lang('l_page')" :form="state.sinks.creations.menu" :options="[]"/>
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.name`" 
+                                                    :key="`${props.fname}.${props.id}.name`" 
+                                                    :label="lang('l_menu_name')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_menu_name')" 
+                                                    type="text" 
+                                                    :form="state.sinks.creations.menu"
+                                                />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.icon`" 
+                                                    :key="`${props.fname}.${props.id}.icon`" 
+                                                    :label="lang('l_menu_icon')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_menu_icon')" 
+                                                    type="text" 
+                                                    :form="state.sinks.creations.menu" 
+                                                />
+                                                <fselect 
+                                                    :name="`${props.fname}.${props.order}.page`" 
+                                                    :key="`${props.fname}.${props.id}.page`" 
+                                                    :label="lang('l_page')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_page')" 
+                                                    fieldLabel="route" 
+                                                    fieldValue="_id"
+                                                    :form="state.sinks.creations.menu" 
+                                                    :options="content_page"
+                                                />
                                             </template>
                                         </fvariadic-element>
                                     </div>

@@ -21,6 +21,7 @@ module.exports = {
         return {
             state: {
                 mode: this.mode,
+                timeout: null,
             },
         };
     },
@@ -33,10 +34,17 @@ module.exports = {
         },
         cancel(e) {
             e.preventDefault();
-            this.$store.commit(Messages.INITIALIZE, { form: this.name });
-            this.$emit('form-cancel');
+            this.$store.commit(Messages.NOOP, { form: this.name });
+            Vue.nextTick(() => {
+                this.$store.commit(Messages.INITIALIZE, { form: this.name });
+                this.$emit('form-cancel');
+            });
         },
-        send_information() {
+        send_information(sink) {
+            if (this.name !== sink) {
+                return;
+            }
+
             if (this.path === '') {
                 return;
             }
@@ -49,14 +57,24 @@ module.exports = {
                 body: this.content,
             });
         },
-        show_success() {
+        show_success(sink) {
             if (this.state.method !== 'validate' || this.noReinitializeAfterSuccess) {
-                setTimeout(() => {
+                this.state.timeout = setTimeout(() => {
                     this.$store.commit(Messages.INITIALIZE, {
                         form: this.name,
                     });
                     this.$emit('form-success-reset');
                 }, 5000);
+            }
+        },
+        initialize(sink) {
+            if (this.name !== sink) {
+                return;
+            }
+
+            if (this.state.timeout) {
+                clearTimeout(this.state.timeout);
+                this.state.timeout = null;
             }
         },
     },
@@ -80,6 +98,7 @@ module.exports = {
             case 'vupdate':
                 return this.lang('b_validate');
             default:
+            case 'noop':
             case 'default':
                 return this.lang('b_save');
             }
@@ -90,6 +109,7 @@ module.exports = {
             case 'update':
                 return this.put_path;
             case 'validate':
+            case 'noop':
             case 'default':
             default:
                 return this.post_path;
@@ -104,6 +124,7 @@ module.exports = {
                 return 'validate';
             default:
             case 'default':
+            case 'noop':
                 return 'create';
             }
         },
@@ -148,7 +169,7 @@ module.exports = {
         success(n) {
         },
         current_state(s) {
-            this.dispatch(s, this);
+            this.dispatch(s, this, this.name);
         },
         mode(nm) {
             this.state.mode = nm;

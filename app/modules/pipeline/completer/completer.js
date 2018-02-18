@@ -13,20 +13,13 @@ const Logger = require('../../../logger');
  * @param info - Extra information
  */
 async function complete(object: Object, completers: Array<any>, info: ?Object): Promise<Object> {
-    const final_promise = completers.reduce((promise, completer: any) => promise.then((obj) => {
-        const subobjects_promises = _.map(completer, (func: Function, path: string) => {
-            console.log(obj, path, info);
-            return func(obj, path, info);
-        });
-
-        return new Promise((resolve, reject) => {
-            Promise.all(subobjects_promises)
-                .then(results => resolve(_.merge(obj, ...results, object)))
-                .catch(err => reject(err));
-        });
-    }).catch(err => Logger.error(err)), Promise.resolve(object));
-
-    const final_object = await final_promise;
+    let final_object = object;
+    for (const completer of completers) {
+        const promises = _.map(completer,
+            (func: Function, path: string) => func(final_object, path, info));
+        const results = await Promise.all(promises);
+        final_object = Utils.merge_with_superposition(...results, final_object);
+    }
     return final_object;
 }
 

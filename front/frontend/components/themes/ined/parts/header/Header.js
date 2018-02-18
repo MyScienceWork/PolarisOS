@@ -24,5 +24,8 @@ module.exports = {
         fullname() {
             return Auth.fullname();
         },
+        user_id() {
+            return Auth.user_id();
+        },
     },
 };

@@ -17,6 +17,7 @@ const obj = {
             {
                 title: 'French',
                 code: 'FR',
+                frname: 'Français',
             },
             {
                 title: 'German',
@@ -170,5 +171,137 @@ describe('Utils#find_popvalue_with_path', () => {
         const path_2 = 'address.zipcode_undefined';
         const results_2 = [...utils.find_popvalue_with_path(obj, path.split('.'))];
         results.should.be.empty;
+    });
+
+    it('should keep empty element (null / undefined) when ask to', () => {
+        const path = 'address.zipcode_null';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), false, true)];
+        results.should.have.lengthOf(1);
+    });
+
+    it('should keep empty element (null / undefined) when ask to even when traversing an array', () => {
+        const path = 'address.langs.frname';
+        const results = [...utils.find_popvalue_with_path(obj, path.split('.'), false, true)];
+        results.should.have.lengthOf(2);
+        console.log(results);
+    });
+});
+
+describe('Utils#make_nested_object_from_path', () => {
+    it('should generate simple object', () => {
+        const path = 'address';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('address', 'test');
+    });
+
+    it('should generate nested object', () => {
+        const path = 'address._id';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('address');
+        result.address.should.have.property('_id', 'test');
+    });
+
+    it('should generate deeply nested object', () => {
+        const path = 'test.test.address._id';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('test');
+        result.test.should.have.property('test');
+        result.test.test.should.have.property('address');
+        result.test.test.address.should.have.property('_id', 'test');
+    });
+
+    it('should generate array when using special segment *', () => {
+        const path = '*';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.lengthOf(1);
+        result[0].should.equal('test');
+    });
+
+    it('should generate array withing object when using special segment *', () => {
+        const path = 'address.*';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('address');
+        result.address.should.have.lengthOf(1);
+        result.address[0].should.equal('test');
+    });
+
+    it('should generate array withing object when using special segment *', () => {
+        const path = 'address.*._id';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('address');
+        result.address.should.have.lengthOf(1);
+        result.address[0].should.property('_id', 'test');
+    });
+
+    it('should generate array withing deeply nested object when using special segment *', () => {
+        const path = 'test.*.test.address.*._id';
+        const value = 'test';
+
+        const result = utils.make_nested_object_from_path(path.split('.'), value);
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(1);
+        result.test[0].should.have.property('test');
+        result.test[0].test.should.have.property('address');
+        result.test[0].test.address.should.have.lengthOf(1);
+        result.test[0].test.address[0].should.have.property('_id', 'test');
+    });
+});
+
+describe('Utils#merge_with_superposition', () => {
+    it('should concat if arrays of different sizes (source empty / target with 1 element)', () => {
+        const source = { test: [] };
+        const target = { test: [{ yep: 'nok' }] };
+
+        const result = utils.merge_with_superposition(source, target);
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(1);
+        result.test[0].should.have.property('yep', 'nok');
+    });
+
+    it('should concat if arrays of different sizes (source with 1 element / target empty)', () => {
+        const source = { test: [{ yep: 'nok' }] };
+        const target = { test: [] };
+
+        const result = utils.merge_with_superposition(source, target);
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(1);
+        result.test[0].should.have.property('yep', 'nok');
+    });
+
+    it('should merge inner object of array', () => {
+        const source = { test: [{ nope: 'ok' }] };
+        const target = { test: [{ yep: 'nok' }] };
+
+        const result = utils.merge_with_superposition(source, target);
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(1);
+        result.test[0].should.have.property('nope', 'ok');
+        result.test[0].should.have.property('yep', 'nok');
+    });
+
+    it('should merge inner objects of array in order', () => {
+        const source = { test: [{ nope: 'ok' }, { second: 'ok' }] };
+        const target = { test: [{ yep: 'nok' }, { second_nope: 'ok' }] };
+
+        const result = utils.merge_with_superposition(source, target);
+
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(2);
+        result.test[0].should.have.property('nope', 'ok');
+        result.test[0].should.have.property('yep', 'nok');
+        result.test[1].should.have.property('second', 'ok');
+        result.test[1].should.have.property('second_nope', 'ok');
     });
 });

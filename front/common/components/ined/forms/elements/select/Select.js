@@ -70,8 +70,6 @@ module.exports = {
                 } else {
                     info = null;
                 }
-
-                console.log(missing);
             } else {
                 const missing = this.options.filter(o =>
                     info[this.fieldValue] === o[this.fieldValue]);

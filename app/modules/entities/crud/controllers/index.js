@@ -50,6 +50,7 @@ function get(type: string, exists: boolean = false): Function {
         const proj = ctx.params.projection || '';
         const pop = ctx.params.population || '';
         const entity = await EntitiesUtils.retrieve(id, type, proj, pop);
+
         if (entity == null) {
             if (exists) {
                 ctx.body = { exists: false };
