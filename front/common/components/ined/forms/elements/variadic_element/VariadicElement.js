@@ -24,7 +24,8 @@ module.exports = {
         return {
             state: {
                 elements: [],
-                tab_active: this.isRequired ? 0 : -1,
+                tab_active: this.isRequired || this.single ? 0 : -1,
+                total: this.isRequired || this.single ? 1 : 0,
             },
         };
     },
@@ -34,29 +35,37 @@ module.exports = {
             e.preventDefault();
             this.state.tab_active = id;
         },
-        add(e) {
-            e.preventDefault();
-            this.state.elements.push(true);
+        add() {
+            this.state.elements.push({ i: this.state.elements.length, a: true });
+            this.state.total += 1;
         },
-        remove(id, e) {
-            e.preventDefault();
-            this.state.elements.splice(id, 1, false);
+        remove(id) {
+            if ((this.isRequired || this.single) && this.state.total === 1) {
+                return;
+            }
+
+            const real_idx = _.findIndex(this.state.elements, o => o.i === id);
+            if (real_idx === -1) {
+                return;
+            }
+            this.state.elements[real_idx].a = false;
+            this.state.total -= 1;
         },
         initialize() {
             const form = this.$store.state.forms[this.form];
             const object = Utils.find_value_with_path(form.content, this.name.split('.'));
-            if (object instanceof Array) {
-                this.state.elements = object.map(() => true);
-            } else {
-                this.state.elements = _.map(object, () => true);
-            }
-
-            if (this.state.elements.length === 0) {
-                if (this.single || this.isRequired) {
-                    this.state.elements = [true];
-                } else {
-                    this.state.elements = [];
+            if (object != null) {
+                if (object instanceof Array) {
+                    this.state.elements = object.map((o, i) => ({ i, a: true }));
+                    this.state.total = this.state.elements.length;
+                } else if (object instanceof Object) {
+                    this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
+                    this.state.total = this.state.elements.length;
                 }
+            } else if (this.single || this.isRequired) {
+                this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
+            } else {
+                this.state = Object.assign({}, { elements: [], tab_active: -1, total: 0 });
             }
         },
     },

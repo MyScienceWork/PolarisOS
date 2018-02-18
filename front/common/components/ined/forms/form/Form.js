@@ -34,8 +34,11 @@ module.exports = {
         },
         cancel(e) {
             e.preventDefault();
-            this.$store.commit(Messages.INITIALIZE, { form: this.name });
-            this.$emit('form-cancel');
+            this.$store.commit(Messages.NOOP, { form: this.name });
+            Vue.nextTick(() => {
+                this.$store.commit(Messages.INITIALIZE, { form: this.name });
+                this.$emit('form-cancel');
+            });
         },
         send_information(sink) {
             if (this.name !== sink) {
