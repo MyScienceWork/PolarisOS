@@ -1,6 +1,4 @@
-const Handlebars = require('handlebars');
 const Messages = require('../../../../common/api/messages');
-const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 
@@ -9,6 +7,9 @@ module.exports = {
     props: {
         searchSink: { required: true, type: String },
         defaultSearch: { required: true, type: String },
+        useFavorites: { default: true, type: Boolean },
+        color: { default: 'purple' },
+        placeholder: { default: 'f_search_in_archive', type: String },
     },
     data() {
         return {

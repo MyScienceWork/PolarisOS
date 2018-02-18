@@ -1,11 +1,12 @@
 <template>
     <div>
         <template v-if="single">
-            <div v-for="show in state.elements" v-if="show.a" :key="show.i">
+            <div v-for="(show, idx) in state.elements" v-if="show.a" :key="show.i">
                 <slot 
                     name="variadic" 
                     :id="show.i"
                     :fname="name"
+                    :order="idx"
                     :total="state.total"
                     :add="add"
                     :remove="remove"
@@ -40,7 +41,7 @@
                 </div>
                 <div class="column">
                     <div 
-                    v-for="show in state.elements" 
+                    v-for="(show, idx) in state.elements" 
                     v-if="show.a"
                     v-show="state.tab_active === show.i"
                     :key="show.i"
@@ -48,6 +49,7 @@
                         <slot 
                             name="variadic" 
                             :id="show.i"
+                            :order="idx"
                             :fname="name"
                             :total="state.total"
                         >
@@ -59,12 +61,12 @@
             <div v-else-if="draggable && state.elements.length > 0">
                 <draggable v-model="state.elements" @start="drag=true" @end="drag=false" :options="{handle: '.handle', forceFallback: true}">
                     <div 
-                        v-for="show in state.elements" 
+                        v-for="(show, idx) in state.elements" 
                         v-if="show.a" 
                         :key="show.i"
                         class="columns is-centered"
                     >
-                        <div class="column is-2">
+                        <div class="column">
                             <div class="field has-addons">
                                 <p class="control">
                                     <button class="handle button is-primary" @click.prevent="">
@@ -81,11 +83,10 @@
                                     </button>
                                 </p>
                             </div>
-                        </div>
-                        <div class="column">
                             <slot 
                                 name="variadic" 
                                 :id="show.i"
+                                :order="idx"
                                 :fname="name"
                                 :total="state.total"
                             >

@@ -12,12 +12,14 @@ const FunctionMapping = {
                 name: {
                     type: 'keyword',
                     index: false,
-
                 },
                 value: {
                     type: 'keyword',
                     index: false,
-
+                },
+                type: {
+                    type: 'keyword',
+                    index: false,
                 },
             },
         },

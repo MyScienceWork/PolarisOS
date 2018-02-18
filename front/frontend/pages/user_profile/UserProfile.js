@@ -4,11 +4,15 @@ const APIRoutes = require('../../../common/api/routes');
 const Auth = require('../../../common/utils/auth');
 
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
+const SearchBar = require('../browse/subcomponents/SearchBar.vue');
+const SearchResults = require('../browse/subcomponents/SearchResults.vue');
 
 module.exports = {
     mixins: [LangMixin, FormMixin],
     components: {
         LastDeposits,
+        SearchResults,
+        SearchBar,
     },
     data() {
         return {
@@ -16,11 +20,13 @@ module.exports = {
                 sinks: {
                     creations: {
                         user: 'user_profile_creation',
+                        deposit_search: 'user_profile_deposit_creation',
+                        publication_search: 'user_profile_publication_creation',
                     },
                     reads: {
                         user: 'user_profile_read',
                         publication: 'user_publication_read',
-                        last_publication: 'user_last_publication_read',
+                        deposit: 'user_deposit_read',
                     },
                 },
                 paths: {
@@ -42,8 +48,6 @@ module.exports = {
         update_tab(idx) {
             this.state.current_tab = idx;
         },
-        retrieve_deposits() {
-        },
         switch_tab(t) {
             try {
                 this.state.current_tab = Math.min(Math.max(0, parseInt(t, 10)), 3);
@@ -53,31 +57,6 @@ module.exports = {
         },
     },
     watch: {
-        loggedIn(nli) {
-            if (!nli) {
-                return;
-            }
-            this.retrieve_deposits();
-        },
-        user() {
-            if (!this.user.author_id) {
-                return;
-            }
-
-            this.$store.dispatch('search', {
-                form: this.state.sinks.reads.last_publication,
-                path: this.state.paths.reads.publication,
-                body: {
-                    where: {
-                        'authors._id': this.user.author_id,
-                    },
-                    sort: [{ 'dates.deposit': 'desc' }, { _uid: 'desc' }],
-                    size: this.state.last_deposits_number,
-                },
-            });
-
-            this.retrieve_deposits();
-        },
         query(q) {
             if (this.state.loggedIn && 't' in q) {
                 this.switch_tab(q.t);
@@ -94,18 +73,85 @@ module.exports = {
             }
             return {};
         },
+        affiliations() {
+            const author = this.user.author;
+
+            if (author && author.denormalization && author.denormalization.affiliations) {
+                let aff = author.denormalization.affiliations;
+                if (!(aff instanceof Array)) {
+                    aff = [aff];
+                }
+
+                aff.sort((a, b) => (b.from - a.from));
+                return aff;
+            }
+
+            return [];
+        },
         loggedIn() {
             return this.state.loggedIn;
         },
-        last_deposits() {
-            const content = this.fcontent(this.state.sinks.reads.last_publication);
-            if (content instanceof Array && content.length > 0) {
-                return content;
-            }
-            return [];
-        },
         query() {
             return this.$route.query;
+        },
+        search_param_in_query() {
+            return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
+        },
+        default_search_query() {
+            return JSON.stringify({
+                depositor: this.user._id,
+            });
+        },
+        search_query() {
+            return JSON.stringify({
+                $and: [
+                    {
+                        $or: [
+                            { 'title.content': '{{search}}' },
+                            { 'abstracts.content': '{{search}}' },
+                            { 'denormalization.authors.fullname': '{{search}}' },
+                            { 'denormalization.classifications.label': '{{search}}' },
+                            { 'denormalization.contributors.fullname': '{{search}}' },
+                            { 'denormalization.diffusion.internal_collection': '{{search}}' },
+                            { 'denormalization.diffusion.projects.name': '{{search}}' },
+                            { 'denormalization.diffusion.research_team': '{{search}}' },
+                            { 'denormalization.diffusion.surveys.name': '{{search}}' },
+                            { 'denormalization.journal': '{{search}}' },
+                            { 'denormalization.type': '{{search}}' },
+                            { 'denormalization.subtype': '{{search}}' },
+                        ],
+                        depositor: this.user._id,
+                    },
+                ],
+            });
+        },
+        default_search_publications_query() {
+            return JSON.stringify({
+                'authors._id': this.user.author ? this.user.author._id : null,
+            });
+        },
+        search_publications_query() {
+            return JSON.stringify({
+                $and: [
+                    {
+                        $or: [
+                            { 'title.content': '{{search}}' },
+                            { 'abstracts.content': '{{search}}' },
+                            { 'denormalization.authors.fullname': '{{search}}' },
+                            { 'denormalization.classifications.label': '{{search}}' },
+                            { 'denormalization.contributors.fullname': '{{search}}' },
+                            { 'denormalization.diffusion.internal_collection': '{{search}}' },
+                            { 'denormalization.diffusion.projects.name': '{{search}}' },
+                            { 'denormalization.diffusion.research_team': '{{search}}' },
+                            { 'denormalization.diffusion.surveys.name': '{{search}}' },
+                            { 'denormalization.journal': '{{search}}' },
+                            { 'denormalization.type': '{{search}}' },
+                            { 'denormalization.subtype': '{{search}}' },
+                        ],
+                        'authors._id': this.user.author ? this.user.author._id : null,
+                    },
+                ],
+            });
         },
     },
     mounted() {
@@ -117,6 +163,7 @@ module.exports = {
                     'authentication.key': this.$route.params.id,
                 },
                 size: 1,
+                population: ['author'],
             },
         });
 

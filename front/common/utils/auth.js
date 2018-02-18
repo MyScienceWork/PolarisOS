@@ -55,7 +55,7 @@ class Auth {
             return '';
         }
 
-        return user.key;
+        return user.authentication.key;
     }
 
     static async authenticate(email, password) {
@@ -79,7 +79,7 @@ class Auth {
 
     static async access(part, types, check = 'any') {
         const user = Auth.get('user');
-        if (user == null || !('key' in user)) {
+        if (user == null || !('authentication' in user) || !('key' in user.authentication)) {
             return false;
         }
 
@@ -91,7 +91,7 @@ class Auth {
             .set('Authorization', `${signature.key}:${signature.sign}`)
             .set('X-MD-TIMESTAMP', signature.timestamp)
             .send({
-                key: user.key,
+                key: user.authentication.key,
                 part,
                 types,
                 check,
@@ -160,18 +160,19 @@ class Auth {
 
     static get_api_headers(method, path) {
         const user = Auth.get('user');
-        if (user == null || user.key == null || user.secret == null) {
+        if (user == null || user.authentication == null
+            || user.authentication.key == null || user.authentication.secret == null) {
             return {};
         }
 
         const timestamp = +moment();
         const concat = `${method}/${path}${timestamp}`;
-        const sign = Crypto.createHmac('sha1', user.secret).update(concat).digest('hex');
+        const sign = Crypto.createHmac('sha1', user.authentication.secret).update(concat).digest('hex');
 
         return {
             timestamp,
             sign,
-            key: user.key,
+            key: user.authentication.key,
         };
     }
 }

@@ -68,10 +68,20 @@ module.exports = {
                 this.state = Object.assign({}, { elements: [], tab_active: -1, total: 0 });
             }
         },
+        start_collection(sink) {
+            const active_elements = this.state.elements.filter(e => e.a);
+            if (active_elements.length === 0) {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: [],
+                });
+            }
+        },
     },
 
     mounted() {
-        this.initialize();
+        this.initialize(this.form);
     },
 
     computed: {
@@ -82,7 +92,7 @@ module.exports = {
 
     watch: {
         current_state(s) {
-            this.dispatch(s, this);
+            this.dispatch(s, this, this.form);
         },
     },
 };

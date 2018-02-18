@@ -124,7 +124,7 @@ class Pipeline {
                 break;
             }
             case 'complete': {
-                ctx.request.body = await Completer(body, model.Completion);
+                ctx.request.body = await Completer(body, model.Completion, ctx.__md || {});
                 await next();
                 break;
             }

@@ -77,6 +77,7 @@ const Completion: Array<any> = [
             return { version: 1 };
         },
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
+        depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
     },
 ];
 

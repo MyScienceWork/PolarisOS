@@ -10,10 +10,10 @@
                         </figure>
                     </div>
                 </div> <!-- card image user profile -->
-                <h4 class="title is-4">{{user.firstname || ''}} {{user.lastname || ''}}</h4>
+                <h4 class="has-small-top-margin title is-4">{{user.firstname || ''}} {{user.lastname || ''}}</h4>
                 <h5 v-if="user.about_me" class="title is-5">{{lang('l_about_me')}}</h5>
                 <p v-if="user.about_me">{{user.about_me}}</p>
-                <h5 class="title is-5">{{lang('l_get_social')}}</h5>
+                <!--<h5 class="title is-5">{{lang('l_get_social')}}</h5>-->
             </div>
             <div class="column is-9">
                 <div class="card card-equal-height">
@@ -37,18 +37,84 @@
                     </div>
                     <div v-if="state.current_tab === 0"> <!-- overview -->
                         <div class="columns is-centered">
-                            <div class="column" v-if="last_deposits.length > 0">
-                                <h5 class="title is-5">{{lang('l_last_deposits')}}</h5>
-                                <last-deposits :items="[]" />  
+                            <div class="column">
+                                <h5 class="title is-5">{{lang('l_affiliation', {}, 'other')}}</h5>
+                                <article class="media" v-for="aff in affiliations">
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p>
+                                                <strong>{{lang(aff.institution)}}</strong>
+                                                <br />
+                                                <span v-if="aff.to">{{aff.from}} - {{aff.to}}</span>
+                                                <span v-else>{{lang('l_from')}} {{aff.from}}</span>
+                                                <br />
+                                                <small v-for="team in aff.teams">{{lang(team.name)}}<br /></small>
+                                                <small><strong>{{lang(aff.country)}}</strong></small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </article>
                             </div>
-                            <div class="column" v-else>
-                                <h5 class="has-text-centered title is-5">{{lang('l_no_deposits_yet')}}</h5>
+                        </div>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
+                                <div class="columns is-centered">
+                                    <div class="column is-10">
+                                        <search-bar 
+                                        :search-sink="state.sinks.creations.publication_search"
+                                        :default-search="search_param_in_query"
+                                        :use-favorites="false"
+                                        color="red"
+                                        placeholder="l_search_in_publications"
+                                        />
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="columns is-centered">
+                                    <div class="column">
+                                        <search-results 
+                                        :search-sink="state.sinks.creations.publication_search"
+                                        :result-sink="state.sinks.reads.publication"
+                                        :search-path="state.paths.reads.publication"
+                                        :search-query="search_publications_query"
+                                        search-type="publication"
+                                        :use-default-query="true"
+                                        :default-query="default_search_publications_query"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div v-else-if="state.current_tab === 1"> <!-- account -->
                     </div>
                     <div v-else-if="state.current_tab === 2"> <!-- my deposits -->
+                        <div class="columns is-centered">
+                            <div class="column is-10">
+                                <search-bar 
+                                    :search-sink="state.sinks.creations.deposit_search"
+                                    :default-search="search_param_in_query"
+                                    :use-favorites="false"
+                                    color="red"
+                                    placeholder="l_search_in_deposits"
+                                />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <search-results 
+                                :search-sink="state.sinks.creations.deposit_search"
+                                :result-sink="state.sinks.reads.deposit"
+                                :search-path="state.paths.reads.publication"
+                                :search-query="search_query"
+                                search-type="publication"
+                                :use-default-query="true"
+                                :default-query="default_search_query"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- card details -->
             </div>

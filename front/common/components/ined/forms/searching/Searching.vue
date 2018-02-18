@@ -62,9 +62,10 @@
             </div>
         </nav>
     <div class="columns is-centered" v-for="row in matrix_content">
-        <div class="column">
+        <div class="column"
+            v-for="(info, idx) in row" 
+        >
             <slot 
-                v-for="(info, idx) in row" 
                 name="search-result"
                 :id="idx"
                 :info="info"

@@ -5,7 +5,7 @@
             <form @submit.prevent="search">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
-                        <finput :default="defaultSearch" type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="searchSink" label="" />
+                        <finput :default="defaultSearch" type="text" :placeholder="lang(placeholder)" name="search" :form="searchSink" label="" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
@@ -15,7 +15,7 @@
                             <i class="fa fa-search fa-2x"></i>
                         </a>
                     </p>
-                    <p class="control">
+                    <p class="control" v-if="useFavorites">
                         <a class="icon has-text-warning is-large" :alt="lang('f_save_search')" :title="lang('f_save_search')">
                             <i class="fa fa-star-o fa-2x"></i>
                         </a>
@@ -26,7 +26,7 @@
     </div>
     <div class="columns">
         <div class="column">
-            <a href='' @click.prevent="state.showAdvanced = !state.showAdvanced" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
+            <a :class="`has-text-${color} swap`" href='' @click.prevent="state.showAdvanced = !state.showAdvanced" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
         </div>
     </div>
 </div>

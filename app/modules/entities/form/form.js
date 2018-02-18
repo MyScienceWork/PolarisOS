@@ -1,4 +1,5 @@
 // @flow
+const Logger = require('../../../logger');
 const ODM = require('../crud/odm');
 const EntitiesUtils = require('../../utils/entities');
 
@@ -33,21 +34,26 @@ class Form extends ODM {
             return obj;
         }, { });
 
-        const all_datasources = await Promise.all(Object.keys(datasources)
-        .map(ds => EntitiesUtils.search(ds, {
-            projection: Array.from(datasources[ds].projection),
-            size: 800,
-        })));
-
-        all_datasources.forEach((datasource) => {
-            if ('hits' in datasource.result) {
-                const indices = datasources[datasource.entity].indices;
-                indices.forEach((i) => {
-                    this._db.source.fields[i].datasource.content =
-                        datasource.result.hits.map(h => h.source);
+        for (const ds in datasources) {
+            try {
+                const datasource = await EntitiesUtils.search(ds, {
+                    projection: Array.from(datasources[ds].projection),
+                    size: 800,
+                    sort: [{ _uid: 'desc' }],
                 });
+
+                if ('hits' in datasource.result) {
+                    const indices = datasources[datasource.entity].indices;
+                    indices.forEach((i) => {
+                        this._db.source.fields[i].datasource.content =
+                            datasource.result.hits.map(h => h.source);
+                    });
+                }
+            } catch (err) {
+                Logger.error(`Unable to find datasource ${ds}`);
+                Logger.error(err);
             }
-        });
+        }
     }
 }
 

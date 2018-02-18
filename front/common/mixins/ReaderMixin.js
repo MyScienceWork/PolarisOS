@@ -73,13 +73,7 @@ module.exports = {
                 return;
             }
 
-            const req = requests[0];
-            this.$store.state.requests = requests.slice(1);
-            if (req.type === 'commit') {
-                this.$store.commit(req.name, req.content);
-            } else {
-                this.$store.dispatch(req.name, req.content);
-            }
+            this.execute_requests().then(() => {}).catch(err => console.error(err));
         },
     },
     mounted() {

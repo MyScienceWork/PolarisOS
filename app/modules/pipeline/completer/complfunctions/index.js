@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
 const CryptoUtils = require('../../../utils/crypto');
@@ -27,40 +28,54 @@ function denormalization(from_entity: string, from_path: string,
     const ENV = process.env.NODE_ENV || 'local';
 
     return async (object: Object, path: string, info: Object = {}) => {
-        const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'))];
+        const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'), false, true)];
+
         if (fentity_ids.length === 0) {
             return {};
         }
 
-        let fentitys = await Promise.all(fentity_ids.map(id => EntitiesUtils.retrieve(id, from_entity)));
-        fentitys = fentitys.filter(e => e != null);
-        if (fentitys.length === 0) {
-            return {};
+        console.log(fentity_ids);
+        let fentitys = [];
+        let values = [];
+        if (from_entity == null || from_entity === ''
+            || entity_path == null || entity_path === '') {
+            values = fentity_ids;
+        } else {
+            fentitys = await Promise.all(fentity_ids.map(id => EntitiesUtils.retrieve(id, from_entity)));
+            // fentitys = fentitys.filter(e => e != null);
+            if (fentitys.length === 0) {
+                return {};
+            }
+
+            /* let config = null;
+            if (translatable) {
+                config = await LangUtils.get_config(ENV);
+                }*/
+
+            const entity_segments = entity_path.split('.');
+            values = fentitys.map((e) => {
+                if (e == null) {
+                    return null;
+                }
+
+                const eobj = Utils.find_object_with_path(e.source, entity_segments);
+                if (eobj == null) {
+                    return eobj;
+                }
+                const last = entity_segments[entity_segments.length - 1];
+                const value = eobj[last];
+                if (flatten) {
+                    return value;
+                }
+                return { [last]: value };
+            });
         }
-
-        /* let config = null;
-        if (translatable) {
-            config = await LangUtils.get_config(ENV);
-            }*/
-
-        const entity_segments = entity_path.split('.');
-        const values = fentitys.map((e) => {
-            const eobj = Utils.find_object_with_path(e.source, entity_segments);
-            if (eobj == null) {
-                return eobj;
-            }
-            const last = entity_segments[entity_segments.length - 1];
-            const value = eobj[last];
-            if (flatten) {
-                return value;
-            }
-            return { [last]: value };
-        }).filter(v => v != null && Object.keys(v).length > 0);
 
         if (values.length === 0) {
             return {};
         }
 
+        console.log(values);
         let result = {};
         if (values.length === 1) {
             if (flatten) {
@@ -69,48 +84,13 @@ function denormalization(from_entity: string, from_path: string,
                 result = Utils.make_nested_object_from_path(path.split('.'), values);
             }
         } else {
-            result = Utils.make_nested_object_from_path(path.split('.'), values);
+            result = values.reduce((obj, v) => Utils.merge_with_concat(obj, Utils.make_nested_object_from_path(path.split('.'), v)), {});
+            console.log(JSON.stringify(result));
         }
+
         return result;
     };
 }
-
-/* function denormalization(mapping: String): Function {
-    const elements = mapping.split(',').map(e => e.trim()).filter(e => e != null && e !== '');
-    const parts = elements.map(e => e.split('->').map(se => se.trim()));
-    const _mapping = parts.reduce((arr, part) => {
-        if (part.length !== 2) {
-            return arr;
-        }
-
-        const input = part[0].split(':').map(p => p.trim());
-        if (input.length !== 2) {
-            return arr;
-        }
-        const output = part[1];
-        arr.push({ id: input[0], from: input[1], to: output[0] });
-        return arr;
-    }, []);
-
-    return async (object: Object, path: String, info: Object = {}) => {
-        const p = path.split('.');
-        let info = [...Utils.find_popvalue_with_path(object, p, true)];
-        if(info.length === 0){
-            return null;
-        }
-
-        info = info[0];
-        const last = p[p.length-1];
-        return _mapping.reduce((obj, mapp) => {
-            const id = mapp.id;
-            const populate = [...Utils.find_popvalue_with_path(info[last], id.split('.'))];
-            if(populate.length === 0){
-                return obj;
-            }
-
-        }, info)
-    };
-}*/
 
 module.exports = {
     generic_complete,

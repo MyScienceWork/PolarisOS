@@ -9,6 +9,7 @@ module.exports = {
                         roles: {
                             _id: 'role',
                         },
+                        author: 'author',
                     },
                 },
                 properties: {
@@ -64,6 +65,9 @@ module.exports = {
                                 type: 'keyword',
                             },
                         },
+                    },
+                    author: {
+                        type: 'keyword',
                     },
                     authentication: {
                         properties: {

@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const _ = require('lodash');
 const Messages = require('../api/messages');
 const Utils = require('../utils/utils');
@@ -71,9 +72,10 @@ module.exports = {
 
         const intersection = Object.keys(form.claims).filter(x => x in form.elements);
         const difference = Object.keys(form.elements).filter(x => !(x in form.claims));
-        console.log('collect difference', difference);
         if (intersection.length === Object.keys(form.elements).length && intersection.length > 0) {
-            form.state = 'completed';
+            Vue.nextTick(() => {
+                form.state = 'completed';
+            });
         }
     },
 

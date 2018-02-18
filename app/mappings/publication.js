@@ -14,6 +14,7 @@ module.exports = {
                             _id: 'contributor',
                         },
                         conference: 'conference',
+                        depositor: 'user',
                         editor: 'editor',
                         classification: {
                             _id: 'classification',
@@ -485,6 +486,9 @@ module.exports = {
                         type: 'keyword',
                     },
                     url: {
+                        type: 'keyword',
+                    },
+                    depositor: {
                         type: 'keyword',
                     },
                 },

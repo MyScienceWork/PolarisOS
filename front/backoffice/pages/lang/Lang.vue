@@ -4,14 +4,14 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title">List of language items</span>
+                <span slot="title">{{lang('l_list_language_items')}}</span>
                     <div slot="body">
                         <fsearching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.forms.rsink"
                             :search-path="state.rpath"
                             :search-query="search_query"
-                            :default-query-match-all="true"
+                            :use-default-query="true"
                             search-type="lang"
                         >
                             <widget slot="search-result" slot-scope="props">
