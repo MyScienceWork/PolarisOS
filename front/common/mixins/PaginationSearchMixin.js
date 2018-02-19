@@ -132,8 +132,8 @@ module.exports = {
             };
 
             let where = {};
-            if (this.state.seso_filter.length > 0) {
-                where.$and = this.state.seso_filter.reduce((arr, filter) => {
+            if (this.state.seso.filters.length > 0) {
+                where.$and = this.state.seso.filters.reduce((arr, filter) => {
                     arr.push(JSON.parse(filter));
                     return arr;
                 }, []);
@@ -145,7 +145,7 @@ module.exports = {
                 }
 
                 const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
-                if (this.state.seso_filter.length > 0) {
+                if (this.state.seso.filters.length > 0) {
                     where.$and.push(squery);
                 } else {
                     where = squery;
@@ -153,7 +153,7 @@ module.exports = {
                 body.where = where;
             } else {
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
-                if (this.state.seso_filter.length > 0) {
+                if (this.state.seso.filters.length > 0) {
                     where.$and.push(squery);
                 } else {
                     where = squery;
@@ -162,7 +162,7 @@ module.exports = {
             }
 
             if (content.search) {
-                const q = _.merge({}, this.$route.query, { s: content.search, seso_filter: this.state.seso_filter });
+                const q = _.merge({}, this.$route.query, { s: content.search, seso_filter: this.state.seso.filters });
                 this.$router.push({ query: q });
             }
 
@@ -223,7 +223,7 @@ module.exports = {
             this.changePage(np, op);
         },
         filters(nf) {
-            this.state.seso_filter = nf;
+            this.state.seso.filters = nf;
 
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);

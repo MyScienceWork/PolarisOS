@@ -4,6 +4,18 @@ const ODM = require('../crud/odm');
 const EntitiesUtils = require('../../utils/entities');
 
 class Form extends ODM {
+    static generate_sort(sort) {
+        if (!sort || sort.length === 0) {
+            return {};
+        }
+
+        const fc = sort[0];
+        if (fc === '-') {
+            return { [sort.slice(1)]: 'desc' };
+        }
+        return { [sort]: 'asc' };
+    }
+
     async post_read_hook(population: Array<String>) {
         await this._handle_population(population, true);
 
@@ -23,12 +35,14 @@ class Form extends ODM {
                 const name = field.datasource.name;
                 const label = field.datasource.label;
                 const value = field.datasource.value;
+                const sort = field.datasource.sort;
                 if (name in obj) {
                     obj[name].indices.push(i);
                     obj[name].projection.add(label);
                     obj[name].projection.add(value);
+                    obj[name].sort = sort;
                 } else {
-                    obj[name] = { indices: [i], projection: new Set([label, value]) };
+                    obj[name] = { indices: [i], projection: new Set([label, value]), sort };
                 }
             }
             return obj;
@@ -36,10 +50,12 @@ class Form extends ODM {
 
         for (const ds in datasources) {
             try {
+                const sort = Form.generate_sort(datasources[ds].sort);
+                console.log(sort);
                 const datasource = await EntitiesUtils.search(ds, {
                     projection: Array.from(datasources[ds].projection),
                     size: 800,
-                    sort: [{ _uid: 'desc' }],
+                    sort: [sort, { _uid: 'desc' }],
                 });
 
                 if ('hits' in datasource.result) {

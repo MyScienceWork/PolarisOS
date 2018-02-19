@@ -53,7 +53,12 @@ module.exports = {
         },
         initialize() {
             const form = this.$store.state.forms[this.form];
-            const object = Utils.find_value_with_path(form.content, this.name.split('.'));
+            let object = null;
+
+            if (form && 'content' in form) {
+                object = Utils.find_value_with_path(form.content, this.name.split('.'));
+            }
+
             if (object != null) {
                 if (object instanceof Array) {
                     this.state.elements = object.map((o, i) => ({ i, a: true }));

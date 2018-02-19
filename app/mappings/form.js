@@ -81,6 +81,10 @@ module.exports = {
                                     step: {
                                         type: 'integer',
                                     },
+                                    sort: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                 },
                             },
                             datasource: {
