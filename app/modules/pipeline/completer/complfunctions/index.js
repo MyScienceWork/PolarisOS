@@ -34,7 +34,6 @@ function denormalization(from_entity: string, from_path: string,
             return {};
         }
 
-        console.log(fentity_ids);
         let fentitys = [];
         let values = [];
         if (from_entity == null || from_entity === ''
@@ -75,7 +74,6 @@ function denormalization(from_entity: string, from_path: string,
             return {};
         }
 
-        console.log(values);
         let result = {};
         if (values.length === 1) {
             if (flatten) {
@@ -85,7 +83,6 @@ function denormalization(from_entity: string, from_path: string,
             }
         } else {
             result = values.reduce((obj, v) => Utils.merge_with_concat(obj, Utils.make_nested_object_from_path(path.split('.'), v)), {});
-            console.log(JSON.stringify(result));
         }
 
         return result;

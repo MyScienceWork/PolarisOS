@@ -13,7 +13,9 @@ module.exports = {
         searchQuery: { required: true, type: String },
         searchType: { required: true, type: String },
         useDefaultQuery: { default: false, type: Boolean }, // Run default query when typed_search === '' ?
-        defaultQuery: { default: '{}', type: String, required: false },
+        defaultQuery: { default: '{}', type: String },
+        filters: { default: () => [], type: Array },
+        searchWhenFiltersChange: { default: false, type: Boolean },
     },
     data() {
         return {
@@ -129,17 +131,38 @@ module.exports = {
                 sort: [],
             };
 
+            let where = {};
+            if (this.state.seso_filter.length > 0) {
+                where.$and = this.state.seso_filter.reduce((arr, filter) => {
+                    arr.push(JSON.parse(filter));
+                    return arr;
+                }, []);
+            }
+
             if ((!content.search || content.search.trim() === '')) {
                 if (!this.useDefaultQuery) {
                     return;
                 }
-                body.where = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
+
+                const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
+                if (this.state.seso_filter.length > 0) {
+                    where.$and.push(squery);
+                } else {
+                    where = squery;
+                }
+                body.where = where;
             } else {
-                body.where = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+                const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+                if (this.state.seso_filter.length > 0) {
+                    where.$and.push(squery);
+                } else {
+                    where = squery;
+                }
+                body.where = where;
             }
 
             if (content.search) {
-                const q = _.merge({}, this.$route.query, { s: content.search });
+                const q = _.merge({}, this.$route.query, { s: content.search, seso_filter: this.state.seso_filter });
                 this.$router.push({ query: q });
             }
 
@@ -171,6 +194,7 @@ module.exports = {
                 sort: this.get_information(q, 'seso_sort'),
                 order: this.get_information(q, 'seso_order'),
                 size: this.get_information(q, 'seso_size', 20),
+                filters: this.get_information(q, 'seso_filter', this.filters),
                 typed_search: this.get_information(q, 's', '').trim(),
             };
 
@@ -197,6 +221,13 @@ module.exports = {
     watch: {
         currentPage(np, op) {
             this.changePage(np, op);
+        },
+        filters(nf) {
+            this.state.seso_filter = nf;
+
+            if (this.searchWhenFiltersChange) {
+                this.send_information(this.searchSink);
+            }
         },
         current_state_search(s) {
             this.dispatch(s, this, this.searchSink);

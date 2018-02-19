@@ -26,7 +26,8 @@
                     :on-change="onChange"
                     :value="state.selected"
                     :placeholder="placeholder"
-                    :class="['input', {'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    :reset-on-options-change="resetOnOptionsChange"
+                    :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                 </v-select>
             </div> 

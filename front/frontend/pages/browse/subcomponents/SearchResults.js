@@ -3,11 +3,12 @@ const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
+const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlerbars = require('../../../../../app/modules/utils/templating');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin],
     props: {
     },
     data() {

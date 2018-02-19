@@ -2,13 +2,14 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const APIRoutes = require('../../../common/api/routes');
 const Auth = require('../../../common/utils/auth');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     components: {
         LastDeposits,
         SearchResults,

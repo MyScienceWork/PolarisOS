@@ -10,6 +10,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin],
     props: {
         navItems: { required: true, type: Array },
+        filters: { type: Array, default: () => [] },
     },
     data() {
         return {
@@ -68,17 +69,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.creations.selected);
             if ('browsing_terms' in content) {
                 const ids = content.browsing_terms.map(b => b._id);
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.search,
-                    path: APIRoutes.entity('publication', 'POST', true),
-                    body: {
-                        size: 50,
-                        where: {
-                            [this.query.b]: ids,
-                        },
-                    },
-                });
+                this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
             }
         },
     },
