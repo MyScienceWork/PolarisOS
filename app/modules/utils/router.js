@@ -55,6 +55,7 @@ function api_middlewares(type: string,
 function app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
     return [
+        Pipeline.memoize_model(type),
         Pipeline.check(type),
         Pipeline.transform(type),
         Pipeline.merge(type),
