@@ -457,9 +457,15 @@ class ODM {
                 ref = ref[0];
                 const last = path[path.length - 1];
                 for (const v of vals) {
-                    const result = await EntitiesUtils.retrieve(v[last],
-                        ref, '', propagate_population ? population.join(',') : '');
-                    v[last] = result != null ? result.source : {};
+                    if (ref === 'lang') {
+                        const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 1 } });
+                        const hits = EntitiesUtils.get_hits(result);
+                        v[last] = hits.length > 0 ? hits[0].source : {};
+                    } else {
+                        const result = await EntitiesUtils.retrieve(v[last],
+                            ref, '', propagate_population ? population.join(',') : '');
+                        v[last] = result != null ? result.source : {};
+                    }
                 }
             }
         }

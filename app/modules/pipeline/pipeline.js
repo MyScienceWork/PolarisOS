@@ -83,7 +83,7 @@ class Pipeline {
         return async function afunc(ctx: Object, next: Function): Promise<*> {
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
-            const model = await EntitiesUtils.get_model_from_type(type);
+            const model = ctx.__md.model;
             // console.log('validation: ', type, ' action:', m, ' method:', method);
 
             switch (m) {
@@ -143,6 +143,17 @@ class Pipeline {
         };
     }
 
+    static memoize_model(type: string): Function {
+        return async function afunc(ctx: Object, next: Function): Promise<*> {
+            const model = await EntitiesUtils.get_model_from_type(type);
+            if ('__md' in ctx) {
+                ctx.__md.model = model;
+            } else {
+                ctx.__md = { model };
+            }
+            await next();
+        };
+    }
 
     /**
      * Invoke the dispatcher to format the input
