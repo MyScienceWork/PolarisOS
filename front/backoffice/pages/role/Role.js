@@ -46,6 +46,7 @@ module.exports = {
             const content = this.mcontent(this.state.forms.rsink_entities);
             content.sort((a, b) => (a.type > b.type) - (a.type < b.type));
             // TODO make this WAY cleaner;
+            content.push({ type: 'publication' });
             content.push({ type: 'entity' });
             content.push({ type: 'form' });
             content.push({ type: 'pipeline' });
@@ -54,6 +55,13 @@ module.exports = {
             content.push({ type: 'function' });
             content.push({ type: 'lang' });
             content.push({ type: 'config' });
+            content.push({ type: 'importer' });
+            content.push({ type: 'exporter' });
+            content.push({ type: 'connector' });
+            content.push({ type: 'template' });
+            content.push({ type: 'menu' });
+            content.push({ type: 'widget' });
+            content.push({ type: 'page' });
             content.push({ type: 'overview' });
             return content;
         },

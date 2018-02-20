@@ -61,7 +61,7 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
         Pipeline.defaults(type),
         Pipeline.format(type),
         Pipeline.complete(type),
-        Pipeline.format(type),
+        // Pipeline.format(type),
         ...emiddlewares,
         Pipeline.validate(type),
     ];
