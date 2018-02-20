@@ -126,6 +126,14 @@
                                             type="text"
                                             :form="state.forms.csink"
                                             />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.range.sort`" 
+                                            :key="`${props.fname}.${props.id}.range.sort`" 
+                                            :label="lang('l_sort')"
+                                            :placeholder="lang('l_sort')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
                                             </hr>
                                             <h4 class="title h4">{{lang('l_use_datasource')}}</h4>
                                             <fselect 
@@ -151,6 +159,15 @@
                                             :label="lang('b_datasource_value')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_value')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.sort`" 
+                                            :key="`${props.fname}.${props.id}.datasource.sort`" 
+                                            :label="lang('l_sort')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_sort')"
                                             type="text"
                                             :form="state.forms.csink"
                                             />

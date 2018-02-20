@@ -43,7 +43,7 @@ module.exports = {
                     body: {
                         size: 500,
                         projection: [field.datasource.label, field.datasource.value],
-                        $where: {
+                        where: {
                             [field.datasource.label]: search,
                         },
                     },

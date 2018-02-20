@@ -7,7 +7,7 @@ module.exports = {
     props: {
         searchSink: { required: true, type: String },
         defaultSearch: { required: true, type: String },
-        useFavorites: { default: true, type: Boolean },
+        useFavorites: { default: false, type: Boolean },
         color: { default: 'purple' },
         placeholder: { default: 'f_search_in_archive', type: String },
     },

@@ -22,6 +22,7 @@
                     :multi="true"
                     :fieldLabel="label"
                     fieldValue="_id"
+                    :reset-on-options-change="true"
                 />
             </div> 
             <div class="control">

@@ -21,6 +21,8 @@ module.exports = {
         help: { required: false, default: '', type: String },
         viewValidationTexts: { required: false, default: true, type: Boolean },
         isAddon: { required: false, default: false, type: Boolean },
+        resetOnOptionsChange: { default: false, type: Boolean },
+        defaultValue: { default: null, required: false },
     },
     components: {
         'v-select': VSelect,
@@ -47,7 +49,7 @@ module.exports = {
             let info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
-                this.state.selected = null;
+                this.state.selected = this.defaultValue;
                 return;
             } else if (info instanceof Array) {
                 info = info.map((o) => {

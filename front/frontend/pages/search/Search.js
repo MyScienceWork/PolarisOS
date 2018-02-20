@@ -1,12 +1,13 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     components: {
         SearchBar,
         SearchResults,

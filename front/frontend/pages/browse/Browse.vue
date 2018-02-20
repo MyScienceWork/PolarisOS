@@ -1,19 +1,11 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns">
-            <div class="column">
-                <widget-search class="is-pulled-right" 
-                    :search_url="this.state.pread_path"
-                    :redirect_to_search="true"
-                    form="test_form" mode="on-side" />
-            </div>
-        </div>
         <div class="columns is-centered">
             <div class="column">
                 <div class="card card-equal-height info-card-purple info-card">
                     <div class="card-content">
-                        <category :nav-items="navs" /> 
+                        <category :filters.sync="state.filters" :nav-items="navs" /> 
                     </div>
                 </div>
             </div>
@@ -22,9 +14,14 @@
             <div class="column">
                 <div class="card info-card-purple">
                     <search-results 
-                        :search-sink="state.sinks.reads.search"
-                        :search-path="state.paths.reads.search"
-                        :search-query="state.queries.reads.search"
+                        :search-sink="state.sinks.creations.search"
+                        :result-sink="state.sinks.reads.publication"
+                        :search-path="state.paths.reads.publication"
+                        :filters="state.filters"
+                        :search-when-filters-change="true"
+                        :use-default-query="true"
+                        search-type="publication"
+                        search-query="{}"
                     />
                 </div>
             </div>

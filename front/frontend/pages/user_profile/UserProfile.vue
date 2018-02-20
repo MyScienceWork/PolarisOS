@@ -28,11 +28,11 @@
                             <li :class="{'is-active': state.current_tab === 2, 'is-red': true}">
                                 <a @click.prevent="update_tab(2)">{{lang('f_my_deposit', {}, 'other')}}</a>
                             </li>
-                            <li :class="{'is-active': state.current_tab === 3, 'is-red': true}">
+                            <!--<li :class="{'is-active': state.current_tab === 3, 'is-red': true}">
                                 <a @click.prevent="update_tab(3)">
                                     {{lang('f_registered_search', {}, 'other')}}
                                 </a>
-                            </li>
+                                </li>-->
                         </ul>
                     </div>
                     <div v-if="state.current_tab === 0"> <!-- overview -->

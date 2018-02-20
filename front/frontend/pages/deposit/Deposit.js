@@ -108,6 +108,7 @@ module.exports = {
                 path: this.state.typology.path,
                 body: {
                     size: 10000,
+                    sort: [{ order: 'asc' }, { _uid: 'desc' }],
                 },
             },
         });

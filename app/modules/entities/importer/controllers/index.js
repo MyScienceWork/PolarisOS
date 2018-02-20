@@ -1,6 +1,7 @@
 // @flow
-const EntitiesUtils = require('../../../utils/entities');
+const moment = require('moment');
 const request = require('superagent');
+const EntitiesUtils = require('../../../utils/entities');
 
 function import_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
@@ -33,6 +34,9 @@ async function import_information(ctx: Object): Promise<any> {
             number: message.issue || '',
             volume: message.volume || '',
             pagination: message.page || '',
+            ids: [
+                { _id: doi, type: 'doi' },
+            ],
         };
 
         if (message.title && message.title.length > 0) {
@@ -46,7 +50,23 @@ async function import_information(ctx: Object): Promise<any> {
         if (message.issued && message.issued['date-parts']
             && message.issued['date-parts'].length > 0) {
             const issued = message.issued['date-parts'][0].filter(i => i != null);
-            ctx.body.dates = { publication: issued.join('-') };
+            let format = 'YYYY';
+            if (issued.length >= 2) {
+                format += '-MM';
+            }
+            if (issued.length >= 3) {
+                format += '-DD';
+            }
+
+            ctx.body.dates = { publication: +moment(issued.join('-'), format) };
+        }
+
+        if (message.ISBN) {
+            message.ISBN.map(isbn => ctx.body.ids.push({ _id: isbn, type: 'isbn' }));
+        }
+
+        if (message['container-title'] && message['container-title'].length > 0) {
+            ctx.body.publication_title = message['container-title'][0].trim();
         }
         return;
     }
