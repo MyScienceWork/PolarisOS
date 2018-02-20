@@ -3,17 +3,24 @@ const _ = require('lodash');
 const Joi = require('joi');
 const LangMapping = require('../../../../mappings/lang');
 const MMapping = require('../../crud/mapping');
+const ValFunctions = require('../../../pipeline/validator/valfunctions');
 
 const Mapping: Object = LangMapping.msw
-    .mappings.lang.properties;
+.mappings.lang.properties;
+
+const valuesSchema = Joi.object({
+    value: Joi.string().required().label('Translation'),
+    quantity: Joi.any().valid(['0', '1', '2', 'few', 'many', 'other', 'n/a']).required().label('Quantity'),
+});
 
 const Validation: Array<any> = [
     Joi.object({
         key: Joi.string().required().label('Key'),
-        values: Joi.array().min(1).items(Joi.any().required()).label('Text/Quantity'),
+        values: Joi.array().min(1).items(valuesSchema).required().label('Translation/Quantity'),
         parts: Joi.array().min(1).items(Joi.any().required()).label('Parts'),
         lang: Joi.string().required().label('Lang'),
     }),
+    ValFunctions.checks.is_unique('key', 'lang', [{ lang: '{{lang}}' }]),
 ];
 
 const Formatting: Array<any> = [

@@ -31,6 +31,12 @@ module.exports = {
                             projects: {
                                 _id: 'project',
                             },
+                            anr_projects: {
+                                _id: 'anr_project',
+                            },
+                            european_projects: {
+                                _id: 'european_project',
+                            },
                             rights: {
                                 license: 'license',
                                 access: 'publication_access',
@@ -176,6 +182,32 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    anr_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            name: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    european_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            name: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                     surveys: {
                                         type: 'nested',
                                         properties: {
@@ -287,6 +319,22 @@ module.exports = {
                         properties: {
                             internal_collection: { type: 'keyword' },
                             projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            anr_projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            european_projects: {
                                 type: 'nested',
                                 properties: {
                                     _id: {

@@ -30,11 +30,11 @@
                         <b-dropdown-item has-link>
                             <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=2`">{{lang('f_my_deposit', {}, 'other')}}</router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item has-link>
+                        <!--<b-dropdown-item has-link>
                             <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=3`">
                                 {{lang('f_registered_search', {}, 'other')}}
                             </router-link>
-                        </b-dropdown-item>
+                            </b-dropdown-item>-->
                         <b-dropdown-item has-link>
                             <a class="dropdown-item" @click="logout">
                                 {{lang('f_logout')}}

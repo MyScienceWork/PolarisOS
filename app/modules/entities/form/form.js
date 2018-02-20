@@ -51,7 +51,6 @@ class Form extends ODM {
         for (const ds in datasources) {
             try {
                 const sort = Form.generate_sort(datasources[ds].sort);
-                console.log(sort);
                 const datasource = await EntitiesUtils.search(ds, {
                     projection: Array.from(datasources[ds].projection),
                     size: 800,
