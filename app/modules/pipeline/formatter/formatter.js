@@ -21,7 +21,7 @@ async function formatting(object: Object, func: Function, key: string) {
         for (const i in results) {
             const result = results[i];
             const outer_object = outer_objects[i];
-            outer_object[last] = await func(result, object);
+            outer_object[last] = await func(result, object, key);
         }
     }
     return object;

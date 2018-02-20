@@ -5,14 +5,24 @@ const FormMapping = require('../../../../mappings/form');
 const MMapping = require('../../crud/mapping');
 const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
+const ValFunctions = require('../../../pipeline/validator/valfunctions/index');
 
 const Mapping: Object = FormMapping.msw
-    .mappings.form.properties;
+.mappings.form.properties;
+
+const fieldsSchema = Joi.object({
+    type: Joi.string().required().label('Type'),
+    name: Joi.string().required().label('Name'),
+    order: Joi.number().required().min(1).label('Order'),
+});
 
 const Validation: Array<any> = [
     Joi.object({
-
+        name: Joi.string().required().label('Name'),
+        label: Joi.string().required().label('Label'),
+        fields: Joi.array().min(1).items(fieldsSchema).required().label('Fields'),
     }),
+    ValFunctions.checks.is_unique('name', 'form', []),
 ];
 
 const Formatting: Array<any> = [

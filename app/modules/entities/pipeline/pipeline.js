@@ -66,9 +66,12 @@ class Pipeline extends ODM {
                     });
                 }
 
+                const args = f.function.arguments;
                 switch (f.function.name) {
                 case 'oarray_to_array':
                     return { [f.field]: a => FormatFunctions.oarray_to_array(a) };
+                case 'generic_formatter':
+                    return { [f.field]: (a, o, k) => FormatFunctions.generic_formatter(args[0].value)(a, o, k) };
                 default:
                     return null;
                 }
@@ -91,7 +94,7 @@ class Pipeline extends ODM {
                 const args = f.function.arguments;
                 switch (f.function.name) {
                 case 'generic_complete':
-                    return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(f.function.arguments[0].value)(o, p, i) };
+                    return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(args[0].value)(o, p, i) };
                 case 'key_complete':
                     return { [f.field]: (o, p, i) => ComplFunctions.key_complete(o, p, i) };
                 case 'secret_complete':

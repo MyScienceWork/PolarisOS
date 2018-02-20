@@ -68,6 +68,37 @@ async function import_information(ctx: Object): Promise<any> {
         if (message['container-title'] && message['container-title'].length > 0) {
             ctx.body.publication_title = message['container-title'][0].trim();
         }
+
+        if (message.ISSN && message.ISSN.length > 0) {
+            const journal_search = await EntitiesUtils.search('journal', { where: { 'ids.value': message.ISSN }, projection: [] });
+            const hits = EntitiesUtils.get_hits(journal_search);
+
+            if (hits.length > 0) {
+                ctx.body.journal = hits[0].id;
+            }
+        }
+
+        if (message['publisher-location']) {
+            ctx.body.localisation = {
+                city: message['publisher-location'].trim(),
+            };
+        }
+
+        if (message.publisher && message.publisher.trim() !== '') {
+            const publisher = message.publisher.trim();
+            const editor_search = await EntitiesUtils.search('editor',
+                { where: { label: { $match: { query: publisher, minimum_should_match: '100%' } } } });
+            const hits = EntitiesUtils.get_hits(editor_search);
+
+            if (hits.length > 0) {
+                ctx.body.editor = hits[0].id;
+            } else {
+                const editor_result = await EntitiesUtils.create({ label: publisher }, 'editor');
+                if (editor_result) {
+                    ctx.body.editor = editor_result.id;
+                }
+            }
+        }
         return;
     }
     ctx.body = {};

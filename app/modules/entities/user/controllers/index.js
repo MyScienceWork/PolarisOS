@@ -32,9 +32,7 @@ async function authenticate(ctx: Object) {
 
     // let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
 
-    let hpassword = Crypto.createHash('sha1').update(password).digest('hex');
-    // HACK TODO
-    hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex'); // As the formatter is called twice, we need to apply the hashing twice...
+    const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
 
     if (hpassword === db.password) {
         // info.set('force_deconnection', false);

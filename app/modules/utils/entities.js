@@ -355,6 +355,18 @@ async function remove(id: string, type: string): Promise<*> {
     return [odm, obj];
 }
 
+function get_hits(result) {
+    if ('hits' in result) {
+        return result.hits;
+    }
+
+    if ('result' in result && 'hits' in result.result) {
+        return result.result.hits;
+    }
+
+    return [];
+}
+
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
@@ -365,3 +377,4 @@ module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
+module.exports.get_hits = get_hits;
