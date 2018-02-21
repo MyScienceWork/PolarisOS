@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-
+const Errors = require('../exceptions/errors');
 
 function hasProperty(obj: Object, key: string | number): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
@@ -210,6 +210,9 @@ function make_nested_object_from_path(path: Array<string>,
     return rpath.reduce((acc, field) => {
         if (Object.keys(acc).length === 0) {
             if (field === '*') {
+                if (value instanceof Array) {
+                    return value;
+                }
                 return [value];
             }
             acc[field] = value;
@@ -225,6 +228,44 @@ function make_nested_object_from_path(path: Array<string>,
     }, obj);
 }
 
+async function traverse_and_execute(object: Object, path: Array<string>,
+        f: Function, keep_last: boolean = true): any {
+    if (path.length === 0) {
+        const info = _return_inner_object(object);
+        const result = await f(info);
+        return result;
+    }
+
+    const key = path[0];
+    const idx = parseInt(key, 10);
+
+    if (object instanceof Array) {
+        if (isNaN(idx)) {
+            const new_array = [];
+            for (const i in object) {
+                const result = await traverse_and_execute(object[i], path, f, keep_last);
+                new_array.push(result);
+            }
+            return new_array;
+        } else if (key < object.length) {
+            const result = await traverse_and_execute(object[key],
+                path.slice(1), f, keep_last);
+            return [result];
+        }
+    } else if (object != null && hasProperty(object, key)) {
+        const result = await traverse_and_execute(object[key], path.slice(1), f, keep_last);
+        if (path.length === 1 && !keep_last) {
+            return result;
+        }
+        return { [key]: result };
+    } else {
+        if (keep_last) {
+            return { [key]: null };
+        }
+        return null;
+    }
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -234,5 +275,6 @@ module.exports = {
     merge_with_concat,
     merge_with_superposition,
     find_popvalue_with_path,
+    traverse_and_execute,
     make_nested_object_from_path,
 };

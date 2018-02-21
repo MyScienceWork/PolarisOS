@@ -97,4 +97,7 @@ module.exports = {
      */
     UnableToCreateEntity: new GenericError('UnableToCreateEntity', new Error('Unable to create entity'), 422),
 
+    PathDoesNotExist: new GenericError('PathDoesNotExist',
+        new Error('Path does not exist'), 422),
+
 };

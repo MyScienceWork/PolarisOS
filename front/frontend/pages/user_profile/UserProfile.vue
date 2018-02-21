@@ -43,20 +43,20 @@
                                     <div class="media-content">
                                         <div class="content">
                                             <p>
-                                                <strong>{{lang(aff.institution)}}</strong>
+                                                <strong>{{lang(aff.institution.name)}}</strong>
                                                 <br />
                                                 <span v-if="aff.to">{{aff.from}} - {{aff.to}}</span>
                                                 <span v-else>{{lang('l_from')}} {{aff.from}}</span>
                                                 <br />
-                                                <small v-for="team in aff.teams">{{lang(team.name)}}<br /></small>
-                                                <small><strong>{{lang(aff.country)}}</strong></small>
+                                                <small v-for="team in aff.teams">{{lang(team._id)}}<br /></small>
+                                                <small><strong>{{lang(aff.institution.country)}}</strong></small>
                                             </p>
                                         </div>
                                     </div>
                                 </article>
                             </div>
                         </div>
-                        <div class="columns is-centered">
+                        <div class="columns is-centered" v-if="this.author">
                             <div class="column">
                                 <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
                                 <div class="columns is-centered">

@@ -36,12 +36,14 @@ module.exports = {
                     },
                     reads: {
                         user: APIRoutes.entity('user', 'POST', true),
+                        author: APIRoutes.entity('author', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 current_tab: 0,
                 loggedIn: true,
                 last_deposits_number: 10,
+                author_mode: false,
             },
         };
     },
@@ -68,11 +70,27 @@ module.exports = {
     },
     computed: {
         user() {
+            if (this.state.author_mode) {
+                const content = this.fcontent(this.state.sinks.reads.user);
+                if (content instanceof Array && content.length > 0) {
+                    return { author: content[0],
+                        firstname: content[0].firstname,
+                        lastname: content[0].lastname,
+                        fullname: content[0].fullname };
+                }
+                return {};
+            }
             const content = this.fcontent(this.state.sinks.reads.user);
             if (content instanceof Array && content.length > 0) {
                 return content[0];
             }
             return {};
+        },
+        author() {
+            if (this.user.author) {
+                return this.user.author;
+            }
+            return null;
         },
         affiliations() {
             const author = this.user.author;
@@ -155,21 +173,37 @@ module.exports = {
             });
         },
     },
+    beforeMount() {
+        this.state.author_mode = this.$route.matched[0].path === '/a/:id/profile';
+    },
     mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.user,
-            path: this.state.paths.reads.user,
-            body: {
-                where: {
-                    'authentication.key': this.$route.params.id,
+        if (this.state.author_mode) {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user,
+                path: this.state.paths.reads.author,
+                body: {
+                    where: {
+                        $$ids: { values: [this.$route.params.id] },
+                    },
+                    size: 1,
                 },
-                size: 1,
-                population: ['author'],
-            },
-        });
+            });
+        } else {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user,
+                path: this.state.paths.reads.user,
+                body: {
+                    where: {
+                        'authentication.key': this.$route.params.id,
+                    },
+                    size: 1,
+                    population: ['author'],
+                },
+            });
+        }
 
-        Auth.loggedIn('my_user', ['r', 'c', 'u']).then((ok) => {
-            // this.state.loggedIn = ok;
+        Auth.loggedIn('my_user', ['r', 'u']).then((ok) => {
+            this.state.loggedIn = ok && Auth.user_id() === this.$route.params.id;
             if (this.state.loggedIn && this.$route.query.t) {
                 this.switch_tab(this.$route.query.t);
             }

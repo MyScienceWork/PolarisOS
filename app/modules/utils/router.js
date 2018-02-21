@@ -125,7 +125,7 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
     ]);
 }
 
-function generate_get_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_gets_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
     const get_mware = get_middlewares(type);
 
     router.get(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
@@ -141,6 +141,10 @@ function generate_get_routes(router: KoaRouter, prefix: string, type: string, em
     router.post(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${prefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+}
+
+function generate_get_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const get_mware = get_middlewares(type);
 
     router.get(`${prefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
 
@@ -170,6 +174,7 @@ function generate_post_routes(router: KoaRouter, prefix: string, type: string, e
 function generate_entity_routes(router: KoaRouter,
     type: string, emiddlewares: Array<Function>) {
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
+    generate_gets_routes(router, puprefix, type, emiddlewares);
     generate_get_routes(router, puprefix, type, emiddlewares);
     generate_del_routes(router, puprefix, type, emiddlewares);
     generate_post_routes(router, puprefix, type, emiddlewares);
@@ -177,6 +182,7 @@ function generate_entity_routes(router: KoaRouter,
 }
 
 exports.generate_entity_routes = generate_entity_routes;
+exports.generate_gets_routes = generate_gets_routes;
 exports.generate_get_routes = generate_get_routes;
 exports.generate_del_routes = generate_del_routes;
 exports.generate_post_routes = generate_post_routes;
