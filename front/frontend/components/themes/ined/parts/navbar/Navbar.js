@@ -6,7 +6,7 @@ module.exports = {
     data() {
         return {
             state: {
-                routes: this.$router.options.routes.filter(r => r.navbar),
+                routes: [],
                 colors: ['red', 'purple', 'orange', 'blue', 'brown', 'green'],
             },
         };
@@ -25,10 +25,12 @@ module.exports = {
             }
             return -1;
         },
+        routes() {
+        },
     },
-    mounted() {
-        /* console.log(this.$route);
-        console.log(this.$router.options.routes);
-        console.log(this.active_idx, this.state.colors);*/
+    beforeMount() {
+        const rs = this.$router.options.routes.filter(r => r.navbar);
+        rs.sort((r1, r2) => (r1.meta.menu_item - r2.meta.menu_item));
+        this.state.routes = rs;
     },
 };

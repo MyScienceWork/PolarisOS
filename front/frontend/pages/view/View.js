@@ -43,7 +43,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.reads.item);
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
-                item.html = Handlebars.compile(item.denormalization.template)(item);
+                item.html = Handlebars.compile(item.denormalization.type.template)(item);
                 return item;
             }
             return content;

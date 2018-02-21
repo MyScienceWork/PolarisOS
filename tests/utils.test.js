@@ -24,6 +24,18 @@ const obj = {
                 code: 'DE',
             },
         ],
+        embedded: [
+            {
+                em: [{
+                    title: 'French',
+                }, { title: 'German' }],
+            },
+            {
+                em: [{
+                    title: 'English',
+                }],
+            },
+        ],
     },
     langs: ['FR', 'DE', 'EN'],
 };
@@ -183,7 +195,6 @@ describe('Utils#find_popvalue_with_path', () => {
         const path = 'address.langs.frname';
         const results = [...utils.find_popvalue_with_path(obj, path.split('.'), false, true)];
         results.should.have.lengthOf(2);
-        console.log(results);
     });
 });
 
@@ -303,5 +314,142 @@ describe('Utils#merge_with_superposition', () => {
         result.test[0].should.have.property('yep', 'nok');
         result.test[1].should.have.property('second', 'ok');
         result.test[1].should.have.property('second_nope', 'ok');
+    });
+});
+
+describe('Utils#traverse_and_execute', () => {
+    const func = async o => o;
+    const func2 = async o => 'ok';
+
+    it('should generate as many paths as necessary for unexplicited array', async () => {
+        const path = 'address.langs.title';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+
+        results.should.deep.equal({ address: { langs: [{ title: 'French' }, { title: 'German' }] } });
+    });
+
+    it('should be empty when path is inexact', async () => {
+        const path = 'address.langs.title.test';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+
+        results.should.deep.equal({ address: { langs: [{ title: { test: null } }, { title: { test: null } }] } });
+    });
+
+    it('should generate one element if array index is specified', async () => {
+        const path = 'address.langs.0.title';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+        results.should.deep.equal({ address: { langs: [{ title: 'French' }] } });
+    });
+
+    it('should generate one object if array index is specified', async () => {
+        const path = 'address.langs.0';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+        results.should.deep.equal({ address: { langs: [{ title: 'French', code: 'FR', frname: 'Français' }] } });
+    });
+
+    it('should not return an empty generator when the field is null or undefined', async () => {
+        const path = 'address.zipcode_null';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+        results.should.deep.equal({ address: { zipcode_null: null } });
+
+        const path_2 = 'address.zipcode_undefined';
+        const results_2 = await utils.traverse_and_execute(obj, path.split('.'), func);
+        results.should.deep.equal({ address: { zipcode_null: null } });
+    });
+
+    it('should keep the structure of embedded arrays', async () => {
+        const path = 'address.embedded.em.title';
+        const results = await utils.traverse_and_execute(obj, path.split('.'), func);
+        results.should.deep.equal({ address: { embedded: [{ em: [{ title: 'French' }, { title: 'German' }] }, { em: [{ title: 'English' }] }] } });
+    });
+});
+
+describe('Utils#merge_with_remplacement', () => {
+    it('should merge into source not the other way around', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement(source, defaults);
+        result.should.have.property('title', 'Test');
+        result.should.have.property('authors');
+        result.authors.should.have.lengthOf(2);
+        result.should.have.property('lang', 'EN');
+        result.should.have.property('version', 1);
+        result.should.have.property('default_array');
+        result.default_array.should.have.lengthOf(2);
+    });
+
+    it('should mutate first object, but not subsequent ones', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+
+        source.should.not.have.property('version');
+        source.should.not.have.property('lang', 'EN');
+        source.should.have.property('lang', 'FR');
+
+        defaults.should.not.have.property('title');
+        defaults.should.not.have.property('lang', 'FR');
+        defaults.should.have.property('lang', 'EN');
+
+        result.should.have.property('title', 'Test');
+        result.should.have.property('authors');
+        result.authors.should.have.lengthOf(2);
+        result.should.have.property('lang', 'EN');
+        result.should.have.property('version', 1);
+        result.should.have.property('default_array');
+        result.default_array.should.have.lengthOf(2);
+    });
+
+    it('should replace arrays', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+            default_array: ['dac'],
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+
+        source.default_array.should.have.lengthOf(1);
+        defaults.default_array.should.have.lengthOf(2);
+        result.default_array.should.have.lengthOf(2);
     });
 });

@@ -159,6 +159,8 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return 'validate';
+            } else if (this.is_review_mode) {
+                return 'update';
             }
             return 'default';
         },

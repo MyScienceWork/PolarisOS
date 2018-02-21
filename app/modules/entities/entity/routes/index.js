@@ -11,6 +11,7 @@ function routes(router: KoaRouter) {
     const type = 'entity';
     const puprefix = `${config.api.public.prefix}/${config.api.public.version}`;
 
+    RouterUtils.generate_gets_routes(router, puprefix, type, []);
     RouterUtils.generate_get_routes(router, puprefix, type, []);
     RouterUtils.generate_del_routes(router, puprefix, type, []);
     RouterUtils.generate_put_routes(router, puprefix, type, []);

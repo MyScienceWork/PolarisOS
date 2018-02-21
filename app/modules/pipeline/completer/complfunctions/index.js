@@ -27,65 +27,38 @@ function denormalization(from_entity: string, from_path: string,
         entity_path: string, flatten: boolean, translatable: boolean): Function {
     const ENV = process.env.NODE_ENV || 'local';
 
+
     return async (object: Object, path: string, info: Object = {}) => {
-        const fentity_ids = [...Utils.find_popvalue_with_path(object, from_path.split('.'), false, true)];
-
-        if (fentity_ids.length === 0) {
-            return {};
-        }
-
-        let fentitys = [];
-        let values = [];
-        if (from_entity == null || from_entity === ''
-            || entity_path == null || entity_path === '') {
-            values = fentity_ids;
-        } else {
-            fentitys = await Promise.all(fentity_ids.map(id => EntitiesUtils.retrieve(id, from_entity)));
-            // fentitys = fentitys.filter(e => e != null);
-            if (fentitys.length === 0) {
-                return {};
+        const func = (nr, from, eseg, flat) => async (id) => {
+            if (!id) {
+                return null;
             }
-
-            /* let config = null;
-            if (translatable) {
-                config = await LangUtils.get_config(ENV);
-                }*/
-
-            const entity_segments = entity_path.split('.');
-            values = fentitys.map((e) => {
-                if (e == null) {
+            if (nr) {
+                const e = await EntitiesUtils.retrieve(id, from);
+                const eobj = Utils.find_object_with_path(e.source, eseg);
+                if (eobj == null) {
                     return null;
                 }
-
-                const eobj = Utils.find_object_with_path(e.source, entity_segments);
-                if (eobj == null) {
-                    return eobj;
-                }
-                const last = entity_segments[entity_segments.length - 1];
+                const last = eseg[eseg.length - 1];
                 const value = eobj[last];
-                if (flatten) {
+                if (flat) {
                     return value;
                 }
                 return { [last]: value };
-            });
-        }
-
-        if (values.length === 0) {
-            return {};
-        }
-
-        let result = {};
-        if (values.length === 1) {
-            if (flatten) {
-                result = Utils.make_nested_object_from_path(path.split('.'), values[0]);
-            } else {
-                result = Utils.make_nested_object_from_path(path.split('.'), values);
             }
-        } else {
-            result = values.reduce((obj, v) => Utils.merge_with_concat(obj, Utils.make_nested_object_from_path(path.split('.'), v)), {});
-        }
+            return id;
+        };
 
-        return result;
+        const need_to_retrieve = from_entity != null && from_entity.trim() !== ''
+            && entity_path != null && entity_path.trim() !== '';
+        const entity_segments = entity_path.split('.');
+
+        const from_path_segments = from_path.split('.');
+        const result = await Utils.traverse_and_execute(object, from_path_segments,
+                func(need_to_retrieve, from_entity, entity_segments, flatten));
+        console.log('denorm');
+        console.log(JSON.stringify(result));
+        return { denormalization: result };
     };
 }
 

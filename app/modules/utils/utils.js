@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-
+const Errors = require('../exceptions/errors');
 
 function hasProperty(obj: Object, key: string | number): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
@@ -159,33 +159,26 @@ function forge_whitelist_blacklist_query(lists: Object): Object {
 }
 
 
-function merge_with_replacement(object: Object, source: Object): Object {
-    return Object.keys(source).reduce((obj, key) => {
-        if (key in obj) {
-            if (obj[key] instanceof Array) {
-                obj[key] = source[key]; // Replace with new array
-            } else if (obj[key] instanceof Object) {
-                obj[key] = merge_with_replacement(obj[key], source[key]);
-            } else {
-                obj[key] = source[key];
-            }
-        } else {
-            obj[key] = source[key];
+function merge_with_replacement(object: Object, ...sources): Object {
+    function customizer(objValue, srcValue) {
+        if (_.isArray(objValue)) {
+            objValue = srcValue;
+            return objValue;
         }
-        return obj;
-    }, object);
+    }
+    return _.mergeWith(object, ...sources, customizer);
 }
 
-function merge_with_concat(source: Object, ...values) {
+function merge_with_concat(object: Object, ...sources) {
     function customizer(objValue, srcValue) {
         if (_.isArray(objValue)) {
             return objValue.concat(srcValue);
         }
     }
-    return _.mergeWith(source, ...values, customizer);
+    return _.mergeWith(object, ...sources, customizer);
 }
 
-function merge_with_superposition(source: Object, ...values) {
+function merge_with_superposition(object: Object, ...sources) {
     function customizer(objValue, srcValue) {
         if (_.isArray(objValue)) {
             if (_.isArray(srcValue)) {
@@ -201,7 +194,7 @@ function merge_with_superposition(source: Object, ...values) {
             return objValue.concat(srcValue);
         }
     }
-    return _.mergeWith(source, ...values, customizer);
+    return _.mergeWith(object, ...sources, customizer);
 }
 
 function make_nested_object_from_path(path: Array<string>,
@@ -210,6 +203,9 @@ function make_nested_object_from_path(path: Array<string>,
     return rpath.reduce((acc, field) => {
         if (Object.keys(acc).length === 0) {
             if (field === '*') {
+                if (value instanceof Array) {
+                    return value;
+                }
                 return [value];
             }
             acc[field] = value;
@@ -225,6 +221,44 @@ function make_nested_object_from_path(path: Array<string>,
     }, obj);
 }
 
+async function traverse_and_execute(object: Object, path: Array<string>,
+        f: Function, keep_last: boolean = true): any {
+    if (path.length === 0) {
+        const info = _return_inner_object(object);
+        const result = await f(info);
+        return result;
+    }
+
+    const key = path[0];
+    const idx = parseInt(key, 10);
+
+    if (object instanceof Array) {
+        if (isNaN(idx)) {
+            const new_array = [];
+            for (const i in object) {
+                const result = await traverse_and_execute(object[i], path, f, keep_last);
+                new_array.push(result);
+            }
+            return new_array;
+        } else if (key < object.length) {
+            const result = await traverse_and_execute(object[key],
+                path.slice(1), f, keep_last);
+            return [result];
+        }
+    } else if (object != null && hasProperty(object, key)) {
+        const result = await traverse_and_execute(object[key], path.slice(1), f, keep_last);
+        if (path.length === 1 && !keep_last) {
+            return result;
+        }
+        return { [key]: result };
+    } else {
+        if (keep_last) {
+            return { [key]: null };
+        }
+        return null;
+    }
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -234,5 +268,6 @@ module.exports = {
     merge_with_concat,
     merge_with_superposition,
     find_popvalue_with_path,
+    traverse_and_execute,
     make_nested_object_from_path,
 };

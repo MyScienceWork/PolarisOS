@@ -63,6 +63,7 @@ module.exports = {
             content.push({ type: 'widget' });
             content.push({ type: 'page' });
             content.push({ type: 'overview' });
+            content.push({ type: 'my_user' });
             return content;
         },
     },

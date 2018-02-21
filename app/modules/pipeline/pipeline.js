@@ -64,11 +64,11 @@ class Pipeline {
      * @return merged object
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement(defaults, input);
+        return Utils.merge_with_replacement({}, defaults, input);
     }
 
     static _merge_put(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement(defaults, input);
+        return Utils.merge_with_replacement({}, defaults, input);
     }
 
     /**
@@ -107,6 +107,8 @@ class Pipeline {
             }
             case 'defaults': {
                 ctx.request.body = Pipeline._merge_defaults(body, model.Defaults);
+                console.log('defaults');
+                console.log(JSON.stringify(ctx.request.body));
                 await next();
                 break;
             }
