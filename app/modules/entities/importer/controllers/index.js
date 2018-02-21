@@ -99,6 +99,19 @@ async function import_information(ctx: Object): Promise<any> {
                 }
             }
         }
+
+        if (message.author && message.author.length > 0) {
+            const author_search_promises = message.author.map((a) => {
+                const name = `${a.given} ${a.family}`;
+                return EntitiesUtils.search('author',
+                        { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
+            });
+
+            let results = await Promise.all(author_search_promises);
+            results = results.map(r => EntitiesUtils.get_hits(r))
+            .filter(r => r != null && r.length > 0);
+            ctx.body.authors = results.map(r => ({ _id: r[0].id }));
+        }
         return;
     }
     ctx.body = {};
