@@ -27,34 +27,37 @@ function denormalization(from_entity: string, from_path: string,
         entity_path: string, flatten: boolean, translatable: boolean): Function {
     const ENV = process.env.NODE_ENV || 'local';
 
-    const func = (nr, from, eseg, flat) => async (id) => {
-        if (!id) {
-            return null;
-        }
-        if (nr) {
-            const e = await EntitiesUtils.retrieve(id, from);
-            const eobj = Utils.find_object_with_path(e.source, eseg);
-            if (eobj == null) {
-                return null;
-            }
-            const last = eseg[eseg.length - 1];
-            const value = eobj[last];
-            if (flat) {
-                return value;
-            }
-            return { [last]: value };
-        }
-        return id;
-    };
 
     return async (object: Object, path: string, info: Object = {}) => {
+        const func = (nr, from, eseg, flat) => async (id) => {
+            if (!id) {
+                return null;
+            }
+            if (nr) {
+                const e = await EntitiesUtils.retrieve(id, from);
+                const eobj = Utils.find_object_with_path(e.source, eseg);
+                if (eobj == null) {
+                    return null;
+                }
+                const last = eseg[eseg.length - 1];
+                const value = eobj[last];
+                if (flat) {
+                    return value;
+                }
+                return { [last]: value };
+            }
+            return id;
+        };
+
         const need_to_retrieve = from_entity != null && from_entity.trim() !== ''
             && entity_path != null && entity_path.trim() !== '';
         const entity_segments = entity_path.split('.');
 
         const from_path_segments = from_path.split('.');
         const result = await Utils.traverse_and_execute(object, from_path_segments,
-            func(need_to_retrieve, from_entity, entity_segments, flatten));
+                func(need_to_retrieve, from_entity, entity_segments, flatten));
+        console.log('denorm');
+        console.log(JSON.stringify(result));
         return { denormalization: result };
     };
 }

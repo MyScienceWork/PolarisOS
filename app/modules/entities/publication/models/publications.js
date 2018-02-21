@@ -56,17 +56,44 @@ const Formatting: Array<any> = [
 const Completion: Array<any> = [
     {
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
+    },
+    {
+        'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', '_id', false),
+    },
+    {
         'denormalization.classifications': ComplFunctions.denormalization('subject', 'classifications._id', 'label', false),
+    },
+    {
         'denormalization.contributors': ComplFunctions.denormalization('contributor', 'contributors._id', 'fullname', false),
+    },
+    {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
+    },
+    {
         'denormalization.diffusion.anr_projects': ComplFunctions.denormalization('project', 'diffusion.anr_projects._id', 'name', false),
+    },
+    {
         'denormalization.diffusion.european_projects': ComplFunctions.denormalization('project', 'diffusion.european_projects._id', 'name', false),
+    },
+    {
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
+    },
+    {
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection', 'label', true),
+    },
+    {
         'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', true),
+    },
+    {
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
-        'denormalization.type': ComplFunctions.denormalization('typology', 'type', 'label', true),
-        'denormalization.template': ComplFunctions.denormalization('typology', 'type', 'children.0.template', true),
+    },
+    {
+        'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
+    },
+    {
+        'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
+    },
+    {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         version: async (obj, path, info) => {
             if (!('parent' in obj)) {

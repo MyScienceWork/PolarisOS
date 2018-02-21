@@ -26,7 +26,7 @@
                             </div>
                         </div>
                         <p></p>
-                        <p><strong v-html="lang('f_publication_type')"></strong> {{lang(content_item.denormalization.type)}}</p>
+                        <p><strong v-html="lang('f_publication_type')"></strong> {{lang(content_item.denormalization.type.label)}}</p>
                         <p>Coling 2016 - 26th International Conference on Computational Linguistics, Dec 2016, Osaka, Japan. The 26th International Conference on Computational Linguistics Proceedings of COLING 2016: Technical Papers, 2016</p>
                         <p><strong v-html="lang('f_publication_id')"></strong> ark:tt:12342432fezfe</p>
                         <p><a class="has-text-info" href=''>{{lang('f_see_more_metadata')}}</a></p>
@@ -66,7 +66,7 @@
                                 <p class="card-header-title">{{lang('f_publication_citation')}}</p>
                             </header>
                             <div class="card-content">
-                                <p>{{content_item.html}}</p>
+                                <p v-html="content_item.html"></p>
                             </div>
                         </div>
                     </div>

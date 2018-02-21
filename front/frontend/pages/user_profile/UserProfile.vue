@@ -36,7 +36,10 @@
                         </ul>
                     </div>
                     <div v-if="state.current_tab === 0"> <!-- overview -->
-                        <div class="columns is-centered">
+                        <div class="columns is-centered" v-if="affiliations.length === 0 && !author">
+                            <p v-html="lang('l_no_information_for_author_yet')" />
+                        </div>
+                        <div class="columns is-centered" v-if="affiliations.length > 0">
                             <div class="column">
                                 <h5 class="title is-5">{{lang('l_affiliation', {}, 'other')}}</h5>
                                 <article class="media" v-for="aff in affiliations">
@@ -56,7 +59,7 @@
                                 </article>
                             </div>
                         </div>
-                        <div class="columns is-centered" v-if="this.author">
+                        <div class="columns is-centered" v-if="author">
                             <div class="column">
                                 <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
                                 <div class="columns is-centered">

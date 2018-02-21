@@ -363,3 +363,93 @@ describe('Utils#traverse_and_execute', () => {
         results.should.deep.equal({ address: { embedded: [{ em: [{ title: 'French' }, { title: 'German' }] }, { em: [{ title: 'English' }] }] } });
     });
 });
+
+describe('Utils#merge_with_remplacement', () => {
+    it('should merge into source not the other way around', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement(source, defaults);
+        result.should.have.property('title', 'Test');
+        result.should.have.property('authors');
+        result.authors.should.have.lengthOf(2);
+        result.should.have.property('lang', 'EN');
+        result.should.have.property('version', 1);
+        result.should.have.property('default_array');
+        result.default_array.should.have.lengthOf(2);
+    });
+
+    it('should mutate first object, but not subsequent ones', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+
+        source.should.not.have.property('version');
+        source.should.not.have.property('lang', 'EN');
+        source.should.have.property('lang', 'FR');
+
+        defaults.should.not.have.property('title');
+        defaults.should.not.have.property('lang', 'FR');
+        defaults.should.have.property('lang', 'EN');
+
+        result.should.have.property('title', 'Test');
+        result.should.have.property('authors');
+        result.authors.should.have.lengthOf(2);
+        result.should.have.property('lang', 'EN');
+        result.should.have.property('version', 1);
+        result.should.have.property('default_array');
+        result.default_array.should.have.lengthOf(2);
+    });
+
+    it('should replace arrays', () => {
+        const source = {
+            title: 'Test',
+            authors: [{
+                _id: 'ok',
+            }, {
+                _id: 'nok',
+            }],
+            lang: 'FR',
+            default_array: ['dac'],
+        };
+
+        const defaults = {
+            version: 1,
+            lang: 'EN',
+            default_array: ['ok', 'nok'],
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+
+        source.default_array.should.have.lengthOf(1);
+        defaults.default_array.should.have.lengthOf(2);
+        result.default_array.should.have.lengthOf(2);
+    });
+});

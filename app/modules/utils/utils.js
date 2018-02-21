@@ -159,33 +159,26 @@ function forge_whitelist_blacklist_query(lists: Object): Object {
 }
 
 
-function merge_with_replacement(object: Object, source: Object): Object {
-    return Object.keys(source).reduce((obj, key) => {
-        if (key in obj) {
-            if (obj[key] instanceof Array) {
-                obj[key] = source[key]; // Replace with new array
-            } else if (obj[key] instanceof Object) {
-                obj[key] = merge_with_replacement(obj[key], source[key]);
-            } else {
-                obj[key] = source[key];
-            }
-        } else {
-            obj[key] = source[key];
+function merge_with_replacement(object: Object, ...sources): Object {
+    function customizer(objValue, srcValue) {
+        if (_.isArray(objValue)) {
+            objValue = srcValue;
+            return objValue;
         }
-        return obj;
-    }, object);
+    }
+    return _.mergeWith(object, ...sources, customizer);
 }
 
-function merge_with_concat(source: Object, ...values) {
+function merge_with_concat(object: Object, ...sources) {
     function customizer(objValue, srcValue) {
         if (_.isArray(objValue)) {
             return objValue.concat(srcValue);
         }
     }
-    return _.mergeWith(source, ...values, customizer);
+    return _.mergeWith(object, ...sources, customizer);
 }
 
-function merge_with_superposition(source: Object, ...values) {
+function merge_with_superposition(object: Object, ...sources) {
     function customizer(objValue, srcValue) {
         if (_.isArray(objValue)) {
             if (_.isArray(srcValue)) {
@@ -201,7 +194,7 @@ function merge_with_superposition(source: Object, ...values) {
             return objValue.concat(srcValue);
         }
     }
-    return _.mergeWith(source, ...values, customizer);
+    return _.mergeWith(object, ...sources, customizer);
 }
 
 function make_nested_object_from_path(path: Array<string>,

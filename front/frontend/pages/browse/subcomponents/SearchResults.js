@@ -69,7 +69,7 @@ module.exports = {
             }
 
             return content.map((c) => {
-                c.html = Handlerbars.compile(c.denormalization.template)(c);
+                c.html = Handlerbars.compile(c.denormalization.type.template)(c);
                 return c;
             });
         },

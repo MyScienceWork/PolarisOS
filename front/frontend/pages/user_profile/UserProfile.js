@@ -107,6 +107,13 @@ module.exports = {
 
             return [];
         },
+        publications() {
+            const content = this.fcontent(this.state.sinks.reads.publication);
+            if (content instanceof Array) {
+                return content;
+            }
+            return content;
+        },
         loggedIn() {
             return this.state.loggedIn;
         },
