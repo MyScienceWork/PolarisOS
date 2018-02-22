@@ -221,7 +221,7 @@ function make_nested_object_from_path(path: Array<string>,
     }, obj);
 }
 
-async function traverse_and_execute(object: Object, path: Array<string>,
+async function traverse_recreate_and_execute(object: Object, path: Array<string>,
         f: Function, keep_last: boolean = true): any {
     if (path.length === 0) {
         const info = _return_inner_object(object);
@@ -236,17 +236,17 @@ async function traverse_and_execute(object: Object, path: Array<string>,
         if (isNaN(idx)) {
             const new_array = [];
             for (const i in object) {
-                const result = await traverse_and_execute(object[i], path, f, keep_last);
+                const result = await traverse_recreate_and_execute(object[i], path, f, keep_last);
                 new_array.push(result);
             }
             return new_array;
         } else if (key < object.length) {
-            const result = await traverse_and_execute(object[key],
+            const result = await traverse_recreate_and_execute(object[key],
                 path.slice(1), f, keep_last);
             return [result];
         }
     } else if (object != null && hasProperty(object, key)) {
-        const result = await traverse_and_execute(object[key], path.slice(1), f, keep_last);
+        const result = await traverse_recreate_and_execute(object[key], path.slice(1), f, keep_last);
         if (path.length === 1 && !keep_last) {
             return result;
         }
@@ -259,6 +259,35 @@ async function traverse_and_execute(object: Object, path: Array<string>,
     }
 }
 
+async function traverse_and_execute(object: Object, path: Array<string>, f: Function): any {
+    if (path.length === 0) {
+        const info = _return_inner_object(object);
+        const result = await f(info);
+        return result;
+    }
+
+    const key = path[0];
+    const idx = parseInt(key, 10);
+
+    if (object instanceof Array) {
+        if (isNaN(idx)) {
+            for (const i in object) {
+                object[i] = await traverse_and_execute(object[i], path, f);
+            }
+            return object;
+        } else if (key < object.length) {
+            object[key] = await traverse_and_execute(object[key],
+                    path.slice(1), f);
+            return object;
+        }
+    } else if (object != null && hasProperty(object, key)) {
+        const result = await traverse_and_execute(object[key], path.slice(1), f);
+        object[key] = result;
+        return object;
+    }
+    return object;
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -269,5 +298,6 @@ module.exports = {
     merge_with_superposition,
     find_popvalue_with_path,
     traverse_and_execute,
+    traverse_recreate_and_execute,
     make_nested_object_from_path,
 };

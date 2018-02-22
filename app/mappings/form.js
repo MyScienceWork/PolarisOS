@@ -94,6 +94,14 @@ module.exports = {
                                         type: 'keyword',
                                         index: false,
                                     },
+                                    sink: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    fetch_from_sink: {
+                                        type: 'boolean',
+                                        index: false,
+                                    },
                                     label: {
                                         type: 'keyword',
                                         index: false,

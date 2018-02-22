@@ -31,7 +31,8 @@ class Form extends ODM {
         // Collect subforms and datasources to be expanded.
         const datasources = info.fields.reduce((obj, field, i) => {
             if (field.datasource != null && field.datasource.name != null
-                    && field.datasource.name !== '') {
+                    && field.datasource.name !== '' &&
+                !field.datasource.fetch_from_sink) {
                 const name = field.datasource.name;
                 const label = field.datasource.label;
                 const value = field.datasource.value;

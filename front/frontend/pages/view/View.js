@@ -17,7 +17,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
-                        item: APIRoutes.entity('publication', 'GET', false, this.item_id),
+                        item: APIRoutes.entity('publication', 'POST', true),
                         author: APIRoutes.entity('author', 'GET', true),
                     },
                 },
@@ -48,13 +48,16 @@ module.exports = {
             }
             return content;
         },
+        abstracts() {
+            if (!this.content_item.abstracts) {
+                return [];
+            }
+            const abstracts = this.content_item.abstracts.filter(a => a.content && a.content.trim() !== '');
+            return abstracts;
+        },
         abstract() {
             return (lang) => {
-                if (!this.content_item.abstracts) {
-                    return '';
-                }
-
-                if (this.content_item.abstracts.length === 0) {
+                if (this.abstracts.length === 0) {
                     return '';
                 }
 
@@ -72,9 +75,14 @@ module.exports = {
             keepContent: false,
         });
 
-        this.$store.dispatch('single_read', {
+        this.$store.dispatch('search', {
             form: this.state.sinks.reads.item,
             path: this.state.paths.reads.item,
+            body: {
+                where: {
+                    _id: this.item_id,
+                },
+            },
         });
     },
 

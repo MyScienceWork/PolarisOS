@@ -43,7 +43,7 @@ module.exports = {
             const _id = form.value;
             const typology = this.typology_options.filter(t => t._id === _id);
             this.state.typology.form = typology[0].children[0].form;
-            this.$emit('typology-change', this.state.typology.form, undefined);
+            this.$emit('typology-change', this.state.typology.form, typology[0].children);
         },
         import_from_id(e) {
             e.preventDefault();
@@ -101,7 +101,7 @@ module.exports = {
                 return content.map((t, i) => {
                     t.label = this.lang(t.label);
                     t.children = t.children.map((ch, j) => {
-                        ch.label = this.lang(ch.label);
+                        ch.tlabel = this.lang(ch.label);
                         ch.path = `${i}.${j}`;
                         return ch;
                     });

@@ -473,8 +473,13 @@ module.exports = {
                     pagination: {
                         type: 'keyword',
                     },
-                    parent: {
-                        type: 'keyword',
+                    parents: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     publication_title: {
                         type: 'text',

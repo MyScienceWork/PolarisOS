@@ -190,7 +190,7 @@ module.exports = {
                 path: this.state.paths.reads.author,
                 body: {
                     where: {
-                        $$ids: { values: [this.$route.params.id] },
+                        _id: this.$route.params.id,
                     },
                     size: 1,
                 },

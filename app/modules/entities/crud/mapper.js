@@ -50,6 +50,13 @@ class Mapper {
         return null;
     }
 
+    static make_ids_query(value) {
+        if (value instanceof Array) {
+            return new queries.Ids({ values: value });
+        }
+        return new queries.Ids({ values: [value] });
+    }
+
     static shortcut_query(obj, mapping) {
         const keys = Object.keys(obj);
         if (keys.length === 0) {
@@ -57,6 +64,11 @@ class Mapper {
         }
 
         const key = keys[0];
+
+        if (key === '_id') {
+            return Mapper.make_ids_query(obj[key]);
+        }
+
         const types = mapping.get_all_type(key);
         if (types.length === 0) {
             return null;
@@ -419,6 +431,7 @@ function transform_to_search(body, mapping) {
 
     const where = body.where;
     const result = Mapper.visit_object(where, mapping);
+
     if (result) {
         s.query(result);
     } else {

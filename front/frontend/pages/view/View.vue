@@ -17,7 +17,14 @@
                             <li>Département de Linguistique - Université de Genève</li>
                             <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
                         </ol>-->
-                        <div class="card">
+                        <div class="card card-with-tag" v-if="abstract(content_item.lang) !== ''">
+                            <div class="card-header">
+                                <div class="card-header-title">
+                                </div>
+                                <a href='#' class="card-header-icon card-header-tag" v-for="ab in abstracts">
+                                    <span :class="['tag is-purple', {'is-active': !ab.lang || ab.lang === content_item.lang}]">{{ab.lang || content_item.lang}}</span>
+                                </a>
+                            </div>
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
                                 <p>
