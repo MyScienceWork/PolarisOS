@@ -135,6 +135,7 @@ function generate_gets_routes(router: KoaRouter, prefix: string, type: string, e
     router.post(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
 
     router.post(`${prefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
+    router.post(`${prefix}/${type}s/search/:translatable/:lang`, compose([...get_mware, CrudController.search(type)]));
 
     router.get(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.get(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));

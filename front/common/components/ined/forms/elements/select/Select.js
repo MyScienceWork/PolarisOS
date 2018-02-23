@@ -1,8 +1,11 @@
+const moment = require('moment');
+const _ = require('lodash');
 const VSelect = require('vue-select').VueSelect;
 const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
+const LangMixin = require('../../../../../mixins/LangMixin');
 
 module.exports = {
     props: {
@@ -23,21 +26,115 @@ module.exports = {
         isAddon: { required: false, default: false, type: Boolean },
         resetOnOptionsChange: { default: false, type: Boolean },
         defaultValue: { default: null, required: false },
+        translatable: { default: false, type: Boolean },
+        ajax: { default: false, type: Boolean },
+        ajaxUrl: { default: '', type: String },
+        ajaxValueUrl: { default: '', type: String },
     },
     components: {
         'v-select': VSelect,
     },
-    mixins: [RegisterMixin, InputMixin],
+    mixins: [RegisterMixin, InputMixin, LangMixin],
     data() {
         return {
             state: {
                 selected: null,
                 options: [],
                 showHelpModal: false,
+                form: `${name}_${+moment()}`,
             },
         };
     },
     methods: {
+        onSearch(search, loading) {
+            loading(true);
+            this.search(loading, search, this);
+        },
+        merge_options_and_selected(selected, options) {
+            if (options.length < selected.length) {
+                return this.merge_options_and_selected(options, selected);
+            }
+
+            const new_elements = selected.reduce((arr, data) => {
+                const elt = _.find(options, o => o[this.fieldValue] === data[this.fieldValue]);
+                if (!elt) {
+                    arr.push(elt);
+                }
+                return arr;
+            }, []);
+
+            new_elements.concat(options);
+            return new_elements;
+        },
+        set_selected(missings) {
+            const values = missings.map((m) => {
+                if (typeof m === 'string') {
+                    return m;
+                }
+                return m[this.fieldValue];
+            });
+
+            if (this.ajax) {
+                const promise = this.$store.dispatch('search', {
+                    form: this.state.form,
+                    path: this.ajaxValueUrl,
+                    body: {
+                        where: {
+                            [this.fieldValue]: values,
+                        },
+                        projection: [this.fieldLabel, this.fieldValue],
+                        size: values.length,
+                    },
+                });
+
+                promise.then((res) => {
+                    if (this.multi) {
+                        this.state.selected = this.translate_options(res.data);
+                        this.state.options = this.merge_options_and_selected(this.state.selected, this.options);
+                    } else if (res.data.length > 0) {
+                        this.state.selected = this.translate_options(res.data)[0];
+                        this.state.options = this.merge_options_and_selected([this.state.selected], this.options);
+                    } else {
+                        this.state.selected = null;
+                    }
+                });
+                return;
+            }
+
+            const data = values.reduce((arr, v) => {
+                const elt = _.find(this.options, o => o[this.fieldValue] === v);
+                if (elt) {
+                    arr.push(elt);
+                }
+                return arr;
+            }, []);
+
+            if (this.multi) {
+                this.state.selected = data;
+            } else if (data.length > 0) {
+                this.state.selected = data[0];
+            } else {
+                this.state.selected = null;
+            }
+        },
+        search: _.debounce((loading, search, self) => {
+            const promise = self.$store.dispatch('search', {
+                form: self.state.form,
+                path: self.ajaxUrl,
+                body: {
+                    where: {
+                        [self.fieldLabel]: search,
+                    },
+                    projection: [self.fieldLabel, self.fieldValue],
+                    size: 20,
+                },
+            });
+            promise.then((res) => {
+                loading(false);
+                const selected = self.state.selected instanceof Array ? self.state.selected : [self.state.selected];
+                self.state.options = self.merge_options_and_selected(selected, self.translate_options(res.data));
+            });
+        }, 350),
         toggleHelpModal(e) {
             e.preventDefault();
             if (this.modal_help) {
@@ -46,52 +143,25 @@ module.exports = {
         },
         initialize() {
             const form = this.$store.state.forms[this.form];
-            let info = Utils.find_value_with_path(form.content, this.name.split('.'));
+            const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
                 this.state.selected = this.defaultValue;
                 return;
-            } else if (info instanceof Array) {
-                info = info.map((o) => {
-                    if (this.fieldLabel in o) {
-                        return o;
-                    }
-                    const missing = this.options.filter(op =>
-                        o[this.fieldValue] === op[this.fieldValue]);
-                    if (missing.length > 0) {
-                        o[this.fieldLabel] = missing[0][this.fieldLabel];
-                        return o;
-                    }
-                    return null;
-                }).filter(o => o != null);
-            } else if (typeof info === 'string') {
-                const missing = this.options.filter(o => info === o[this.fieldValue]);
-                if (missing.length > 0) {
-                    info = { [this.fieldValue]: info,
-                        [this.fieldLabel]: missing[0][this.fieldLabel] };
-                } else {
-                    info = null;
-                }
-            } else {
-                const missing = this.options.filter(o =>
-                    info[this.fieldValue] === o[this.fieldValue]);
-                if (missing.length > 0) {
-                    info = { [this.fieldValue]: info,
-                        [this.fieldLabel]: missing[0][this.fieldLabel] };
-                } else {
-                    info = null;
-                }
             }
 
-            if (info == null) {
-                this.state.selected = null;
-            } else if (info instanceof Array) {
-                this.state.selected = info.map(o =>
-                    ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
-            } else {
-                this.state.selected = { label: info[this.fieldLabel],
-                    value: info[this.fieldValue] };
+            if (info instanceof Array) {
+                this.set_selected(info);
+                return;
             }
+
+            if (typeof info === 'string') {
+                this.set_selected([{ [this.fieldValue]: info, [this.fieldLabel]: '' }]);
+                return;
+            }
+
+            info[this.fieldLabel] = '';
+            this.set_selected([info]);
         },
         start_collection() {
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
@@ -118,25 +188,26 @@ module.exports = {
             }
             return infos.value;
         },
-        format_options() {
-            if (this.fieldValue === 'value' && this.fieldLabel === 'label') {
-                this.state.options = this.options;
+        translate_options(options) {
+            if (this.translatable) {
+                return options.map((data) => {
+                    data[this.fieldLabel] = this.lang(data[this.fieldLabel]);
+                    return data;
+                });
             }
-
-            this.state.options = this.options.map(o =>
-                    ({ label: o[this.fieldLabel], value: o[this.fieldValue] }));
+            return options;
         },
     },
     watch: {
         options() {
-            this.format_options();
+            this.state.options = this.options;
         },
         current_state(s) {
             this.dispatch(s, this);
         },
     },
     beforeMount() {
-        this.format_options();
+        this.state.options = this.options;
     },
     mounted() {
         this.initialize();

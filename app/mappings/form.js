@@ -118,6 +118,10 @@ module.exports = {
                                         type: 'keyword',
                                         index: false,
                                     },
+                                    ajax_value_path: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                     translatable: {
                                         type: 'boolean',
                                         index: false,

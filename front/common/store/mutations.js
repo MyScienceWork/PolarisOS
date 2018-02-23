@@ -121,42 +121,29 @@ module.exports = {
     },
 
     [Messages.FETCH]: (state, payload) => {
-        const success = payload.response.type === Messages.SUCCESS;
         const form_name = payload.form;
-        const action = payload.action;
+        const { action, succeeded, data, total, validations, success, error, content } = payload;
         create_form_if_needed(state, form_name);
 
-        if (payload.response.content == null) {
-            payload.response.content = [];
-        }
-
-
-        if (success) {
-            if (payload.action === 'read') {
-                const content = payload.response.content;
-                if ('result' in content && 'hits' in content.result) {
-                    state.forms[form_name].content = content.result.hits.map(hit => hit.source);
-                    state.forms[form_name].total = content.result.total;
-                } else {
-                    state.forms[form_name].content = content;
-                }
+        if (succeeded) {
+            if (action === 'read') {
+                state.forms[form_name].content = data;
+                state.forms[form_name].total = total;
                 payload.commit(Messages.SUCCESS, { type: action, form: form_name });
-            } else if ('change' in payload.response.content
-                            && payload.response.content.change === 'Validation') {
-                state.forms[form_name].validations = Object.assign({}, payload.response.content.errors);
+            } else if ('change' in content
+                    && content.change === 'Validation') {
+                state.forms[form_name].validations = validations;
                 payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
             } else if (action === 'validate') {
                 payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
             } else if (action === 'delete') {
                 // Noop
             } else {
-                state.forms[form_name].success = payload.response.content.message;
+                state.forms[form_name].success = success;
                 payload.commit(Messages.SUCCESS, { type: 'create', form: form_name });
             }
         } else if (form_name in state.forms) {
-            state.forms[form_name].error = Object.assign({}, {
-                found: true, content: payload.response.content,
-            });
+            state.forms[form_name].error = error;
             payload.commit(Messages.ERROR, { type: 'generic', form: form_name });
         }
     },

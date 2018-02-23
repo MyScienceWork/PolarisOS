@@ -230,6 +230,14 @@
                                             :form="state.forms.csink"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
+                                            :key="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
+                                            :label="lang('b_datasource_ajax_value_path')"
+                                            :placeholder="lang('b_datasource_ajax_value_path')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.translatable`" 
                                             :key="`${props.fname}.${props.id}.datasource.translatable`" 
                                             :label="lang('b_datasource_translatable')"

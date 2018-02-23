@@ -18,6 +18,8 @@ module.exports = {
                         properties: {
                             value: {
                                 type: 'text',
+                                analyzer: 'autocomplete',
+                                search_analyzer: 'standard',
                             },
                             quantity: {
                                 type: 'keyword',
