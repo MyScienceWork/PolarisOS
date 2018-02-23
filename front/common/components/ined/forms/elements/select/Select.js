@@ -58,13 +58,12 @@ module.exports = {
             const new_elements = selected.reduce((arr, data) => {
                 const elt = _.find(options, o => o[this.fieldValue] === data[this.fieldValue]);
                 if (!elt) {
-                    arr.push(elt);
+                    arr.push(data);
                 }
                 return arr;
             }, []);
 
-            new_elements.concat(options);
-            return new_elements;
+            return new_elements.concat(options);
         },
         set_selected(missings) {
             const values = missings.map((m) => {
@@ -88,12 +87,13 @@ module.exports = {
                 });
 
                 promise.then((res) => {
+                    const opts = this.translate_options(res.data);
                     if (this.multi) {
-                        this.state.selected = this.translate_options(res.data);
-                        this.state.options = this.merge_options_and_selected(this.state.selected, this.options);
+                        this.state.options = this.format_options(this.merge_options_and_selected(opts, this.options), 'to');
+                        this.state.selected = this.format_options(opts, 'to');
                     } else if (res.data.length > 0) {
-                        this.state.selected = this.translate_options(res.data)[0];
-                        this.state.options = this.merge_options_and_selected([this.state.selected], this.options);
+                        this.state.options = this.format_options(this.merge_options_and_selected(opts, this.options), 'to');
+                        this.state.selected = this.format_options(opts, 'to')[0];
                     } else {
                         this.state.selected = null;
                     }
@@ -110,9 +110,9 @@ module.exports = {
             }, []);
 
             if (this.multi) {
-                this.state.selected = data;
+                this.state.selected = this.format_options(data, 'to');
             } else if (data.length > 0) {
-                this.state.selected = data[0];
+                this.state.selected = this.format_options(data, 'to')[0];
             } else {
                 this.state.selected = null;
             }
@@ -131,8 +131,9 @@ module.exports = {
             });
             promise.then((res) => {
                 loading(false);
-                const selected = self.state.selected instanceof Array ? self.state.selected : [self.state.selected];
-                self.state.options = self.merge_options_and_selected(selected, self.translate_options(res.data));
+                let selected = self.state.selected instanceof Array ? self.state.selected : [self.state.selected];
+                selected = self.format_options(selected, 'from');
+                self.state.options = self.format_options(self.merge_options_and_selected(selected, self.translate_options(res.data)), 'to');
             });
         }, 350),
         toggleHelpModal(e) {
@@ -197,17 +198,33 @@ module.exports = {
             }
             return options;
         },
+        format_options(options, direction = 'to') {
+            // Direction:
+            // to -> to vue-select
+            // from -> from vue-select
+            if (direction === 'to') {
+                return options.map(opt => ({
+                    label: opt[this.fieldLabel],
+                    value: opt[this.fieldValue],
+                }));
+            }
+
+            return options.map(opt => ({
+                [this.fieldLabel]: opt.label,
+                [this.fieldValue]: opt.value,
+            }));
+        },
     },
     watch: {
         options() {
-            this.state.options = this.options;
+            this.state.options = this.format_options(this.options, 'to');
         },
         current_state(s) {
             this.dispatch(s, this);
         },
     },
     beforeMount() {
-        this.state.options = this.options;
+        this.state.options = this.format_options(this.options, 'to');
     },
     mounted() {
         this.initialize();

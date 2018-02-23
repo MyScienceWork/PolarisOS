@@ -22,7 +22,6 @@
                 <v-select
                     v-else-if="!ajax"
                     :multiple="multi"
-                    :label="fieldLabel"
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
@@ -35,7 +34,6 @@
                     v-else
                     :multiple="multi"
                     :filterable="false"
-                    :label="fieldLabel"
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
