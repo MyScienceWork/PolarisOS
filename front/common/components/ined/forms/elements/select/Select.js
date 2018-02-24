@@ -131,9 +131,14 @@ module.exports = {
             });
             promise.then((res) => {
                 loading(false);
-                let selected = self.state.selected instanceof Array ? self.state.selected : [self.state.selected];
-                selected = self.format_options(selected, 'from');
-                self.state.options = self.format_options(self.merge_options_and_selected(selected, self.translate_options(res.data)), 'to');
+                if (self.state.selected) {
+                    let selected = self.state.selected instanceof Array ?
+                        self.state.selected : [self.state.selected];
+                    selected = self.format_options(selected, 'from');
+                    self.state.options = self.format_options(self.merge_options_and_selected(selected, self.translate_options(res.data)), 'to');
+                } else {
+                    self.state.options = self.format_options(self.translate_options(res.data), 'to');
+                }
             });
         }, 350),
         toggleHelpModal(e) {

@@ -81,7 +81,8 @@ async function initialize_routes() {
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',
-        `${Config.root}/public/uploads`), UploadUtils.add_single('public')]));
+        `${Config.root}/public/uploads`), UploadUtils.add_single]));
+    router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
     return router;
 }
 

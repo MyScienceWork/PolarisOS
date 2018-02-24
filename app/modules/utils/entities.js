@@ -374,7 +374,6 @@ async function search(type: string, body: Object,
         return { entity: type, result: {} };
     }
 
-    console.log(body);
     const response = format_search(body, model);
     const result = await cls.constructor.search(get_index(type), type, es_client,
             model, response.search, response.options);
@@ -438,6 +437,21 @@ async function remove(id: string, type: string): Promise<*> {
     return [odm, obj];
 }
 
+async function retrieve_and_get_source(type: string, id: string): ?Object {
+    if (!id) {
+        return null;
+    }
+    const search_results = await search(type, {
+        size: 1,
+        where: { _id: id },
+    });
+
+    const hits = get_hits(search_results);
+    if (hits.length === 0) {
+        return null;
+    }
+    return hits[0].source;
+}
 
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
@@ -450,3 +464,4 @@ module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
 module.exports.get_hits = get_hits;
+module.exports.retrieve_and_get_source = retrieve_and_get_source;

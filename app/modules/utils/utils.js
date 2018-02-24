@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Errors = require('../exceptions/errors');
 
+
 function hasProperty(obj: Object, key: string | number): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
 }
@@ -58,7 +59,7 @@ function find_object_with_path(object: ? Object, path: Array<string>): any {
     return find_object_with_path(object, p.slice(1));
 }
 
-function find_value_with_path(object: ? Object, path: Array<string>): any {
+function find_value_with_path(object: ?Object, path: Array<string>): any {
     const p = path;
     if (p.length === 0) {
         return _return_inner_object(object);
@@ -288,6 +289,13 @@ async function traverse_and_execute(object: Object, path: Array<string>, f: Func
     return object;
 }
 
+function isNil(path: string, object: ?Object): boolean {
+    if (_.isNil(object)) {
+        return true;
+    }
+    return _.isNil(find_value_with_path(object, path.split('.')));
+}
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -300,4 +308,5 @@ module.exports = {
     traverse_and_execute,
     traverse_recreate_and_execute,
     make_nested_object_from_path,
+    isNil,
 };

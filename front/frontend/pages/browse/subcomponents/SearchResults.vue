@@ -89,53 +89,13 @@
             </div>
         </div>
         </nav>
-        <article class="media" v-for="(info, idx) in content">
-        <div class="media-left">
-            <finput
-            :name="info._id"
-            type="checkbox"
-            :form="state.sinks.reads.export"
-            label=""
-            />
-        </div>
-        <div class="media-content">
-            <p v-html="info.html"></p>
-            <div class="is-pulled-right level is-mobile">
-                <div class="level-left">
-                    <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${info._id}`">
-                    <span class="icon is-small"><i class="fa fa-eye"></i></span>
-                    </router-link>
-                    <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
-                        <span class="icon is-small"><i class="fa fa-unlock-alt"></i></span>
-                    </a>
-                    <router-link 
-                        class="level-item"
-                        v-if="state.loggedIn"
-                        :alt="lang('f_use_as_model')" 
-                        :title="lang('f_use_as_model')" 
-                        :to="`/deposit?type=model&_id=${info._id}`"
-                    >
-                        <span class="icon is-small"><i class="fa fa-book"></i></span>
-                    </router-link>
-                    <router-link 
-                        v-if="state.loggedIn"
-                        class="level-item" 
-                        :alt="lang('f_modify_publication')" 
-                        :title="lang('f_modify_publication')"
-                        :to="`/deposit?type=modify&_id=${info._id}`"
-                    >
-                        <span class="icon is-small"><i class="fa fa-pencil"></i></span>
-                    </router-link>
-                    <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
-                        <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
-                    </a>
-                    <a class="level-item" :alt="lang('f_share_on_twitter')" :title="lang('f_share_on_twitter')">
-                        <span class="icon is-small"><i class="fa fa-twitter"></i></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        </article>
+        <results 
+            :is-selectable="true" 
+            :user="user" 
+            :logged-in="state.loggedIn"
+            :items="content"
+            :export-sink="state.sinks.reads.export"
+        />
         <b-pagination
             v-if="total > state.seso.size"
             :total="total"

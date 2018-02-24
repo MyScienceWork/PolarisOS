@@ -7,6 +7,7 @@ const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
+const Utils = require('../../../utils/utils');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -56,7 +57,47 @@ const Formatting: Array<any> = [
         },
     },
     {
-        version: async (result, object) => object.parents ? object.parents.length + 1 : 1,
+        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
+    },
+    {
+        files: async (result, object) => {
+            if (!result) {
+                return [];
+            }
+
+
+            const access = Utils.find_value_with_path(object, 'diffusion.rights.access'.split('.'));
+            if (!access) {
+                return result;
+            }
+
+            const access_description = await EntitiesUtils
+                .retrieve_and_get_source('access_level', access);
+
+
+            if (!access_description) {
+                return result;
+            }
+
+            const files = result.reduce((arr, file) => {
+                if (!file) {
+                    return arr;
+                }
+
+                file.access = {
+                    restricted: access_description.restricted,
+                    delayed: access_description.delayed,
+                };
+
+                arr.push(file);
+                return arr;
+            }, []);
+
+            if (files.length === 1) {
+                files[0].is_master = true;
+            }
+            return files;
+        },
     },
 ];
 

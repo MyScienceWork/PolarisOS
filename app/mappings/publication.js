@@ -424,6 +424,16 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            access: {
+                                properties: {
+                                    restricted: {
+                                        type: 'boolean',
+                                    },
+                                    delayed: {
+                                        type: 'boolean',
+                                    },
+                                },
+                            },
                         },
                     },
                     ids: {
