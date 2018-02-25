@@ -169,6 +169,7 @@
                 :keep_files="field.file.keep"
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
+                @analyze-file="dropzone_analyze_file"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -179,6 +180,7 @@
                     :readonly="readonly"
                     :key="i"
                     @crud-form-change="crud_form_change"
+                    @dropzone-analyze-file="dropzone_analyze_file"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="field has-addons">
@@ -263,6 +265,7 @@
             :keep_files="field.file.keep"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
+            @analyze-file="dropzone_analyze_file"
             />
             <dynamic-form 
                 :form="field.subform" 
@@ -271,6 +274,7 @@
                 :single="field.single_multiple"
                 :readonly="readonly"
                 @crud-form-change="crud_form_change"
+                @dropzone-analyze-file="dropzone_analyze_file"
             >
             </dynamic-form>
         </template>

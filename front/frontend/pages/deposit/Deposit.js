@@ -98,6 +98,9 @@ module.exports = {
                 keep_content: true,
             });
         },
+        go_after_success() {
+            this.$router.push({ path: '/' });
+        },
     },
     components: {
         'first-deposit-step': FirstDepositStep,

@@ -1,5 +1,7 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const _ = require('lodash');
+const moment = require('moment');
+const CopyRequester = require('../../view/subcomponents/CopyRequester.vue');
 
 module.exports = {
     mixins: [LangMixin],
@@ -10,6 +12,16 @@ module.exports = {
         isSelectable: { default: true, type: Boolean },
         exportSink: { default: 'dummy-export-sink', type: String },
     },
+    data() {
+        return {
+            state: {
+                copyRequest: false,
+            },
+        };
+    },
+    components: {
+        CopyRequester,
+    },
     methods: {
         is_accessable(item) {
             const files = item.files;
@@ -18,7 +30,8 @@ module.exports = {
             }
 
             const file = _.find(files, f => f.is_master) || files[0];
-            return file.restricted;
+            return !file.access.restricted
+                || (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment());
         },
         generate_download_link(item) {
             if (!item.files) {
@@ -33,11 +46,7 @@ module.exports = {
             return `/download/publication/${item._id}/${file.url}`;
         },
         request_copy() {
-            if (this.loggedIn) {
-                console.log('email sent');
-            } else {
-                console.log('open modal');
-            }
+            this.state.copyRequest = !this.state.copyRequest;
         },
         can_modify(item) {
             if (!this.loggedIn) {

@@ -23,6 +23,17 @@ const minio = _.reduce({
     return obj;
 }, {});
 
+// MINIO
+const grobid = _.reduce({
+    host: env.GROBID_HOST,
+    port: env.GROBID_PORT,
+}, (obj, val, key) => {
+    if (val) {
+        obj[key] = val;
+    }
+    return obj;
+}, {});
+
 
 const production = {
     port,
@@ -31,6 +42,7 @@ const production = {
         version: '5.2',
     },
     minio,
+    grobid,
     logger: {
         transports: {
             console: {

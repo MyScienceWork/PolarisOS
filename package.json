@@ -67,7 +67,8 @@
     "vuex": "^2.5.0",
     "winston": "^2.2.0",
     "winston-koa-logger": "0.0.2",
-    "ws": "^2.3.1"
+    "ws": "^2.3.1",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "babel-eslint": "^7.x.x",

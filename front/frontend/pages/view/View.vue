@@ -42,26 +42,38 @@
             </div>
 
             <div class="column">
-                <div class="columns is-centered">
+                <div class="columns is-centered" v-if="content_item.files && content_item.files.length > 0">
                     <div class="column">
                         <div class="card info-card info-card-purple">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_file')}}</p>
                             </header>
-                            <div class="card-content has-text-centered">
-                                <a class="swap" href=''>{{lang('f_click_here_to_download')}}</a>
+                            <div 
+                                class="card-content has-text-centered"
+                                v-if="is_files_accessible"    
+                            >
+                                <a href='generate_download_link("master")' class="swap">
+                                    <span class="icon is-large">
+                                        <i class="fa fa-file fa-3x"></i>
+                                    </span>
+
+                                </a>
+                                <a v-if="has_extra_files" class="swap" href='generate_download_link("all")'>{{lang('f_click_here_to_download_extra_files')}}</a>
+                            </div>
+                            <div class="card-content has-text-centered" v-else>
+                                <a @click.prevent="state.copyRequest = !state.copyRequest" class="swap" href=''>{{lang('f_click_here_to_request_copy')}}</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="columns is-centered" v-if="content_item.denormalization.license">
+                <div class="columns is-centered" v-if="content_item.denormalization.diffusion.rights.license">
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_license')}}</p>
                             </header>
                             <div class="card-content">
-                                <p>{{lang(content_item.denormalization.license)}}</p>
+                                <p>{{lang(content_item.denormalization.diffusion.rights.license)}}</p>
                             </div>
                         </div>
                     </div>
@@ -109,6 +121,10 @@
                 <p v-html="lang('l_unexisting_item_view')"></p>
             </div>
         </div>
+        <copy-requester
+            :logged-in="state.loggedIn"
+            :trigger.sync="state.copyRequest"
+        />
     </div>
 </div>
 </template>

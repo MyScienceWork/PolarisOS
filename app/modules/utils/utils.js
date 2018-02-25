@@ -296,6 +296,19 @@ function isNil(path: string, object: ?Object): boolean {
     return _.isNil(find_value_with_path(object, path.split('.')));
 }
 
+function filter_empty_or_null_objects(array: Array<any>): Array<any> {
+    return array.filter((obj) => {
+        if (_.isNil(obj) || _.isEmpty(obj)) {
+            return false;
+        }
+
+        const filtered = _.filter(obj, val => !_.isNil(val));
+
+        return !_.isEmpty(filtered);
+    });
+}
+
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -309,4 +322,5 @@ module.exports = {
     traverse_recreate_and_execute,
     make_nested_object_from_path,
     isNil,
+    filter_empty_or_null_objects,
 };

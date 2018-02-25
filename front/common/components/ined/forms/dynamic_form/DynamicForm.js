@@ -51,6 +51,9 @@ module.exports = {
             }
             return '';
         },
+        dropzone_analyze_file(filename) {
+            this.$emit('dropzone-analyze-file', filename);
+        },
     },
     computed: {
         datasource() {

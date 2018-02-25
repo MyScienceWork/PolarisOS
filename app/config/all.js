@@ -27,6 +27,10 @@ const all = {
         secure: false,
         default_bucket: 'posbucket',
     },
+    grobid: {
+        host: 'localhost',
+        port: '8070',
+    },
     entities: [{
         name: 'citation',
         text: 'Citation',

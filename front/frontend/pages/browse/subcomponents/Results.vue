@@ -65,6 +65,10 @@
                 </div>
             </div>
         </article>
+        <copy-requester
+            :logged-in="loggedIn"
+            :trigger.sync="state.copyRequest"
+        />
     </div>
 </template>
 

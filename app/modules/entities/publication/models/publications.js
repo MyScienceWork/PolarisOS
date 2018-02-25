@@ -60,6 +60,12 @@ const Formatting: Array<any> = [
         version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
     },
     {
+        abstracts: FormatFunctions.filter_empty_or_null_objects,
+        subtitles: FormatFunctions.filter_empty_or_null_objects,
+        translated_titles: FormatFunctions.filter_empty_or_null_objects,
+        authors: FormatFunctions.filter_empty_or_null_objects,
+    },
+    {
         files: async (result, object) => {
             if (!result) {
                 return [];

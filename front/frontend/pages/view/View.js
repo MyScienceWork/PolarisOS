@@ -1,11 +1,19 @@
+const _ = require('lodash');
+const moment = require('moment');
+const Auth = require('../../../common/utils/auth');
 const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 
+const CopyRequester = require('./subcomponents/CopyRequester.vue');
+
 module.exports = {
     mixins: [LangMixin, FormMixin],
+    components: {
+        CopyRequester,
+    },
     data() {
         return {
             state: {
@@ -21,11 +29,26 @@ module.exports = {
                         author: APIRoutes.entity('author', 'GET', true),
                     },
                 },
+                loggedIn: false,
+                copyRequest: false,
             },
         };
     },
     methods: {
+        generate_download_link(status) {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return '#';
+            }
 
+            if (status === 'master') {
+                const file = _.find(files, f => f.is_master) || files[0];
+                return `/download/publication/${this.content_item._id}/${file.url}`;
+            } else if (status === 'all') {
+                return '#';
+            }
+            return '#';
+        },
     },
     watch: {
         current_state_item(s) {
@@ -68,6 +91,20 @@ module.exports = {
                 return filtered[0].content;
             };
         },
+        is_files_accessible() {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return false;
+            }
+
+            const file = files[0];
+            return !file.access.restricted
+                || (file.access.delayed && +moment(this.content_item.diffusion.rights.embargo) < +moment());
+        },
+        has_extra_files() {
+            const files = this.content_item.files || [];
+            return files.length > 1;
+        },
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {
@@ -84,6 +121,9 @@ module.exports = {
                 },
             },
         });
-    },
 
+        Auth.loggedIn('publication', ['r']).then((ok) => {
+            this.state.loggedIn = ok;
+        }).catch(err => console.error(err));
+    },
 };
