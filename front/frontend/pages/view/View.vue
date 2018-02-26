@@ -3,32 +3,41 @@
     <div class="container is-fluid">
         <div class="columns" v-if="content_item && Object.keys(content_item).length > 0">
             <div class="column is-8">
-                <div class="card card-equal-height">
+                <div class="card card-equal-height card-with-tag">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                        </div>
+                        <a href='#' class="card-header-icon card-header-tag" v-for="tt in titles" @click.prevent="activate_lang('title', tt.lang)">
+                            <span :class="['tag is-purple', {'is-active': state.current_title.lang === tt.lang}]">{{tt.lang}}</span>
+                        </a>
+                    </div>
                     <div class="card-content content">
-                        <h3 class="title is-3">{{content_item.title.content}}</h3>
-                        <p>
+                        <h3 class="title is-3">{{state.current_title.content}}</h3>
+                        <h5 class="title is-5" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
+                        <p v-html="authors"></p>
+                        <!--<p>
                         <strong>Olivier Michalon<sup>1</sup></strong>, 
                         <strong>Corentin Ribeyre<sup>2</sup></strong>, 
                         <strong>Marie Candito<sup>3</sup></strong>, 
                         <strong>Alexis Nasr<sup>1</sup></strong>
-                        </p>
+                        </p>-->
                         <!--<ol>
                             <li>LIF - Laboratoire d'informatique fondamentale de Marseille</li>
                             <li>Département de Linguistique - Université de Genève</li>
                             <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
                         </ol>-->
-                        <div class="card card-with-tag" v-if="abstract(content_item.lang) !== ''">
+                        <div class="card card-with-tag" v-if="state.current_abstract.content !== ''">
                             <div class="card-header">
                                 <div class="card-header-title">
                                 </div>
-                                <a href='#' class="card-header-icon card-header-tag" v-for="ab in abstracts">
-                                    <span :class="['tag is-purple', {'is-active': !ab.lang || ab.lang === content_item.lang}]">{{ab.lang || content_item.lang}}</span>
+                                <a href='#' class="card-header-icon card-header-tag" v-for="ab in abstracts" @click.prevent="activate_lang('abstract', ab.lang)">
+                                    <span :class="['tag is-purple', {'is-active': state.current_abstract.lang === ab.lang}]">{{ab.lang}}</span>
                                 </a>
                             </div>
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
                                 <p>
-                                {{abstract(content_item.lang)}}
+                                {{state.current_abstract}}
                                 </p>
                             </div>
                         </div>
@@ -52,13 +61,13 @@
                                 class="card-content has-text-centered"
                                 v-if="is_files_accessible"    
                             >
-                                <a href='generate_download_link("master")' class="swap">
+                                <a :href="generate_download_link('master')" class="swap">
                                     <span class="icon is-large">
                                         <i class="fa fa-file fa-3x"></i>
                                     </span>
 
                                 </a>
-                                <a v-if="has_extra_files" class="swap" href='generate_download_link("all")'>{{lang('f_click_here_to_download_extra_files')}}</a>
+                                <a v-if="has_extra_files" class="swap" :href="generate_download_link('all')">{{lang('f_click_here_to_download_extra_files')}}</a>
                             </div>
                             <div class="card-content has-text-centered" v-else>
                                 <a @click.prevent="state.copyRequest = !state.copyRequest" class="swap" href=''>{{lang('f_click_here_to_request_copy')}}</a>
