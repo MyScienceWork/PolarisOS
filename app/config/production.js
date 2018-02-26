@@ -15,7 +15,7 @@ const minio = _.reduce({
     port: env.MINIO_PORT,
     accessKey: env.MINIO_ACCESS_KEY,
     secretKey: env.MINIO_SECRET_KEY,
-    secure: env.MINIO_SECURE.toLowerCase() === 'true',
+    secure: env.MINIO_SECURE ? env.MINIO_SECURE.toLowerCase() === 'true' : null,
 }, (obj, val, key) => {
     if (val) {
         obj[key] = val;
