@@ -114,24 +114,20 @@ module.exports = {
     },
     computed: {
         typology_options() {
-            if (this.typologySink in this.$store.state.forms) {
-                const sink = this.$store.state.forms[this.typologySink];
-                let content = sink.content || [];
-                if (!(content instanceof Array)) {
-                    content = [];
-                }
-
-                return content.map((t, i) => {
-                    t.label = this.lang(t.label);
-                    t.children = t.children.map((ch, j) => {
-                        ch.tlabel = this.lang(ch.label);
-                        ch.path = `${i}.${j}`;
-                        return ch;
-                    });
-                    return t;
-                });
+            const content = this.fcontent(this.typologySink);
+            if (!(content instanceof Array)) {
+                return [];
             }
-            return [];
+
+            return content.map((t, i) => {
+                t.label = this.lang(t.label);
+                t.children = t.children.map((ch, j) => {
+                    ch.tlabel = this.lang(ch.label);
+                    ch.path = `${i}.${j}`;
+                    return ch;
+                });
+                return t;
+            });
         },
         upload_form() {
             if (this.publicationSpecs in this.$store.state.forms) {
