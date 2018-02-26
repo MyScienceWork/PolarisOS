@@ -12,7 +12,7 @@ const Logger = require('../../../logger');
  * @param completers - Array of completers
  * @param info - Extra information
  */
-async function complete(object: Object, completers: Array<any>, info: ?Object): Promise<Object> {
+async function complete(object: Object, completers: Array<any>, info: Object = {}, infinite: boolean = false): Promise<Object> {
     let final_object = object;
     for (const completer of completers) {
         const promises = _.map(completer,

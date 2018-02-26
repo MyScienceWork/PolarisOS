@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="tile is-parent is-2 is-vertical">
-                <p class="tile is-child" v-if="fullname != null">
+                <p class="tile is-child has-text-centered" v-if="fullname != null">
                     <b-dropdown position="is-bottom-left">
                         <a class="navbar-item is-justify-center" slot="trigger">
                             <span>{{fullname}}</span>
@@ -42,7 +42,7 @@
                         </b-dropdown-item>
                     </b-dropdown>
                 </p>
-                <p v-else class="tile is-child">
+                <p v-else class="tile is-child has-text-centered">
                     <router-link class="navbar-item is-justify-center" slot="trigger" to="/login?redirect=%2F">
                         <span>Log in</span>
                     </router-link>

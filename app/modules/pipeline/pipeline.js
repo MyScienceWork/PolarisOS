@@ -71,6 +71,23 @@ class Pipeline {
         return Utils.merge_with_replacement({}, defaults, input);
     }
 
+    static async _reset(input: Object, resetters: Object): Object {
+        for (const path in resetters) {
+            const segs = path.split('.');
+            input = await Utils.traverse_and_execute(input, segs, async () => resetters[path]);
+        }
+        return input;
+    }
+
+    static _filter(input: Object, filters: Array<String>): Object {
+        filters.forEach((f) => {
+            if (f in input) {
+                delete input[f];
+            }
+        });
+        return input;
+    }
+
     /**
      * Dispatcher to apply each part of the pipeline
      *
@@ -102,6 +119,16 @@ class Pipeline {
             }
             case 'transform': {
                 ctx.request.body = await Transformer(body, model.Transforming || []);
+                await next();
+                break;
+            }
+            case 'filter': {
+                ctx.request.body = Pipeline._filter(body, model.Filtering || []);
+                await next();
+                break;
+            }
+            case 'reset': {
+                ctx.request.body = await Pipeline._reset(body, model.Resetting || {});
                 await next();
                 break;
             }
@@ -195,6 +222,26 @@ class Pipeline {
      */
     static transform(type: string): Function {
         return Pipeline._action(type, 'transform');
+    }
+
+    /**
+     * Invoke the dispatcher to filter the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static filter(type: string): Function {
+        return Pipeline._action(type, 'filter');
+    }
+
+    /**
+     * Invoke the dispatcher to reset the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static reset(type: string): Function {
+        return Pipeline._action(type, 'reset');
     }
 
     /**

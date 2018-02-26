@@ -7,6 +7,7 @@ const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
+const Utils = require('../../../utils/utils');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -47,9 +48,62 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
+        parents: async (result, object) => {
+            if ('parent' in object) {
+                result.push({ _id: object.parent });
+            }
+
+            return result;
+        },
     },
     {
+        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
+    },
+    {
+        abstracts: FormatFunctions.filter_empty_or_null_objects,
+        subtitles: FormatFunctions.filter_empty_or_null_objects,
+        translated_titles: FormatFunctions.filter_empty_or_null_objects,
+        authors: FormatFunctions.filter_empty_or_null_objects,
+    },
+    {
+        files: async (result, object) => {
+            if (!result) {
+                return [];
+            }
 
+
+            const access = Utils.find_value_with_path(object, 'diffusion.rights.access'.split('.'));
+            if (!access) {
+                return result;
+            }
+
+            const access_description = await EntitiesUtils
+                .retrieve_and_get_source('access_level', access);
+
+
+            if (!access_description) {
+                return result;
+            }
+
+            const files = result.reduce((arr, file) => {
+                if (!file) {
+                    return arr;
+                }
+
+                file.access = {
+                    restricted: access_description.restricted,
+                    delayed: access_description.delayed,
+                };
+
+                arr.push(file);
+                return arr;
+            }, []);
+
+            if (files.length === 1) {
+                files[0].is_master = true;
+            }
+            return files;
+        },
     },
 ];
 
@@ -94,26 +148,29 @@ const Completion: Array<any> = [
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
     },
     {
-        status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
-        version: async (obj, path, info) => {
-            if (!('parent' in obj)) {
-                return { version: 1 };
+        parents: (o, p, i) => {
+            if ('parents' in o) {
+                return { parents: o.parents };
             }
-
-            const parent = await EntitiesUtils.retrieve(obj.parent, 'publication');
-            if (parent) {
-                const src = parent.source;
-                return { version: src.version + 1 };
-            }
-            return { version: 1 };
+            return { parents: [] };
         },
+    },
+    {
+        status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
         depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
     },
 ];
 
-const Defaults: Object = {
+const Resetting: Object = {
+    denormalization: {},
 };
+
+const Defaults: Object = {
+    version: 1,
+};
+
+const Filtering: Object = ['parent'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',
@@ -127,6 +184,8 @@ module.exports = {
     Mapping: new MMapping(Mapping),
     Validation,
     Formatting,
+    Filtering,
+    Resetting,
     Completion,
     Messages,
     Defaults,

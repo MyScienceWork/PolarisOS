@@ -1,5 +1,5 @@
 // @flow
-
+const Utils = require('../../../utils/utils');
 const Handlebars = require('../../../utils/templating');
 
 async function oarray_to_array(info: any): any {
@@ -21,7 +21,33 @@ function generic_formatter(template: string): Function {
     };
 }
 
+async function filter_empty_or_null_objects(result: Array<any>): Array<any> {
+    return Utils.filter_empty_or_null_objects(result);
+}
+
+function set_default_lang_for_array(flang: string, iflang: string): Function {
+    return async (result: Array<Object>, object: Object): Array<Object> => {
+        if (!object[flang]) {
+            return result;
+        }
+
+        if (result.length > 1) {
+            return result;
+        }
+
+        return result.map((obj) => {
+            if (obj[iflang]) {
+                return obj;
+            }
+            obj[iflang] = object[flang];
+            return obj;
+        });
+    };
+}
+
 module.exports = {
     oarray_to_array,
     generic_formatter,
+    filter_empty_or_null_objects,
+    set_default_lang_for_array,
 };

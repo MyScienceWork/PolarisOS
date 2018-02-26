@@ -1,35 +1,25 @@
 // @flow
 const moment = require('moment');
-const request = require('superagent');
+const Request = require('superagent');
 const EntitiesUtils = require('../../../utils/entities');
+const Errors = require('../../../exceptions/errors');
+const Config = require('../../../../config');
+const Logger = require('../../../../logger');
+const MinioUtils = require('../../../utils/minio');
+const StreamUtils = require('../../../utils/streams');
+const XMLUtils = require('../../../utils/xml');
+const Utils = require('../../../utils/utils');
 
-function import_crossref(doi: string): Promise<any> {
+function request_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
-    return request.get(url).set('Accept', 'application/json');
+    return Request.get(url).set('Accept', 'application/json');
 }
 
-async function import_information(ctx: Object): Promise<any> {
-    const body = ctx.request.body;
-
-    if (!('doi' in body)) {
-        ctx.body = {};
-        return;
-    }
-
-    let doi = body.doi;
-    doi = doi.trim();
-
-    if (doi === '') {
-        ctx.body = {};
-        return;
-    }
-
-    const crossref = await import_crossref(doi);
+async function import_crossref(ctx: Object, info: string): Promise<any> {
+    const crossref = await request_crossref(info);
     const information = crossref.body;
     if (information.status && information.status === 'ok') {
         const message = information.message;
-        console.log(message);
-        console.log(message.issued);
         ctx.body = {
             number: message.issue || '',
             volume: message.volume || '',
@@ -99,9 +89,115 @@ async function import_information(ctx: Object): Promise<any> {
                 }
             }
         }
+
+        if (message.author && message.author.length > 0) {
+            const author_search_promises = message.author.map((a) => {
+                const name = `${a.given} ${a.family}`;
+                return EntitiesUtils.search('author',
+                        { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
+            });
+
+            let results = await Promise.all(author_search_promises);
+            results = results.map(r => EntitiesUtils.get_hits(r))
+            .filter(r => r != null && r.length > 0);
+            ctx.body.authors = results.map(r => ({ _id: r[0].id }));
+        }
         return;
     }
     ctx.body = {};
+}
+
+async function extract_relevant_information_from_grobid(information) {
+    console.log(information);
+    const file_description = Utils.find_value_with_path(information, 'TEI.teiHeader.0.fileDesc.0'.split('.'));
+    const profile_description = Utils.find_value_with_path(information, 'TEI.teiHeader.0.profileDesc.0'.split('.'));
+    const item = {};
+
+    if (!file_description) {
+        return item;
+    }
+
+    const title = Utils.find_value_with_path(file_description, 'titleStmt.0.title.0._'.split('.'));
+    if (title) {
+        item.title = { content: title };
+    }
+
+    const authors = [...Utils.find_popvalue_with_path(file_description,
+            'sourceDesc.0.biblStruct.0.analytic.0.author.persName.0'.split('.'))];
+
+    const final_authors = authors.reduce((arr, a) => {
+        const forename = Utils.find_value_with_path(a, 'forename.0._'.split('.'));
+        const surname = Utils.find_value_with_path(a, 'surname.0'.split('.'));
+        if (!forename || !surname) {
+            return arr;
+        }
+        arr.push(`${forename} ${surname}`);
+        return arr;
+    }, []);
+
+    const author_search_promises = final_authors.map(a => EntitiesUtils.search('author',
+        { where: { fullname: { $match: { query: a, minimum_should_match: '100%' } } }, size: 1 }));
+
+    let results = await Promise.all(author_search_promises);
+    results = results.map(r => EntitiesUtils.get_hits(r))
+    .filter(r => r != null && r.length > 0);
+    item.authors = results.map(r => ({ _id: r[0].id }));
+
+    if (profile_description) {
+        const abstract = Utils.find_value_with_path(profile_description, 'abstract.0.p.0'.split('.'));
+        if (abstract) {
+            item.abstracts = [{ content: abstract }];
+        }
+    }
+    return item;
+}
+
+async function import_grobid(ctx: Object, info: string): Promise<*> {
+    try {
+        const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, info);
+        const result = await Request.post(`${Config.grobid.host}:${Config.grobid.port}/api/processFulltextDocument`)
+            .attach('input', stream, 'file.pdf').buffer().type('xml');
+        const object = await XMLUtils.to_object(result.text);
+        const publication = await extract_relevant_information_from_grobid(object);
+        ctx.body = publication;
+        return;
+    } catch (err) {
+        Logger.error('Unable to analyse PDF using Grobid');
+        Logger.error(err);
+    }
+
+    ctx.body = {};
+}
+
+
+async function import_information(ctx: Object): Promise<any> {
+    const body = ctx.request.body;
+
+    let info = body.info;
+    const type = body.type;
+
+    if (!type || !info) {
+        ctx.body = {};
+        return;
+    }
+
+    info = info.trim();
+
+    if (info === '') {
+        ctx.body = {};
+        return;
+    }
+
+    switch (type) {
+    case 'doi':
+        await import_crossref(ctx, info);
+        break;
+    case 'pdf':
+        await import_grobid(ctx, info);
+        break;
+    default:
+        break;
+    }
 
 
     /* let importer = null;

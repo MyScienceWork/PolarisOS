@@ -43,7 +43,7 @@
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
-                                <dynamic-form :form="upload_form" :cform="creationSink"/>
+                                <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="upload_form" :cform="creationSink"/>
                                 <!--<fdropzone form="dummy_form" name="name" master="master" files="files" />-->
                             </div>
                         </div>

@@ -424,6 +424,16 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            access: {
+                                properties: {
+                                    restricted: {
+                                        type: 'boolean',
+                                    },
+                                    delayed: {
+                                        type: 'boolean',
+                                    },
+                                },
+                            },
                         },
                     },
                     ids: {
@@ -473,8 +483,13 @@ module.exports = {
                     pagination: {
                         type: 'keyword',
                     },
-                    parent: {
-                        type: 'keyword',
+                    parents: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     publication_title: {
                         type: 'text',

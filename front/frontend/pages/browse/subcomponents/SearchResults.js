@@ -7,9 +7,14 @@ const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlerbars = require('../../../../../app/modules/utils/templating');
 
+const Results = require('./Results.vue');
+
 module.exports = {
     mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin],
     props: {
+    },
+    components: {
+        Results,
     },
     data() {
         return {
@@ -79,6 +84,9 @@ module.exports = {
         },
         current_state_export() {
             return this.fstate(this.state.sinks.reads.export);
+        },
+        user() {
+            return Auth.user();
         },
     },
     beforeMount() {

@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Errors = require('../exceptions/errors');
 
+
 function hasProperty(obj: Object, key: string | number): boolean {
     return Object.prototype.hasOwnProperty.call(obj, key);
 }
@@ -58,7 +59,7 @@ function find_object_with_path(object: ? Object, path: Array<string>): any {
     return find_object_with_path(object, p.slice(1));
 }
 
-function find_value_with_path(object: ? Object, path: Array<string>): any {
+function find_value_with_path(object: ?Object, path: Array<string>): any {
     const p = path;
     if (p.length === 0) {
         return _return_inner_object(object);
@@ -221,7 +222,7 @@ function make_nested_object_from_path(path: Array<string>,
     }, obj);
 }
 
-async function traverse_and_execute(object: Object, path: Array<string>,
+async function traverse_recreate_and_execute(object: Object, path: Array<string>,
         f: Function, keep_last: boolean = true): any {
     if (path.length === 0) {
         const info = _return_inner_object(object);
@@ -236,17 +237,17 @@ async function traverse_and_execute(object: Object, path: Array<string>,
         if (isNaN(idx)) {
             const new_array = [];
             for (const i in object) {
-                const result = await traverse_and_execute(object[i], path, f, keep_last);
+                const result = await traverse_recreate_and_execute(object[i], path, f, keep_last);
                 new_array.push(result);
             }
             return new_array;
         } else if (key < object.length) {
-            const result = await traverse_and_execute(object[key],
+            const result = await traverse_recreate_and_execute(object[key],
                 path.slice(1), f, keep_last);
             return [result];
         }
     } else if (object != null && hasProperty(object, key)) {
-        const result = await traverse_and_execute(object[key], path.slice(1), f, keep_last);
+        const result = await traverse_recreate_and_execute(object[key], path.slice(1), f, keep_last);
         if (path.length === 1 && !keep_last) {
             return result;
         }
@@ -259,6 +260,55 @@ async function traverse_and_execute(object: Object, path: Array<string>,
     }
 }
 
+async function traverse_and_execute(object: Object, path: Array<string>, f: Function): any {
+    if (path.length === 0) {
+        const info = _return_inner_object(object);
+        const result = await f(info);
+        return result;
+    }
+
+    const key = path[0];
+    const idx = parseInt(key, 10);
+
+    if (object instanceof Array) {
+        if (isNaN(idx)) {
+            for (const i in object) {
+                object[i] = await traverse_and_execute(object[i], path, f);
+            }
+            return object;
+        } else if (key < object.length) {
+            object[key] = await traverse_and_execute(object[key],
+                    path.slice(1), f);
+            return object;
+        }
+    } else if (object != null && hasProperty(object, key)) {
+        const result = await traverse_and_execute(object[key], path.slice(1), f);
+        object[key] = result;
+        return object;
+    }
+    return object;
+}
+
+function isNil(path: string, object: ?Object): boolean {
+    if (_.isNil(object)) {
+        return true;
+    }
+    return _.isNil(find_value_with_path(object, path.split('.')));
+}
+
+function filter_empty_or_null_objects(array: Array<any>): Array<any> {
+    return array.filter((obj) => {
+        if (_.isNil(obj) || _.isEmpty(obj)) {
+            return false;
+        }
+
+        const filtered = _.filter(obj, val => !_.isNil(val));
+
+        return !_.isEmpty(filtered);
+    });
+}
+
+
 module.exports = {
     hasProperty,
     find_value_with_path,
@@ -269,5 +319,8 @@ module.exports = {
     merge_with_superposition,
     find_popvalue_with_path,
     traverse_and_execute,
+    traverse_recreate_and_execute,
     make_nested_object_from_path,
+    isNil,
+    filter_empty_or_null_objects,
 };

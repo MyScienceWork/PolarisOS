@@ -25,6 +25,7 @@
                                             :show-errors="false"
                                             :mode="form_mode"
                                             :no_reinitialize_after_success="true"
+                                            @form-success-reset="go_after_success"
                                         >
                                             <first-deposit-step
                                                 :creation-sink="state.publication.sink"

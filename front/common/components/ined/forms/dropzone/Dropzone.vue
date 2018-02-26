@@ -22,51 +22,58 @@
                 </div>
                 <div v-else class="dz-message" style="display:none">
                 </div>
-                <div class="responsive-table">
-                    <table v-if="state.files.order.length > 0" class="table is-striped is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th>{{lang('b_file_original_name')}}</th>
-                                <th>{{lang('b_file_deposit_name')}}</th>
-                                <th>{{lang('b_file_status')}}</th>
-                                <th>{{lang('b_file_size')}}</th>
-                                <th>{{lang('b_file_master')}}</th>
-                                <th v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(filename, i) in state.files.order">
-                                <td>{{state.files.content[filename].name}}</td>
-                                <td>
-                                    <finput :readonly="readonly" :name="`${files}.${i}.${name}`" label="" type="text" :placeholder="lang('dropzone_file_deposit_name')" :form="form" />
-                                    <finput 
-                                        :name="`${files}.${i}.${url}`" 
-                                        label="" type="hidden" 
-                                        :form="form" 
-                                        :hidden-value="state.files.content[filename].pathOnServer || ''" 
-                                    />
-                                </td>
-                                <td v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
-                                    <progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
-                                <td v-else>
-                                    <span v-html="lang('dropzone_status_'+state.files.content[filename].status)"></span><br /><span v-if="state.files.content[filename].errorMessage">({{state.files.content[filename].errorMessage}})</span> 
-                                </td>
-                                <td>
-                                    {{parseFloat(state.files.content[filename].size / 1024).toFixed(2)}} KB
-                                </td>
-                                <td>
-                                    <finput
-                                    :readonly="readonly"
-                                    :name="`${files}.${i}.${master}`" label="" type="checkbox" :form="form" />
-                                </td>
-                                <td v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
-                                    <a class="has-text-danger" @click="removeFile(filename, $event)">
-                                        <span class="icon"><i class="fa fa-trash"></i></span>
+                <div class="is-clearfix">
+                    <div v-for="(filename, i) in state.files.order">
+                        <finput 
+                            :readonly="readonly" 
+                            :name="`${files}.${i}.${name}`" 
+                            :label="lang('b_file_deposit_name')" 
+                            type="text" 
+                            :placeholder="lang('dropzone_file_deposit_name')" 
+                            :form="form"
+                            :help="`${lang('b_file_original_name')} ${state.files.content[filename].name} (${parseFloat(state.files.content[filename].size / 1024).toFixed(2)} KB)`"
+                            :has-addons="true"
+                        >
+                            <template slot="input-addons">       
+                                <p class="control" v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
+                                    <a class="button is-danger" 
+                                        @click="removeFile(filename, $event)"
+                                        >
+                                        <span class="icon">
+                                            <i class="fa fa-trash"></i>
+                                        </span>
                                     </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </p>
+                                <p class="control">
+                                    <a class="button is-info" @click.prevent="analyze(state.files.content[filename].pathOnServer)">
+                                        <span class="icon">
+                                            <i class="fa fa-gear"></i>
+                                        </span>
+                                    </a>
+                                </p>
+                            </template>
+                        </finput>
+                        <finput 
+                            :name="`${files}.${i}.${url}`" 
+                            label="" type="hidden" 
+                            :form="form" 
+                            :hidden-value="state.files.content[filename].pathOnServer || ''" 
+                            />
+                        <finput
+                        :readonly="readonly"
+                        :name="`${files}.${i}.${master}`" 
+                        :label="lang('b_file_master')" 
+                        type="checkbox" :form="form" />
+
+                        <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
+                            <span>{{lang('b_file_status')}} </span><progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
+                        </div>
+                        <div v-else>
+                            <span>{{lang('b_file_status')}} </span><span v-html="lang('dropzone_status_'+state.files.content[filename].status)"></span><br /><span v-if="state.files.content[filename].errorMessage">({{state.files.content[filename].errorMessage}})</span> 
+                        </div>
+                
+                        <hr />
+                    </div>
                 </div>
             </div>
         </vue-dropzone>

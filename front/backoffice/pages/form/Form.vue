@@ -145,6 +145,22 @@
                                             fieldValue="type"
                                             :form="state.forms.csink" />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.fetch_from_sink`" 
+                                            :key="`${props.fname}.${props.id}.datasource.fetch_from_sink`" 
+                                            :label="lang('b_datasource_fetch_from_sink')"
+                                            type="checkbox"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.sink`" 
+                                            :key="`${props.fname}.${props.id}.datasource.sink`" 
+                                            :label="lang('b_datasource_sink')"
+                                            :is-required="false"
+                                            :placeholder="lang('b_datasource_sink')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.label`" 
                                             :key="`${props.fname}.${props.id}.datasource.label`" 
                                             :label="lang('b_datasource_label')"
@@ -210,6 +226,14 @@
                                             :key="`${props.fname}.${props.id}.datasource.ajax_path`" 
                                             :label="lang('b_datasource_ajax_path')"
                                             :placeholder="lang('b_datasource_ajax_path')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
+                                            :key="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
+                                            :label="lang('b_datasource_ajax_value_path')"
+                                            :placeholder="lang('b_datasource_ajax_value_path')"
                                             type="text"
                                             :form="state.forms.csink"
                                             />

@@ -20,13 +20,26 @@
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
                 <v-select
-                    v-else
+                    v-else-if="!ajax"
                     :multiple="multi"
                     :options="state.options"
                     :on-change="onChange"
                     :value="state.selected"
                     :placeholder="placeholder"
                     :reset-on-options-change="resetOnOptionsChange"
+                    :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
+                >
+                </v-select>
+                <v-select
+                    v-else
+                    :multiple="multi"
+                    :filterable="false"
+                    :options="state.options"
+                    :on-change="onChange"
+                    :value="state.selected"
+                    :placeholder="placeholder"
+                    :reset-on-options-change="resetOnOptionsChange"
+                    @search="onSearch"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                 </v-select>

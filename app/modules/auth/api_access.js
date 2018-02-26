@@ -10,31 +10,25 @@ const EntitiesUtils = require('../utils/entities');
 
 async function _find_info(key: string): Promise<?ODM> {
     let info = await EntitiesUtils.search('apiuser', {
-        $where: {
+        where: {
             key,
         },
     });
 
-    if (info == null || info.result == null ||
-        info.result.hits == null ||
-        info.result.hits.length === 0) {
-        info = null;
-    }
-
-    if (info == null) {
+    let hits = EntitiesUtils.get_hits(info);
+    if (hits.length === 0) {
         info = await EntitiesUtils.search('user', {
             where: {
                 'authentication.key': key,
             },
         });
 
-        if (info == null || info.result == null ||
-            info.result.hits == null ||
-            info.result.hits.length === 0) {
+        hits = EntitiesUtils.get_hits(info);
+        if (hits.length === 0) {
             return null;
         }
     }
-    return info.result.hits[0].source;
+    return hits[0].source;
 }
 
 function api_signature(deactivated: boolean = false): Function {

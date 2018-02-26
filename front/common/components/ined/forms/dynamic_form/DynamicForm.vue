@@ -53,9 +53,12 @@
                     :placeholder="lang(field.placeholder || '')"
                     :name="get_name(field.name)"
                     :form="cform"
-                    :fieldLabel="field.datasource.label"
-                    :fieldValue="field.datasource.value"
-                    :options="datasource(field, field.datasource.ajax)"
+                    :fieldLabel="generate_select_label(field)"
+                    :fieldValue="generate_select_value(field)"
+                    :options="generate_select_options(field)"
+                    :ajax="field.datasource.ajax"
+                    :ajax-url="generate_ajax_url(field)"
+                    :ajax-value-url="generate_ajax_url(field, 'value')"
                     :is-addon="true"
                     :readonly="readonly"
                     :is-required="field.required"
@@ -120,6 +123,9 @@
                 :fieldLabel="generate_select_label(field)"
                 :fieldValue="generate_select_value(field)"
                 :options="generate_select_options(field)"
+                :ajax="field.datasource.ajax"
+                :ajax-url="generate_ajax_url(field)"
+                :ajax-value-url="generate_ajax_url(field, 'value')"
                 :readonly="readonly"
                 :is-required="field.required"
                 :has-addons="field.single_multiple"
@@ -163,6 +169,7 @@
                 :keep_files="field.file.keep"
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
+                @analyze-file="dropzone_analyze_file"
                 />
                 <dynamic-form 
                     :form="field.subform" 
@@ -173,6 +180,7 @@
                     :readonly="readonly"
                     :key="i"
                     @crud-form-change="crud_form_change"
+                    @dropzone-analyze-file="dropzone_analyze_file"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                         <div class="field has-addons">
@@ -220,9 +228,12 @@
             :placeholder="lang(field.placeholder || '')"
             :name="get_name(field.name)"
             :form="cform"
-            :fieldLabel="field.datasource.label"
-            :fieldValue="field.datasource.value"
-            :options="datasource(field, field.datasource.ajax)"
+            :fieldLabel="generate_select_label(field)"
+            :fieldValue="generate_select_value(field)"
+            :options="generate_select_options(field)"
+            :ajax="field.datasource.ajax"
+            :ajax-url="generate_ajax_url(field)"
+            :ajax-value-url="generate_ajax_url(field, 'value')"
             :readonly="readonly"
             :is-required="field.required"
             :multi="field.type === 'multi-select'"
@@ -254,6 +265,7 @@
             :keep_files="field.file.keep"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
+            @analyze-file="dropzone_analyze_file"
             />
             <dynamic-form 
                 :form="field.subform" 
@@ -262,6 +274,7 @@
                 :single="field.single_multiple"
                 :readonly="readonly"
                 @crud-form-change="crud_form_change"
+                @dropzone-analyze-file="dropzone_analyze_file"
             >
             </dynamic-form>
         </template>

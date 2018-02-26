@@ -63,7 +63,6 @@ function update() {
             body._meta = mapping.mappings[name]._meta;
         }
 
-
         const response = client.indices.putMapping({
             index: `${config.elasticsearch.index_prefix}_${name}`,
             type: name,

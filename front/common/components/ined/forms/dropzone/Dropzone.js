@@ -82,6 +82,9 @@ module.exports = {
                 delete this.state.files.content[filename];
             }
         },
+        analyze(filename) {
+            this.$emit('analyze-file', filename);
+        },
     },
     mounted() {
         console.log('keeper content', this.keeperContent);

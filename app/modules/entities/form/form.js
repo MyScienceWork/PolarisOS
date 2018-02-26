@@ -31,18 +31,21 @@ class Form extends ODM {
         // Collect subforms and datasources to be expanded.
         const datasources = info.fields.reduce((obj, field, i) => {
             if (field.datasource != null && field.datasource.name != null
-                    && field.datasource.name !== '') {
+                    && field.datasource.name !== '' &&
+                !field.datasource.fetch_from_sink) {
                 const name = field.datasource.name;
                 const label = field.datasource.label;
                 const value = field.datasource.value;
                 const sort = field.datasource.sort;
+                const ajax = field.datasource.ajax;
                 if (name in obj) {
                     obj[name].indices.push(i);
                     obj[name].projection.add(label);
                     obj[name].projection.add(value);
                     obj[name].sort = sort;
+                    obj[name].ajax = ajax;
                 } else {
-                    obj[name] = { indices: [i], projection: new Set([label, value]), sort };
+                    obj[name] = { indices: [i], projection: new Set([label, value]), sort, ajax };
                 }
             }
             return obj;
@@ -53,7 +56,7 @@ class Form extends ODM {
                 const sort = Form.generate_sort(datasources[ds].sort);
                 const datasource = await EntitiesUtils.search(ds, {
                     projection: Array.from(datasources[ds].projection),
-                    size: 800,
+                    size: datasources[ds].ajax ? 20 : 800,
                     sort: [sort, { _uid: 'desc' }],
                 });
 

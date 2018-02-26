@@ -209,7 +209,7 @@ class ODM {
     static async search(index: string, type: string, client: Object, model: Object,
             search: Search, opts: Object = {}): Promise<Object> {
         const query = search.generate();
-        console.log(query);
+        console.log(JSON.stringify(query));
         const sort = search.sort();
         const aggs = search.aggs();
         const population = 'population' in opts ? opts.population : [];
@@ -235,8 +235,6 @@ class ODM {
                 }, {}));
 
                 body.search_after = opts.search_before;
-
-                console.log(JSON.stringify(body));
             }
         }
 

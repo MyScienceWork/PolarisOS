@@ -185,6 +185,7 @@ class Pipeline extends ODM {
             Formatting: formatters,
             Completion: completers,
             Transforming: transformers,
+            Filtering: [],
             Name: type,
         };
         // console.log(defaults);

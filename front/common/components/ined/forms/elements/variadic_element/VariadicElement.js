@@ -51,15 +51,15 @@ module.exports = {
             this.state.elements[real_idx].a = false;
             this.state.total -= 1;
         },
-        initialize() {
-            const form = this.$store.state.forms[this.form];
+        initialize(sink) {
+            const form = this.$store.state.forms[sink];
             let object = null;
 
             if (form && 'content' in form) {
                 object = Utils.find_value_with_path(form.content, this.name.split('.'));
             }
 
-            if (object != null) {
+            if (object != null && object.length > 0) {
                 if (object instanceof Array) {
                     this.state.elements = object.map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;

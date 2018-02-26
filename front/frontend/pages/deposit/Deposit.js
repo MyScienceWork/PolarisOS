@@ -23,6 +23,7 @@ module.exports = {
                 typology: {
                     path: APIRoutes.entity('typology', 'GET'),
                     sink: 'typology_read',
+                    subsink: 'subtypology_read',
                 },
                 forms: {
                     name: 'typology_form',
@@ -40,10 +41,14 @@ module.exports = {
         };
     },
     methods: {
-        update_typology_form(form, name) {
+        update_typology_form(form, children) {
             this.state.deposit_form_name = form;
             if (form !== '') {
                 this.fetch_form(form, this.state.publication.specs);
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.typology.subsink,
+                    body: children,
+                });
             } else {
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.publication.specs,
@@ -92,6 +97,9 @@ module.exports = {
                 form: this.state.publication.sink,
                 keep_content: true,
             });
+        },
+        go_after_success() {
+            this.$router.push({ path: '/' });
         },
     },
     components: {
