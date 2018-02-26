@@ -25,7 +25,7 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             volume: message.volume || '',
             pagination: message.page || '',
             ids: [
-                { _id: doi, type: 'doi' },
+                { _id: info, type: 'doi' },
             ],
         };
 
