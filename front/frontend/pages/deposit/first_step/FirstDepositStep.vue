@@ -45,6 +45,13 @@
                                 </div>
                                 <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="upload_form" :cform="creationSink"/>
                                 <!--<fdropzone form="dummy_form" name="name" master="master" files="files" />-->
+                                <div class="columns is-centered">
+                                    <div class="column">
+                                        <p v-if="state.analyze_state === 'loading'">{{lang('l_analyze_in_progress')}}</p>
+                                        <p v-else-if="state.analyze_state === 'fail'">{{lang('l_analyze_failed')}}</p>
+                                        <p v-else-if="state.analyze_state === 'success'">{{lang('l_analyze_succeeded')}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

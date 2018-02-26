@@ -64,6 +64,17 @@ const Formatting: Array<any> = [
         subtitles: FormatFunctions.filter_empty_or_null_objects,
         translated_titles: FormatFunctions.filter_empty_or_null_objects,
         authors: FormatFunctions.filter_empty_or_null_objects,
+        files: FormatFunctions.filter_empty_or_null_objects,
+        classifications: FormatFunctions.filter_empty_or_null_objects,
+        contributors: FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.projects': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.surveys': FormatFunctions.filter_empty_or_null_objects,
+        ids: FormatFunctions.filter_empty_or_null_objects,
+        keywords: FormatFunctions.filter_empty_or_null_objects,
+        resources: FormatFunctions.filter_empty_or_null_objects,
+        sources: FormatFunctions.filter_empty_or_null_objects,
     },
     {
         files: async (result, object) => {
@@ -80,19 +91,14 @@ const Formatting: Array<any> = [
             const access_description = await EntitiesUtils
                 .retrieve_and_get_source('access_level', access);
 
-
-            if (!access_description) {
-                return result;
-            }
-
             const files = result.reduce((arr, file) => {
                 if (!file) {
                     return arr;
                 }
 
                 file.access = {
-                    restricted: access_description.restricted,
-                    delayed: access_description.delayed,
+                    restricted: access_description ? access_description.restricted : false,
+                    delayed: access_description ? access_description.delayed : false,
                 };
 
                 arr.push(file);
