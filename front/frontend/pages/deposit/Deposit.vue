@@ -24,6 +24,7 @@
                                             get_form="dummy_sink"
                                             :show-errors="false"
                                             :mode="form_mode"
+                                            :validate-step="state.current_step"
                                             :no_reinitialize_after_success="true"
                                             @form-success-reset="go_after_success"
                                         >

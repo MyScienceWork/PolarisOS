@@ -18,7 +18,7 @@ module.exports = {
                     path: APIRoutes.entity('publication', 'POST'),
                     put_path: APIRoutes.entity('publication', 'PUT'),
                     read_path: APIRoutes.entity('publication', 'GET'),
-                    validate_path: APIRoutes.entity('publication', 'VALIDATE'),
+                    validate_path: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
                 },
                 typology: {
                     path: APIRoutes.entity('typology', 'GET'),
@@ -71,6 +71,8 @@ module.exports = {
             e.preventDefault();
             this.state.next_step = step;
             this.state.current_step = step - 1;
+            this.state.publication.validate_path = APIRoutes.entity('publication',
+                'VALIDATE', false, `0-${this.state.current_step}`);
             func(e);
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,
@@ -81,6 +83,8 @@ module.exports = {
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
                     this.state.current_step = this.state.next_step;
+                    this.state.publication.validate_path = APIRoutes.entity('publication',
+                        'VALIDATE', false, `0-${this.state.current_step}`);
                     this.state.stepper.next(this.state.stepper.e);
                 }
 
@@ -92,6 +96,8 @@ module.exports = {
         },
         show_success_validate() {
             this.state.current_step = this.state.next_step;
+            this.state.publication.validate_path = APIRoutes.entity('publication',
+                'VALIDATE', false, `0-${this.state.current_step}`);
             this.state.stepper.next(this.state.stepper.e);
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,

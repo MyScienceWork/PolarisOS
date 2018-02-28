@@ -11,6 +11,7 @@ const Utils = require('../../../utils/utils');
 
 // Pipelines
 const PipelineTypeFiles = require('./pipeline_type_files');
+const PipelineDiffusion = require('./pipeline_diffusion');
 
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
@@ -198,7 +199,7 @@ module.exports = {
         Resetting,
         Completion,
         Defaults,
-    }],
+    }, PipelineDiffusion],
     Messages,
     Name: 'Publication',
 };
