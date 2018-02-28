@@ -9,6 +9,9 @@ const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 
+// Pipelines
+const PipelineTypeFiles = require('./pipeline_type_files');
+
 const Mapping: Object = PubMapping.msw.mappings.publication.properties;
 
 const Validation: Array<any> = [
@@ -26,7 +29,7 @@ const Validation: Array<any> = [
     Joi.object({
         authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
         lang: Joi.string().required().label('lang'),
-        type: Joi.string().required().label('type'),
+        // type: Joi.string().required().label('type'),
         // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
@@ -176,7 +179,7 @@ const Defaults: Object = {
     version: 1,
 };
 
-const Filtering: Object = ['parent'];
+const Filtering: Array<string> = ['parent'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',
@@ -188,12 +191,14 @@ const Messages: Object = {
 module.exports = {
     RawMapping: Mapping,
     Mapping: new MMapping(Mapping),
-    Validation,
-    Formatting,
-    Filtering,
-    Resetting,
-    Completion,
+    Pipelines: [PipelineTypeFiles, {
+        Validation,
+        Formatting,
+        Filtering,
+        Resetting,
+        Completion,
+        Defaults,
+    }],
     Messages,
-    Defaults,
     Name: 'Publication',
 };

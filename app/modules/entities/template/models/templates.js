@@ -8,7 +8,12 @@ const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
 const Mapping: Object = TemplateMapping.msw.mappings.template.properties;
 
-const Validation: Array<any> = [];
+const Validation: Array<any> = [
+    Joi.object({
+        css: Joi.string().required().label('CSS'),
+        name: Joi.string().required().label('Name'),
+    }),
+];
 
 const Formatting: Array<any> = [];
 
@@ -27,10 +32,12 @@ const Messages: Object = {
 module.exports = {
     RawMapping: Mapping,
     Mapping: new MMapping(Mapping),
-    Validation,
-    Formatting,
-    Completion,
+    Pipelines: [{
+        Validation,
+        Formatting,
+        Completion,
+        Defaults,
+    }],
     Messages,
-    Defaults,
     Name: 'Template',
 };

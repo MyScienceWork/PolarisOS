@@ -165,6 +165,7 @@ function generate_put_routes(router: KoaRouter, prefix: string, type: string, em
     const put_mware = put_middlewares(type, emiddlewares);
     router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
+    router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
 }
 
 function generate_post_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
@@ -172,6 +173,7 @@ function generate_post_routes(router: KoaRouter, prefix: string, type: string, e
 
     router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
+    router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
 }
 
 function generate_entity_routes(router: KoaRouter,
