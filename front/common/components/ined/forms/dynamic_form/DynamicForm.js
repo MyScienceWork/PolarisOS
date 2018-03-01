@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const LangMixin = require('../../../../mixins/LangMixin');
+const FormMixin = require('../../../../mixins/FormMixin');
 const CrudForm = require('./CrudForm.vue');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
+const Utils = require('../../../../utils/utils');
 
 module.exports = {
-    mixins: [LangMixin],
+    mixins: [LangMixin, FormMixin],
     props: {
         form: { required: true },
         cform: { type: String, required: true },
@@ -62,7 +64,17 @@ module.exports = {
                     return [];
                 }
 
-                const content = field.datasource.content || [];
+
+                let content = [];
+                if (field.datasource.fetch_from_sink) {
+                    content = this.fcontent(field.datasource.sink);
+                    if (field.datasource.info_in_sink && field.datasource.info_in_sink.trim() !== '') {
+                        content = Utils.find_value_with_path(content, field.datasource.info_in_sink.trim().split('.')) || [];
+                    }
+                } else {
+                    content = field.datasource.content || [];
+                }
+
                 if (field.datasource.translatable) {
                     return content.map((dc) => {
                         dc[field.datasource.label] = this.lang(dc[field.datasource.label]);

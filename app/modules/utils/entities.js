@@ -231,9 +231,9 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
-    default:
+    default: {
         return grab_entity_from_type(type, 'model');
-        // return null;
+    }
     }
 }
 
@@ -283,7 +283,6 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
 
 async function create(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
 
     if (cls == null) {
         return null;
@@ -293,18 +292,20 @@ async function create(info: Object, type: string): Promise<*> {
         delete info._id;
     }
 
+    const model = cls.model;
+
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
-    // console.log('create', response);
     return response;
 }
 
 async function update(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return null;
     }
+
+    const model = cls.model;
 
     const id = info._id;
     delete info._id;
@@ -321,14 +322,13 @@ async function count(type: string, body: Object): Promise<*> {
     }
 
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, count: 0 };
     }
 
     const s = Mapper.transform_to_search(body, cls.mapping);
     const counting = await cls.constructor.count(get_index(type), type,
-        es_client, model, s);
+        es_client, cls.model, s);
     return { entity: type, count: counting.count };
 }
 
@@ -337,15 +337,14 @@ async function search_lang(body: Object, lang: string = 'EN'): Promise<*> {
     const label = Object.keys(body.where)[0];
 
     const cls_lang = await get_info_from_type('lang');
-    const model_lang = await get_model_from_type('lang');
     if (cls_lang == null) {
         body.where[label] = '';
         return body;
     }
 
-    const response_lang = format_search(format_search_for_lang(body, lang), model_lang);
+    const response_lang = format_search(format_search_for_lang(body, lang), cls_lang.model);
     const result_lang = await cls_lang.constructor.search(get_index('lang'), 'lang',
-            es_client, model_lang, response_lang.search, response_lang.options);
+            es_client, cls_lang.model, response_lang.search, response_lang.options);
 
     const hits_lang = get_hits(result_lang);
     if (hits_lang.length === 0) {
@@ -369,14 +368,13 @@ async function search(type: string, body: Object,
     }
 
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, result: {} };
     }
 
-    const response = format_search(body, model);
+    const response = format_search(body, cls.model);
     const result = await cls.constructor.search(get_index(type), type, es_client,
-            model, response.search, response.options);
+            cls.model, response.search, response.options);
 
     return { entity: type, result };
 }

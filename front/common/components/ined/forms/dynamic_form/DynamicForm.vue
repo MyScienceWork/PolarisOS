@@ -46,6 +46,7 @@
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
                     :view-validation-texts="false"
+                    label=""
                     />
                     <fselect 
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -107,6 +108,7 @@
                 :form="cform"
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
+                label=""
                 :readonly="readonly"
                 :is-required="field.required"
                 :key="i"
@@ -216,6 +218,7 @@
             :form="cform"
             :is-addon="true"
             :hidden-value="field.hiddenValue"
+            label=""
             :readonly="readonly"
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"

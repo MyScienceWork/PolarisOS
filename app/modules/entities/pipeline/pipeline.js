@@ -181,11 +181,13 @@ class Pipeline extends ODM {
                 remove: `l_message_remove_entity_${type}`,
                 modify: `l_message_modify_entity_${type}`,
             },
-            Validation: validators,
-            Formatting: formatters,
-            Completion: completers,
-            Transforming: transformers,
-            Filtering: [],
+            Pipelines: [{
+                Validation: validators,
+                Formatting: formatters,
+                Completion: completers,
+                Transforming: transformers,
+                Filtering: [],
+            }],
             Name: type,
         };
         // console.log(defaults);

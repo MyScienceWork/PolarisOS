@@ -88,6 +88,61 @@ class Pipeline {
         return input;
     }
 
+    static _format_range(potential_range, total) {
+        if (potential_range == null) {
+            return [];
+        }
+        if (potential_range.match(/[0-9]+-[0-9]+/)) {
+            const range = potential_range.split('-').map(r => parseInt(r, 10));
+            return _.range(range[0], range[1]).filter(r => (r >= 0 && r < total));
+        }
+
+
+        const pnum = parseInt(potential_range, 10);
+        if (isNaN(pnum)) {
+            return [];
+        }
+
+        return [pnum];
+    }
+
+    static async _evaluate_pipeline(ctx: Object, pipeline: Object,
+        type: string, action: string, method: string) {
+        switch (action) {
+        case 'transform': {
+            ctx.request.body = await Transformer(ctx.request.body, pipeline.Transforming || []);
+            break;
+        }
+        case 'filter': {
+            ctx.request.body = Pipeline._filter(ctx.request.body, pipeline.Filtering || []);
+            break;
+        }
+        case 'reset': {
+            ctx.request.body = await Pipeline._reset(ctx.request.body, pipeline.Resetting || {});
+            break;
+        }
+        case 'defaults': {
+            ctx.request.body = Pipeline._merge_defaults(ctx.request.body, pipeline.Defaults);
+            break;
+        }
+        case 'format': {
+            ctx.request.body = await Formatter(ctx.request.body, pipeline.Formatting);
+            break;
+        }
+        case 'complete': {
+            ctx.request.body = await Completer(ctx.request.body, pipeline.Completion, ctx.__md || {});
+            break;
+        }
+        default:
+        case 'validate': {
+            const validator = new Validator();
+            const errors = await validator
+                    .validate(ctx.request.body, pipeline.Validation, method);
+            return errors;
+        }
+        }
+    }
+
     /**
      * Dispatcher to apply each part of the pipeline
      *
@@ -96,15 +151,15 @@ class Pipeline {
      * @returns Koa middleware
      */
     static _action(type: string, m: string): Function {
-        const validator = new Validator();
         return async function afunc(ctx: Object, next: Function): Promise<*> {
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = ctx.__md.model;
-            // console.log('validation: ', type, ' action:', m, ' method:', method);
+            const pipelines = model.Pipelines || [];
 
-            switch (m) {
-            case 'check': {
+            const range = Pipeline._format_range(ctx.params.range, pipelines.length);
+
+            if (m === 'check') {
                 if (method === 'put') {
                     const exists = await Pipeline._check_if_entity_exists(body, type);
                     if (exists) {
@@ -115,59 +170,30 @@ class Pipeline {
                 } else {
                     await next();
                 }
-                break;
-            }
-            case 'transform': {
-                ctx.request.body = await Transformer(body, model.Transforming || []);
-                await next();
-                break;
-            }
-            case 'filter': {
-                ctx.request.body = Pipeline._filter(body, model.Filtering || []);
-                await next();
-                break;
-            }
-            case 'reset': {
-                ctx.request.body = await Pipeline._reset(body, model.Resetting || {});
-                await next();
-                break;
-            }
-            case 'defaults': {
-                ctx.request.body = Pipeline._merge_defaults(body, model.Defaults);
-                console.log('defaults');
-                console.log(JSON.stringify(ctx.request.body));
-                await next();
-                break;
-            }
-            case 'merge': {
+            } else if (m === 'merge') {
                 if (method === 'put') {
-                    const entity = await EntitiesUtils.retrieve(body._id, type);
-                    ctx.request.body = Pipeline._merge_put(body, entity.db.source);
+                    const entity = await EntitiesUtils.retrieve(ctx.request.body._id, type);
+                    ctx.request.body = Pipeline._merge_put(ctx.request.body, entity.db.source);
                 }
                 await next();
-                break;
-            }
-            case 'format': {
-                ctx.request.body = await Formatter(body, model.Formatting);
-                await next();
-                break;
-            }
-            case 'complete': {
-                ctx.request.body = await Completer(body, model.Completion, ctx.__md || {});
-                await next();
-                break;
-            }
-            default:
-            case 'validate': {
-                const errors = await validator
-                    .validate(body, model.Validation, method);
-                if (Object.keys(errors).length === 0) {
-                    await next();
-                } else {
+            } else {
+                let errors = {};
+                const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
+                for (const i of prange) {
+                    const pipeline = pipelines[i];
+                    const ret = await Pipeline._evaluate_pipeline(ctx, pipeline,
+                        type, m, method);
+                    if (m === 'validate') {
+                        errors = Utils.merge_with_concat({}, errors, ret);
+                    }
+                }
+
+                console.log(prange, pipelines, errors);
+                if (Object.keys(errors).length > 0) {
                     ctx.body = { change: 'Validation', errors };
+                } else {
+                    await next();
                 }
-                break;
-            }
             }
         };
     }
