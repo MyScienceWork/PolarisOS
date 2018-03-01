@@ -47,7 +47,7 @@ module.exports = {
                 this.fetch_form(form, this.state.publication.specs);
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.typology.subsink,
-                    body: children,
+                    body: { children },
                 });
             } else {
                 this.$store.commit(Messages.INITIALIZE, {
@@ -84,7 +84,7 @@ module.exports = {
                 if (this.state.deposit_form_name) {
                     this.state.current_step = this.state.next_step;
                     this.state.publication.validate_path = APIRoutes.entity('publication',
-                        'VALIDATE', false, `0-${this.state.current_step}`);
+                        'VALIDATE', false, `0-${this.state.current_step + 1}`);
                     this.state.stepper.next(this.state.stepper.e);
                 }
 

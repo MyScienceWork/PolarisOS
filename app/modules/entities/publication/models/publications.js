@@ -180,7 +180,7 @@ const Defaults: Object = {
     version: 1,
 };
 
-const Filtering: Array<string> = ['parent'];
+const Filtering: Array<string> = ['parent', 'dkeywords'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',

@@ -161,6 +161,15 @@
                                             :form="state.forms.csink"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.info_in_sink`" 
+                                            :key="`${props.fname}.${props.id}.datasource.info_in_sink`" 
+                                            :label="lang('b_datasource_info_sink')"
+                                            :is-required="false"
+                                            :placeholder="lang('b_datasource_info_sink')"
+                                            type="text"
+                                            :form="state.forms.csink"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.label`" 
                                             :key="`${props.fname}.${props.id}.datasource.label`" 
                                             :label="lang('b_datasource_label')"

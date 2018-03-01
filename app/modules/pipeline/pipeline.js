@@ -92,20 +92,16 @@ class Pipeline {
         if (potential_range == null) {
             return [];
         }
-        console.log('not null');
         if (potential_range.match(/[0-9]+-[0-9]+/)) {
             const range = potential_range.split('-').map(r => parseInt(r, 10));
             return _.range(range[0], range[1]).filter(r => (r >= 0 && r < total));
         }
 
-        console.log('unmatched');
 
         const pnum = parseInt(potential_range, 10);
         if (isNaN(pnum)) {
             return [];
         }
-
-        console.log('is not nan');
 
         return [pnum];
     }
@@ -183,16 +179,16 @@ class Pipeline {
             } else {
                 let errors = {};
                 const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
-                console.log(prange, range);
                 for (const i of prange) {
                     const pipeline = pipelines[i];
                     const ret = await Pipeline._evaluate_pipeline(ctx, pipeline,
-                        type, method, m);
+                        type, m, method);
                     if (m === 'validate') {
                         errors = Utils.merge_with_concat({}, errors, ret);
                     }
                 }
 
+                console.log(prange, pipelines, errors);
                 if (Object.keys(errors).length > 0) {
                     ctx.body = { change: 'Validation', errors };
                 } else {

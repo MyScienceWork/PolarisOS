@@ -102,6 +102,10 @@ module.exports = {
                                         type: 'boolean',
                                         index: false,
                                     },
+                                    info_in_sink: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                     label: {
                                         type: 'keyword',
                                         index: false,

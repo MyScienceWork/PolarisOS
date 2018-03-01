@@ -117,6 +117,7 @@ function del(type: string): Function {
 }
 
 async function validate(ctx: Object): Promise<*> {
+    console.log(ctx.request.body);
     ctx.body = ctx.request.body;
 }
 

@@ -59,11 +59,11 @@ module.exports = {
                 object = Utils.find_value_with_path(form.content, this.name.split('.'));
             }
 
-            if (object != null && object.length > 0) {
-                if (object instanceof Array) {
+            if (object != null) {
+                if (object instanceof Array && object.length > 0) {
                     this.state.elements = object.map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
-                } else if (object instanceof Object) {
+                } else if (object instanceof Object && Object.keys(object).length > 0) {
                     this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
                 }
