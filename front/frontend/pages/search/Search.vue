@@ -9,13 +9,22 @@
         </div>
         <div class="columns is-centered">
             <div class="column is-10">
-                <search-bar :search-query="query" />
+                <search-bar 
+                    :search-sink="state.sinks.creations.search"
+                    :default-search="query_search"
+                />
             </div>
         </div>
         <div class="columns is-centered">
             <div class="column">
                 <div class="card info-card-purple">
-                    <search-results />
+                    <search-results 
+                        :search-sink="state.sinks.creations.search"
+                        :result-sink="state.sinks.reads.search"
+                        :search-path="state.paths.creations.search"
+                        :search-query="query"
+                        search-type="publication"
+                    />
                 </div>
             </div>
         </div>

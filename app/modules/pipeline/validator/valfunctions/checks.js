@@ -3,8 +3,10 @@ const _ = require('lodash');
 const Utils = require('../../../utils/utils');
 const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
+const Handlebars = require('../../../utils/templating');
 
-function is_unique(path: string, type: string, error: ?Object): Function {
+function is_unique(path: string, type: string,
+    filters: Array<Object> = [], error: ?Object): Function {
     return async function func(object: Object, method: string): Promise<boolean> {
         if (method === 'put') {
             return true;
@@ -12,7 +14,26 @@ function is_unique(path: string, type: string, error: ?Object): Function {
 
         const p = path.split('.');
         const info = Utils.find_value_with_path(object, p);
-        const result = await EntitiesUtils.search(type, { where: { [path]: info } });
+
+
+        let where = { [path]: info };
+        if (filters.length > 0) {
+            where = {
+                $and: [
+                    { [path]: info },
+                ],
+            };
+
+            filters.forEach((f) => {
+                const nf = Object.keys(f).reduce((obj, k) => {
+                    obj[k] = Handlebars.compile(f[k])(object);
+                    return obj;
+                }, {});
+                where.$and.push(nf);
+            });
+        }
+
+        const result = await EntitiesUtils.search(type, { where });
         if (result && Object.keys(result).length > 0 && result.result.hits.length > 0) {
             error = error == null ? Errors.AlreadyExistingEntity : error;
             error.path = path;

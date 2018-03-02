@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Vue = require('vue');
 const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
 const FormMixin = require('./FormMixin');
@@ -39,9 +40,15 @@ module.exports = {
             return s => this.dispatch(s, this, sink);
         },
         update(obj, entity) {
-            this.$store.commit(Messages.READ, {
+            this.$store.commit(Messages.NOOP, {
                 form: this.state.sinks.creations[entity],
-                content: obj,
+            });
+
+            Vue.nextTick(() => {
+                this.$store.commit(Messages.READ, {
+                    form: this.state.sinks.creations[entity],
+                    content: obj,
+                });
             });
         },
         remove(obj, entity) {
@@ -66,13 +73,7 @@ module.exports = {
                 return;
             }
 
-            const req = requests[0];
-            this.$store.state.requests = requests.slice(1);
-            if (req.type === 'commit') {
-                this.$store.commit(req.name, req.content);
-            } else {
-                this.$store.dispatch(req.name, req.content);
-            }
+            this.execute_requests().then(() => {}).catch(err => console.error(err));
         },
     },
     mounted() {

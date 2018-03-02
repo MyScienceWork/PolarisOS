@@ -17,7 +17,22 @@ const Validation: Array<any> = [
 const Formatting: Array<any> = [
     {
         langs: async langs => langs
-           .filter(lang => lang != null && lang.trim() !== '')
+            .map((lang) => {
+                if (lang == null) {
+                    return null;
+                }
+
+                if (typeof lang === 'string' && lang.trim() !== '') {
+                    return lang;
+                }
+
+                const val = lang.value;
+                if (val && val.trim() !== '') {
+                    return val.trim();
+                }
+                return null;
+            })
+            .filter(lang => lang != null)
            .map(lang => ({ value: lang })),
     },
 ];
@@ -35,10 +50,12 @@ const Messages: Object = {
 module.exports = {
     RawMapping: Mapping,
     Mapping: new MMapping(Mapping),
-    Validation,
-    Formatting,
-    Completion,
+    Pipelines: [{
+        Validation,
+        Formatting,
+        Completion,
+        Defaults,
+    }],
     Messages,
-    Defaults,
     Name: 'Config',
 };

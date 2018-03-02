@@ -51,9 +51,11 @@ const Model: mongoose.Model = mongoose.model('ApiUser', MySchema);
 
 module.exports = {
     Model,
-    Validation,
-    Formatting,
-    Completion,
+    Pipelines: [{
+        Validation,
+        Formatting,
+        Completion,
+    }],
     Messages,
     Name: 'ApiUser',
 };

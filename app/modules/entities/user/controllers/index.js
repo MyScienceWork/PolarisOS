@@ -32,22 +32,14 @@ async function authenticate(ctx: Object) {
 
     // let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
 
-    let hpassword = Crypto.createHash('sha1').update(password).digest('hex');
-    // HACK TODO
-    hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex'); // As the formatter is called twice, we need to apply the hashing twice...
+    const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
 
     if (hpassword === db.password) {
         // info.set('force_deconnection', false);
         // await info.update();
 
         ctx.body = { ok: true,
-            user: { firstname: db.firstname,
-                lastname: db.lastname,
-                emails: db.emails,
-                roles: db.roles,
-                key: db.authentication.key,
-                secret: db.authentication.secret,
-            } };
+            user: db };
         return;
     }
 

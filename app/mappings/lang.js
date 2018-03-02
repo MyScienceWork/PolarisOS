@@ -6,14 +6,20 @@ module.exports = {
                 dynamic_date_formats: [],
                 properties: {
                     key: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     values: {
                         type: 'nested',
                         properties: {
                             value: {
                                 type: 'text',
-                                index: false,
+                                analyzer: 'autocomplete',
+                                search_analyzer: 'standard',
                             },
                             quantity: {
                                 type: 'keyword',

@@ -63,8 +63,53 @@ type ObjectList = {
 
 const es_client = new elasticsearch.Client(config.elasticsearch);
 
-function get_index(type) {
+function get_hits(result: Object): Array<any> {
+    if ('hits' in result) {
+        return result.hits;
+    }
+
+    if ('result' in result && 'hits' in result.result) {
+        return result.result.hits;
+    }
+
+    return [];
+}
+
+
+function get_index(type: string): string {
     return `${config.elasticsearch.index_prefix}_${type}`;
+}
+
+function format_search_for_lang(body: Object, lang: string = 'EN'): Object {
+    const default_object = {
+        size: Math.min(20, body.size || 20),
+        sort: [{ _uid: 'desc' }],
+    };
+
+    if (!('where' in body)) {
+        return default_object;
+    }
+
+    const where = body.where;
+    const keys = Object.keys(where);
+
+    if (keys.length === 0) {
+        return default_object;
+    }
+
+    const key = keys[0];
+    const val = where[key];
+
+    if (typeof val !== 'string') {
+        return default_object;
+    }
+
+    default_object.where = { $and: [
+        { 'values.value': val.trim() },
+        { lang },
+    ] };
+
+    return default_object;
 }
 
 function format_search(body: Object, model: Object): Object {
@@ -118,6 +163,13 @@ function format_search(body: Object, model: Object): Object {
             options.population = body.population.filter(p => p != null && p !== '');
         }
     }
+
+    if ('search_after' in body) {
+        options.search_after = body.search_after;
+    } else if ('search_before' in body) {
+        options.search_before = body.search_before;
+    }
+
     return { search: s, options };
 }
 
@@ -179,9 +231,9 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
-    default:
+    default: {
         return grab_entity_from_type(type, 'model');
-        // return null;
+    }
     }
 }
 
@@ -231,23 +283,29 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
 
 async function create(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
+
     if (cls == null) {
         return null;
     }
 
+    if ('_id' in info) {
+        delete info._id;
+    }
+
+    const model = cls.model;
+
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
-    // console.log('create', response);
     return response;
 }
 
 async function update(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return null;
     }
+
+    const model = cls.model;
 
     const id = info._id;
     delete info._id;
@@ -264,31 +322,60 @@ async function count(type: string, body: Object): Promise<*> {
     }
 
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, count: 0 };
     }
 
     const s = Mapper.transform_to_search(body, cls.mapping);
     const counting = await cls.constructor.count(get_index(type), type,
-        es_client, model, s);
+        es_client, cls.model, s);
     return { entity: type, count: counting.count };
 }
 
-async function search(type: string, body: Object): Promise<*> {
+async function search_lang(body: Object, lang: string = 'EN'): Promise<*> {
+    // TODO May not be satisfactory enough
+    const label = Object.keys(body.where)[0];
+
+    const cls_lang = await get_info_from_type('lang');
+    if (cls_lang == null) {
+        body.where[label] = '';
+        return body;
+    }
+
+    const response_lang = format_search(format_search_for_lang(body, lang), cls_lang.model);
+    const result_lang = await cls_lang.constructor.search(get_index('lang'), 'lang',
+            es_client, cls_lang.model, response_lang.search, response_lang.options);
+
+    const hits_lang = get_hits(result_lang);
+    if (hits_lang.length === 0) {
+        body.where[label] = '';
+        return body;
+    }
+    const keys = hits_lang.map(h => h.source.key);
+
+    body.where[label] = keys;
+    return body;
+}
+
+async function search(type: string, body: Object,
+    translatable: boolean = false, lang: string = 'EN'): Promise<*> {
     if (type == null) {
         throw Errors.InvalidEntity;
     }
 
+    if (translatable && 'where' in body && Object.keys(body.where).length > 0) {
+        body = await search_lang(body, lang);
+    }
+
     const cls = await get_info_from_type(type);
-    const model = await get_model_from_type(type);
     if (cls == null) {
         return { entity: type, result: {} };
     }
 
-    const response = format_search(body, model);
+    const response = format_search(body, cls.model);
     const result = await cls.constructor.search(get_index(type), type, es_client,
-            model, response.search, response.options);
+            cls.model, response.search, response.options);
+
     return { entity: type, result };
 }
 
@@ -348,6 +435,22 @@ async function remove(id: string, type: string): Promise<*> {
     return [odm, obj];
 }
 
+async function retrieve_and_get_source(type: string, id: string): ?Object {
+    if (!id) {
+        return null;
+    }
+    const search_results = await search(type, {
+        size: 1,
+        where: { _id: id },
+    });
+
+    const hits = get_hits(search_results);
+    if (hits.length === 0) {
+        return null;
+    }
+    return hits[0].source;
+}
+
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
@@ -358,3 +461,5 @@ module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
+module.exports.get_hits = get_hits;
+module.exports.retrieve_and_get_source = retrieve_and_get_source;

@@ -55,13 +55,16 @@ function api_middlewares(type: string,
 function app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
     return [
+        Pipeline.memoize_model(type),
         Pipeline.check(type),
         Pipeline.transform(type),
         Pipeline.merge(type),
+        Pipeline.reset(type),
         Pipeline.defaults(type),
         Pipeline.format(type),
         Pipeline.complete(type),
-        Pipeline.format(type),
+        Pipeline.filter(type),
+        // Pipeline.format(type),
         ...emiddlewares,
         Pipeline.validate(type),
     ];
@@ -111,7 +114,10 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
             });
         },
     });
-    const upload = Multer({ storage });
+    const upload = Multer({ storage,
+            /* limits: {
+        fieldSize: 1024 * 1024 * 1024 * 1024 * 1024 * 10, // 10 Tb
+    }*/ });
     return _.flatten([
         [upload.single('file'),
             async (ctx, next) => {
@@ -124,7 +130,7 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
     ]);
 }
 
-function generate_get_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_gets_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
     const get_mware = get_middlewares(type);
 
     router.get(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
@@ -132,6 +138,7 @@ function generate_get_routes(router: KoaRouter, prefix: string, type: string, em
     router.post(`${prefix}/${type}s/count`, compose([...get_mware, CrudController.count(type)]));
 
     router.post(`${prefix}/${type}s/search`, compose([...get_mware, CrudController.search(type)]));
+    router.post(`${prefix}/${type}s/search/:translatable/:lang`, compose([...get_mware, CrudController.search(type)]));
 
     router.get(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.get(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
@@ -140,6 +147,10 @@ function generate_get_routes(router: KoaRouter, prefix: string, type: string, em
     router.post(`${prefix}/${type}s/:projection/:population`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${prefix}/${type}s/:projection`, compose([...get_mware, CrudController.gets(type)]));
     router.post(`${prefix}/${type}s`, compose([...get_mware, CrudController.gets(type)]));
+}
+
+function generate_get_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+    const get_mware = get_middlewares(type);
 
     router.get(`${prefix}/${type}/exists/:id`, compose([...get_mware, CrudController.get(type, true)]));
 
@@ -157,6 +168,7 @@ function generate_put_routes(router: KoaRouter, prefix: string, type: string, em
     const put_mware = put_middlewares(type, emiddlewares);
     router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
+    router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
 }
 
 function generate_post_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
@@ -164,11 +176,13 @@ function generate_post_routes(router: KoaRouter, prefix: string, type: string, e
 
     router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
+    router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
 }
 
 function generate_entity_routes(router: KoaRouter,
     type: string, emiddlewares: Array<Function>) {
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
+    generate_gets_routes(router, puprefix, type, emiddlewares);
     generate_get_routes(router, puprefix, type, emiddlewares);
     generate_del_routes(router, puprefix, type, emiddlewares);
     generate_post_routes(router, puprefix, type, emiddlewares);
@@ -176,6 +190,7 @@ function generate_entity_routes(router: KoaRouter,
 }
 
 exports.generate_entity_routes = generate_entity_routes;
+exports.generate_gets_routes = generate_gets_routes;
 exports.generate_get_routes = generate_get_routes;
 exports.generate_del_routes = generate_del_routes;
 exports.generate_post_routes = generate_post_routes;

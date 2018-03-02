@@ -16,11 +16,20 @@ module.exports = {
                 },
                 properties: {
                     name: {
-                        type: 'keyword',
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     label: {
                         type: 'text',
-                        index: false,
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     description: {
                         type: 'text',
@@ -72,12 +81,28 @@ module.exports = {
                                     step: {
                                         type: 'integer',
                                     },
+                                    sort: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
                                 },
                             },
                             datasource: {
                                 type: 'nested',
                                 properties: {
                                     name: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    sink: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    fetch_from_sink: {
+                                        type: 'boolean',
+                                        index: false,
+                                    },
+                                    info_in_sink: {
                                         type: 'keyword',
                                         index: false,
                                     },
@@ -94,6 +119,10 @@ module.exports = {
                                         index: false,
                                     },
                                     ajax_path: {
+                                        type: 'keyword',
+                                        index: false,
+                                    },
+                                    ajax_value_path: {
                                         type: 'keyword',
                                         index: false,
                                     },

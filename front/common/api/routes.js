@@ -6,6 +6,9 @@ module.exports = {
     entity(entity, method, search = false, id = null, projection = '', population = '') {
         switch (method) {
         case 'VALIDATE':
+            if (id != null) {
+                return `${prefix}/${entity}/validate/${id}`;
+            }
             return `${prefix}/${entity}/validate`;
         case 'UPLOAD': {
             const url = `${prefix}/single_upload`;

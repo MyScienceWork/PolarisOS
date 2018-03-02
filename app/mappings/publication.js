@@ -7,13 +7,14 @@ module.exports = {
                     refs: {
                         type: 'typology',
                         journal: 'journal',
-                        conference: 'conference',
                         authors: {
                             _id: 'author',
                         },
                         contributors: {
                             _id: 'contributor',
                         },
+                        conference: 'conference',
+                        depositor: 'user',
                         editor: 'editor',
                         classification: {
                             _id: 'classification',
@@ -29,6 +30,12 @@ module.exports = {
                             },
                             projects: {
                                 _id: 'project',
+                            },
+                            anr_projects: {
+                                _id: 'anr_project',
+                            },
+                            european_projects: {
+                                _id: 'european_project',
                             },
                             rights: {
                                 license: 'license',
@@ -60,18 +67,9 @@ module.exports = {
                             authors: {
                                 type: 'nested',
                                 properties: {
-                                    fullname: {
-                                        type: 'text',
-                                        fields: {
-                                            raw: {
-                                                type: 'keyword',
-                                            },
-                                        },
-                                    },
-                                    affiliations: {
-                                        type: 'nested',
+                                    _id: {
                                         properties: {
-                                            name: {
+                                            fullname: {
                                                 type: 'text',
                                                 fields: {
                                                     raw: {
@@ -79,13 +77,8 @@ module.exports = {
                                                     },
                                                 },
                                             },
-                                            ined_status: {
-                                                type: 'text',
-                                                fields: {
-                                                    raw: {
-                                                        type: 'keyword',
-                                                    },
-                                                },
+                                            _id: {
+                                                type: 'keyword',
                                             },
                                         },
                                     },
@@ -94,11 +87,15 @@ module.exports = {
                             classifications: {
                                 type: 'nested',
                                 properties: {
-                                    label: {
-                                        type: 'text',
-                                        fields: {
-                                            raw: {
-                                                type: 'keyword',
+                                    _id: {
+                                        properties: {
+                                            label: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -107,11 +104,15 @@ module.exports = {
                             contributors: {
                                 type: 'nested',
                                 properties: {
-                                    fullname: {
-                                        type: 'text',
-                                        fields: {
-                                            raw: {
-                                                type: 'keyword',
+                                    _id: {
+                                        properties: {
+                                            fullname: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -137,10 +138,18 @@ module.exports = {
                                 type: 'text',
                             },
                             type: {
-                                type: 'text',
-                                fields: {
-                                    raw: {
-                                        type: 'keyword',
+                                properties: {
+                                    label: {
+                                        type: 'text',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    template: {
+                                        type: 'text',
+                                        index: false,
                                     },
                                 },
                             },
@@ -165,11 +174,49 @@ module.exports = {
                                     projects: {
                                         type: 'nested',
                                         properties: {
-                                            name: {
-                                                type: 'text',
-                                                fields: {
-                                                    raw: {
-                                                        type: 'keyword',
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    anr_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    european_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
                                                     },
                                                 },
                                             },
@@ -178,7 +225,23 @@ module.exports = {
                                     surveys: {
                                         type: 'nested',
                                         properties: {
-                                            name: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    rights: {
+                                        properties: {
+                                            license: {
                                                 type: 'text',
                                                 fields: {
                                                     raw: {
@@ -231,7 +294,13 @@ module.exports = {
                     contributors: {
                         type: 'nested',
                         properties: {
-                            _id: {
+                            label: {
+                                type: 'text',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            role: {
                                 type: 'keyword',
                             },
                         },
@@ -266,13 +335,7 @@ module.exports = {
                     },
                     diffusion: {
                         properties: {
-                            internal_collection: {
-                                properties: {
-                                    _id: {
-                                        type: 'keyword',
-                                    },
-                                },
-                            },
+                            internal_collection: { type: 'keyword' },
                             projects: {
                                 type: 'nested',
                                 properties: {
@@ -281,13 +344,23 @@ module.exports = {
                                     },
                                 },
                             },
-                            research_team: {
+                            anr_projects: {
+                                type: 'nested',
                                 properties: {
                                     _id: {
                                         type: 'keyword',
                                     },
                                 },
                             },
+                            european_projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            research_team: { type: 'keyword' },
                             rights: {
                                 properties: {
                                     access: {
@@ -351,6 +424,16 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            access: {
+                                properties: {
+                                    restricted: {
+                                        type: 'boolean',
+                                    },
+                                    delayed: {
+                                        type: 'boolean',
+                                    },
+                                },
+                            },
                         },
                     },
                     ids: {
@@ -400,8 +483,13 @@ module.exports = {
                     pagination: {
                         type: 'keyword',
                     },
-                    parent: {
-                        type: 'keyword',
+                    parents: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     publication_title: {
                         type: 'text',
@@ -476,6 +564,12 @@ module.exports = {
                         type: 'integer',
                     },
                     volume: {
+                        type: 'keyword',
+                    },
+                    url: {
+                        type: 'keyword',
+                    },
+                    depositor: {
                         type: 'keyword',
                     },
                 },

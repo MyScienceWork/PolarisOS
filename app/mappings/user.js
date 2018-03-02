@@ -9,6 +9,7 @@ module.exports = {
                         roles: {
                             _id: 'role',
                         },
+                        author: 'author',
                     },
                 },
                 properties: {
@@ -44,35 +45,29 @@ module.exports = {
                     firstname: {
                         type: 'text',
                         fields: {
-                            firstname: {
-                                type: 'text',
-                                analyzer: 'text_analyzer',
-                                search_analyzer: 'search_analyzer',
-                            },
                             raw: {
                                 type: 'keyword',
                             },
                         },
-                        fielddata: true,
                     },
                     fullname: {
                         type: 'text',
-                        analyzer: 'text_analyzer',
-                        search_analyzer: 'search_analyzer',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     lastname: {
                         type: 'text',
                         fields: {
-                            lastname: {
-                                type: 'text',
-                                analyzer: 'text_analyzer',
-                                search_analyzer: 'search_analyzer',
-                            },
                             raw: {
                                 type: 'keyword',
                             },
                         },
-                        fielddata: true,
+                    },
+                    author: {
+                        type: 'keyword',
                     },
                     authentication: {
                         properties: {

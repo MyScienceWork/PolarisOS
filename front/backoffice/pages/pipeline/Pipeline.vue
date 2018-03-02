@@ -60,6 +60,7 @@
                                             :key="tprops.id"
                                             name="defaults" 
                                             :form="state.sinks.creations.pipeline" 
+                                            :is-required="false"
                                             :tabs="true">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput :name="`${props.fname}.${props.id}.key`" 
@@ -85,6 +86,7 @@
                                             name="formatters" 
                                             :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
+                                            :is-required="false"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 
@@ -121,6 +123,12 @@
                                                             :hidden-value="arg.name"
                                                             :form="state.sinks.creations.pipeline" 
                                                         />
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.type`" 
+                                                            type="hidden"
+                                                            :hidden-value="arg.type"
+                                                            :form="state.sinks.creations.pipeline" 
+                                                        />
                                                     </template>
                                                 </div>
                                             </template>
@@ -131,6 +139,7 @@
                                             name="completers" 
                                             :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
+                                            :is-required="false"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 
@@ -166,6 +175,12 @@
                                                             :hidden-value="arg.name"
                                                             :form="state.sinks.creations.pipeline" 
                                                         />
+                                                        <finput
+                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.type`" 
+                                                            type="hidden"
+                                                            :hidden-value="arg.type"
+                                                            :form="state.sinks.creations.pipeline" 
+                                                        />
                                                     </template>
                                                 </div>
                                             </template>
@@ -176,6 +191,7 @@
                                             name="transformers" 
                                             :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
+                                            :is-required="false"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                             </template>
@@ -186,6 +202,7 @@
                                             name="validators" 
                                             :form="state.sinks.creations.pipeline" 
                                             :tabs="true"
+                                            :is-required="false"
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 

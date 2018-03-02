@@ -43,8 +43,15 @@
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
-                                <dynamic-form :form="upload_form" :cform="creationSink"/>
+                                <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="upload_form" :cform="creationSink"/>
                                 <!--<fdropzone form="dummy_form" name="name" master="master" files="files" />-->
+                                <div class="columns is-centered">
+                                    <div class="column">
+                                        <p v-if="state.analyze_state === 'loading'">{{lang('l_analyze_in_progress')}}</p>
+                                        <p v-else-if="state.analyze_state === 'fail'">{{lang('l_analyze_failed')}}</p>
+                                        <p v-else-if="state.analyze_state === 'success'">{{lang('l_analyze_succeeded')}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,6 +88,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="columns is-centered" 
+                    v-else-if="Object.keys(upload_form).length === 0 && Object.keys(import_form).length === 0 && state.typology.form !== ''">
+                    <loader />
                 </div>
                 <div v-if="!validated" class="columns is-centered">
                     <div class="column has-text-centered is-8 redify">

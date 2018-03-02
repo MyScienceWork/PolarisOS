@@ -12,20 +12,27 @@ module.exports = {
             state: {
                 need_html_editor: false,
                 path: APIRoutes.entity('lang', 'POST'),
-                rpath: APIRoutes.entity('lang', 'GET'),
-                itemsPerPage: 1000,
-                itemsPerRow: 1,
+                rpath: APIRoutes.entity('lang', 'POST', true),
                 langs: Langs.LangsList,
                 quantities: Quantities,
                 forms: {
                     csink: 'lang_creation',
                     rsink: 'lang_read',
                 },
+                sinks: {
+                    creations: {
+                        search: 'search_creation_lang',
+                    },
+                },
             },
         };
     },
     methods: {
         grab_quantity(arr, quantity) {
+            if (!arr) {
+                return '';
+            }
+
             const values = arr.filter(a => a.quantity === quantity);
             if (values.length === 0) {
                 return '';
@@ -34,14 +41,17 @@ module.exports = {
         },
     },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
-        });
     },
     computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
+        search_query() {
+            return JSON.stringify({
+                $or: [
+                    { key: '{{search}}' },
+                    { 'values.value': '{{search}}' },
+                    { 'parts.value': '{{search}}' },
+                    { lang: '{{search}}' },
+                ],
+            });
         },
     },
 };

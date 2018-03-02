@@ -25,19 +25,28 @@ module.exports = {
                 sinks: {
                     reads: {
                         import: 'import_read',
+                        analyze: 'analyze_read',
                     },
                 },
                 import_in_progress: false,
                 import_state: 'nothing',
+                analyze_in_progress: false,
+                analyze_state: 'nothing',
             },
         };
     },
     methods: {
         grab_typology_form(form) {
+            if (form == null) {
+                this.state.typology.form = '';
+                this.$emit('typology-change', this.state.typology.form, undefined);
+                return;
+            }
+
             const _id = form.value;
             const typology = this.typology_options.filter(t => t._id === _id);
             this.state.typology.form = typology[0].children[0].form;
-            this.$emit('typology-change', this.state.typology.form, undefined);
+            this.$emit('typology-change', this.state.typology.form, typology[0].children);
         },
         import_from_id(e) {
             e.preventDefault();
@@ -48,22 +57,32 @@ module.exports = {
                 form: this.state.sinks.reads.import,
                 body: {
                     // TODO remove hack
-                    doi: this.state.search_id,
+                    info: this.state.search_id,
+                    type: 'doi',
                 },
             });
             this.state.import_state = 'loading';
         },
+        analyze_from_file(filename) {
+            this.$store.dispatch('fetch', {
+                path: APIRoutes.import(),
+                method: 'POST',
+                action: 'read',
+                form: this.state.sinks.reads.analyze,
+                body: {
+                    info: filename,
+                    type: 'pdf',
+                },
+            });
+            this.state.analyze_state = 'loading';
+        },
         show_success_read(sink) {
-            if (sink !== this.state.sinks.reads.import) {
-                return;
-            }
-
+            const state = this.generate_import_state(sink);
             const content = this.fcontent(sink);
-
             if (Object.keys(content).length === 0) {
-                this.state.import_state = 'fail';
+                this.state[state] = 'fail';
             } else {
-                this.state.import_state = 'success';
+                this.state[state] = 'success';
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.creationSink,
                     body: content,
@@ -71,38 +90,44 @@ module.exports = {
             }
         },
         show_error(sink) {
-            if (sink !== this.state.sinks.reads.import) {
-                return;
+            const state = this.generate_import_state(sink);
+            this.state[state] = 'fail';
+        },
+        generate_import_state(sink) {
+            switch (sink) {
+            case this.state.sinks.reads.import:
+                return 'import_state';
+            case this.state.sinks.reads.analyze:
+                return 'analyze_state';
+            default:
+                return '';
             }
-            this.state.import_state = 'fail';
         },
     },
     watch: {
-        current_state(s) {
-            console.log('current_state', s);
+        current_state_import(s) {
             this.dispatch(s, this, this.state.sinks.reads.import);
+        },
+        current_state_analyze(s) {
+            this.dispatch(s, this, this.state.sinks.reads.analyze);
         },
     },
     computed: {
         typology_options() {
-            if (this.typologySink in this.$store.state.forms) {
-                const sink = this.$store.state.forms[this.typologySink];
-                let content = sink.content || [];
-                if (!(content instanceof Array)) {
-                    content = [];
-                }
-
-                return content.map((t, i) => {
-                    t.label = this.lang(t.label);
-                    t.children = t.children.map((ch, j) => {
-                        ch.label = this.lang(ch.label);
-                        ch.path = `${i}.${j}`;
-                        return ch;
-                    });
-                    return t;
-                });
+            const content = this.fcontent(this.typologySink);
+            if (!(content instanceof Array)) {
+                return [];
             }
-            return [];
+
+            return content.map((t, i) => {
+                t.label = this.lang(t.label);
+                t.children = t.children.map((ch, j) => {
+                    ch.tlabel = this.lang(ch.label);
+                    ch.path = `${i}.${j}`;
+                    return ch;
+                });
+                return t;
+            });
         },
         upload_form() {
             if (this.publicationSpecs in this.$store.state.forms) {
@@ -128,14 +153,21 @@ module.exports = {
             }
             return {};
         },
-        current_state() {
+        current_state_import() {
             return this.fstate(this.state.sinks.reads.import);
+        },
+        current_state_analyze() {
+            return this.fstate(this.state.sinks.reads.analyze);
         },
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {
             form: this.state.sinks.reads.import,
-            keepContent: false,
+            keep_content: false,
+        });
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.analyze,
+            keep_content: false,
         });
     },
 };

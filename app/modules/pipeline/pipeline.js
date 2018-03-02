@@ -64,11 +64,83 @@ class Pipeline {
      * @return merged object
      */
     static _merge_defaults(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement(defaults, input);
+        return Utils.merge_with_replacement({}, defaults, input);
     }
 
     static _merge_put(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement(defaults, input);
+        return Utils.merge_with_replacement({}, defaults, input);
+    }
+
+    static async _reset(input: Object, resetters: Object): Object {
+        for (const path in resetters) {
+            const segs = path.split('.');
+            input = await Utils.traverse_and_execute(input, segs, async () => resetters[path]);
+        }
+        return input;
+    }
+
+    static _filter(input: Object, filters: Array<String>): Object {
+        filters.forEach((f) => {
+            if (f in input) {
+                delete input[f];
+            }
+        });
+        return input;
+    }
+
+    static _format_range(potential_range, total) {
+        if (potential_range == null) {
+            return [];
+        }
+        if (potential_range.match(/[0-9]+-[0-9]+/)) {
+            const range = potential_range.split('-').map(r => parseInt(r, 10));
+            return _.range(range[0], range[1]).filter(r => (r >= 0 && r < total));
+        }
+
+
+        const pnum = parseInt(potential_range, 10);
+        if (isNaN(pnum)) {
+            return [];
+        }
+
+        return [pnum];
+    }
+
+    static async _evaluate_pipeline(ctx: Object, pipeline: Object,
+        type: string, action: string, method: string) {
+        switch (action) {
+        case 'transform': {
+            ctx.request.body = await Transformer(ctx.request.body, pipeline.Transforming || []);
+            break;
+        }
+        case 'filter': {
+            ctx.request.body = Pipeline._filter(ctx.request.body, pipeline.Filtering || []);
+            break;
+        }
+        case 'reset': {
+            ctx.request.body = await Pipeline._reset(ctx.request.body, pipeline.Resetting || {});
+            break;
+        }
+        case 'defaults': {
+            ctx.request.body = Pipeline._merge_defaults(ctx.request.body, pipeline.Defaults);
+            break;
+        }
+        case 'format': {
+            ctx.request.body = await Formatter(ctx.request.body, pipeline.Formatting);
+            break;
+        }
+        case 'complete': {
+            ctx.request.body = await Completer(ctx.request.body, pipeline.Completion, ctx.__md || {});
+            break;
+        }
+        default:
+        case 'validate': {
+            const validator = new Validator();
+            const errors = await validator
+                    .validate(ctx.request.body, pipeline.Validation, method);
+            return errors;
+        }
+        }
     }
 
     /**
@@ -79,15 +151,15 @@ class Pipeline {
      * @returns Koa middleware
      */
     static _action(type: string, m: string): Function {
-        const validator = new Validator();
         return async function afunc(ctx: Object, next: Function): Promise<*> {
             const body = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
-            const model = await EntitiesUtils.get_model_from_type(type);
-            // console.log('validation: ', type, ' action:', m, ' method:', method);
+            const model = ctx.__md.model;
+            const pipelines = model.Pipelines || [];
 
-            switch (m) {
-            case 'check': {
+            const range = Pipeline._format_range(ctx.params.range, pipelines.length);
+
+            if (m === 'check') {
                 if (method === 'put') {
                     const exists = await Pipeline._check_if_entity_exists(body, type);
                     if (exists) {
@@ -98,51 +170,45 @@ class Pipeline {
                 } else {
                     await next();
                 }
-                break;
-            }
-            case 'transform': {
-                ctx.request.body = await Transformer(body, model.Transforming || []);
-                await next();
-                break;
-            }
-            case 'defaults': {
-                ctx.request.body = Pipeline._merge_defaults(body, model.Defaults);
-                await next();
-                break;
-            }
-            case 'merge': {
+            } else if (m === 'merge') {
                 if (method === 'put') {
-                    const entity = await EntitiesUtils.retrieve(body._id, type);
-                    ctx.request.body = Pipeline._merge_put(body, entity.db.source);
+                    const entity = await EntitiesUtils.retrieve(ctx.request.body._id, type);
+                    ctx.request.body = Pipeline._merge_put(ctx.request.body, entity.db.source);
                 }
                 await next();
-                break;
-            }
-            case 'format': {
-                ctx.request.body = await Formatter(body, model.Formatting);
-                await next();
-                break;
-            }
-            case 'complete': {
-                ctx.request.body = await Completer(body, model.Completion);
-                await next();
-                break;
-            }
-            default:
-            case 'validate': {
-                const errors = await validator
-                    .validate(body, model.Validation, method);
-                if (Object.keys(errors).length === 0) {
-                    await next();
-                } else {
+            } else {
+                let errors = {};
+                const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
+                for (const i of prange) {
+                    const pipeline = pipelines[i];
+                    const ret = await Pipeline._evaluate_pipeline(ctx, pipeline,
+                        type, m, method);
+                    if (m === 'validate') {
+                        errors = Utils.merge_with_concat({}, errors, ret);
+                    }
+                }
+
+                console.log(prange, pipelines, errors);
+                if (Object.keys(errors).length > 0) {
                     ctx.body = { change: 'Validation', errors };
+                } else {
+                    await next();
                 }
-                break;
-            }
             }
         };
     }
 
+    static memoize_model(type: string): Function {
+        return async function afunc(ctx: Object, next: Function): Promise<*> {
+            const model = await EntitiesUtils.get_model_from_type(type);
+            if ('__md' in ctx) {
+                ctx.__md.model = model;
+            } else {
+                ctx.__md = { model };
+            }
+            await next();
+        };
+    }
 
     /**
      * Invoke the dispatcher to format the input
@@ -182,6 +248,26 @@ class Pipeline {
      */
     static transform(type: string): Function {
         return Pipeline._action(type, 'transform');
+    }
+
+    /**
+     * Invoke the dispatcher to filter the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static filter(type: string): Function {
+        return Pipeline._action(type, 'filter');
+    }
+
+    /**
+     * Invoke the dispatcher to reset the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static reset(type: string): Function {
+        return Pipeline._action(type, 'reset');
     }
 
     /**

@@ -19,6 +19,16 @@
             color: @@name;
         }
     }
+
+    .tabs.is-toggle li.is-active.is-@{name} a {
+        background-color: @@name;
+        border-color: @@name;
+        color: @white;
+    }
+
+    .tabs li.is-active.is-@{name} a {
+        color: @@name;
+    }
     
     .generate-colored-texts((@i - 1));
 }
@@ -60,6 +70,10 @@
 .has-no-left-spaces {
     margin-left: 0 !important;
     padding-left: 0 !important;
+}
+
+.has-small-top-margin {
+    margin-top: 0.5rem;
 }
 
 .text-with-line {
@@ -117,4 +131,17 @@ a {
     &:hover{
         color: @blue;
     }
+}
+
+.is-justify-center {
+    justify-content: center;
+}
+
+.is-vcentered {
+    display: flex;
+    align-items: center;
+}
+
+.is-clearfix {
+    clear: both;
 }

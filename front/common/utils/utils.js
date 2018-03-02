@@ -115,6 +115,34 @@ function to_matrix(content: Array<*>, rowLength: number = 2) {
             : rows[rows.length - 1].push(key)) && rows, []);
 }
 
+function crunch_data_for_fetch(action: string, success: boolean, content: any): Object {
+    let data = [];
+    let total = 0;
+    let validations = {};
+    let success_ = '';
+    let error = {};
+
+    if (success) {
+        if (action === 'read') {
+            if ('result' in content && 'hits' in content.result) {
+                total = content.result.total;
+                data = content.result.hits.map(hit => hit.source);
+            } else {
+                data = content;
+            }
+        } else if ('change' in content && content.change === 'Validation') {
+            validations = Object.assign({}, content.errors);
+        } else {
+            success_ = content.message;
+        }
+    } else {
+        error = Object.assign({}, {
+            found: true, content,
+        });
+    }
+    return { error, data, success: success_, total, validations };
+}
+
 module.exports = {
     truncate,
     to_matrix,
@@ -122,4 +150,5 @@ module.exports = {
     find_object_with_path,
     make_nested_object_from_path,
     merge_with_replacement,
+    crunch_data_for_fetch,
 };

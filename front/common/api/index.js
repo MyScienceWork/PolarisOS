@@ -4,7 +4,7 @@ const LangUtils = require('../utils/lang');
 
 
 async function fetch(object) {
-    const { method, path, body, commit, signature } = object;
+    const { method, path, body, signature } = object;
 
     let super_request = Request[method.toLowerCase()](path)
         .set('Authorization', `${signature.key}:${signature.sign}`)

@@ -37,13 +37,16 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 2}]" @click.prevent="size(2)">
+                            2 
+                        </a>
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 20}]" @click.prevent="size(20)">
                             20
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.size === 50}]" @click.prevent="size(50)">
                             50
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active':state.seso.size === 100}]" @click.prevent="size(100)">
                             100 
                         </a>
                     </div>
@@ -54,67 +57,53 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.publication'}]" @click.prevent="sort('dates.publication', get_order('dates.publication'))">
                             {{lang('f_sort_by_year')}}
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'dates.publication'">
+                                    <i v-if="get_order('dates.publication') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('dates.publication') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'type'}]" @click.prevent="sort('type', get_order(('type')))">
                             {{lang('f_sort_by_publication_type')}}
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'type'">
+                                    <i v-if="get_order('type') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('type') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
-                        <a class="navbar-item swap">
+                        <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', get_order('dates.deposit'))">
                             {{lang('f_sort_by_deposit_year')}} 
+                            <span class="icon">
+                                <template v-if="state.seso.sort === 'dates.deposit'">
+                                    <i v-if="get_order('dates.deposit') === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order('dates.deposit') === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
         </nav>
-        <article class="media" v-for="(info, idx) in content">
-        <div class="media-left">
-            <finput
-            :name="info._id"
-            type="checkbox"
-            :form="state.sinks.reads.export"
-            label=""
-            />
-        </div>
-        <div class="media-content">
-            <p v-html="info.html"></p>
-            <div class="is-pulled-right level is-mobile">
-                <div class="level-left">
-                    <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${info._id}`">
-                    <span class="icon is-small"><i class="fa fa-eye"></i></span>
-                    </router-link>
-                    <a class="level-item" :alt="lang('f_download_file')" :title="lang('f_download_file')">
-                        <span class="icon is-small"><i class="fa fa-unlock-alt"></i></span>
-                    </a>
-                    <router-link 
-                        class="level-item"
-                        v-if="state.loggedIn"
-                        :alt="lang('f_use_as_model')" 
-                        :title="lang('f_use_as_model')" 
-                        :to="`/deposit?type=model&_id=${info._id}`"
-                    >
-                        <span class="icon is-small"><i class="fa fa-book"></i></span>
-                    </router-link>
-                    <router-link 
-                        v-if="state.loggedIn"
-                        class="level-item" 
-                        :alt="lang('f_modify_publication')" 
-                        :title="lang('f_modify_publication')"
-                        :to="`/deposit?type=modify&_id=${info._id}`"
-                    >
-                        <span class="icon is-small"><i class="fa fa-pencil"></i></span>
-                    </router-link>
-                    <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
-                        <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
-                    </a>
-                    <a class="level-item" :alt="lang('f_share_on_twitter')" :title="lang('f_share_on_twitter')">
-                        <span class="icon is-small"><i class="fa fa-twitter"></i></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        </article>
+        <results 
+            :is-selectable="true" 
+            :user="user" 
+            :logged-in="state.loggedIn"
+            :items="content"
+            :export-sink="state.sinks.reads.export"
+        />
+        <b-pagination
+            v-if="total > state.seso.size"
+            :total="total"
+            :current.sync="currentPage"
+            :simple="true"
+            :rounded="false"
+            :per-page="state.seso.size">
+        </b-pagination>
     </div>
 </template>
 

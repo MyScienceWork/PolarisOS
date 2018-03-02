@@ -18,7 +18,7 @@ module.exports = {
                     },
                     reads: {
                         pipeline: APIRoutes.entity('pipeline', 'GET'),
-                        function: APIRoutes.entity('pipeline', 'POST', true),
+                        function: APIRoutes.entity('function', 'POST', true),
                     },
                 },
                 sinks: {
@@ -126,7 +126,7 @@ module.exports = {
             return this.mcurrent_read_state(this.state.sinks.reads.function);
         },
         functions() {
-            const content = this.mcontent(this.state.forms.rsink_function);
+            const content = this.mcontent(this.state.sinks.reads.function);
             return content.reduce((obj, func) => {
                 if (!(func.type in obj)) {
                     obj[func.type] = {};

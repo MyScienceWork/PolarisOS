@@ -10,6 +10,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin],
     props: {
         navItems: { required: true, type: Array },
+        filters: { type: Array, default: () => [] },
     },
     data() {
         return {
@@ -68,17 +69,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.creations.selected);
             if ('browsing_terms' in content) {
                 const ids = content.browsing_terms.map(b => b._id);
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.search,
-                    path: APIRoutes.entity('publication', 'POST', true),
-                    body: {
-                        size: 50,
-                        where: {
-                            [this.query.b]: ids,
-                        },
-                    },
-                });
+                this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
             }
         },
     },
@@ -100,9 +91,11 @@ module.exports = {
             return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
         },
         options() {
-            const entity = query.entity;
+            const entity = this.state.query.entity;
             if (entity == null || entity.trim() === '') {
-                return _.range(1700, parseInt(moment().format('YYYY')) + 1).map(a => ({ label: a, value: a }));
+                const r = _.range(1700, parseInt(moment().format('YYYY'), 10) + 1);
+                r.sort((a, b) => b - a);
+                return r.map(a => ({ label: `${a}`, _id: `${a}` }));
             }
 
             const content = this.fcontent(this.state.sinks.creations.browse);

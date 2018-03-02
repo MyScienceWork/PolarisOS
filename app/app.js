@@ -43,7 +43,10 @@ process.on('message', (message) => {
     koa.use(koa_router.allowedMethods());
     logger.info('Starting koalication...');
     await koa.listen(config.port);
-    logger.info(`Midstod started on port ${config.port}`);
+    logger.info(`PolarisOS started on port ${config.port}`);
+    logger.info(`PolarisOS environment => ${config._env}`);
+    logger.info(`Grobid host:port => ${config.grobid.host}:${config.grobid.port}`);
+    logger.info(`Minio host:port => ${config.minio.host}:${config.minio.port}`);
     if (process.send) {
         process.send('online');
     }

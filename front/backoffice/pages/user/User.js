@@ -1,51 +1,77 @@
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const Messages = require('../../../common/api/messages');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, PaginationSearchMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('user', 'POST'),
-                rpath: APIRoutes.entity('user', 'GET'),
-                forms: {
-                    csink: 'user_creation',
-                    rsink: 'user_read',
-                    rsink_roles: 'role_read',
+                paths: {
+                    reads: {
+                        user: APIRoutes.entity('user', 'POST', true),
+                        author: APIRoutes.entity('author', 'POST', true),
+                        role: APIRoutes.entity('role', 'POST', true),
+                    },
+                    creations: {
+                        user: APIRoutes.entity('user', 'POST'),
+                    },
                 },
-                itemsPerPage: 20,
-                itemsPerRow: 2,
+                sinks: {
+                    reads: {
+                        role: 'role_read',
+                        user: 'user_read',
+                        author: 'author_read',
+                    },
+                    creations: {
+                        search: 'search_creation_user',
+                        user: 'user_creation',
+                    },
+                },
             },
         };
     },
     methods: {
     },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
-        });
-
-        this.$store.dispatch('search', {
-            form: this.state.forms.rsink_roles,
-            path: APIRoutes.entity('role', 'POST', true),
-            body: {
-                projection: ['name'],
-                size: 10000,
+        this.$store.state.requests = ['role', 'author'].map(e => ({
+            name: 'search',
+            type: 'dispatch',
+            content: {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    size: 10000,
+                },
             },
-        });
+        }));
     },
     computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
+        authors() {
+            const content = this.mcontent(this.state.sinks.reads.author);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
         },
         roles() {
-            const content = this.mcontent(this.state.forms.rsink_roles);
+            const content = this.mcontent(this.state.sinks.reads.role);
             return content.map((c) => {
                 c.name = this.lang(c.name);
                 return c;
+            });
+        },
+        search_query() {
+            return JSON.stringify({
+                $or: [
+                    { firstname: '{{search}}' },
+                    { lastname: '{{search}}' },
+                    { fullname: '{{search}}' },
+                    { 'emails.email': '{{search}}' },
+                ],
             });
         },
     },

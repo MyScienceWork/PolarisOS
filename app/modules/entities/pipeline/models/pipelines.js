@@ -39,10 +39,12 @@ const Messages: Object = {
 module.exports = {
     RawMapping: Mapping,
     Mapping: new MMapping(Mapping),
-    Validation,
-    Formatting,
-    Completion,
+    Pipelines: [{
+        Validation,
+        Formatting,
+        Completion,
+        Defaults,
+    }],
     Messages,
-    Defaults,
     Name: 'Pipeline',
 };

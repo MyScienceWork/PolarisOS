@@ -6,6 +6,14 @@ module.exports = {
                 dynamic_date_formats: [],
                 properties: {
                     name: {
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    part: {
                         type: 'keyword',
                     },
                     elements: {
@@ -15,9 +23,6 @@ module.exports = {
                                 type: 'keyword',
                             },
                             icon: {
-                                type: 'keyword',
-                            },
-                            part: {
                                 type: 'keyword',
                             },
                             page: {

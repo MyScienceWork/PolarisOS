@@ -5,7 +5,13 @@ module.exports = {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
                 properties: {
-                    name: { type: 'keyword' },
+                    name: { type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     file: { type: 'keyword' },
                     variables: {
                         type: 'nested',

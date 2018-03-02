@@ -19,6 +19,18 @@ const all = {
         },
         interval: [120000, 120000],
     },
+    minio: {
+        host: 'localhost',
+        port: 9000,
+        accessKey: 'D6WOTGX0QWJ0I61CACYZ',
+        secretKey: 'NdD4gVGH3OeK3s+W4kPnF+qU8DntxO1HwDT0luoC',
+        secure: false,
+        default_bucket: 'posbucket',
+    },
+    grobid: {
+        host: 'localhost',
+        port: '8070',
+    },
     entities: [{
         name: 'citation',
         text: 'Citation',

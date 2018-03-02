@@ -186,7 +186,7 @@ describe('Formatter#format', () => {
         obj = await Formatter(obj, formats);
 
         obj.should.have.property('name', 'test');
-        obj.should.have.property('display', 'M. TEST');
+        obj.should.have.property('display', 'M. test');
     });
 });
 

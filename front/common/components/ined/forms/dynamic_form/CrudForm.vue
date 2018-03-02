@@ -30,6 +30,7 @@
                         <dynamic-form
                         :form="$store.state.forms[state.specs].content || {}"
                         :cform="state.cform"
+                        @crud-form-change="refetch_form"
                         class="field"
                         />
                     </fform>

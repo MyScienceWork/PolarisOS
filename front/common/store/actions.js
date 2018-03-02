@@ -1,9 +1,21 @@
 const _ = require('lodash');
-const StringUtils = require('../utils/strings');
 const API = require('../api');
-const APIRoutes = require('../api/routes');
 const Messages = require('../api/messages');
 const Auth = require('../utils/auth');
+const Utils = require('../utils/utils');
+
+function run_fetch_mutation(action, response, form, ctx) {
+    const succeeded = response.type === Messages.SUCCESS;
+    const results = Utils.crunch_data_for_fetch(action, succeeded, response.content || []);
+    ctx.commit(Messages.FETCH, _.merge({}, results, {
+        action,
+        succeeded,
+        form,
+        content: response.content,
+        commit: ctx.commit }));
+
+    return results;
+}
 
 async function create_or_update_or_validate(ctx, { path, body, form, rform, rpath }, action = 'create') {
     const method = action === 'update' ? 'PUT' : 'POST';
@@ -12,22 +24,23 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
         path,
         method,
         body,
-        commit: ctx.commit,
         signature: Auth.get_api_headers(method, path),
     };
 
     ctx.commit(Messages.LOADING, { form });
     const response = await API.fetch(payload);
-    ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
+    const results = run_fetch_mutation(action, response, form, ctx);
 
-    if (action !== 'validate'
+    /* if (action !== 'validate'
         && rform !== '' && rpath !== ''
         && rform != null && rpath != null) {
         ctx.dispatch('single_read', {
             form: rform,
             path: rpath,
         });
-    }
+        }*/
+
+    return results;
 }
 
 module.exports = {
@@ -42,70 +55,63 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method, action, response, form, commit: ctx.commit });
+        const results = run_fetch_mutation(action, response, form, ctx);
+        return results;
     },
 
-    create: async (ctx, payload) => {
-        await create_or_update_or_validate(ctx, payload, 'create');
-    },
+    create: async (ctx, payload) => await create_or_update_or_validate(ctx, payload, 'create'),
 
-    update: async (ctx, payload) => {
-        await create_or_update_or_validate(ctx, payload, 'update');
-    },
+    update: async (ctx, payload) => await create_or_update_or_validate(ctx, payload, 'update'),
 
-    validate: async (ctx, payload) => {
-        await create_or_update_or_validate(ctx, payload, 'validate');
-    },
+    validate: async (ctx, payload) => await create_or_update_or_validate(ctx, payload, 'validate'),
 
-    remove: async (ctx, { path, form, rpath, rform }) => {
+    remove: async (ctx, { path, form }) => {
         const payload = {
             path,
             method: 'DEL',
-            commit: ctx.commit,
             signature: Auth.get_api_headers('DEL', path),
         };
+        const action = 'delete';
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'DEL', response, form, action: 'delete', commit: ctx.commit });
-        ctx.dispatch('single_read', {
-            form: rform,
-            path: rpath,
-        });
+        const results = run_fetch_mutation(action, response, form, ctx);
+        return results;
     },
 
     single_read: async (ctx, { form, path }) => {
         const payload = {
             path,
             method: 'GET',
-            commit: ctx.commit,
             signature: Auth.get_api_headers('GET', path),
         };
+        const action = 'read';
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'GET', response, form, action: 'read', commit: ctx.commit });
+        const results = run_fetch_mutation(action, response, form, ctx);
+        return results;
     },
 
     search: async (ctx, { form, path, body }) => {
         const payload = {
             path,
             method: 'POST',
-            commit: ctx.commit,
             body,
             signature: Auth.get_api_headers('POST', path),
         };
+        const action = 'read';
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        ctx.commit(Messages.FETCH, { method: 'GET', response, form, action: 'read', commit: ctx.commit });
+        const results = run_fetch_mutation(action, response, form, ctx);
+        return results;
     },
 
     grab_config: async (ctx, { path, body }) => {
         const payload = {
             path,
             method: 'POST',
-            commit: ctx.commit,
             body,
             signature: Auth.get_api_headers('POST', path),
         };
@@ -115,8 +121,6 @@ module.exports = {
         if (response.content == null) {
             response.content = {};
         }
-
-        console.log(response.content);
 
         const content = 'result' in response.content
             && 'hits' in response.content.result ? response.content.result.hits : [];
@@ -129,7 +133,6 @@ module.exports = {
         const payload = {
             path,
             method: 'POST',
-            commit: ctx.commit,
             body,
             signature: Auth.get_api_headers('POST', path),
         };

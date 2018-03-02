@@ -4,6 +4,29 @@
 
     .card-@{name} {
         background-color: @@name;
+        
+        .card-header-tag {
+            .tag {
+                background-color: @white;
+                color: @black;
+            }
+        }
+    }
+
+    .card-header-tag {
+        .tag.is-@{name}.is-active {
+            background-color: @@name;
+            color: @white;
+        }
+
+        .tag.is-@{name} {
+            background-color: lighten(@@name, 20%);
+            color: @white;
+        }
+
+        .tag:hover.is-@{name} {
+            background-color: @@name;
+        }
     }
 
     .clickable-card-@{name}:hover {
@@ -150,6 +173,29 @@
 
     .title, .subtitle {
         color: @default;
+    }
+}
+
+.card-with-tag {
+    padding: 0 !important;
+    .card-header {
+        border-bottom: none;
+    }
+}
+
+.card-header-tag {
+    align-items: normal;
+    padding: 0 !important;
+    .tag {
+        border-radius: 0px;
+    }
+
+    &:last-child > .tag {
+        border-top-right-radius: 5px;
+    }
+
+    &:not(last-child) > .tag {
+        border-right: 1px solid @white;
     }
 }
 

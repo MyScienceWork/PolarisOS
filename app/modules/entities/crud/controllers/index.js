@@ -13,10 +13,19 @@ function count(type: string): Function {
 function search(type: string): Function {
     return async function func(ctx: Object) {
         const body = ctx.request.body;
-        if (!('scroll' in body)) {
-            body.scroll = '10m';
+        const params = ctx.params;
+
+        let translatable = false;
+        let lang = 'EN';
+        if ('translatable' in params) {
+            translatable = params.translatable === 'true';
         }
-        ctx.body = await EntitiesUtils.search(type, body);
+
+        if (translatable && 'lang' in params) {
+            lang = params.lang.trim();
+        }
+
+        ctx.body = await EntitiesUtils.search(type, body, translatable, lang);
     };
 }
 
@@ -50,6 +59,7 @@ function get(type: string, exists: boolean = false): Function {
         const proj = ctx.params.projection || '';
         const pop = ctx.params.population || '';
         const entity = await EntitiesUtils.retrieve(id, type, proj, pop);
+
         if (entity == null) {
             if (exists) {
                 ctx.body = { exists: false };
@@ -107,6 +117,7 @@ function del(type: string): Function {
 }
 
 async function validate(ctx: Object): Promise<*> {
+    console.log(ctx.request.body);
     ctx.body = ctx.request.body;
 }
 
