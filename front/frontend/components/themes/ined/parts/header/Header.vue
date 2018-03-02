@@ -10,9 +10,7 @@
             <div class="tile is-vertical is-parent">
                 <div class="columns is-centered is-child">
                     <div class="column is-10 has-text-centered">
-                        <p class="title is-3">OpenINED</p>
-                        <p class="subtitle is-5">L'archive ouverte de l'Ined</p>
-                        <!--<widget-stats form="test_form" :infos="[]" />-->
+                        <widget-stats form="test_form" :infos="[]" />
                     </div>
                 </div>
             </div>

@@ -9,6 +9,14 @@
   }
 
   
+  .button-background-@{name}:hover {
+    color: @white;
+  }
+  .button-background-@{name} {
+    background-color: @@name;
+    color: @white !important;
+    box-shadow: none !important;
+  }
   .generate-colored-buttons((@i - 1));
 }
 

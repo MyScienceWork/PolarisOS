@@ -4,7 +4,7 @@
         <div class="tile is-ancestor">
             <div class="tile is-parent is-2 is-vertical is-hidden-touch">
                 <div class="image tile is-child is-16by9">
-                    <img src='/public/front/imgs/logo/logo.svg' alt='Logo' title='App Logo' />
+                    <img src='/public/front/imgs/logo/logo_msw.png' alt='Logo' title='App Logo' />
                 </div>
             </div>
             <div class="tile is-vertical">
