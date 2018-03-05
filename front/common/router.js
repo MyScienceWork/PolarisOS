@@ -16,6 +16,7 @@ const View = require('../frontend/pages/view/View.vue');
 const Project = require('../frontend/pages/project/Project.vue');
 const About = require('../frontend/pages/about/About.vue');
 const Help = require('../frontend/pages/help/Help.vue');
+const News = require('../frontend/pages/news/News.vue');
 
 const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
@@ -88,6 +89,8 @@ function get_default_component(page) {
         return About;
     case '/help':
         return Help;
+    case '/news':
+        return News;
     }
 }
 
