@@ -26,6 +26,12 @@
                             <li>Département de Linguistique - Université de Genève</li>
                             <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
                         </ol>-->
+                        <p><strong v-html="lang('f_publication_type')"></strong> {{lang(content_item.denormalization.type.label)}}</p>
+                        <p v-if="journal">{{journal}}</p>
+                        <p v-if="book">{{book}}</p>
+                        <p v-if="chapter">{{chapter}}</p>
+                        <p v-if="conference">{{conference}}</p>
+                        <p v-if="other_document">{{other_document}}</p>
                         <div class="card card-with-tag" v-if="state.current_abstract.content !== ''">
                             <div class="card-header">
                                 <div class="card-header-title">
@@ -41,11 +47,60 @@
                                 </p>
                             </div>
                         </div>
-                        <p></p>
-                        <p><strong v-html="lang('f_publication_type')"></strong> {{lang(content_item.denormalization.type.label)}}</p>
-                        <p>Coling 2016 - 26th International Conference on Computational Linguistics, Dec 2016, Osaka, Japan. The 26th International Conference on Computational Linguistics Proceedings of COLING 2016: Technical Papers, 2016</p>
-                        <p><strong v-html="lang('f_publication_id')"></strong> ark:tt:12342432fezfe</p>
-                        <p><a class="has-text-info" href=''>{{lang('f_see_more_metadata')}}</a></p>
+                        <p><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong>: {{keywords('user')}}</p>
+                        <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>: {{themes}}</p>
+                        <p><strong v-html="lang('f_publication_id')"></strong></p>
+                        <p><a class="has-text-info" href='#' @click.prevent="see_more_metadata">{{lang('f_see_more_metadata')}}</a></p>
+                        <div v-if="state.more_metadata">
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_description')}}</span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_id_title')}}</span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_rights')}}</span>
+                                <div slot="body">
+                                    <p><strong v-html="lang('f_publication_version')"></strong></p>
+                                    <p><strong v-html="lang('f_publication_access_level')"></strong></p>
+                                    <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong></p>
+                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong></p>
+                                    <p v-if="url"><strong v-html="lang('f_publication_url')"></strong></p>
+                                    <p v-if="resources"></p>
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_indexing')}}</span>
+                                <div slot="body">
+                                    <p><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong>: {{keywords('user')}}</p>
+                                    <p><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong>: {{keywords('demovoc')}}</p>
+                                    <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>: {{themes}}</p>
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_collection')}}</span>
+                                <div slot="body">
+                                    <p><strong v-html="lang('f_publication_team', {}, 'other')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_collection', {}, 'other')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_project', {}, 'other')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_surveys', {}, 'other')"></strong>: </p>
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('f_publication_information')}}</span>
+                                <div slot="body">
+                                    <p><strong v-html="lang('f_publication_depositor')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_id')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_deposit_date')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_last_modification_date')"></strong>: </p>
+                                    <p><strong v-html="lang('f_publication_version')"></strong>: </p>
+                                </div>
+                            </widget>
+                        </div>
                     </div>
                 </div>
             </div>

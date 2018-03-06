@@ -43,6 +43,7 @@ module.exports = {
                     content: '',
                     lang: '',
                 },
+                more_metadata: false,
             },
         };
     },
@@ -83,6 +84,9 @@ module.exports = {
                 break;
             }
             }
+        },
+        see_more_metadata() {
+            this.state.more_metadata = !this.state.more_metadata;
         },
     },
     watch: {
@@ -164,6 +168,9 @@ module.exports = {
         },
         conference() {
 
+        },
+        keywords() {
+            return type => '';
         },
     },
     mounted() {
