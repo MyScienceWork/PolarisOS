@@ -114,7 +114,10 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
             });
         },
     });
-    const upload = Multer({ storage });
+    const upload = Multer({ storage,
+            /* limits: {
+        fieldSize: 1024 * 1024 * 1024 * 1024 * 1024 * 10, // 10 Tb
+    }*/ });
     return _.flatten([
         [upload.single('file'),
             async (ctx, next) => {

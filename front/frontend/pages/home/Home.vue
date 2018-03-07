@@ -32,15 +32,6 @@
         <div class="columns">
             <div class="column is-offset-6">
                 <widget-stats form="test_form" :infos="[]" />
-                <fselect 
-                    name="test" placeholder="Type to search" 
-                    :ajax="true" 
-                    ajax-url="/api/public/v2/laboratorys/search/true/FR" 
-                    :translatable="true" 
-                    field-label="name" field-value="_id"
-                    form="dont-care"
-                    :options="[]"
-                />
             </div>
         </div>
     </div>
