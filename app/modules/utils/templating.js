@@ -31,8 +31,6 @@ Handlebars.registerHelper('filter_nested', (array, options) => {
     const type = options.hash.type || 'type';
     const value = options.hash.value;
 
-    console.log(type, value, array);
-
     if (array.length === 0) {
         return '';
     }

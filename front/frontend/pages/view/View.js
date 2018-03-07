@@ -6,8 +6,10 @@ const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
-
+const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
+
+require('moment/min/locales.min');
 
 module.exports = {
     mixins: [LangMixin, FormMixin],
@@ -21,12 +23,16 @@ module.exports = {
                     reads: {
                         item: 'item_read',
                         author: 'author_read',
+                        depositor: 'depositor_read',
+                        lang: 'lang_read',
                     },
                 },
                 paths: {
                     reads: {
                         item: APIRoutes.entity('publication', 'POST', true),
                         author: APIRoutes.entity('author', 'GET', true),
+                        depositor: APIRoutes.entity('user', 'POST', true),
+                        lang: APIRoutes.entity('langref', 'POST', true),
                     },
                 },
                 loggedIn: false,
@@ -97,6 +103,27 @@ module.exports = {
             if (ci) {
                 this.activate_lang('title', ci.lang);
                 this.activate_lang('abstract', ci.lang);
+
+
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.depositor,
+                    path: this.state.paths.reads.depositor,
+                    body: {
+                        where: {
+                            _id: ci.depositor,
+                        },
+                    },
+                });
+
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.lang,
+                    path: this.state.paths.reads.lang,
+                    body: {
+                        where: {
+                            value: ci.lang,
+                        },
+                    },
+                });
             }
         },
     },
@@ -115,6 +142,22 @@ module.exports = {
                 return item;
             }
             return content;
+        },
+        depositor() {
+            const content = this.fcontent(this.state.sinks.reads.depositor);
+            if (content instanceof Array && content.length > 0) {
+                const item = content[0];
+                return item;
+            }
+            return null;
+        },
+        publication_lang() {
+            const content = this.fcontent(this.state.sinks.reads.lang);
+            if (content instanceof Array && content.length > 0) {
+                const item = content[0];
+                return item;
+            }
+            return null;
         },
         abstracts() {
             const item = this.content_item;
@@ -189,6 +232,10 @@ module.exports = {
                 return '';
             }
 
+            if (!item.denormalization.journal) {
+                return '';
+            }
+
             const tpl = "{{denormalization.journal}}, {{#if volume}} {{volume}}{{/if}}{{#if issue}}({{issue}}){{/if}}{{#if pagination}}: {{pagination}}{{/if}}. {{moment date=dates.publication format=\"YYYY\"}}.{{#filter_nested ids type='type' value='doi'}} {{_id}}{{/filter_nested}}";
 
             return Handlebars.compile(tpl)(item);
@@ -233,7 +280,7 @@ module.exports = {
             if (!item) {
                 return '';
             }
-            return item.denormalization.diffusion.rights.license || '';
+            return Utils.find_value_with_path(item, 'denormalization.diffusion.rights.license'.split('.')) || '';
         },
         publication_version() {
             const item = this.content_item;
@@ -241,7 +288,7 @@ module.exports = {
                 return '';
             }
 
-            return item.denormalization.publication_version || '';
+            return Utils.find_value_with_path(item, 'denormalization.publication_version'.split('.')) || '';
         },
         access_level() {
             const item = this.content_item;
@@ -249,7 +296,7 @@ module.exports = {
                 return '';
             }
 
-            return item.denormalization.diffusion.rights.access || '';
+            return Utils.find_value_with_path(item, 'denormalization.diffusion.rights.access'.split('.')) || '';
         },
         ids() {
             const item = this.content_item;
@@ -265,21 +312,26 @@ module.exports = {
                 return '';
             }
 
-            return item.denormalization.diffusion.research_team || '';
+            return Utils.find_value_with_path(item, 'denormalization.diffusion.research_team'.split('.')) || '';
         },
         projects() {
             const item = this.content_item;
             if (!item) {
                 return [];
             }
-            return [];
+
+            const iprojects = item.denormalization.diffusion.projects;
+            const aprojects = item.denormalization.diffusion.anr_projects;
+            const euprojects = item.denormalization.diffusion.european_projects;
+            const all = [].concat(iprojects, aprojects, euprojects);
+            return all.map(s => s._id.name);
         },
         surveys() {
             const item = this.content_item;
             if (!item) {
                 return [];
             }
-            return [];
+            return item.denormalization.diffusion.surveys.map(s => s._id.name);
         },
         collection() {
             const item = this.content_item;
@@ -287,7 +339,49 @@ module.exports = {
                 return '';
             }
 
-            return item.denormalization.diffusion.internal_collection || '';
+            return Utils.find_value_with_path(item, 'denormalization.diffusion.internal_collection'.split('.')) || '';
+        },
+        editor() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            return Utils.find_value_with_path(item, 'denormalization.editor'.split('.')) || '';
+        },
+        country() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            return Utils.find_value_with_path(item, 'denormalization.localisation.country'.split('.')) || '';
+        },
+        city() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            return Utils.find_value_with_path(item, 'localisation.city'.split('.')) || '';
+        },
+        description() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            return Utils.find_value_with_path(item, 'description'.split('.')) || '';
+        },
+        date() {
+            return (type) => {
+                moment.locale(this.$store.state.interfaceLang.toLowerCase());
+                const item = this.content_item;
+                if (!item) {
+                    return '';
+                }
+
+                if (type in item.dates) {
+                    return moment(item.dates[type]).format('LL');
+                }
+                return '';
+            };
         },
     },
     mounted() {

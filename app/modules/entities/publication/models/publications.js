@@ -79,6 +79,7 @@ const Formatting: Array<any> = [
         keywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
+        'dates.update': async () => +moment(),
     },
     {
         files: async (result, object) => {
@@ -119,6 +120,7 @@ const Formatting: Array<any> = [
 
 const Completion: Array<any> = [
     {
+        'dates.update': async () => ({ dates: { update: +moment() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
     },
     {
