@@ -118,10 +118,18 @@ module.exports = {
         },
         abstracts() {
             const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
             return item.abstracts;
         },
         authors() {
             const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
             const authors = item.denormalization.authors || [];
 
             const names = authors
@@ -133,6 +141,10 @@ module.exports = {
         },
         titles() {
             const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
             if (!item.title.lang) {
                 item.title.lang = item.lang;
             }
@@ -149,28 +161,133 @@ module.exports = {
             return item.subtitles;
         },
         is_files_accessible() {
-            const files = this.content_item.files || [];
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
+            const files = item.files || [];
             if (files.length === 0) {
                 return false;
             }
 
             const file = files[0];
             return !file.access.restricted
-                || (file.access.delayed && +moment(this.content_item.diffusion.rights.embargo) < +moment());
+                || (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment());
         },
         has_extra_files() {
-            const files = this.content_item.files || [];
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+            const files = item.files || [];
             return files.length > 1;
         },
         journal() {
             const item = this.content_item;
-            return item.denormalization.journal || '';
+            if (!item) {
+                return '';
+            }
+
+            const tpl = "{{denormalization.journal}}, {{#if volume}} {{volume}}{{/if}}{{#if issue}}({{issue}}){{/if}}{{#if pagination}}: {{pagination}}{{/if}}. {{moment date=dates.publication format=\"YYYY\"}}.{{#filter_nested ids type='type' value='doi'}} {{_id}}{{/filter_nested}}";
+
+            return Handlebars.compile(tpl)(item);
         },
         conference() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
 
+            return item.denormalization.conference || '';
+        },
+        themes() {
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
+            return item.denormalization.classifications.map(c => c._id.label);
         },
         keywords() {
-            return type => '';
+            return (type) => {
+                const item = this.content_item;
+                if (!item) {
+                    return '';
+                }
+
+                if (item.keywords.length === 0) {
+                    return '';
+                }
+
+                item.keywords.reduce((arr, k) => {
+                    if (k.type === type) {
+                        arr.push(k.value);
+                    }
+                    return arr;
+                }, []).join(', ');
+            };
+        },
+        license() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            return item.denormalization.diffusion.rights.license || '';
+        },
+        publication_version() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
+            return item.denormalization.publication_version || '';
+        },
+        access_level() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
+            return item.denormalization.diffusion.rights.access || '';
+        },
+        ids() {
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
+            return item.ids;
+        },
+        teams() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
+            return item.denormalization.diffusion.research_team || '';
+        },
+        projects() {
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+            return [];
+        },
+        surveys() {
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+            return [];
+        },
+        collection() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
+            return item.denormalization.diffusion.internal_collection || '';
         },
     },
     mounted() {

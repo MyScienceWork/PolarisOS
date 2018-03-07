@@ -118,7 +118,46 @@ module.exports = {
                                     },
                                 },
                             },
+                            depositor: {
+                                properties: {
+                                    fullname: {
+                                        type: 'text',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                             journal: {
+                                type: 'text',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            conference: {
+                                type: 'text',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            publication_version: {
+                                type: 'text',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            editor: {
                                 type: 'text',
                                 fields: {
                                     raw: {
@@ -150,6 +189,18 @@ module.exports = {
                                     template: {
                                         type: 'text',
                                         index: false,
+                                    },
+                                },
+                            },
+                            localisation: {
+                                properties: {
+                                    country: {
+                                        type: 'text',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -242,6 +293,14 @@ module.exports = {
                                     rights: {
                                         properties: {
                                             license: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            access: {
                                                 type: 'text',
                                                 fields: {
                                                     raw: {

@@ -27,4 +27,23 @@ Handlebars.registerHelper('people_join', (array, options) => {
     return `${separated} l_et_al`;
 });
 
+Handlebars.registerHelper('filter_nested', (array, options) => {
+    const type = options.hash.type || 'type';
+    const value = options.hash.value;
+
+    console.log(type, value, array);
+
+    if (array.length === 0) {
+        return '';
+    }
+
+    const filtered = array.filter(i => i[type] === value);
+
+    if (filtered.length === 0) {
+        return '';
+    }
+
+    return options.fn(filtered[0]);
+});
+
 module.exports = Handlebars;

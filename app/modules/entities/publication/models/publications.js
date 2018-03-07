@@ -146,16 +146,34 @@ const Completion: Array<any> = [
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection', 'label', true),
     },
     {
+        'denormalization.diffusion.research_team': ComplFunctions.denormalization('laboratory', 'diffusion.research_team', 'name', true),
+    },
+    {
         'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', true),
     },
     {
+        'denormalization.diffusion.rights.access': ComplFunctions.denormalization('access_level', 'diffusion.rights.access', 'label', true),
+    },
+    {
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
+    },
+    {
+        'denormalization.editor': ComplFunctions.denormalization('editor', 'editor', 'label', true),
+    },
+    {
+        'denormalization.conference': ComplFunctions.denormalization('conference', 'conference', 'name', true),
     },
     {
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
     },
     {
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
+    },
+    {
+        'denormalization.publication_version': ComplFunctions.denormalization('publication_version', 'publication_version', 'label', true),
+    },
+    {
+        'denormalization.localisation.country': ComplFunctions.denormalization('country', 'localisation.country', 'label', true),
     },
     {
         parents: (o, p, i) => {

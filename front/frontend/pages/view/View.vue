@@ -47,8 +47,8 @@
                                 </p>
                             </div>
                         </div>
-                        <p><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong>: {{keywords('user')}}</p>
-                        <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>: {{themes}}</p>
+                        <p v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
+                        <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>: {{themes.join(', ')}}</p>
                         <p><strong v-html="lang('f_publication_id')"></strong></p>
                         <p><a class="has-text-info" href='#' @click.prevent="see_more_metadata">{{lang('f_see_more_metadata')}}</a></p>
                         <div v-if="state.more_metadata">
@@ -57,37 +57,38 @@
                                 <div slot="body">
                                 </div>
                             </widget>
-                            <widget :collapsed="true">
+                            <widget v-if="ids.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title')}}</span>
                                 <div slot="body">
+                                    <p v-for="id in ids"><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
                                 </div>
                             </widget>
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('f_publication_rights')}}</span>
                                 <div slot="body">
-                                    <p><strong v-html="lang('f_publication_version')"></strong></p>
-                                    <p><strong v-html="lang('f_publication_access_level')"></strong></p>
+                                    <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
+                                    <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong></p>
-                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong></p>
-                                    <p v-if="url"><strong v-html="lang('f_publication_url')"></strong></p>
+                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
+                                    <p v-if="url"><strong v-html="lang('f_publication_url')"></strong> {{content_item.url}}</p>
                                     <p v-if="resources"></p>
                                 </div>
                             </widget>
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('f_publication_indexing')}}</span>
                                 <div slot="body">
-                                    <p><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong>: {{keywords('user')}}</p>
-                                    <p><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong>: {{keywords('demovoc')}}</p>
-                                    <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>: {{themes}}</p>
+                                    <p v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
+                                    <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
+                                    <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong> {{themes.join (', ')}}</p>
                                 </div>
                             </widget>
-                            <widget :collapsed="true">
+                            <widget v-if="teams || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_collection')}}</span>
                                 <div slot="body">
-                                    <p><strong v-html="lang('f_publication_team', {}, 'other')"></strong>: </p>
-                                    <p><strong v-html="lang('f_publication_collection', {}, 'other')"></strong>: </p>
-                                    <p><strong v-html="lang('f_publication_project', {}, 'other')"></strong>: </p>
-                                    <p><strong v-html="lang('f_publication_surveys', {}, 'other')"></strong>: </p>
+                                    <p v-if="teams"><strong v-html="lang('f_publication_team')"></strong> {{lang(teams)}}</p>
+                                    <p v-if="collection"><strong v-html="lang('f_publication_collection')"></strong> </p>
+                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong> </p>
+                                    <p v-if="surveys.length > 0"><strong v-html="lang('f_publication_surveys', {}, 'other')"></strong> </p>
                                 </div>
                             </widget>
                             <widget :collapsed="true">
@@ -130,14 +131,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="columns is-centered" v-if="content_item.denormalization.diffusion.rights.license">
+                <div class="columns is-centered" v-if="license">
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_license')}}</p>
                             </header>
                             <div class="card-content">
-                                <p>{{lang(content_item.denormalization.diffusion.rights.license)}}</p>
+                                <p>{{lang(license)}}</p>
                             </div>
                         </div>
                     </div>
