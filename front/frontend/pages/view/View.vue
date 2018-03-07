@@ -118,7 +118,7 @@
                                 </div>
                             </widget>
                             <widget v-if="teams || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_collection')}}</span>
+                                <span slot="title">{{lang('f_publication_collection', {}, 'other')}}</span>
                                 <div slot="body">
                                     <p v-if="teams"><strong v-html="lang('f_publication_team')"></strong> {{lang(teams)}}</p>
                                     <p v-if="collection"><strong v-html="lang('f_publication_collection')"></strong> </p>
@@ -129,7 +129,7 @@
                                             </li>
                                         </ul>
                                     </p>
-                                    <p v-if="surveys.length > 0"><strong v-html="lang('f_publication_surveys', {}, 'other')"></strong>
+                                    <p v-if="surveys.length > 0"><strong v-html="lang('f_publication_survey', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="p in surveys">
                                                 {{lang(p)}}
@@ -145,7 +145,7 @@
                                     <!--<p><strong v-html="lang('f_publication_id')"></strong>: </p>-->
                                     <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit')}}</p>
                                     <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update')}}</p>
-                                    <p><strong v-html="lang('f_publication_version')"></strong> {{content_item.version}} </p>
+                                    <p><strong v-html="lang('f_publication_deposit_version')"></strong> {{content_item.version}} </p>
                                 </div>
                             </widget>
                         </div>
