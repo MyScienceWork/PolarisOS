@@ -31,6 +31,7 @@
                                             <first-deposit-step
                                                 :creation-sink="state.publication.sink"
                                                 :typology-sink="state.typology.sink"
+                                                :subtypology-sink="state.typology.subsink"
                                                 v-if="state.current_step === 0"
                                                 :key="state.current_step"
                                                 :validated="!unvalidated"

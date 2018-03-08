@@ -7,12 +7,12 @@ const moment = require('moment');
 const Utils = require('../../../utils/utils');
 
 const Validation: Array<any> = [
-    {
+    /* {
         'diffusion.rights': Joi.object({
             access: Joi.string().required().label('access'),
         }),
-    },
-    /*Joi.object({
+    },*/
+    /* Joi.object({
         publication_version: Joi.string().required().label('publication_version'),
     }),*/
 ];

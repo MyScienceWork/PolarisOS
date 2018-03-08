@@ -22,6 +22,16 @@
                             @select-change="grab_typology_form"
                             :view-validation-texts="false"
                             />
+                        <fselect 
+                            :label="lang('b_subtype')"
+                            :options="subtypology_options"
+                            :form="creationSink"
+                            name="subtype"
+                            class="has-text-centered"
+                            fieldLabel="tlabel"
+                            fieldValue="value"
+                            :view-validation-texts="false"
+                            />
                         <finput
                             type='hidden'
                             placeholder=''
