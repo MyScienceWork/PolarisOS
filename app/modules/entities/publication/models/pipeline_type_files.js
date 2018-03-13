@@ -19,6 +19,14 @@ const Formatting: Array<any> = [
     {
         files: FormatFunctions.filter_empty_or_null_objects,
     },
+    {
+        files: async a => a.map((f) => {
+            if ('not_is_master' in f) {
+                delete f.not_is_master;
+            }
+            return f;
+        }),
+    },
 ];
 
 const Completion: Array<any> = [
