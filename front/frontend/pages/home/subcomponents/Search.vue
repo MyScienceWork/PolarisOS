@@ -24,6 +24,16 @@
             </form>
         </div>
     </div>
+    <div class="columns">
+        <div class="column">
+            <a :class="`has-text-${color} swap`" href='' @click.prevent="state.showAdvanced = !state.showAdvanced" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
+        </div>
+    </div>
+    <div class="columns" v-if="state.showAdvanced"> 
+        <div class="column">
+            <faggregate-form :sink="state.forms.ssink" :specs="specs" />
+        </div>
+    </div>
 </div>
 </template>
 

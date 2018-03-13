@@ -112,7 +112,7 @@ module.exports = {
         options() {
             return Object.keys(this.specs).map((k) => {
                 const object = this.specs[k];
-                return { label: object.label, value: k };
+                return { label: this.lang(object.label), value: k };
             });
         },
     },
