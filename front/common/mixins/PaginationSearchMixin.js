@@ -174,16 +174,19 @@ module.exports = {
             }
 
             if ((!content.search || content.search.trim() === '')) {
-                if (!this.useDefaultQuery) {
+                if (this.useDefaultQuery) {
+                    const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
+                    if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
+                        where.$and.push(squery);
+                    } else {
+                        where = squery;
+                    }
+                }
+
+                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0) {
                     return;
                 }
 
-                const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
-                if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
-                    where.$and.push(squery);
-                } else {
-                    where = squery;
-                }
                 body.where = where;
             } else {
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
