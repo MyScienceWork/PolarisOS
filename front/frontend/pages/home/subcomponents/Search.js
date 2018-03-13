@@ -21,10 +21,7 @@ module.exports = {
         };
     },
     methods: {
-        trigger_click(e) {
-            if (e) {
-                e.preventDefault();
-            }
+        trigger_click() {
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.forms.ssink,
             });

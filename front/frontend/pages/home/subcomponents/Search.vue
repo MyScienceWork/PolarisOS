@@ -11,7 +11,7 @@
                         </span>
                         </p>
                     <p class="control">
-                        <a class="icon has-text-red swap is-large" :alt="lang('f_search')" :title="lang('f_search')" @click="trigger_click">
+                        <a class="icon has-text-red swap is-large" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="trigger_click">
                             <i class="fa fa-search fa-2x"></i>
                         </a>
                     </p>
@@ -31,7 +31,8 @@
     </div>
     <div class="columns" v-if="state.showAdvanced"> 
         <div class="column">
-            <faggregate-form :sink="state.forms.ssink" :specs="specs" />
+            <faggregate-form :sink="state.forms.ssink" :specs="specs" @aggregate-search="trigger_click">
+            </faggregate-form>
         </div>
     </div>
 </div>

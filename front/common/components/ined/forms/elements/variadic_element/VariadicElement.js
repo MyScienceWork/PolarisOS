@@ -49,7 +49,8 @@ module.exports = {
                 return;
             }
             this.state.elements[real_idx].a = false;
-            this.state.total -= 1;
+            this.state.elements = this.state.elements.filter(e => e.a);
+            this.state.total = this.state.elements.length;
         },
         initialize(sink) {
             const form = this.$store.state.forms[sink];
