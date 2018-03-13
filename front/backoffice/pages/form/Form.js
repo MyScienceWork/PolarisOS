@@ -2,7 +2,7 @@ const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
-const FieldTypes = require('../../lists/fieldtypes');
+const FieldTypes = require('../../../common/lists/fieldtypes');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],

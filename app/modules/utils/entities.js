@@ -451,6 +451,15 @@ async function retrieve_and_get_source(type: string, id: string): ?Object {
     return hits[0].source;
 }
 
+async function search_and_get_sources(type: string, body: Object): Array<Object> {
+    const search_results = await search(type, body);
+    const hits = get_hits(search_results);
+    if (hits.length === 0) {
+        return [];
+    }
+    return hits.map(h => h.source);
+}
+
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
@@ -463,3 +472,4 @@ module.exports.format_search = format_search;
 module.exports.get_index = get_index;
 module.exports.get_hits = get_hits;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
+module.exports.search_and_get_sources = search_and_get_sources;

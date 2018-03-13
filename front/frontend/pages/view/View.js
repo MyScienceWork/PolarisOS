@@ -250,7 +250,7 @@ module.exports = {
         },
         themes() {
             const item = this.content_item;
-            if (!item) {
+            if (!item || !item.denormalization.classifications) {
                 return [];
             }
 

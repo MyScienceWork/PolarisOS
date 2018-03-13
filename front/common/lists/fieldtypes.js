@@ -1,5 +1,6 @@
 module.exports = [{ label: 'Checkbox', value: 'checkbox' },
   { label: 'Date', value: 'date' },
+  { label: 'Date Year', value: 'date-year' },
   { label: 'Email', value: 'email' },
   { label: 'File', value: 'file' },
   { label: 'Hidden', value: 'hidden' },

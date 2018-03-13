@@ -188,7 +188,6 @@ class Pipeline {
                     }
                 }
 
-                console.log(prange, pipelines, errors);
                 if (Object.keys(errors).length > 0) {
                     ctx.body = { change: 'Validation', errors };
                 } else {

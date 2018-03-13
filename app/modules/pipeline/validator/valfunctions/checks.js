@@ -85,8 +85,47 @@ function is_valid_json(path: string, error: ?Object): Function {
     };
 }
 
+function is_conditioned_on(in_path: string, check: Function, out_path: string,
+    is: Function, error: ?Object): Function {
+    return async function f(object): Promise<boolean> {
+        // Semantic of the function
+        // Check(in_path) when Is(out_path)
+
+        const in_segs = in_path.split('.');
+        const out_segs = out_path.split('.');
+
+        const in_info = [...Utils.find_popvalue_with_path(object, in_segs)];
+        const out_info = Utils.find_value_with_path(object, out_segs);
+
+        if (out_info == null) {
+            return true;
+        }
+
+        if (!is(out_info)) {
+            return true;
+        }
+
+        if (in_info.length === 0) {
+            error = error == null ? Errors.InvalidObject : error;
+            error.path = in_path;
+            throw error;
+        }
+
+        const verif = in_info.every(io => check(io));
+
+        if (!verif) {
+            error = error == null ? Errors.InvalidObject : error;
+            error.path = in_path;
+            throw error;
+        }
+
+        return true;
+    };
+}
+
 module.exports = {
     is_unique,
     if_exists,
     is_valid_json,
+    is_conditioned_on,
 };
