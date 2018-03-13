@@ -33,7 +33,7 @@ module.exports = {
             form: this.state.forms.psink,
             path: this.state.pread_path,
             body: {
-                size: 3,
+                size: 6,
                 population: ['authors._id', 'journal'],
             },
         });

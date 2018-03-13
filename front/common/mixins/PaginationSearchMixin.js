@@ -279,23 +279,33 @@ module.exports = {
         },
     },
     mounted() {
+        const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
 
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
 
-        if (search === '' && !this.useDefaultQuery) {
+        if ((search === '' && sink === '') && !this.useDefaultQuery) {
             return;
+        }
+
+        let body = {
+            search,
+        };
+
+        if (sink !== '') {
+            const sink_info = this.fcontent(sink);
+            if (sink_info && Object.keys(sink_info).length > 0) {
+                body = sink_info;
+            }
         }
 
         this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
             form: this.searchSink,
-            body: {
-                search,
-            },
+            body,
         });
-
+        this.add_extra_filters(this.searchSink, 'pos_aggregate', '*');
         this.send_information(this.searchSink);
     },
 };
