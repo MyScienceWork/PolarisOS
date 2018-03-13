@@ -1,8 +1,9 @@
 <template>
 <div>
     <template v-if="form.addons && form.fields.length > 0">
-        <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'html-editor'].indexOf(form.fields[0].type) !== -1"
+        <component
+            :is="['multi-select', 'select'].indexOf(form.fields[0].type) !== -1 ? 'fselect' : 'finput'"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
             :name="get_name(form.fields[0].name)"
             :placeholder="lang(form.fields[0].placeholder || '')"
@@ -14,12 +15,21 @@
             :modal_help="form.fields[0].help ? form.fields[0].help.use_modal : false"
             :is-required="form.fields[0].required"
             :view-validation-texts="false"
+            :year-range-start="form.fields[0].range ? form.fields[0].range.start : 0"
+            :year-range-end="form.fields[0].range ? form.fields[0].range.end : 0"
+            :year-step="form.fields[0].range ? form.fields[0].range.step : 1"
+            :fieldLabel="generate_select_label(form.fields[0])"
+            :fieldValue="generate_select_value(form.fields[0])"
+            :options="generate_select_options(form.fields[0])"
+            :ajax="form.fields[0].datasource ? form.fields[0].datasource.ajax : ''"
+            :ajax-url="generate_ajax_url(form.fields[0])"
+            :ajax-value-url="generate_ajax_url(form.fields[0], 'value')"
         >
             <template slot="input-addons">
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput 
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -32,6 +42,9 @@
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
                     :view-validation-texts="false"
+                    :year-range-start="field.range ? field.range.start : 0"
+                    :year-range-end="field.range ? field.range.end : 0"
+                    :year-step="field.range ? field.range.step : 1"
                     />
                     <finput 
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -72,13 +85,24 @@
                 </template> 
                 <slot name="form-addons"></slot>
             </template>
-        </finput>
+        </component>
+        <crud-form 
+            :text="form.fields[0].datasource.action_text"
+            :header="form.fields[0].datasource.header_text"
+            :help="form.fields[0].datasource.help_text"
+            :form="form.fields[0].datasource.form"
+            :get-path="form.fields[0].datasource.form_paths.get"
+            :put-path="form.fields[0].datasource.form_paths.put"
+            :post-path="form.fields[0].datasource.form_paths.post"
+            @crud-form-change="crud_form_change"
+            v-if="form.fields[0].datasource && (form.fields[0].datasource.add || form.fields[0].datasource.modify) && !readonly" 
+        />
     </template>
     <template v-else v-for="(field, i) in form.fields">
         <fvariadic-element class="field" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput 
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -91,6 +115,9 @@
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
                 :view-validation-texts="false"
+                :year-range-start="field.range ? field.range.start : 0"
+                :year-range-end="field.range ? field.range.end : 0"
+                :year-step="field.range ? field.range.step : 1"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -199,7 +226,7 @@
         </fvariadic-element>
         <template v-else>
             <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'html-editor'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -210,6 +237,9 @@
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
             :view-validation-texts="false"
+            :year-range-start="field.range ? field.range.start : 0"
+            :year-range-end="field.range ? field.range.end : 0"
+            :year-step="field.range ? field.range.step : 1"
             />
             <finput 
             v-else-if="['hidden'].indexOf(field.type) !== -1"

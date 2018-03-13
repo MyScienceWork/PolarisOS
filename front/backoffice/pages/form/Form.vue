@@ -320,11 +320,39 @@
                                                 </div>
                                             </card>
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
                                             :name="`${props.fname}.${props.id}.placeholder`" 
                                             :key="`${props.fname}.${props.id}.placeholder`" 
                                             :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.forms.csink" />
+                                            <template v-if="state.selected_types[props.id] === 'date-year'">
+                                                <finput 
+                                                :name="`${props.fname}.${props.id}.range.start`" 
+                                                :key="`${props.fname}.${props.id}.range.start`" 
+                                                :label="lang('l_range_start')"
+                                                :is-required="true"
+                                                :placeholder="lang('l_range_start')"
+                                                type="text"
+                                                :form="state.forms.csink"
+                                                />
+                                                <finput 
+                                                :name="`${props.fname}.${props.id}.range.end`" 
+                                                :key="`${props.fname}.${props.id}.range.end`" 
+                                                :label="lang('l_range_end')"
+                                                :is-required="true"
+                                                :placeholder="lang('l_range_end')"
+                                                type="text"
+                                                :form="state.forms.csink"
+                                                />
+                                                <finput 
+                                                :name="`${props.fname}.${props.id}.range.step`" 
+                                                :key="`${props.fname}.${props.id}.range.step`" 
+                                                :label="lang('l_range_step')"
+                                                :placeholder="lang('l_range_step')"
+                                                type="text"
+                                                :form="state.forms.csink"
+                                                />
+                                            </template>
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 

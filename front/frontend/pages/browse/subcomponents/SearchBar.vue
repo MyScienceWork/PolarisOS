@@ -31,7 +31,7 @@
     </div>
     <div class="columns" v-if="state.showAdvanced"> 
         <div class="column">
-            <!--<faggregate-form />-->
+            <faggregate-form :sink="searchSink" :specs="specs" />
         </div>
     </div>
 </div>

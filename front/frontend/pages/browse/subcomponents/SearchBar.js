@@ -2,6 +2,8 @@ const Messages = require('../../../../common/api/messages');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 
+const AdvancedSearchSpecs = require('../../../../common/specs/AdvancedSearchSpecs');
+
 module.exports = {
     mixins: [LangMixin, FormMixin],
     props: {
@@ -22,9 +24,13 @@ module.exports = {
         search() {
             this.$store.commit(Messages.COLLECT, {
                 form: this.searchSink,
+                remove_content: true,
             });
         },
     },
     computed: {
+        specs() {
+            return AdvancedSearchSpecs;
+        },
     },
 };

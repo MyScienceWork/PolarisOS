@@ -12,11 +12,13 @@ module.exports = {
         selectPlaceholder: { default: 'l_select_content', type: String },
         label: { default: '', type: String },
         placeholder: { default: '', type: String },
-        // specs: { required: true, type: Object },
+        sink: { default: 'aggregate_form_read', type: String },
+        specs: { required: true, type: Object },
     },
     data() {
         return {
             state: {
+                variadic_name: 'pos_aggregate',
                 sinks: {
                     creations: {
                         aggregate: 'aggregate_read',
@@ -32,19 +34,42 @@ module.exports = {
         select(val, id) {
             if (val == null) {
                 if (id in this.state.inputs) {
+                    this.$store.commit(Messages.REMOVE_FORM, {
+                        form: this.state.inputs[id].sink,
+                    });
                     delete this.state.inputs[id];
                 }
                 return;
             }
 
-            this.state.sinks.reads[val.value] = `${val.value}_read`;
+            const info = this.specs[val.value];
+            const sink = `${val.value}_read`;
+            const element = info.element;
+            const entity = info.entity || {};
+            const path = element !== 'text' ? APIRoutes.entity(entity.name, 'POST', true) : '';
 
             this.state.inputs = Object.assign({}, this.state.inputs, { [id]: {
-                element: this.specs[val.value].element,
-                name: `content.${id}.${val.value}`,
+                element,
+                name: `${this.state.variadic_name}.${id}.${val.value}`,
                 selected: val,
-                sink: this.state.sinks.reads[val.value],
+                sink,
+                entity,
+                path,
             } });
+
+            this.$store.commit(Messages.INITIALIZE, {
+                form: sink,
+            });
+
+            if (this.state.inputs[id].element !== 'text') {
+                this.$store.dispatch('search', {
+                    form: sink,
+                    path,
+                    body: {
+                        projection: [entity.label, entity.value],
+                    },
+                });
+            }
         },
         select_component(id) {
             if (!(id in this.state.inputs)
@@ -53,64 +78,48 @@ module.exports = {
             }
             return 'fselect';
         },
+        get_options(id, sink) {
+            if (!sink) {
+                return [];
+            }
+
+            const content = this.fcontent(sink);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+
+            const entity = this.state.inputs[id].entity;
+            const label_key = entity.label;
+            const translatable = entity.translatable;
+            if (translatable) {
+                return content.map((e) => {
+                    e[label_key] = this.lang(e[label_key]);
+                    return e;
+                });
+            }
+            return content;
+        },
+        get_field(type, entity) {
+            if (!entity) {
+                return 'type';
+            }
+            return entity[type];
+        },
     },
     watch: {
     },
     computed: {
-        specs() {
-            return {
-                'title.content': {
-                    element: 'text',
-                    label: 'l_title',
-                    value: 'title.content',
-                },
-                'abstracts.content': {
-                    element: 'text',
-                    label: 'l_abstract',
-                    value: 'abstracts.content',
-                },
-                'authors._id': {
-                    entity: {
-                        name: 'author',
-                        label: 'fullname',
-                        value: '_id',
-                    },
-                    element: 'multi-select',
-                    label: 'l_author',
-                    value: 'authors._id',
-                },
-                'diffusion.research_team': {
-                    entity: {
-                        name: 'laboratory',
-                        label: 'name',
-                        value: '_id',
-                    },
-                    element: 'multi-select',
-                    label: 'l_laboratory',
-                    value: 'diffusion.research_team',
-                },
-            };
-        },
         options() {
             return Object.keys(this.specs).map((k) => {
                 const object = this.specs[k];
                 return { label: object.label, value: k };
             });
         },
-        information(sink) {
-            const content = this.fcontent(sink);
-
-            if (content instanceof Array) {
-                if (content.length === 0) {
-
-                }
-            }
-        },
     },
     beforeMount() {
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.creations.aggregate,
-            keep_content: false,
-        });
+        /* const val = { value: Object.keys(this.specs)[0] };
+        const id = 0;
+        console.log(val, id);
+        this.select(val, id);*/
     },
 };

@@ -72,7 +72,6 @@ module.exports = {
                 }
                 return m[this.fieldValue];
             });
-            console.log(values);
 
             if (this.ajax) {
                 const promise = this.$store.dispatch('search', {
@@ -104,13 +103,11 @@ module.exports = {
 
             const data = values.reduce((arr, v) => {
                 const elt = _.find(this.options, o => o[this.fieldValue] === v);
-                console.log(elt);
                 if (elt) {
                     arr.push(elt);
                 }
                 return arr;
             }, []);
-            console.log(data);
 
 
             if (this.multi) {

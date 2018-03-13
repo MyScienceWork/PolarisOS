@@ -56,8 +56,6 @@ function denormalization(from_entity: string, from_path: string,
         const from_path_segments = from_path.split('.');
         const result = await Utils.traverse_recreate_and_execute(object, from_path_segments,
                 func(need_to_retrieve, from_entity, entity_segments, flatten));
-        console.log('denorm');
-        console.log(JSON.stringify(result));
         return { denormalization: result };
     };
 }

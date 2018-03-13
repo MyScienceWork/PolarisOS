@@ -31,13 +31,22 @@ module.exports = {
             if (field.range && field.range.enabled) {
                 return 'label';
             }
-            return field.datasource.label;
+
+            if (field.datasource) {
+                return field.datasource.label;
+            }
+
+            return '';
         },
         generate_select_value(field) {
             if (field.range && field.range.enabled) {
                 return 'value';
             }
-            return field.datasource.value;
+
+            if (field.datasource) {
+                return field.datasource.value;
+            }
+            return '';
         },
         generate_select_options(field) {
             if (field.range && field.range.enabled) {
@@ -46,7 +55,7 @@ module.exports = {
             return this.datasource(field);
         },
         generate_ajax_url(field, type = 'normal') {
-            if (field.datasource.ajax) {
+            if (field.datasource && field.datasource.ajax) {
                 const path = type === 'normal' ? field.datasource.ajax_path : field.datasource.ajax_value_path;
                 const url = Handlebars.compile(path)({ lang: this.$store.state.interfaceLang });
                 return url;

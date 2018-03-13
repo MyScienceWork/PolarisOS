@@ -23,22 +23,16 @@ const Validation: Array<any> = [
         dates: Joi.object({
             publication: Joi.number().required().label('dates.publication'),
         }),
-        /* 'diffusion.rights': Joi.object({
-            access: Joi.string().required().label('diffusion.rights.access'),
-        }),*/
     },
     Joi.object({
-        authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
+        contributors: Joi.array().min(1).required().items(Joi.any().required()).label('contributors'),
         lang: Joi.string().required().label('lang'),
-        // type: Joi.string().required().label('type'),
-        // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
 
 const Formatting: Array<any> = [
     {
         abstracts: a => FormatFunctions.oarray_to_array(a),
-        authors: a => FormatFunctions.oarray_to_array(a),
         classifications: a => FormatFunctions.oarray_to_array(a),
         contributors: a => FormatFunctions.oarray_to_array(a),
         'diffusion.projects': a => FormatFunctions.oarray_to_array(a),
@@ -67,7 +61,6 @@ const Formatting: Array<any> = [
         abstracts: FormatFunctions.filter_empty_or_null_objects,
         subtitles: FormatFunctions.filter_empty_or_null_objects,
         translated_titles: FormatFunctions.filter_empty_or_null_objects,
-        authors: FormatFunctions.filter_empty_or_null_objects,
         files: FormatFunctions.filter_empty_or_null_objects,
         classifications: FormatFunctions.filter_empty_or_null_objects,
         contributors: FormatFunctions.filter_empty_or_null_objects,
@@ -120,6 +113,18 @@ const Formatting: Array<any> = [
 
 const Completion: Array<any> = [
     {
+        authors: async (object) => {
+            if (!object.contributors) {
+                return [];
+            }
+
+            const potential_authors = object.contributors
+                .filter(c => c.label && (c.role === 'author' || c.role == null));
+            return { authors: potential_authors.map(pa => ({ _id: pa.label })) };
+        },
+        classifications: async () => ({ classifications: [] }),
+    },
+    {
         'dates.update': async () => ({ dates: { update: +moment() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
     },
@@ -130,7 +135,7 @@ const Completion: Array<any> = [
         'denormalization.classifications': ComplFunctions.denormalization('subject', 'classifications._id', 'label', false),
     },
     {
-        'denormalization.contributors': ComplFunctions.denormalization('contributor', 'contributors._id', 'fullname', false),
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
@@ -194,6 +199,7 @@ const Completion: Array<any> = [
 
 const Resetting: Object = {
     denormalization: {},
+    authors: [],
 };
 
 const Defaults: Object = {

@@ -11,7 +11,7 @@ module.exports = {
                             _id: 'author',
                         },
                         contributors: {
-                            _id: 'contributor',
+                            label: 'author',
                         },
                         conference: 'conference',
                         depositor: 'user',
@@ -20,11 +20,11 @@ module.exports = {
                             _id: 'classification',
                         },
                         collection: 'collection',
-                        internal_collection: 'internal_collection',
                         keywords: {
                             value: 'keyword',
                         },
                         diffusion: {
+                            internal_collection: 'internal_collection',
                             surveys: {
                                 _id: 'survey',
                             },
@@ -104,7 +104,7 @@ module.exports = {
                             contributors: {
                                 type: 'nested',
                                 properties: {
-                                    _id: {
+                                    label: {
                                         properties: {
                                             fullname: {
                                                 type: 'text',

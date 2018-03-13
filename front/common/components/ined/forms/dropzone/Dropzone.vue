@@ -22,7 +22,7 @@
                 </div>
                 <div v-else class="dz-message" style="display:none">
                 </div>
-                <div class="is-clearfix">
+                <div class="is-clearfix" v-if="!readonly">
                     <div v-for="(filename, i) in state.files.order">
                         <finput 
                             :readonly="readonly" 
@@ -32,6 +32,7 @@
                             :placeholder="lang('dropzone_file_deposit_name')" 
                             :form="form"
                             :help="`${lang('b_file_original_name')} ${state.files.content[filename].name} (${parseFloat(state.files.content[filename].size / 1024).toFixed(2)} KB)`"
+                            :default="state.files.content[filename].name"
                             :has-addons="true"
                         >
                             <template slot="input-addons">       
@@ -64,6 +65,11 @@
                         :name="`${files}.${i}.${master}`" 
                         :label="lang('b_file_master')" 
                         type="checkbox" :form="form" />
+                        <finput
+                        :readonly="readonly"
+                        :name="`${files}.${i}.not_${master}`" 
+                        :label="lang('b_file_not_master')" 
+                        type="checkbox" :form="form" />
 
                         <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
                             <span>{{lang('b_file_status')}} </span><progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
@@ -74,6 +80,41 @@
                 
                         <hr />
                     </div>
+                </div>
+                <div v-else>
+                    <table class="table is-fullwidth is-striped">
+                        <thead>
+                            <tr>
+                                <th>{{lang('l_original_filename')}}</th>
+                                <th>{{lang('l_filename')}}</th>
+                                <th>{{lang('l_principal_file')}}</th>
+                                <th>{{lang('l_filesize')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(filename, i) in state.files.order">
+                                <td>{{state.files.content[filename].name}}</td>
+                                <td>
+                                    <finput 
+                                        :readonly="readonly" 
+                                        :name="`${files}.${i}.${name}`" 
+                                        label="" 
+                                        type="text" 
+                                        placeholder="" 
+                                        :form="form"
+                                    />
+                                </td>
+                                <td>
+                                    <finput
+                                    :readonly="readonly"
+                                    :name="`${files}.${i}.${master}`" 
+                                    label="" 
+                                    type="checkbox" :form="form" />
+                                </td>
+                                <td>{{parseFloat(state.files.content[filename].size / 1024).toFixed(2)}} KB</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </vue-dropzone>

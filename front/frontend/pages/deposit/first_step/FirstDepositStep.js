@@ -179,5 +179,7 @@ module.exports = {
             form: this.state.sinks.reads.analyze,
             keep_content: false,
         });
+        this.state.import_state = 'nothing';
+        this.state.analyze_state = 'nothing';
     },
 };
