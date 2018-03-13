@@ -31,6 +31,9 @@ module.exports = {
         };
     },
     methods: {
+        search() {
+            this.$emit('aggregate-search');
+        },
         select(val, id) {
             if (val == null) {
                 if (id in this.state.inputs) {
