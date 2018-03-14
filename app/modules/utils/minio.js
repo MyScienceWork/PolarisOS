@@ -3,6 +3,7 @@ const Config = require('../../config');
 const Logger = require('../../logger');
 const Errors = require('../exceptions/errors');
 
+
 const minio_client = new Minio.Client({
     endPoint: Config.minio.host,
     port: Config.minio.port,

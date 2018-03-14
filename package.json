@@ -20,7 +20,8 @@
     "watch": "./node_modules/.bin/nodemon -e js,jsx,less,css,scss,vue -w 'app/**/*.*' -w 'public/**/*.*' -x 'npm run dev-watch'",
     "flow": "flow",
     "clean-public": "rm -rf ./public/front/{css,js,fonts,views}/* && rm -rf ./public/back/{css,js,fonts,views}/*",
-    "doc": "./node_modules/.bin/esdoc"
+    "doc": "./node_modules/.bin/esdoc",
+    "deploy-doc": "npm run doc && ./node_modules/.bin/gh-pages -d doc"
   },
   "dependencies": {
     "buefy": "^0.6.1",
@@ -81,10 +82,10 @@
     "chai": "^3.5.0",
     "envify": "^4.1.0",
     "esdoc": "^1.0.3",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-flow-type-plugin": "^1.0.1",
-    "esdoc-node": "^1.0.2",
-    "esdoc-standard-plugin": "^1.0.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.x",
+    "esdoc-flow-type-plugin": "^1.0.x",
+    "esdoc-node": "^1.0.x",
+    "esdoc-standard-plugin": "^1.0.x",
     "eslint": "^3.17.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-flowtype": "^2.32.1",
@@ -95,6 +96,7 @@
     "flow-bin": "^0.45.0",
     "flow-remove-types": "^1.2.1",
     "funwithflags": "^1.0.2",
+    "gh-pages": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-clean": "^0.3.2",
