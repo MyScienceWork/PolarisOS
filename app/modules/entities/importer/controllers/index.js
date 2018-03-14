@@ -100,7 +100,7 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             let results = await Promise.all(author_search_promises);
             results = results.map(r => EntitiesUtils.get_hits(r))
             .filter(r => r != null && r.length > 0);
-            ctx.body.authors = results.map(r => ({ _id: r[0].id }));
+            ctx.body.contributors = results.map(r => ({ _id: r[0].id }));
         }
         return;
     }
