@@ -37,9 +37,9 @@ const Formatting: Array<any> = [
         fields: async fields => fields.sort((a, b) => a.order - b.order),
     },
     {
-        'fields.range.start': async start => parseInt(Handlebars.compile(start)({})),
-        'fields.range.end': async end => parseInt(Handlebars.compile(end)({})),
-        'fields.range.step': async step => parseInt(Handlebars.compile(step)({})),
+        'fields.range.start': async start => parseInt(Handlebars.compile(`${start}`)({})),
+        'fields.range.end': async end => parseInt(Handlebars.compile(`${end}`)({})),
+        'fields.range.step': async step => parseInt(Handlebars.compile(`${step}`)({})),
         has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
     },
 ];

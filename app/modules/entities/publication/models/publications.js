@@ -39,6 +39,7 @@ const Formatting: Array<any> = [
         'diffusion.anr_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.european_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.surveys': a => FormatFunctions.oarray_to_array(a),
+        'diffusion.research_teams': a => FormatFunctions.oarray_to_array(a),
         files: a => FormatFunctions.oarray_to_array(a),
         ids: a => FormatFunctions.oarray_to_array(a),
         keywords: a => FormatFunctions.oarray_to_array(a),
@@ -68,13 +69,18 @@ const Formatting: Array<any> = [
         'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.surveys': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.research_teams': FormatFunctions.filter_empty_or_null_objects,
         ids: FormatFunctions.filter_empty_or_null_objects,
         keywords: FormatFunctions.filter_empty_or_null_objects,
+        dkeywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
         'dates.update': async () => +moment(),
     },
     {
+        subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        titles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        abstracts: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         files: async (result, object) => {
             if (!result) {
                 return [];
@@ -107,6 +113,13 @@ const Formatting: Array<any> = [
                 files[0].is_master = true;
             }
             return files;
+        },
+        keywords: async (result, object) => {
+            const demovoc = object.dkeywords || [];
+            const keywords = result.map(k => ({ value: k.value, type: 'user' }));
+            // TODO Change ._id when final Demovoc
+            const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
+            return [...keywords, ...dkeywords];
         },
     },
 ];
@@ -153,7 +166,7 @@ const Completion: Array<any> = [
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection', 'label', true),
     },
     {
-        'denormalization.diffusion.research_team': ComplFunctions.denormalization('laboratory', 'diffusion.research_team', 'name', true),
+        'denormalization.diffusion.research_teams': ComplFunctions.denormalization('laboratory', 'diffusion.research_teams._id', 'name', false),
     },
     {
         'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', true),

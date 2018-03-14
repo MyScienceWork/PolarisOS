@@ -67,6 +67,8 @@ module.exports = {
                 } else if (object instanceof Object && Object.keys(object).length > 0) {
                     this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
+                } else if (this.single || this.isRequired) {
+                    this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
                 }
             } else if (this.single || this.isRequired) {
                 this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });

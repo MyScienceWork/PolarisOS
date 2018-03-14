@@ -6,6 +6,7 @@ const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const LangMixin = require('../../../../../mixins/LangMixin');
+const ASCIIFolder = require('fold-to-ascii');
 
 module.exports = {
     props: {
@@ -49,6 +50,11 @@ module.exports = {
         onSearch(search, loading) {
             loading(true);
             this.search(loading, search, this);
+        },
+        filterFunction(option, label, search) {
+            const l = ASCIIFolder.fold(label || '', '').toLowerCase();
+            const s = ASCIIFolder.fold(search, '').toLowerCase();
+            return l.indexOf(s) > -1;
         },
         merge_options_and_selected(selected, options) {
             if (options.length < selected.length) {

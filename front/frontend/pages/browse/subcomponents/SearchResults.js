@@ -5,7 +5,7 @@ const FormMixin = require('../../../../common/mixins/FormMixin');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Auth = require('../../../../common/utils/auth');
-const Handlerbars = require('../../../../../app/modules/utils/templating');
+const Handlebars = require('../../../../../app/modules/utils/templating');
 
 const Results = require('./Results.vue');
 
@@ -74,7 +74,7 @@ module.exports = {
             }
 
             return content.map((c) => {
-                c.html = Handlerbars.compile(c.denormalization.type.template)(c);
+                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
                 return c;
             });
         },

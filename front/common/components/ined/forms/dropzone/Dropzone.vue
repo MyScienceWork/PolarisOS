@@ -31,26 +31,30 @@
                             type="text" 
                             :placeholder="lang('dropzone_file_deposit_name')" 
                             :form="form"
-                            :help="`${lang('b_file_original_name')} ${state.files.content[filename].name} (${parseFloat(state.files.content[filename].size / 1024).toFixed(2)} KB)`"
+                            :help="filename_help(filename)"
                             :default="state.files.content[filename].name"
                             :has-addons="true"
                         >
                             <template slot="input-addons">       
                                 <p class="control" v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
-                                    <a class="button is-danger" 
-                                        @click="removeFile(filename, $event)"
+                                    <b-tooltip class="is-dark" :label="lang('l_dropzone_remove_file_help')" multilined>
+                                        <a class="button is-danger" 
+                                            @click="removeFile(filename, $event)"
                                         >
-                                        <span class="icon">
-                                            <i class="fa fa-trash"></i>
-                                        </span>
-                                    </a>
+                                            <span class="icon">
+                                                <i class="fa fa-trash"></i>
+                                            </span>
+                                        </a>
+                                    </b-tooltip>
                                 </p>
                                 <p class="control">
-                                    <a class="button is-info" @click.prevent="analyze(state.files.content[filename].pathOnServer)">
-                                        <span class="icon">
-                                            <i class="fa fa-gear"></i>
-                                        </span>
-                                    </a>
+                                    <b-tooltip class="is-dark" :label="lang('l_dropzone_analyze_file_help')" multilined>
+                                        <a class="button is-info" @click.prevent="analyze(state.files.content[filename].pathOnServer)">
+                                            <span class="icon">
+                                                <i class="fa fa-gear"></i>
+                                            </span>
+                                        </a>
+                                    </b-tooltip>
                                 </p>
                             </template>
                         </finput>
@@ -64,11 +68,13 @@
                         :readonly="readonly"
                         :name="`${files}.${i}.${master}`" 
                         :label="lang('b_file_master')" 
+                        :help="lang('l_master_file_help')"
                         type="checkbox" :form="form" />
                         <finput
                         :readonly="readonly"
                         :name="`${files}.${i}.not_${master}`" 
                         :label="lang('b_file_not_master')" 
+                        :help="lang('l_not_master_file_help')"
                         type="checkbox" :form="form" />
 
                         <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">

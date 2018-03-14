@@ -2,6 +2,7 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const APIRoutes = require('../../../common/api/routes');
 const Auth = require('../../../common/utils/auth');
+const Queries = require('../../../common/specs/queries');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
@@ -160,20 +161,7 @@ module.exports = {
             return JSON.stringify({
                 $and: [
                     {
-                        $or: [
-                            { 'title.content': '{{search}}' },
-                            { 'abstracts.content': '{{search}}' },
-                            { 'denormalization.authors.fullname': '{{search}}' },
-                            { 'denormalization.classifications.label': '{{search}}' },
-                            { 'denormalization.contributors.fullname': '{{search}}' },
-                            { 'denormalization.diffusion.internal_collection': '{{search}}' },
-                            { 'denormalization.diffusion.projects.name': '{{search}}' },
-                            { 'denormalization.diffusion.research_team': '{{search}}' },
-                            { 'denormalization.diffusion.surveys.name': '{{search}}' },
-                            { 'denormalization.journal': '{{search}}' },
-                            { 'denormalization.type': '{{search}}' },
-                            { 'denormalization.subtype': '{{search}}' },
-                        ],
+                        $or: Queries.publication_search.$or,
                         'authors._id': this.user.author ? this.user.author._id : null,
                     },
                 ],
