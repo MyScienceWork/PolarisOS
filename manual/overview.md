@@ -18,6 +18,17 @@ The directory is subdivised into:
 - `logger.js`: the logger of the solution (based on Winston).
 - `modules`: the main logic of the backend.
 
+### Modules
+
+The modules directory is sudivised into:
+
+- `auth`: responsible for checking the authentication of a user (will s/he be a 'real' one or an API key).
+- `exceptions`: collection of all the exceptions that the program can throw.
+- `rate_limit`: a small and easy-to-use rate limiter to avoid getting DDoS when using the APIs.
+- `utils`: a set of utils.
+- `entities`: all the data models required by the program (see Data model for more details).
+- `pipeline`: the standardized pipeline of the program (see Pipeline for more details).
+
 ## Frontend
 
 ### Common

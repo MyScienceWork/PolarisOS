@@ -3,8 +3,8 @@ const APIRoutes = require('./api/routes');
 const Auth = require('./utils/auth');
 const API = require('./api');
 
-const Header = require('../frontend/components/themes/ined/parts/header/Header.vue');
-const Footer = require('../frontend/components/themes/ined/parts/footer/Footer.vue');
+const Header = require('../frontend/components/themes/main/parts/header/Header.vue');
+const Footer = require('../frontend/components/themes/main/parts/footer/Footer.vue');
 const Meta = require('./meta/Meta.vue');
 
 const Home = require('../frontend/pages/home/Home.vue');
