@@ -83,8 +83,13 @@ module.exports = {
 
     [Messages.COLLECT]: (state, payload) => {
         const form_name = payload.form;
+        const remove_content = payload.remove_content;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'collect';
+
+        if (remove_content) {
+            state.forms[form_name].content = {};
+        }
     },
 
     [Messages.COMPLETED]: (state, payload) => {
@@ -161,9 +166,15 @@ module.exports = {
 
     [Messages.REGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
+        const name = payload.name;
+
+        if (!name || name.trim() === '') {
+            return;
+        }
+
         create_form_if_needed(state, form_name);
         const pool = state.forms[form_name].elements;
-        state.forms[form_name].elements = Object.assign({}, pool, { [payload.name]: 1 });
+        state.forms[form_name].elements = Object.assign({}, pool, { [name]: 1 });
     },
 
     [Messages.UNREGISTER_FORM_ELEMENT]: (state, payload) => {

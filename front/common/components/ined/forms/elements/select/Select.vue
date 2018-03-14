@@ -28,6 +28,7 @@
                     :placeholder="placeholder"
                     :reset-on-options-change="resetOnOptionsChange"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    :filter-by="filterFunction"
                 >
                 </v-select>
                 <v-select
@@ -38,6 +39,7 @@
                     :on-change="onChange"
                     :value="state.selected"
                     :placeholder="placeholder"
+                    :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"
                     @search="onSearch"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"

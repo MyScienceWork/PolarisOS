@@ -6,6 +6,7 @@ const Messages = require('../../../../common/api/messages');
 module.exports = {
     props: {
         typologySink: { required: true, type: String },
+        subtypologySink: { required: true, type: String },
         creationSink: { required: true, type: String },
         publicationSpecs: { required: true, type: String },
         review: { default: false, type: Boolean },
@@ -129,6 +130,15 @@ module.exports = {
                 return t;
             });
         },
+        subtypology_options() {
+            const content = this.fcontent(this.subtypologySink);
+
+            if ('children' in content) {
+                return content.children;
+            }
+
+            return [];
+        },
         upload_form() {
             if (this.publicationSpecs in this.$store.state.forms) {
                 const sink = this.$store.state.forms[this.publicationSpecs];
@@ -169,5 +179,7 @@ module.exports = {
             form: this.state.sinks.reads.analyze,
             keep_content: false,
         });
+        this.state.import_state = 'nothing';
+        this.state.analyze_state = 'nothing';
     },
 };

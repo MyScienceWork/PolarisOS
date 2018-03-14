@@ -5,7 +5,7 @@ const FormMixin = require('../../../../common/mixins/FormMixin');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Auth = require('../../../../common/utils/auth');
-const Handlerbars = require('../../../../../app/modules/utils/templating');
+const Handlebars = require('../../../../../app/modules/utils/templating');
 
 const Results = require('./Results.vue');
 
@@ -35,7 +35,7 @@ module.exports = {
             this.state.export_type = format;
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.export,
-                keepContent: false,
+                keep_content: false,
             });
 
             this.$store.commit(Messages.COLLECT, {
@@ -43,10 +43,10 @@ module.exports = {
             });
         },
         send_information(sink) {
-            console.log('send information', sink);
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {
+                this.add_extra_filters(sink, 'pos_aggregate', '*');
                 this.run_search(sink);
             }
         },
@@ -74,7 +74,7 @@ module.exports = {
             }
 
             return content.map((c) => {
-                c.html = Handlerbars.compile(c.denormalization.type.template)(c);
+                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
                 return c;
             });
         },

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Handlebars = require('../../../app/modules/utils/templating');
 
 function format(form, ...args) {
     return form.replace(/{(\d+)}/g, (match, number) => {
@@ -47,11 +48,29 @@ function lang(key, obj, n, clang) {
         return text;
     }
 
-    return format_with_obj(text, obj);
+    return Handlebars.compile(text)(obj);
+}
+
+function hlang(str, obj, n, clang) {
+    const regex = /#POS#LANG(\w+)/g;
+    let copy = str;
+    let m;
+
+    while ((m = regex.exec(str)) !== null) {
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex += 1;
+        }
+        const all = m[0];
+        const key = m[1];
+        const info = lang(key, obj, n, clang);
+        copy = copy.replace(all, info);
+    }
+    return copy;
 }
 
 module.exports = {
     format,
     format_with_obj,
     lang,
+    hlang,
 };

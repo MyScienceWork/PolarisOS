@@ -23,28 +23,23 @@ const Validation: Array<any> = [
         dates: Joi.object({
             publication: Joi.number().required().label('dates.publication'),
         }),
-        /* 'diffusion.rights': Joi.object({
-            access: Joi.string().required().label('diffusion.rights.access'),
-        }),*/
     },
     Joi.object({
-        authors: Joi.array().min(1).items(Joi.any().required()).label('authors'),
+        contributors: Joi.array().min(1).required().items(Joi.any().required()).label('contributors'),
         lang: Joi.string().required().label('lang'),
-        // type: Joi.string().required().label('type'),
-        // publication_version: Joi.string().required().label('publication_version'),
     }),
 ];
 
 const Formatting: Array<any> = [
     {
         abstracts: a => FormatFunctions.oarray_to_array(a),
-        authors: a => FormatFunctions.oarray_to_array(a),
         classifications: a => FormatFunctions.oarray_to_array(a),
         contributors: a => FormatFunctions.oarray_to_array(a),
         'diffusion.projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.anr_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.european_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.surveys': a => FormatFunctions.oarray_to_array(a),
+        'diffusion.research_teams': a => FormatFunctions.oarray_to_array(a),
         files: a => FormatFunctions.oarray_to_array(a),
         ids: a => FormatFunctions.oarray_to_array(a),
         keywords: a => FormatFunctions.oarray_to_array(a),
@@ -67,7 +62,6 @@ const Formatting: Array<any> = [
         abstracts: FormatFunctions.filter_empty_or_null_objects,
         subtitles: FormatFunctions.filter_empty_or_null_objects,
         translated_titles: FormatFunctions.filter_empty_or_null_objects,
-        authors: FormatFunctions.filter_empty_or_null_objects,
         files: FormatFunctions.filter_empty_or_null_objects,
         classifications: FormatFunctions.filter_empty_or_null_objects,
         contributors: FormatFunctions.filter_empty_or_null_objects,
@@ -75,12 +69,18 @@ const Formatting: Array<any> = [
         'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.surveys': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.research_teams': FormatFunctions.filter_empty_or_null_objects,
         ids: FormatFunctions.filter_empty_or_null_objects,
         keywords: FormatFunctions.filter_empty_or_null_objects,
+        dkeywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
+        'dates.update': async () => +moment(),
     },
     {
+        subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        titles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        abstracts: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         files: async (result, object) => {
             if (!result) {
                 return [];
@@ -114,11 +114,31 @@ const Formatting: Array<any> = [
             }
             return files;
         },
+        keywords: async (result, object) => {
+            const demovoc = object.dkeywords || [];
+            const keywords = result.map(k => ({ value: k.value, type: 'user' }));
+            // TODO Change ._id when final Demovoc
+            const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
+            return [...keywords, ...dkeywords];
+        },
     },
 ];
 
 const Completion: Array<any> = [
     {
+        authors: async (object) => {
+            if (!object.contributors) {
+                return [];
+            }
+
+            const potential_authors = object.contributors
+                .filter(c => c.label && (c.role === 'author' || c.role == null));
+            return { authors: potential_authors.map(pa => ({ _id: pa.label })) };
+        },
+        classifications: async () => ({ classifications: [] }),
+    },
+    {
+        'dates.update': async () => ({ dates: { update: +moment() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
     },
     {
@@ -128,7 +148,7 @@ const Completion: Array<any> = [
         'denormalization.classifications': ComplFunctions.denormalization('subject', 'classifications._id', 'label', false),
     },
     {
-        'denormalization.contributors': ComplFunctions.denormalization('contributor', 'contributors._id', 'fullname', false),
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
@@ -146,16 +166,34 @@ const Completion: Array<any> = [
         'denormalization.diffusion.internal_collection': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection', 'label', true),
     },
     {
+        'denormalization.diffusion.research_teams': ComplFunctions.denormalization('laboratory', 'diffusion.research_teams._id', 'name', false),
+    },
+    {
         'denormalization.diffusion.rights.license': ComplFunctions.denormalization('license', 'diffusion.rights.license', 'label', true),
     },
     {
+        'denormalization.diffusion.rights.access': ComplFunctions.denormalization('access_level', 'diffusion.rights.access', 'label', true),
+    },
+    {
         'denormalization.journal': ComplFunctions.denormalization('journal', 'journal', 'name', true),
+    },
+    {
+        'denormalization.editor': ComplFunctions.denormalization('editor', 'editor', 'label', true),
+    },
+    {
+        'denormalization.conference': ComplFunctions.denormalization('conference', 'conference', 'name', true),
     },
     {
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
     },
     {
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
+    },
+    {
+        'denormalization.publication_version': ComplFunctions.denormalization('publication_version', 'publication_version', 'label', true),
+    },
+    {
+        'denormalization.localisation.country': ComplFunctions.denormalization('country', 'localisation.country', 'label', true),
     },
     {
         parents: (o, p, i) => {
@@ -174,6 +212,7 @@ const Completion: Array<any> = [
 
 const Resetting: Object = {
     denormalization: {},
+    authors: [],
 };
 
 const Defaults: Object = {

@@ -1,7 +1,7 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns is-centered">
+        <div class="columns">
             <div class="column is-6">
                 <card color="orange" class="card-equal-height">
                     <template slot="card-title">

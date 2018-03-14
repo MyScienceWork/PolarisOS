@@ -6,6 +6,7 @@ const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const LangMixin = require('../../../../../mixins/LangMixin');
+const ASCIIFolder = require('fold-to-ascii');
 
 module.exports = {
     props: {
@@ -50,6 +51,11 @@ module.exports = {
             loading(true);
             this.search(loading, search, this);
         },
+        filterFunction(option, label, search) {
+            const l = ASCIIFolder.fold(label || '', '').toLowerCase();
+            const s = ASCIIFolder.fold(search, '').toLowerCase();
+            return l.indexOf(s) > -1;
+        },
         merge_options_and_selected(selected, options) {
             if (options.length < selected.length) {
                 return this.merge_options_and_selected(options, selected);
@@ -72,7 +78,6 @@ module.exports = {
                 }
                 return m[this.fieldValue];
             });
-            console.log(values);
 
             if (this.ajax) {
                 const promise = this.$store.dispatch('search', {
@@ -104,13 +109,11 @@ module.exports = {
 
             const data = values.reduce((arr, v) => {
                 const elt = _.find(this.options, o => o[this.fieldValue] === v);
-                console.log(elt);
                 if (elt) {
                     arr.push(elt);
                 }
                 return arr;
             }, []);
-            console.log(data);
 
 
             if (this.multi) {

@@ -123,6 +123,27 @@ module.exports = {
             sa.push(`${this.searchType}#${_id}`);
             return sa;
         },
+        add_extra_filters(sink, obj_name, dot_replacer = '*') {
+            const content = this.fcontent(sink);
+
+            if (!content || !(obj_name in content)) {
+                return;
+            }
+
+            const obj = content[obj_name];
+            const filters = _.map(obj, (value) => {
+                const result = _.reduce(value, (acc, val, key) => {
+                    if (!val || _.isEmpty(val)) {
+                        return acc;
+                    }
+
+                    acc[key.replace(dot_replacer, '.')] = val;
+                    return acc;
+                }, {});
+                return JSON.stringify(result);
+            });
+            this.state.seso.extra_filters = filters;
+        },
         run_search(sink) {
             const content = this.fcontent(sink);
 
@@ -139,21 +160,37 @@ module.exports = {
                 }, []);
             }
 
+            if (this.state.seso.extra_filters.length > 0) {
+                const extra = this.state.seso.extra_filters.reduce((arr, filter) => {
+                    arr.push(JSON.parse(filter));
+                    return arr;
+                }, []);
+
+                if (where.$and) {
+                    where.$and.concat(extra);
+                } else {
+                    where.$and = extra;
+                }
+            }
+
             if ((!content.search || content.search.trim() === '')) {
-                if (!this.useDefaultQuery) {
+                if (this.useDefaultQuery) {
+                    const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
+                    if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
+                        where.$and.push(squery);
+                    } else {
+                        where = squery;
+                    }
+                }
+
+                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0) {
                     return;
                 }
 
-                const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
-                if (this.state.seso.filters.length > 0) {
-                    where.$and.push(squery);
-                } else {
-                    where = squery;
-                }
                 body.where = where;
             } else {
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
-                if (this.state.seso.filters.length > 0) {
+                if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
                     where.$and.push(squery);
                 } else {
                     where = squery;
@@ -162,7 +199,9 @@ module.exports = {
             }
 
             if (content.search) {
-                const q = _.merge({}, this.$route.query, { s: content.search, seso_filter: this.state.seso.filters });
+                const q = _.merge({}, this.$route.query, { s: content.search,
+                    seso_filter: this.state.seso.filters,
+                /* seso_extra_filter: this.state.seso.extra_filters*/ });
                 this.$router.push({ query: q });
             }
 
@@ -195,6 +234,7 @@ module.exports = {
                 order: this.get_information(q, 'seso_order'),
                 size: this.get_information(q, 'seso_size', 20),
                 filters: this.get_information(q, 'seso_filter', this.filters),
+                extra_filters: [], // this.get_information(q, 'seso_extra_filter', []),
                 typed_search: this.get_information(q, 's', '').trim(),
             };
 
@@ -239,23 +279,33 @@ module.exports = {
         },
     },
     mounted() {
+        const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
 
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
 
-        if (search === '' && !this.useDefaultQuery) {
+        if ((search === '' && sink === '') && !this.useDefaultQuery) {
             return;
+        }
+
+        let body = {
+            search,
+        };
+
+        if (sink !== '') {
+            const sink_info = this.fcontent(sink);
+            if (sink_info && Object.keys(sink_info).length > 0) {
+                body = sink_info;
+            }
         }
 
         this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
             form: this.searchSink,
-            body: {
-                search,
-            },
+            body,
         });
-
+        this.add_extra_filters(this.searchSink, 'pos_aggregate', '*');
         this.send_information(this.searchSink);
     },
 };

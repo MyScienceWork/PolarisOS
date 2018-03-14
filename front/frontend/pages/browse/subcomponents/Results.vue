@@ -5,7 +5,7 @@
                 <finput
                 :name="info._id"
                 type="checkbox"
-                :form="exportSinks"
+                :form="exportSink"
                 label=""
                 />
             </div>

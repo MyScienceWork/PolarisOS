@@ -29,7 +29,7 @@
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
         v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' 
-        || type === 'email' || type === 'date' || type === 'time'"
+        || type === 'email' || type === 'date' || type === 'date-year' || type === 'time'"
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
@@ -75,6 +75,18 @@
                     :readonly="readonly"
                     :placeholder="placeholder"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    />
+                <input
+                    v-else-if="type === 'date-year' && !readonly"
+                    v-model="state.value"
+                    type="number"
+                    :min="yearRangeStart"
+                    :max="yearRangeEnd"
+                    :step="yearStep"
+                    :readonly="readonly"
+                    :placeholder="placeholder"
+                    :name="name"
+                    :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     />
                 <p v-else-if="type === 'date' && readonly">{{readonlyValue}}</p>
                 <b-timepicker

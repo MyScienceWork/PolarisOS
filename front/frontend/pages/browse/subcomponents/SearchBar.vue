@@ -13,7 +13,7 @@
                     <p class="control">
                     <a class="icon has-text-red swap is-large" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
                             <i class="fa fa-search fa-2x"></i>
-                        </a>
+                    </a>
                     </p>
                     <p class="control" v-if="useFavorites">
                         <a class="icon has-text-warning is-large" :alt="lang('f_save_search')" :title="lang('f_save_search')">
@@ -31,7 +31,8 @@
     </div>
     <div class="columns" v-if="state.showAdvanced"> 
         <div class="column">
-            <!--<faggregate-form />-->
+            <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="search">
+            </faggregate-form>
         </div>
     </div>
 </div>

@@ -315,6 +315,17 @@ describe('Utils#merge_with_superposition', () => {
         result.test[1].should.have.property('second', 'ok');
         result.test[1].should.have.property('second_nope', 'ok');
     });
+    it('should merge inner objects and remove null values', () => {
+        const source = { test: [{ yep: 'nok' }, { second_nope: 'ok' }] };
+        const target = { test: null };
+
+        const result = utils.merge_with_superposition(source, target);
+
+        result.should.have.property('test');
+        result.test.should.have.lengthOf(2);
+        result.test[0].should.have.property('yep', 'nok');
+        result.test[1].should.have.property('second_nope', 'ok');
+    });
 });
 
 describe('Utils#traverse_recreate_and_execute', () => {

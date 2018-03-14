@@ -3,6 +3,7 @@ const VueDropzone = require('vue2-dropzone');
 const APIRoutes = require('../../../../api/routes');
 const LangMixin = require('../../../../mixins/LangMixin');
 const Messages = require('../../../../api/messages');
+const Handlebars = require('../../../../../../app/modules/utils/templating');
 
 module.exports = {
     mixins: [LangMixin],
@@ -30,6 +31,7 @@ module.exports = {
                 maxFilesize: this.$store.state.global_config.upload.maxFileSizeInMB || 1.0,
                 previewTemplate: '<div></div>',
                 autoQueue: true,
+                dictFileTooBig: '', // this.lang('l_dropzone_file_too_big'),
             },
             state: {
                 files: { order: [], content: {} },
@@ -85,9 +87,12 @@ module.exports = {
         analyze(filename) {
             this.$emit('analyze-file', filename);
         },
+        filename_help(filename) {
+            const file = this.state.files.content[filename];
+            return Handlebars.compile(this.lang('l_dropzone_filename_help'))(file);
+        },
     },
     mounted() {
-        console.log('keeper content', this.keeperContent);
         if (this.restore_files && Object.keys(this.keeperContent).length > 0) {
             this.state.files = this.keeperContent;
         }

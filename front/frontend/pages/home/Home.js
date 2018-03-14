@@ -33,7 +33,7 @@ module.exports = {
             form: this.state.forms.psink,
             path: this.state.pread_path,
             body: {
-                size: 3,
+                size: 6,
                 population: ['authors._id', 'journal'],
             },
         });
@@ -45,7 +45,7 @@ module.exports = {
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
                 const items = this.content.map((c) => {
-                    const html = Handlebars.compile(c.denormalization.type.template || '')(c);
+                    const html = this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c));
                     c.html = html;
                     return c;
                 });

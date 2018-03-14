@@ -5,7 +5,8 @@ const FormMapping = require('../../../../mappings/form');
 const MMapping = require('../../crud/mapping');
 const Handlebars = require('../../../utils/templating');
 const Utils = require('../../../utils/utils');
-const ValFunctions = require('../../../pipeline/validator/valfunctions/index');
+const ValFunctions = require('../../../pipeline/validator/valfunctions');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
 const Mapping: Object = FormMapping.msw
 .mappings.form.properties;
@@ -27,22 +28,18 @@ const Validation: Array<any> = [
 
 const Formatting: Array<any> = [
     {
-        fields: async (fields) => {
-            let new_fields = [];
-            if (fields instanceof Array) {
-                new_fields = fields.filter(v => v != null && Object.keys(v).length > 0);
-            }
-            if (fields instanceof Object) {
-                new_fields = _.filter(fields, val => val != null && Object.keys(val).length > 0);
-            }
-            new_fields.sort((a, b) => a.order - b.order);
-            return new_fields;
-        },
-        'fields.range.start': async start => parseInt(Handlebars.compile(start)({})),
-        'fields.range.end': async end => parseInt(Handlebars.compile(end)({})),
-        'fields.range.step': async step => parseInt(Handlebars.compile(step)({})),
+        fields: a => FormatFunctions.oarray_to_array(a),
     },
     {
+        fields: FormatFunctions.filter_empty_or_null_objects,
+    },
+    {
+        fields: async fields => fields.sort((a, b) => a.order - b.order),
+    },
+    {
+        'fields.range.start': async start => parseInt(Handlebars.compile(`${start}`)({})),
+        'fields.range.end': async end => parseInt(Handlebars.compile(`${end}`)({})),
+        'fields.range.step': async step => parseInt(Handlebars.compile(`${step}`)({})),
         has_subforms: async (has, object) => object.fields.some(f => f.subform && f.subform !== ''),
     },
 ];

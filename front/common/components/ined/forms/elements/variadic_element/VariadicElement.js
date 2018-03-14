@@ -49,7 +49,8 @@ module.exports = {
                 return;
             }
             this.state.elements[real_idx].a = false;
-            this.state.total -= 1;
+            this.state.elements = this.state.elements.filter(e => e.a);
+            this.state.total = this.state.elements.length;
         },
         initialize(sink) {
             const form = this.$store.state.forms[sink];
@@ -66,6 +67,8 @@ module.exports = {
                 } else if (object instanceof Object && Object.keys(object).length > 0) {
                     this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
+                } else if (this.single || this.isRequired) {
+                    this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
                 }
             } else if (this.single || this.isRequired) {
                 this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });

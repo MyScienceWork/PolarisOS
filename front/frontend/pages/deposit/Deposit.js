@@ -74,6 +74,10 @@ module.exports = {
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step}`);
             func(e);
+
+            this.$store.commit(Messages.COLLECT, {
+                form: this.state.publication.sink,
+            });
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,
                 keep_content: true,

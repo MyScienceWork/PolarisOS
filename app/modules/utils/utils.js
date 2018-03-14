@@ -192,7 +192,11 @@ function merge_with_superposition(object: Object, ...sources) {
                     return o;
                 });
             }
-            return objValue.concat(srcValue);
+
+            if (srcValue) {
+                return objValue.concat(srcValue);
+            }
+            return objValue;
         }
     }
     return _.mergeWith(object, ...sources, customizer);

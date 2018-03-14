@@ -27,6 +27,13 @@ module.exports = {
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
         dateFormat: { required: false, default: 'YYYY-MM-DD' },
+        yearRangeStart: { required: false,
+            default: parseInt(moment().subtract(150, 'y').format('YYYY'), 10),
+            type: Number },
+        yearRangeEnd: { required: false,
+            default: parseInt(moment().add(3, 'y').format('YYYY'), 10),
+            type: Number },
+        yearStep: { required: false, default: 1, type: Number },
     },
 
     data() {
@@ -59,6 +66,8 @@ module.exports = {
                 this.state.value = this.defaultValue();
             } else if (this.type === 'date') {
                 this.state.value = moment(value).toDate();
+            } else if (this.type === 'date-year') {
+                this.state.value = moment(value).format('YYYY');
             } else {
                 this.state.value = value;
             }
@@ -69,6 +78,9 @@ module.exports = {
                 if (typeof info !== 'string') {
                     info = +moment(info.toISOString());
                 }
+            } else if (this.type === 'date-year') {
+                const number = Math.min(Math.max(this.yearRangeStart, parseInt(info, 10)), this.yearRangeEnd);
+                info = +moment(`${number}`, 'YYYY');
             } else if (this.type === 'time') {
                 if (typeof info !== 'string') {
                     info = moment(info.toISOString()).format('HH:mm');
@@ -92,13 +104,15 @@ module.exports = {
                 return false;
             } else if (this.type === 'date') {
                 return moment().toDate();
+            } else if (this.type === 'date-year') {
+                return moment().format('YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             }
             return undefined;
         },
         computeReadonlyValue(v) {
-            if (this.type === 'date') {
+            if (this.type === 'date' || this.type === 'date-year') {
                 if (typeof v === 'string') {
                     return v;
                 }

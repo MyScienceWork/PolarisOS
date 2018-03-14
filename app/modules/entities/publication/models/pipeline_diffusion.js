@@ -1,20 +1,19 @@
 // @flow
 const Joi = require('joi');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
+const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 
 const Validation: Array<any> = [
-    {
-        'diffusion.rights': Joi.object({
-            access: Joi.string().required().label('access'),
-        }),
-    },
-    /*Joi.object({
-        publication_version: Joi.string().required().label('publication_version'),
-    }),*/
+    ValFunctions.checks.is_conditioned_on('publication_version',
+        i => (i != null && i.trim() !== ''),
+        'files', (f => f != null && f.length > 0)),
+    ValFunctions.checks.is_conditioned_on('diffusion.rights.access',
+        (i => i != null && i.trim() !== ''),
+        'files', (f => f != null && f.length > 0)),
 ];
 
 const Formatting: Array<any> = [
