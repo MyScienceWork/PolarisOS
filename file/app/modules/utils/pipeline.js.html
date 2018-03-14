@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">app/modules/utils/pipeline.js | AOI</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#initializations">initializations</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initialize_routes">initialize_routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-auth">modules/auth</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-FilterSchema">FilterSchema</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud">modules/entities/crud</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/entities/crud/odm.js~ODM.html">ODM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_aggregation">transform_to_aggregation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_search">transform_to_search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_sort">transform_to_sort</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud-controllers">modules/entities/crud/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-count">count</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del">del</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get">get</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gets">gets</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post">post</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_with_action">post_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put">put</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_with_action">put_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-search">search</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-exceptions">modules/exceptions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-GenericException">GenericException</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-utils">modules/utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/utils/pipeline.js~Pipeline.html">Pipeline</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_signature">generate_signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_key">generate_key</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_secret">generate_secret</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_return_inner_object">_return_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_test_inner_object">_test_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-falsy">falsy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_object_with_path">find_object_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_value_with_path">find_value_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_whitelist_blacklist_query">forge_whitelist_blacklist_query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasProperty">hasProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-null_or_undef">null_or_undef</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/modules/utils/pipeline.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+
+const Errors = require(&apos;../exceptions/errors&apos;);
+const Validator = require(&apos;../validator/validator&apos;);
+const EntitiesUtils = require(&apos;./entities&apos;);
+
+/**
+ * Completion and validation pipeline
+ *
+ * The pipeline works by applying a sequence of actions (represented as Koa&apos;s middlewares).
+ * When an action fails, the middleware returns an error that needs to be handled by the client
+ * who emitted that request.
+ *
+ * The pipeline works the following way:
+ *
+ * - For PUT requests (UPDATE):
+ *  1. Check if entity exists, if not, fails
+ *  2. Merge JSON body with existing entity
+ *  3. Apply default fields
+ *  4. Format fieds
+ *  5. Complete fields
+ *  6. Validate fields
+ *  7. UPDATE or FAIL
+ *
+ * - For POST requests (CREATE):
+ *  1. Start at 2. from the above list
+ *  7. CREATE or FAIL.
+ */
+class Pipeline {
+    /**
+     * Check if an entity exists in the DB by using its type (publication, user, journal, ...).
+     *
+     * @param body - JSON body
+     * @param type - entity type
+     * @returns a promise containing a boolean
+     */
+    static async _check_if_entity_exists(body: Object, type: string): Promise&lt;boolean&gt; {
+        if (body == null) {
+            return false;
+        }
+
+        const id = body._id;
+        if (id == null) {
+            return false;
+        }
+
+        const entity = await EntitiesUtils.retrieve(id, type);
+        if (entity == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Dispatcher to apply each part of the pipeline
+     *
+     * @param type - Entity type
+     * @param m - Part of the pipeline to apply
+     * @returns Koa middleware
+     */
+    static _action(type: string, m: string): Function {
+        const validator = new Validator();
+        return async function afunc(ctx: Object, next: Function): Promise&lt;*&gt; {
+            const body = ctx.request.body;
+            const method = ctx.request.method.toLowerCase();
+            const model = EntitiesUtils.get_model_from_type(type);
+
+            switch (m) {
+            case &apos;check&apos;: {
+                if (method === &apos;put&apos;) {
+                    const exists = await check_if_entity_exists(body, type);
+                    if (exists) {
+                        await next();
+                    } else {
+                        throw Errors.InvalidEntity;
+                    }
+                } else {
+                    await next();
+                }
+                break;
+            }
+            case &apos;defaults&apos;: {
+                ctx.request.body = validator.merge_defaults(body, model.Defaults);
+                await next();
+                break;
+            }
+            case &apos;merge&apos;: {
+                if (method === &apos;put&apos;) {
+                    const entity = await EntitiesUtils.retrieve(body._id, type);
+                    ctx.request.body = validator.merge_update(body, entity.db);
+                }
+                await next();
+                break;
+            }
+            case &apos;format&apos;: {
+                ctx.request.body = validator.format(body, model.Formatting);
+                await next();
+                break;
+            }
+            case &apos;complete&apos;: {
+                validator.complete(body, model.Completion);
+                await next();
+                break;
+            }
+            default:
+            case &apos;validate&apos;: {
+                const errors = await validator
+                        .validate(body, model.Validation);
+                if (Object.keys(errors).length === 0) {
+                    await next();
+                } else {
+                    ctx.body = { change: &apos;Validation&apos;, errors };
+                }
+                break;
+            }
+            }
+        };
+    }
+
+
+    /**
+     * Invoke the dispatcher to format the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static format(type: string): Function {
+        return _action(type, &apos;format&apos;);
+    }
+
+    /**
+     * Invoke the dispatcher to validate the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static validate(type: string): Function {
+        return _action(type, &apos;validate&apos;);
+    }
+
+    /**
+     * Invoke the dispatcher to complete the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static complete(type: string): Function {
+        return _action(type, &apos;complete&apos;);
+    }
+
+    /**
+     * Invoke the dispatcher to merge previous entity with new input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static merge(type: string): Function {
+        return _action(type, &apos;merge&apos;);
+    }
+
+    /**
+     * Invoke the dispatcher to include default values in the input
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static defaults(type: string): Function {
+        return _action(type, &apos;defaults&apos;);
+    }
+
+    /**
+     * Invoke the dispatcher to check if the entity exists
+     *
+     * @param type - Entity type;
+     * @returns Koa middleware
+     */
+    static check(type: string): Function {
+        return _action(type, &apos;check&apos;);
+    }
+}
+
+module.exports = Pipeline;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.3)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

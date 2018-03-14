@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">_doc_test/utils/pipeline.js | AOI</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-__method">__method</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-check">check</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-check_if_entity_exists">check_if_entity_exists</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-complete">complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-defaults">defaults</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge">merge</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validate">validate</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">_doc_test/utils/pipeline.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+
+/**
+ * Check if an entity exists in the DB by using its type (publication, user, journal, ...).
+ *
+ * @param body - JSON body
+ * @param type - entity type
+ * @returns a promise containing a boolean
+ */
+async function check_if_entity_exists(body: Object, type: string): Promise&lt;boolean&gt; {
+    if (body == null) {
+        return false;
+    }
+
+    const id = body._id;
+    if (id == null) {
+        return false;
+    }
+
+    const entity = await EntitiesUtils.retrieve(id, type);
+    if (entity == null) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Dispatcher to apply each part of the pipeline
+ *
+ * @param type - Entity type
+ * @param m - Part of the pipeline to apply
+ * @returns Koa middleware
+ */
+function __method(type: string, m: string): Function {
+    const validator = new Validator();
+    return async function afunc(ctx: Object, next: Function): Promise&lt;*&gt; {
+        const body = ctx.request.body;
+        const method = ctx.request.method.toLowerCase();
+        const model = EntitiesUtils.get_model_from_type(type);
+
+        switch (m) {
+        case &apos;check&apos;: {
+            if (method === &apos;put&apos;) {
+                const exists = await check_if_entity_exists(body, type);
+                if (exists) {
+                    await next();
+                } else {
+                    throw Errors.InvalidEntity;
+                }
+            } else {
+                await next();
+            }
+            break;
+        }
+        case &apos;defaults&apos;: {
+            ctx.request.body = validator.merge_defaults(body, model.Defaults);
+            await next();
+            break;
+        }
+        case &apos;merge&apos;: {
+            if (method === &apos;put&apos;) {
+                const entity = await EntitiesUtils.retrieve(body._id, type);
+                ctx.request.body = validator.merge_update(body, entity.db);
+            }
+            await next();
+            break;
+        }
+        case &apos;format&apos;: {
+            ctx.request.body = validator.format(body, model.Formatting);
+            await next();
+            break;
+        }
+        case &apos;complete&apos;: {
+            validator.complete(body, model.Completion);
+            await next();
+            break;
+        }
+        default:
+        case &apos;validate&apos;: {
+            const errors = await validator
+                    .validate(body, model.Validation);
+            if (Object.keys(errors).length === 0) {
+                await next();
+            } else {
+                ctx.body = { change: &apos;Validation&apos;, errors };
+            }
+            break;
+        }
+        }
+    };
+}
+
+/**
+ * Invoke the dispatcher to format the input
+ *
+ * @param type - Entity type;
+ * @returns Koa middleware
+ */
+function format(type: string): Function {
+    return __method(type, &apos;format&apos;);
+}
+
+/**
+ * Invoke the dispatcher to format the input
+ *
+ * @param type - Entity type;
+ * @returns Koa middleware
+ */
+function validate(type: string): Function {
+    return __method(type, &apos;validate&apos;);
+}
+
+function complete(type: string): Function {
+    return __method(type, &apos;complete&apos;);
+}
+
+function merge(type: string): Function {
+    return __method(type, &apos;merge&apos;);
+}
+
+function defaults(type: string): Function {
+    return __method(type, &apos;defaults&apos;);
+}
+
+function check(type: string): Function {
+    return __method(type, &apos;check&apos;);
+}
+
+exports.format = format;
+exports.validate = validate;
+exports.complete = complete;
+exports.defaults = defaults;
+exports.merge = merge;
+exports.check = check;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.3)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

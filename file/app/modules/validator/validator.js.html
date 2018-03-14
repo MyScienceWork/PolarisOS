@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">app/modules/validator/validator.js | AOI</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#initializations">initializations</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initialize_routes">initialize_routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-auth">modules/auth</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-FilterSchema">FilterSchema</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud">modules/entities/crud</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/entities/crud/odm.js~ODM.html">ODM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_aggregation">transform_to_aggregation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_search">transform_to_search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_sort">transform_to_sort</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud-controllers">modules/entities/crud/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-count">count</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del">del</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get">get</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gets">gets</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post">post</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_with_action">post_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put">put</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_with_action">put_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-search">search</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-exceptions">modules/exceptions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-GenericException">GenericException</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-utils">modules/utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/utils/pipeline.js~Pipeline.html">Pipeline</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_signature">generate_signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_key">generate_key</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_secret">generate_secret</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_return_inner_object">_return_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_test_inner_object">_test_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-falsy">falsy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_object_with_path">find_object_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_value_with_path">find_value_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_whitelist_blacklist_query">forge_whitelist_blacklist_query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasProperty">hasProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-null_or_undef">null_or_undef</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/modules/validator/validator.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+const Joi = require(&apos;joi&apos;);
+const _ = require(&apos;lodash&apos;);
+const utils = require(&apos;../utils/utils&apos;);
+const GCExp = require(&apos;../exceptions/generic&apos;);
+const Errors = require(&apos;../exceptions/errors&apos;);
+const Logger = require(&apos;../../logger&apos;);
+
+const no_subobject = path =&gt; async () =&gt; {
+    const e = Errors.InvalidSubobject;
+    e.path = path;
+    throw e;
+};
+
+class Validator {
+    _options: Object;
+    constructor() {
+        this._options = {
+            joi: {
+                allowUnknown: true,
+                abortEarly: false,
+                language: {
+                    key: &apos;{{!key}} &apos;,
+                },
+            },
+            custom: {},
+        };
+    }
+
+    static _isJoi(validator: Joi | Object | Function): boolean {
+        return utils.hasProperty(validator, &apos;isJoi&apos;) &amp;&amp; validator.isJoi;
+    }
+
+    static _compose_joi_errors(errors: Object,
+        joi_errors: Object, parent_key: ?string) {
+        if (&apos;details&apos; in joi_errors) {
+            if (errors === null) errors = {};
+            joi_errors.details.forEach((obj) =&gt; {
+                const path = parent_key ? `${parent_key}.${obj.path}` : obj.path;
+                obj.path = path;
+                if (path in errors) {
+                    errors[path].push(obj);
+                } else {
+                    errors[path] = [obj];
+                }
+            });
+        }
+    }
+
+    static _compose_custom_errors(errors: Object,
+            custom_errors: Array&lt;GCExp&gt;, parent_key: ?string) {
+        custom_errors.forEach((error) =&gt; {
+            const path = parent_key ? `${parent_key}.${error.path}` : error.path;
+            const e = {
+                message: error.message,
+                path,
+            };
+            if (path in errors) {
+                errors[path].push(e);
+            } else {
+                errors[path] = [e];
+            }
+        });
+    }
+
+    async _validate_with_validator(object: Object, errors: Object,
+        validator: Function, key: ?string): Object {
+        if (Validator._isJoi(validator)) {
+            const val = Joi.validate(object, validator, this._options.joi);
+            if (val.error) {
+                Validator._compose_joi_errors(errors, val.error, key);
+            }
+        } else {
+            try {
+                await validator(object);
+            } catch (err) {
+                Validator._compose_custom_errors(errors, [err], key);
+            }
+        }
+        return errors;
+    }
+
+    async validate(object: Object,
+            validators: Array&lt;Object | Function&gt;): Promise&lt;*&gt; {
+        let errors = {};
+        for (const validator of validators) {
+            if (_.isPlainObject(validator)) {
+                for (const key in validator) {
+                    const subvalidator = validator[key];
+                    if (key in object) {
+                        errors = await this._validate_with_validator(object[key], errors, subvalidator, key);
+                    } else {
+                        errors = await this._validate_with_validator(object[key], errors, no_subobject(key));
+                    }
+                }
+            } else {
+                errors = await this._validate_with_validator(object,
+                            errors, validator);
+            }
+        }
+        return errors;
+    }
+
+    async format(object: Object, formatters: Array&lt;any&gt;): Object {
+        async function formatting(func: Function, key: string) {
+            const path = key.split(&apos;.&apos;);
+            const last = path[path.length - 1];
+            const result = utils.find_value_with_path(object, path);
+            const outer_object = utils.find_object_with_path(object, path);
+            if (result != null) {
+                outer_object[last] = await func(result, object);
+            }
+        }
+
+        const promises = formatters.map((formatter: any) =&gt; _.reduce(formatter,
+            (pr: Promise&lt;*&gt;, func: Function, key: string) =&gt; pr.then(
+                () =&gt; formatting(func, key)).catch(err =&gt; Logger.error(err)),
+            Promise.resolve()));
+
+        await Promise.all(promises);
+        return object;
+    }
+
+    async complete(object: Object, completers: Array&lt;any&gt;, info: ?Object): Promise&lt;Object&gt; {
+        const final_promise = completers.reduce((promise, completer: any) =&gt; promise.then((obj) =&gt; {
+            const subobjects_promises = _.map(completer, (func: Function, path: string) =&gt; {
+                const result = utils.find_value_with_path(object, path.split(&apos;.&apos;));
+                if (result == null) {
+                    return func(obj, path, info);
+                }
+                return Promise.resolve({});
+            });
+
+            return new Promise((resolve, reject) =&gt; {
+                Promise.all(subobjects_promises)
+                .then(results =&gt; resolve(_.merge(obj, ...results, object)))
+                .catch(err =&gt; reject(err));
+            });
+        }).catch(err =&gt; Logger.error(err)), Promise.resolve(object));
+
+        const final_object = await final_promise;
+        return final_object;
+    }
+
+}
+
+module.exports = Validator;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.3)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

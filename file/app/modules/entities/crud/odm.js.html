@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">app/modules/entities/crud/odm.js | PolarisOS</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:type" content="website"><meta property="og:url" content="https://www.mysciencework.com"><meta property="og:site_name" content="PolarisOS"><meta property="og:title" content="PolarisOS"><meta property="og:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"><meta property="og:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:author" content="MyScienceWork"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="PolarisOS"><meta property="twitter:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="twitter:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.png" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/MyScienceWork/PolarisOS"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-create">create</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-update">update</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#initializations">initializations</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initialize_routes">initialize_routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-auth">modules/auth</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-FilterSchema">FilterSchema</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud">modules/entities/crud</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/entities/crud/odm.js~ODM.html">ODM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_aggregation">transform_to_aggregation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_search">transform_to_search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_sort">transform_to_sort</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud-controllers">modules/entities/crud/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-count">count</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del">del</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get">get</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gets">gets</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post">post</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_with_action">post_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put">put</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_with_action">put_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-search">search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validate">validate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-entity-routes">modules/entities/entity/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-exporter-controllers">modules/entities/exporter/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-export_information">export_information</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-exporter-routes">modules/entities/exporter/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-importer-controllers">modules/entities/importer/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-extract_relevant_information_from_grobid">extract_relevant_information_from_grobid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-import_crossref">import_crossref</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-import_grobid">import_grobid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-import_information">import_information</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-request_crossref">request_crossref</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-importer-routes">modules/entities/importer/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-menu-routes">modules/entities/menu/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-page-routes">modules/entities/page/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-publication-routes">modules/entities/publication/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-role-controllers">modules/entities/role/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-role-routes">modules/entities/role/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-template-routes">modules/entities/template/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-controllers">modules/entities/user/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-routes">modules/entities/user/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-widget-routes">modules/entities/widget/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-exceptions">modules/exceptions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-GenericException">GenericException</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline">modules/pipeline</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/pipeline.js~Pipeline.html">Pipeline</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer">modules/pipeline/completer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-complete">complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer-complfunctions">modules/pipeline/completer/complfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-denormalization">denormalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_complete">generic_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_complete">key_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-secret_complete">secret_complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter">modules/pipeline/formatter</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatting">formatting</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter-formatfunctions">modules/pipeline/formatter/formatfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_formatter">generic_formatter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-oarray_to_array">oarray_to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-set_default_lang_for_array">set_default_lang_for_array</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer">modules/pipeline/transformer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform">transform</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer-transfunctions">modules/pipeline/transformer/transfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform">transform</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator">modules/pipeline/validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/validator/validator.js~Validator.html">Validator</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator-valfunctions">modules/pipeline/validator/valfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-if_exists">if_exists</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_conditioned_on">is_conditioned_on</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_unique">is_unique</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_json">is_valid_json</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-utils">modules/utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_signature">generate_signature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_key">generate_key</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_secret">generate_secret</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_config">get_config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values">get_language_values</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-retrieve_single_quantity">retrieve_single_quantity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-api_middlewares">api_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-app_middlewares">app_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del_middlewares">del_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_del_routes">generate_del_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_entity_routes">generate_entity_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_get_routes">generate_get_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_gets_routes">generate_gets_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_post_routes">generate_post_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_put_routes">generate_put_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_middlewares">get_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-koa_middlewares">koa_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_middlewares">post_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_middlewares">put_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-upload_middlewares">upload_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_stream">is_valid_stream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_array">to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_buffer">to_buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add_single">add_single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-download">download</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_return_inner_object">_return_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_test_inner_object">_test_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_object_with_path">find_object_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_popvalue_with_path">find_popvalue_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_value_with_path">find_value_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_whitelist_blacklist_query">forge_whitelist_blacklist_query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasProperty">hasProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isNil">isNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-make_nested_object_from_path">make_nested_object_from_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_concat">merge_with_concat</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_replacement">merge_with_replacement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_superposition">merge_with_superposition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_and_execute">traverse_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_recreate_and_execute">traverse_recreate_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_ok_response">forge_ok_response</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_object">to_object</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/modules/entities/crud/odm.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+const _ = require(&apos;lodash&apos;);
+const Search = require(&apos;./search&apos;);
+const Mapping = require(&apos;./mapping&apos;);
+const Utils = require(&apos;../../utils/utils&apos;);
+
+/**
+ * Object Data Model
+ * Generic class to model an entity in the program (saved into an ElasticSearch DB).
+ *
+ * @public
+ *
+ *
+ */
+class ODM {
+    _client: Object;
+    _index: string;
+    _type: string;
+    _db: Object;
+    _model: Object;
+    _id: ?string;
+
+    /**
+     * @param client: ElasticSearch client;
+     * @param id: id of the entity (could be null)
+     */
+    constructor(index: string, type: string, client: Object,
+        model: Object, id: ?string) {
+        this._client = client;
+        this._id = id;
+        this._db = {};
+        this._index = index;
+        this._type = type;
+        this._model = model;
+    }
+
+    /**
+     * @public
+     * @return the underlying model of this entity
+     * @see entity models for more details
+     */
+    get model(): Object {
+        return this._model;
+    }
+
+    /**
+     * @public
+     * @return the underlying ElasticSearch mapping of this entity
+     */
+    get mapping(): Object {
+        return this._model.Mapping;
+    }
+
+    /**
+     * @public
+     * @return the underlying ElasticSearch index of this entity
+     */
+    get index(): string {
+        return this._index;
+    }
+
+    /**
+     * @public
+     * @return the underlying ElasticSearch type of this entity
+     */
+    get type(): string {
+        return this._type;
+    }
+
+    get source(): Object {
+        return this.db.source || {};
+    }
+
+    /**
+     * Process an entity and create an {ODM} object.
+     *
+     * @public
+     * @param hit: hit in ElasticSearch result
+     * @param found: true if the object was found in DB, false otherwise
+     * @return content of the hit
+     */
+    static format_hit(hit: Object, found: boolean = true): Object {
+        if (hit == null) {
+            return {};
+        }
+
+        let score = 0;
+        const index = hit._index;
+        const type = hit._type;
+        const id = hit._id;
+        const source = &apos;_source&apos; in hit ? hit._source : {};
+        const sort = &apos;sort&apos; in hit ? hit.sort : [];
+        if (&apos;score&apos; in hit) {
+            score = hit._score;
+        }
+
+        source._id = id;
+
+        return {
+            id,
+            type,
+            index,
+            score,
+            source,
+            sort,
+            found,
+        };
+    }
+
+    /**
+     * Get name of the class (= entity)
+     * @public
+     * @return name of the class
+     */
+    get name(): string {
+        return this.constructor.name.toLowerCase();
+    }
+
+    /**
+     * Get id of an entity (possibly null)
+     * @public
+     * @return id
+     */
+    get id(): ?string {
+        return this._id;
+    }
+
+    get messages(): Object {
+        return this._model.Messages;
+    }
+
+    /**
+     * Get all information about an entity;
+     * @public
+     * @return all interesting information
+     */
+    get db(): Object {
+        return JSON.parse(JSON.stringify(this._db));
+    }
+
+    /**
+     * Set all interesting information about an entity
+     * @public
+     * @param o: information
+     */
+    set db(o: Object) {
+        this._db = o;
+    }
+
+    static async fetch_mapping(index: string, type: string, client: Object, include_meta: boolean = false) {
+        const mapping = await client.indices.getMapping({ index, type });
+        if (index in mapping &amp;&amp; type in mapping[index].mappings) {
+            if (include_meta) {
+                return mapping[index].mappings[type];
+            }
+            return mapping[index].mappings[type].properties;
+        }
+        return null;
+    }
+
+    static async read(index: string, type: string,
+            client: Object, model: Object, response: Object,
+            population: Array&lt;String&gt; = [], backward: boolean = false): Object {
+        const o = {};
+
+        if (&apos;_scroll_id&apos; in response) {
+            o.scroll_id = response._scroll_id;
+        }
+
+        if (&apos;count&apos; in response) {
+            o.count = response.count;
+        }
+
+        if (&apos;took&apos; in response) {
+            o.took = response.took;
+        }
+
+        if (&apos;timed_out&apos; in response) {
+            o.timeout = response.timed_out;
+        }
+
+        if (&apos;hits&apos; in response) {
+            o.hits = response.hits.hits.map((hit) =&gt; {
+                const info = this.format_hit(hit);
+                const odm = new this(index, type, client, model, info.id);
+                odm.db = info;
+                return odm;
+            });
+
+            if (backward) {
+                _.reverse(o.hits);
+            }
+
+            await o.hits.reduce((pr, hit) =&gt;
+                pr.then(() =&gt; hit.post_read_hook(population)), Promise.resolve());
+
+            o.total = response.hits.total;
+            o.count = response.hits.total;
+            o.max_score = response.hits.max_score;
+        }
+
+        if (&apos;aggregations&apos; in response) {
+            o.aggs = response.aggregations;
+        }
+
+        return o;
+    }
+
+    static async search(index: string, type: string, client: Object, model: Object,
+            search: Search, opts: Object = {}): Promise&lt;Object&gt; {
+        const query = search.generate();
+        console.log(JSON.stringify(query));
+        const sort = search.sort();
+        const aggs = search.aggs();
+        const population = &apos;population&apos; in opts ? opts.population : [];
+        const body = {
+            from: &apos;from&apos; in opts ? opts.from : 0,
+            size: &apos;size&apos; in opts ? opts.size : 1000,
+            _source: &apos;source&apos; in opts ? opts.source : true,
+            query,
+        };
+
+
+        // console.log(&apos;search query&apos;, JSON.stringify(query));
+
+        if (sort != null) {
+            body.sort = sort;
+            if (&apos;search_after&apos; in opts) {
+                body.from = 0;
+                body.search_after = opts.search_after;
+            } else if (&apos;search_before&apos; in opts) {
+                body.sort = body.sort.map(s =&gt; _.reduce(s, (obj, value, key) =&gt; {
+                    obj[key] = value.order === &apos;asc&apos; ? { order: &apos;desc&apos; } : { order: &apos;asc&apos; };
+                    return obj;
+                }, {}));
+
+                body.search_after = opts.search_before;
+            }
+        }
+
+        if (aggs != null) {
+            body.aggs = aggs;
+        }
+
+        let response = {};
+        if (&apos;scroll_id&apos; in opts &amp;&amp; &apos;scroll&apos; in opts) {
+            response = await client.scroll({
+                scrollId: opts.scroll_id,
+                scroll: opts.scroll,
+            });
+        } else {
+            const req = {
+                index,
+                type,
+                body,
+            };
+
+            if (&apos;scroll&apos; in opts) {
+                req.scroll = opts.scroll;
+            }
+
+            response = await client.search(req);
+        }
+
+        return this.read(index, type, client, model, response, population, &apos;search_before&apos; in opts);
+    }
+
+    static async count(index: string, type: string, client: Object,
+            model: Object, search: Search): Promise&lt;Object&gt; {
+        const query = search.generate();
+        const response = await client.count({
+            index,
+            type,
+            body: {
+                query,
+            },
+        });
+        return this.read(index, type, client, model, response);
+    }
+
+    static async deleteByQuery(index: string, type: string, client: Object, search: Search) {
+        const query = search.generate();
+        await client.deleteByQuery({
+            index,
+            type,
+            refresh: true,
+            body: {
+                query,
+            },
+        });
+    }
+
+    static async remove(index: string, type: string, client: Object, id: string): Promise&lt;boolean&gt; {
+        try {
+            const response = await client.delete({
+                index,
+                type,
+                id,
+                refresh: true,
+            });
+            // console.log(response);
+            return response.found;
+        } catch (err) {
+            console.log(&apos;remove error&apos;, err);
+            return false;
+        }
+    }
+
+    static async _create_or_update(index: string, type: string,
+            client: Object, model: Object, body: Object, id: ?string = null): Promise&lt;?ODM&gt; {
+        console.log(&apos;create or update body&apos;, JSON.stringify(body));
+        try {
+            const content = {
+                index,
+                type,
+                body,
+                refresh: true,
+            };
+
+            if (id != null) {
+                content.id = id;
+                const ret = await this.pre_update_hook(index, type, client, model, body, id);
+                if (!ret) {
+                    return null;
+                }
+            } else {
+                const ret = await this.pre_create_hook(index, type, client, model, body);
+                if (!ret) {
+                    return null;
+                }
+            }
+
+            const response = await client.index(content);
+            if ((&apos;created&apos; in response &amp;&amp; response.created)
+                || (&apos;result&apos; in response &amp;&amp; response.result === &apos;updated&apos;)) {
+                try {
+                    const get_response = await client.get({
+                        index,
+                        type,
+                        id: response._id,
+                    });
+                    const odm = new this(index, type, client, model, response._id);
+                    odm.db = this.format_hit(get_response, get_response.found);
+                    if (&apos;created&apos; in response) {
+                        await odm.post_create_hook();
+                    } else {
+                        await odm.post_update_hook();
+                    }
+
+                    // console.log(odm);
+                    return odm;
+                } catch (err) {
+                    return null;
+                }
+            }
+            return null;
+        } catch (err) {
+            console.log(&apos;creation or update error&apos;, err);
+            return null;
+        }
+    }
+
+    async read(opts: Object = {}): Promise&lt;ODM&gt; {
+        const population = &apos;population&apos; in opts ? opts.population : [];
+        const source = &apos;source&apos; in opts ? opts.source : null;
+
+        await this.pre_read_hook(source, population);
+
+        try {
+            const response = await this._client.get({
+                index: this.index,
+                type: this.type,
+                id: this._id,
+                _source: source,
+            });
+
+
+            this.db = this.constructor.format_hit(response, response.found);
+            await this.post_read_hook(population);
+        } catch (err) {
+            const response = err.body;
+            this.db = this.constructor.format_hit(response, response ? response.found : false);
+            await this.post_read_hook(population);
+        }
+        return this;
+    }
+
+    static async create(index: string, type: string, client: Object,
+            model: Object, body: Object): Promise&lt;?ODM&gt; {
+        return this._create_or_update(index, type, client, model, body);
+    }
+
+    static async update(index: string, type: string, client: Object,
+            model: Object, body: Object, id: string): Promise&lt;?ODM&gt; {
+        // console.log(&apos;update&apos;, JSON.stringify(body));
+        return this._create_or_update(index, type, client, model, body, id);
+    }
+
+    toJSON(): Object {
+        return this.db;
+    }
+
+    async pre_read_hook() {
+        // TODO TBD
+    }
+
+    static async pre_create_hook(index: string, type: string,
+            client: Object, model: Object, body: Object): Promise&lt;boolean&gt; {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
+    static async pre_update_hook(index: string, type: string,
+            client: Object, model: Object, body: Object, id: string): Promise&lt;boolean&gt; {
+        // To be re-implemented in subclass (if needed)
+        return true;
+    }
+
+    async post_read_hook(population: Array&lt;String&gt;) {
+        // To be re-implemented in subclass (if needed)
+        await this._handle_population(population);
+    }
+
+    async post_create_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async post_update_hook() {
+        // To be re-implemented in subclass (if needed)
+    }
+
+    async _handle_population(population: Array&lt;String&gt;, propagate_population: boolean = false) {
+        const EntitiesUtils = require(&apos;../../utils/entities&apos;);
+        const mapping = await this.constructor.fetch_mapping(this.index, this.type,
+                this._client, true);
+
+        if (mapping &amp;&amp; !(&apos;_meta&apos; in mapping)) {
+            return;
+        }
+
+        if (!(&apos;refs&apos; in mapping._meta)) {
+            return;
+        }
+
+        const refs = mapping._meta.refs;
+        const info = this._db.source;
+
+
+        for (const p of population) {
+            const path = p.split(&apos;.&apos;);
+            const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
+            let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
+
+            if (ref.length &gt; 0 &amp;&amp; vals.length &gt; 0) {
+                ref = ref[0];
+                const last = path[path.length - 1];
+                for (const v of vals) {
+                    if (ref === &apos;lang&apos;) {
+                        const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 1 } });
+                        const hits = EntitiesUtils.get_hits(result);
+                        v[last] = hits.length &gt; 0 ? hits[0].source : {};
+                    } else {
+                        const result = await EntitiesUtils.retrieve(v[last],
+                            ref, &apos;&apos;, propagate_population ? population.join(&apos;,&apos;) : &apos;&apos;);
+                        v[last] = result != null ? result.source : {};
+                    }
+                }
+            }
+        }
+    }
+}
+
+module.exports = ODM;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.3)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
