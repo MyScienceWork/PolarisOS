@@ -7,7 +7,17 @@
         "option": {
             "lint": {"enable": false},
             "undocumentIdentifier": {"enable": false},
-            "unexportedIdentifier": {"enable": true}
+            "unexportedIdentifier": {"enable": true},
+            "manual": {
+                "index": "./manual/index.md",
+                "asset": "./manual/asset",
+                "files": [
+                    "./manual/overview.md",
+                    "./manual/architecture.md",
+                    "./manual/gettingstarted.md",
+                    "./manual/deployment.md"
+                ]
+            }
         }
     },
     {
