@@ -15,7 +15,8 @@
                     "./manual/overview.md",
                     "./manual/architecture.md",
                     "./manual/gettingstarted.md",
-                    "./manual/deployment.md"
+                    "./manual/deployment.md",
+                    "./CODE_OF_CONDUCT.md"
                 ]
             },
             "brand": {
