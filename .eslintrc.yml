@@ -1,0 +1,38 @@
+parser:
+    babel-eslint
+
+env:
+  es6: true
+  node: true
+  mocha: true
+
+extends:
+  - airbnb
+  - plugin:flowtype/recommended
+
+plugins:
+  - import
+  - flowtype
+
+rules:
+  #Allow _id on mongo id attributes and rewire __get__
+  #[error, {allow: [_id, __get__], allowAfterThis: true}]
+  no-underscore-dangle: off
+
+  #Put 4 spaces instead of 2
+  indent: [error, 4]
+
+  #Remove camelcase
+  camelcase: off
+
+  #Allow reassigning koa context
+  no-param-reassign: off
+
+  #Allow for of/in loops as forEach does not work with async await
+  no-restricted-syntax: [warn, ForOfStatement, ForInStatement]
+
+  #Ignore unused-var error message on chai.should()
+  no-unused-vars: [error, {varsIgnorePattern: should}]
+
+  #Allow devDependencies for tests
+  import/no-extraneous-dependencies: [error, {devDependencies: ['**/*.test.js']}]

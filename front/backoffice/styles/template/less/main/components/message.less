@@ -1,0 +1,15 @@
+.generate-colored-message(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+    .message.is-@{name} {
+        //TODO lighter color for background
+        //background-color: @lighter;
+        .message-body {
+            border-color: @@name;
+            color: @@name;
+        }
+    }
+     
+    .generate-colored-message((@i - 1));
+}
+
+.generate-colored-message();

@@ -1,0 +1,202 @@
+//Mixins
+.generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .card-@{name} {
+        background-color: @@name;
+        
+        .card-header-tag {
+            .tag {
+                background-color: @white;
+                color: @black;
+            }
+        }
+    }
+
+    .card-header-tag {
+        .tag.is-@{name}.is-active {
+            background-color: @@name;
+            color: @white;
+        }
+
+        .tag.is-@{name} {
+            background-color: lighten(@@name, 20%);
+            color: @white;
+        }
+
+        .tag:hover.is-@{name} {
+            background-color: @@name;
+        }
+    }
+
+    .clickable-card-@{name}:hover {
+        background-color: @@name;
+        .card-header {
+            background-color: @grey-3;
+            color: @white;
+        }
+    }
+
+    .clickable-card-@{name}, .info-card-@{name} {
+        .card-header {
+            background-color: @grey-3;
+
+            .card-header-title {
+                color: @white !important;
+            }
+        }
+    }
+
+    .info-card-@{name} {
+        a {
+            color: @@name;
+        }
+        
+        a:hover {
+            color: @grey-3;
+        }
+
+        a.swap {
+            color: @grey-3;
+        }
+
+        a.swap:hover {
+            color: @@name;
+        }
+
+        a.swap.is-active {
+            color: @@name;
+        }
+
+        p.colored {
+            color: @@name !important;
+        }
+    }
+
+    .card-header-@{name} {
+        background-color: @grey-3;
+        border-radius: 5px 5px 0 0;
+        padding: 1%;
+        border-bottom: 0px solid @white !important;
+        font-weight: bold;
+        color: @white !important;
+        text-transform: uppercase;
+
+        .card-header-title {
+            color: @white !important;
+        }
+    }
+
+    .generate-colored-cards((@i - 1));
+}
+
+.card {
+    padding: 1%;
+    border: 1px solid @white;
+    border-radius: 5px;
+    box-shadow: 0 0 3px @black-shadow;
+
+    .card-header {
+        box-shadow: none;
+        border-bottom: 1px solid @black-shadow;
+        color: @grey-3;
+    }
+
+    .card-footer {
+        border-top: none;
+    }
+}
+
+.clickable-card, .info-card {
+    border-radius: 5px;
+    box-shadow: 0 0 3px @black-shadow;
+    padding: 0 2% 2% 2%;
+
+    .card-header {
+        display: inline-block;
+        padding: 0px 10px;
+        color: @white;
+        border-radius: 0 0 5px 5px;
+        text-transform: uppercase;
+        border-bottom: none;
+    }
+}
+
+.clickable-card {
+    cursor: pointer;
+}
+
+.has-card-gradient {
+    background: linear-gradient(to bottom, @grey-gradient,@white);
+}
+
+.card-equal-height {
+   //display:flex;
+   flex-direction: column;
+   height: 100%;
+}
+.card-equal-height .card-footer {
+   margin-top: auto;
+}
+
+.stats-card {
+    .columns {
+       margin: 0;
+    }
+
+    .columns:not(:first-child) {
+        border-top: 1px solid rgba(219,219,219,0.75);
+    }
+
+    .column:not(:first-child) {
+        border-left: 1px solid rgba(219,219,219,0.75);
+    }
+
+    .column {
+       padding: 0;
+    }
+
+    hr {
+       margin: 0.75rem 0;
+    }
+    
+    .card-content {
+        padding: 0.35rem;
+    }
+
+    .media {
+        padding: 0.5rem;
+    }
+
+    background-image: linear-gradient(to bottom, @white, @grey-gradient); 
+    padding: 0 !important;
+
+    .title, .subtitle {
+        color: @default;
+    }
+}
+
+.card-with-tag {
+    padding: 0 !important;
+    .card-header {
+        border-bottom: none;
+    }
+}
+
+.card-header-tag {
+    align-items: normal;
+    padding: 0 !important;
+    .tag {
+        border-radius: 0px;
+    }
+
+    &:last-child > .tag {
+        border-top-right-radius: 5px;
+    }
+
+    &:not(last-child) > .tag {
+        border-right: 1px solid @white;
+    }
+}
+
+.generate-colored-cards();

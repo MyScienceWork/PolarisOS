@@ -1,0 +1,74 @@
+//Variables
+@white-transparent-breadcrumb: rgba(255, 255, 255, 1);
+
+//Mixins
+.generate-colored-nav-menu(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    aside.menu {
+        .menu-label-@{name} {
+            border-bottom-color: @@name;
+        }
+
+        .menu-list-@{name} {
+            a.is-active {
+                background-color: @@name;
+            }
+            
+            a.is-active:hover {
+                background-color: @@name;
+            }
+        }
+    }
+
+    .generate-colored-nav-menu((@i - 1));
+}
+
+.generate-colored-nav-menu();
+
+
+aside.menu {
+    background-color: @grey-3;
+    padding: 1rem;
+
+    .menu-label {
+        color: @white;
+        font-weight: bold;
+    }
+
+    .menu-label {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+    }
+
+    .menu-list a {
+        color: @white;
+    }
+
+    .menu-list a:hover {
+        background-color: @black-shadow;
+    }
+
+    .menu-list {
+        .is-active-dropdown {
+            background-color: @black-shadow;
+        } 
+    }
+    
+    .menu-dropdown {
+        transition: height;
+    }
+
+    .menu-dropdown-enter,
+    .menu-dropdown-leave-to { opacity: 0 }
+
+    .menu-dropdown-leave,
+    .menu-dropdown-enter-to { opacity: 1 }
+
+    .menu-dropdown-enter-active,
+    .menu-dropdown-leave-active {
+        transition: opacity 100ms ease-in-out;
+    }
+
+    .menu-dropdown-enter-active { transition-delay: 100ms }
+}

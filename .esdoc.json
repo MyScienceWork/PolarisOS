@@ -1,0 +1,45 @@
+{
+  "source": "./app",
+  "destination": "./doc",
+  "plugins": [
+    {
+        "name": "esdoc-standard-plugin", 
+        "option": {
+            "lint": {"enable": false},
+            "undocumentIdentifier": {"enable": false},
+            "unexportedIdentifier": {"enable": true},
+            "manual": {
+                "index": "./manual/index.md",
+                "asset": "./manual/asset",
+                "files": [
+                    "./manual/overview.md",
+                    "./manual/architecture.md",
+                    "./manual/gettingstarted.md",
+                    "./manual/deployment.md",
+                    "./CODE_OF_CONDUCT.md",
+                    "./CONTRIBUTING.md"
+                ]
+            },
+            "brand": {
+                "logo": "./manual/asset/logo.png",
+                "title": "PolarisOS",
+                "description": "MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&D companies. MyScienceWork's comprehensive database includes more than 70 million scientific publications and 12 million patents.",
+                "repository": "https://github.com/MyScienceWork/PolarisOS",
+                "site": "https://www.mysciencework.com",
+                "image": "https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"
+            }
+        }
+    },
+    {
+        "name": "esdoc-flow-type-plugin", 
+        "option": {"enable": true}
+    },
+    {
+        "name": "esdoc-ecmascript-proposal-plugin", 
+        "option": {"all": true}
+    },
+    {
+        "name": "esdoc-node"
+    }
+  ]
+}
