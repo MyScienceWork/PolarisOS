@@ -30,11 +30,12 @@ async function download(ctx) {
 }
 
 async function multi_download(ctx) {
-    const body = ctx.request.body;
+    const body = ctx.params;
     const entity = body.entity || '';
     const eid = body.eid || '';
-    const names = body.names || [];
-    const filenames = body.filenames || [];
+    const names = body.names ? body.names.split('|') : [];
+    const filenames = body.filenames ? body.filenames.split('|') : [];
+
 
     if (entity === '' || eid === ''
         || filenames.length === 0 || names.length === 0

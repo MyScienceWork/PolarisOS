@@ -34,7 +34,7 @@ module.exports = {
             path: this.state.pread_path,
             body: {
                 size: 6,
-                population: ['authors._id', 'journal'],
+                sort: [{ 'dates.deposit': 'desc' }],
             },
         });
     },

@@ -152,6 +152,8 @@ module.exports = {
                 sort: [],
             };
 
+            console.log(this.state.seso);
+
             let where = {};
             if (this.state.seso.filters.length > 0) {
                 where.$and = this.state.seso.filters.reduce((arr, filter) => {
@@ -176,10 +178,14 @@ module.exports = {
             if ((!content.search || content.search.trim() === '')) {
                 if (this.useDefaultQuery) {
                     const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
-                    if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
-                        where.$and.push(squery);
-                    } else {
-                        where = squery;
+
+                    if (Object.keys(squery).length > 0) {
+                        if (this.state.seso.filters.length > 0
+                            || this.state.seso.extra_filters.length > 0) {
+                            where.$and.push(squery);
+                        } else {
+                            where = squery;
+                        }
                     }
                 }
 

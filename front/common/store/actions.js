@@ -44,7 +44,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
 }
 
 module.exports = {
-    fetch: async (ctx, { path, method, body, action, form }) => {
+    fetch: async (ctx, { path, method, body, action, form, no_fetch }) => {
         const payload = {
             path,
             method,
@@ -55,8 +55,11 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        const results = run_fetch_mutation(action, response, form, ctx);
-        return results;
+        if (!no_fetch) {
+            const results = run_fetch_mutation(action, response, form, ctx);
+            return results;
+        }
+        return [];
     },
 
     create: async (ctx, payload) => await create_or_update_or_validate(ctx, payload, 'create'),

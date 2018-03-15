@@ -44,7 +44,7 @@
                 </p>
                 <p v-else class="tile is-child has-text-centered">
                     <router-link class="navbar-item is-justify-center" slot="trigger" to="/login?redirect=%2F">
-                        <span>Log in</span>
+                    <span>{{lang('f_login')}}</span>
                     </router-link>
                 </p>
                 <p class="tile is-child has-text-centered">

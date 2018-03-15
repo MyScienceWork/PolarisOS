@@ -53,10 +53,18 @@ module.exports = {
                 },
                 more_metadata: false,
                 show_extra_files: false,
+                selected_files: {
+
+                },
             },
         };
     },
     methods: {
+        select_all_extra_files(s) {
+            this.$lodash.forEach(this.state.selected_files, (f) => {
+                f.s = s;
+            });
+        },
         generate_download_link(status) {
             const files = this.content_item.files || [];
             if (files.length === 0) {
@@ -134,6 +142,30 @@ module.exports = {
         },
     },
     computed: {
+        multi_download_link() {
+            const names = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
+                if (f.s) {
+                    arr.push(f.name);
+                }
+                return arr;
+            }, []);
+
+            const filenames = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
+                if (f.s) {
+                    arr.push(f.url);
+                }
+                return arr;
+            }, []);
+
+            if (!this.content_item || names.length === 0 || filenames.length === 0) {
+                return '#';
+            }
+
+            return APIRoutes.multi_download('publication', this.content_item._id, names, filenames);
+        },
+        is_all_extra_files_selected() {
+            return this.$lodash.every(this.state.selected_files, f => f.s);
+        },
         item_id() {
             return this.$route.params.id || '';
         },
@@ -145,6 +177,15 @@ module.exports = {
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
                 item.html = this.hlang(Handlebars.compile(item.denormalization.type.template)(item));
+                this.state.selected_files = item.files.reduce((obj, file) => {
+                    obj[file.name] = {
+                        name: file.name,
+                        url: file.url,
+                        s: false,
+                    };
+                    return obj;
+                }, {});
+
                 return item;
             }
             return content;
