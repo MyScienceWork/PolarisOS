@@ -138,36 +138,43 @@
                                 class="card-content has-text-centered"
                                 v-if="is_files_accessible"    
                             >
-                                <a :href="generate_download_link('master')" class="swap">
-                                    <span class="icon is-large">
-                                        <i class="fa fa-file fa-3x"></i>
-                                    </span>
+                                <div>
+                                    <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
+                                        <a :href="generate_download_link('master')" class="swap">
+                                            <span class="icon is-large">
+                                                <i class="fa fa-file fa-3x"></i>
+                                            </span>
 
-                                </a>
-                                <a v-if="has_extra_files" class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
-                                    {{lang('f_click_here_to_download_extra_files')}}
-                                </a>
-                                <div v-if="state.show_extra_files">
-                                    <p class="title is-5">{{lang('f_select_extra_files_to_dowload')}}</p>
-                                    <div class="field has-addons">
-                                        <p class="control">
-                                            <input class="input" type="checkbox">
-                                        </p>
-                                        <p class="control">
-                                            <a class="button is-static">
-                                                @gmail.com
+                                        </a>
+                                    </b-tooltip>
+                                </div>
+                                <p class="has-small-top-margin" v-if="has_extra_files">
+                                    <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
+                                        {{lang('f_click_here_to_download_extra_files')}}
+                                    </a>
+                                </p>
+
+                                <div class="has-small-top-margin" v-if="state.show_extra_files">
+                                    <p class="title is-5">{{lang('f_select_extra_files_to_download')}}</p>
+                                    <div class="field has-addons" v-for="file in content_item.files">
+                                        <p class="control is-expanded">
+                                            <a class="button is-static is-fullwidth">
+                                                {{$lodash.truncate(file.name)}}
                                             </a>
                                         </p>
+                                        <div class="control">
+                                            <div class="input">
+                                                <input type="checkbox" v-model="state.selected_files[file.name].s" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="field has-addons">
-                                        <p class="control">
-                                            <input class="input" type="checkbox">
-                                        </p>
-                                        <p class="control">
-                                            <a class="button is-static">
-                                                @gmail.com
-                                            </a>
-                                        </p>
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <a class="button" :href='multi_download_link'>{{lang('f_download')}}</a>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-primary" @click.prevent="select_all_extra_files(!is_all_extra_files_selected)">{{is_all_extra_files_selected ?  lang('f_deselect_all') : lang('f_select_all')}}</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

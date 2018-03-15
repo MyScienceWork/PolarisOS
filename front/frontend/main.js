@@ -4,6 +4,8 @@ const VueWysiwyg = require('vue-wysiwyg');
 const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
+const _ = require('lodash');
+
 
 const Loader = require('./components/loader/Loader.vue');
 const Stepper = require('../common/components/main/stepper/Stepper.vue');
@@ -34,6 +36,9 @@ const MediaWidget = require('./components/themes/main/widgets/media_widget/Media
 
 
 const App = require('./pages/App.vue');
+
+
+Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
