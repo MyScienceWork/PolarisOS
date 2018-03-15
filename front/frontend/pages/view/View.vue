@@ -51,12 +51,12 @@
                         <!--<p><strong v-html="lang('f_publication_id')"></strong></p>-->
                         <p class="has-small-top-margin"><a class="has-text-info" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>
                         <div v-if="state.more_metadata">
-                            <widget :collapsed="true">
+                            <widget v-if="themes.length > 0 || keywords('user') || keywords('demovoc')" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_indexing')}}</span>
                                 <div slot="body">
                                     <p v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
                                     <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
-                                    <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
+                                    <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="theme in themes">{{theme}}</li>
                                         </ul>
@@ -69,7 +69,7 @@
                                     <p v-for="id in ids"><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
                                 </div>
                             </widget>
-                            <widget :collapsed="true">
+                            <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_rights')}}</span>
                                 <div slot="body">
                                     <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
@@ -77,7 +77,7 @@
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
                                     <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
                                     <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> {{content_item.url}}</p>
-                                    <p v-if="resources">
+                                    <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="r in resources">({{r.type}}) {{r.url}}</li>
@@ -85,7 +85,7 @@
                                     </p>
                                 </div>
                             </widget>
-                            <widget v-if="teams || teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
+                            <widget v-if="teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_collection', {}, 'other')}}</span>
                                 <div slot="body">
                                     <p v-if="teams && teams.length > 0"><strong v-html="lang('f_publication_team', {}, 'other')"></strong>
@@ -148,7 +148,27 @@
                                     {{lang('f_click_here_to_download_extra_files')}}
                                 </a>
                                 <div v-if="state.show_extra_files">
-                                    
+                                    <p class="title is-5">{{lang('f_select_extra_files_to_dowload')}}</p>
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <input class="input" type="checkbox">
+                                        </p>
+                                        <p class="control">
+                                            <a class="button is-static">
+                                                @gmail.com
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="field has-addons">
+                                        <p class="control">
+                                            <input class="input" type="checkbox">
+                                        </p>
+                                        <p class="control">
+                                            <a class="button is-static">
+                                                @gmail.com
+                                            </a>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-content has-text-centered" v-else>

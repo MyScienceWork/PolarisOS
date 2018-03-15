@@ -107,26 +107,29 @@ module.exports = {
                 this.activate_lang('title', ci.lang);
                 this.activate_lang('abstract', ci.lang);
 
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.depositor,
-                    path: this.state.paths.reads.depositor,
-                    body: {
-                        where: {
-                            _id: ci.depositor,
+                if (ci.depositor) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.depositor,
+                        path: this.state.paths.reads.depositor,
+                        body: {
+                            where: {
+                                _id: ci.depositor,
+                            },
                         },
-                    },
-                });
+                    });
+                }
 
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.lang,
-                    path: this.state.paths.reads.lang,
-                    body: {
-                        where: {
-                            value: ci.lang,
+                if (ci.lang) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.lang,
+                        path: this.state.paths.reads.lang,
+                        body: {
+                            where: {
+                                value: ci.lang,
+                            },
                         },
-                    },
-                });
+                    });
+                }
             }
         },
     },

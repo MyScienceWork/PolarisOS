@@ -11,14 +11,27 @@
                 </card>
             </div>
             <div class="column is-6">
-                <card color="red" class="card-equal-height">
-                    <template slot="card-title">
-                        {{lang('l_discover')}}
-                    </template>
-                    <search slot="card-content" />
-                    <hr />
-                    <discovery :nav-items="navs" slot="card-content" />
-                </card>
+                <div class="columns is-multiline">
+                    <div class="column is-12">
+                        <card color="red" class="">
+                            <template slot="card-title">
+                                {{lang('l_search')}}
+                            </template>
+                            <search slot="card-content" />
+                        </card>
+                    </div>
+                    <div class="column is-12">
+                        <card color="purple">
+                            <template slot="card-title">
+                                {{lang('l_discover')}}
+                            </template>
+                            <discovery :nav-items="navs" slot="card-content" />
+                        </card>
+                    </div>
+                    <div class="column is-12">
+                        <widget-stats form="test_form" :infos="[]" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>

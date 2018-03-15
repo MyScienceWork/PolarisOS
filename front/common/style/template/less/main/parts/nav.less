@@ -17,11 +17,11 @@
         border-bottom-color: @@name;
     }
 
-    /*.breadcrumb-@{name} {
+    .breadcrumb-@{name} {
         background-color: @@name;
-    }*/
+    }
 
-    /*.breadcrumb-@{name} {
+    .breadcrumb-@{name} {
         a::after {
             box-shadow: 
             2px -2px 0 2px @@name, 
@@ -36,7 +36,7 @@
         a:first-child::after {
             background: @@name; 
         }
-    }*/
+    }
 
     .generate-colored-nav-menu((@i - 1));
 }
@@ -110,4 +110,3 @@ nav.navigation-menu {
 }
 
 .generate-colored-nav-menu();
-

@@ -18,7 +18,7 @@ module.exports = {
         return {
             state: {
                 current_step: 0,
-                colors: ['blue', 'blue', 'blue', 'blue', 'blue', 'blue'],
+                colors: ['red', 'orange', 'purple', 'brown', 'green', 'blue'],
             },
         };
     },

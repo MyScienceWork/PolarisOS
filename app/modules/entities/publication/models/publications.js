@@ -217,6 +217,27 @@ const Resetting: Object = {
 
 const Defaults: Object = {
     version: 1,
+    abstracts: [],
+    keywords: [],
+    subtitles: [],
+    translated_titles: [],
+    classifications: [],
+    resources: [],
+    dates: {},
+    denormalization: {},
+    authors: [],
+    contributors: [],
+    diffusion: {
+        research_teams: [],
+        projects: [],
+        surveys: [],
+        european_projects: [],
+        anr_projects: [],
+    },
+    files: [],
+    ids: [],
+    parents: [],
+    sources: [],
 };
 
 const Filtering: Array<string> = ['parent', 'dkeywords'];

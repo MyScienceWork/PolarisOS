@@ -10,7 +10,7 @@ module.exports = {
             { 'denormalization.contributors._id.fullname': '{{search}}' },
             { 'denormalization.diffusion.internal_collection': '{{search}}' },
             { 'denormalization.diffusion.projects._id.name': '{{search}}' },
-            { 'denormalization.diffusion.research_team': '{{search}}' },
+            { 'denormalization.diffusion.research_teams._id.name': '{{search}}' },
             { 'denormalization.diffusion.surveys._id.name': '{{search}}' },
             { 'denormalization.journal': '{{search}}' },
             { 'denormalization.type': '{{search}}' },

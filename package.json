@@ -24,6 +24,7 @@
     "deploy-doc": "npm run doc && ./node_modules/.bin/gh-pages -d doc"
   },
   "dependencies": {
+    "archiver": "^2.1.1",
     "buefy": "^0.6.1",
     "bulma": "^0.5.3",
     "bulma-steps": "github:Cocophotos/bulma-steps#master",
