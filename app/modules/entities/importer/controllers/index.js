@@ -100,7 +100,7 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             let results = await Promise.all(author_search_promises);
             results = results.map(r => EntitiesUtils.get_hits(r))
             .filter(r => r != null && r.length > 0);
-            ctx.body.contributors = results.map(r => ({ _id: r[0].id }));
+            ctx.body.contributors = results.map(r => ({ label: r[0].id }));
         }
         return;
     }
@@ -141,7 +141,7 @@ async function extract_relevant_information_from_grobid(information) {
     let results = await Promise.all(author_search_promises);
     results = results.map(r => EntitiesUtils.get_hits(r))
     .filter(r => r != null && r.length > 0);
-    item.authors = results.map(r => ({ _id: r[0].id }));
+    item.contributors = results.map(r => ({ label: r[0].id }));
 
     if (profile_description) {
         const abstract = Utils.find_value_with_path(profile_description, 'abstract.0.p.0'.split('.'));
