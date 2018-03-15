@@ -25,6 +25,7 @@ module.exports = {
                         author: 'author_read',
                         depositor: 'depositor_read',
                         lang: 'lang_read',
+                        typology: 'typology_read',
                     },
                 },
                 paths: {
@@ -33,6 +34,7 @@ module.exports = {
                         author: APIRoutes.entity('author', 'GET', true),
                         depositor: APIRoutes.entity('user', 'POST', true),
                         lang: APIRoutes.entity('langref', 'POST', true),
+                        typology: APIRoutes.entity('typology', 'POST', true),
                     },
                 },
                 loggedIn: false,
@@ -50,6 +52,7 @@ module.exports = {
                     lang: '',
                 },
                 more_metadata: false,
+                show_extra_files: false,
             },
         };
     },
@@ -78,7 +81,7 @@ module.exports = {
                     this.state.current_title = title;
                 }
                 if (subtitle) {
-                    this.state.current_subtitle = title;
+                    this.state.current_subtitle = subtitle;
                 }
                 break;
             }
@@ -104,26 +107,29 @@ module.exports = {
                 this.activate_lang('title', ci.lang);
                 this.activate_lang('abstract', ci.lang);
 
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.depositor,
-                    path: this.state.paths.reads.depositor,
-                    body: {
-                        where: {
-                            _id: ci.depositor,
+                if (ci.depositor) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.depositor,
+                        path: this.state.paths.reads.depositor,
+                        body: {
+                            where: {
+                                _id: ci.depositor,
+                            },
                         },
-                    },
-                });
+                    });
+                }
 
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.lang,
-                    path: this.state.paths.reads.lang,
-                    body: {
-                        where: {
-                            value: ci.lang,
+                if (ci.lang) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.lang,
+                        path: this.state.paths.reads.lang,
+                        body: {
+                            where: {
+                                value: ci.lang,
+                            },
                         },
-                    },
-                });
+                    });
+                }
             }
         },
     },
@@ -138,7 +144,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.reads.item);
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
-                item.html = Handlebars.compile(item.denormalization.type.template)(item);
+                item.html = this.hlang(Handlebars.compile(item.denormalization.type.template)(item));
                 return item;
             }
             return content;
@@ -184,7 +190,7 @@ module.exports = {
         },
         titles() {
             const item = this.content_item;
-            if (!item) {
+            if (!item || !item.title) {
                 return [];
             }
 
@@ -229,24 +235,75 @@ module.exports = {
         journal() {
             const item = this.content_item;
             if (!item) {
-                return '';
+                return null;
             }
 
             if (!item.denormalization.journal) {
-                return '';
+                return null;
             }
 
-            const tpl = "{{denormalization.journal}}, {{#if volume}} {{volume}}{{/if}}{{#if issue}}({{issue}}){{/if}}{{#if pagination}}: {{pagination}}{{/if}}. {{moment date=dates.publication format=\"YYYY\"}}.{{#filter_nested ids type='type' value='doi'}} {{_id}}{{/filter_nested}}";
+            if (!this.typology_type || this.typology_type.name !== 'journal') {
+                return null;
+            }
 
+            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if issue}}, n°{{issue}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        book() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+            if (!this.typology_type || this.typology_type.name !== 'book') {
+                return null;
+            }
+
+            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
             return Handlebars.compile(tpl)(item);
+        },
+        chapter() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'chapter') {
+                return null;
+            }
+
+            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+            return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
             const item = this.content_item;
             if (!item) {
-                return '';
+                return null;
             }
 
-            return item.denormalization.conference || '';
+
+            if (!this.typology_type || this.typology_type.name !== 'conference') {
+                return null;
+            }
+
+            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD'}}-{{moment date=dates.end format='DD/MM/YYYY'}}.";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        other_document() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'other') {
+                return null;
+            }
+
+            const tpl = "{{#if localisation.city}}{{localisation.city}}, {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
+            return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {
             const item = this.content_item;
@@ -267,7 +324,7 @@ module.exports = {
                     return '';
                 }
 
-                item.keywords.reduce((arr, k) => {
+                return item.keywords.reduce((arr, k) => {
                     if (k.type === type) {
                         arr.push(k.value);
                     }
@@ -309,10 +366,15 @@ module.exports = {
         teams() {
             const item = this.content_item;
             if (!item) {
-                return '';
+                return [];
             }
 
-            return Utils.find_value_with_path(item, 'denormalization.diffusion.research_team'.split('.')) || '';
+            const arr = Utils.find_value_with_path(item, 'denormalization.diffusion.research_teams'.split('.'));
+
+            if (!arr) {
+                return [];
+            }
+            return arr.map(t => t._id.name);
         },
         projects() {
             const item = this.content_item;
@@ -383,12 +445,75 @@ module.exports = {
                 return '';
             };
         },
+        typology_type() {
+            const content = this.fcontent(this.state.sinks.reads.typology);
+
+            if (!(content instanceof Array)) {
+                return null;
+            }
+
+            const item = this.content_item;
+
+            if (!item) {
+                return null;
+            }
+
+            const tid = item.type;
+            const info = content.filter(c => c._id === tid);
+            if (info.length === 0) {
+                return null;
+            }
+
+            return info[0];
+        },
+        embargo() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+
+            if (!item.files || item.files.length === 0) {
+                return '';
+            }
+
+            const is_embargoed = item.files.some(f => Utils.find_value_with_path(f, 'access.delayed'.split('.')));
+
+            if (!is_embargoed) {
+                return '';
+            }
+
+            const info = Utils.find_value_with_path(item, 'denormalization.diffusion.rights.embargo'.split('.'));
+            if (info) {
+                return Handlebars.compile("{{moment date=date, format='DD/MM/YYYY'}}")({ date: info });
+            }
+            return '';
+        },
+        resources() {
+            const item = this.content_item;
+            if (!item) {
+                return [];
+            }
+
+            return item.resources.filter(r => (r.type != null && r.url != null));
+        },
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {
             form: this.state.sinks.reads.item,
             keepContent: false,
         });
+
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.typology,
+            keepContent: false,
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.typology,
+            path: this.state.paths.reads.typology,
+            body: { where: {} },
+        });
+
 
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.item,

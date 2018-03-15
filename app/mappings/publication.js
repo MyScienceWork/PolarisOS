@@ -28,6 +28,9 @@ module.exports = {
                             surveys: {
                                 _id: 'survey',
                             },
+                            research_teams: {
+                                _id: 'laboratory',
+                            },
                             projects: {
                                 _id: 'project',
                             },
@@ -70,6 +73,7 @@ module.exports = {
                                     _id: {
                                         properties: {
                                             fullname: {
+                                                analyzer: 'folding',
                                                 type: 'text',
                                                 fields: {
                                                     raw: {
@@ -108,6 +112,7 @@ module.exports = {
                                         properties: {
                                             fullname: {
                                                 type: 'text',
+                                                analyzer: 'folding',
                                                 fields: {
                                                     raw: {
                                                         type: 'keyword',
@@ -122,6 +127,7 @@ module.exports = {
                                 properties: {
                                     fullname: {
                                         type: 'text',
+                                        analyzer: 'folding',
                                         fields: {
                                             raw: {
                                                 type: 'keyword',
@@ -135,6 +141,7 @@ module.exports = {
                             },
                             journal: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: {
                                         type: 'keyword',
@@ -143,6 +150,7 @@ module.exports = {
                             },
                             conference: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: {
                                         type: 'keyword',
@@ -151,6 +159,7 @@ module.exports = {
                             },
                             publication_version: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: {
                                         type: 'keyword',
@@ -159,6 +168,7 @@ module.exports = {
                             },
                             editor: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: {
                                         type: 'keyword',
@@ -167,6 +177,7 @@ module.exports = {
                             },
                             subtype: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: {
                                         type: 'keyword',
@@ -180,6 +191,7 @@ module.exports = {
                                 properties: {
                                     label: {
                                         type: 'text',
+                                        analyzer: 'folding',
                                         fields: {
                                             raw: {
                                                 type: 'keyword',
@@ -196,6 +208,7 @@ module.exports = {
                                 properties: {
                                     country: {
                                         type: 'text',
+                                        analyzer: 'folding',
                                         fields: {
                                             raw: {
                                                 type: 'keyword',
@@ -208,17 +221,28 @@ module.exports = {
                                 properties: {
                                     internal_collection: {
                                         type: 'text',
+                                        analyzer: 'folding',
                                         fields: {
                                             raw: {
                                                 type: 'keyword',
                                             },
                                         },
                                     },
-                                    research_team: {
-                                        type: 'text',
-                                        fields: {
-                                            raw: {
-                                                type: 'keyword',
+                                    research_teams: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                             },
                                         },
                                     },
@@ -229,6 +253,7 @@ module.exports = {
                                                 properties: {
                                                     name: {
                                                         type: 'text',
+                                                        analyzer: 'folding',
                                                         fields: {
                                                             raw: {
                                                                 type: 'keyword',
@@ -246,6 +271,7 @@ module.exports = {
                                                 properties: {
                                                     name: {
                                                         type: 'text',
+                                                        analyzer: 'folding',
                                                         fields: {
                                                             raw: {
                                                                 type: 'keyword',
@@ -263,6 +289,7 @@ module.exports = {
                                                 properties: {
                                                     name: {
                                                         type: 'text',
+                                                        analyzer: 'folding',
                                                         fields: {
                                                             raw: {
                                                                 type: 'keyword',
@@ -280,6 +307,7 @@ module.exports = {
                                                 properties: {
                                                     name: {
                                                         type: 'text',
+                                                        analyzer: 'folding',
                                                         fields: {
                                                             raw: {
                                                                 type: 'keyword',
@@ -294,6 +322,7 @@ module.exports = {
                                         properties: {
                                             license: {
                                                 type: 'text',
+                                                analyzer: 'folding',
                                                 fields: {
                                                     raw: {
                                                         type: 'keyword',
@@ -302,6 +331,7 @@ module.exports = {
                                             },
                                             access: {
                                                 type: 'text',
+                                                analyzer: 'folding',
                                                 fields: {
                                                     raw: {
                                                         type: 'keyword',
@@ -319,6 +349,7 @@ module.exports = {
                         properties: {
                             content: {
                                 type: 'text',
+                                analyzer: 'folding',
                             },
                             lang: {
                                 type: 'keyword',
@@ -355,6 +386,7 @@ module.exports = {
                         properties: {
                             label: {
                                 type: 'text',
+                                analyzer: 'folding',
                                 fields: {
                                     raw: { type: 'keyword' },
                                 },
@@ -419,7 +451,14 @@ module.exports = {
                                     },
                                 },
                             },
-                            research_team: { type: 'keyword' },
+                            research_teams: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                             rights: {
                                 properties: {
                                     access: {
@@ -509,6 +548,15 @@ module.exports = {
                     journal: {
                         type: 'keyword',
                     },
+                    newspaper: {
+                        type: 'text',
+                        analyzer: 'folding',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     keywords: {
                         type: 'nested',
                         properties: {
@@ -552,6 +600,7 @@ module.exports = {
                     },
                     publication_title: {
                         type: 'text',
+                        analyzer: 'folding',
                     },
                     publication_version: {
                         type: 'keyword',
@@ -586,6 +635,7 @@ module.exports = {
                         properties: {
                             content: {
                                 type: 'text',
+                                analyzer: 'folding',
                             },
                             lang: {
                                 type: 'keyword',
@@ -596,6 +646,7 @@ module.exports = {
                         properties: {
                             content: {
                                 type: 'text',
+                                analyzer: 'folding',
                             },
                             lang: {
                                 type: 'keyword',
@@ -607,6 +658,7 @@ module.exports = {
                         properties: {
                             content: {
                                 type: 'text',
+                                analyzer: 'folding',
                             },
                             lang: {
                                 type: 'keyword',

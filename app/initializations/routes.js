@@ -19,6 +19,9 @@ async function initialize_routes() {
         await ctx.render('front/views/front');
     });
 
+    router.get('/news', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
     router.get('/about', async (ctx) => {
         await ctx.render('front/views/front');
     });
@@ -83,6 +86,7 @@ async function initialize_routes() {
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',
         `${Config.root}/public/uploads`), UploadUtils.add_single]));
     router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
+    router.post('/downloads', Compose([UploadUtils.multi_download]));
     return router;
 }
 

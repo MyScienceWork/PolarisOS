@@ -45,7 +45,7 @@ module.exports = {
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
                 const items = this.content.map((c) => {
-                    const html = Handlebars.compile(c.denormalization.type.template || '')(c);
+                    const html = this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c));
                     c.html = html;
                     return c;
                 });

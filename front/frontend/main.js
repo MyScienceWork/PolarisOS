@@ -6,31 +6,31 @@ const router = require('./router');
 const store = require('../common/store');
 
 const Loader = require('./components/loader/Loader.vue');
-const Stepper = require('../common/components/ined/stepper/Stepper.vue');
-const Input = require('../common/components/ined/forms/elements/input/Input.vue');
-const Select = require('../common/components/ined/forms/elements/select/Select.vue');
-const VariadicElement = require('../common/components/ined/forms/elements/variadic_element/VariadicElement.vue');
-const Form = require('../common/components/ined/forms/form/Form.vue');
-const DynamicForm = require('../common/components/ined/forms/dynamic_form/DynamicForm.vue');
-const Paginator = require('../common/components/ined/paginator/Paginator.vue');
-const Dropzone = require('../common/components/ined/forms/dropzone/Dropzone.vue');
-const HierarchicalSelect = require('../common/components/ined/forms/elements/hierarchical_select/HierarchicalSelect.vue');
-const Card = require('../common/components/ined/card/Card.vue');
-const Widget = require('../common/components/ined/widget/Widget.vue');
+const Stepper = require('../common/components/main/stepper/Stepper.vue');
+const Input = require('../common/components/main/forms/elements/input/Input.vue');
+const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
+const Form = require('../common/components/main/forms/form/Form.vue');
+const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
+const Paginator = require('../common/components/main/paginator/Paginator.vue');
+const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
+const HierarchicalSelect = require('../common/components/main/forms/elements/hierarchical_select/HierarchicalSelect.vue');
+const Card = require('../common/components/main/card/Card.vue');
+const Widget = require('../common/components/main/widget/Widget.vue');
 
-const Indexer = require('../common/components/ined/indexer/Indexer.vue');
-const HierarchicalStructure = require('../common/components/ined/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
-const AggregateForm = require('../common/components/ined/forms/aggregate_form/AggregateForm.vue');
+const Indexer = require('../common/components/main/indexer/Indexer.vue');
+const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
+const AggregateForm = require('../common/components/main/forms/aggregate_form/AggregateForm.vue');
 
 // Widgets
-const SearchWidget = require('./components/themes/ined/widgets/search_widget/SearchWidget.vue');
-const BrowseWidget = require('./components/themes/ined/widgets/browse_widget/BrowseWidget.vue');
-const NavWidget = require('./components/themes/ined/widgets/nav_widget/NavWidget.vue');
-const TextWidget = require('./components/themes/ined/widgets/text_widget/TextWidget.vue');
-const ListWidget = require('./components/themes/ined/widgets/list_widget/ListWidget.vue');
-const StatsWidget = require('./components/themes/ined/widgets/stats_widget/StatsWidget.vue');
-const AlternativeWidget = require('./components/themes/ined/widgets/alternative_widget/AlternativeWidget.vue');
-const MediaWidget = require('./components/themes/ined/widgets/media_widget/MediaWidget.vue');
+const SearchWidget = require('./components/themes/main/widgets/search_widget/SearchWidget.vue');
+const BrowseWidget = require('./components/themes/main/widgets/browse_widget/BrowseWidget.vue');
+const NavWidget = require('./components/themes/main/widgets/nav_widget/NavWidget.vue');
+const TextWidget = require('./components/themes/main/widgets/text_widget/TextWidget.vue');
+const ListWidget = require('./components/themes/main/widgets/list_widget/ListWidget.vue');
+const StatsWidget = require('./components/themes/main/widgets/stats_widget/StatsWidget.vue');
+const AlternativeWidget = require('./components/themes/main/widgets/alternative_widget/AlternativeWidget.vue');
+const MediaWidget = require('./components/themes/main/widgets/media_widget/MediaWidget.vue');
 
 
 const App = require('./pages/App.vue');

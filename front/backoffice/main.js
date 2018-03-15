@@ -5,19 +5,19 @@ const router = require('./router');
 const store = require('../common/store');
 
 const Loader = require('./components/loader/Loader.vue');
-const Input = require('../common/components/ined/forms/elements/input/Input.vue');
-const Select = require('../common/components/ined/forms/elements/select/Select.vue');
-const VariadicElement = require('../common/components/ined/forms/elements/variadic_element/VariadicElement.vue');
-const Form = require('../common/components/ined/forms/form/Form.vue');
-const DynamicForm = require('../common/components/ined/forms/dynamic_form/DynamicForm.vue');
-const Paginator = require('../common/components/ined/paginator/Paginator.vue');
-const Tabber = require('../common/components/ined/tabber/Tabber.vue');
-const Grid = require('../common/components/ined/forms/elements/grid/Grid.vue');
-const Card = require('../common/components/ined/card/Card.vue');
-const Searching = require('../common/components/ined/forms/searching/Searching.vue');
+const Input = require('../common/components/main/forms/elements/input/Input.vue');
+const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
+const Form = require('../common/components/main/forms/form/Form.vue');
+const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
+const Paginator = require('../common/components/main/paginator/Paginator.vue');
+const Tabber = require('../common/components/main/tabber/Tabber.vue');
+const Grid = require('../common/components/main/forms/elements/grid/Grid.vue');
+const Card = require('../common/components/main/card/Card.vue');
+const Searching = require('../common/components/main/forms/searching/Searching.vue');
 
-const ActionButton = require('./components/themes/ined/components/action_button/ActionButton.vue');
-const Widget = require('../common/components/ined/widget/Widget.vue');
+const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
+const Widget = require('../common/components/main/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
 

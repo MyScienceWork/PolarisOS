@@ -25,6 +25,9 @@ async function filter_empty_or_null_objects(result: Array<any>): Array<any> {
     return Utils.filter_empty_or_null_objects(result);
 }
 
+/*
+ *
+ */
 function set_default_lang_for_array(flang: string, iflang: string): Function {
     return async (result: Array<Object>, object: Object): Array<Object> => {
         if (!object[flang]) {

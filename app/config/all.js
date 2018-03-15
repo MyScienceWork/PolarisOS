@@ -6,7 +6,7 @@ const all = {
         index_prefix: 'pos',
     },
     logger: {
-        logFile: 'midstod.log',
+        logFile: 'polarisos.log',
     },
     api: {
         public: {
@@ -31,23 +31,6 @@ const all = {
         host: 'localhost',
         port: '8070',
     },
-    entities: [{
-        name: 'citation',
-        text: 'Citation',
-    },
-    {
-        name: 'apiuser',
-        text: 'User of API',
-    },
-    {
-        name: 'user',
-        text: 'User',
-    },
-    {
-        name: 'institution',
-        text: 'Institution',
-    },
-    ],
 };
 
 module.exports = all;

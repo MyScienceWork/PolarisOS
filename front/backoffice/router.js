@@ -2,9 +2,9 @@ const _ = require('lodash');
 
 const Vue = require('vue');
 const Router = require('vue-router');
-const Header = require('./components/themes/ined/parts/header/Header.vue');
-const Footer = require('./components/themes/ined/parts/footer/Footer.vue');
-const Navbar = require('./components/themes/ined/parts/navbar/Navbar.vue');
+const Header = require('./components/themes/main/parts/header/Header.vue');
+const Footer = require('./components/themes/main/parts/footer/Footer.vue');
+const Navbar = require('./components/themes/main/parts/navbar/Navbar.vue');
 const Menus = require('./menus');
 
 const Auth = require('../common/utils/auth');

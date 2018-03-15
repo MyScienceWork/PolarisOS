@@ -5,10 +5,10 @@
             <div class="column">
                 <card color="red" class="card-equal-height">
                     <template slot="card-title">
-                        {{lang('l_ined_about_us_title')}}
+                        {{lang('l_about_us_title')}}
                     </template>
                     <div slot="card-content">
-                        <p v-html="lang('l_ined_history')" />
+                        <p v-html="lang('l_history')" />
                     </div>
                 </card>
             </div>

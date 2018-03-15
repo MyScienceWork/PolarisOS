@@ -22,16 +22,6 @@
                             @select-change="grab_typology_form"
                             :view-validation-texts="false"
                             />
-                        <fselect 
-                            :label="lang('b_subtype')"
-                            :options="subtypology_options"
-                            :form="creationSink"
-                            name="subtype"
-                            class="has-text-centered"
-                            fieldLabel="tlabel"
-                            fieldValue="value"
-                            :view-validation-texts="false"
-                            />
                         <finput
                             type='hidden'
                             placeholder=''
@@ -43,13 +33,44 @@
                         />
                     </div>
                 </div> 
+                <div class="columns is-centered"
+                    v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0"
+                >
+                    <div class="column">
+                        <fselect 
+                            :label="lang('b_subtype')"
+                            :options="subtypology_options"
+                            :form="creationSink"
+                            name="subtype"
+                            class="has-text-centered"
+                            fieldLabel="tlabel"
+                            fieldValue="name"
+                            :view-validation-texts="false"
+                            />
+                    </div>
+                </div>
+                <div class="columns is-centered"
+                    v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0"
+                >
+                    <div class="column has-text-centered">
+                        <p class="title is-4">{{lang('f_upload_import_help')}}</p>
+                    </div>
+                </div>
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
                     <div class="column" v-if="Object.keys(upload_form).length > 0">
                         <div class="card card-equal-height">
                             <div class="card-content card-equal-height">
                                 <div class="columns is-centered">
                                     <div class="column has-text-centered">
-                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}</h4>
+                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}
+                                            <b-tooltip class="is-dark is-tooltip-small" :label="lang('l_upload_deposit_file_help')" multilined>
+                                                <a href='#' alt="Tooltip">
+                                                    <span class="icon has-text-info">
+                                                        <i class="fa fa-question-circle"></i>
+                                                    </span>
+                                                </a>
+                                            </b-tooltip>
+                                        </h4>
                                         <p v-html="lang('f_upload_deposit_file_help')"></p>
                                     </div>
                                 </div>
@@ -103,11 +124,11 @@
                     v-else-if="Object.keys(upload_form).length === 0 && Object.keys(import_form).length === 0 && state.typology.form !== ''">
                     <loader />
                 </div>
-                <div v-if="!validated" class="columns is-centered">
+                <!--<div v-if="!validated" class="columns is-centered">
                     <div class="column has-text-centered is-8 redify">
                         <p v-html="lang('f_step_not_validated')"></p>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

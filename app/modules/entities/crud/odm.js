@@ -221,8 +221,6 @@ class ODM {
         };
 
 
-        // console.log('search query', JSON.stringify(query));
-
         if (sort != null) {
             body.sort = sort;
             if ('search_after' in opts) {
