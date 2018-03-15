@@ -29,6 +29,9 @@
                         <a class="navbar-item swap" @click="export_format('ris', $event)">
                             {{lang('f_export_ris')}}
                         </a>
+                        <a class="navbar-item swap" @click="export_format('jsonld', $event)">
+                            {{lang('f_export_jsonld')}}
+                        </a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable">

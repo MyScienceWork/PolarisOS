@@ -3,6 +3,7 @@ const API = require('../api');
 const Messages = require('../api/messages');
 const Auth = require('../utils/auth');
 const Utils = require('../utils/utils');
+const FileSaver = require('file-saver');
 
 function run_fetch_mutation(action, response, form, ctx) {
     const succeeded = response.type === Messages.SUCCESS;
@@ -24,7 +25,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
         path,
         method,
         body,
-        signature: Auth.get_api_headers(method, path),
+        signature: auth.get_api_headers(method, path),
     };
 
     ctx.commit(Messages.LOADING, { form });
@@ -164,5 +165,17 @@ module.exports = {
         const ok = await Auth.authenticate(email, password);
         const status = ok ? 'success' : 'fail';
         ctx.commit(Messages.LOGIN_PASS, { status });
+    },
+
+    download: async (ctx, { body, path }) => {
+        const method = 'POST';
+        const payload = {
+            method,
+            path,
+            body,
+            signature: Auth.get_api_headers(method, path),
+        };
+        const response = await API.download(payload);
+        FileSaver.saveAs(response.blob, response.filename);
     },
 };
