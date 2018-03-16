@@ -25,7 +25,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
         path,
         method,
         body,
-        signature: auth.get_api_headers(method, path),
+        signature: Auth.get_api_headers(method, path),
     };
 
     ctx.commit(Messages.LOADING, { form });
