@@ -683,6 +683,12 @@ module.exports = {
                     depositor: {
                         type: 'keyword',
                     },
+                    duration: {
+                        type: 'integer',
+                    },
+                    size: {
+                        type: 'float',
+                    },
                 },
             },
         },
