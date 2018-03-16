@@ -13,6 +13,10 @@ async function apply_transducer(transducer: Object, object: Object,
 async function transform(object: Object, transformers: Array<Object>,
     info: Object = {}): Promise<Object> {
     let final_object = {};
+    if (transformers.length === 0) {
+        return object;
+    }
+
     if (transformers.length > 0) {
         final_object = await apply_transducer(transformers[0], object, info, {});
     }
