@@ -52,11 +52,16 @@ module.exports = {
         },
         run_export(sink) {
             const content = this.fcontent(sink);
-            this.$store.dispatch('create', {
+            this.$store.dispatch('download', {
                 path: APIRoutes.export(),
                 body: {
-                    ids: Object.keys(content),
-                    type: content.type || '',
+                    ids: this.$lodash.reduce(content, (arr, val, key) => {
+                        if (val) {
+                            arr.push(key);
+                        }
+                        return arr;
+                    }, []),
+                    type: this.state.export_type || null,
                 },
             });
         },

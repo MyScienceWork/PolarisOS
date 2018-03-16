@@ -5,6 +5,9 @@
             <div class="column is-8">
                 <div class="card card-equal-height card-with-tag">
                     <div class="card-header">
+                        <a href='#' class="card-header-icon card-header-tag is-left">
+                            <span class="tag is-purple is-active">{{lang(content_item.denormalization.type.label)}}</span>
+                        </a>
                         <div class="card-header-title">
                         </div>
                         <a href='#' class="card-header-icon card-header-tag" v-for="tt in titles" @click.prevent="activate_lang('title', tt.lang)">
@@ -26,7 +29,7 @@
                             <li>Département de Linguistique - Université de Genève</li>
                             <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
                         </ol>-->
-                        <p>{{lang(content_item.denormalization.type.label)}}</p>
+                        <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>
                         <p v-if="chapter" v-html="chapter"></p>

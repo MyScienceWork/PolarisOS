@@ -1,13 +1,5 @@
 <template>
     <div class="card-content">
-        <finput
-        name="type"
-        type="hidden"
-        placeholder=""
-        :form="state.sinks.reads.export"
-        label=""
-        :hidden-value="state.export_type"
-        />
         <nav class="navbar is-transparent">
         <div class="navbar-menu">
             <div class="navbar-end">
@@ -17,18 +9,18 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap" @click="export_format('bibtex', $event)">
+                        <!--<a disabled class="navbar-item swap"> 
                             {{lang('f_export_bibtex')}}
-                        </a>
+                        </a>-->
                         <a class="navbar-item swap" @click="export_format('csv', $event)">
                             {{lang('f_export_csv')}}
                         </a>
-                        <a class="navbar-item swap" @click="export_format('endnote', $event)">
+                        <!--<a disabled class="navbar-item swap">
                             {{lang('f_export_endnote')}}
                         </a>
-                        <a class="navbar-item swap" @click="export_format('ris', $event)">
+                        <a disabled class="navbar-item swap">
                             {{lang('f_export_ris')}}
-                        </a>
+                        </a>-->
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable">
