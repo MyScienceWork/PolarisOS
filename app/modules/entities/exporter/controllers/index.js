@@ -2,9 +2,38 @@
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
 const Readable = require('stream').Readable;
+const CSVPipeline = require('../pipeline/csv_pipeline');
+const Transformer = require('../../../pipeline/transformer/transformer');
+const CSVStringify = require('csv-stringify');
 
 async function transform_to_csv(publications: Array<Object>): Promise<string> {
-    return '';
+    const results = [];
+    for (const i in publications) {
+        const publication = publications[i];
+        const result = await Transformer(publication.source, CSVPipeline.transformers);
+        const keys = Object.keys(result);
+        keys.sort((a, b) => a.localeCompare(b));
+
+        if (parseInt(i, 10) === 0) {
+            results.push(keys);
+        }
+
+        const row = keys.reduce((arr, k) => {
+            arr.push(result[k]);
+            return arr;
+        }, []);
+        results.push(row);
+    }
+
+    const csv_string = await new Promise((resolve, reject) => {
+        CSVStringify(results, (err, out) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(out);
+        });
+    });
+    return csv_string;
 }
 
 async function transform_to_json(publications: Array<Object>, ld): Promise<string> {
@@ -31,7 +60,6 @@ async function export_information(ctx: Object): Promise<any> {
     });
 
     const publications = EntitiesUtils.get_hits(infos);
-    console.log(publications);
 
     let results = '';
     let ext = '.bib';

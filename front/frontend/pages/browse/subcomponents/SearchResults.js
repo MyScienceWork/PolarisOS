@@ -55,7 +55,12 @@ module.exports = {
             this.$store.dispatch('download', {
                 path: APIRoutes.export(),
                 body: {
-                    ids: Object.keys(content),
+                    ids: this.$lodash.reduce(content, (arr, val, key) => {
+                        if (val) {
+                            arr.push(key);
+                        }
+                        return arr;
+                    }, []),
                     type: this.state.export_type || null,
                 },
             });
