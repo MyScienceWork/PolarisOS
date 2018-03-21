@@ -27,6 +27,39 @@
                                     </action-button>
                                 </span>
                                 <div slot="body">
+                                    <div class="columns is-centered">
+                                        <div class="column">
+                                            <h4 class="title is-4">{{lang('l_minimal_information_publication')}}</h4>
+                                        </div>
+                                    </div>
+                                    <div class="columns is-centered">
+                                        <div class="column">
+                                            <div class="field">
+                                                <label class="label">{{lang('b_title')}}</label>
+                                                <p class="control">
+                                                    {{info.title.content}} 
+                                                </p>
+                                            </div>
+                                            <div class="field" v-for="subtitle in info.subtitles">
+                                                <label class="label">{{lang('b_subtitle')}} ({{subtitle.lang}})</label>
+                                                <p class="control">
+                                                    {{subtitle.content}} 
+                                                </p>
+                                            </div>
+                                            <div class="field" v-for="ttitle in info.translated_titles">
+                                                <label class="label">{{lang('b_translated_titles')}} ({{ttitle.lang}})</label>
+                                                <p class="control">
+                                                    {{ttitle.content}} 
+                                                </p>
+                                            </div>
+                                            <div class="field">
+                                                <label class="label">{{lang('b_title')}}</label>
+                                                <p class="control">
+                                                    {{info.title.content}} 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 </widget>
                             </div>

@@ -18,7 +18,7 @@
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li> 
                 </ul>
-                <p v-else-if="readonly">{{readonlyValue}}</p>
+                <p v-else-if="readonly">({{readonlyValue}})</p>
                 <v-select
                     v-else-if="!ajax"
                     :multiple="multi"
