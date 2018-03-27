@@ -60,6 +60,15 @@ module.exports = {
         };
     },
     methods: {
+        run_export(format) {
+            this.$store.dispatch('download', {
+                path: APIRoutes.export(),
+                body: {
+                    ids: [this.content_item._id],
+                    type: format || null,
+                },
+            });
+        },
         select_all_extra_files(s) {
             this.$lodash.forEach(this.state.selected_files, (f) => {
                 f.s = s;
