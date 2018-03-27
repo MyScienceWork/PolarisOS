@@ -9,14 +9,24 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item swap" @click="export_format('bibtex', $event)"> 
+                        <a class="navbar-item swap" @click.prevent="export_format('bibtex')"> 
                             {{lang('f_export_bibtex')}}
                         </a>
-                        <a class="navbar-item swap" @click="export_format('csv', $event)">
+                        <a class="navbar-item swap" @click.prevent="export_format('csv')">
                             {{lang('f_export_csv')}}
                         </a>
-                        <a class="navbar-item swap" @click="export_format('ris', $event)">
+                        <a class="navbar-item swap" @click.prevent="export_format('ris')">
                             {{lang('f_export_ris')}}
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="navbar-item swap" @click.prevent="export_format('csl', 'apa')">
+                            {{lang('f_export_csl')}} (APA)
+                        </a>
+                        <a class="navbar-item swap" @click.prevent="export_format('csl', 'vancouver')">
+                            {{lang('f_export_csl')}} (Vancouver)
+                        </a>
+                        <a class="navbar-item swap" @click.prevent="export_format('csl', 'havard1')">
+                            {{lang('f_export_csl')}} (Harvard (1))
                         </a>
                     </div>
                 </div>

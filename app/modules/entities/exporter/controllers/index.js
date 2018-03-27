@@ -1,15 +1,16 @@
 // @flow
+const Readable = require('stream').Readable;
+const Cite = require('citation-js');
+const moment = require('moment');
+const _ = require('lodash');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
-const Readable = require('stream').Readable;
 const CSVPipeline = require('../pipeline/csv_pipeline');
 const EndNotePipeline = require('../pipeline/endnote_pipeline');
 const Transformer = require('../../../pipeline/transformer/transformer');
 const CSVStringify = require('csv-stringify');
-const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const BibTeXUtils = require('../../../utils/bibtex');
-const _ = require('lodash');
 
 async function transform_to_bibtex_type(publication: Object, extra: Object,
     fields: Array<string> = [], type: string = 'other'): Promise<Object> {
@@ -56,10 +57,26 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         return `"${names.join(' and ')}"`;
     };
 
-    const grab_and_escape = async (pub, path) => {
+    const grab_and_escape = async (pub, path, bracketing = true) => {
         const r = Utils.find_value_with_path(pub, path.split('.'));
         if (r) {
-            return `"{${BibTeXUtils.escape_to_bibtex(r)}}"`;
+            if (bracketing) {
+                return `"{${BibTeXUtils.escape_to_bibtex(r)}}"`;
+            }
+            return `${BibTeXUtils.escape_to_bibtex(r)}`;
+        }
+        return null;
+    };
+
+    const grab_id = async (pub, path, t) => {
+        const ids = Utils.find_value_with_path(pub, path.split('.'));
+        if (!ids) {
+            return null;
+        }
+
+        const matched_ids = ids.filter(id => id.type === t);
+        if (matched_ids.length > 0) {
+            return `"${matched_ids[0]._id}"`;
         }
         return null;
     };
@@ -68,17 +85,20 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         title: () => grab_and_escape(publication, 'title.content'),
         volume: () => grab_and_escape(publication, 'volume'),
         number: () => grab_and_escape(publication, 'number'),
-        pages: () => grab_and_escape(publication, 'pagination'),
+        pages: () => grab_and_escape(publication, 'pagination', false),
         note: () => grab_and_escape(publication, 'description'),
         language: () => grab_and_escape(publication, 'lang'),
         abstract: () => grab_abstract(publication),
         author: () => grab_author(publication),
+        isbn: () => grab_id(publication, 'ids', 'isbn'),
+        doi: () => grab_id(publication, 'ids', 'doi'),
         publisher: () => grab_and_escape(publication, 'denormalization.editor'),
         editor: () => grab_and_escape(publication, 'denormalization.editor'),
         journal: () => grab_and_escape(publication, 'denormalization.journal'),
         year: () => grab_date(publication, 'year'),
         month: () => grab_date(publication, 'month'),
         booktitle: () => grab_and_escape(publication, 'denormalization.conference'),
+        url: () => grab_and_escape(publication, 'url', false),
         institution: () => grab_and_escape(publication, 'denormalization.delivery_institution'),
         address: () => grab_address(publication),
     };
@@ -111,15 +131,15 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
     };
 
     const fields_mapping = {
-        journal: ['author', 'title', 'journal', 'year', 'volume', 'number', 'pages', 'month', 'note', 'abstract', 'language'],
-        book: ['author', 'publisher', 'title', 'year', 'volume', 'address', 'month', 'note', 'abstract', 'language'],
-        conference: ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language'],
-        'book-chapter': ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language'],
-        'book-proceedings': ['author', 'booktitle', 'title', 'year', 'publisher', 'publisher', 'address', 'month', 'note', 'abstract', 'language'],
-        other: ['author', 'title', 'month', 'year', 'abstract', 'language', 'note'],
-        report: ['author', 'title', 'institution', 'year', 'number', 'address', 'month', 'note', 'abstract', 'language'],
-        'working-paper': ['author', 'title', 'note', 'month', 'year', 'abstract', 'language'],
-        thesis: ['author', 'title', 'shool', 'year', 'month', 'address', 'note', 'abstract', 'language'],
+        journal: ['author', 'title', 'journal', 'year', 'volume', 'number', 'pages', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        book: ['author', 'publisher', 'title', 'year', 'volume', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        conference: ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        'book-chapter': ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        'book-proceedings': ['author', 'booktitle', 'title', 'year', 'publisher', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        other: ['author', 'title', 'month', 'year', 'abstract', 'language', 'note', 'isbn', 'doi', 'url'],
+        report: ['author', 'title', 'institution', 'year', 'number', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        'working-paper': ['author', 'title', 'note', 'month', 'year', 'abstract', 'language', 'isbn', 'url', 'doi'],
+        thesis: ['author', 'title', 'shool', 'year', 'month', 'address', 'note', 'abstract', 'language', 'isbn', 'url', 'doi'],
     };
 
     for (const i in publications) {
@@ -346,10 +366,22 @@ async function export_information(ctx: Object): Promise<any> {
     const body = ctx.request.body;
 
     const type = body.type;
+    const subtype = body.subtype;
     const ids = body.ids;
 
     if (type == null) {
         ctx.body = {};
+        return;
+    }
+
+    if (type === 'csl' && subtype == null) {
+        ctx.body = {};
+        return;
+    }
+
+    if (ids == null || ids.length === 0) {
+        ctx.body = {};
+        return;
     }
 
     const infos = await EntitiesUtils.search('publication', {
@@ -389,6 +421,19 @@ async function export_information(ctx: Object): Promise<any> {
         results = await transform_to_json(publications, false);
         ext = '.json';
         break;
+    case 'csl': {
+        const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
+        const data = new Cite(bibtex_output);
+        results = data.get({
+            format: 'string',
+            type: 'html',
+            style: `citation-${subtype}`,
+            lang: 'en-US',
+        });
+        results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
+        ext = '.html';
+        break;
+    }
     }
 
 

@@ -21,6 +21,7 @@ module.exports = {
             state: {
                 loggedIn: false,
                 export_type: '',
+                export_subtype: null,
                 sinks: {
                     reads: {
                         export: 'exporter_read',
@@ -30,13 +31,9 @@ module.exports = {
         };
     },
     methods: {
-        export_format(format, e) {
-            e.preventDefault();
+        export_format(format, subtype) {
             this.state.export_type = format;
-            this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.reads.export,
-                keep_content: false,
-            });
+            this.state.export_subtype = subtype;
 
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.sinks.reads.export,
@@ -46,6 +43,10 @@ module.exports = {
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.sinks.reads.export,
+                    keep_content: false,
+                });
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
                 this.run_search(sink);
             }
@@ -62,6 +63,7 @@ module.exports = {
                         return arr;
                     }, []),
                     type: this.state.export_type || null,
+                    subtype: this.state.export_subtype || null,
                 },
             });
         },
