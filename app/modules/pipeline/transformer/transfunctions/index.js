@@ -46,6 +46,36 @@ async function flatten(path: string, info: Object): Promise<Object> {
     }
     return { [path]: '' };
 }
+
+function get_in_list(where: string, is: string, default_strategy: string = 'first'): Function {
+    return async function func(path: string, info: Object): Promise<Object> {
+        const segs = path.split('.');
+        const wsegs = where.split('.');
+        const results = Utils.find_value_with_path(info, segs);
+
+        if (results == null || results.length === 0) {
+            return Utils.make_nested_object_from_path(segs, '');
+        }
+
+        let choice = null;
+        for (const i in results) {
+            const result = results[i];
+            const match = Utils.find_value_with_path(result, wsegs);
+            if (match && match === is) {
+                choice = result;
+                break;
+            }
+        }
+
+        if (!choice) {
+            if (default_strategy === 'first') {
+                return Utils.make_nested_object_from_path(segs, results[0]);
+            }
+            return Utils.make_nested_object_from_path(segs, '');
+        }
+        return Utils.make_nested_object_from_path(segs, choice);
+    };
+}
 /* function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
         const t = Handlebars.compile(template)({ object, info });
@@ -57,4 +87,5 @@ module.exports = {
     identity,
     template_identity,
     flatten,
+    get_in_list,
 };

@@ -15,12 +15,9 @@
                         <a class="navbar-item swap" @click="export_format('csv', $event)">
                             {{lang('f_export_csv')}}
                         </a>
-                        <!--<a disabled class="navbar-item swap">
-                            {{lang('f_export_endnote')}}
-                        </a>
-                        <a disabled class="navbar-item swap">
+                        <a class="navbar-item swap" @click="export_format('ris', $event)">
                             {{lang('f_export_ris')}}
-                        </a>-->
+                        </a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable">
