@@ -9,9 +9,9 @@
                     </a>
 
                     <div class="navbar-dropdown">
-                        <!--<a disabled class="navbar-item swap"> 
+                        <a class="navbar-item swap" @click="export_format('bibtex', $event)"> 
                             {{lang('f_export_bibtex')}}
-                        </a>-->
+                        </a>
                         <a class="navbar-item swap" @click="export_format('csv', $event)">
                             {{lang('f_export_csv')}}
                         </a>

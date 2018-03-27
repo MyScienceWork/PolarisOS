@@ -213,6 +213,20 @@
                 </div>
                 <div class="columns is-centered">
                     <div class="column">
+                        <div class="card info-card info-card-purple">
+                            <header class="card-header">
+                                <p class="card-header-title">{{lang('f_publication_export')}}</p>
+                            </header>
+                            <div class="card-content">
+                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
+                                <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
+                                <a @click.prevent="run_export('ris')">RIS (EndNote)</a></p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
