@@ -6,7 +6,7 @@ async function get_config(env) {
     const configs = await EntitiesUtils.search('config', {
         size: 1,
         where: {
-            environment: ENV,
+            environment: env,
         },
     });
 
@@ -22,33 +22,39 @@ function retrieve_single_quantity(values) {
     if (values.length === 0) {
         return '';
     } else if (values.length === 1) {
-        return values[0];
+        return values[0].value;
     }
     const results = values.filter(v => (v.quantity === '1' ||
             v.quantity === 'n/a'));
-    return results.length === 0 ? '' : results[0];
+    return results.length === 0 ? '' : results[0].value;
 }
 
 async function get_language_values(key, config) {
     const values = await EntitiesUtils.search('lang', {
         size: 1000,
         where: {
-            lang: config.langs.map(l => l.value),
-            key,
+            $and: [
+                { lang: config.langs.map(l => l.value) },
+                { key },
+            ],
         },
     });
 
-    if ('result' in values && 'hits' in values.result.hits) {
-        return values.result.hits.map((h) => {
-            const src = h.source;
-            const value = retrieve_single_quantity(src.values);
-            return { lang: src.lang, value };
-        });
-    }
-    return [];
+    const hits = EntitiesUtils.get_hits(values);
+    return hits.map((h) => {
+        const src = h.source;
+        const value = retrieve_single_quantity(src.values);
+        return { lang: src.lang, value };
+    });
 }
+
+function get_language_values_from_langs(key, langs) {
+    return get_language_values(key, { langs });
+}
+
 
 module.exports = {
     get_config,
     get_language_values,
+    get_language_values_from_langs,
 };

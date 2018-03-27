@@ -14,6 +14,7 @@ module.exports = {
                             label: 'author',
                         },
                         conference: 'conference',
+                        delivery_institution: 'institution',
                         depositor: 'user',
                         editor: 'editor',
                         classification: {
@@ -120,6 +121,15 @@ module.exports = {
                                                 },
                                             },
                                         },
+                                    },
+                                },
+                            },
+                            delivery_institution: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
                                     },
                                 },
                             },
@@ -682,6 +692,12 @@ module.exports = {
                     },
                     depositor: {
                         type: 'keyword',
+                    },
+                    duration: {
+                        type: 'integer',
+                    },
+                    size: {
+                        type: 'float',
                     },
                 },
             },

@@ -31,7 +31,17 @@ The modules directory is sudivised into:
 
 ## Frontend
 
+The frontend of the solution is subdivised into:
+
+- `common`: the common utils, components shared by the front-office & the back-office.
+- `backoffice`: the pages / components of the back-office.
+- `frontoffice`: the pages / components of the front-office.
+
 ### Common
+
+Common has multiple directories:
+
+- 
 
 ### Front-office
 
