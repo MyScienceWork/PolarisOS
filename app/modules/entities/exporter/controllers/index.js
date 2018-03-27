@@ -129,7 +129,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
 
         if (publication.subtype && publication.subtype in typology_mapping) {
             type = publication.subtype;
-            lines.push(`@${type}{${publication._id}`);
+            lines.push(`@${typology_mapping[type]}{${publication._id}`);
         } else {
             const typologys = await EntitiesUtils.search_and_get_sources('typology', {
                 size: 1,
@@ -141,7 +141,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
             const name = typology.name;
             if (name in typology_mapping) {
                 type = name;
-                lines.push(`@${type}{${publication._id}`);
+                lines.push(`@${typology_mapping[type]}{${publication._id}`);
             } else {
                 lines.push(`@misc{${publication._id}`);
             }
