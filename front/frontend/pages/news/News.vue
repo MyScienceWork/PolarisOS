@@ -11,13 +11,19 @@
                     </div>
                     <div class="card-content">
                         <div class="content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                            <a href="#">#css</a> <a href="#">#responsive</a>
-                            <br>
-                            <time class="is-pulled-right" datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                            <div class="columns">
+                                <div class="column">
+                                    <time class="is-pulled-right" datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.</p>
+                                    <p class=""><a href='#'>Voir plus</a></p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="media">
+                        <div class="media has-small-top-margin">
                             <div class="media-content">
                                 <div class="media-content is-pulled-right">
                                     <p class="title is-4">John Smith</p>

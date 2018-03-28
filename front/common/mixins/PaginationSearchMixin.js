@@ -183,7 +183,7 @@ module.exports = {
                     }
                 }
 
-                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0) {
+                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0 && !this.useDefaultQuery) {
                     return;
                 }
 

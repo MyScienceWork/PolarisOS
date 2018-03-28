@@ -41,5 +41,5 @@ module.exports = {
     exporter: exporter.msw,
     connector: connector.msw,
 
-    publication: publication.msw,
+    // publication: publication.msw,
 };

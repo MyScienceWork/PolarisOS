@@ -70,20 +70,30 @@ module.exports = {
         },
     },
     computed: {
+        hasAddress() {
+            return this.author && this.author.address && this.author.address.address;
+        },
+        hasExternal() {
+            return this.author && this.author.external && Object.keys(this.author.external).filter(k => this.author.external[k]).length > 0;
+        },
         user() {
             if (this.state.author_mode) {
                 const content = this.fcontent(this.state.sinks.reads.user);
                 if (content instanceof Array && content.length > 0) {
                     return { author: content[0],
-                        firstname: content[0].firstname,
-                        lastname: content[0].lastname,
-                        fullname: content[0].fullname };
+                        firstName: content[0].firstName,
+                        lastName: content[0].lastName,
+                        fullName: content[0].fullName };
                 }
                 return {};
             }
             const content = this.fcontent(this.state.sinks.reads.user);
             if (content instanceof Array && content.length > 0) {
-                return content[0];
+                const c = content[0];
+                c.firstName = c.firstname;
+                c.lastName = c.lastname;
+                c.fullName = c.fullname;
+                return c;
             }
             return {};
         },
@@ -92,21 +102,6 @@ module.exports = {
                 return this.user.author;
             }
             return null;
-        },
-        affiliations() {
-            const author = this.user.author;
-
-            if (author && author.denormalization && author.denormalization.affiliations) {
-                let aff = author.denormalization.affiliations;
-                if (!(aff instanceof Array)) {
-                    aff = [aff];
-                }
-
-                aff.sort((a, b) => (b.from - a.from));
-                return aff;
-            }
-
-            return [];
         },
         publications() {
             const content = this.fcontent(this.state.sinks.reads.publication);
@@ -124,48 +119,17 @@ module.exports = {
         search_param_in_query() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
         },
-        default_search_query() {
-            return JSON.stringify({
-                depositor: this.user._id,
-            });
-        },
-        search_query() {
-            return JSON.stringify({
-                $and: [
-                    {
-                        $or: [
-                            { 'title.content': '{{search}}' },
-                            { 'abstracts.content': '{{search}}' },
-                            { 'denormalization.authors.fullname': '{{search}}' },
-                            { 'denormalization.classifications.label': '{{search}}' },
-                            { 'denormalization.contributors.fullname': '{{search}}' },
-                            { 'denormalization.diffusion.internal_collection': '{{search}}' },
-                            { 'denormalization.diffusion.projects.name': '{{search}}' },
-                            { 'denormalization.diffusion.research_team': '{{search}}' },
-                            { 'denormalization.diffusion.surveys.name': '{{search}}' },
-                            { 'denormalization.journal': '{{search}}' },
-                            { 'denormalization.type': '{{search}}' },
-                            { 'denormalization.subtype': '{{search}}' },
-                        ],
-                        depositor: this.user._id,
-                    },
-                ],
-            });
-        },
         default_search_publications_query() {
-            return JSON.stringify({
-                'authors._id': this.user.author ? this.user.author._id : null,
-            });
+            if (this.author && this.author.id) {
+                return JSON.stringify(Queries.author_search(`${this.author.id}`));
+            }
+            return JSON.stringify({});
         },
         search_publications_query() {
-            return JSON.stringify({
-                $and: [
-                    {
-                        $or: Queries.publication_search.$or,
-                        'authors._id': this.user.author ? this.user.author._id : null,
-                    },
-                ],
-            });
+            if (this.author && this.author.id) {
+                return JSON.stringify(Queries.publication_search_with_author(`${this.author.id}`));
+            }
+            return JSON.stringify({});
         },
     },
     beforeMount() {
@@ -178,7 +142,7 @@ module.exports = {
                 path: this.state.paths.reads.author,
                 body: {
                     where: {
-                        _id: this.$route.params.id,
+                        id: this.$route.params.id,
                     },
                     size: 1,
                 },

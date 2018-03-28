@@ -79,7 +79,7 @@
                                 :options="authors" 
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"
-                                fieldLabel="fullname"
+                                fieldLabel="fullName"
                             />
                         </fform>
                     </div>

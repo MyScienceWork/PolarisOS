@@ -53,8 +53,8 @@ const TemplateModel = require('../entities/template/models/templates');
 const Menu = require('../entities/menu/menu');
 const MenuModel = require('../entities/menu/models/menus');
 
-const Publication = require('../entities/publication/publication');
-const PublicationModel = require('../entities/publication/models/publications');
+/* const Publication = require('../entities/publication/publication');
+const PublicationModel = require('../entities/publication/models/publications');*/
 
 type ObjectList = {
     whitelist?: Set<string>,
@@ -229,8 +229,8 @@ async function get_model_from_type(type: string): ?Object {
         return PageModel;
     case 'menu':
         return MenuModel;
-    case 'publication':
-        return PublicationModel;
+    /* case 'publication':
+      return PublicationModel;*/
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -269,8 +269,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'page':
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'publication':
-        return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
+    /* case 'publication':
+        return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);*/
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
