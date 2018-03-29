@@ -29,14 +29,14 @@ module.exports = {
 
     },
     mounted() {
-        this.$store.dispatch('search', {
+        /* this.$store.dispatch('search', {
             form: this.state.forms.psink,
             path: this.state.pread_path,
             body: {
                 size: 6,
                 population: ['authors._id', 'journal'],
             },
-        });
+        });*/
     },
     computed: {
         content() {

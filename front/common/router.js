@@ -17,6 +17,9 @@ const Project = require('../frontend/pages/project/Project.vue');
 const About = require('../frontend/pages/about/About.vue');
 const Help = require('../frontend/pages/help/Help.vue');
 const News = require('../frontend/pages/news/News.vue');
+const NewsPage = require('../frontend/pages/news/NewsPage.vue');
+const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
+const ForumThread = require('../frontend/pages/forum/Forum.vue');
 
 const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
@@ -71,7 +74,7 @@ function get_default_component(page) {
     switch (page.route) {
     default:
     case '/':
-        return Home;
+        return News;
     case '/browse':
         return Browse;
     case '/search':
@@ -91,6 +94,12 @@ function get_default_component(page) {
         return Help;
     case '/news':
         return News;
+    case '/news/:id':
+        return NewsPage;
+    case '/forum':
+        return ForumDiscussion;
+    case '/forum/thread/:id':
+        return ForumThread;
     }
 }
 

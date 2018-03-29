@@ -37,24 +37,6 @@
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </a>
                         </template>
-                        <router-link 
-                            class="level-item"
-                            v-if="loggedIn"
-                            :alt="lang('f_use_as_model')" 
-                            :title="lang('f_use_as_model')" 
-                            :to="`/deposit?type=model&_id=${info._id}`"
-                        >
-                            <span class="icon is-small"><i class="fa fa-book"></i></span>
-                        </router-link>
-                        <router-link 
-                            v-if="loggedIn && can_modify(info)"
-                            class="level-item" 
-                            :alt="lang('f_modify_publication')" 
-                            :title="lang('f_modify_publication')"
-                            :to="`/deposit?type=modify&_id=${info._id}`"
-                        >
-                            <span class="icon is-small"><i class="fa fa-pencil"></i></span>
-                        </router-link>
                         <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
                             <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
                         </a>

@@ -1,10 +1,12 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
+const FormMixin = require('../../../common/mixins/FormMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const moment = require('moment');
 
 module.exports = {
-    mixins: [LangMixin, ReaderMixin],
+    mixins: [LangMixin, ReaderMixin, UserMixin],
     data() {
         return {
             state: {
@@ -42,17 +44,23 @@ module.exports = {
                 body: {
                     size: 10,
                     population: ['author'],
+                    where: {
+                        _id: this.$route.params.id,
+                    },
                 },
             },
         }));
     },
+    watch: {
+
+    },
     computed: {
-        news() {
+        message() {
             const content = this.mcontent(this.state.sinks.reads.news);
-            if (content instanceof Array) {
-                return content;
+            if (content instanceof Array && content.length > 0) {
+                return content[0];
             }
-            return [];
+            return {};
         },
     },
 };

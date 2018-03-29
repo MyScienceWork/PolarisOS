@@ -16,6 +16,7 @@ async function authenticate(ctx: Object) {
         where: {
             'emails.email': email,
         },
+        population: ['author'],
     });
 
     if (info == null || info.result == null ||

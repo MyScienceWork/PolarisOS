@@ -22,6 +22,15 @@ async function initialize_routes() {
     router.get('/news', async (ctx) => {
         await ctx.render('front/views/front');
     });
+    router.get('/news/:id', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/forum', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+    router.get('/forum/thread/:id', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
     router.get('/about', async (ctx) => {
         await ctx.render('front/views/front');
     });

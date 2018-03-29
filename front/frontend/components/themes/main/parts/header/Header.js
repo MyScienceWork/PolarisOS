@@ -2,11 +2,13 @@ const Navbar = require('../navbar/Navbar.vue');
 const LangMixin = require('../../../../../../common/mixins/LangMixin');
 const Auth = require('../../../../../../common/utils/auth');
 const Browser = require('../../../../../../common/utils/browser');
+const SearchBar = require('../../../../../../common/components/main/search_bar/SearchBar.vue');
 
 module.exports = {
     mixins: [LangMixin],
     components: {
         navbar: Navbar,
+        searchbar: SearchBar,
     },
     methods: {
         logout() {
