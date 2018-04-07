@@ -2,6 +2,10 @@
 .generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
+    .card-border-color-@{name} {
+        border: 2px solid @@name;
+    }
+
     .card-@{name} {
         background-color: @@name;
         
@@ -201,6 +205,10 @@
     &:not(last-child) > .tag {
         border-right: 1px solid @white;
     }
+}
+
+.card-border-color-deep-blue {
+    border: 2px solid @deep-blue;
 }
 
 .generate-colored-cards();

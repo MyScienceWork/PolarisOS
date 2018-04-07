@@ -190,7 +190,6 @@ class Pipeline extends ODM {
             }],
             Name: type,
         };
-        // console.log(defaults);
         return pipe;
     }
 }

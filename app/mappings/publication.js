@@ -699,9 +699,6 @@ module.exports = {
                     duration: {
                         type: 'integer',
                     },
-                    size: {
-                        type: 'float',
-                    },
                 },
             },
         },

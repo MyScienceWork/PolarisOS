@@ -52,7 +52,14 @@ module.exports = {
             } else {
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.publication.specs,
-                    keep_content: false,
+                });
+
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.publication.sink,
+                });
+
+                this.$store.commit(Messages.INITIALIZE, {
+                    form: this.state.typology.subsink,
                 });
             }
         },

@@ -13,10 +13,8 @@ async function oarray_to_array(info: any): any {
 
 
 function generic_formatter(template: string): Function {
-    return async (info: any, object: Object, key: string): any => {
-        console.log(template, info, object, key);
-        const t = Handlebars.compile(template)({ [key]: info });
-        console.log(t);
+    return async (existing_content: any, fullobject: Object, key: string): any => {
+        const t = Handlebars.compile(template)({ object: fullobject });
         return t;
     };
 }

@@ -283,7 +283,6 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
 
 async function create(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-
     if (cls == null) {
         return null;
     }
@@ -293,7 +292,6 @@ async function create(info: Object, type: string): Promise<*> {
     }
 
     const model = cls.model;
-
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
     return response;
