@@ -10,7 +10,7 @@
         class="pos-dropzone" 
         id="dropzone" 
         ref="dropzone" 
-        :options="dropzone" 
+        :options="dropzoneData" 
         :include-styling="false">
             <div slot="inside">
                 <div class="columns is-pulled-right" v-if="!readonly">

@@ -4,16 +4,33 @@ const ODM = require('../crud/odm');
 const EntitiesUtils = require('../../utils/entities');
 
 class Form extends ODM {
-    static generate_sort(sort) {
-        if (!sort || sort.length === 0) {
-            return {};
+    static generate_sort(sorts) {
+        if (!sorts || sorts.length === 0) {
+            return [];
         }
 
-        const fc = sort[0];
-        if (fc === '-') {
-            return { [sort.slice(1)]: 'desc' };
+        return sorts.map((sort) => {
+            const fc = sort[0];
+            if (fc === '-') {
+                return { [sort.slice(1)]: 'desc' };
+            }
+            return { [sort]: 'asc' };
+        });
+    }
+
+    static async generate_query(query) {
+        if (!query) {
+            return {};
         }
-        return { [sort]: 'asc' };
+        const qs = await EntitiesUtils.search_and_get_sources('query', {
+            size: 1,
+            where: { id: query },
+        });
+
+        if (qs.length > 0) {
+            return JSON.parse(qs[0].content);
+        }
+        return {};
     }
 
     async post_read_hook(population: Array<String>) {
@@ -38,14 +55,16 @@ class Form extends ODM {
                 const value = field.datasource.value;
                 const sort = field.datasource.sort;
                 const ajax = field.datasource.ajax;
+                const query = field.datasource.query;
                 if (name in obj) {
                     obj[name].indices.push(i);
                     obj[name].projection.add(label);
                     obj[name].projection.add(value);
                     obj[name].sort = sort;
                     obj[name].ajax = ajax;
+                    obj[name].query = query;
                 } else {
-                    obj[name] = { indices: [i], projection: new Set([label, value]), sort, ajax };
+                    obj[name] = { indices: [i], projection: new Set([label, value]), sort, ajax, query };
                 }
             }
             return obj;
@@ -53,11 +72,14 @@ class Form extends ODM {
 
         for (const ds in datasources) {
             try {
-                const sort = Form.generate_sort(datasources[ds].sort);
+                const sort_str = datasources[ds].sort;
+                const sorts = Form.generate_sort(sort_str ? sort_str.split('|') : []);
+                const query = await Form.generate_query(datasources[ds].query);
                 const datasource = await EntitiesUtils.search(ds, {
                     projection: Array.from(datasources[ds].projection),
                     size: datasources[ds].ajax ? 20 : 800,
-                    sort: [sort, { _uid: 'desc' }],
+                    sort: [...sorts, { _uid: 'desc' }],
+                    where: query,
                 });
 
                 if ('hits' in datasource.result) {

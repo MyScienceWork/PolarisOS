@@ -182,6 +182,9 @@ module.exports = {
                                         type: 'text',
                                         index: false,
                                     },
+                                    query: {
+                                        type: 'keyword',
+                                    },
                                 },
                             },
                             name: {
