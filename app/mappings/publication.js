@@ -420,6 +420,9 @@ module.exports = {
                             publication: {
                                 type: 'date',
                             },
+                            production: {
+                                type: 'date',
+                            },
                             start: {
                                 type: 'date',
                             },
