@@ -121,6 +121,9 @@ const Formatting: Array<any> = [
             const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
             return [...keywords, ...dkeywords];
         },
+        'email.remark': async (result, object) => {
+            console.log('sending email');
+        },
     },
 ];
 
@@ -240,7 +243,7 @@ const Defaults: Object = {
     sources: [],
 };
 
-const Filtering: Array<string> = ['parent', 'dkeywords'];
+const Filtering: Array<string> = ['parent', 'dkeywords', 'email'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',

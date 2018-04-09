@@ -7,6 +7,7 @@ module.exports = {
     READ: 'read',
     NOOP: 'noop',
     COMPLETED: 'completed',
+    FORCE_COMPLETION: 'force_completion',
     INITIALIZE: 'initialize',
     REMOVE_FORM: 'remove_form',
     REMOVE_ALL_FORMS: 'remove_all_forms',
