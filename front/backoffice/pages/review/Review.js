@@ -4,6 +4,8 @@ const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const BrowserUtils = require('../../../common/utils/browser');
+const moment = require('moment');
+const Queries = require('../../../common/specs/queries');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -21,66 +23,17 @@ module.exports = {
                     reads: {
                         publication: 'publication_read',
                     },
+                    creations: {
+                        search: 'search_creation_publication',
+                    },
                 },
-                generator: [[
-                    {
-                        'denormalization.type.label': { type: 'translate', always: true },
-                    },
-                    {
-                        subtype: { type: 'value', value_source: 'typology/children.*.label', always: true, translate: true },
-                    },
-                    {
-                        title: { type: 'lv', label: 'content', value: 'lang', always: true },
-                    },
-                    {
-                        title: { type: 'lv', label: 'content', value: 'lang', always: true },
-                    },
-                    {
-                        subtitles: { type: 'list_lv', label: 'content', value: 'lang', always: false },
-                    },
-                    {
-                        translated_titles: { type: 'list_lv', label: 'content', value: 'lang', always: false },
-                    },
-                    {
-                        lang: { type: 'normal', always: true },
-                    },
-                    {
-                        'denormalization.journal': { type: 'normal', always: true },
-                    },
-                    {
-                        newspaper: { type: 'normal', always: false },
-                    },
-                    {
-                        contributors: { type: 'list_lv', always: true, label: 'label', value: 'value', label_source: 'author/fullname', value_source: 'contributor_role/label' },
-                    },
-                    {
-                        publication_title: { type: 'normal', always: false },
-                    },
-                    {
-                        'denormalization.localisation.country': { type: 'normal', always: false, translate: true },
-                    },
-                    {
-                        'localisation.city': { type: 'normal', always: false },
-                    },
-                    {
-                        'denormalization.delivery_institution': { type: 'normal', always: false, translate: true },
-                    },
-                    {
-                        'dates.publication': { type: 'date', always: true },
-                    },
-                    {
-                        'dates.start': { type: 'date', always: false },
-                    },
-                    {
-                        'dates.end': { type: 'date', always: false },
-                    },
-                ], [
-
-                ]],
             },
         };
     },
     methods: {
+        date_format(d) {
+            return moment(d).format('LLLL');
+        },
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {
@@ -124,6 +77,9 @@ module.exports = {
         },
         current_read_state_publication() {
             return this.mcurrent_read_state(this.state.sinks.reads.publication);
+        },
+        search_query() {
+            return JSON.stringify(Queries.publication_search);
         },
     },
 };

@@ -56,6 +56,12 @@ module.exports = {
         state.forms[form_name].state = 'noop';
     },
 
+    [Messages.FORCE_COMPLETION]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'completed';
+    },
+
     [Messages.COMPLETE_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);

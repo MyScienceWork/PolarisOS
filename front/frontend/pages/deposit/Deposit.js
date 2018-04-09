@@ -34,22 +34,19 @@ module.exports = {
                 total_steps: 5,
                 stepper: {
                     next: undefined,
-                    e: undefined,
                 },
                 deposit_form_name: undefined,
+                show_review_modal: false,
+                modal_has_been_validated: false,
+                step_props: {},
+                status_review: undefined,
             },
         };
     },
     methods: {
         update_typology_form(form, children) {
-            this.state.deposit_form_name = form;
-            if (form !== '') {
-                this.fetch_form(form, this.state.publication.specs);
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.state.typology.subsink,
-                    body: { children },
-                });
-            } else {
+            if (!form || form === '' ||
+                (form && form !== this.state.deposit_form_name && this.state.deposit_form_name)) {
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.publication.specs,
                 });
@@ -62,25 +59,31 @@ module.exports = {
                     form: this.state.typology.subsink,
                 });
             }
+            if (form !== '') {
+                this.state.deposit_form_name = form;
+                this.fetch_form(form, this.state.publication.specs);
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.typology.subsink,
+                    body: { children },
+                });
+            }
         },
-        next(func, step, total, e) {
-            e.preventDefault();
-
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.publication.sink,
-            });
+        next(func, step, total, no_collect = false) {
+            if (!no_collect) {
+                this.$store.commit(Messages.COLLECT, {
+                    form: this.state.publication.sink,
+                });
+            }
 
             this.state.next_step = step + 1;
             this.state.stepper.next = func;
-            this.state.stepper.e = e;
         },
-        previous(func, step, total, e) {
-            e.preventDefault();
+        previous(func, step, total) {
             this.state.next_step = step;
             this.state.current_step = step - 1;
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step}`);
-            func(e);
+            func();
 
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.publication.sink,
@@ -96,20 +99,27 @@ module.exports = {
                     this.state.current_step = this.state.next_step;
                     this.state.publication.validate_path = APIRoutes.entity('publication',
                         'VALIDATE', false, `0-${this.state.current_step + 1}`);
-                    this.state.stepper.next(this.state.stepper.e);
+                    this.state.stepper.next();
                 }
 
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.publication.sink,
                     keep_content: true,
                 });
+            } else if (this.is_review_mode && this.state.modal_has_been_validated) {
+                this.state.show_review_modal = false;
+                this.$store.commit(Messages.FORCE_COMPLETION, {
+                    form: this.state.publication.sink,
+                });
+                this.next(this.state.step_props.next, this.state.step_props.step,
+                    this.state.step_props.numberOfSteps, true);
             }
         },
         show_success_validate() {
             this.state.current_step = this.state.next_step;
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step}`);
-            this.state.stepper.next(this.state.stepper.e);
+            this.state.stepper.next();
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,
                 keep_content: true,
@@ -117,6 +127,19 @@ module.exports = {
         },
         go_after_success() {
             this.$router.push({ path: '/' });
+        },
+        open_review_modal(props) {
+            this.state.step_props = props;
+            this.state.show_review_modal = true;
+        },
+        review_publication(e) {
+            this.state.modal_has_been_validated = true;
+            this.$store.commit(Messages.COLLECT, {
+                form: this.state.publication.sink,
+            });
+        },
+        status_review_change(val) {
+            this.state.status_review = val ? val.value : undefined;
         },
     },
     components: {
@@ -243,6 +266,11 @@ module.exports = {
                 return this.$route.query._id;
             }
             return '';
+        },
+        status_options() {
+            return ['pending', 'rejected',
+                'incomplete', 'published', 'withdrawn']
+            .map(s => ({ label: `l_${s}_status`, value: s }));
         },
     },
     watch: {

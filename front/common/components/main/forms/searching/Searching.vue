@@ -60,8 +60,14 @@
                     </div>
                 </div>
             </div>
-        </nav>
-    <div class="columns is-centered" v-for="row in matrix_content">
+    </nav>
+    <div v-if="getAllResults">
+        <slot name="search-results"
+            :results="content"
+        >
+        </slot>
+    </div>
+    <div v-else class="columns is-centered" v-for="row in matrix_content">
         <div class="column"
             v-for="(info, idx) in row" 
         >

@@ -12,6 +12,7 @@ module.exports = {
         sizeList: { default: () => [10, 30, 50, 100], type: Array },
         sortList: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
+        getAllResults: { default: false, type: Boolean },
     },
     data() {
         return {
