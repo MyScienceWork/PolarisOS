@@ -9,7 +9,7 @@
         </div>
         <div v-if="state.showForm" class="columns">
             <div class="column">
-                <div class="card">
+                <div class="card card-border-color-deep-blue">
                     <div class="columns" v-if="header != null && header !== ''">
                         <div class="column" v-html="lang(header)">
                         </div>

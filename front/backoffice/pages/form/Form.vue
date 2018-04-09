@@ -160,6 +160,14 @@
                                             type="text"
                                             :form="state.forms.csink"
                                             />
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.datasource.query`" 
+                                            :key="`${props.fname}.${props.id}.datasource.query`" 
+                                            :label="lang('l_query')" 
+                                            :options="queries"
+                                            fieldLabel="name"
+                                            fieldValue="id"
+                                            :form="state.forms.csink" />
                                             <finput 
                                             :name="`${props.fname}.${props.id}.datasource.info_in_sink`" 
                                             :key="`${props.fname}.${props.id}.datasource.info_in_sink`" 

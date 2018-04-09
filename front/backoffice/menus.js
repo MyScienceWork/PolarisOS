@@ -18,6 +18,7 @@ const Widget = require('./pages/widget/Widget.vue');
 const Template = require('./pages/template/Template.vue');
 const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
+const Query = require('./pages/query/Query.vue');
 
 module.exports.menu = [
     [
@@ -103,6 +104,16 @@ module.exports.menu = [
             routes: [Routes.lang],
             submenu: [],
             component: Lang,
+        },
+        {
+            section: 'Administration',
+            name: 'Queries',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'query',
+            routes: [Routes.query],
+            submenu: [],
+            component: Query,
         },
     ],
 

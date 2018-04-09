@@ -112,6 +112,10 @@ module.exports = {
             }
             return {};
         },
+        dropzoneData() {
+            this.state.dropzone.dictFileTooBig = this.lang('l_dropzone_file_too_big');
+            return this.state.dropzone;
+        },
     },
     watch: {
         keeperContent(kc) {

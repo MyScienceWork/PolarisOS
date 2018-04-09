@@ -55,6 +55,15 @@
                         >
                             <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                         </router-link>
+                        <router-link 
+                            v-if="loggedIn && can_modify(info)"
+                            class="level-item" 
+                            :alt="lang('f_deposit_new_file_version')" 
+                            :title="lang('f_deposit_new_file_version')"
+                            :to="`/deposit?type=new_version&_id=${info._id}`"
+                        >
+                            <span class="icon is-small"><i class="fa fa-pencil-square-o"></i></span>
+                        </router-link>
                         <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
                             <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
                         </a>

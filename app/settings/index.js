@@ -17,6 +17,7 @@ const page = require('./page');
 const importer = require('./importer');
 const exporter = require('./exporter');
 const connector = require('./connector');
+const query = require('./query');
 
 const publication = require('./publication');
 
@@ -40,6 +41,7 @@ module.exports = {
     importer: importer.msw,
     exporter: exporter.msw,
     connector: connector.msw,
+    query: query.msw,
 
     publication: publication.msw,
 };
