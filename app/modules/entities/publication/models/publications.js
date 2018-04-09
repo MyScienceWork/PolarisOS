@@ -157,10 +157,10 @@ const Completion: Array<any> = [
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
     },
     {
-        'denormalization.diffusion.anr_projects': ComplFunctions.denormalization('project', 'diffusion.anr_projects._id', 'name', false),
+        'denormalization.diffusion.anr_projects': ComplFunctions.denormalization('anr_project', 'diffusion.anr_projects._id', 'name', false),
     },
     {
-        'denormalization.diffusion.european_projects': ComplFunctions.denormalization('project', 'diffusion.european_projects._id', 'name', false),
+        'denormalization.diffusion.european_projects': ComplFunctions.denormalization('european_project', 'diffusion.european_projects._id', 'name', false),
     },
     {
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
