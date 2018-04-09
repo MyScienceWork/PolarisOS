@@ -39,6 +39,7 @@
                                                 :publication-specs="state.publication.specs"
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="is_review_mode"
+                                                :new-version="is_new_version_mode"
                                                 :modification="is_modification_mode"
                                                 :parent-publication="publication_id"
                                             />
@@ -103,7 +104,12 @@
                                             <div class="control" v-else>
                                                 <button @click="next(props.next, props.step, props.numberOfSteps, $event)" 
                                                     :disabled="success"
+                                                    v-if="!is_review_mode"
                                                     class="button">{{lang('f_finish_button_step')}}</button>
+                                                <button @click="next(props.next, props.step, props.numberOfSteps, $event)" 
+                                                    :disabled="success"
+                                                    v-else-if="is_review_mode"
+                                                    class="button">{{lang('f_finish_review_step')}}</button>
                                             </div>
                                         </div>
                                     </template>

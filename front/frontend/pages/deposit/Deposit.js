@@ -157,6 +157,7 @@ module.exports = {
         default:
         case 'review':
         case 'model':
+        case 'new_version':
         case 'modify':
             this.$store.state.requests.push({
                 name: 'single_read',
@@ -196,7 +197,7 @@ module.exports = {
                 return this.state.publication.validate_path;
             }
 
-            if (this.is_review_mode) {
+            if (this.is_review_mode || this.is_modification_mode) {
                 return this.state.publication.put_path;
             }
             return this.state.publication.path;
@@ -233,6 +234,9 @@ module.exports = {
         },
         is_modification_mode() {
             return this.$route.query && this.$route.query.type && this.$route.query.type === 'modify';
+        },
+        is_new_version_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'new_version';
         },
         publication_id() {
             if (this.$route.query && this.$route.query._id) {
