@@ -156,10 +156,18 @@
                             :label="lang('l_email_remark')"
                             :is-required="true"
                             :form="state.publication.sink"
-                            name="email.remarks"
+                            name="system.email.remark"
                             :rows="10"
                             type="textarea"
                             v-if="state.status_review === 'incomplete' || state.status_review === 'rejected' || state.status_review === 'withdrawn'"
+                            :unregister="false"
+                        />
+                        <finput 
+                            label=""
+                            :form="state.publication.sink"
+                            name="review_mode"
+                            type="hidden"
+                            :hidden-value="true"
                             :unregister="false"
                         />
                     </div>

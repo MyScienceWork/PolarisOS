@@ -296,7 +296,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if issue}}, n°{{issue}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if issue}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: {{_id}}{{/filter_nested}}";
 
             return this.hlang(Handlebars.compile(tpl)(item));
         },
@@ -338,7 +338,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD'}}-{{moment date=dates.end format='DD/MM/YYYY'}}.";
+            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}.";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         other_document() {

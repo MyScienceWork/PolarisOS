@@ -35,6 +35,7 @@ function denormalization(from_entity: string, from_path: string,
             }
             if (nr) {
                 const e = await EntitiesUtils.retrieve(id, from);
+                console.log(e, id, from);
                 const eobj = Utils.find_object_with_path(e.source, eseg);
                 if (eobj == null) {
                     return null;

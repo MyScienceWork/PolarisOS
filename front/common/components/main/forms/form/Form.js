@@ -41,6 +41,7 @@ module.exports = {
             });
         },
         send_information(sink) {
+            console.log(this.path, this.name, this.dispatch_method);
             if (this.name !== sink) {
                 return;
             }

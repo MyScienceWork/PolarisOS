@@ -16,6 +16,7 @@ module.exports = {
                         conference: 'conference',
                         delivery_institution: 'institution',
                         depositor: 'user',
+                        reviewer: 'user',
                         editor: 'editor',
                         classification: {
                             _id: 'classification',
@@ -135,7 +136,41 @@ module.exports = {
                             },
                             depositor: {
                                 properties: {
-                                    fullname: {
+                                    lastname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    firstname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            reviewer: {
+                                properties: {
+                                    lastname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    firstname: {
                                         type: 'text',
                                         analyzer: 'folding',
                                         fields: {
@@ -696,8 +731,23 @@ module.exports = {
                     depositor: {
                         type: 'keyword',
                     },
+                    reviewer: {
+                        type: 'keyword',
+                    },
                     duration: {
                         type: 'integer',
+                    },
+                    system: {
+                        properties: {
+                            email: {
+                                properties: {
+                                    remark: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
