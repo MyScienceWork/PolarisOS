@@ -169,8 +169,12 @@ function format_search(body: Object, model: Object): Object {
 
     if ('search_after' in body) {
         options.search_after = body.search_after;
+        delete options.scroll;
+        delete options.scroll_id;
     } else if ('search_before' in body) {
         options.search_before = body.search_before;
+        delete options.scroll;
+        delete options.scroll_id;
     }
 
     return { search: s, options };

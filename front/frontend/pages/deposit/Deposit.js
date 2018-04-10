@@ -108,11 +108,6 @@ module.exports = {
                 });
             } else if (this.is_review_mode && this.state.modal_has_been_validated) {
                 this.state.show_review_modal = false;
-                this.$store.commit(Messages.FORCE_COMPLETION, {
-                    form: this.state.publication.sink,
-                });
-                this.next(this.state.step_props.next, this.state.step_props.step,
-                    this.state.step_props.numberOfSteps, true);
             }
         },
         show_success_validate() {
@@ -132,11 +127,10 @@ module.exports = {
             this.state.step_props = props;
             this.state.show_review_modal = true;
         },
-        review_publication(e) {
+        review_publication() {
             this.state.modal_has_been_validated = true;
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.publication.sink,
-            });
+            this.next(this.state.step_props.next, this.state.step_props.step,
+                this.state.step_props.numberOfSteps);
         },
         status_review_change(val) {
             this.state.status_review = val ? val.value : undefined;
@@ -208,7 +202,7 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return 'validate';
-            } else if (this.is_review_mode) {
+            } else if (this.is_review_mode || this.is_modification_mode) {
                 return 'update';
             }
             return 'default';

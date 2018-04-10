@@ -32,7 +32,7 @@ module.exports = {
         go(step, emit = true) {
             this.state.current_step = _.clamp(step, 0, this.numberOfSteps);
             if (emit) {
-                this.$emit('step-change', { e, step: this.state.current_step });
+                this.$emit('step-change', { step: this.state.current_step });
             }
         },
     },

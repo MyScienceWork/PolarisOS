@@ -121,9 +121,6 @@ const Formatting: Array<any> = [
             const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
             return [...keywords, ...dkeywords];
         },
-        'email.remark': async (result, object) => {
-            console.log('sending email');
-        },
     },
 ];
 
@@ -187,6 +184,18 @@ const Completion: Array<any> = [
         'denormalization.conference': ComplFunctions.denormalization('conference', 'conference', 'name', true),
     },
     {
+        'denormalization.depositor.lastname': ComplFunctions.denormalization('user', 'depositor', 'lastname', false),
+    },
+    {
+        'denormalization.reviewer.lastname': ComplFunctions.denormalization('user', 'reviewer', 'lastname', false),
+    },
+    {
+        'denormalization.depositor.firstname': ComplFunctions.denormalization('user', 'depositor', 'firstname', false),
+    },
+    {
+        'denormalization.reviewer.firstname': ComplFunctions.denormalization('user', 'reviewer', 'firstname', false),
+    },
+    {
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
     },
     {
@@ -210,6 +219,11 @@ const Completion: Array<any> = [
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
         depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
+        reviewer: (obj, path, info) => {
+            if (obj.review_mode) {
+                return { reviewer: info.papi ? info.papi._id : null };
+            }
+        },
     },
 ];
 
@@ -243,7 +257,7 @@ const Defaults: Object = {
     sources: [],
 };
 
-const Filtering: Array<string> = ['parent', 'dkeywords', 'email'];
+const Filtering: Array<string> = ['parent', 'dkeywords', 'review_mode'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',

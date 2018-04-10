@@ -5,6 +5,7 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const moment = require('moment');
+const _ = require('lodash');
 const Queries = require('../../../common/specs/queries');
 
 module.exports = {
@@ -31,8 +32,21 @@ module.exports = {
         };
     },
     methods: {
-        date_format(d) {
-            return moment(d).format('LLLL');
+        date_format(d, f = 'LLLL') {
+            return moment(d).format(f);
+        },
+        truncate(s) {
+            return _.truncate(s, {
+                length: 50,
+                separator: ' ',
+            });
+        },
+        get_info(content, path) {
+            const val = Utils.find_value_with_path(content, path.split('.'));
+            if (val) {
+                return val;
+            }
+            return '';
         },
     },
     mounted() {
