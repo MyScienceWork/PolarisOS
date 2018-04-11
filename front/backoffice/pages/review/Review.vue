@@ -14,6 +14,7 @@
                             :use-default-query="true"
                             search-type="query"
                             :get-all-results="true"
+                            :sort-list="sort_list"
                         >
                             <div slot="search-results" slot-scope="props">
                                 <widget :collapsed="true" v-for="info in props.results">

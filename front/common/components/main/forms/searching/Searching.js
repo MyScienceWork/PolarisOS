@@ -11,6 +11,7 @@ module.exports = {
     props: {
         sizeList: { default: () => [10, 30, 50, 100], type: Array },
         sortList: { required: false, type: Array, default: () => [] },
+        filters: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
         getAllResults: { default: false, type: Boolean },
     },
@@ -42,7 +43,6 @@ module.exports = {
                 return [];
             }
 
-            console.log(content.map(c => c._id).join('\n'));
             return content;
         },
         matrix_content() {

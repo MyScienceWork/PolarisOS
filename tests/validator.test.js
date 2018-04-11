@@ -201,6 +201,16 @@ describe('Completer#complete', () => {
         obj.should.have.property('name', 'TEST');
     });
 
+    it('should complete the object following completers only when key is undefined', async () => {
+        let obj = {
+            name: undefined,
+        };
+
+        obj = await Completer(obj, completes);
+
+        obj.should.have.property('name', 'New name');
+    });
+
     it('should complete the object following completers only when key does not exist', async () => {
         let obj = {
         };

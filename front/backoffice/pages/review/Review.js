@@ -7,6 +7,7 @@ const BrowserUtils = require('../../../common/utils/browser');
 const moment = require('moment');
 const _ = require('lodash');
 const Queries = require('../../../common/specs/queries');
+const SortLists = require('../../../common/specs/sorts');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -94,6 +95,9 @@ module.exports = {
         },
         search_query() {
             return JSON.stringify(Queries.publication_search);
+        },
+        sort_list() {
+            return SortLists.publication_validation_sorts;
         },
     },
 };
