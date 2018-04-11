@@ -34,7 +34,7 @@ function denormalization(from_entity: string, from_path: string,
                 return null;
             }
             if (nr) {
-                const source = await EntitiesUtils.retrieve_and_get_source(id, from);
+                const source = await EntitiesUtils.retrieve_and_get_source(from, id);
                 if (source == null) {
                     return null;
                 }
