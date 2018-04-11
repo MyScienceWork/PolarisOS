@@ -34,9 +34,12 @@ function denormalization(from_entity: string, from_path: string,
                 return null;
             }
             if (nr) {
-                const e = await EntitiesUtils.retrieve(id, from);
-                console.log(e, id, from);
-                const eobj = Utils.find_object_with_path(e.source, eseg);
+                const source = await EntitiesUtils.retrieve_and_get_source(id, from);
+                if (source == null) {
+                    return null;
+                }
+
+                const eobj = Utils.find_object_with_path(source, eseg);
                 if (eobj == null) {
                     return null;
                 }
