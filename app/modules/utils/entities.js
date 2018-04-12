@@ -59,6 +59,9 @@ const MenuModel = require('../entities/menu/models/menus');
 const Publication = require('../entities/publication/publication');
 const PublicationModel = require('../entities/publication/models/publications');
 
+const MailTemplate = require('../entities/mail_template/mail_template');
+const MailTemplateModel = require('../entities/mail_template/models/mail_templates');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -240,6 +243,8 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
+    case 'mail_template':
+        return MailTemplateModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -282,6 +287,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'publication':
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'mail_template':
+        return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {

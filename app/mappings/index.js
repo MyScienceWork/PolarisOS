@@ -8,6 +8,7 @@ const form = require('./form');
 
 const lang = require('./lang');
 const config = require('./config');
+const mail_template = require('./mail_template');
 
 const widget = require('./widget');
 const menu = require('./menu');
@@ -32,6 +33,7 @@ module.exports = {
 
     lang: lang.msw,
     config: config.msw,
+    mail_template: mail_template.msw,
 
     widget: widget.msw,
     menu: menu.msw,

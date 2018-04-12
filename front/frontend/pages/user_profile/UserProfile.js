@@ -83,6 +83,9 @@ module.exports = {
                 });
             }
         },
+        send_author_request() {
+
+        },
     },
     watch: {
         query(q) {

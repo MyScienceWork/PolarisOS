@@ -64,6 +64,8 @@ module.exports = {
             content.push({ type: 'page' });
             content.push({ type: 'overview' });
             content.push({ type: 'my_user' });
+            content.push({ type: 'query' });
+            content.push({ type: 'mail_template' });
             return content;
         },
     },

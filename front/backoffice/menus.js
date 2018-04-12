@@ -19,6 +19,7 @@ const Template = require('./pages/template/Template.vue');
 const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
+const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 
 module.exports.menu = [
     [
@@ -114,6 +115,16 @@ module.exports.menu = [
             routes: [Routes.query],
             submenu: [],
             component: Query,
+        },
+        {
+            section: 'Administration',
+            name: 'Mails',
+            access: 'mail_template',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'mail_template',
+            routes: [Routes.mail_template],
+            submenu: [],
+            component: MailTemplate,
         },
     ],
 
