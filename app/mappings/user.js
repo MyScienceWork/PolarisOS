@@ -79,6 +79,31 @@ module.exports = {
                             },
                         },
                     },
+                    ids: {
+                        properties: {
+                            twitter: {
+                                type: 'keyword',
+                            },
+                            linkedin: {
+                                type: 'keyword',
+                            },
+                            orcid: {
+                                type: 'keyword',
+                            },
+                            facebook: {
+                                type: 'keyword',
+                            },
+                            hal: {
+                                type: 'keyword',
+                            },
+                            idref: {
+                                type: 'keyword',
+                            },
+                            pubmedid: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     roles: {
                         type: 'nested',
                         properties: {

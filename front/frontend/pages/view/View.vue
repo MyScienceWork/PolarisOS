@@ -52,8 +52,8 @@
                         </div>
                         <p class="has-small-top-margin" v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
                         <!--<p><strong v-html="lang('f_publication_id')"></strong></p>-->
-                        <p class="has-small-top-margin"><a class="" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>
-                        <div v-if="state.more_metadata">
+                        <!--<p class="has-small-top-margin"><a class="" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>-->
+                        <div>
                             <widget v-if="themes.length > 0 || keywords('user') || keywords('demovoc')" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_indexing')}}</span>
                                 <div slot="body">

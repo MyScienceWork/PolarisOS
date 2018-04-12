@@ -9,23 +9,10 @@ module.exports = {
         navbar: Navbar,
     },
     methods: {
-        logout() {
-            Auth.logout();
-            this.$router.push({ path: '/' });
-            location.reload();
-        },
-        change_language(lang, e) {
-            e.preventDefault();
-            Browser.localSet('default_lang', lang);
-            location.reload();
-        },
     },
     computed: {
-        fullname() {
-            return Auth.fullname();
-        },
-        user_id() {
-            return Auth.user_id();
+        languages() {
+            return this.$store.state.global_config.langs.map(l => l.value);
         },
     },
 };

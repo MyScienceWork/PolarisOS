@@ -15,6 +15,7 @@ const Tabber = require('../common/components/main/tabber/Tabber.vue');
 const Grid = require('../common/components/main/forms/elements/grid/Grid.vue');
 const Card = require('../common/components/main/card/Card.vue');
 const Searching = require('../common/components/main/forms/searching/Searching.vue');
+const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -42,6 +43,7 @@ Vue.component('tabber', Tabber);
 Vue.component('card', Card);
 Vue.component('fsearching', Searching);
 Vue.component('dynamic-form', DynamicForm);
+Vue.component('login-lang', LoginLang);
 
 new Vue({
     el: '#app',

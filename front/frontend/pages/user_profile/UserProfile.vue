@@ -5,12 +5,12 @@
             <div class="column is-3 card-equal-height">
                 <div class="card">
                     <div class="card-image">
-                        <figure class="image is-4by3">
-                            <img src="https://bulma.io/images/placeholders/1280x960.png" :alt="user.fullname || 'No user'">
+                        <figure class="image">
+                            <img :src="avatar" :alt="fullname">
                         </figure>
                     </div>
                 </div> <!-- card image user profile -->
-                <h4 class="has-small-top-margin title is-4">{{user.firstname || ''}} {{user.lastname || ''}}</h4>
+                <h4 class="has-small-top-margin title is-4">{{fullname}}</h4>
                 <h5 v-if="user.about_me" class="title is-5">{{lang('l_about_me')}}</h5>
                 <p v-if="user.about_me">{{user.about_me}}</p>
                 <!--<h5 class="title is-5">{{lang('l_get_social')}}</h5>-->
@@ -90,9 +90,20 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="state.current_tab === 1"> <!-- account -->
-                    </div>
-                    <div v-else-if="state.current_tab === 2"> <!-- my deposits -->
+                    <div v-else-if="state.current_tab === 1 && state.loggedIn"> <!-- account -->
+                        <h4 class="title is-4 has-no-bottom-margin">{{lang('f_user_general_settings')}}</h4>
+                        <hr class="hr-section "/>
+                        <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
+                        
+                        <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations')}}</h4>
+                        <hr class="hr-section" />
+                        <dynamic-form :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.user"/>
+                        
+                        <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_external_ids')}}</h4>
+                        <hr class="hr-section" />
+                        <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
+                    </div> <!-- account -->
+                    <div v-else-if="state.current_tab === 2 && state.loggedIn && user && user._id"> <!-- my deposits -->
                         <div class="columns is-centered">
                             <div class="column is-10">
                                 <search-bar 

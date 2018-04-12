@@ -53,7 +53,7 @@
                             :get_form="state.sinks.reads.pipeline"
                         >
                             <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.sinks.creations.pipeline" />
-                            <tabber :tabs="[lang('b_defaults'), lang('b_formatters'), lang('b_completers'), lang('b_transformers'), lang('b_validations')]">
+                            <tabber :tabs="[lang('b_defaults', {}, 'other'), lang('b_formatters', {}, 'other'), lang('b_completers', {}, 'other'), lang('b_transformers', {}, 'other'), lang('b_validations', {}, 'other')]">
                                 <template slot="body" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
                                         <fvariadic-element

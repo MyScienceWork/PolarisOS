@@ -61,7 +61,8 @@
                                     <finput :name="`${props.fname}.${props.id}.master`" :label="lang('b_principal_email')" placeholder="" type="checkbox" :form="state.sinks.creations.user" />
                                 </template>
                             </fvariadic-element>
-                            <finput name="password" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.sinks.creations.user" />
+                            <finput name="hpassword" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.sinks.creations.user" />
+                            <finput name="retype_hpassword" :label="lang('b_retype_password')" :is-required="true" :placeholder="lang('b_retype_password')" type="password-sha1" :form="state.sinks.creations.user" />
                             <fselect 
                                 name="roles" 
                                 :label="lang('b_role', {}, 'other')" 

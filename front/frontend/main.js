@@ -19,6 +19,7 @@ const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue'
 const HierarchicalSelect = require('../common/components/main/forms/elements/hierarchical_select/HierarchicalSelect.vue');
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
+const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
 
 const Indexer = require('../common/components/main/indexer/Indexer.vue');
 const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
@@ -63,6 +64,7 @@ Vue.component('paginator', Paginator);
 Vue.component('hierarchical-structure', HierarchicalStructure);
 Vue.component('card', Card);
 Vue.component('widget', Widget);
+Vue.component('login-lang', LoginLang);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);

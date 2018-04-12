@@ -10,12 +10,7 @@
             <div class="tile is-vertical">
             </div>
             <div class="tile is-parent is-2 is-vertical">
-                <p class="tile is-child">
-                <a href='#'>Log In / Sign In</a>
-                </p>
-                <p class="tile is-child">
-                <!--<a href='#'>FR</a>&nbsp;|&nbsp;<a href='#'>EN</a>-->
-                </p>
+                <login-lang website="https://www.ined.fr" :languages="languages" :back-to-website="true" :backoffice="true" />
             </div>
         </div>
     </div>

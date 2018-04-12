@@ -199,6 +199,9 @@ const Completion: Array<any> = [
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
     },
     {
+        'denormalization.demovoc_keywords': ComplFunctions.denormalization('demovoc_keywords', 'demovoc_keywords', 'label', false),
+    },
+    {
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
     },
     {
