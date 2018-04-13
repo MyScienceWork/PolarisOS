@@ -50,7 +50,14 @@ const Formatting: Array<any> = [
         parents: async (result, object) => {
             if ('parent' in object) {
                 result.push({ _id: object.parent });
+
+                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                if (pub) {
+                    pub.source.has_other_version = true;
+                    await pub.oupdate();
+                }
             }
+
 
             return result;
         },
@@ -136,6 +143,7 @@ const Completion: Array<any> = [
             return { authors: potential_authors.map(pa => ({ _id: pa.label })) };
         },
         classifications: async () => ({ classifications: [] }),
+        has_other_version: async () => ({ has_other_version: false }),
     },
     {
         'dates.update': async () => ({ dates: { update: +moment() } }),
@@ -211,7 +219,7 @@ const Completion: Array<any> = [
         'denormalization.localisation.country': ComplFunctions.denormalization('country', 'localisation.country', 'label', true),
     },
     {
-        parents: (o, p, i) => {
+        parents: async (o, p, i) => {
             if ('parents' in o) {
                 return { parents: o.parents };
             }

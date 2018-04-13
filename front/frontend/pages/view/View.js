@@ -296,7 +296,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if issue}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: {{_id}}{{/filter_nested}}";
+            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if number}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: {{_id}}{{/filter_nested}}";
 
             return this.hlang(Handlebars.compile(tpl)(item));
         },

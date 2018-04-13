@@ -61,7 +61,7 @@
                                     <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
                                     <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="theme in themes">{{theme}}</li>
+                                            <li v-for="theme in themes">{{lang(theme)}}</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -83,7 +83,7 @@
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources">({{r.type}}) {{r.url}}</li>
+                                            <li v-for="r in resources"><a :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>

@@ -1,6 +1,7 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const Queries = require('../../../common/specs/queries');
 const Handlebars = require('../../../../app/modules/utils/templating');
 
 const Discovery = require('./subcomponents/Discovery.vue');
@@ -35,6 +36,7 @@ module.exports = {
             body: {
                 size: 6,
                 sort: [{ 'dates.deposit': 'desc' }],
+                where: Queries.last_deposits,
             },
         });
     },

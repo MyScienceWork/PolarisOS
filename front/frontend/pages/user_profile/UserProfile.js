@@ -171,29 +171,58 @@ module.exports = {
             });
         },
         search_query() {
-            return JSON.stringify({
+            const s = {
                 $and: [
-                    {
-                        $or: Queries.publication_search.$or,
-                        depositor: this.user ? this.user._id : null,
-                    },
+                    Queries.no_other_version,
+                    { $or: Queries.publication_search.$or },
+                    { depositor: this.user ? this.user._id : null },
                 ],
-            });
+            };
+            return JSON.stringify(s);
         },
         default_search_publications_query() {
-            return JSON.stringify({
-                'authors._id': this.user.author ? this.user.author._id : null,
-            });
+            const a = { 'authors._id': this.user.author ? this.user.author._id : null };
+            let s = {};
+            if (this.loggedIn) {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        a,
+                    ],
+                };
+            } else {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        Queries.published,
+                        a,
+                    ],
+                };
+            }
+            return JSON.stringify(s);
         },
         search_publications_query() {
-            return JSON.stringify({
-                $and: [
-                    {
-                        $or: Queries.publication_search.$or,
-                        'authors._id': this.user.author ? this.user.author._id : null,
-                    },
-                ],
-            });
+            const a = { 'authors._id': this.user.author ? this.user.author._id : null };
+            let s = {};
+            if (this.loggedIn) {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        { $or: Queries.publication_search.$or },
+                        a,
+                    ],
+                };
+            } else {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        Queries.published,
+                        { $or: Queries.publication_search.$or },
+                        a,
+                    ],
+                };
+            }
+            return JSON.stringify(s);
         },
         current_state_user() {
             return this.fstate(this.state.sinks.reads.user);

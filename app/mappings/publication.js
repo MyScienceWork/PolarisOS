@@ -751,6 +751,9 @@ module.exports = {
                     version: {
                         type: 'integer',
                     },
+                    has_other_version: {
+                        type: 'boolean',
+                    },
                     volume: {
                         type: 'keyword',
                     },
