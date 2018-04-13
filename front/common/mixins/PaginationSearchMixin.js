@@ -126,7 +126,12 @@ module.exports = {
             const sa = [backward ? 'before' : 'after'];
             const _id = source._id;
             if (seso.sort) {
-                const val = Utils.find_value_with_path(source, seso.sort.split('.'));
+                const segments = seso.sort.split('.');
+                if (segments[segments.length - 1] === 'raw') {
+                    segments.pop();
+                }
+                console.log(segments, source);
+                const val = Utils.find_value_with_path(source, segments);
                 if (val) {
                     sa.push(val);
                 }

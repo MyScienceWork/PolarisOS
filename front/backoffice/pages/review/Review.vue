@@ -61,18 +61,20 @@
                                 </b-table-column>
                             </template>
                             <template slot="detail" slot-scope="props">
-                                <h4 class="title is-4">{{lang('l_general_information')}}</h4>
-                                <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
-                                <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
-                                    {{props.row.denormalization.authors | join('_id.fullname')}}
-                                </p> 
-                                <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p> 
-                                <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p> 
-                                <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
-                                <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
-                                <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p> 
-                                <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
-                                </p> 
+                                <div class="has-medium-font">
+                                    <h4 class="title is-4">{{lang('l_general_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
+                                    <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
+                                        {{props.row.denormalization.authors | join('_id.fullname')}}
+                                    </p> 
+                                    <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p> 
+                                    <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p> 
+                                    <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
+                                    <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p> 
+                                    <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
+                                    </p> 
+                                </div>
                             </template>
                         </fdata-table-searching>
                     </div>
