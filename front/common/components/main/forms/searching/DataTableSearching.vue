@@ -18,12 +18,6 @@
         <b-table
             :data="content"
             :loading="state.loading"
-            paginated
-            backend-pagination
-            :total="total"
-            :per-page="state.seso.size"
-            :pagination-simple="true"
-            @page-change="on_page_change"
             backend-sorting
             default-sort-direction="asc"
             :default-sort="default_sort"
@@ -41,6 +35,23 @@
                 </slot>
             </template>
         </b-table>
+        <div class="level">
+            <div class="level-left">
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <b-pagination
+                        v-if="total > state.seso.size"
+                        :total="total"
+                        :current.sync="currentPage"
+                        :simple="true"
+                        :rounded="false"
+                        :per-page="state.seso.size"
+                    >
+                    </b-pagination>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
