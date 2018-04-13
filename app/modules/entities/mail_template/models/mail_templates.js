@@ -6,7 +6,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = MailTemplateMapping.msw.mappings.menu.properties;
+const Mapping: Object = MailTemplateMapping.msw.mappings.mail_template.properties;
 
 const Validation: Array<any> = [];
 

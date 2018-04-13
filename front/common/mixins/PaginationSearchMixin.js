@@ -22,10 +22,21 @@ module.exports = {
             currentPage: 1,
             state: {
                 seso: this.update_state(this.$route.query),
+                loading: false,
             },
         };
     },
     methods: {
+        show_success_read(sink) {
+            if (sink === this.searchSink) {
+                this.state.loading = false;
+            }
+        },
+        switch_to_loading(sink) {
+            if (sink === this.searchSink) {
+                this.state.loading = true;
+            }
+        },
         get_information(query, opt, default_value) {
             if (!query) {
                 return default_value;

@@ -14,12 +14,13 @@ module.exports = {
         filters: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
         getAllResults: { default: false, type: Boolean },
-        defaultSort: { default: () => [], type: Array },
+        detailed: { default: false, type: Boolean },
+        detailKey: { default: '', type: String },
+        tableClasses: { default: '', type: String },
     },
     data() {
         return {
             state: {
-                loading: false,
             },
         };
     },
@@ -31,22 +32,22 @@ module.exports = {
         },
         send_information(sink) {
             if (sink === this.searchSink) {
-                this.state.loading = true;
                 this.run_search(sink);
             }
         },
         on_page_change(page) {
             this.currentPage = page;
         },
-        show_success_read(sink) {
-            if (sink === this.searchSink) {
-                this.state.loading = false;
-            }
-        },
     },
     watch: {
     },
     computed: {
+        default_sort() {
+            if (this.state.seso.sort && this.state.seso.order) {
+                return [this.state.seso.sort, this.state.seso.order];
+            }
+            return [];
+        },
         content() {
             const content = this.fcontent(this.resultSink);
 

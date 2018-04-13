@@ -18,7 +18,7 @@ module.exports = {
                 itemsPerRow: 1,
                 paths: {
                     reads: {
-                        publication: APIRoutes.entity('publication', 'GET'),
+                        publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 sinks: {
@@ -33,15 +33,6 @@ module.exports = {
         };
     },
     methods: {
-        date_format(d, f = 'LLLL') {
-            return moment(d).format(f);
-        },
-        truncate(s) {
-            return _.truncate(s, {
-                length: 50,
-                separator: ' ',
-            });
-        },
         get_info(content, path) {
             const val = Utils.find_value_with_path(content, path.split('.'));
             if (val) {
@@ -50,48 +41,27 @@ module.exports = {
             return '';
         },
     },
+    filters: {
+        truncate(value, length, separator = ' ') {
+            return _.truncate(value, {
+                length,
+                separator,
+            });
+        },
+        join(value, subpath, sep = ', ') {
+            return value.map(v => Utils.find_value_with_path(v, subpath.split('.'))).filter(v => v != null).join(sep);
+        },
+        format_date(d, f = 'LLLL') {
+            return moment(d).format(f);
+        },
+    },
     mounted() {
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.publication,
-            keepContent: false,
-        });
-
-        this.$store.state.requests.push({
-            name: 'single_read',
-            content: {
-                form: this.state.sinks.reads.publication,
-                path: this.state.paths.reads.publication,
-            },
-        });
     },
     watch: {
-        error_publication(n) {
-            return this.mwerror(this.state.sinks.reads.publication)(n);
-        },
-        current_read_state_publication(s) {
-            return this.mwcurrent_read_state(this.state.sinks.reads.publication)(s);
-        },
     },
     computed: {
         host() {
             return BrowserUtils.getURLHost(window.location);
-        },
-        content_publication() {
-            const content = this.mcontent(this.state.sinks.reads.publication);
-            return content;
-        },
-        length_publication() {
-            return this.mlength(this.state.sinks.reads.publication);
-        },
-        read_content_publication() {
-            const content = this.content_publication;
-            return Utils.to_matrix(content, this.state.itemsPerRow);
-        },
-        error_publication() {
-            return this.merror(this.state.sinks.reads.publication);
-        },
-        current_read_state_publication() {
-            return this.mcurrent_read_state(this.state.sinks.reads.publication);
         },
         search_query() {
             return JSON.stringify(Queries.publication_search);
