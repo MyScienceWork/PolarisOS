@@ -53,6 +53,7 @@
                             :get_form="state.forms.rsink"
                         >
                             <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
+                            <finput name="id" :label="lang('b_id')" :is-required="true" :placeholder="lang('b_id')" type="text" :form="state.forms.csink" />
                             <p class="title is-3">{{lang('b_rights')}}</p>
                             <div class="columns" v-for="(entity, i) in entities">
                                 <div class="column">

@@ -25,6 +25,9 @@ module.exports = {
                         keywords: {
                             value: 'keyword',
                         },
+                        demovoc_keywords: {
+                            value: 'demovoc_keyword',
+                        },
                         diffusion: {
                             internal_collection: 'internal_collection',
                             surveys: {
@@ -113,6 +116,24 @@ module.exports = {
                                     label: {
                                         properties: {
                                             fullname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            demovoc_keywords: {
+                                type: 'nested',
+                                properties: {
+                                    value: {
+                                        properties: {
+                                            label: {
                                                 type: 'text',
                                                 analyzer: 'folding',
                                                 fields: {
@@ -614,6 +635,14 @@ module.exports = {
                             type: {
                                 type: 'keyword',
                             },
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    demovoc_keywords: {
+                        type: 'nested',
+                        properties: {
                             value: {
                                 type: 'keyword',
                             },

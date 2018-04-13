@@ -12,19 +12,20 @@ async function authenticate(ctx: Object) {
 
     // const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
 
-    const info = await EntitiesUtils.search('user', {
+    const sources = await EntitiesUtils.search_and_get_sources('user', {
         where: {
             'emails.email': email,
         },
+        size: 1,
+        population: ['roles._id'],
     });
 
-    if (info == null || info.result == null ||
-        info.result.hits.length === 0) {
+    if (sources.length === 0) {
         ctx.body = { ok: false, user: {} };
         return;
     }
 
-    const db = info.result.hits[0].source;
+    const db = sources[0];
 
     if (db.locked) {
         throw Errors.AccountIsLocked;

@@ -32,6 +32,8 @@ const AccessSchema: Object = {
         taskexec: RightsSchema,
         task_template: RightsSchema,
         customer: RightsSchema,
+        query: RightsSchema,
+        mail_template: RightsSchema,
     },
     filter: {
         organization: FilterSchema('Organization'),

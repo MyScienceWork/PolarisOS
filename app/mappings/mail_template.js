@@ -1,8 +1,8 @@
 module.exports = {
     msw: {
         mappings: {
-            role: {
-                dynamic: 'false',
+            mail_template: {
+                dynamic: 'strict',
                 dynamic_date_formats: [],
                 properties: {
                     name: {
@@ -16,23 +16,19 @@ module.exports = {
                     id: {
                         type: 'keyword',
                     },
-                    rights: {
-                        type: 'nested',
-                        properties: {
-                            entity: {
+                    subject: {
+                        type: 'text',
+                        fields: {
+                            raw: {
                                 type: 'keyword',
                             },
-                            c: {
-                                type: 'boolean',
-                            },
-                            r: {
-                                type: 'boolean',
-                            },
-                            u: {
-                                type: 'boolean',
-                            },
-                            d: {
-                                type: 'boolean',
+                        },
+                    },
+                    body: {
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
                             },
                         },
                     },

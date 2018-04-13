@@ -14,6 +14,9 @@ module.exports = {
         filters: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
         getAllResults: { default: false, type: Boolean },
+        detailed: { default: false, type: Boolean },
+        detailKey: { default: '', type: String },
+        tableClasses: { default: '', type: String },
     },
     data() {
         return {
@@ -32,10 +35,19 @@ module.exports = {
                 this.run_search(sink);
             }
         },
+        on_page_change(page) {
+            this.currentPage = page;
+        },
     },
     watch: {
     },
     computed: {
+        default_sort() {
+            if (this.state.seso.sort && this.state.seso.order) {
+                return [this.state.seso.sort, this.state.seso.order];
+            }
+            return [];
+        },
         content() {
             const content = this.fcontent(this.resultSink);
 

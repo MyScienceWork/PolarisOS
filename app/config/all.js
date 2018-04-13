@@ -31,6 +31,9 @@ const all = {
         host: 'localhost',
         port: '8070',
     },
+    auth: {
+        default_password: 'default_pos_password',
+    },
 };
 
 module.exports = all;
