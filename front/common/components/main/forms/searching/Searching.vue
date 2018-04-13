@@ -91,5 +91,6 @@
 </template>
 
 <script>
-    module.exports = require('./Searching');
+    const _ = require('lodash');
+    module.exports = _.merge({}, {name: 'Searching'}, require('./Searching'));
 </script>

@@ -45,5 +45,6 @@
 </template>
 
 <script>
-    module.exports = require('./Searching');
+    const _ = require('lodash');
+    module.exports = _.merge({}, {name: 'DataTableSearching'}, require('./Searching'));
 </script>
