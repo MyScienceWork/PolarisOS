@@ -5,6 +5,7 @@ const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
 const _ = require('lodash');
+const SocialSharing = require('vue-social-sharing');
 
 
 const Loader = require('./components/loader/Loader.vue');
@@ -40,6 +41,8 @@ const App = require('./pages/App.vue');
 
 
 Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
+
+Vue.use(SocialSharing);
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
