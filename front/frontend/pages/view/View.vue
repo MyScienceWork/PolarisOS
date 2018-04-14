@@ -70,7 +70,8 @@
                             <widget v-if="ids.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
-                                    <p v-for="id in ids"><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
+                                    <p v-for="id in ids" v-if="id.type.toUpperCase() === 'DOI'"><strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a></p>
+                                    <p v-for="id in ids" v-else><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
                                 </div>
                             </widget>
                             <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
@@ -80,11 +81,11 @@
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
                                     <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> {{content_item.url}}</p>
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources"><a :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
+                                            <li v-for="r in resources"><a target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>
