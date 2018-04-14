@@ -33,6 +33,7 @@
     "csv-stringify": "^2.0.4",
     "elasticsearch": "^13.0.1",
     "enumify": "^1.0.4",
+    "feed": "^1.1.1",
     "file-saver": "^1.3.3",
     "fold-to-ascii": "^4.0.0",
     "font-awesome": "^4.7.0",

@@ -441,12 +441,30 @@ function transform_to_search(body, mapping) {
 }
 
 function transform_to_sort(body, mapping) {
+    const get_sort = (sorts) => {
+        if (!sorts || sorts.length === 0) {
+            return [];
+        }
+
+        return sorts.map((sort) => {
+            if (sort instanceof String) {
+                const fc = sort[0];
+                if (fc === '-') {
+                    return { [sort.slice(1)]: 'desc' };
+                }
+                return { [sort]: 'asc' };
+            }
+            return sort;
+        });
+    };
+
     if (!('sort' in body)) {
         return null;
     }
 
     const sort = body.sort;
-    const result = SortMapper.visit_object(sort, mapping);
+    const sort_transformed = get_sort(sort);
+    const result = SortMapper.visit_object(sort_transformed, mapping);
     return result;
 }
 
