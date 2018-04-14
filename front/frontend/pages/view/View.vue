@@ -35,6 +35,7 @@
                         <p v-if="chapter" v-html="chapter"></p>
                         <p v-if="conference" v-html="conference"></p>
                         <p v-if="other_document" v-html="other_document"></p>
+                        <p v-if="working_paper" v-html="working_paper"></p>
                         <div class="card card-with-tag" v-if="state.current_abstract.content !== ''">
                             <div class="card-header">
                                 <div class="card-header-title">

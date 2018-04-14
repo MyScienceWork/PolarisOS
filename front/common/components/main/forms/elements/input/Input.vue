@@ -33,7 +33,7 @@
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -120,7 +120,7 @@
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -156,7 +156,7 @@
     <div v-else-if="type === 'radio'" class="field">
         <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -205,7 +205,7 @@
             </label>
         </div>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
