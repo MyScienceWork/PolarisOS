@@ -370,6 +370,17 @@ module.exports = {
                     return '';
                 }
 
+                if (type === 'demovoc') {
+                    const demovoc = Utils.find_value_with_path(item, 'denormalization.demovoc_keywords'.split('.'));
+                    if (!demovoc || demovoc.length === 0) {
+                        return '';
+                    }
+                    return demovoc.reduce((arr, k) => {
+                        arr.push(k._id.label);
+                        return arr;
+                    }, []).join(', ');
+                }
+
                 if (item.keywords.length === 0) {
                     return '';
                 }

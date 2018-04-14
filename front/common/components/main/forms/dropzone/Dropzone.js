@@ -37,10 +37,23 @@ module.exports = {
             },
             state: {
                 files: { order: [], content: {} },
+                master_files: {},
+
             },
         };
     },
     methods: {
+        update_master_files(i, val) {
+            if (!val && i in this.state.master_files) {
+                delete this.state.master_files[i];
+                this.state.master_files = Object.assign({}, this.state.master_files);
+                return;
+            }
+
+            if (val) {
+                this.state.master_files = Object.assign({}, this.state.master_files, { [i]: val });
+            }
+        },
         dropzone_added(file) {
             const name = `${file.name}_${file.lastModified}`;
             this.state.files.order.push(name);

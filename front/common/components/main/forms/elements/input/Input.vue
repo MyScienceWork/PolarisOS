@@ -182,7 +182,9 @@
             <input
             type="checkbox"
             :name="name"
-            v-model="state.value"
+            :value="state.value"
+            :checked="state.value"
+            @change="update_value"
             :disabled="readonly"
             />
         </span>
@@ -194,7 +196,9 @@
                 <input
                 type="checkbox"
                 :name="name"
-                v-model="state.value"
+                :value="state.value"
+                :checked="state.value"
+                @change="update_value"
                 :disabled="readonly"
                 />
                 {{label}}
