@@ -29,7 +29,7 @@
                             :hiddenValue="parentPublication"
                             name="parent"
                             :form="creationSink"
-                            v-if="modification"
+                            v-if="newVersion"
                         />
                     </div>
                 </div> 

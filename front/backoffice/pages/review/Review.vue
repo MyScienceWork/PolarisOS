@@ -16,47 +16,58 @@
                             table-classes="has-small-font"
                             :detailed="true"
                             detail-key="_id"
+                            :columns="state.columns"
+                            @column-checkbox-update="on_column_update"
                         >
                             <template slot="rows" slot-scope="props">
-                                <b-table-column field="_id" :label="lang('l_id')" centered>
+                                <b-table-column field="_id" :label="lang('l_id')" centered :visible="state.columns._id.visible">
                                     <span class="tag is-light">
                                         {{props.row._id | truncate(10, '')}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="denormalization.authors._id.fullname" :label="lang('l_p_author', {}, 'other')">
+                                <b-table-column field="denormalization.authors._id.fullname" :label="lang('l_p_author', {}, 'other')" :visible="state.columns['denormalization.authors._id.fullname'].visible">
                                     {{props.row.denormalization.authors | join('_id.fullname') | truncate(30)}}
                                 </b-table-column>
-                                <b-table-column field="title.content" :label="lang('l_p_title')">
+                                <b-table-column field="title.content" :label="lang('l_p_title')" :visible="state.columns['title.content'].visible">
                                     {{props.row.title.content | truncate(30)}}
                                 </b-table-column>
-                                <b-table-column field="dates.publication" :label="lang('l_p_year')" sortable centered>
+                                <b-table-column field="dates.publication" :label="lang('l_p_year')" sortable centered :visible="state.columns['dates.publication'].visible">
                                     <span class="tag is-success">
                                         {{props.row.dates.publication | format_date('YYYY')}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="status" :label="lang('l_p_status')" sortable centered>
+                                <b-table-column field="status" :label="lang('l_p_status')" sortable centered :visible="state.columns.status.visible">
                                     <span class="tag is-warning" v-if="props.row.status === 'pending'">
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
                                     <span class="tag is-danger" v-else-if="props.row.status === 'rejected'">
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
-                                    <span class="tag is-info" v-else>
+                                    <span class="tag is-info" v-else-if="props.row.status === 'incomplete'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                    <span class="tag is-success" v-else>
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="dates.update" :label="lang('l_p_update')" sortable centered>
+                                <b-table-column field="dates.update" :label="lang('l_p_update')" sortable centered :visible="state.columns['dates.update'].visible">
                                     <span class="tag is-warning">
                                         {{props.row.dates.update | format_date('DD/MM/YYYY')}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered>
+                                <b-table-column field="files" :label="lang('l_p_file', {}, 'other')" centered :visible="state.columns.files.visible">
+                                    <span class="icon is-info">
+                                        <a v-if="get_multi_download_link(props.row) != null" :href='get_multi_download_link(props.row)' title="Download file"><i class="fa fa-cloud-download"></i></a>
+                                        <i v-else class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
-                                <b-table-column field="depositor" :label="lang('l_p_action', {}, 'other')" centered>
+                                <b-table-column field="depositor" :label="lang('l_p_action', {}, 'other')" centered :visible="state.columns.depositor.visible">
                                     <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a>
                                 </b-table-column>
-                                <b-table-column field="denormalization.reviewer.lastname.raw" :label="lang('l_p_reviewer')" sortable centered>
+                                <b-table-column field="denormalization.reviewer.lastname.raw" :label="lang('l_p_reviewer')" sortable centered :visible="state.columns['denormalization.reviewer.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
                                 </b-table-column>
                             </template>

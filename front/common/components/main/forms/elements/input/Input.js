@@ -125,6 +125,10 @@ module.exports = {
             }
             return v;
         },
+        update_value(e) {
+            this.state.value = e.target.checked;
+            this.$emit('value-change', this.state.value);
+        },
     },
 
     watch: {

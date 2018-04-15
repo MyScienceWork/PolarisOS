@@ -394,6 +394,14 @@ class ODM {
         return this._create_or_update(index, type, client, model, body, id);
     }
 
+    oupdate(): Promise<?ODM> {
+        return this.update(this.index, this.type, this.client, this.model, this.source);
+    }
+
+    ocreate(): Promise<?ODM> {
+        return this.update(this.index, this.type, this.client, this.model, this.source);
+    }
+
     toJSON(): Object {
         return this.db;
     }

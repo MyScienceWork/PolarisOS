@@ -131,7 +131,7 @@ module.exports = {
                             demovoc_keywords: {
                                 type: 'nested',
                                 properties: {
-                                    value: {
+                                    _id: {
                                         properties: {
                                             label: {
                                                 type: 'text',
@@ -643,7 +643,7 @@ module.exports = {
                     demovoc_keywords: {
                         type: 'nested',
                         properties: {
-                            value: {
+                            _id: {
                                 type: 'keyword',
                             },
                         },
@@ -750,6 +750,9 @@ module.exports = {
                     },
                     version: {
                         type: 'integer',
+                    },
+                    has_other_version: {
+                        type: 'boolean',
                     },
                     volume: {
                         type: 'keyword',

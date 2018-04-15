@@ -17,6 +17,7 @@ module.exports = {
         detailed: { default: false, type: Boolean },
         detailKey: { default: '', type: String },
         tableClasses: { default: '', type: String },
+        columns: { default: () => ({}), type: Object },
     },
     data() {
         return {
@@ -37,6 +38,9 @@ module.exports = {
         },
         on_page_change(page) {
             this.currentPage = page;
+        },
+        on_checkbox_update(key, checked) {
+            this.$emit('column-checkbox-update', { key, checked });
         },
     },
     watch: {

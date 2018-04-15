@@ -43,6 +43,7 @@ const Formatting: Array<any> = [
         files: a => FormatFunctions.oarray_to_array(a),
         ids: a => FormatFunctions.oarray_to_array(a),
         keywords: a => FormatFunctions.oarray_to_array(a),
+        demovoc_keywords: a => FormatFunctions.oarray_to_array(a),
         resources: a => FormatFunctions.oarray_to_array(a),
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
@@ -50,7 +51,14 @@ const Formatting: Array<any> = [
         parents: async (result, object) => {
             if ('parent' in object) {
                 result.push({ _id: object.parent });
+
+                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                if (pub) {
+                    pub.source.has_other_version = true;
+                    await pub.oupdate();
+                }
             }
+
 
             return result;
         },
@@ -72,7 +80,7 @@ const Formatting: Array<any> = [
         'diffusion.research_teams': FormatFunctions.filter_empty_or_null_objects,
         ids: FormatFunctions.filter_empty_or_null_objects,
         keywords: FormatFunctions.filter_empty_or_null_objects,
-        dkeywords: FormatFunctions.filter_empty_or_null_objects,
+        demovoc_keywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
         'dates.update': async () => +moment(),
@@ -115,11 +123,8 @@ const Formatting: Array<any> = [
             return files;
         },
         keywords: async (result, object) => {
-            const demovoc = object.dkeywords || [];
             const keywords = result.map(k => ({ value: k.value, type: 'user' }));
-            // TODO Change ._id when final Demovoc
-            const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
-            return [...keywords, ...dkeywords];
+            return keywords;
         },
     },
 ];
@@ -136,6 +141,7 @@ const Completion: Array<any> = [
             return { authors: potential_authors.map(pa => ({ _id: pa.label })) };
         },
         classifications: async () => ({ classifications: [] }),
+        has_other_version: async () => ({ has_other_version: false }),
     },
     {
         'dates.update': async () => ({ dates: { update: +moment() } }),
@@ -199,7 +205,7 @@ const Completion: Array<any> = [
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
     },
     {
-        'denormalization.demovoc_keywords': ComplFunctions.denormalization('demovoc_keywords', 'demovoc_keywords', 'label', false),
+        'denormalization.demovoc_keywords': ComplFunctions.denormalization('demovoc', 'demovoc_keywords._id', 'label', false),
     },
     {
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
@@ -211,7 +217,7 @@ const Completion: Array<any> = [
         'denormalization.localisation.country': ComplFunctions.denormalization('country', 'localisation.country', 'label', true),
     },
     {
-        parents: (o, p, i) => {
+        parents: async (o, p, i) => {
             if ('parents' in o) {
                 return { parents: o.parents };
             }

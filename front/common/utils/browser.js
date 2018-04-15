@@ -41,10 +41,15 @@ function getURLHost(location) {
     return `${location.protocol}//${location.hostname}${location.port ? `:${location.port}` : ''}`;
 }
 
+function utf8ToB64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
 module.exports = {
     getFirstBrowserLanguage,
     normalizeBrowserLanguage,
     localGet,
     localSet,
     getURLHost,
+    utf8ToB64,
 };

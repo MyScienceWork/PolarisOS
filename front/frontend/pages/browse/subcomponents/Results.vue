@@ -64,12 +64,30 @@
                         >
                             <span class="icon is-small"><i class="fa fa-pencil-square-o"></i></span>
                         </router-link>
-                        <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
-                            <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
-                        </a>
-                        <a class="level-item" :alt="lang('f_share_on_twitter')" :title="lang('f_share_on_twitter')">
-                            <span class="icon is-small"><i class="fa fa-twitter"></i></span>
-                        </a>
+                        <social-sharing :url="`${host}/view/${info._id}`"
+                          :title="info.title.content"
+                          :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
+                          quote=""
+                          hashtags="ined"
+                          twitter-user="ined"
+                          network-tag="a"
+                          inline-template>
+                            <network network="facebook" class="level-item">
+                                <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
+                            </network>
+                        </social-sharing>
+                        <social-sharing :url="`${host}/view/${info._id}`"
+                          :title="info.title.content"
+                          :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
+                          quote=""
+                          hashtags="ined"
+                          twitter-user="ined"
+                          network-tag="a"
+                          inline-template>
+                            <network network="twitter" class="level-item">
+                                <span class="icon is-small"><i class="fa fa-twitter"></i></span>
+                            </network>
+                        </social-sharing>
                     </div>
                 </div>
             </div>

@@ -17,25 +17,18 @@
                     <div class="card-content content">
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
-                        <p v-html="authors"></p>
-                        <!--<p>
-                        <strong>Olivier Michalon<sup>1</sup></strong>, 
-                        <strong>Corentin Ribeyre<sup>2</sup></strong>, 
-                        <strong>Marie Candito<sup>3</sup></strong>, 
-                        <strong>Alexis Nasr<sup>1</sup></strong>
-                        </p>-->
-                        <!--<ol>
-                            <li>LIF - Laboratoire d'informatique fondamentale de Marseille</li>
-                            <li>Département de Linguistique - Université de Genève</li>
-                            <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
-                        </ol>-->
+                        <p v-html="contributors.contributors"></p>
+                        <ol>
+                            <li v-for="affiliation in affiliations" v-html="affiliation"></li>
+                        </ol>
                         <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>
                         <p v-if="chapter" v-html="chapter"></p>
                         <p v-if="conference" v-html="conference"></p>
                         <p v-if="other_document" v-html="other_document"></p>
-                        <div class="card card-with-tag" v-if="state.current_abstract.content !== ''">
+                        <p v-if="working_paper" v-html="working_paper"></p>
+                        <div class="card card-with-tag has-medium-bottom-margin" v-if="state.current_abstract.content !== ''">
                             <div class="card-header">
                                 <div class="card-header-title">
                                 </div>
@@ -61,7 +54,7 @@
                                     <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
                                     <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="theme in themes">{{theme}}</li>
+                                            <li v-for="theme in themes">{{lang(theme)}}</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -69,7 +62,8 @@
                             <widget v-if="ids.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
-                                    <p v-for="id in ids"><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
+                                    <p v-for="id in ids" v-if="id.type.toUpperCase() === 'DOI'"><strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a></p>
+                                    <p v-for="id in ids" v-else><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
                                 </div>
                             </widget>
                             <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
@@ -79,11 +73,11 @@
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
                                     <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> {{content_item.url}}</p>
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources">({{r.type}}) {{r.url}}</li>
+                                            <li v-for="r in resources"><a target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -220,7 +214,7 @@
                             <div class="card-content">
                                 <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
                                 <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
-                                <a @click.prevent="run_export('ris')">RIS (EndNote)</a></p> 
+                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p> 
                             </div>
                         </div>
                     </div>
@@ -232,18 +226,30 @@
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
                             </header>
                             <div class="card-content has-text-centered">
-                                <a class="icon facebook-color is-large">
-                                    <i class="fa fa-facebook-official fa-2x"></i>
-                                </a>
-                                <a class="icon twitter-color is-large">
-                                    <i class="fa fa-twitter fa-2x"></i>
-                                </a>
-                                <a class="icon linkedin-color is-large">
-                                    <i class="fa fa-linkedin fa-2x"></i>
-                                </a>
-                                <a class="swap icon is-large">
-                                    <i class="fa fa-envelope fa-2x"></i>
-                                </a>
+                                <social-sharing 
+                                  :title="state.current_title.content"
+                                  :description="state.current_abstract.content"
+                                  quote=""
+                                  hashtags="ined"
+                                  twitter-user="InedFr"
+                                  network-tag="a"
+                                  inline-template
+                                >
+                                    <div>
+                                        <network network="facebook" class="icon facebook-color is-large share-icon">
+                                            <i class="fa fa-facebook-official fa-2x"></i>
+                                        </network>
+                                        <network network="twitter" class="icon twitter-color is-large share-icon">
+                                            <i class="fa fa-twitter fa-2x"></i>
+                                        </network>
+                                        <network network="linkedin" class="icon linkedin-color is-large share-icon">
+                                            <i class="fa fa-linkedin fa-2x"></i>
+                                        </network>
+                                        <network network="email" class="swap icon is-large share-icon">
+                                            <i class="fa fa-envelope fa-2x"></i>
+                                        </network>
+                                    </div>
+                                </social-sharing> 
                             </div>
                         </div>
                     </div>

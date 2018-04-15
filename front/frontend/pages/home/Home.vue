@@ -7,7 +7,28 @@
                     <template slot="card-title">
                         {{lang('l_last_deposits')}}
                     </template>
-                    <last-deposits :items="items" slot="card-content" />
+                    <div 
+                        slot="card-extra-header" 
+                        class="is-pulled-right"
+                    >
+                        <rss-feed-icon
+                            entity="publication"
+                            :sort="['-dates.deposit', '-dates.update']"
+                            :query="lastDepositsQuery"
+                            :mapping="rssMapping"
+                            :lang-code="$store.state.interfaceLang"
+                        />
+                    </div>
+                    <div slot="card-content">
+                        <last-deposits :items="items" />
+                        <div class="level has-medium-bottom-margin has-medium-top-margin">
+                            <div class="level-left">
+                            </div>
+                            <div class="level-right">
+                                <router-link class="level-item" to="/browse">{{lang('l_see_more')}}</router-link>
+                            </div>
+                        </div>
+                    </div>
                 </card>
             </div>
             <div class="column is-6">
