@@ -1,4 +1,5 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
+const BrowserUtils = require('../../../../common/utils/browser');
 const _ = require('lodash');
 const moment = require('moment');
 const CopyRequester = require('../../view/subcomponents/CopyRequester.vue');
@@ -58,6 +59,11 @@ module.exports = {
             }
 
             return item.depositor === this.user._id;
+        },
+    },
+    computed: {
+        host() {
+            return BrowserUtils.getURLHost(window.location);
         },
     },
 };

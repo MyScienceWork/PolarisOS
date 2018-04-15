@@ -222,7 +222,7 @@
                             <div class="card-content">
                                 <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
                                 <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
-                                <a @click.prevent="run_export('ris')">RIS (EndNote)</a></p> 
+                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p> 
                             </div>
                         </div>
                     </div>
@@ -234,18 +234,30 @@
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
                             </header>
                             <div class="card-content has-text-centered">
-                                <a class="icon facebook-color is-large">
-                                    <i class="fa fa-facebook-official fa-2x"></i>
-                                </a>
-                                <a class="icon twitter-color is-large">
-                                    <i class="fa fa-twitter fa-2x"></i>
-                                </a>
-                                <a class="icon linkedin-color is-large">
-                                    <i class="fa fa-linkedin fa-2x"></i>
-                                </a>
-                                <a class="swap icon is-large">
-                                    <i class="fa fa-envelope fa-2x"></i>
-                                </a>
+                                <social-sharing 
+                                  :title="state.current_title.content"
+                                  :description="state.current_abstract.content"
+                                  quote=""
+                                  hashtags="ined"
+                                  twitter-user="InedFr"
+                                  network-tag="a"
+                                  inline-template
+                                >
+                                    <div>
+                                        <network network="facebook" class="icon facebook-color is-large share-icon">
+                                            <i class="fa fa-facebook-official fa-2x"></i>
+                                        </network>
+                                        <network network="twitter" class="icon twitter-color is-large share-icon">
+                                            <i class="fa fa-twitter fa-2x"></i>
+                                        </network>
+                                        <network network="linkedin" class="icon linkedin-color is-large share-icon">
+                                            <i class="fa fa-linkedin fa-2x"></i>
+                                        </network>
+                                        <network network="email" class="swap icon is-large share-icon">
+                                            <i class="fa fa-envelope fa-2x"></i>
+                                        </network>
+                                    </div>
+                                </social-sharing> 
                             </div>
                         </div>
                     </div>

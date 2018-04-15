@@ -8,6 +8,7 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
+const BrowserUtils = require('../../../common/utils/browser');
 
 require('moment/min/locales.min');
 
@@ -569,6 +570,9 @@ module.exports = {
             }
 
             return item.resources.filter(r => (r.type != null && r.url != null));
+        },
+        host() {
+            return BrowserUtils.getURLHost(window.location);
         },
     },
     mounted() {
