@@ -2,11 +2,12 @@ const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const Langs = require('../../lists/langs');
 const Quantities = require('../../lists/quantities');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin],
     data() {
         return {
             state: {

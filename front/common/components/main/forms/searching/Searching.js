@@ -17,7 +17,7 @@ module.exports = {
         detailed: { default: false, type: Boolean },
         detailKey: { default: '', type: String },
         tableClasses: { default: '', type: String },
-        columns: { default: () => {}, type: Object },
+        columns: { default: () => ({}), type: Object },
     },
     data() {
         return {

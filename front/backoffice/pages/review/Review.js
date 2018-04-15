@@ -3,14 +3,14 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const BrowserUtils = require('../../../common/utils/browser');
-const moment = require('moment');
-const _ = require('lodash');
 const Queries = require('../../../common/specs/queries');
 const SortLists = require('../../../common/specs/sorts');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin],
     data() {
         return {
             state: {
@@ -114,20 +114,6 @@ module.exports = {
             }, []);
 
             return APIRoutes.multi_download('publication', item._id, names, filenames);
-        },
-    },
-    filters: {
-        truncate(value, length, separator = ' ') {
-            return _.truncate(value, {
-                length,
-                separator,
-            });
-        },
-        join(value, subpath, sep = ', ') {
-            return value.map(v => Utils.find_value_with_path(v, subpath.split('.'))).filter(v => v != null).join(sep);
-        },
-        format_date(d, f = 'LLLL') {
-            return moment(d).format(f);
         },
     },
     mounted() {

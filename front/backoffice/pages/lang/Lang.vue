@@ -6,50 +6,77 @@
                 <widget>
                 <span slot="title">{{lang('l_list_language_items')}}</span>
                     <div slot="body">
-                        <fsearching
+                        <fdata-table-searching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.forms.rsink"
                             :search-path="state.rpath"
                             :search-query="search_query"
                             :use-default-query="true"
                             search-type="lang"
+                            :detailed="true"
+                            detail-key="_id"
                         >
-                            <widget slot="search-result" slot-scope="props">
-                                <span slot="title">{{props.info.key}} ({{props.info.lang}})
+                            <template slot="rows" slot-scope="props">
+                                <b-table-column field="_id" :label="lang('l_id')" centered>
+                                    <span class="tag is-light">
+                                        {{props.row._id | truncate(10, '')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="key.raw" :label="lang('l_l_key')" centered sortable>
+                                    <span class="tag is-info">
+                                        {{props.row.key}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="lang" :label="lang('l_l_lang')" centered sortable>
+                                    <span class="tag is-success">
+                                        {{props.row.lang}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="values.na" :label="lang('l_l_na')">
+                                    {{grab_quantity(props.row.values, 'n/a') | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column field="values.one" :label="lang('l_l_one')">
+                                    {{grab_quantity(props.row.values, '1') | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column field="values.other" :label="lang('l_l_other')">
+                                    {{grab_quantity(props.row.values, 'other') | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
                                     <action-button
-                                    class="button is-small button-background-blue"
-                                    @action-click="update(props.info, 'lang')"
+                                        class="button is-small button-background-blue"
+                                        @action-click="update(props.row, 'lang')"
+                                        v-scroll-to="'#mwidget'"
                                     >
-                                    <i class="fa fa-pencil"></i>
+                                        <i class="fa fa-pencil"></i>
                                     </action-button>
                                     <action-button
-                                    class="button is-small button-background-red"
-                                    confirmation="Are you sure?"
-                                    :two-steps="true"
-                                    @action-click="remove(props.info, 'lang')"
+                                        class="button is-small button-background-red"
+                                        confirmation="Are you sure?"
+                                        :two-steps="true"
+                                        @action-click="remove(props.row, 'lang')"
                                     >
-                                    <i class="fa fa-times"></i>
+                                        <i class="fa fa-times"></i>
                                     </action-button>
-                                </span>
-                                <div slot="body">
-                                    <h4>{{props.info.key}} ({{props.info.lang}})</h4>
-                                    <p><strong>N/A</strong> : {{grab_quantity(props.info.values, 'n/a')}}</p>
-                                    <p><strong>1</strong> : {{grab_quantity(props.info.values, '1')}}</p>
-                                    <p><strong>{{lang('b_lang_other')}}</strong> : {{grab_quantity(props.info.values, 'other')}}</p>
-                                    <p><strong>2</strong> : {{grab_quantity(props.info.values, '2')}}</p>
-                                    <p><strong>{{lang('b_lang_few')}}</strong> : {{grab_quantity(props.info.values, 'few')}}</p>
-                                    <p><strong>{{lang('b_lang_many')}}</strong> : {{grab_quantity(props.info.values, 'many')}}</p>
-                                </div>
-                            </widget>
-                        </fsearching>
+                                </b-table-column>
+                            </template>
+                            <div slot="detail" slot-scope="props">
+                                <h4>{{props.row.key}} ({{props.row.lang}})</h4>
+                                <p><strong>N/A</strong> : {{grab_quantity(props.row.values, 'n/a')}}</p>
+                                <p><strong>1</strong> : {{grab_quantity(props.row.values, '1')}}</p>
+                                <p><strong>{{lang('b_lang_other')}}</strong> : {{grab_quantity(props.row.values, 'other')}}</p>
+                                <p><strong>2</strong> : {{grab_quantity(props.row.values, '2')}}</p>
+                                <p><strong>{{lang('b_lang_few')}}</strong> : {{grab_quantity(props.row.values, 'few')}}</p>
+                                <p><strong>{{lang('b_lang_many')}}</strong> : {{grab_quantity(props.row.values, 'many')}}</p>
+                            </div>
+                        </fdata-table-searching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
-                    <span slot="title">Add or modify a language item</span>
+                <widget id="mwidget">
+                    <span slot="title">{{lang('l_add_or_modify_lang')}}</span>
                     <div slot="body">
                         <fform 
                             :name="state.forms.csink" 
