@@ -83,7 +83,7 @@
                                 </div>
                             </widget>
                             <widget v-if="teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_collection', {}, 'other')}}</span>
+                                <span slot="title">{{lang('f_publication_collection_title', {}, 'other')}}</span>
                                 <div slot="body">
                                     <p v-if="teams && teams.length > 0"><strong v-html="lang('f_publication_team', {}, 'other')"></strong>
                                         <ul>
@@ -92,7 +92,7 @@
                                             </li>
                                         </ul>
                                     </p>
-                                    <p v-if="collection"><strong v-html="lang('f_publication_collection')"></strong> {{lang(collection)}}</p>
+                                    <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
                                     <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong> 
                                         <ul>
                                             <li v-for="p in projects">
