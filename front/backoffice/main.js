@@ -1,6 +1,7 @@
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
+const VueScrollTo = require('vue-scrollto');
 const router = require('./router');
 const store = require('../common/store');
 
@@ -22,6 +23,8 @@ const ActionButton = require('./components/themes/main/components/action_button/
 const Widget = require('../common/components/main/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
+
+Vue.use(VueScrollTo);
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',

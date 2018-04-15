@@ -38,4 +38,16 @@ module.exports = {
             { status: 'published' },
         ],
     },
+    form: {
+        $or: [
+            { name: '{{search}}' },
+            { label: '{{search}}' },
+            { 'fields.name': '{{search}}' },
+            { 'fields.label': '{{search}}' },
+            { 'fields.type': '{{search}}' },
+            { 'fields.placeholder': '{{search}}' },
+            { 'fields.multiple_name': '{{search}}' },
+            { 'fields.help.content': '{{search}}' },
+        ],
+    },
 };

@@ -7,6 +7,14 @@
                     <template slot="card-title">
                         {{lang('l_last_deposits')}}
                     </template>
+                    <div 
+                        slot="card-extra-header" 
+                        class="is-pulled-right"
+                    >
+                        <a class="icon is-large share-icon" target='_blank' :title="lang('l_rss_feed')" href='#'>
+                            <i class="fa fa-rss-square fa-2x"></i>
+                        </a>
+                    </div>
                     <last-deposits :items="items" slot="card-content" />
                 </card>
             </div>
