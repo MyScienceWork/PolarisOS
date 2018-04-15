@@ -371,7 +371,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if number}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if number}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
 
             return this.hlang(Handlebars.compile(tpl)(item));
         },
@@ -385,7 +385,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return Handlebars.compile(tpl)(item);
         },
         chapter() {
@@ -399,7 +399,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br />DOI: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
