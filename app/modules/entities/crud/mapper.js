@@ -447,7 +447,7 @@ function transform_to_sort(body, mapping) {
         }
 
         return sorts.map((sort) => {
-            if (sort instanceof String) {
+            if (_.isString(sort)) {
                 const fc = sort[0];
                 if (fc === '-') {
                     return { [sort.slice(1)]: 'desc' };

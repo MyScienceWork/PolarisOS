@@ -11,9 +11,13 @@
                         slot="card-extra-header" 
                         class="is-pulled-right"
                     >
-                        <a class="icon is-large share-icon" target='_blank' :title="lang('l_rss_feed')" href='#'>
-                            <i class="fa fa-rss-square fa-2x"></i>
-                        </a>
+                        <rss-feed-icon
+                            entity="publication"
+                            :sort="['-dates.deposit', '-dates.update']"
+                            :query="lastDepositsQuery"
+                            :mapping="rssMapping"
+                            :lang-code="$store.state.interfaceLang"
+                        />
                     </div>
                     <last-deposits :items="items" slot="card-content" />
                 </card>

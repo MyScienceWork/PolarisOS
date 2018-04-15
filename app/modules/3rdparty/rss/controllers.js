@@ -1,38 +1,56 @@
 // @flow
 const Feed = require('feed');
 const EntitiesUtils = require('../../utils/entities');
+const LangUtils = require('../../utils/lang');
 const Errors = require('../../exceptions/errors');
 const Handlebars = require('../../utils/templating');
 
-const feed = new Feed({
-    title: 'l_rss_title',
-    description: 'l_rss_description',
-    id: 'l_rss_id',
-    link: 'l_rss_link',
-    copyright: 'l_rss_copyright',
-});
 
 async function generate_rss_feed(ctx: Object): Promise<*> {
-    const body = ctx.request.params;
+    const body = ctx.params;
 
     const entity = body.entity;
-    const mapping = JSON.parse(Buffer.from(body.mapping, 'base64').toString());
+    const lang = body.lang || 'EN';
+    let mapping = Buffer.from(body.mapping, 'base64').toString();
+    mapping = JSON.parse(mapping);
 
     let query = {};
     let sort = [];
     let size = 2000;
 
     if (body.query) {
-        query = JSON.parse(Buffer.from(body.query, 'base64').toString());
+        query = Buffer.from(body.query, 'base64').toString();
+        query = JSON.parse(query);
     }
 
     if (body.sort) {
-        sort = JSON.parse(Buffer.from(body.sort, 'base64').toString());
+        sort = Buffer.from(body.sort, 'base64').toString();
+        sort = JSON.parse(sort);
     }
 
     if (body.size) {
         size = Math.min(parseInt(body.size, 10), size);
     }
+
+    const litems = ['l_rss_title', 'l_rss_description',
+        'l_rss_id', 'l_rss_link', 'l_rss_copyright', 'l_p_action'];
+    const lang_items = await Promise.all(litems.map(l =>
+        LangUtils.get_language_values_from_langs(l, [{ value: lang }])));
+    const langs_object = lang_items.reduce((obj, items) => {
+        if (items.length > 0) {
+            obj[items[0].key] = items[0].value;
+        }
+        return obj;
+    }, {});
+
+    const feed = new Feed({
+        title: langs_object.l_rss_title || 'l_rss_title',
+        description: langs_object.l_rss_description || 'l_rss_description',
+        id: langs_object.l_rss_id || 'l_rss_id',
+        link: langs_object.l_rss_link || 'l_rss_link',
+        copyright: langs_object.l_rss_copyright || 'l_rss_copyright',
+        generator: 'PolarisOS',
+    });
 
     const items = await EntitiesUtils.search_and_get_sources(entity, {
         size,

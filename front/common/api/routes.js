@@ -66,4 +66,8 @@ module.exports = {
     multi_download(type, id, names, filenames) {
         return `/downloads/${type}/${id}/${names.join('|')}/${filenames.join('|')}`;
     },
+
+    rss(entity, mapping, lang, query, sort, size) {
+        return `${prefix}/rss/${entity}/${mapping}/${lang}/${query}/${sort}/${size}`;
+    },
 };

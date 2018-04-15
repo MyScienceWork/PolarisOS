@@ -21,6 +21,7 @@ const HierarchicalSelect = require('../common/components/main/forms/elements/hie
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
 const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
+const RSSC = require('../common/components/main/rss/RSS.vue');
 
 const Indexer = require('../common/components/main/indexer/Indexer.vue');
 const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
@@ -68,6 +69,7 @@ Vue.component('hierarchical-structure', HierarchicalStructure);
 Vue.component('card', Card);
 Vue.component('widget', Widget);
 Vue.component('login-lang', LoginLang);
+Vue.component('rss-feed-icon', RSSC);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);

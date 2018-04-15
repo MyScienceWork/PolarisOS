@@ -31,7 +31,7 @@ function retrieve_single_quantity(values) {
 
 async function get_language_values(key, config) {
     const values = await EntitiesUtils.search('lang', {
-        size: 1000,
+        size: config.langs.length,
         where: {
             $and: [
                 { lang: config.langs.map(l => l.value) },
@@ -44,7 +44,7 @@ async function get_language_values(key, config) {
     return hits.map((h) => {
         const src = h.source;
         const value = retrieve_single_quantity(src.values);
-        return { lang: src.lang, value };
+        return { lang: src.lang, value, key };
     });
 }
 
