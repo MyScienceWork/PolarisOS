@@ -17,18 +17,10 @@
                     <div class="card-content content">
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
-                        <p v-html="authors"></p>
-                        <!--<p>
-                        <strong>Olivier Michalon<sup>1</sup></strong>, 
-                        <strong>Corentin Ribeyre<sup>2</sup></strong>, 
-                        <strong>Marie Candito<sup>3</sup></strong>, 
-                        <strong>Alexis Nasr<sup>1</sup></strong>
-                        </p>-->
-                        <!--<ol>
-                            <li>LIF - Laboratoire d'informatique fondamentale de Marseille</li>
-                            <li>Département de Linguistique - Université de Genève</li>
-                            <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
-                        </ol>-->
+                        <p v-html="contributors.contributors"></p>
+                        <ol>
+                            <li v-for="affiliation in affiliations" v-html="affiliation"></li>
+                        </ol>
                         <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>

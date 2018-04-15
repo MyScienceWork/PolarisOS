@@ -5,6 +5,7 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
@@ -13,7 +14,7 @@ const BrowserUtils = require('../../../common/utils/browser');
 require('moment/min/locales.min');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     components: {
         CopyRequester,
     },
@@ -23,7 +24,8 @@ module.exports = {
                 sinks: {
                     reads: {
                         item: 'item_read',
-                        author: 'author_read',
+                        contributor: 'contributor_read',
+                        contributor_role: 'contributor_role_read',
                         depositor: 'depositor_read',
                         lang: 'lang_read',
                         typology: 'typology_read',
@@ -32,7 +34,8 @@ module.exports = {
                 paths: {
                     reads: {
                         item: APIRoutes.entity('publication', 'POST', true),
-                        author: APIRoutes.entity('author', 'GET', true),
+                        contributor: APIRoutes.entity('author', 'POST', true),
+                        contributor_role: APIRoutes.entity('contributor_role', 'POST', true),
                         depositor: APIRoutes.entity('user', 'POST', true),
                         lang: APIRoutes.entity('langref', 'POST', true),
                         typology: APIRoutes.entity('typology', 'POST', true),
@@ -148,6 +151,18 @@ module.exports = {
                         },
                     });
                 }
+
+                if (ci.contributors && ci.contributors.length > 0) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.contributor,
+                        path: this.state.paths.reads.contributor,
+                        body: {
+                            where: {
+                                _id: ci.contributors.map(co => co.label),
+                            },
+                        },
+                    });
+                }
             }
         },
     },
@@ -224,20 +239,79 @@ module.exports = {
 
             return item.abstracts;
         },
-        authors() {
+        contributors() {
             const item = this.content_item;
             if (!item) {
                 return '';
             }
 
-            const authors = item.denormalization.authors || [];
+            const publication_date = parseInt(moment(item.dates.publication).format('YYYY'), 10);
+            const contributors_content = this.fcontent(this.state.sinks.reads.contributor);
+            if (!(contributors_content instanceof Array) || contributors_content.length === 0) {
+                return '';
+            }
 
-            const names = authors
-                .map(a => (a._id.fullname || ''))
-                .filter(a => a !== '')
-                .map(a => `<strong>${a}</strong>`)
-                .join(', ');
-            return names;
+            const contributor_roles_content =
+                this.fcontent(this.state.sinks.reads.contributor_role);
+            if (!(contributor_roles_content instanceof Array)
+                    || contributor_roles_content.length === 0) {
+                return '';
+            }
+
+            const authors = item.contributors.filter(co => co.role === 'author');
+            const others = item.contributors.filter(co => co.role !== 'author');
+
+            const affiliations = {};
+
+            const authors_content = authors.map((a) => {
+                const info = _.find(contributors_content, coc => (coc._id === a.label));
+                let my_affiliations = info.denormalization.affiliations.filter((aff) => {
+                    if (aff.to) {
+                        return aff.from >= publication_date && aff.to <= publication_date;
+                    }
+                    return aff.from >= publication_date;
+                });
+
+                if (my_affiliations.length === 0 && info.denormalization.affiliations.length > 0) {
+                    my_affiliations = [info.denormalization.affiliations[0]];
+                }
+
+                const affiliation_numbers = [];
+                if (my_affiliations.length > 0) {
+                    my_affiliations.forEach((affiliation) => {
+                        const uid = `${affiliation.institution.name}_${affiliation.teams.map(t => t._id).join('_')}`;
+                        if (!(uid in affiliations)) {
+                            affiliations[uid] = { a: affiliation, order: Object.keys(affiliations).length + 1 };
+                        }
+                        affiliation_numbers.push(affiliations[uid].order);
+                    });
+                }
+
+                if (affiliation_numbers.length > 0) {
+                    return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                }
+                return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong>`;
+            });
+
+            const others_content = others.map((a) => {
+                const info = _.find(contributors_content, coc => (coc._id === a.label));
+                const role = _.find(contributor_roles_content,
+                    co_role => (info.role === co_role.value));
+                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbrev)})</strong>`;
+            });
+
+            return { contributors: [...authors_content, ...others_content].join(', '),
+                affiliations };
+        },
+        affiliations() {
+            const affiliations = _.sortBy(this.contributors.affiliations, 'order');
+            return affiliations.map((aff) => {
+                let teams = '';
+                if (aff.a.teams && aff.a.teams.length > 0) {
+                    teams = `<emph>${aff.a.teams.map(t => this.lang(t._id)).join(', ')}</emph><br />`;
+                }
+                return `${teams}<strong>${aff.a.institution.name}</strong>`;
+            });
         },
         titles() {
             const item = this.content_item;
@@ -600,6 +674,15 @@ module.exports = {
                 where: {
                     _id: this.item_id,
                 },
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.contributor_role,
+            path: this.state.paths.reads.contributor_role,
+            body: {
+                size: 10000,
+                where: {},
             },
         });
 
