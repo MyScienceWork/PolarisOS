@@ -30,10 +30,10 @@ module.exports = {
                     },
                 },
                 columns: {
-                    _id: {
+                    'denormalization.type.label': {
                         visible: true,
                         force: true,
-                        title: 'l_id',
+                        title: 'l_p_type',
                     },
                     'denormalization.authors._id.fullname': {
                         visible: true,
