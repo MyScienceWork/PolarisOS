@@ -1,7 +1,9 @@
 const _ = require('lodash');
+const LangMixin = require('../../../../../../common/mixins/LangMixin');
 
 module.exports = {
     props: ['menus'],
+    mixins: [LangMixin],
     data() {
         return {
             isShown: false,

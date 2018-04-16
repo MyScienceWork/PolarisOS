@@ -89,6 +89,13 @@ const Formatting: Array<any> = [
         subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         titles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         abstracts: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        contributors: async result => result.reduce((arr, co) => {
+            if (co.role == null) {
+                co.role = 'author';
+            }
+            arr.push(co);
+            return arr;
+        }, []),
         files: async (result, object) => {
             if (!result) {
                 return [];
@@ -245,6 +252,7 @@ const Defaults: Object = {
     version: 1,
     abstracts: [],
     keywords: [],
+    demovoc_keywords: [],
     subtitles: [],
     translated_titles: [],
     classifications: [],
@@ -266,7 +274,7 @@ const Defaults: Object = {
     sources: [],
 };
 
-const Filtering: Array<string> = ['parent', 'dkeywords', 'review_mode'];
+const Filtering: Array<string> = ['parent', 'review_mode'];
 
 const Messages: Object = {
     set: 'Publication is successfully added',

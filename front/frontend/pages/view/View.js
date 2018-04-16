@@ -297,7 +297,7 @@ module.exports = {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
                 const role = _.find(contributor_roles_content,
                     co_role => (info.role === co_role.value));
-                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbrev)})</strong>`;
+                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbreviation)})</strong>`;
             });
 
             return { contributors: [...authors_content, ...others_content].join(', '),
