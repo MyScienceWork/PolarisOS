@@ -15,7 +15,7 @@
                             search-type="publication"
                             table-classes="has-small-font"
                             :detailed="true"
-                            detail-key="type"
+                            detail-key="_id"
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
                         >
