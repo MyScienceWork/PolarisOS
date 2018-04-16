@@ -15,14 +15,14 @@
                             search-type="publication"
                             table-classes="has-small-font"
                             :detailed="true"
-                            detail-key="_id"
+                            detail-key="type"
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
                         >
                             <template slot="rows" slot-scope="props">
-                                <b-table-column field="_id" :label="lang('l_id')" centered :visible="state.columns._id.visible">
+                                <b-table-column field="denormalization.type.label.raw" :label="lang('l_p_type')" centered :visible="state.columns['denormalization.type.label'].visible" sortable centered>
                                     <span class="tag is-light">
-                                        {{props.row._id | truncate(10, '')}}
+                                        {{lang(props.row.denormalization.type.label) | truncate(30)}}
                                     </span>
                                 </b-table-column>
                                 <b-table-column field="denormalization.authors._id.fullname" :label="lang('l_p_author', {}, 'other')" :visible="state.columns['denormalization.authors._id.fullname'].visible">
@@ -73,6 +73,7 @@
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p> 
                                     <h4 class="title is-4">{{lang('l_general_information')}}</h4>
                                     <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
                                     <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
