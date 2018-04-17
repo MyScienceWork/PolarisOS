@@ -9,6 +9,7 @@ const MinioUtils = require('../../../utils/minio');
 const StreamUtils = require('../../../utils/streams');
 const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
+const parseString = require('xml2js-parser').parseString;
 
 function request_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
@@ -169,6 +170,19 @@ async function import_grobid(ctx: Object, info: string): Promise<*> {
     ctx.body = {};
 }
 
+async function import_sherpa_romeo(ctx: Object): Promise<any> {
+    const body = ctx.request.body;
+    const issn = body.issn;
+
+    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?issn=';
+    const final_url = url + issn;
+
+    const response = await Request.get(final_url).type('xml');
+    const result = await XMLUtils.to_object(response.text);
+    console.log(JSON.stringify(result));
+    ctx.body = result;
+    return result;
+}
 
 async function import_information(ctx: Object): Promise<any> {
     const body = ctx.request.body;
@@ -246,4 +260,5 @@ async function import_information(ctx: Object): Promise<any> {
 
 module.exports = {
     import_information,
+    import_sherpa_romeo,
 };

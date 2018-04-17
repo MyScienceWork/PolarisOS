@@ -3,7 +3,7 @@
         <slot v-if="!state.confirm">
 
         </slot>
-        <span v-else v-html="confirmation">
+        <span v-else v-html="lang('confirmation')">
         </span>
     </component>
 </template>

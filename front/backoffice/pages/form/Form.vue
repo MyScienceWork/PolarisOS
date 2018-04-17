@@ -35,7 +35,7 @@
                                     <action-button
                                     class="has-text-red share-icon"
                                     tag="a"
-                                    confirmation="lang('l_are_you_sure')"
+                                    confirmation="l_are_you_sure"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'form')"
                                     >
@@ -76,6 +76,7 @@
                                 <template slot="variadic" slot-scope="props">
                                     <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.id}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.id}.readonly`" :label="lang('l_field_readonly')" :is-required="true" :placeholder="lang('l_field_readonly')" type="checkbox" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.id}.help.content`" :label="lang('l_help')" :placeholder="lang('l_help')" type="text" :form="state.sinks.creations.form" :is-required="true" />
                                     <finput :name="`${props.fname}.${props.id}.help.use_modal`" :label="lang('l_show_help_as_modal')" :placeholder="lang('l_show_help_as_modal')" type="checkbox" :form="state.sinks.creations.form" :is-required="true" />
                                     <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.form" />

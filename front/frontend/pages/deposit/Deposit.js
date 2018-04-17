@@ -6,6 +6,8 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const Messages = require('../../../common/api/messages');
 const EventHub = require('../../../common/store/event_hub');
+const VueScrollTo = require('vue-scrollto');
+const BrowserUtils = require('../../../common/utils/browser');
 
 module.exports = {
     mixins: [FormMixin, RequestsMixin],
@@ -44,6 +46,12 @@ module.exports = {
         };
     },
     methods: {
+        run_next_or_previous(f) {
+            f();
+            VueScrollTo.scrollTo('#deposit-stepper', 500);
+            const content = this.fcontent(this.state.publication.sink);
+            BrowserUtils.localSet('saved_deposit', content);
+        },
         update_typology_form(form, children) {
             if (!form || form === '' ||
                 (form && form !== this.state.deposit_form_name && this.state.deposit_form_name)) {
@@ -83,7 +91,7 @@ module.exports = {
             this.state.current_step = step - 1;
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step}`);
-            func();
+            this.run_next_or_previous(func);
 
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.publication.sink,
@@ -99,7 +107,7 @@ module.exports = {
                     this.state.current_step = this.state.next_step;
                     this.state.publication.validate_path = APIRoutes.entity('publication',
                         'VALIDATE', false, `0-${this.state.current_step + 1}`);
-                    this.state.stepper.next();
+                    this.run_next_or_previous(this.state.stepper.next);
                 }
 
                 this.$store.commit(Messages.INITIALIZE, {
@@ -113,14 +121,15 @@ module.exports = {
         show_success_validate() {
             this.state.current_step = this.state.next_step;
             this.state.publication.validate_path = APIRoutes.entity('publication',
-                'VALIDATE', false, `0-${this.state.current_step}`);
-            this.state.stepper.next();
+                'VALIDATE', false, `0-${this.state.current_step + 1}`);
+            this.run_next_or_previous(this.state.stepper.next);
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,
                 keep_content: true,
             });
         },
         go_after_success() {
+            BrowserUtils.localRemove('saved_deposit');
             this.$router.push({ path: '/' });
         },
         open_review_modal(props) {
@@ -156,19 +165,24 @@ module.exports = {
         });
 
         const query = this.$route.query;
-
-        if (!query) {
+        if (!query || (query && (!query.type || !query.id))) {
+            const saved_deposit = BrowserUtils.localGet('saved_deposit');
+            if (saved_deposit) {
+                this.$store.state.requests.push({
+                    name: Messages.TRANSFERT_INTO_FORM,
+                    type: 'commit',
+                    content: {
+                        form: this.state.publication.sink,
+                        body: saved_deposit,
+                    },
+                });
+            }
             this.execute_requests().then(() => {}).catch(err => console.error(err));
             return;
         }
 
         const type = query.type;
         const id = query._id;
-
-        if (!id || !type) {
-            this.execute_requests().then(() => {}).catch(err => console.error(err));
-            return;
-        }
 
         switch (type) {
         default:

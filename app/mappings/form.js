@@ -55,6 +55,9 @@ module.exports = {
                             type: {
                                 type: 'keyword',
                             },
+                            readonly: {
+                                type: 'boolean',
+                            },
                             subform: {
                                 type: 'keyword',
                             },

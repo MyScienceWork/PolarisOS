@@ -37,6 +37,10 @@ function localGet(name) {
     }
 }
 
+function localRemove(name) {
+    localStorage.removeItem(name);
+}
+
 function getURLHost(location) {
     return `${location.protocol}//${location.hostname}${location.port ? `:${location.port}` : ''}`;
 }
@@ -50,6 +54,7 @@ module.exports = {
     normalizeBrowserLanguage,
     localGet,
     localSet,
+    localRemove,
     getURLHost,
     utf8ToB64,
 };

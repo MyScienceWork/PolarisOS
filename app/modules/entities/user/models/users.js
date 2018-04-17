@@ -42,6 +42,7 @@ const Completion: Array<any> = [{
     fullname: ComplFunctions.generic_complete('{{object.firstname}} {{object.lastname}}'),
     password: async (o) => {
         const hpassword = Utils.find_value_with_path(o, 'hpassword');
+        console.log(hpassword);
         if (!hpassword) {
             const dpassword = Config.auth.default_password;
             const sha_dpassword = Crypto.createHash('sha1').update(dpassword).digest('hex');
