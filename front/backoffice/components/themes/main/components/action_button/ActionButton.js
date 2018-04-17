@@ -2,6 +2,7 @@ module.exports = {
     props: {
         twoSteps: { default: false, type: Boolean },
         confirmation: { default: 'Are you sure?', type: String },
+        tag: { default: 'button', type: String },
     },
     data() {
         return {
