@@ -179,7 +179,6 @@ async function import_sherpa_romeo(ctx: Object): Promise<any> {
 
     const response = await Request.get(final_url).type('xml');
     const result = await XMLUtils.to_object(response.text);
-    console.log(JSON.stringify(result));
     ctx.body = result;
     return result;
 }
