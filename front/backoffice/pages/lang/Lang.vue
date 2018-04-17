@@ -8,8 +8,8 @@
                     <div slot="body">
                         <fdata-table-searching
                             :search-sink="state.sinks.creations.search"
-                            :result-sink="state.forms.rsink"
-                            :search-path="state.rpath"
+                            :result-sink="state.sinks.reads.lang"
+                            :search-path="state.paths.reads.lang"
                             :search-query="search_query"
                             :use-default-query="true"
                             search-type="lang"
@@ -43,14 +43,24 @@
                                 </b-table-column>
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
                                     <action-button
-                                        class="button is-small button-background-blue"
+                                        class="icon has-text-blue share-icon"
+                                        tag="a"
                                         @action-click="update(props.row, 'lang')"
                                         v-scroll-to="'#mwidget'"
                                     >
                                         <i class="fa fa-pencil"></i>
                                     </action-button>
                                     <action-button
-                                        class="button is-small button-background-red"
+                                        class="icon has-text-orange share-icon"
+                                        tag="a"
+                                        @action-click="use_as_model(props.row, 'lang')"
+                                        v-scroll-to="'#mwidget'"
+                                    >
+                                        <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                        class="icon has-text-red share-icon"
+                                        tag="a"
                                         confirmation="Are you sure?"
                                         :two-steps="true"
                                         @action-click="remove(props.row, 'lang')"
@@ -79,16 +89,16 @@
                     <span slot="title">{{lang('l_add_or_modify_lang')}}</span>
                     <div slot="body">
                         <fform 
-                            :name="state.forms.csink" 
-                            :post_path="state.path" 
-                            :put_path="state.path"
-                            :get_path="state.rpath"
-                            :get_form="state.forms.rsink"
+                            :name="state.sinks.creations.lang" 
+                            :post_path="state.paths.creations.lang" 
+                            :put_path="state.paths.creations.lang"
+                            :get_path="state.paths.reads.lang"
+                            :get_form="state.sinks.reads.lang"
                         >
-                            <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.forms.csink" />
-                            <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.forms.csink" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
-                            <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.forms.csink" />
-                            <fvariadic-element name="values" :form="state.forms.csink" :tabs="true">
+                            <finput name="key" :label="lang('b_key')" :is-required="true" :placeholder="lang('b_key')" type="text" :form="state.sinks.creations.lang" />
+                            <fselect name="parts" :multi="true" :label="lang('b_part_of_website')" :is-required="true" :placeholder="lang('b_part_of_website')" :form="state.sinks.creations.lang" :options="[{value: 'backoffice', label: 'Backoffice'}, {value: 'frontoffice', label: 'Frontoffice'}]"/>
+                            <fselect name="lang" :label="lang('b_lang')" :is-required="true" :options="state.langs" :form="state.sinks.creations.lang" />
+                            <fvariadic-element name="values" :form="state.sinks.creations.lang" :tabs="true">
                             <template slot="variadic" slot-scope="props">
                                 <div class="field">
                                     <div class="checkbox">
@@ -102,9 +112,9 @@
                                         </label>
                                     </div>
                                 </div>
-                                <finput v-if="!state.need_html_editor" :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.forms.csink" />
-                                <finput v-else :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="html-editor" :form="state.forms.csink" />
-                                <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.forms.csink" />
+                                <finput v-if="!state.need_html_editor" :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.sinks.creations.lang" />
+                                <finput v-else :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="html-editor" :form="state.sinks.creations.lang" />
+                                <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.sinks.creations.lang" />
                                 </template>
                             </fvariadic-element>
                         </fform>

@@ -17,15 +17,25 @@
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
                                     <action-button
-                                    class="button is-small button-background-blue"
+                                    class="has-text-blue share-icon"
+                                    tag="a"
                                     @action-click="update(props.info, 'form')"
                                     v-scroll-to="'#mwidget'"
                                     >
-                                    <i class="fa fa-pencil"></i>
+                                        <i class="fa fa-pencil"></i>
                                     </action-button>
                                     <action-button
-                                    class="button is-small button-background-red"
-                                    confirmation="Are you sure?"
+                                    class="has-text-orange share-icon"
+                                    tag="a"
+                                    @action-click="use_as_model(props.info, 'form')"
+                                    v-scroll-to="'#mwidget'"
+                                    >
+                                        <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red share-icon"
+                                    tag="a"
+                                    confirmation="lang('l_are_you_sure')"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'form')"
                                     >
