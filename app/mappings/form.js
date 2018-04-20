@@ -61,6 +61,16 @@ module.exports = {
                             subform: {
                                 type: 'keyword',
                             },
+                            subform_information: {
+                                properties: {
+                                    type: {
+                                        type: 'keyword',
+                                    },
+                                    title: {
+                                        type: 'text',
+                                    },
+                                },
+                            },
                             importer: {
                                 type: 'keyword',
                             },

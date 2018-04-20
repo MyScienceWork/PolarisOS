@@ -380,6 +380,16 @@
                                             :key="`${props.fname}.${props.id}.hiddenValue`" 
                                             :label="lang('b_hidden_value')" :is-required="true" :placeholder="lang('b_hidden_value')" type="text" :form="state.sinks.creations.form" />
                                         </div>
+                                        <div v-else-if="['static-html'].indexOf(state.selected_types[props.id]) !== -1">
+                                            <finput 
+                                            :name="`${props.fname}.${props.id}.hiddenValue`" 
+                                            :key="`${props.fname}.${props.id}.hiddenValue`" 
+                                            :label="lang('l_html_template')" 
+                                            :is-required="true" 
+                                            :placeholder="lang('l_html_template')" 
+                                            type="textarea" 
+                                            :form="state.sinks.creations.form" />
+                                        </div>
                                         <div v-else-if="['subform'].indexOf(state.selected_types[props.id]) !== -1">
                                             <fselect 
                                             :name="`${props.fname}.${props.id}.subform`" 
@@ -390,6 +400,24 @@
                                             fieldLabel="label"
                                             fieldValue="_id"
                                             :form="state.sinks.creations.form" />
+                                            <fselect 
+                                            :name="`${props.fname}.${props.id}.subform_information.type`" 
+                                            :key="`${props.fname}.${props.id}.subform_information.type`" 
+                                            :label="lang('l_subform_type')" 
+                                            :is-required="true"
+                                            :options="subform_types"
+                                            @select-change="(val) => {subform_type_change(val, props.id)}"
+                                            :form="state.sinks.creations.form" />
+                                            <template v-if="['section', 'widget', 'hidden'].indexOf(state.selected_subform_types[props.id]) !== -1">
+                                                <finput 
+                                                    :key="`${props.fname}.${props.id}.subform_information.title`" 
+                                                    :name="`${props.fname}.${props.id}.subform_information.title`" 
+                                                    :label="lang('l_subform_title')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_subform_title')" 
+                                                    type="text" 
+                                                    :form="state.sinks.creations.form" />
+                                            </template>
                                         </div>
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 

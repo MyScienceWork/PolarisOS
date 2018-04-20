@@ -8,6 +8,7 @@ const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
+const XMLUtils = require('../../../utils/xml');
 const Importers = require('../../importer/controllers');
 
 // Pipelines
@@ -267,6 +268,10 @@ const Completion: Array<any> = [
     },
     {
         sherpa: async (object, path) => {
+            if ('sherpa' in object) {
+                return {};
+            }
+
             const ids = Utils.find_value_with_path(object, 'ids'.split('.'));
             if (!ids) {
                 return {};
@@ -285,7 +290,8 @@ const Completion: Array<any> = [
             const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));
             const sherpa_final = {};
             if (conditions) {
-                sherpa_final.conditions = conditions.map((c, i) => ({ label: c, value: i }));
+                sherpa_final.conditions = conditions.map((c, i) =>
+                    ({ label: XMLUtils.strip_xhtml_tags(c), value: i }));
             }
             if (color) {
                 switch (color) {
@@ -304,7 +310,6 @@ const Completion: Array<any> = [
                     break;
                 }
             }
-
             return { sherpa: sherpa_final };
         },
     },

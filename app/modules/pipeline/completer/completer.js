@@ -1,5 +1,4 @@
 // @flow
-
 const _ = require('lodash');
 const Utils = require('../../utils/utils');
 const Logger = require('../../../logger');
@@ -12,11 +11,12 @@ const Logger = require('../../../logger');
  * @param completers - Array of completers
  * @param info - Extra information
  */
-async function complete(object: Object, completers: Array<any>, info: Object = {}): Promise<Object> {
+async function complete(object: Object, completers: Array<any>,
+        info: Object = {}): Promise<Object> {
     let final_object = object;
     for (const completer of completers) {
-        const promises = _.map(completer,
-            (func: Function, path: string) => func(final_object, path, info));
+        const promises = _.map(completer, (func: Function, path: string) =>
+            func(final_object, path, info));
         const results = await Promise.all(promises);
         final_object = Utils.merge_with_superposition(...results, final_object);
     }

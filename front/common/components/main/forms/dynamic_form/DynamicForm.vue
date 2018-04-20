@@ -143,6 +143,17 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 :view-validation-texts="false"
                 />
+                <fstatic
+                v-else-if="['static-html', 'static-text', 'static-list'].indexOf(field.type) !== -1"
+                :name="get_name(field.name)"
+                :type="field.type"
+                :form="cform"
+                :label="lang(field.label || '')"
+                :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :template="field.hiddenValue"
+                />
                 <fselect 
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
                 :label="lang(field.label || '')"
@@ -200,28 +211,67 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 @analyze-file="dropzone_analyze_file"
                 />
-                <dynamic-form 
-                    :form="field.subform" 
-                    :cform="cform"
-                    :prefix="`${props.fname}.${props.id}`"
-                    v-else-if="field.type === 'subform' && field.subform != null"
-                    :single="field.single_multiple"
-                    :readonly="readonly"
-                    :key="i"
-                    @crud-form-change="crud_form_change"
-                    @dropzone-analyze-file="dropzone_analyze_file"
-                >
-                    <template v-if="field.single_multiple && !readonly" slot="form-addons">
-                        <div class="field has-addons">
-                            <div class="control">
-                                <a class="button is-info" @click="props.add">+</a>
+                <template v-else-if="field.type === 'subform' && field.subform != null">
+                    <template v-if="form_is_of_type('widget', field)">
+                        <widget>
+                            <span slot="title">{{lang(field.subform_information.title)}}</span>
+                            <div slot="body">
+                                <dynamic-form 
+                                    :form="field.subform" 
+                                    :cform="cform"
+                                    :prefix="`${props.fname}.${props.id}`"
+                                    :single="field.single_multiple"
+                                    :readonly="readonly"
+                                    :key="i"
+                                    @crud-form-change="crud_form_change"
+                                    @dropzone-analyze-file="dropzone_analyze_file"
+                                >
+                                    <template v-if="field.single_multiple && !readonly" slot="form-addons">
+                                        <div class="field has-addons">
+                                            <div class="control">
+                                                <a class="button is-info" @click="props.add">+</a>
+                                            </div>
+                                            <div class="control">
+                                                <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </dynamic-form>
                             </div>
-                            <div class="control">
-                                <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
-                            </div>
-                        </div>
+                        </widget>
                     </template>
-                </dynamic-form>
+                    <template v-else>
+                        <template v-if="form_is_of_type('section', field)">
+                            <h4 class="title is-4 has-no-bottom-margin">{{lang(field.subform_information.title)}}</h4>
+                            <hr class="hr-section "/>
+                        </template>
+                        <template v-else-if="form_is_of_type('hidden', field)">
+                            <p class="has-small-bottom-margin"><a @click.prevent="show_hidden_form(field)">{{lang(field.subform_information.title)}}</a></p>
+                        </template>
+                        <dynamic-form 
+                            :form="field.subform" 
+                            :cform="cform"
+                            :prefix="`${props.fname}.${props.id}`"
+                            :single="field.single_multiple"
+                            :readonly="readonly"
+                            :key="i"
+                            v-if="!form_is_of_type('hidden', field) || state.show[field.name]"
+                            @crud-form-change="crud_form_change"
+                            @dropzone-analyze-file="dropzone_analyze_file"
+                        >
+                            <template v-if="field.single_multiple && !readonly" slot="form-addons">
+                                <div class="field has-addons">
+                                    <div class="control">
+                                        <a class="button is-info" @click="props.add">+</a>
+                                    </div>
+                                    <div class="control">
+                                        <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                    </div>
+                                </div>
+                            </template>
+                        </dynamic-form>
+                    </template>
+                </template>
             </template>
         </fvariadic-element>
         <template v-else>
@@ -254,6 +304,17 @@
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
             :view-validation-texts="false"
+            />
+            <fstatic
+                v-else-if="['static-html', 'static-text', 'static-list'].indexOf(field.type) !== -1"
+                :name="get_name(field.name)"
+                :type="field.type"
+                :form="cform"
+                :label="lang(field.label || '')"
+                :key="i"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :template="field.hiddenValue"
             />
             <fselect 
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
@@ -300,16 +361,43 @@
             :modal_help="field.help ? field.help.use_modal : false"
             @analyze-file="dropzone_analyze_file"
             />
-            <dynamic-form 
-                :form="field.subform" 
-                :cform="cform"
-                v-else-if="field.type === 'subform' && field.subform != null"
-                :single="field.single_multiple"
-                :readonly="readonly"
-                @crud-form-change="crud_form_change"
-                @dropzone-analyze-file="dropzone_analyze_file"
-            >
-            </dynamic-form>
+            <template v-else-if="field.type === 'subform' && field.subform != null">
+                <template v-if="form_is_of_type('widget', field)">
+                    <widget>
+                        <span slot="title">{{lang(field.subform_information.title)}}</span>
+                        <div slot="body">
+                            <dynamic-form 
+                                :form="field.subform" 
+                                :cform="cform"
+                                :single="field.single_multiple"
+                                :readonly="readonly"
+                                @crud-form-change="crud_form_change"
+                                @dropzone-analyze-file="dropzone_analyze_file"
+                            >
+                            </dynamic-form>
+                        </div>
+                    </widget>
+                </template>
+                <template v-else>
+                    <template v-if="form_is_of_type('section', field)">
+                        <h4 class="title is-4 has-no-bottom-margin">{{lang(field.subform_information.title)}}</h4>
+                        <hr class="hr-section "/>
+                    </template>
+                    <template v-else-if="form_is_of_type('hidden', field)">
+                        <p class="has-small-bottom-margin"><a @click.prevent="show_hidden_form(field)">{{lang(field.subform_information.title)}}</a></p>
+                    </template>
+                    <dynamic-form 
+                        :form="field.subform" 
+                        :cform="cform"
+                        :single="field.single_multiple"
+                        :readonly="readonly"
+                        v-if="!form_is_of_type('hidden', field) || state.show[field.name]"
+                        @crud-form-change="crud_form_change"
+                        @dropzone-analyze-file="dropzone_analyze_file"
+                    >
+                    </dynamic-form>
+                </template>
+            </template>
         </template>
     </template>
 </div>
