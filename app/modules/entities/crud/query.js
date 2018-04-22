@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Operator = require('./enums/operator');
 const ZeroTermsQuery = require('./enums/zero_terms_query');
 const Fuzziness = require('./enums/fuzziness');
@@ -376,6 +377,134 @@ class Terms extends Query {
     }
 }
 
+class Range extends Query {
+    _object: Object;
+    _key: ?string;
+    _lt: ?string;
+    _gt: ?string;
+    _lte: ?string;
+    _gte: ?string;
+    _format: ?string;
+    _timezone: ?string;
+
+    constructor(object: Object = {}) {
+        super(object);
+        this._key = null;
+        this._lt = null;
+        this._gt = null;
+        this._lte = null;
+        this._gte = null;
+        this._format = null;
+        this._timezone = null;
+    }
+
+    field(key: string): Range {
+        this._key = key;
+        return this;
+    }
+
+    lt(val: string): Range {
+        this._lt = val;
+        return this;
+    }
+
+    lte(val: string): Range {
+        this._lte = val;
+        return this;
+    }
+
+    gt(val: string): Range {
+        this._gt = val;
+        return this;
+    }
+
+    gte(val: string): Range {
+        this._gte = val;
+        return this;
+    }
+
+    format(f: string): Range {
+        this._format = f;
+        return this;
+    }
+
+    timezone(t: string): Range {
+        this._timezone = t;
+        return this;
+    }
+
+    operators(ops: Object): Range {
+        _.forEach(ops, (val, key) => {
+            switch (key) {
+            case 'lt':
+            case '<':
+                this.lt(val);
+                break;
+            case 'gt':
+            case '>':
+                this.gt(val);
+                break;
+            case 'gte':
+            case '>=':
+                this.gte(val);
+                break;
+            case 'lte':
+            case '<=':
+                this.lte(val);
+                break;
+            case 'format':
+            case 'f':
+                this.format(val);
+                break;
+            case 'timezone':
+            case 'time_zone':
+            case 'tz':
+                this.timezone(val);
+                break;
+            default:
+                break;
+            }
+        });
+        return this;
+    }
+
+    generate() {
+        if (!this._key) {
+            return {};
+        }
+
+        const not_null = [{ lt: this._lt }, { lte: this._lte },
+              { gte: this._gte }, { gt: this._gt }]
+        .filter((e) => {
+            const keys = Object.keys(e);
+            return e[keys[0]] != null;
+        });
+
+        if (not_null.length === 0) {
+            return {};
+        }
+
+        const q = {
+            range: {
+                [this._key]: {},
+            },
+        };
+
+        const sq = not_null.reduce((obj, i) => _.merge(obj, i), {});
+
+        if (this._format) {
+            sq.format = this._format;
+        }
+
+        if (this._timezone) {
+            sq.time_zone = this._timezone;
+        }
+
+        q.range[this._key] = sq;
+        return q;
+    }
+}
+
 module.exports = {
     RawQuery,
     Query,
@@ -395,4 +524,5 @@ module.exports = {
     QueryString,
     Term,
     Terms,
+    Range,
 };

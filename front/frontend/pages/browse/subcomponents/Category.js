@@ -3,11 +3,13 @@ const moment = require('moment');
 
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const QueryMixin = require('../../../../common/mixins/QueryMixin');
+const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
     props: {
         navItems: { required: true, type: Array },
         filters: { type: Array, default: () => [] },
@@ -15,7 +17,6 @@ module.exports = {
     data() {
         return {
             state: {
-                query: this.$route.query || {},
                 sinks: {
                     creations: {
                         browse: 'browsing_creation',
@@ -32,7 +33,7 @@ module.exports = {
         if (Object.keys(this.state.query).length === 0) {
             this.state.query = { b: 'authors._id', i: 0, entity: 'author' };
         }
-        this.make_request(this.state.query);
+        this.post_hook_query_changed(this.state.query);
     },
     methods: {
         browse(e) {
@@ -41,7 +42,7 @@ module.exports = {
                 form: this.state.sinks.creations.selected,
             });
         },
-        make_request(query) {
+        post_hook_query_changed(query) {
             const entity = query.entity;
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.browse,
@@ -74,18 +75,11 @@ module.exports = {
         },
     },
     watch: {
-        query(q) {
-            this.state.query = q;
-            this.make_request(q);
-        },
         current_state(s) {
             this.dispatch(s, this, this.state.sinks.creations.selected);
         },
     },
     computed: {
-        query() {
-            return this.$route.query;
-        },
         current_nav() {
             const query = this.state.query;
             return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};

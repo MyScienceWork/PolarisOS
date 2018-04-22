@@ -2,13 +2,14 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const QueryMixin = require('../../../common/mixins/QueryMixin');
 
 const BrowsingList = require('../../lists/browse');
 const Category = require('./subcomponents/Category.vue');
 const SearchResults = require('./subcomponents/SearchResults.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
     components: {
         Category,
         SearchResults,
@@ -38,6 +39,10 @@ module.exports = {
     computed: {
         navs() {
             return BrowsingList;
+        },
+        current_nav() {
+            const query = this.state.query;
+            return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
         },
     },
 };

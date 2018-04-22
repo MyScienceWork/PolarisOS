@@ -165,7 +165,7 @@ module.exports = {
         });
 
         const query = this.$route.query;
-        if (!query || (query && (!query.type || !query.id))) {
+        if (!query || (query && (!query.type || !query._id))) {
             const saved_deposit = BrowserUtils.localGet('saved_deposit');
             if (saved_deposit) {
                 this.$store.state.requests.push({

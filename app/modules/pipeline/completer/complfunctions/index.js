@@ -23,6 +23,44 @@ async function secret_complete(object: Object, path: string, info: Object = {}) 
     return result;
 }
 
+function initial(name_path: string, use_dash_split: boolean = true) {
+    return async (object: Object, path: string) => {
+        const name = Utils.find_value_with_path(object, name_path.split('.'));
+        if (name == null || name.trim() === '') {
+            return {};
+        }
+
+        const stopwords = ['de', 'le', 'la', 'les', 'van', 'von', 'du'];
+        const parts = name.split(' ');
+        const info = parts.reduce((arr, p) => {
+            if (stopwords.indexOf(p.toLowerCase()) !== -1) {
+                return arr;
+            }
+            arr.push(p);
+            return arr;
+        }, []);
+
+        if (info.length === 0) {
+            return {};
+        }
+
+        const first = info[0];
+
+        if (first.startsWith('d\'')) {
+            return Utils.make_nested_object_from_path(path.split('.'), first.slice(2)[0]);
+        }
+
+        if (use_dash_split) {
+            const dash_parts = first.split('-');
+            if (dash_parts.length > 1) {
+                const f = dash_parts.map(p => p[0]);
+                return Utils.make_nested_object_from_path(path.split('.'), f.join('-'));
+            }
+        }
+        return Utils.make_nested_object_from_path(path.split('.'), first[0]);
+    };
+}
+
 function denormalization(from_entity: string, from_path: string,
         entity_path: string, flatten: boolean, translatable: boolean): Function {
     const ENV = process.env.NODE_ENV || 'local';
@@ -69,4 +107,5 @@ module.exports = {
     key_complete,
     secret_complete,
     denormalization,
+    initial,
 };

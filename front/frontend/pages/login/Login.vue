@@ -15,7 +15,10 @@
                             <div class="column">
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input is-large" :placeholder="lang('f_your_email')" autofocus="" type="email" v-model="state.email">
+                                        <input class="input is-large" :placeholder="lang('f_your_email')" 
+                                        autofocus="" type="email" v-model="state.email"
+                                        @keyup.enter="authenticate"
+                                        >
                                     </div>
                                 </div>
                             </div>
@@ -25,7 +28,11 @@
                             <div class="column">
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input is-large" :placeholder="lang('f_your_password')" type="password" v-model="state.password">
+                                        <input class="input is-large" 
+                                        :placeholder="lang('f_your_password')" 
+                                        type="password" v-model="state.password"
+                                        @keyup.enter="authenticate"
+                                        >
                                     </div>
                                 </div>
                             </div>

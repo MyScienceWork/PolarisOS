@@ -342,6 +342,39 @@ describe('Mapper#transform_to_search#Shortcut', () => {
         json.match.masterTitle.should.have.property('operator', 'and');
         json.match.masterTitle.should.have.property('minimum_should_match', '100%');
     });
+
+    it('should create range query with used with date type field', () => {
+        const body = {
+            where: {
+                updatedAt: { '<': 'now', '>': 'now-1d' },
+            },
+        };
+
+        const mapping = new Mapping(es_mapping);
+        const search = mapper.transform_to_search(body, mapping);
+        const json = search.generate();
+
+        json.should.have.property('range');
+        json.range.should.have.property('updatedAt');
+        json.range.updatedAt.should.have.property('lt', 'now');
+        json.range.updatedAt.should.have.property('gt', 'now-1d');
+    });
+
+    it('should create range query with used with date type field and an array of operators', () => {
+        const body = {
+            where: {
+                updatedAt: [{ '<': 'now' }, { '>': 'now-1d' }],
+            },
+        };
+
+        const mapping = new Mapping(es_mapping);
+        const search = mapper.transform_to_search(body, mapping);
+        const json = search.generate();
+        json.should.have.property('range');
+        json.range.should.have.property('updatedAt');
+        json.range.updatedAt.should.have.property('lt', 'now');
+        json.range.updatedAt.should.have.property('gt', 'now-1d');
+    });
 });
 
 

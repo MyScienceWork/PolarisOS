@@ -100,6 +100,14 @@ class Mapper {
                 }
                 return bool;
             }
+            case 'date': {
+                const range = value.reduce((q, elt) => q.operators(elt), new queries.Range().field(key));
+                if (outer_query != null) {
+                    most_inner_query.query(range);
+                    return outer_query;
+                }
+                return range;
+            }
             default: {
                 const terms = new queries.Terms({ [key]: value });
                 if (outer_query != null) {
@@ -114,6 +122,15 @@ class Mapper {
             if (q != null && outer_query != null) {
                 most_inner_query.query(q);
                 return outer_query;
+            }
+
+            if (q == null && type === 'date') {
+                const range = new queries.Range().field(key).operators(value);
+                if (outer_query != null) {
+                    most_inner_query.query(range);
+                    return outer_query;
+                }
+                return range;
             }
             return q;
         } else {
@@ -405,6 +422,8 @@ class AggregationMapper {
             return new aggs.CardinalityAggregation(name, aggregation).field(field);
         case 'terms':
             return new aggs.TermsAggregation(name, aggregation).field(field);
+        case 'date_histogram':
+            return new aggs.DateHistogramAggregation(name, aggregation).field(field);
         case 'filter': {
             if (!('$query' in aggregation)) {
                 return null;

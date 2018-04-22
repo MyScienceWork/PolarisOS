@@ -1,11 +1,5 @@
 <template>
     <div>
-        <div class="columns is-centered">
-            <div class="column has-text-centered is-8">
-                <h4 class="title is-4">{{lang('f_browse_info')}}</h4>
-                <p v-html="lang('f_browse_help')"></p>
-            </div>
-        </div>
         <div class="columns is-centered is-multiline">
             <div class="column is-3 has-text-centered" v-for="(obj, idx) in navItems">
                 <router-link  :class="['swap', {'is-active': current_nav.type === obj.type}]" :to="`/browse?b=${obj.type}&i=${idx}&entity=${obj.entity}`">{{lang(obj.text)}}</router-link>
