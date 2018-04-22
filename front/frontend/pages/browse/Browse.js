@@ -54,7 +54,15 @@ module.exports = {
             const elt = content[0].elements[idx];
             return elt.submenus.map((celt) => {
                 const params = BrowserUtils.getQueryParams(celt.query);
-                return { text: celt.name, type: params.b, entity: params.entity };
+                return {
+                    text: celt.name,
+                    type: params.b,
+                    entity: params.entity,
+                    picker: params.picker,
+                    view: params.view,
+                    label: params.label,
+                    abc: params.abc,
+                };
             });
         },
         current_nav() {

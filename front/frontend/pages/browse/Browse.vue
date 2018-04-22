@@ -10,19 +10,23 @@
                         <li v-for="(obj, idx) in navs">
                             <router-link
                                 :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]" 
-                                :to="`/browse?b=${obj.type}&entity=${obj.entity}`">
+                                :to="`/browse?b=${obj.type}&entity=${obj.entity}&view=${obj.view}&picker=${obj.picker}&label=${obj.label}&abc=${obj.abc}`">
                             {{lang(obj.text)}}
                             </router-link>
                         </li>
                     </ul>
                 </aside>
-                <!--<category :filters.sync="state.filters" :nav-items="navs" /> -->
             </div>
             <div class="column">
                 <div class="columns is-centered">
                     <div class="column has-text-centered is-8">
                         <h4 class="title is-4">{{lang('f_browse_info')}}</h4>
                         <p v-html="lang('f_browse_help')"></p>
+                    </div>
+                </div>
+                <div class="columns"> 
+                    <div class="column">
+                        <category :filters.sync="state.filters" />
                     </div>
                 </div>
                 <div class="columns is-centered">
