@@ -5,6 +5,9 @@ const Browser = require('../../../../../../common/utils/browser');
 
 module.exports = {
     mixins: [LangMixin],
+    props: {
+        menu: { type: Object, required: true },
+    },
     components: {
         navbar: Navbar,
     },

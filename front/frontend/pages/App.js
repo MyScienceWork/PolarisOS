@@ -45,6 +45,7 @@ function configure_app($store) {
 module.exports = {
     props: {
         pages: { type: Array, required: true },
+        menu: { type: Object, required: true },
     },
     name: 'App',
     beforeMount() {

@@ -67,11 +67,6 @@ module.exports = {
                     form: this.state.sinks.creations[entity],
                     body,
                 });
-
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.sinks.creations[entity],
-                    keep_content: true,
-                });
             });
         },
         remove(obj, entity) {

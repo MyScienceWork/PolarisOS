@@ -28,6 +28,9 @@ module.exports = {
                             page: {
                                 type: 'keyword',
                             },
+                            query: {
+                                type: 'keyword',
+                            },
                             submenus: {
                                 type: 'nested',
                                 properties: {
@@ -38,6 +41,9 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                     page: {
+                                        type: 'keyword',
+                                    },
+                                    query: {
                                         type: 'keyword',
                                     },
                                 },

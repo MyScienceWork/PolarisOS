@@ -21,7 +21,7 @@
             </div>
         </div>
     </div>
-    <navbar />
+    <navbar :menu="menu" />
 </div>
 </template>
 

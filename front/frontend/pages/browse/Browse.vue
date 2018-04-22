@@ -9,8 +9,8 @@
                     <ul class="menu-list">
                         <li v-for="(obj, idx) in navs">
                             <router-link
-                                :class="['swap', {'is-active': current_nav.type === obj.type}]" 
-                                :to="`/browse?b=${obj.type}&i=${idx}&entity=${obj.entity}`">
+                                :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]" 
+                                :to="`/browse?b=${obj.type}&entity=${obj.entity}`">
                             {{lang(obj.text)}}
                             </router-link>
                         </li>

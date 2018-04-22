@@ -3,34 +3,39 @@ const LangMixin = require('../../../../../../common/mixins/LangMixin');
 
 module.exports = {
     mixins: [LangMixin],
+    props: {
+        menu: { type: Object, required: true },
+    },
     data() {
         return {
             state: {
-                routes: [],
                 colors: ['red', 'purple', 'orange', 'blue', 'brown', 'green'],
             },
         };
     },
+    methods: {
+        generate_route(item) {
+            if (item.query && item.query.trim() !== '') {
+                return `${item.$route}?${item.query}`;
+            }
+            return item.$route;
+        },
+    },
     computed: {
         active_idx() {
-            const index = _.findIndex(this.state.routes, r => this.$route.path === r.path);
+            const index = _.findIndex(this.menu.elements, r => this.$route.path === r.$route);
 
             if (index === -1) {
                 return index;
             }
 
-            const info = this.state.routes[index];
+            const info = this.menu.elements[index];
             if (info) {
                 return index;
             }
             return -1;
         },
-        routes() {
-        },
     },
     beforeMount() {
-        const rs = this.$router.options.routes.filter(r => r.navbar);
-        rs.sort((r1, r2) => (r1.meta.menu_item - r2.meta.menu_item));
-        this.state.routes = rs;
     },
 };

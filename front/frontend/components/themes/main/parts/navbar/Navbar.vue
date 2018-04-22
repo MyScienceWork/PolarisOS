@@ -2,16 +2,39 @@
 <nav role="navigation" aria-label="main navigation" class="navigation-menu">
     <div class="columns is-centered">
         <div
-            v-for="(item, i) in state.routes.filter(it => it.navbar)"
+            v-for="(item, i) in menu.elements"
             :class="`column navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
         >
-            <router-link class="" :to='item.path'>{{lang(item.name)}}</router-link>
+            <b-dropdown hoverable v-if="item.submenus && item.submenus.length > 0">
+                <a
+                    class=""
+                    @click.prevent="() => {}"
+                    slot="trigger"
+                >
+                    {{lang(item.name)}}
+                </a>
+                <b-dropdown-item has-link v-for="(subitem, j) in item.submenus">
+                    <router-link 
+                        class="" 
+                        :to='generate_route(subitem)'
+                    >
+                        {{lang(subitem.name)}}
+                    </router-link>
+                </b-dropdown-item>
+            </b-dropdown>
+            <router-link
+                v-else
+                class="" 
+                :to="generate_route(item)"
+            >
+                {{lang(item.name)}}
+            </router-link>
         </div>
     </div>
     <div v-if="active_idx !== -1" :class="`breadcrumb breadcrumb-${state.colors[active_idx]}`">
         <div class="breadcrumb-content">
             <router-link class="" to='/'><i class="fa fa-home"></i></router-link>
-            <a>{{lang(state.routes[active_idx].name)}}</a>
+            <a>{{lang(menu.elements[active_idx].name)}}</a>
         </div>
     </div>
 </nav>

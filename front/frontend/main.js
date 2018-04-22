@@ -92,6 +92,7 @@ RouterRenderer.render_router('frontoffice').then((result) => {
         render: h => h(App, {
             props: {
                 pages: result.pages,
+                menu: result.menu,
             },
         }),
     });

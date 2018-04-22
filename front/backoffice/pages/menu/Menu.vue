@@ -84,6 +84,14 @@
                                             fieldLabel="route" 
                                             fieldValue="_id"
                                         />
+                                        <finput 
+                                            :name="`${fprops.fname}.${fprops.order}.query`" 
+                                            :key="`${fprops.fname}.${fprops.id}.query`" 
+                                            :label="lang('l_menu_query')" 
+                                            :is-required="true" 
+                                            :placeholder="lang('l_menu_query')" type="text" 
+                                            :form="state.sinks.creations.menu"
+                                        />
                                         <fvariadic-element 
                                             :name="`${fprops.fname}.${fprops.order}.submenus`" 
                                             :key="`${fprops.fname}.${fprops.id}.submenus`" 
@@ -120,6 +128,14 @@
                                                     fieldValue="_id"
                                                     :form="state.sinks.creations.menu" 
                                                     :options="content_page"
+                                                />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.query`" 
+                                                    :key="`${props.fname}.${props.id}.query`" 
+                                                    :label="lang('l_menu_query')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_menu_query')" type="text" 
+                                                    :form="state.sinks.creations.menu"
                                                 />
                                             </template>
                                         </fvariadic-element>

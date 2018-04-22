@@ -11,16 +11,27 @@
                                 <widget>
                                     <span slot="title">{{info.name}} ({{info.route}})
                                         <action-button
-                                        class="button is-small button-background-blue"
+                                        class="share-icon has-text-blue"
                                         @action-click="update(info, 'page')"
+                                        v-scroll-to="'#mwidget'"
+                                        tag="a"
                                         >
                                         <i class="fa fa-pencil"></i>
                                         </action-button>
                                         <action-button
-                                        class="button is-small button-background-red"
+                                        class="has-text-orange share-icon"
+                                        tag="a"
+                                        @action-click="use_as_model(info, 'page')"
+                                        v-scroll-to="'#mwidget'"
+                                        >
+                                            <i class="fa fa-clone"></i>
+                                        </action-button>
+                                        <action-button
+                                        class="share-icon has-text-red"
                                         confirmation="Are you sure?"
                                         :two-steps="true"
                                         @action-click="remove(info, 'page')"
+                                        tag="a"
                                         >
                                         <i class="fa fa-times"></i>
                                         </action-button>
@@ -41,7 +52,7 @@
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                     <span slot="title">{{lang('l_add_or_modify_page')}}</span>
                     <div slot="body">
                         <fform

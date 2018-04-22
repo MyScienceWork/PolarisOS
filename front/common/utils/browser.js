@@ -49,6 +49,20 @@ function utf8ToB64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
 }
 
+function getQueryParams(query) {
+    if (!query) {
+        return { };
+    }
+
+    return (/^[?#]/.test(query) ? query.slice(1) : query)
+    .split('&')
+    .reduce((params, param) => {
+        const [key, value] = param.split('=');
+        params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+        return params;
+    }, { });
+}
+
 module.exports = {
     getFirstBrowserLanguage,
     normalizeBrowserLanguage,
@@ -57,4 +71,5 @@ module.exports = {
     localRemove,
     getURLHost,
     utf8ToB64,
+    getQueryParams,
 };
