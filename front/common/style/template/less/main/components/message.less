@@ -1,0 +1,22 @@
+.generate-colored(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .message.is-abc.is-active-@{name} {
+        background-color: @@name;
+        .message-body {
+            color: white;
+        }
+    }
+    
+    .generate-colored((@i - 1));
+}
+
+.message.is-abc {
+    cursor: pointer;
+    .message-body {
+        font-weight: bold;
+        padding: 0.7rem;
+    }
+}
+
+.generate-colored();

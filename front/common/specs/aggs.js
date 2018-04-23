@@ -18,6 +18,9 @@ function terms_aggregation(field, name) {
             $name: name,
             $type: 'terms',
             size: 100000,
+            // WARNING TODO
+            // Deprecated in 6.0.0, use _key instead of _term
+            order: { _term: 'asc' },
         },
     };
 }

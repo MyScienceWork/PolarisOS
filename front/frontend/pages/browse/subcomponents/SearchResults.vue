@@ -1,6 +1,6 @@
 <template>
     <div class="card-content">
-        <nav class="navbar is-transparent">
+        <nav class="navbar is-transparent" v-if="content.length > 0">
         <div class="navbar-menu">
             <div class="navbar-end">
                 <div class="navbar-item has-dropdown is-hoverable">
@@ -94,7 +94,11 @@
             :logged-in="state.loggedIn"
             :items="content"
             :export-sink="state.sinks.reads.export"
+            v-if="content.length > 0"
         />
+        <div v-else>
+            <p class="has-text-centered" v-html="lang('l_no_search_results')"></p>
+        </div>
         <b-pagination
             v-if="total > state.seso.size"
             :total="total"

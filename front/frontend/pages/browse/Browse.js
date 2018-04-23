@@ -56,12 +56,8 @@ module.exports = {
                 const params = BrowserUtils.getQueryParams(celt.query);
                 return {
                     text: celt.name,
+                    query: celt.query,
                     type: params.b,
-                    entity: params.entity,
-                    picker: params.picker,
-                    view: params.view,
-                    label: params.label,
-                    abc: params.abc,
                 };
             });
         },

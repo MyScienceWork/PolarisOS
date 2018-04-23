@@ -21,6 +21,7 @@ module.exports = {
                 sinks: {
                     creations: {
                         browse: 'browsing_creation',
+                        browse_abc: 'browsing_abc_creation',
                         selected: 'browsing_selected_creation',
                         aggregation: 'browsing_aggregation_creation',
                     },
@@ -28,6 +29,7 @@ module.exports = {
                         search: 'search_read',
                     },
                 },
+                active_abc: null,
             },
         };
     },
@@ -40,13 +42,23 @@ module.exports = {
                 form: this.state.sinks.creations.selected,
             });
         },
-        browse_list(term) {
-            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                form: this.state.sinks.creations.selected,
-                body: {
-                    browsing_terms: [{ _id: term }],
-                },
-            });
+        browse_list(term, type = 'publication') {
+            if (type === 'publication') {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.selected,
+                    body: {
+                        browsing_terms: [{ _id: term }],
+                    },
+                });
+            } else if (type === 'date') {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.selected,
+                    body: {
+                        browsing_dates: term,
+                    },
+                });
+            }
+
             Vue.nextTick(() => {
                 this.send_information(this.state.sinks.creations.selected);
             });
@@ -60,34 +72,44 @@ module.exports = {
             });
 
             if (entity != null && entity.trim() !== '') {
+                const body = {
+                    projection: [label],
+                    size: 1000,
+                };
+                if (query.order) {
+                    body.sort = query.order.split('|');
+                }
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.browse,
                     path: APIRoutes.entity(entity, 'POST', true),
-                    body: {
-                        projection: [label],
-                    },
+                    body,
                 });
             }
 
-            if (this.query.agge && this.query.aggf && this.query.aggt) {
+            if (query.agge && query.aggf && query.aggt) {
                 let aggregation = {};
-                switch (this.query.aggt) {
+                switch (query.aggt) {
                 case 'terms':
-                    aggregation = AggregationSpecs.terms_aggregation(this.query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation');
                     break;
                 case 'date':
-                    aggregation = AggregationSpecs.years_aggregation(this.query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation');
                     break;
                 default:
                     break;
                 }
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
-                    path: APIRoutes.entity(this.query.agge, 'POST', true),
+                    path: APIRoutes.entity(query.agge, 'POST', true),
                     body: {
                         size: 0,
                         aggregations: aggregation,
                     },
+                });
+            } else {
+                this.$store.commit(Messages.REMOVE_FORM, {
+                    form: this.state.sinks.creations.aggregation,
                 });
             }
         },
@@ -98,7 +120,40 @@ module.exports = {
                 if ('browsing_terms' in content) {
                     const ids = content.browsing_terms.map(b => b._id);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
+                } else if ('browsing_dates' in content) {
+                    const date = content.browsing_dates;
+                    this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: {
+                        '>=': date,
+                        '<': `${parseInt(date, 10) + 1}`,
+                        f: 'YYYY',
+                    } })]);
                 }
+            }
+        },
+
+        click_on_abc(letter) {
+            this.state.active_abc = letter;
+            const entity = this.query.agge;
+            const label = this.query.label;
+            const order = this.query.order;
+            const field = this.query.aggf;
+            if (entity != null && entity.trim() !== '' && label != null) {
+                const body = {
+                    projection: [label],
+                    size: 1000,
+                    where: {
+                        [field]: letter,
+                    },
+                };
+                if (order) {
+                    body.sort = order.split('|');
+                }
+
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.creations.browse_abc,
+                    path: APIRoutes.entity(entity, 'POST', true),
+                    body,
+                });
             }
         },
     },
@@ -115,11 +170,50 @@ module.exports = {
                     return [];
                 }
                 return content.map((c) => {
-                    c[this.label] = this.lang(c[this.label]);
+                    if (this.aggregations.length > 0 && this.query.agge === 'publication') {
+                        const info = this.aggregations.find(a => a.key === c._id);
+                        const count = info ? info.count : 0;
+                        c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                    } else {
+                        c[this.label] = this.lang(c[this.label]);
+                    }
                     return c;
                 });
             }
             return [];
+        },
+        aggregations() {
+            const content = this.fcontent(this.state.sinks.creations.aggregation);
+            if (!content) {
+                return [];
+            }
+
+            let ct = content;
+            let keys = Object.keys(ct);
+            while (keys.length === 1 && keys[0] !== 'myaggregation') {
+                ct = ct[keys[0]];
+                keys = Object.keys(ct);
+            }
+
+            if (!('myaggregation' in ct)) {
+                return [];
+            }
+
+            return ct.myaggregation.buckets.map((b) => {
+                const key = b.key_as_string || b.key;
+                const count = b.doc_count;
+                return { key, count };
+            });
+        },
+        options_abc() {
+            const content = this.fcontent(this.state.sinks.creations.browse_abc);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content.map((c) => {
+                c[this.label] = this.lang(c[this.label]);
+                return c;
+            });
         },
         label() {
             return this.state.query.label || '_id';

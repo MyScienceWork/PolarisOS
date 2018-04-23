@@ -253,6 +253,7 @@ class TermsAggregation extends BucketAggregation {
     _shard_size: number;
     _min_doc_count: number;
     _shard_min_doc_count: number;
+    _order: ?Object;
 
     constructor(name: string, object: Object = {}) {
         super(name, object);
@@ -261,14 +262,25 @@ class TermsAggregation extends BucketAggregation {
         this._missing = 'missing' in object ? object.missing : null;
         this._size = 'size' in object ? object.size : 10;
         this._shard_size = 'shard_size' in object ? object.shard_size : this._size;
-        this._order_types = [];
-        this._orders = [];
         this._min_doc_count = 'min_doc_count' in object ?
             object.min_doc_count : 1;
         this._shard_min_doc_count = 'shard_min_doc_count' in object ?
             object.shard_min_doc_count : 1;
         // Check with an enum TODO
         this._collect_mode = 'collect_mode' in object ? object.collect_mode : null;
+        this._order = 'order' in object ? this._extract_order(object.order) : null;
+    }
+
+    _extract_order(order: Object): ?Object {
+        if (order && Object.keys(order).length === 1) {
+            const keys = Object.keys(order);
+            const key = keys[0];
+            if (order[key] === 'desc' || order[key] === 'asc') {
+                return order;
+            }
+            return null;
+        }
+        return null;
     }
 
     include(inc: string | Array<string>) {
@@ -331,6 +343,10 @@ class TermsAggregation extends BucketAggregation {
 
         if (this._exclude != null) {
             obj[this._name].terms.exclude = this._exclude;
+        }
+
+        if (this._order != null) {
+            obj[this._name].terms.order = this._order;
         }
 
         if (this._sub_aggregations.length > 0) {

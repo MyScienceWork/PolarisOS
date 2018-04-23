@@ -10,7 +10,7 @@
                         <li v-for="(obj, idx) in navs">
                             <router-link
                                 :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]" 
-                                :to="`/browse?b=${obj.type}&entity=${obj.entity}&view=${obj.view}&picker=${obj.picker}&label=${obj.label}&abc=${obj.abc}`">
+                                :to="`/browse?${obj.query}`">
                             {{lang(obj.text)}}
                             </router-link>
                         </li>
@@ -33,6 +33,7 @@
                     <div class="column">
                         <div class="card info-card-purple">
                             <search-results 
+                                id="msearchresults"
                                 :search-sink="state.sinks.creations.search"
                                 :result-sink="state.sinks.reads.publication"
                                 :search-path="state.paths.reads.publication"
