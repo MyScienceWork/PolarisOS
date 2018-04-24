@@ -33,6 +33,7 @@ module.exports = {
                 },
                 current_step: 0,
                 next_step: 0,
+                prev_step: 0,
                 total_steps: 5,
                 stepper: {
                     next: undefined,
@@ -52,6 +53,11 @@ module.exports = {
             const content = this.fcontent(this.state.publication.sink);
             BrowserUtils.localSet('saved_deposit', content);
         },
+        update_step(info) {
+            this.state.next_step = info.next_step;
+            this.state.prev_step = info.prev_step;
+            this.state.current_step = info.step;
+        },
         update_typology_form(form, children) {
             if (!form || form === '' ||
                 (form && form !== this.state.deposit_form_name && this.state.deposit_form_name)) {
@@ -66,6 +72,8 @@ module.exports = {
                 this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.typology.subsink,
                 });
+
+                BrowserUtils.localRemove('saved_deposit');
             }
             if (form !== '') {
                 this.state.deposit_form_name = form;
@@ -83,15 +91,12 @@ module.exports = {
                 });
             }
 
-            this.state.next_step = step + 1;
             this.state.stepper.next = func;
         },
         previous(func, step, total) {
-            this.state.next_step = step;
-            this.state.current_step = step - 1;
-            this.state.publication.validate_path = APIRoutes.entity('publication',
-                'VALIDATE', false, `0-${this.state.current_step}`);
             this.run_next_or_previous(func);
+            this.state.publication.validate_path = APIRoutes.entity('publication',
+                'VALIDATE', false, `0-${this.state.current_step + 1}`);
 
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.publication.sink,
@@ -104,10 +109,9 @@ module.exports = {
         send_information() {
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
-                    this.state.current_step = this.state.next_step;
-                    this.state.publication.validate_path = APIRoutes.entity('publication',
-                        'VALIDATE', false, `0-${this.state.current_step + 1}`);
                     this.run_next_or_previous(this.state.stepper.next);
+                    this.state.publication.validate_path = APIRoutes.entity('publication',
+                        'VALIDATE', false, `0-${this.state.current_step}`);
                 }
 
                 this.$store.commit(Messages.INITIALIZE, {
@@ -119,7 +123,6 @@ module.exports = {
             }
         },
         show_success_validate() {
-            this.state.current_step = this.state.next_step;
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step + 1}`);
             this.run_next_or_previous(this.state.stepper.next);

@@ -1,7 +1,7 @@
 <template>
 <div class="card-content">
     <div class="level" v-if="content.length > 0">
-        <div class="level-left">{{total}} {{lang('l_number_search_results', {}, total > 1 ? 'other' : '1')}}</div>
+        <div class="level-left">{{total}} {{lang('l_number_search_results', {}, total)}}</div>
         <div class="level-right">
             <div class="level-item">
                 <div class="field has-addons">

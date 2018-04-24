@@ -93,7 +93,7 @@ module.exports = {
         removeFile(filename, e) {
             e.preventDefault();
             this.$refs.dropzone.removeFile(this.state.files.content[filename]);
-            const idx = _.findIndex(this.state.files.order, n => n === name);
+            const idx = _.findIndex(this.state.files.order, n => n === filename);
             if (idx !== -1) {
                 this.state.files.order.splice(idx, 1);
                 delete this.state.files.content[filename];
