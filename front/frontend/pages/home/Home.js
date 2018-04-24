@@ -21,6 +21,7 @@ module.exports = {
                     reads: {
                         publication: 'publication_read',
                         menu: 'menu_read',
+                        search: 'search_home_sink',
                     },
                 },
                 paths: {
