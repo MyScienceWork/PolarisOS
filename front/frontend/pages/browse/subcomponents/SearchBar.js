@@ -22,6 +22,7 @@ module.exports = {
     },
     methods: {
         search() {
+            // this.$scrollTo('#msearchresults', 500);
             this.$store.commit(Messages.COLLECT, {
                 form: this.searchSink,
                 remove_content: true,

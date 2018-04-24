@@ -8,6 +8,8 @@ const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
+const XMLUtils = require('../../../utils/xml');
+const Importers = require('../../importer/controllers');
 
 // Pipelines
 const PipelineTypeFiles = require('./pipeline_type_files');
@@ -133,6 +135,28 @@ const Formatting: Array<any> = [
             const keywords = result.map(k => ({ value: k.value, type: 'user' }));
             return keywords;
         },
+        ids: async (result, object) => {
+            const journal = Utils.find_value_with_path(object, 'journal'.split('.'));
+            if (!journal) {
+                return result;
+            }
+
+            const relevant_ids = result.filter(i => i.type === 'eissn' || i.type === 'issn');
+            if (relevant_ids.length > 0) {
+                return result;
+            }
+            const journal_source = await EntitiesUtils.retrieve_and_get_source('journal', journal);
+            if (journal_source && 'ids' in journal_source) {
+                const issns = journal_source.ids.reduce((arr, i) => {
+                    if (i.type === 'issn' || i.type === 'eissn') {
+                        arr.push({ type: i.type, _id: i.value });
+                    }
+                    return arr;
+                }, []);
+                result = result.concat(issns);
+            }
+            return result;
+        },
     },
 ];
 
@@ -149,6 +173,13 @@ const Completion: Array<any> = [
         },
         classifications: async () => ({ classifications: [] }),
         has_other_version: async () => ({ has_other_version: false }),
+        depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
+        reviewer: (obj, path, info) => {
+            if (obj.review_mode) {
+                return { reviewer: info.papi ? info.papi._id : null };
+            }
+            return {};
+        },
     },
     {
         'dates.update': async () => ({ dates: { update: +moment() } }),
@@ -234,11 +265,52 @@ const Completion: Array<any> = [
     {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
-        depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
-        reviewer: (obj, path, info) => {
-            if (obj.review_mode) {
-                return { reviewer: info.papi ? info.papi._id : null };
+    },
+    {
+        sherpa: async (object, path) => {
+            if ('sherpa' in object) {
+                return {};
             }
+
+            const ids = Utils.find_value_with_path(object, 'ids'.split('.'));
+            if (!ids) {
+                return {};
+            }
+
+
+            const issns = ids.filter(i => (i.type === 'eissn' || i.type === 'issn'));
+            if (issns.length === 0) {
+                return {};
+            }
+
+            const issn = issns[0]._id;
+
+            const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
+            const conditions = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.conditions.0.condition'.split('.'));
+            const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));
+            const sherpa_final = {};
+            if (conditions) {
+                sherpa_final.conditions = conditions.map((c, i) =>
+                    ({ label: XMLUtils.strip_xhtml_tags(c), value: i }));
+            }
+            if (color) {
+                switch (color) {
+                case 'blue':
+                    sherpa_final.color = '#3273DC';
+                    break;
+                case 'green':
+                    sherpa_final.color = '#23D161';
+                    break;
+                case 'yellow':
+                    sherpa_final.color = '#544300';
+                    break;
+                default:
+                case 'white':
+                    sherpa_final.color = '#FFFFFF';
+                    break;
+                }
+            }
+            return { sherpa: sherpa_final };
         },
     },
 ];
@@ -274,7 +346,7 @@ const Defaults: Object = {
     sources: [],
 };
 
-const Filtering: Array<string> = ['parent', 'review_mode'];
+const Filtering: Array<string> = [];
 
 const Messages: Object = {
     set: 'Publication is successfully added',
@@ -293,7 +365,14 @@ module.exports = {
         Resetting,
         Completion,
         Defaults,
-    }, PipelineDiffusion],
+    }, PipelineDiffusion, {
+        Validation: [],
+        Formatting: [],
+        Completion: [],
+        Filtering: ['sherpa', 'parent', 'review_mode'],
+        Resetting: {},
+        Defaults: {},
+    }],
     Messages,
     Name: 'Publication',
 };

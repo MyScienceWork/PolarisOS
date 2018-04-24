@@ -76,14 +76,14 @@ module.exports = {
             let info = this.state.value;
             if (this.type === 'date') {
                 if (typeof info !== 'string') {
-                    info = +moment(info.toISOString());
+                    info = +moment.utc(info.toISOString());
                 }
             } else if (this.type === 'date-year') {
                 const number = Math.min(Math.max(this.yearRangeStart, parseInt(info, 10)), this.yearRangeEnd);
-                info = +moment(`${number}`, 'YYYY');
+                info = +moment.utc(`${number}`, 'YYYY');
             } else if (this.type === 'time') {
                 if (typeof info !== 'string') {
-                    info = moment(info.toISOString()).format('HH:mm');
+                    info = moment.utc(info.toISOString()).format('HH:mm');
                 }
             } else if (this.type === 'password-sha1' && this.state.value != null && this.state.value.trim() !== '') {
                 info = Crypto.createHash('sha1').update(this.state.value).digest('hex');
@@ -103,9 +103,9 @@ module.exports = {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {
-                return moment().toDate();
+                return moment.utc().toDate();
             } else if (this.type === 'date-year') {
-                return moment().format('YYYY');
+                return moment.utc().format('YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             }

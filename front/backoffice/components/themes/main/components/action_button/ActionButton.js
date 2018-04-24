@@ -1,4 +1,7 @@
+const LangMixin = require('../../../../../../common/mixins/LangMixin');
+
 module.exports = {
+    mixins: [LangMixin],
     props: {
         twoSteps: { default: false, type: Boolean },
         confirmation: { default: 'Are you sure?', type: String },

@@ -46,6 +46,9 @@
                                     <span class="tag is-info" v-else-if="props.row.status === 'incomplete'">
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
+                                    <span class="tag is-light" v-else-if="props.row.status === 'withdrawn'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
                                     <span class="tag is-success" v-else>
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>

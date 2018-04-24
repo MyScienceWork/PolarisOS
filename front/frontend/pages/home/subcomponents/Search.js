@@ -1,11 +1,14 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const AdvancedSearchSpecs = require('../../../../common/specs/AdvancedSearchSpecs');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     props: {
+        showAdvancedSearch: { type: Boolean, default: true },
+        showFavorites: { type: Boolean, default: true },
     },
     data() {
         return {
@@ -13,9 +16,11 @@ module.exports = {
                 more_options: false,
                 search: '',
                 showAdvanced: false,
-                forms: {
-                    ssink: 'search_sink',
-                    collector_sink: 'search_collector_sink',
+                sinks: {
+                    reads: {
+                        ssink: 'search_sink',
+                        collector_sink: 'search_collector_sink',
+                    },
                 },
             },
         };
@@ -23,14 +28,14 @@ module.exports = {
     methods: {
         trigger_click() {
             this.$store.commit(Messages.COLLECT, {
-                form: this.state.forms.ssink,
+                form: this.state.sinks.reads.ssink,
             });
         },
         initialize() {
             this.send_information();
         },
         send_information() {
-            const content = this.fcontent(this.state.forms.ssink);
+            const content = this.fcontent(this.state.sinks.reads.ssink);
             let search = '';
 
             const defined = 'search' in content && content.search && content.search.trim !== '';
@@ -48,7 +53,7 @@ module.exports = {
             }
 
             if (extra_filters) {
-                params.push(`sink=${encodeURIComponent(this.state.forms.ssink)}`);
+                params.push(`sink=${encodeURIComponent(this.state.sinks.reads.ssink)}`);
             }
 
             const strings = params.reduce((arr, val) => {
@@ -62,7 +67,7 @@ module.exports = {
     },
     computed: {
         current_state() {
-            return this.fstate(this.state.forms.ssink);
+            return this.fstate(this.state.sinks.reads.ssink);
         },
         specs() {
             return AdvancedSearchSpecs;
@@ -70,7 +75,7 @@ module.exports = {
     },
     watch: {
         current_state(s) {
-            this.dispatch(s, this, this.state.forms.ssink);
+            this.dispatch(s, this, this.state.sinks.reads.ssink);
         },
     },
 };

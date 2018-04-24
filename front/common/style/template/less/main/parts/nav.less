@@ -70,6 +70,21 @@ nav.navigation-menu {
         a:hover {
             color: @white;
         }
+
+        .dropdown {
+            display: inline;
+            width: 100%;
+            .dropdown-menu {
+                .dropdown-content {
+                    .has-link {
+                        a {
+                            padding-right: 1em;
+                            padding-left: 1em;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

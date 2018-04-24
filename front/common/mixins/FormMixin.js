@@ -71,6 +71,7 @@ module.exports = {
             switch (s) {
             default:
             case 'noop':
+            case 'transfer':
                 break;
             case 'update':
             case 'initial':

@@ -7,7 +7,7 @@
                     <div class="card-content">
                         <div class="columns is-centered">
                             <div class="column">
-                                <stepper :number-of-steps="state.total_steps">
+                                <stepper :number-of-steps="state.total_steps" id="deposit-stepper">
                                     <template slot="step-title" slot-scope="props">
                                         {{lang('f_deposit_step')}} {{props.id+1}}
                                     </template>

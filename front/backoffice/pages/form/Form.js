@@ -5,6 +5,7 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const Queries = require('../../../common/specs/queries');
 const FieldTypes = require('../../../common/lists/fieldtypes');
+const SubformTypes = require('../../../common/lists/subformtypes');
 
 module.exports = {
     mixins: [LangMixin, ReaderMixin, FormCleanerMixin],
@@ -36,6 +37,7 @@ module.exports = {
                     },
                 },
                 selected_types: {},
+                selected_subform_types: {},
             },
         };
     },
@@ -47,6 +49,15 @@ module.exports = {
                 }
             } else {
                 this.$set(this.state.selected_types, idx, val.value);
+            }
+        },
+        subform_type_change(val, idx) {
+            if (val == null) {
+                if (idx in this.state.selected_subform_types) {
+                    delete this.state.selected_subform_types[idx];
+                }
+            } else {
+                this.$set(this.state.selected_subform_types, idx, val.value);
             }
         },
     },
@@ -98,6 +109,9 @@ module.exports = {
         },
         fieldtypes() {
             return FieldTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
+        },
+        subform_types() {
+            return SubformTypes.map(ft => ({ value: ft.value, label: this.lang(ft.label) }));
         },
         search_query() {
             return JSON.stringify(Queries.form);

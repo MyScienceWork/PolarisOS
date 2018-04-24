@@ -358,6 +358,35 @@ class ODM {
         }
     }
 
+    static async _bulk_create_or_update(index: string, type: string, client: Object,
+            body: Object, action: string = 'create'): Promise<?ODM> {
+        try {
+            const content = {
+                index,
+                type,
+                body: _.flatten(body.map((e) => {
+                    if (action === 'create') {
+                        return [{ index: {} }, e];
+                    } else if (action === 'update') {
+                        const _id = e._id;
+                        delete e._id;
+                        return [{ update: { _id } }, { doc: e }];
+                    }
+                    return [];
+                })),
+                refresh: true,
+            };
+
+            const response = await client.bulk(content);
+            console.log(response);
+            return null;
+        } catch (err) {
+            console.log('bulk creation or update error', err);
+            return null;
+        }
+    }
+
+
     async read(opts: Object = {}): Promise<ODM> {
         const population = 'population' in opts ? opts.population : [];
         const source = 'source' in opts ? opts.source : null;
@@ -392,6 +421,16 @@ class ODM {
             model: Object, body: Object, id: string): Promise<?ODM> {
         // console.log('update', JSON.stringify(body));
         return this._create_or_update(index, type, client, model, body, id);
+    }
+
+    static async bulk_create(index: string, type: string, client: Object,
+            body: Object): Promise<?ODM> {
+        return this._bulk_create_or_update(index, type, client, body, 'create');
+    }
+
+    static async bulk_update(index: string, type: string, client: Object,
+            body: Object): Promise<?ODM> {
+        return this._bulk_create_or_update(index, type, client, body, 'update');
     }
 
     oupdate(): Promise<?ODM> {

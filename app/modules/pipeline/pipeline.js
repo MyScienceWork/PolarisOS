@@ -173,7 +173,6 @@ class Pipeline {
             } else if (m === 'merge') {
                 if (method === 'put') {
                     const entity = await EntitiesUtils.retrieve(ctx.request.body._id, type);
-                    console.log(ctx.request.body);
                     ctx.request.body = Pipeline._merge_put(ctx.request.body, entity.db.source);
                 }
                 await next();

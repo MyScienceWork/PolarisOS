@@ -118,6 +118,13 @@ module.exports = {
                 return { label: this.lang(object.label), value: k };
             });
         },
+        bool_options() {
+            return [
+            { label: 'l_bool_and', value: 'and' },
+            { label: 'l_bool_or', value: 'or' },
+            { label: 'l_bool_not', value: 'not' },
+            ];
+        },
     },
     beforeMount() {
         /* const val = { value: Object.keys(this.specs)[0] };

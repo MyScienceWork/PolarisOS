@@ -55,8 +55,21 @@ module.exports = {
                             type: {
                                 type: 'keyword',
                             },
+                            readonly: {
+                                type: 'boolean',
+                            },
                             subform: {
                                 type: 'keyword',
+                            },
+                            subform_information: {
+                                properties: {
+                                    type: {
+                                        type: 'keyword',
+                                    },
+                                    title: {
+                                        type: 'text',
+                                    },
+                                },
                             },
                             importer: {
                                 type: 'keyword',

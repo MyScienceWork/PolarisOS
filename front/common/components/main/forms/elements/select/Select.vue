@@ -13,7 +13,9 @@
               </span>
             </a>
         </b-tooltip>
-        <div :class="{'field': !isAddon, 'has-addons': hasAddons}">
+        <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
+            <slot v-if="hasAddons" name="left-input-addons" />
+            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li> 

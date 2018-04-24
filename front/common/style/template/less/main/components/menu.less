@@ -1,0 +1,11 @@
+.generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .menu-list{
+        a.is-active.is-@{name}{
+            background-color: @@name; 
+        }
+    } 
+}
+
+.generate-colored-cards();

@@ -124,7 +124,10 @@ function crunch_data_for_fetch(action: string, success: boolean, content: any): 
 
     if (success) {
         if (action === 'read') {
-            if ('result' in content && 'hits' in content.result) {
+            if ('result' in content && 'aggs' in content.result) {
+                total = content.result.total;
+                data = content.result.aggs;
+            } else if ('result' in content && 'hits' in content.result) {
                 total = content.result.total;
                 data = content.result.hits.map(hit => hit.source);
             } else {

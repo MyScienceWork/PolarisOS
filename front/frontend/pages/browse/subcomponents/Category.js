@@ -1,120 +1,233 @@
 const _ = require('lodash');
 const moment = require('moment');
+const Vue = require('vue');
 
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const QueryMixin = require('../../../../common/mixins/QueryMixin');
+const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
+const AggregationSpecs = require('../../../../common/specs/aggs');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
     props: {
-        navItems: { required: true, type: Array },
         filters: { type: Array, default: () => [] },
     },
     data() {
         return {
             state: {
-                query: this.$route.query || {},
                 sinks: {
                     creations: {
                         browse: 'browsing_creation',
+                        browse_abc: 'browsing_abc_creation',
                         selected: 'browsing_selected_creation',
+                        aggregation: 'browsing_aggregation_creation',
                     },
                     reads: {
                         search: 'search_read',
                     },
                 },
+                active_abc: null,
             },
         };
     },
     mounted() {
-        if (Object.keys(this.state.query).length === 0) {
-            this.state.query = { b: 'authors._id', i: 0, entity: 'author' };
-        }
-        this.make_request(this.state.query);
+        this.post_hook_query_changed(this.state.query);
     },
     methods: {
-        browse(e) {
-            e.preventDefault();
+        browse() {
             this.$store.commit(Messages.COLLECT, {
                 form: this.state.sinks.creations.selected,
             });
         },
-        make_request(query) {
+        browse_list(term, type = 'publication') {
+            if (type === 'publication') {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.selected,
+                    body: {
+                        browsing_terms: [{ _id: term }],
+                    },
+                });
+            } else if (type === 'date') {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.selected,
+                    body: {
+                        browsing_dates: term,
+                    },
+                });
+            }
+
+            Vue.nextTick(() => {
+                this.send_information(this.state.sinks.creations.selected);
+            });
+        },
+        post_hook_query_changed(query) {
             const entity = query.entity;
+            const label = query.label;
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.browse,
                 keep_content: false,
             });
 
-            if (entity == null || entity.trim() === '') {
+            if (entity != null && entity.trim() !== '') {
+                const body = {
+                    projection: [label],
+                    size: 1000,
+                };
+                if (query.order) {
+                    body.sort = query.order.split('|');
+                }
 
-            } else {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.browse,
                     path: APIRoutes.entity(entity, 'POST', true),
+                    body,
+                });
+            }
+
+            if (query.agge && query.aggf && query.aggt) {
+                let aggregation = {};
+                switch (query.aggt) {
+                case 'terms':
+                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation');
+                    break;
+                case 'date':
+                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation');
+                    break;
+                default:
+                    break;
+                }
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.creations.aggregation,
+                    path: APIRoutes.entity(query.agge, 'POST', true),
                     body: {
-                        projection: ['name', 'title', 'label', 'fullname'],
+                        size: 0,
+                        aggregations: aggregation,
                     },
+                });
+            } else {
+                this.$store.commit(Messages.REMOVE_FORM, {
+                    form: this.state.sinks.creations.aggregation,
                 });
             }
         },
 
         send_information(sink) {
-            if (sink !== this.state.sinks.creations.selected) {
-                return;
+            if (sink === this.state.sinks.creations.selected) {
+                const content = this.fcontent(this.state.sinks.creations.selected);
+                if ('browsing_terms' in content) {
+                    const ids = content.browsing_terms.map(b => b._id);
+                    this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
+                } else if ('browsing_dates' in content) {
+                    const date = content.browsing_dates;
+                    this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: {
+                        '>=': date,
+                        '<': `${parseInt(date, 10) + 1}`,
+                        f: 'YYYY',
+                    } })]);
+                }
             }
+        },
 
-            const content = this.fcontent(this.state.sinks.creations.selected);
-            if ('browsing_terms' in content) {
-                const ids = content.browsing_terms.map(b => b._id);
-                this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
+        click_on_abc(letter) {
+            this.state.active_abc = letter;
+            const entity = this.query.agge;
+            const label = this.query.label;
+            const order = this.query.order;
+            const field = this.query.aggf;
+            if (entity != null && entity.trim() !== '' && label != null) {
+                const body = {
+                    projection: [label],
+                    size: 1000,
+                    where: {
+                        [field]: letter,
+                    },
+                };
+                if (order) {
+                    body.sort = order.split('|');
+                }
+
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.creations.browse_abc,
+                    path: APIRoutes.entity(entity, 'POST', true),
+                    body,
+                });
             }
         },
     },
     watch: {
-        query(q) {
-            this.state.query = q;
-            this.make_request(q);
-        },
         current_state(s) {
             this.dispatch(s, this, this.state.sinks.creations.selected);
         },
     },
     computed: {
-        query() {
-            return this.$route.query;
-        },
-        current_nav() {
-            const query = this.state.query;
-            return query.i != null && query.i >= 0 ? this.navItems[query.i] : {};
-        },
         options() {
-            const entity = this.state.query.entity;
-            if (entity == null || entity.trim() === '') {
-                const r = _.range(1700, parseInt(moment().format('YYYY'), 10) + 1);
-                r.sort((a, b) => b - a);
-                return r.map(a => ({ label: `${a}`, _id: `${a}` }));
+            if (this.picker !== 'date') {
+                const content = this.fcontent(this.state.sinks.creations.browse);
+                if (!(content instanceof Array)) {
+                    return [];
+                }
+                return content.map((c) => {
+                    if (this.aggregations.length > 0 && this.query.agge === 'publication') {
+                        const info = this.aggregations.find(a => a.key === c._id);
+                        const count = info ? info.count : 0;
+                        c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                    } else {
+                        c[this.label] = this.lang(c[this.label]);
+                    }
+                    return c;
+                });
             }
-
-            const content = this.fcontent(this.state.sinks.creations.browse);
-            if (!(content instanceof Array)) {
+            return [];
+        },
+        aggregations() {
+            const content = this.fcontent(this.state.sinks.creations.aggregation);
+            if (!content) {
                 return [];
             }
 
+            let ct = content;
+            let keys = Object.keys(ct);
+            while (keys.length === 1 && keys[0] !== 'myaggregation') {
+                ct = ct[keys[0]];
+                keys = Object.keys(ct);
+            }
+
+            if (!('myaggregation' in ct)) {
+                return [];
+            }
+
+            return ct.myaggregation.buckets.map((b) => {
+                const key = b.key_as_string || b.key;
+                const count = b.doc_count;
+                return { key, count };
+            });
+        },
+        options_abc() {
+            const content = this.fcontent(this.state.sinks.creations.browse_abc);
+            if (!(content instanceof Array)) {
+                return [];
+            }
             return content.map((c) => {
-                const label = Object.keys(c).filter(k => k !== '_id')[0];
-                c[label] = this.lang(c[label]);
+                c[this.label] = this.lang(c[this.label]);
                 return c;
             });
         },
         label() {
-            if (this.options.length > 0) {
-                const info = this.options[0];
-                return Object.keys(info).filter(e => e !== '_id')[0];
-            }
-            return '_id';
+            return this.state.query.label || '_id';
+        },
+        abc() {
+            return this.state.query.abc;
+        },
+        picker() {
+            const picker = this.state.query.picker;
+            return picker;
+        },
+        view() {
+            const view = this.state.query.view;
+            return view;
         },
         current_state() {
             return this.fstate(this.state.sinks.creations.selected);

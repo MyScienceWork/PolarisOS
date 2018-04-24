@@ -6,12 +6,14 @@ const router = require('./router');
 const store = require('../common/store');
 const _ = require('lodash');
 const SocialSharing = require('vue-social-sharing');
+const VueScrollTo = require('vue-scrollto');
 
 
 const Loader = require('./components/loader/Loader.vue');
 const Stepper = require('../common/components/main/stepper/Stepper.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('../common/components/main/forms/form/Form.vue');
 const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
@@ -43,6 +45,7 @@ const App = require('./pages/App.vue');
 
 Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
 
+Vue.use(VueScrollTo);
 Vue.use(SocialSharing);
 
 Vue.use(Buefy.default, {
@@ -58,6 +61,7 @@ Vue.component('stepper', Stepper);
 Vue.component('fform', Form);
 Vue.component('finput', Input);
 Vue.component('fselect', Select);
+Vue.component('fstatic', Static);
 Vue.component('fdropzone', Dropzone);
 Vue.component('fhselect', HierarchicalSelect);
 Vue.component('fvariadic-element', VariadicElement);
@@ -90,6 +94,7 @@ RouterRenderer.render_router('frontoffice').then((result) => {
         render: h => h(App, {
             props: {
                 pages: result.pages,
+                menu: result.menu,
             },
         }),
     });
