@@ -111,7 +111,7 @@ module.exports = {
                 if (this.state.deposit_form_name) {
                     this.run_next_or_previous(this.state.stepper.next);
                     this.state.publication.validate_path = APIRoutes.entity('publication',
-                        'VALIDATE', false, `0-${this.state.current_step}`);
+                        'VALIDATE', false, `0-${this.state.current_step + 1}`);
                 }
 
                 this.$store.commit(Messages.INITIALIZE, {
@@ -123,9 +123,9 @@ module.exports = {
             }
         },
         show_success_validate() {
+            this.run_next_or_previous(this.state.stepper.next);
             this.state.publication.validate_path = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step + 1}`);
-            this.run_next_or_previous(this.state.stepper.next);
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.publication.sink,
                 keep_content: true,

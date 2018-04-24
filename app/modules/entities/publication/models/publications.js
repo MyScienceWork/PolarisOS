@@ -365,6 +365,13 @@ module.exports = {
         Resetting,
         Completion,
         Defaults,
+    }, {
+        Validation,
+        Formatting,
+        Completion,
+        Filtering,
+        Resetting,
+        Defaults,
     }, PipelineDiffusion, {
         Validation: [],
         Formatting: [],
