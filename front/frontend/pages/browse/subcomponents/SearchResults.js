@@ -43,10 +43,10 @@ module.exports = {
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {
-                this.$store.commit(Messages.INITIALIZE, {
+                /* this.$store.commit(Messages.INITIALIZE, {
                     form: this.state.sinks.reads.export,
                     keep_content: false,
-                });
+                });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
                 this.run_search(sink);
             }

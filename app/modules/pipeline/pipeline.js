@@ -180,6 +180,7 @@ class Pipeline {
                 let errors = {};
                 const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
                 for (const i of prange) {
+                    console.log(i, 'in', prange);
                     const pipeline = pipelines[i];
                     const ret = await Pipeline._evaluate_pipeline(ctx, pipeline,
                         type, m, method);
