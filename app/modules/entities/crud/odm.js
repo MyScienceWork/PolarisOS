@@ -503,15 +503,18 @@ class ODM {
             const path = p.split('.');
             const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
             let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
-
             if (ref.length > 0 && vals.length > 0) {
                 ref = ref[0];
                 const last = path[path.length - 1];
                 for (const v of vals) {
                     if (ref === 'lang') {
-                        const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 1 } });
-                        const hits = EntitiesUtils.get_hits(result);
-                        v[last] = hits.length > 0 ? hits[0].source : {};
+                        if (v[last]) {
+                            const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 250 } });
+                            const hits = EntitiesUtils.get_hits(result);
+                            v[last] = hits.length > 0 ? hits.map(h => h.source) : [];
+                        } else {
+                            v[last] = [];
+                        }
                     } else {
                         const result = await EntitiesUtils.retrieve(v[last],
                             ref, '', propagate_population ? population.join(',') : '');

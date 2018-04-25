@@ -1,6 +1,6 @@
 // @flow
 const Readable = require('stream').Readable;
-const Cite = require('citation-js');
+const ExtraCSLStyles = require('../../../../csl_styles/register');
 const moment = require('moment');
 const _ = require('lodash');
 const EntitiesUtils = require('../../../utils/entities');
@@ -11,13 +11,17 @@ const Transformer = require('../../../pipeline/transformer/transformer');
 const CSVStringify = require('csv-stringify');
 const LangUtils = require('../../../utils/lang');
 const BibTeXUtils = require('../../../utils/bibtex');
+const HtmlDocx = require('html-docx-js');
+const Cite = require('citation-js');
+
+ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
 async function transform_to_bibtex_type(publication: Object, extra: Object,
     fields: Array<string> = [], type: string = 'other'): Promise<Object> {
     const grab_abstract = async (pub) => {
         const ab = pub.abstracts.filter(a => a.lang === pub.lang);
         if (ab.length > 0) {
-            return BibTeXUtils.escape_to_bibtex(ab[0].content);
+            return `"{${BibTeXUtils.escape_to_bibtex(ab[0].content)}}"`;
         }
         return null;
     };
@@ -37,16 +41,20 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         let tcountry = null;
         if (country) {
             tcountry = await LangUtils.get_language_values_from_langs(country,
-                [{ value: extra.lang }]);
+                    [{ value: extra.lang }]);
+            if (tcountry.length > 0) {
+                tcountry = tcountry[0].value;
+            } else {
+                tcountry = null;
+            }
         }
-
         const city = Utils.find_value_with_path(pub, 'localisation.city'.split('.'));
         if (city && tcountry) {
-            return BibTeXUtils.escape_to_bibtex(`${city} (${tcountry})`);
+            return `"${BibTeXUtils.escape_to_bibtex(`${city} (${tcountry})`)}"`;
         } else if (city) {
-            return BibTeXUtils.escape_to_bibtex(city);
+            return `"${BibTeXUtils.escape_to_bibtex(city)}"`;
         } else if (tcountry) {
-            return BibTeXUtils.escape_to_bibtex(tcountry);
+            return `"${BibTeXUtils.escape_to_bibtex(tcountry)}"`;
         }
         return null;
     };
@@ -423,6 +431,7 @@ async function export_information(ctx: Object): Promise<any> {
         break;
     case 'csl': {
         const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
+        console.log(bibtex_output);
         const data = new Cite(bibtex_output);
         results = data.get({
             format: 'string',
@@ -430,8 +439,12 @@ async function export_information(ctx: Object): Promise<any> {
             style: `citation-${subtype}`,
             lang: 'en-US',
         });
+        results = JSON.parse(JSON.stringify(results));
+        console.log(results);
+        console.log(subtype);
         results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
-        ext = '.html';
+        results = HtmlDocx.asBlob(results);
+        ext = '.docx';
         break;
     }
     }
