@@ -78,7 +78,8 @@
                             :form="state.forms.csink" 
                         />
                         <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.forms.csink" />
-
+                        <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="textarea" :form="state.forms.csink" />
+                        <finput name="update_settings" :label="lang('b_update_settings')" placeholder="" type="checkbox" :form="state.forms.csink" />
                         </fform>
                     </div>
                 </widget>

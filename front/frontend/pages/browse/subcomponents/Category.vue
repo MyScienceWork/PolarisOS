@@ -17,9 +17,9 @@
                         />
                     </div> 
                     <div class="control">
-                        <a class="icon has-text-info is-medium" :alt="lang('f_search')" :title="lang('f_search')" 
+                        <a class="button" :alt="lang('f_search')" :title="lang('f_search')" 
                             @click.prevent="browse" v-scroll-to="'#msearchresults'">
-                            <i class="fa fa-search fa-2x"></i>
+                            <i class="fa fa-search"></i>
                         </a>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     <ul>
                         <li v-for="obj in options">
                             <a
-                                :class="['swap is-purple']"
+                                class="has-text-purple"
                                 @click.prevent="browse_list(obj._id)"
                                 v-scroll-to="'#msearchresults'"
                             >

@@ -10,20 +10,29 @@
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.query"
                             :search-path="state.paths.reads.query"
-                            :search-query="search_query"
+                            :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="query"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">{{props.info.name}} 
                                     <action-button
-                                    class="button is-small button-background-blue"
+                                    class="has-text-blue"
+                                    tag="a"
                                     @action-click="update(props.info, 'query')"
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
                                     <action-button
-                                    class="button is-small button-background-red"
+                                    class="has-text-orange"
+                                    tag="a"
+                                    @action-click="use_as_model(props.info, 'query')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
                                     confirmation="Are you sure?"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'query')"

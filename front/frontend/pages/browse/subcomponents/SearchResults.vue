@@ -1,7 +1,7 @@
 <template>
 <div class="card-content">
     <div class="level" v-if="content.length > 0">
-        <div class="level-left">{{total}} {{lang('l_number_search_results', {}, total)}}</div>
+        <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" /> <h4 class="is-subtitle is-2"><strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong></h4></div>
         <div class="level-right">
             <div class="level-item">
                 <div class="field has-addons">
@@ -42,6 +42,31 @@
                             <b-dropdown-item has-link>
                                 <a class="navbar-item swap" @click.prevent="export_format('csl', 'havard1')">
                                     {{lang('f_export_csl')}} (Harvard (1))
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'population')">
+                                    {{lang('f_export_csl')}} (Population)
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'chicago')">
+                                    {{lang('f_export_csl')}} (Chicago)
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'springer-humanities')">
+                                    {{lang('f_export_csl')}} (Springer Humanities)
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'iso690')">
+                                    {{lang('f_export_csl')}} (ISO-690)
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'ined-hceres')">
+                                    {{lang('f_export_csl')}} (HCERES)
                                 </a>
                             </b-dropdown-item>
                         </b-dropdown>

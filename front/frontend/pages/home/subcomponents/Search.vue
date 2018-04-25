@@ -5,7 +5,8 @@
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
-                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" :form="state.sinks.reads.ssink" label="" class="has-no-bottom-margin" />
+                    <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
+                        :form="searchSink" label="" class="has-no-bottom-margin" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
@@ -35,7 +36,7 @@
     </div>
     <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch"> 
         <div class="column">
-            <faggregate-form :sink="state.sinks.reads.ssink" :specs="specs" @aggregate-search="trigger_click">
+            <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="trigger_click">
             </faggregate-form>
         </div>
     </div>-->

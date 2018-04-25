@@ -25,8 +25,21 @@
                                         {{lang(props.row.denormalization.type.label) | truncate(30)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="denormalization.authors._id.fullname" :label="lang('l_p_author', {}, 'other')" :visible="state.columns['denormalization.authors._id.fullname'].visible">
+                                <b-table-column 
+                                    field="denormalization.authors._id.fullname" 
+                                    :label="lang('l_p_author', {}, 'other')" 
+                                    :visible="state.columns['denormalization.authors._id.fullname'].visible"
+                                    v-if="props.row.denormalization.authors.length > 0"
+                                >
                                     {{props.row.denormalization.authors | join('_id.fullname') | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column 
+                                    field="denormalization.contributors.label.fullname" 
+                                    :label="lang('l_p_author', {}, 'other')" 
+                                    :visible="state.columns['denormalization.authors._id.fullname'].visible"
+                                    v-else
+                                >
+                                    {{props.row.denormalization.contributors | join('label.fullname') | truncate(30)}}
                                 </b-table-column>
                                 <b-table-column field="title.content" :label="lang('l_p_title')" :visible="state.columns['title.content'].visible">
                                     {{props.row.title.content | truncate(30)}}

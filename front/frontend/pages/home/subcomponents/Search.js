@@ -9,6 +9,7 @@ module.exports = {
     props: {
         showAdvancedSearch: { type: Boolean, default: true },
         showFavorites: { type: Boolean, default: true },
+        searchSink: { type: String, default: 'search_sink' },
     },
     data() {
         return {
@@ -18,7 +19,6 @@ module.exports = {
                 showAdvanced: false,
                 sinks: {
                     reads: {
-                        ssink: 'search_sink',
                         collector_sink: 'search_collector_sink',
                     },
                 },
@@ -28,14 +28,14 @@ module.exports = {
     methods: {
         trigger_click() {
             this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.reads.ssink,
+                form: this.searchSink,
             });
         },
         initialize() {
             this.send_information();
         },
         send_information() {
-            const content = this.fcontent(this.state.sinks.reads.ssink);
+            const content = this.fcontent(this.searchSink);
             let search = '';
 
             const defined = 'search' in content && content.search && content.search.trim !== '';
@@ -67,7 +67,7 @@ module.exports = {
     },
     computed: {
         current_state() {
-            return this.fstate(this.state.sinks.reads.ssink);
+            return this.fstate(this.searchSink);
         },
         specs() {
             return AdvancedSearchSpecs;
@@ -75,7 +75,7 @@ module.exports = {
     },
     watch: {
         current_state(s) {
-            this.dispatch(s, this, this.state.sinks.reads.ssink);
+            this.dispatch(s, this, this.searchSink);
         },
     },
 };

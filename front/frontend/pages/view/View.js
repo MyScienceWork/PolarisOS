@@ -258,6 +258,8 @@ module.exports = {
                 return '';
             }
 
+            console.log(contributor_roles_content);
+
             const authors = item.contributors.filter(co => co.role === 'author');
             const others = item.contributors.filter(co => co.role !== 'author');
 
@@ -296,7 +298,7 @@ module.exports = {
             const others_content = others.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
                 const role = _.find(contributor_roles_content,
-                    co_role => (info.role === co_role.value));
+                        co_role => (a.role === co_role.value));
                 return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbreviation)})</strong>`;
             });
 
