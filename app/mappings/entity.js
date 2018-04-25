@@ -20,6 +20,12 @@ module.exports = {
                     pipeline: {
                         type: 'keyword',
                     },
+                    pipelines: {
+                        type: 'nested',
+                        properties: {
+                            value: { type: 'keyword' },
+                        },
+                    },
                 },
             },
         },

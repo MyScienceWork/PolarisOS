@@ -28,7 +28,7 @@
                                     tag="a"
                                     @action-click="use_as_model(props.info, 'query')"
                                     >
-                                    <i class="fa fa-pencil"></i>
+                                    <i class="fa fa-clone"></i>
                                     </action-button>
                                     <action-button
                                     class="has-text-red"

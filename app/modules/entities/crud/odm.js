@@ -158,6 +158,14 @@ class ODM {
         return null;
     }
 
+    static async fetch_settings(index: string, type: string, client: Object) {
+        const settings = await client.indices.getSettings({ index, type });
+        if (settings && index in settings) {
+            return settings[index];
+        }
+        return null;
+    }
+
     static async read(index: string, type: string,
             client: Object, model: Object, response: Object,
             population: Array<String> = [], backward: boolean = false): Object {

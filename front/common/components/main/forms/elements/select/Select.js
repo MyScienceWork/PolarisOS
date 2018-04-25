@@ -130,10 +130,10 @@ module.exports = {
                 path: self.ajaxUrl,
                 body: {
                     where: {
-                        [self.fieldLabel]: search,
+                        [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
                     },
                     projection: [self.fieldLabel, self.fieldValue],
-                    size: 20,
+                    size: 10,
                 },
             });
             promise.then((res) => {
