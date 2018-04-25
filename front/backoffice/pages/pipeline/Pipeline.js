@@ -4,14 +4,13 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin],
     data() {
         return {
             state: {
-                itemsPerPage: 20,
-                itemsPerRow: 2,
                 paths: {
                     creations: {
                         pipeline: APIRoutes.entity('pipeline', 'POST'),
@@ -28,6 +27,7 @@ module.exports = {
                     },
                     creations: {
                         pipeline: 'pipeline_creation',
+                        search: 'search_creation_pipeline',
                     },
                 },
                 selected_functions: {

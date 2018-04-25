@@ -2,9 +2,10 @@ const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ESQueryMixin, ReaderMixin, LangMixin],
     data() {
         return {
             state: {
@@ -25,21 +26,8 @@ module.exports = {
                         query: APIRoutes.entity('query', 'POST', true),
                     },
                 },
+                es_query_id: 'backoffice-query-query',
             },
         };
-    },
-    methods: {
-    },
-    mounted() {
-    },
-    computed: {
-        search_query() {
-            return JSON.stringify({
-                $or: [
-                    { id: '{{search}}' },
-                    { name: '{{search}}' },
-                ],
-            });
-        },
     },
 };
