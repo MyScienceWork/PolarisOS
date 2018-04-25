@@ -62,8 +62,14 @@
                             <widget v-if="ids.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
-                                    <p v-for="id in ids" v-if="id.type.toUpperCase() === 'DOI'"><strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a></p>
-                                    <p v-for="id in ids" v-else><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
+                                    <p v-for="id in ids">
+                                        <template v-if="id.type.toUpperCase() === 'DOI'">
+                                            <strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
+                                        </template>
+                                        <template v-else>
+                                            <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
+                                        </template>
+                                    </p>
                                 </div>
                             </widget>
                             <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
@@ -185,7 +191,7 @@
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_license')}}</p>
+                                <p class="card-header-title">{{lang('f_publication_license_title')}}</p>
                             </header>
                             <div class="card-content">
                                 <p>{{lang(license)}}</p>
