@@ -149,7 +149,7 @@ module.exports.menu = [
             submenu: [],
             component: Template,
         },
-        {
+        /* {
             section: 'l_ui_ux_section',
             name: 'l_widgets_page',
             access: 'entity',
@@ -158,7 +158,7 @@ module.exports.menu = [
             routes: [Routes.widget],
             submenu: [],
             component: Widget,
-        },
+        },*/
         {
             section: 'l_ui_ux_section',
             name: 'l_pages_page',
@@ -171,7 +171,7 @@ module.exports.menu = [
         },
     ],
 
-    [
+    /* [
         {
             section: 'l_import_export_section',
             name: 'l_connectors_page',
@@ -202,7 +202,7 @@ module.exports.menu = [
             submenu: [],
             component: Widget,
         },
-    ],
+    ],*/
 
     [
         {

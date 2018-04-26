@@ -6,47 +6,63 @@
                 <widget>
                     <span slot="title">{{lang('l_global_configuration')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in readContent">
-                            <div class="column" v-for="content in row">
-                                <widget>
-                                    <span slot="title">
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(content)"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        :confirmation="lang('b_sure')"
-                                        :two-steps="true"
-                                        @action-click="remove(content, 'config')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                        {{content.environment}} 
-                                    </span>
-                                    <div slot="body">
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.config"
+                            :search-path="state.paths.reads.config"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="config"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="has-text-blue"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="update(props.info, 'config')"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="use_as_model(props.info, 'config')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'config')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.environment}} 
+                                </span>
+                                <div slot="body">
 
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                 <span slot="title">{{lang('l_add_or_modify_global_configuration')}}</span>
                     <div slot="body">
                         <fform 
-                            :name="state.forms.csink" 
-                            :post_path="state.path" 
-                            :put_path="state.path"
-                            :get_path="state.rpath"
-                            :get_form="state.forms.rsink"
+                            :name="state.sinks.creations.config" 
+                            :post_path="state.paths.creations.config" 
+                            :put_path="state.paths.creations.config"
+                            :get_path="state.paths.reads.config"
+                            :get_form="state.sinks.reads.config"
                         >
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_general_setting', {}, 'other')}}</span>
@@ -54,13 +70,13 @@
                                     <fselect 
                                         name="environment" :label="lang('b_environment')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         :options="state.environments" 
                                     />
                                     <fselect 
                                         name="langs" :label="lang('b_lang',{}, 'other')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         :multi="true"
                                         :options="state.langs" 
                                     />
@@ -74,13 +90,13 @@
                                         :label="lang('b_config_maxFileSizeInMB')" 
                                         :placeholder="lang('b_config_maxFileSizeInMB')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="text"
                                     />
                                     <finput
                                         name="upload.allowRemoveFiles" 
                                         :label="lang('b_config_allowRemoveFiles')" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="checkbox"
                                     />
                                 </div>
@@ -93,7 +109,7 @@
                                         :label="lang('l_config_smtp_host')" 
                                         :placeholder="lang('l_config_smtp_host')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="text"
                                     />
                                     <finput
@@ -101,13 +117,13 @@
                                         :label="lang('l_config_smtp_port')" 
                                         :placeholder="lang('l_config_smtp_port')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="number"
                                     />
                                     <finput
                                         name="mail.smtp.secure" 
                                         :label="lang('l_config_smtp_secure')" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="checkbox"
                                     />
                                     <finput
@@ -115,7 +131,7 @@
                                         :label="lang('l_config_smtp_auth_user')" 
                                         :placeholder="lang('l_config_smtp_auth_user')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="text"
                                     />
                                     <finput
@@ -123,7 +139,7 @@
                                         :label="lang('l_config_smtp_auth_password')" 
                                         :placeholder="lang('l_config_smtp_auth_password')" 
                                         :is-required="true" 
-                                        :form="state.forms.csink" 
+                                        :form="state.sinks.creations.config" 
                                         type="password"
                                     />
                                 </div>

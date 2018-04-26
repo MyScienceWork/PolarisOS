@@ -4,16 +4,27 @@
         <div class="column has-no-bottom-padding">
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons">
-                    <p class="control has-icons-left is-expanded">
-                    <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
-                        :form="searchSink" label="" class="has-no-bottom-margin" />
+                    <b-collapse :open.sync="state.collapse_opened" v-if="collapsible">
+                        <p class="control has-icons-left is-expanded">
+                            <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
+                                :form="searchSink" label="" class="has-no-bottom-margin" />
+                            <span class="icon is-left">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </p>
+                    </b-collapse>
+                    <p class="control has-icons-left is-expanded" v-else>
+                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
+                            :form="searchSink" label="" class="has-no-bottom-margin" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
-                        </p>
+                    </p>
                     <p class="control">
-                        <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="trigger_click">
-                            <i class="fa fa-search"></i>
+                        <a :class="['button has-text-red swap']" :alt="lang('f_search')" :title="lang('f_search')" 
+                            @click.prevent="trigger_click"
+                        >
+                            <i :class="['fa fa-search']"></i>
                         </a>
                     </p>
                     <p class="control" v-if="showFavorites">

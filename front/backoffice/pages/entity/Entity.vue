@@ -91,8 +91,8 @@
                             :form="state.sinks.creations.entity"
                             :multi="true"
                         />
-                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.sinks.creations.entity" />
-                        <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="textarea" :form="state.sinks.creations.entity" />
+                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
+                        <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
                         <finput name="update_settings" :label="lang('b_update_settings')" placeholder="" type="checkbox" :form="state.sinks.creations.entity" />
                         </fform>
                     </div>

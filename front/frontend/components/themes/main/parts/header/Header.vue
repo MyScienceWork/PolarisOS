@@ -20,11 +20,7 @@
                 <login-lang :languages="languages" :back-to-website="true" website="https://www.ined.fr" />
             </div>
         </div>
-        <div class="columns">
-            <div class="column is-4 is-offset-8">
-                <search :show-advanced-search="false" :show-favorites="false" key="header-searchbar" />
-            </div>
-        </div>
+        <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
     </div>
     <navbar :menu="menu" />
 </div>

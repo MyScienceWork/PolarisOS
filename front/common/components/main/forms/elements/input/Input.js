@@ -4,6 +4,7 @@ const InputMixin = require('../../mixins/InputMixin');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
+const AceEditor = require('vue2-ace-editor');
 
 module.exports = {
     mixins: [RegisterMixin, InputMixin],
@@ -46,9 +47,15 @@ module.exports = {
     },
 
     components: {
+        AceEditor,
     },
 
     methods: {
+        IDEInit() {
+            require('brace/ext/language_tools');
+            require('brace/mode/json');
+            require('brace/theme/solarized_light');
+        },
         toggleHelpModal(e) {
             e.preventDefault();
             if (this.modal_help) {
@@ -108,6 +115,8 @@ module.exports = {
                 return moment.utc().format('YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
+            } else if (this.type === 'ide-editor') {
+                return '';
             }
             return undefined;
         },
