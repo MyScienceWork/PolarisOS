@@ -188,6 +188,39 @@ describe('Mapper#transform_to_search#Bool', () => {
         json.bool.must_not.should.have.lengthOf(1);
         json.bool.must_not[0].should.have.property('term');
     });
+
+    it('should handle bool query correctly (7)', () => {
+        const body = {
+            where: {
+                $or: [
+                    { $$term: { test: 'OK' } },
+                    { $$term: { test: 'NOK' } },
+                ],
+                $msm: 2,
+            },
+        };
+
+        const body_2 = {
+            where: {
+                $or: [
+                    { $$term: { test: 'OK' } },
+                    { $$term: { test: 'NOK' } },
+                ],
+                $minimum_should_match: 2,
+            },
+        };
+
+        [body, body_2].map((b) => {
+            const search = mapper.transform_to_search(b);
+            const json = search.generate();
+            json.should.have.property('bool');
+            expect(json.bool).to.have.property('should');
+            expect(json.bool.should).to.have.lengthOf(2);
+            expect(json.bool.should[0]).to.have.property('term');
+            expect(json.bool.should[1]).to.have.property('term');
+            expect(json.bool).to.property('minimum_should_match', 2);
+        });
+    });
 });
 
 describe('Mapper#transform_to_search#Shortcut', () => {
