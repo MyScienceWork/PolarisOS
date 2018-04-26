@@ -60,8 +60,42 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
     };
 
     const grab_author = async (pub) => {
-        const authors = await Promise.all(pub.authors.map(a => EntitiesUtils.retrieve_and_get_source('author', a._id)));
-        const names = authors.map(a => `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`);
+        const authors_et_al = pub.contributors.filter(c => c.role !== 'editor');
+
+        if (authors_et_al.length === 0) {
+            return null;
+        }
+
+        const roles = await EntitiesUtils.search_and_get_sources('contributor_role', {
+            size: 50,
+            where: {},
+            population: ['abbreviation'],
+        });
+
+        const authors = await Promise.all(authors_et_al.map(a => EntitiesUtils.retrieve_and_get_source('author', a.label)));
+        const authors_roles = authors_et_al.map(a => roles.find(r => r.value === a.role));
+
+        const names = authors.map((a, i) => {
+            const role = authors_roles[i];
+            if (role.value !== 'author') {
+                const abbreviation = role.abbreviation
+                    .filter(ab => ab.lang === extra.lang)[0].values
+                    .filter(v => (v.quantity === 'n/a' || v.quantity === '1'))[0].value;
+                return `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)} (${BibTeXUtils.escape_to_bibtex(abbreviation.toLowerCase())})`;
+            }
+            return `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`;
+        });
+        return `"${names.join(' and ')}"`;
+    };
+
+    const grab_editor = async (pub) => {
+        const editors_only = pub.contributors.filter(c => c.role === 'editor');
+        if (editors_only.length === 0) {
+            return null;
+        }
+
+        const editors = await Promise.all(editors_only.map(a => EntitiesUtils.retrieve_and_get_source('author', a.label)));
+        const names = editors.map(a => `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`);
         return `"${names.join(' and ')}"`;
     };
 
@@ -101,7 +135,7 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         isbn: () => grab_id(publication, 'ids', 'isbn'),
         doi: () => grab_id(publication, 'ids', 'doi'),
         publisher: () => grab_and_escape(publication, 'denormalization.editor'),
-        editor: () => grab_and_escape(publication, 'denormalization.editor'),
+        editor: () => grab_editor(publication),
         journal: () => grab_and_escape(publication, 'denormalization.journal'),
         year: () => grab_date(publication, 'year'),
         month: () => grab_date(publication, 'month'),

@@ -223,7 +223,7 @@ class Mapper {
 
     static bool_query(obj, mapping) {
         let bool = new queries.Bool();
-        ['$and', '$fand', '$nfand', '$or'].forEach((op) => {
+        ['$and', '$fand', '$nfand', '$or', '$msm', '$minimum_should_match'].forEach((op) => {
             if (!(op in obj)) {
                 return;
             }
@@ -231,6 +231,8 @@ class Mapper {
             const val = obj[op];
             if (val instanceof Array) {
                 bool = Mapper.visit_list(bool, val, op, mapping);
+            } else if (op === '$msm' || op === '$minimum_should_match') {
+                bool.minimum_should_match(val);
             } else {
                 bool = Mapper.visit_bool_query(bool, val, op, mapping);
             }
