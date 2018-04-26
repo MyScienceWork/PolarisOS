@@ -40,8 +40,31 @@ class Pipeline extends ODM {
         }
     }
 
-    async generate_defaults(): Promise<Object> {
-        const info = this.source;
+    static async generate_resetters(source: Object): Promise<Object> {
+        if ('resetters' in source) {
+            return source.resetters.reduce((obj, d) => {
+                if (d.value != null && d.key != null) {
+                    const t = Handlebars.compile(d.value)({});
+                    const small = Utils.make_nested_object_from_path(d.key, t);
+                    obj = Utils.merge_with_replacement(obj, small);
+                }
+                return obj;
+            }, {});
+        }
+        return {};
+    }
+
+    static async generate_filters(source: Object): Promise<Array<string>> {
+        if ('filters' in source) {
+            return source.filters
+                .filter(f => (f != null && f.value && f.value != null))
+                .map(f => f.value);
+        }
+        return [];
+    }
+
+    static async generate_defaults(source: Object): Promise<Object> {
+        const info = source;
         if ('defaults' in info) {
             return info.defaults.reduce((obj, d) => {
                 if (d.value != null && d.key != null) {
@@ -55,8 +78,8 @@ class Pipeline extends ODM {
         return {};
     }
 
-    async generate_formatters(): Promise<Array<any>> {
-        const info = this.source;
+    static async generate_formatters(source: Object): Promise<Array<any>> {
+        const info = source;
         if ('formatters' in info && info.formatters.length > 0) {
             return info.formatters.map((f) => {
                 if (f.function.arguments) {
@@ -80,8 +103,8 @@ class Pipeline extends ODM {
         return [];
     }
 
-    async generate_completers(): Promise<Array<any>> {
-        const info = this.source;
+    static async generate_completers(source: Object): Promise<Array<any>> {
+        const info = source;
         if ('completers' in info && info.completers.length > 0) {
             return info.completers.map((f) => {
                 if (f.function.arguments) {
@@ -116,8 +139,8 @@ class Pipeline extends ODM {
         return [];
     }
 
-    async generate_transformers(): Promise<Array<any>> {
-        const info = this.source;
+    static async generate_transformers(source: Object): Promise<Array<any>> {
+        const info = source;
         if (!('transformers' in info)) {
             return [];
         }
@@ -134,8 +157,8 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
-    async generate_validators(): Promise<Array<any>> {
-        const info = this.source;
+    static async generate_validators(source: Object): Promise<Array<any>> {
+        const info = source;
         const validators = [];
         if ('validators' in info && info.validators.length > 0) {
             const partitions = info.validators.reduce((obj, v) => {
@@ -166,18 +189,33 @@ class Pipeline extends ODM {
         return validators;
     }
 
-    async generate_model(index: string, type: string): Object {
+    static async generate_model(index: string, type: string,
+        client: Object, pipelines: Array<Object>): Object {
         // console.log('gen model', index, type);
-        const mapping = await this.constructor.fetch_mapping(index, type,
-                this._client);
-        const defaults = await this.generate_defaults();
-        const formatters = await this.generate_formatters();
-        const completers = await this.generate_completers();
-        const validators = await this.generate_validators();
-        const transformers = await this.generate_transformers();
+        const mapping = await Pipeline.fetch_mapping(index, type, client);
+
+
+        const all_pipelines = [];
+        for (const pipeline of pipelines) {
+            const defaults = await Pipeline.generate_defaults(pipeline.source);
+            const filters = await Pipeline.generate_filters(pipeline.source);
+            const resetters = await Pipeline.generate_resetters(pipeline.source);
+            const formatters = await Pipeline.generate_formatters(pipeline.source);
+            const completers = await Pipeline.generate_completers(pipeline.source);
+            const validators = await Pipeline.generate_validators(pipeline.source);
+            const transformers = await Pipeline.generate_transformers(pipeline.source);
+            all_pipelines.push({
+                Validation: validators,
+                Formatting: formatters,
+                Completion: completers,
+                Transforming: transformers,
+                Filtering: filters,
+                Resetting: resetters,
+                Defaults: defaults,
+            });
+        }
 
         const pipe = {
-            Defaults: defaults,
             RawMapping: mapping,
             Mapping: new MMapping(mapping),
             Messages: {
@@ -185,13 +223,7 @@ class Pipeline extends ODM {
                 remove: `l_message_remove_entity_${type}`,
                 modify: `l_message_modify_entity_${type}`,
             },
-            Pipelines: [{
-                Validation: validators,
-                Formatting: formatters,
-                Completion: completers,
-                Transforming: transformers,
-                Filtering: [],
-            }],
+            Pipelines: all_pipelines,
             Name: type,
         };
         return pipe;

@@ -3,11 +3,11 @@
     <div class="columns is-centered">
         <div
             v-for="(item, i) in menu.elements"
-            :class="`column navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
+            :class="`column is-paddingless navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
         >
-            <b-dropdown hoverable v-if="item.submenus && item.submenus.length > 0">
+            <b-dropdown hoverable v-if="item.submenus && item.submenus.length > 0" :class="`is-${state.colors[i]}`">
                 <a
-                    class=""
+                    class="fullheight-center has-xmedium-padding"
                     @click.prevent="() => {}"
                     slot="trigger"
                 >
@@ -24,7 +24,7 @@
             </b-dropdown>
             <router-link
                 v-else
-                class="" 
+                class="fullheight-center has-xmedium-padding" 
                 :to="generate_route(item)"
             >
                 {{lang(item.name)}}

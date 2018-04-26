@@ -11,11 +11,11 @@ const Validation: Array<any> = [
     Joi.object({
         type: Joi.string().required().label('Entity type'),
         mapping: Joi.string().required().label('Mapping'),
-        pipeline: Joi.string().required().label('Pipeline'),
+        pipelines: Joi.array().min(1).required().items(Joi.any().required()).label('Pipelines'),
     }),
     ValFunctions.checks.is_unique('type', 'entity'),
     ValFunctions.checks.if_exists('form', 'form'),
-    ValFunctions.checks.if_exists('pipeline', 'pipeline'),
+    ValFunctions.checks.if_exists('pipelines._id', 'pipeline', true),
     ValFunctions.checks.is_valid_json('mapping'),
 ];
 

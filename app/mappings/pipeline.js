@@ -41,6 +41,25 @@ module.exports = {
                             },
                         },
                     },
+                    filters: {
+                        type: 'nested',
+                        properties: {
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    resetters: {
+                        type: 'nested',
+                        properties: {
+                            key: {
+                                type: 'keyword',
+                            },
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     defaults: {
                         type: 'nested',
                         properties: {
@@ -57,7 +76,6 @@ module.exports = {
                         properties: {
                             field: {
                                 type: 'keyword',
-                                index: false,
                             },
                             function: FunctionMapping,
                         },
@@ -67,7 +85,6 @@ module.exports = {
                         properties: {
                             field: {
                                 type: 'keyword',
-                                index: false,
                             },
                             function: FunctionMapping,
                         },
@@ -77,7 +94,6 @@ module.exports = {
                         properties: {
                             input: {
                                 type: 'keyword',
-                                index: false,
                             },
                             rules: {
                                 type: 'nested',
@@ -87,7 +103,6 @@ module.exports = {
                             },
                             output: {
                                 type: 'keyword',
-                                index: 'false',
                             },
                         },
                     },
@@ -96,15 +111,12 @@ module.exports = {
                         properties: {
                             field: {
                                 type: 'keyword',
-                                index: false,
                             },
                             type: {
                                 type: 'keyword',
-                                index: false,
                             },
                             required: {
                                 type: 'boolean',
-                                index: false,
                             },
                             function: FunctionMapping,
                         },

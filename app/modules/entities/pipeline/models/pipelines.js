@@ -18,12 +18,22 @@ const Formatting: Array<any> = [
         transformers: a => FormatFunctions.oarray_to_array(a),
         validators: a => FormatFunctions.oarray_to_array(a),
         defaults: a => FormatFunctions.oarray_to_array(a),
+        filters: a => FormatFunctions.oarray_to_array(a),
+        resetters: a => FormatFunctions.oarray_to_array(a),
+    },
+    {
+        formatters: FormatFunctions.filter_empty_or_null_objects,
+        completers: FormatFunctions.filter_empty_or_null_objects,
+        transformers: FormatFunctions.filter_empty_or_null_objects,
+        validators: FormatFunctions.filter_empty_or_null_objects,
+        defaults: FormatFunctions.filter_empty_or_null_objects,
+        filters: FormatFunctions.filter_empty_or_null_objects,
+        resetters: FormatFunctions.filter_empty_or_null_objects,
     },
     {
         'formatters.function.arguments': a => FormatFunctions.oarray_to_array(a),
         'completers.function.arguments': a => FormatFunctions.oarray_to_array(a),
     },
-
 ];
 
 const Completion: Array<any> = [];
