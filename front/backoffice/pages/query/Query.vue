@@ -15,10 +15,11 @@
                             search-type="query"
                         >
                             <widget slot="search-result" slot-scope="props">
-                                <span slot="title">{{props.info.name}} 
+                                <span slot="title">
                                     <action-button
                                     class="has-text-blue"
                                     tag="a"
+                                    v-scroll-to="'#mwidget'"
                                     @action-click="update(props.info, 'query')"
                                     >
                                     <i class="fa fa-pencil"></i>
@@ -26,6 +27,7 @@
                                     <action-button
                                     class="has-text-orange"
                                     tag="a"
+                                    v-scroll-to="'#mwidget'"
                                     @action-click="use_as_model(props.info, 'query')"
                                     >
                                     <i class="fa fa-clone"></i>
@@ -39,6 +41,7 @@
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
+                                    {{props.info.name}}
                                 </span>
                                 <div slot="body">
                                 </div>
@@ -50,7 +53,7 @@
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                 <span slot="title">{{lang('l_add_or_modify_query')}}</span>
                     <div slot="body">
                         <fform 

@@ -23,7 +23,7 @@ module.exports = {
                     pipelines: {
                         type: 'nested',
                         properties: {
-                            value: { type: 'keyword' },
+                            _id: { type: 'keyword' },
                         },
                     },
                 },

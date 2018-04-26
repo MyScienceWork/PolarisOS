@@ -32,9 +32,11 @@ module.exports = {
         },
         es_query_content() {
             if (this.es_query) {
-                return JSON.stringify(this.es_query.content);
+                // WARN TODO
+                // Content is already stringified!
+                return this.es_query.content;
             }
-            return {};
+            return JSON.stringify({});
         },
     },
     mounted() {

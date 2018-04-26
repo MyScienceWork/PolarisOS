@@ -37,6 +37,26 @@
             background: @@name; 
         }
     }
+    
+    .navbar-item {
+        .dropdown.is-@{name} {
+            .dropdown-menu {
+                .dropdown-content {
+                    background-color: @@name;
+                    .has-link {
+                        a {
+                            color: @white;
+                        }
+
+                        a:hover {
+                            background-color: @grey-3;
+                            color: @white;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     .generate-colored-nav-menu((@i - 1));
 }
@@ -66,6 +86,13 @@ nav.navigation-menu {
             text-transform: uppercase;
             width: 100%;
         }
+
+        a.fullheight-center {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
         a:hover {
             color: @white;
@@ -75,6 +102,7 @@ nav.navigation-menu {
             display: inline;
             width: 100%;
             .dropdown-menu {
+                width: 100%;
                 .dropdown-content {
                     .has-link {
                         a {

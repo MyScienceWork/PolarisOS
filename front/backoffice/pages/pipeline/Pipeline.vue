@@ -6,43 +6,54 @@
                 <widget>
                 <span slot="title">{{lang('l_list_of_pipelines')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in read_content_pipeline">
-                            <div v-for="content in row" class="column">
-                                <widget>
-                                    <span slot="title">
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(content, 'pipeline')"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(content, 'pipeline')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                        {{content.name}}
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_pipeline" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.pipeline"
+                            :search-path="state.paths.reads.pipeline"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="pipeline"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="has-text-blue"
+                                    tag="a"
+                                    @action-click="update(props.info, 'pipeline')"
+                                    v-scroll-to="'#mwidget'"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange"
+                                    tag="a"
+                                    @action-click="use_as_model(props.info, 'pipeline')"
+                                    v-scroll-to="'#mwidget'"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'pipeline')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.name}}
+                                </span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                 <span slot="title">{{lang('l_add_or_modify_pipeline')}}</span>
                     <div slot="body">
                         <fform

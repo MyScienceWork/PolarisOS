@@ -1,65 +1,60 @@
-const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
-const Messages = require('../../../common/api/messages');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('entity', 'POST'),
-                rpath: APIRoutes.entity('entity', 'GET'),
-                itemsPerPage: 20,
-                itemsPerRow: 2,
-                selected_types: {},
-                forms: {
-                    csink: 'entity_creation',
-                    rsink: 'entity_read',
-                    rpipeline: 'pipeline_read',
-                    rform: 'form_read',
+                paths: {
+                    reads: {
+                        entity: APIRoutes.entity('entity', 'POST', true),
+                        pipeline: APIRoutes.entity('pipeline', 'POST', true),
+                        form: APIRoutes.entity('form', 'POST', true),
+                    },
+                    creations: {
+                        entity: APIRoutes.entity('entity', 'POST'),
+                    },
                 },
+                sinks: {
+                    reads: {
+                        entity: 'entity_read',
+                        pipeline: 'pipeline_read',
+                        form: 'form_read',
+                    },
+                    creations: {
+                        entity: 'entity_creation',
+                        search: 'entity_creation_search',
+                    },
+                },
+                selected_types: {},
+                es_query_id: 'backoffice-entity-query',
             },
         };
     },
     methods: {
     },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
-        });
-
-        this.$store.dispatch('search', {
-            form: this.state.forms.rpipeline,
-            path: APIRoutes.entity('pipeline', 'POST', true),
-            body: {
-                projection: ['name'],
-                size: 10000,
-            },
-        });
-
-        this.$store.dispatch('search', {
-            form: this.state.forms.rform,
-            path: APIRoutes.entity('form', 'POST', true),
-            body: {
-                projection: ['name'],
-                size: 10000,
-            },
+        ['pipeline', 'form'].forEach((e) => {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    projection: ['name'],
+                    size: 10000,
+                },
+            });
         });
     },
     computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
-        },
         forms() {
-            const fname = this.state.forms.rform;
-            return this.mcontent(fname);
+            return this.mcontent(this.state.sinks.reads.form);
         },
         pipelines() {
-            const fname = this.state.forms.rpipeline;
-            return this.mcontent(fname);
+            return this.mcontent(this.state.sinks.reads.pipeline);
         },
     },
 };
