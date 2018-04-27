@@ -71,29 +71,106 @@
                             :get_path="state.paths.reads.entity"
                             :get_form="state.sinks.reads.entity"
                         >
-                        <finput name="type" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.sinks.creations.entity" />
-                        <fselect
-                            name="form" 
-                            :label="lang('b_form_name')" 
-                            :is-required="true"
-                            :options="forms || []"
-                            fieldLabel="name"
-                            fieldValue="_id"
-                            :form="state.sinks.creations.entity" 
-                        />
-                        <fselect
-                            name="pipelines" 
-                            :label="lang('b_pipeline_name', {}, 'other')" 
-                            :is-required="true"
-                            :options="pipelines || []"
-                            fieldLabel="name"
-                            fieldValue="_id"
-                            :form="state.sinks.creations.entity"
-                            :multi="true"
-                        />
-                        <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="textarea" :form="state.sinks.creations.entity" />
-                        <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="textarea" :form="state.sinks.creations.entity" />
-                        <finput name="update_settings" :label="lang('b_update_settings')" placeholder="" type="checkbox" :form="state.sinks.creations.entity" />
+                            <finput name="type" :label="lang('b_entity_name')" :is-required="true" :placeholder="lang('b_entity_name')" type="text" :form="state.sinks.creations.entity" />
+                            <fselect
+                                name="form" 
+                                :label="lang('b_form_name')" 
+                                :is-required="true"
+                                :options="forms || []"
+                                fieldLabel="name"
+                                fieldValue="_id"
+                                :form="state.sinks.creations.entity" 
+                            />
+                            <fselect
+                                name="pipelines" 
+                                :label="lang('b_pipeline_name', {}, 'other')" 
+                                :is-required="true"
+                                :options="pipelines || []"
+                                fieldLabel="name"
+                                fieldValue="_id"
+                                :form="state.sinks.creations.entity"
+                                :multi="true"
+                            />
+                            <finput name="search_query" 
+                                :label="lang('l_search_query')" 
+                                :placeholder="lang('l_search_query')" 
+                                :is-required="true" 
+                                type="text" 
+                                :form="state.sinks.creations.entity"
+                            />
+                            <widget :collapsed="true"> 
+                                <span slot="title">{{lang('l_configure_backoffice_preview')}}</span>
+                                <div slot="body">
+                                    <fvariadic-element name="backoffice.columns" :form="state.sinks.creations.entity" :tabs="true">
+                                        <template slot="variadic" slot-scope="props">
+                                            <finput :name="`${props.fname}.${props.id}.field`" 
+                                                :label="lang('l_mapping_field')" 
+                                                :placeholder="lang('l_mapping_field')" 
+                                                :is-required="true" 
+                                                type="text" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.title`" 
+                                                :label="lang('l_column_title')" 
+                                                :placeholder="lang('l_column_title')" 
+                                                :is-required="true" 
+                                                type="text" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.sortable`" 
+                                                :label="lang('l_column_sortable')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.sort`" 
+                                                :label="lang('l_sort_field')" 
+                                                :placeholder="lang('l_sort_field')" 
+                                                :is-required="false" 
+                                                type="text" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.centered`" 
+                                                :label="lang('l_column_content_centered')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.force`" 
+                                                :label="lang('l_column_cannot_be_hidden')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.is_tag`" 
+                                                :label="lang('l_column_content_is_tag')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.tag_class`" 
+                                                :label="lang('l_column_content_tag_class')" 
+                                                :placeholder="lang('l_column_content_tag_class')" 
+                                                :is-required="false" 
+                                                type="text" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.id}.truncate`" 
+                                                :label="lang('l_column_content_truncate')" 
+                                                :placeholder="lang('l_column_content_truncate')" 
+                                                :is-required="false" 
+                                                type="number"
+                                                :default-value="0"
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                        </template>
+                                    </fvariadic-element>
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_configure_mapping')}}</span>
+                                <div slot="body">
+                                    <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
+                                    <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
+                                    <finput name="update_settings" :label="lang('b_update_settings')" placeholder="" type="checkbox" :form="state.sinks.creations.entity" />
+                                </div>
+                            </widget>
                         </fform>
                     </div>
                 </widget>

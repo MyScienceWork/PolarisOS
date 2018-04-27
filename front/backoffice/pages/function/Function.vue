@@ -4,61 +4,72 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                    <span slot="title"></span>
+                    <span slot="title">{{lang('l_list_functions')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in readContent">
-                            <div v-for="content in row" class="column">
-                                <widget>
-                                    <span slot="title">
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(content)"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(content, 'function')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                        {{content.name}} ({{content.type}}) 
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="contentLength" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.function"
+                            :search-path="state.paths.reads.function"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="function"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="has-text-blue"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="update(props.info, 'function')"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="use_as_model(props.info, 'function')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'function')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.name}} ({{props.info.type}}) 
+                                </span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
-                    <span slot="title"></span>
+                <widget id="mwidget">
+                    <span slot="title">{{lang('l_add_or_modify_function')}}</span>
                     <div slot="body">
                         <fform
-                            :name="state.forms.csink" 
-                            :post_path="state.path" 
-                            :put_path="state.path"
-                            :get_path="state.rpath"
-                            :get_form="state.forms.rsink"
+                            :name="state.sinks.creations.function" 
+                            :post_path="state.paths.creations.function" 
+                            :put_path="state.paths.creations.function"
+                            :get_path="state.paths.reads.function"
+                            :get_form="state.sinks.reads.function"
                             >
-                                <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.forms.csink" />
-                                <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.forms.csink" />
+                                <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.function" />
+                                <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.sinks.creations.function" />
                                 <h4 class="title is-3">{{lang('b_function_argument', {}, 'other')}}</h4>
                                 <hr />
                                 <fvariadic-element 
                                     name="arguments" 
-                                    :form="state.forms.csink" 
+                                    :form="state.sinks.creations.function" 
                                     :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
@@ -67,7 +78,7 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_name')" 
                                             type="text" 
-                                            :form="state.forms.csink"
+                                            :form="state.sinks.creations.function"
                                         />
                                         <finput 
                                             :name="`${props.fname}.${props.id}.type`"
@@ -75,7 +86,7 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_type')" 
                                             type="text" 
-                                            :form="state.forms.csink"
+                                            :form="state.sinks.creations.function"
                                         />
                                         <finput 
                                             :name="`${props.fname}.${props.id}.default`"
@@ -83,10 +94,10 @@
                                             :is-required="true" 
                                             :placeholder="lang('b_default_value')" 
                                             type="text" 
-                                            :form="state.forms.csink" 
+                                            :form="state.sinks.creations.function" 
                                         />
                                     </template>
-                                </fvariadic-element>
+                                    </fvariadic-element>
                         </fform>
                     </div>
                 </widget>

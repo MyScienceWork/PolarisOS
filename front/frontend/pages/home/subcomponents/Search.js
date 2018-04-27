@@ -9,11 +9,13 @@ module.exports = {
     props: {
         showAdvancedSearch: { type: Boolean, default: true },
         showFavorites: { type: Boolean, default: true },
+        collapsible: { type: Boolean, default: false },
         searchSink: { type: String, default: 'search_sink' },
     },
     data() {
         return {
             state: {
+                collapse_opened: false,
                 more_options: false,
                 search: '',
                 showAdvanced: false,
@@ -27,6 +29,12 @@ module.exports = {
     },
     methods: {
         trigger_click() {
+            if (this.collapsible) {
+                if (!this.state.collapse_opened) {
+                    this.state.collapse_opened = !this.state.collapse_opened;
+                    return;
+                }
+            }
             this.$store.commit(Messages.COLLECT, {
                 form: this.searchSink,
             });
@@ -35,6 +43,10 @@ module.exports = {
             this.send_information();
         },
         send_information() {
+            if (this.collapsible) {
+                this.state.collapse_opened = false;
+            }
+
             const content = this.fcontent(this.searchSink);
             let search = '';
 
@@ -77,5 +89,11 @@ module.exports = {
         current_state(s) {
             this.dispatch(s, this, this.searchSink);
         },
+    },
+    mounted() {
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.searchSink,
+            keep_content: false,
+        });
     },
 };

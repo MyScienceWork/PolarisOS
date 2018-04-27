@@ -3,6 +3,7 @@ const Joi = require('joi');
 const LRMapping = require('../../../../mappings/entity');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
 const Mapping: Object = LRMapping.msw
     .mappings.entity.properties;
@@ -20,6 +21,12 @@ const Validation: Array<any> = [
 ];
 
 const Formatting: Array<any> = [
+    {
+        'backoffice.columns': FormatFunctions.oarray_to_array,
+    },
+    {
+        'backoffice.columns': FormatFunctions.filter_empty_or_null_objects,
+    },
 ];
 
 const Completion: Array<any> = [];

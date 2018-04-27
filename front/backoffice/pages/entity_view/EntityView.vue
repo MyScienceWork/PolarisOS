@@ -6,43 +6,54 @@
                 <widget>
                 <span slot="title">{{lang('b_list_datainstances')}}</span>
                     <div slot="body">
-                        <div class="columns is-centered" v-for="row in read_content_datainstance">
-                            <div v-for="content in row" class="column">
-                                <widget>
-                                    <span slot="title">
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(content, entity())"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        :confirmation="lang('b_are_sure')"
-                                        :two-steps="true"
-                                        @action-click="remove(content, entity())"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                        {{content.label || content.name || content.title || content.question || content.fullname}}
+                        <fdata-table-searching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads[entity()]"
+                            :search-path="state.paths.reads[entity()]"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            :search-type="entity()"
+                            :table-classes="{'has-small-font': Object.keys(state.columns).length > 5}"
+                            :detailed="true"
+                            detail-key="_id"
+                            :columns="state.columns"
+                            @column-checkbox-update="on_column_update"
+                        >
+                            <template slot="rows" slot-scope="props">
+                                <b-table-column v-for="(value, key) in state.columns"
+                                    :field="value.sort" 
+                                    :label="lang(value.title, {}, value.lang)" 
+                                    :visible="value.visible"
+                                    :sortable="value.sortable"
+                                    :centered="value.centered">
+                                    <span 
+                                        :class="`tag ${value.tag_class}`" 
+                                        v-if="value.is_tag">
+                                        <template v-if="value.truncate > 0">
+                                            {{props.row | find(value.field) | truncate(value.truncate)}}
+                                        </template>
+                                        <template v-else>
+                                            {{props.row | find(value.field)}}
+                                        </template>
                                     </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_datainstance" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                                    <template v-else>
+                                        <template v-if="value.truncate > 0">
+                                            {{props.row | find(value.field) | truncate(value.truncate)}}
+                                        </template>
+                                        <template v-else>
+                                            {{props.row | find(value.field)}}
+                                        </template>
+                                    </template>
+                                </b-table-column>
+                            </template>
+                        </fdata-table-searching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                 <span slot="title">{{lang('b_add_entity')}}</span>
                     <div slot="body">
                         <fform 
