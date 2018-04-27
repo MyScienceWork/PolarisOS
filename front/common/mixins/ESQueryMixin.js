@@ -22,6 +22,21 @@ module.exports = {
     },
     methods: {
     },
+    watch: {
+        es_query_id(q) {
+            if (q && q.trim() !== '') {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.query_grabber,
+                    path: this.state.paths.reads.query_grabber,
+                    body: {
+                        where: {
+                            id: this.state.es_query_id,
+                        },
+                    },
+                });
+            }
+        },
+    },
     computed: {
         es_query() {
             const content = this.fcontent(this.state.sinks.reads.query_grabber);
@@ -37,6 +52,9 @@ module.exports = {
                 return this.es_query.content;
             }
             return JSON.stringify({});
+        },
+        es_query_id() {
+            return this.state.es_query_id;
         },
     },
     mounted() {
