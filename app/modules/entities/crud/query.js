@@ -294,8 +294,15 @@ class Match extends FullTextQuery {
 }
 
 class MatchPhrase extends FullTextQuery {
+    match(obj: Object): MatchPhrase {
+        this._object = _.merge({}, this._object, obj);
+        return this;
+    }
+
     generate() {
-        return { match_phrase: {} };
+        return {
+            match_phrase: this._object,
+        };
     }
 }
 

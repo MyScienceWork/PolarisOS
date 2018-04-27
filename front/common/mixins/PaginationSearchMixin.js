@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const _ = require('lodash');
 const Handlebars = require('../../../app/modules/utils/templating');
 const Messages = require('../api/messages');
@@ -205,13 +206,17 @@ module.exports = {
                     }
                 }
 
-                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0 && !this.useDefaultQuery) {
+                if (this.state.seso.filters.length === 0
+                    && this.state.seso.extra_filters.length === 0
+                    && !this.useDefaultQuery) {
                     return;
                 }
 
                 body.where = where;
             } else {
-                const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+                const new_content = _.cloneDeep(content);
+                new_content.search = new_content.search.replace(new RegExp('"', 'g'), '\\"');
+                const squery = JSON.parse(Handlebars.compile(this.searchQuery)(new_content));
                 if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
                     where.$and.push(squery);
                 } else {
@@ -303,7 +308,6 @@ module.exports = {
     mounted() {
         const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
-        console.log(sink, search);
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
@@ -328,6 +332,9 @@ module.exports = {
             body,
         });
         this.add_extra_filters(this.searchSink, 'pos_aggregate', '*');
-        this.send_information(this.searchSink);
+
+        Vue.nextTick(() => {
+            this.send_information(this.searchSink);
+        });
     },
 };

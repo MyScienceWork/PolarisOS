@@ -89,6 +89,8 @@ class Mapper {
                 const matches = value.map((elt) => {
                     if (elt instanceof Object) {
                         return Mapper.special_shortcut_query(key, type, elt);
+                    } else if (elt.startsWith('"') && elt.endsWith('"')) {
+                        return new queries.MatchPhrase().match({ [key]: elt.slice(1, -1) });
                     }
                     return new queries.Match().match({ [key]: elt });
                 }).filter(elt => elt != null);
@@ -136,7 +138,12 @@ class Mapper {
         } else {
             switch (type) {
             case 'text': {
-                const q = new queries.Match().match({ [key]: value });
+                let q = null;
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    q = new queries.MatchPhrase().match({ [key]: value.slice(1, -1) });
+                } else {
+                    q = new queries.Match().match({ [key]: value });
+                }
                 if (outer_query != null) {
                     most_inner_query.query(q);
                     return outer_query;

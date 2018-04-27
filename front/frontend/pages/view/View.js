@@ -442,7 +442,7 @@ module.exports = {
             if (!this.typology_type || this.typology_type.name !== 'working-paper') {
                 return null;
             }
-            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
+            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}},{{/if}} {{moment date=dates.publication format='YYYY'}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {

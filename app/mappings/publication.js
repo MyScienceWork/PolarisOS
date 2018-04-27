@@ -126,6 +126,19 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    role: {
+                                        properties: {
+                                            abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                             demovoc_keywords: {

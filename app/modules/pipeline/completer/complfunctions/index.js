@@ -62,17 +62,30 @@ function initial(name_path: string, use_dash_split: boolean = true) {
 }
 
 function denormalization(from_entity: string, from_path: string,
-        entity_path: string, flatten: boolean, translatable: boolean): Function {
+        entity_path: string, flatten: boolean, translatable: boolean, search_value: string = ''): Function {
     const ENV = process.env.NODE_ENV || 'local';
 
 
     return async (object: Object, path: string, info: Object = {}) => {
-        const func = (nr, from, eseg, flat) => async (id) => {
+        const func = (nr, from, eseg, flat, svalue) => async (id) => {
             if (!id) {
                 return null;
             }
             if (nr) {
-                const source = await EntitiesUtils.retrieve_and_get_source(from, id);
+                let source = null;
+
+                if (svalue !== '') {
+                    const sources = await EntitiesUtils.search_and_get_sources(from, {
+                        where: { [svalue]: id },
+                        size: 1,
+                    });
+                    if (sources.length > 0) {
+                        source = sources[0];
+                    }
+                } else {
+                    source = await EntitiesUtils.retrieve_and_get_source(from, id);
+                }
+
                 if (source == null) {
                     return null;
                 }
@@ -97,7 +110,7 @@ function denormalization(from_entity: string, from_path: string,
 
         const from_path_segments = from_path.split('.');
         const result = await Utils.traverse_recreate_and_execute(object, from_path_segments,
-                func(need_to_retrieve, from_entity, entity_segments, flatten));
+                func(need_to_retrieve, from_entity, entity_segments, flatten, search_value));
         return { denormalization: result };
     };
 }

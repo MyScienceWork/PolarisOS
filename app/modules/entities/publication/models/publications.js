@@ -195,6 +195,9 @@ const Completion: Array<any> = [
         'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
+        'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'abbreviation', false, false, 'value'),
+    },
+    {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
     },
     {
