@@ -25,7 +25,7 @@ const Formatting: Array<any> = [
         emails: a => FormatFunctions.oarray_to_array(a),
         roles: a => FormatFunctions.oarray_to_array(a),
         password: async (result, object) => {
-            const hpassword = Utils.find_value_with_path(object, 'hpassword');
+            const hpassword = Utils.find_value_with_path(object, 'hpassword'.split('.'));
             if (!hpassword) {
                 return result;
             }
@@ -41,8 +41,7 @@ const Completion: Array<any> = [{
     'authentication.secret': (o, i, p) => ComplFunctions.secret_complete(o, i, p),
     fullname: ComplFunctions.generic_complete('{{object.firstname}} {{object.lastname}}'),
     password: async (o) => {
-        const hpassword = Utils.find_value_with_path(o, 'hpassword');
-        console.log(hpassword);
+        const hpassword = Utils.find_value_with_path(o, 'hpassword'.split('.'));
         if (!hpassword) {
             const dpassword = Config.auth.default_password;
             const sha_dpassword = Crypto.createHash('sha1').update(dpassword).digest('hex');

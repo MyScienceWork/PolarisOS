@@ -3,10 +3,11 @@ const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
-const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, PaginationSearchMixin],
+    mixins: [ReaderMixin, LangMixin, ESQueryMixin, FormCleanerMixin],
     data() {
         return {
             state: {
@@ -31,6 +32,7 @@ module.exports = {
                         user: 'user_creation',
                     },
                 },
+                es_query_id: 'backoffice-user-query',
             },
         };
     },
@@ -62,16 +64,6 @@ module.exports = {
             return content.map((c) => {
                 c.name = this.lang(c.name);
                 return c;
-            });
-        },
-        search_query() {
-            return JSON.stringify({
-                $or: [
-                    { firstname: '{{search}}' },
-                    { lastname: '{{search}}' },
-                    { fullname: '{{search}}' },
-                    { 'emails.email': '{{search}}' },
-                ],
             });
         },
     },
