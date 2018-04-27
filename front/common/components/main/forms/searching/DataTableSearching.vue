@@ -42,7 +42,7 @@
             </div>
         </nav>
         <section v-if="Object.keys(columns).length > 0">
-            <p class="has-small-top-margin">{{lang('l_show_columns')}}</p>
+            <p class="has-small-top-margin has-small-bottom-margin">{{lang('l_show_columns')}}</p>
             <b-field grouped group-multiline>
                 <div v-for="(val, key) in columns" v-if="!columns[key].force" 
                     :key="key"
