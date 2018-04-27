@@ -10,27 +10,39 @@
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.user"
                             :search-path="state.paths.reads.user"
-                            :search-query="search_query"
+                            :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="user"
                             :matrix-row-size="2"
                         >
                             <widget slot="search-result" slot-scope="props">
-                                <span slot="title">{{props.info.firstname}} {{props.info.lastname}}
+                                <span slot="title">
                                     <action-button
-                                    class="button is-small button-background-blue"
+                                    class="has-text-blue"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
                                     @action-click="update(props.info, 'user')"
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
                                     <action-button
-                                    class="button is-small button-background-red"
+                                    class="has-text-orange"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="use_as_model(props.info, 'user')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
                                     confirmation="Are you sure?"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'user')"
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
+                                    {{props.info.firstname}} {{props.info.lastname}}
                                 </span>
                                 <div slot="body">
                                     <h4 class="title is-4">{{props.info.firstname}} {{props.info.lastname}}</h4>
@@ -43,7 +55,7 @@
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                 <span slot="title">{{lang('l_add_modify_user')}}</span>
                     <div slot="body">
                         <fform
@@ -55,6 +67,14 @@
                         >
                             <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.sinks.creations.user" />
                             <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.sinks.creations.user" />
+                            <finput 
+                                name="sso" :label="lang('b_is_sso')" 
+                                type="checkbox" :form="state.sinks.creations.user" 
+                            />
+                            <finput 
+                                name="ldap" :label="lang('b_is_ldap')" 
+                                type="checkbox" :form="state.sinks.creations.user" 
+                            />
                             <fvariadic-element name="emails" :form="state.sinks.creations.user" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                     <finput :name="`${props.fname}.${props.id}.email`" :label="lang('b_email')" :is-required="true" :placeholder="lang('b_email')" type="email" :form="state.sinks.creations.user" />

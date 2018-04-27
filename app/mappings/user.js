@@ -42,6 +42,12 @@ module.exports = {
                     password: {
                         type: 'keyword',
                     },
+                    sso: {
+                        type: 'boolean',
+                    },
+                    ldap: {
+                        type: 'boolean',
+                    },
                     firstname: {
                         type: 'text',
                         fields: {
