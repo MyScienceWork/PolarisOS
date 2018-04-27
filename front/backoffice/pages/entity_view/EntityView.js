@@ -34,6 +34,7 @@ module.exports = {
                     },
                 },
                 columns: this.columns || {},
+                checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
             },
         };
@@ -63,6 +64,9 @@ module.exports = {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
             this.$forceUpdate();
+        },
+        on_checked_rows_update(obj) {
+            this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
     },
     mounted() {

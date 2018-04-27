@@ -14,6 +14,8 @@ module.exports = {
         filters: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
         getAllResults: { default: false, type: Boolean },
+        checkable: { default: false, type: Boolean },
+        checkedRows: { default: () => [], type: Array },
         detailed: { default: false, type: Boolean },
         detailKey: { default: '', type: String },
         tableClasses: { default: '', type: String },
@@ -41,6 +43,9 @@ module.exports = {
         },
         on_checkbox_update(key, checked) {
             this.$emit('column-checkbox-update', { key, checked });
+        },
+        on_checked_rows_update(checkedList, row) {
+            this.$emit('table-checked-rows-update', { checkedRows: checkedList, checkedRow: row });
         },
     },
     watch: {

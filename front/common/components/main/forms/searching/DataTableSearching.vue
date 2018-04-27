@@ -62,7 +62,11 @@
             :default-sort="default_sort"
             :class="tableClasses"
             :detailed="detailed"
+            :checked-rows="checkedRows"
+            @check="on_checked_rows_update"
+            @check-all="on_checked_rows_update"
             :detail-key="detailKey"
+            :checkable="checkable"
             @sort="sort">
 
             <template slot-scope="props">

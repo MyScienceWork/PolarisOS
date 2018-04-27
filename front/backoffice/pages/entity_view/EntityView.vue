@@ -16,8 +16,11 @@
                             :table-classes="{'has-small-font': Object.keys(state.columns).length > 5}"
                             :detailed="true"
                             detail-key="_id"
+                            :checkable="true"
+                            :checked-rows="state.checked_rows"
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
+                            @table-checked-rows-update="on_checked_rows_update"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column v-for="(value, key) in state.columns"
@@ -28,22 +31,41 @@
                                     :centered="value.centered">
                                     <span 
                                         :class="`tag ${value.tag_class}`" 
-                                        v-if="value.is_tag">
-                                        <template v-if="value.truncate > 0">
-                                            {{props.row | find(value.field) | truncate(value.truncate)}}
-                                        </template>
-                                        <template v-else>
-                                            {{props.row | find(value.field)}}
-                                        </template>
+                                        v-if="value.is_tag"
+                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format"
+                                    >
                                     </span>
-                                    <template v-else>
-                                        <template v-if="value.truncate > 0">
-                                            {{props.row | find(value.field) | truncate(value.truncate)}}
-                                        </template>
-                                        <template v-else>
-                                            {{props.row | find(value.field)}}
-                                        </template>
-                                    </template>
+                                    <div v-else
+                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format" 
+                                    >
+                                    </div>
+                                </b-table-column>
+                                <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
+                                    <action-button
+                                        class="icon has-text-blue share-icon"
+                                        tag="a"
+                                        @action-click="update(props.row, entity())"
+                                        v-scroll-to="'#mwidget'"
+                                    >
+                                        <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                        class="icon has-text-orange share-icon"
+                                        tag="a"
+                                        @action-click="use_as_model(props.row, entity())"
+                                        v-scroll-to="'#mwidget'"
+                                    >
+                                        <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                        class="icon has-text-red share-icon"
+                                        tag="a"
+                                        confirmation="Are you sure?"
+                                        :two-steps="true"
+                                        @action-click="remove(props.row, entity())"
+                                    >
+                                        <i class="fa fa-times"></i>
+                                    </action-button>
                                 </b-table-column>
                             </template>
                         </fdata-table-searching>
