@@ -4,7 +4,7 @@
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
-                    <p><strong>{{lang('b_error_occured')}}</strong> {{error.content.message}}</p>
+                    <p><strong>{{lang('b_error_occured')}}</strong> {{lang(error.content.message)}}</p>
                 </div>
             </article>
         </div>
@@ -13,7 +13,7 @@
         <div class="column">
             <article class="message is-green">
                 <div class="message-body">
-                    <p>{{success}}</p>
+                    <p>{{lang(success)}}</p>
                 </div>
             </article>
         </div>
@@ -45,7 +45,7 @@
         <div class="column">
             <article class="message is-red">
                 <div class="message-body">
-                    <p><strong>{{lang('b_error_occured')}}</strong> {{error.content.message}}</p>
+                    <p><strong>{{lang('b_error_occured')}}</strong> {{lang(error.content.message)}}</p>
                 </div>
             </article>
         </div>
@@ -54,7 +54,7 @@
         <div class="column">
             <article class="message is-green">
                 <div class="message-body">
-                    <p>{{success}}</p>
+                    <p>{{lang(success)}}</p>
                 </div>
             </article>
         </div>

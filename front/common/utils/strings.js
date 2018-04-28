@@ -35,11 +35,11 @@ function lang(key, obj, n, clang) {
             text = info['n/a'] || key;
         }
     } else if (n === 0) {
-        text = info.zero || info['n/a'] || key;
+        text = info['0'] || info['n/a'] || key;
     } else if (n === 1) {
-        text = info.one || info['n/a'] || key;
+        text = info['1'] || info['n/a'] || key;
     } else if (n === 2) {
-        text = info.two || info['n/a'] || key;
+        text = info['2'] || info['n/a'] || key;
     } else {
         text = info.other || info['n/a'] || key;
     }

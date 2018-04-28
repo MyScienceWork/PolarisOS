@@ -8,6 +8,33 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
+                    mail: {
+                        properties: {
+                            smtp: {
+                                properties: {
+                                    host: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'integer',
+                                    },
+                                    secure: {
+                                        type: 'boolean',
+                                    },
+                                    auth: {
+                                        properties: {
+                                            user: {
+                                                type: 'keyword',
+                                            },
+                                            pass: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     upload: {
                         properties: {
                             maxFileSizeInMB: {

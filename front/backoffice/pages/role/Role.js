@@ -64,7 +64,13 @@ module.exports = {
             content.push({ type: 'page' });
             content.push({ type: 'overview' });
             content.push({ type: 'my_user' });
-            return content;
+            content.push({ type: 'query' });
+            content.push({ type: 'mail_template' });
+
+            return content.map((c, i) => {
+                c.i = i;
+                return c;
+            });
         },
     },
 };

@@ -3,10 +3,10 @@ const path = require('path');
 const all = {
     root: path.resolve(path.join(__dirname, '..')),
     elasticsearch: {
-        index_prefix: 'msw',
+        index_prefix: 'pos',
     },
     logger: {
-        logFile: 'midstod.log',
+        logFile: 'polarisos.log',
     },
     api: {
         public: {
@@ -31,23 +31,9 @@ const all = {
         host: 'localhost',
         port: '8070',
     },
-    entities: [{
-        name: 'citation',
-        text: 'Citation',
+    auth: {
+        default_password: 'default_pos_password',
     },
-    {
-        name: 'apiuser',
-        text: 'User of API',
-    },
-    {
-        name: 'user',
-        text: 'User',
-    },
-    {
-        name: 'institution',
-        text: 'Institution',
-    },
-    ],
 };
 
 module.exports = all;

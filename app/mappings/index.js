@@ -8,6 +8,7 @@ const form = require('./form');
 
 const lang = require('./lang');
 const config = require('./config');
+const mail_template = require('./mail_template');
 
 const widget = require('./widget');
 const menu = require('./menu');
@@ -17,6 +18,7 @@ const page = require('./page');
 const importer = require('./importer');
 const exporter = require('./exporter');
 const connector = require('./connector');
+const query = require('./query');
 
 const publication = require('./publication');
 
@@ -31,6 +33,7 @@ module.exports = {
 
     lang: lang.msw,
     config: config.msw,
+    mail_template: mail_template.msw,
 
     widget: widget.msw,
     menu: menu.msw,
@@ -40,6 +43,7 @@ module.exports = {
     importer: importer.msw,
     exporter: exporter.msw,
     connector: connector.msw,
+    query: query.msw,
 
     // publication: publication.msw,
 };

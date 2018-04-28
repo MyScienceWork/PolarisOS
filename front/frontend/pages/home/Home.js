@@ -1,22 +1,35 @@
+const _ = require('lodash');
+
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const Queries = require('../../../common/specs/queries');
+const BrowserUtils = require('../../../common/utils/browser');
 const Handlebars = require('../../../../app/modules/utils/templating');
 
 const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
 const Search = require('./subcomponents/Search.vue');
-const BrowsingList = require('../../lists/browse');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     data() {
         return {
             state: {
-                forms: {
-                    psink: 'publication_sink',
+                sinks: {
+                    reads: {
+                        publication: 'publication_read',
+                        menu: 'menu_read',
+                        search: 'search_home_sink',
+                    },
                 },
-                pread_path: APIRoutes.entity('publication', 'POST', true),
+                paths: {
+                    reads: {
+                        publication: APIRoutes.entity('publication', 'POST', true),
+                        menu: APIRoutes.entity('menu', 'POST', true),
+                    },
+                },
             },
         };
     },
@@ -29,18 +42,30 @@ module.exports = {
 
     },
     mounted() {
-        /* this.$store.dispatch('search', {
-            form: this.state.forms.psink,
-            path: this.state.pread_path,
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.publication,
+            path: this.state.paths.reads.publication,
             body: {
                 size: 6,
-                population: ['authors._id', 'journal'],
+                sort: [{ 'dates.deposit': 'desc' }],
+                where: this.lastDepositsQuery,
             },
-        });*/
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.menu,
+            path: this.state.paths.reads.menu,
+            body: {
+                size: 1,
+                where: {
+                    'menu.elements.name': 'f_nav_browse',
+                },
+            },
+        });
     },
     computed: {
         content() {
-            return this.fcontent(this.state.forms.psink);
+            return this.fcontent(this.state.sinks.reads.publication);
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
@@ -54,7 +79,31 @@ module.exports = {
             return [];
         },
         navs() {
-            return BrowsingList;
+            const content = this.fcontent(this.state.sinks.reads.menu);
+            if (!content || !(content instanceof Array) || content.length === 0) {
+                return [];
+            }
+            const idx = _.findIndex(content[0].elements, elt => elt.name === 'f_nav_browse');
+            if (idx === -1) {
+                return [];
+            }
+            const elt = content[0].elements[idx];
+            return elt.submenus.map(celt => ({
+                text: celt.name,
+                query: celt.query,
+            }));
+        },
+        lastDepositsQuery() {
+            return Queries.last_deposits;
+        },
+        rssMapping() {
+            return {
+                title: '{{{title.content}}}',
+                description: '{{{abstracts.0.content}}}',
+                content: '',
+                link: `${BrowserUtils.getURLHost(window.location)}/view/{{{_id}}}`,
+                id: '{{_id}}',
+            };
         },
     },
 };

@@ -17,6 +17,18 @@
                 :fieldLabel="get_field('label', state.inputs[props.id] ? state.inputs[props.id].entity : null)"
                 class="has-small-bottom-margin"
             >
+                <template slot="left-input-addons">
+                    <fselect 
+                        label=""
+                        placeholder=""
+                        :name="`${props.id}.bool`"
+                        :form="state.sinks.creations.dummy"
+                        :options="bool_options"
+                        :is-addon="true"
+                        :key="`${props.id}.bool`"
+                        class="fix-selected-tag"
+                    />
+                </template>
                 <template slot="input-addons">
                     <fselect 
                     label=""

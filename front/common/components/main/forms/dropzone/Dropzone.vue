@@ -10,7 +10,7 @@
         class="pos-dropzone" 
         id="dropzone" 
         ref="dropzone" 
-        :options="dropzone" 
+        :options="dropzoneData" 
         :include-styling="false">
             <div slot="inside">
                 <div class="columns is-pulled-right" v-if="!readonly">
@@ -64,25 +64,28 @@
                             :form="form" 
                             :hidden-value="state.files.content[filename].pathOnServer || ''" 
                             />
-                        <finput
-                        :readonly="readonly"
-                        :name="`${files}.${i}.${master}`" 
-                        :label="lang('b_file_master')" 
-                        :help="lang('l_master_file_help')"
-                        type="checkbox" :form="form" />
-                        <finput
-                        :readonly="readonly"
-                        :name="`${files}.${i}.not_${master}`" 
-                        :label="lang('b_file_not_master')" 
-                        :help="lang('l_not_master_file_help')"
-                        type="checkbox" :form="form" />
-
                         <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
                             <span>{{lang('b_file_status')}} </span><progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
                         </div>
                         <div v-else>
                             <span>{{lang('b_file_status')}} </span><span v-html="lang('dropzone_status_'+state.files.content[filename].status)"></span><br /><span v-if="state.files.content[filename].errorMessage">({{state.files.content[filename].errorMessage}})</span> 
                         </div>
+                        <finput
+                        :readonly="readonly"
+                        :name="`${files}.${i}.${master}`" 
+                        :label="lang('b_file_master')" 
+                        :help="lang('l_master_file_help')"
+                        @value-change="(v) => update_master_files(i, v)"
+                        v-if="i in state.master_files || Object.keys(state.master_files).length === 0"
+                        type="checkbox" :form="form" />
+                        <finput
+                        :readonly="readonly"
+                        :name="`${files}.${i}.not_${master}`" 
+                        :label="lang('b_file_not_master')" 
+                        v-if="!(i in state.master_files)"
+                        :help="lang('l_not_master_file_help')"
+                        type="checkbox" :form="form" />
+
                 
                         <hr />
                     </div>

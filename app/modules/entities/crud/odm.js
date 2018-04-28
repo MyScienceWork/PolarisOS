@@ -158,6 +158,14 @@ class ODM {
         return null;
     }
 
+    static async fetch_settings(index: string, type: string, client: Object) {
+        const settings = await client.indices.getSettings({ index, type });
+        if (settings && index in settings) {
+            return settings[index];
+        }
+        return null;
+    }
+
     static async read(index: string, type: string,
             client: Object, model: Object, response: Object,
             population: Array<String> = [], backward: boolean = false): Object {
@@ -220,8 +228,6 @@ class ODM {
             query,
         };
 
-
-        // console.log('search query', JSON.stringify(query));
 
         if (sort != null) {
             body.sort = sort;
@@ -360,6 +366,35 @@ class ODM {
         }
     }
 
+    static async _bulk_create_or_update(index: string, type: string, client: Object,
+            body: Object, action: string = 'create'): Promise<?ODM> {
+        try {
+            const content = {
+                index,
+                type,
+                body: _.flatten(body.map((e) => {
+                    if (action === 'create') {
+                        return [{ index: {} }, e];
+                    } else if (action === 'update') {
+                        const _id = e._id;
+                        delete e._id;
+                        return [{ update: { _id } }, { doc: e }];
+                    }
+                    return [];
+                })),
+                refresh: true,
+            };
+
+            const response = await client.bulk(content);
+            console.log(response);
+            return null;
+        } catch (err) {
+            console.log('bulk creation or update error', err);
+            return null;
+        }
+    }
+
+
     async read(opts: Object = {}): Promise<ODM> {
         const population = 'population' in opts ? opts.population : [];
         const source = 'source' in opts ? opts.source : null;
@@ -394,6 +429,24 @@ class ODM {
             model: Object, body: Object, id: string): Promise<?ODM> {
         // console.log('update', JSON.stringify(body));
         return this._create_or_update(index, type, client, model, body, id);
+    }
+
+    static async bulk_create(index: string, type: string, client: Object,
+            body: Object): Promise<?ODM> {
+        return this._bulk_create_or_update(index, type, client, body, 'create');
+    }
+
+    static async bulk_update(index: string, type: string, client: Object,
+            body: Object): Promise<?ODM> {
+        return this._bulk_create_or_update(index, type, client, body, 'update');
+    }
+
+    oupdate(): Promise<?ODM> {
+        return this.update(this.index, this.type, this.client, this.model, this.source);
+    }
+
+    ocreate(): Promise<?ODM> {
+        return this.update(this.index, this.type, this.client, this.model, this.source);
     }
 
     toJSON(): Object {
@@ -450,15 +503,18 @@ class ODM {
             const path = p.split('.');
             const vals = [...Utils.find_popvalue_with_path(info, path.slice(), true)];
             let ref = [...Utils.find_popvalue_with_path(refs, path.slice())];
-
             if (ref.length > 0 && vals.length > 0) {
                 ref = ref[0];
                 const last = path[path.length - 1];
                 for (const v of vals) {
                     if (ref === 'lang') {
-                        const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 1 } });
-                        const hits = EntitiesUtils.get_hits(result);
-                        v[last] = hits.length > 0 ? hits[0].source : {};
+                        if (v[last]) {
+                            const result = await EntitiesUtils.search(ref, { where: { key: v[last], size: 250 } });
+                            const hits = EntitiesUtils.get_hits(result);
+                            v[last] = hits.length > 0 ? hits.map(h => h.source) : [];
+                        } else {
+                            v[last] = [];
+                        }
                     } else {
                         const result = await EntitiesUtils.retrieve(v[last],
                             ref, '', propagate_population ? population.join(',') : '');

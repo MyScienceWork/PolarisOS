@@ -42,6 +42,12 @@ module.exports = {
                     password: {
                         type: 'keyword',
                     },
+                    sso: {
+                        type: 'boolean',
+                    },
+                    ldap: {
+                        type: 'boolean',
+                    },
                     firstname: {
                         type: 'text',
                         fields: {
@@ -75,6 +81,31 @@ module.exports = {
                                 type: 'keyword',
                             },
                             secret: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    ids: {
+                        properties: {
+                            twitter: {
+                                type: 'keyword',
+                            },
+                            linkedin: {
+                                type: 'keyword',
+                            },
+                            orcid: {
+                                type: 'keyword',
+                            },
+                            facebook: {
+                                type: 'keyword',
+                            },
+                            hal: {
+                                type: 'keyword',
+                            },
+                            idref: {
+                                type: 'keyword',
+                            },
+                            pubmedid: {
                                 type: 'keyword',
                             },
                         },

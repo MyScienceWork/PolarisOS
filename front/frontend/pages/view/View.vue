@@ -5,6 +5,9 @@
             <div class="column is-8">
                 <div class="card card-equal-height card-with-tag">
                     <div class="card-header">
+                        <a href='#' class="card-header-icon card-header-tag is-left">
+                            <span class="tag is-purple is-active">{{lang(content_item.denormalization.type.label)}}</span>
+                        </a>
                         <div class="card-header-title">
                         </div>
                         <a href='#' class="card-header-icon card-header-tag" v-for="tt in titles" @click.prevent="activate_lang('title', tt.lang)">
@@ -14,25 +17,18 @@
                     <div class="card-content content">
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
-                        <p v-html="authors"></p>
-                        <!--<p>
-                        <strong>Olivier Michalon<sup>1</sup></strong>, 
-                        <strong>Corentin Ribeyre<sup>2</sup></strong>, 
-                        <strong>Marie Candito<sup>3</sup></strong>, 
-                        <strong>Alexis Nasr<sup>1</sup></strong>
-                        </p>-->
-                        <!--<ol>
-                            <li>LIF - Laboratoire d'informatique fondamentale de Marseille</li>
-                            <li>Département de Linguistique - Université de Genève</li>
-                            <li>ALPAGE - Analyse Linguistique Profonde à Grande Echelle</li>
-                        </ol>-->
-                        <p>{{lang(content_item.denormalization.type.label)}}</p>
+                        <p v-html="contributors.contributors"></p>
+                        <ol>
+                            <li v-for="affiliation in affiliations" v-html="affiliation"></li>
+                        </ol>
+                        <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>
                         <p v-if="chapter" v-html="chapter"></p>
                         <p v-if="conference" v-html="conference"></p>
                         <p v-if="other_document" v-html="other_document"></p>
-                        <div class="card card-with-tag" v-if="state.current_abstract.content !== ''">
+                        <p v-if="working_paper" v-html="working_paper"></p>
+                        <div class="card card-with-tag has-medium-bottom-margin" v-if="state.current_abstract.content !== ''">
                             <div class="card-header">
                                 <div class="card-header-title">
                                 </div>
@@ -49,16 +45,16 @@
                         </div>
                         <p class="has-small-top-margin" v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
                         <!--<p><strong v-html="lang('f_publication_id')"></strong></p>-->
-                        <p class="has-small-top-margin"><a class="has-text-info" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>
-                        <div v-if="state.more_metadata">
-                            <widget :collapsed="true">
+                        <!--<p class="has-small-top-margin"><a class="" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>-->
+                        <div>
+                            <widget v-if="themes.length > 0 || keywords('user') || keywords('demovoc')" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_indexing')}}</span>
                                 <div slot="body">
                                     <p v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
                                     <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
-                                    <p><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
+                                    <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="theme in themes">{{theme}}</li>
+                                            <li v-for="theme in themes">{{lang(theme)}}</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -66,27 +62,34 @@
                             <widget v-if="ids.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
-                                    <p v-for="id in ids"><strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}</p>
+                                    <p v-for="id in ids">
+                                        <template v-if="id.type.toUpperCase() === 'DOI'">
+                                            <strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
+                                        </template>
+                                        <template v-else>
+                                            <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
+                                        </template>
+                                    </p>
                                 </div>
                             </widget>
-                            <widget :collapsed="true">
+                            <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_rights')}}</span>
                                 <div slot="body">
                                     <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
                                     <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> {{content_item.url}}</p>
-                                    <p v-if="resources">
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
+                                    <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources">({{r.type}}) {{r.url}}</li>
+                                            <li v-for="r in resources"><a target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>
                             </widget>
-                            <widget v-if="teams || teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_collection', {}, 'other')}}</span>
+                            <widget v-if="teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
+                                <span slot="title">{{lang('f_publication_collection_title', {}, 'other')}}</span>
                                 <div slot="body">
                                     <p v-if="teams && teams.length > 0"><strong v-html="lang('f_publication_team', {}, 'other')"></strong>
                                         <ul>
@@ -95,7 +98,7 @@
                                             </li>
                                         </ul>
                                     </p>
-                                    <p v-if="collection"><strong v-html="lang('f_publication_collection')"></strong> {{lang(collection)}}</p>
+                                    <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
                                     <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong> 
                                         <ul>
                                             <li v-for="p in projects">
@@ -117,8 +120,8 @@
                                 <div slot="body">
                                     <p v-if="depositor"><strong v-html="lang('f_publication_depositor')"></strong> {{depositor.firstname}} {{depositor.lastname}}</p>
                                     <!--<p><strong v-html="lang('f_publication_id')"></strong>: </p>-->
-                                    <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit')}}</p>
-                                    <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update')}}</p>
+                                    <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit', 'DD/MM/YYYY')}}</p>
+                                    <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update', 'DD/MM/YYYY')}}</p>
                                     <p><strong v-html="lang('f_publication_deposit_version')"></strong> {{content_item.version}} </p>
                                 </div>
                             </widget>
@@ -138,17 +141,44 @@
                                 class="card-content has-text-centered"
                                 v-if="is_files_accessible"    
                             >
-                                <a :href="generate_download_link('master')" class="swap">
-                                    <span class="icon is-large">
-                                        <i class="fa fa-file fa-3x"></i>
-                                    </span>
+                                <div>
+                                    <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
+                                        <a :href="generate_download_link('master')" class="swap">
+                                            <span class="icon is-large">
+                                                <i class="fa fa-file fa-3x"></i>
+                                            </span>
 
-                                </a>
-                                <a v-if="has_extra_files" class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
-                                    {{lang('f_click_here_to_download_extra_files')}}
-                                </a>
-                                <div v-if="state.show_extra_files">
-                                    
+                                        </a>
+                                    </b-tooltip>
+                                </div>
+                                <p class="has-small-top-margin" v-if="has_extra_files">
+                                    <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
+                                        {{lang('f_click_here_to_download_extra_files')}}
+                                    </a>
+                                </p>
+
+                                <div class="has-small-top-margin" v-if="state.show_extra_files">
+                                    <p class="title is-5">{{lang('f_select_extra_files_to_download')}}</p>
+                                    <div class="field has-addons" v-for="file in content_item.files">
+                                        <p class="control is-expanded">
+                                            <a class="button is-static is-fullwidth">
+                                                {{$lodash.truncate(file.name)}}
+                                            </a>
+                                        </p>
+                                        <div class="control">
+                                            <div class="input">
+                                                <input type="checkbox" v-model="state.selected_files[file.name].s" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <a class="button" :href='multi_download_link'>{{lang('f_download')}}</a>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-primary" @click.prevent="select_all_extra_files(!is_all_extra_files_selected)">{{is_all_extra_files_selected ?  lang('f_deselect_all') : lang('f_select_all')}}</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-content has-text-centered" v-else>
@@ -161,7 +191,7 @@
                     <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_license')}}</p>
+                                <p class="card-header-title">{{lang('f_publication_license_title')}}</p>
                             </header>
                             <div class="card-content">
                                 <p>{{lang(license)}}</p>
@@ -183,23 +213,49 @@
                 </div>
                 <div class="columns is-centered">
                     <div class="column">
+                        <div class="card info-card info-card-purple">
+                            <header class="card-header">
+                                <p class="card-header-title">{{lang('f_publication_export')}}</p>
+                            </header>
+                            <div class="card-content">
+                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
+                                <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
+                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column">
                         <div class="card info-card info-card-red">
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
                             </header>
                             <div class="card-content has-text-centered">
-                                <a class="icon facebook-color is-large">
-                                    <i class="fa fa-facebook-official fa-2x"></i>
-                                </a>
-                                <a class="icon twitter-color is-large">
-                                    <i class="fa fa-twitter fa-2x"></i>
-                                </a>
-                                <a class="icon linkedin-color is-large">
-                                    <i class="fa fa-linkedin fa-2x"></i>
-                                </a>
-                                <a class="swap icon is-large">
-                                    <i class="fa fa-envelope fa-2x"></i>
-                                </a>
+                                <social-sharing 
+                                  :title="state.current_title.content"
+                                  :description="state.current_abstract.content"
+                                  quote=""
+                                  hashtags="ined"
+                                  twitter-user="InedFr"
+                                  network-tag="a"
+                                  inline-template
+                                >
+                                    <div>
+                                        <network network="facebook" class="icon facebook-color is-large share-icon">
+                                            <i class="fa fa-facebook-official fa-2x"></i>
+                                        </network>
+                                        <network network="twitter" class="icon twitter-color is-large share-icon">
+                                            <i class="fa fa-twitter fa-2x"></i>
+                                        </network>
+                                        <network network="linkedin" class="icon linkedin-color is-large share-icon">
+                                            <i class="fa fa-linkedin fa-2x"></i>
+                                        </network>
+                                        <network network="email" class="swap icon is-large share-icon">
+                                            <i class="fa fa-envelope fa-2x"></i>
+                                        </network>
+                                    </div>
+                                </social-sharing> 
                             </div>
                         </div>
                     </div>

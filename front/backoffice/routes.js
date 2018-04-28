@@ -26,4 +26,6 @@ module.exports = {
     connector: '/admin/connector',
     importer: '/admin/importer',
     exporter: '/admin/exporter',
+    query: '/admin/query',
+    mail_template: '/admin/mail_template',
 };

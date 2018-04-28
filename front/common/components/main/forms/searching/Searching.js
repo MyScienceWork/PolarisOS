@@ -11,7 +11,15 @@ module.exports = {
     props: {
         sizeList: { default: () => [10, 30, 50, 100], type: Array },
         sortList: { required: false, type: Array, default: () => [] },
+        filters: { required: false, type: Array, default: () => [] },
         matrixRowSize: { default: 1, type: Number },
+        getAllResults: { default: false, type: Boolean },
+        checkable: { default: false, type: Boolean },
+        checkedRows: { default: () => [], type: Array },
+        detailed: { default: false, type: Boolean },
+        detailKey: { default: '', type: String },
+        tableClasses: { default: '', type: String },
+        columns: { default: () => ({}), type: Object },
     },
     data() {
         return {
@@ -30,10 +38,25 @@ module.exports = {
                 this.run_search(sink);
             }
         },
+        on_page_change(page) {
+            this.currentPage = page;
+        },
+        on_checkbox_update(key, checked) {
+            this.$emit('column-checkbox-update', { key, checked });
+        },
+        on_checked_rows_update(checkedList, row) {
+            this.$emit('table-checked-rows-update', { checkedRows: checkedList, checkedRow: row });
+        },
     },
     watch: {
     },
     computed: {
+        default_sort() {
+            if (this.state.seso.sort && this.state.seso.order) {
+                return [this.state.seso.sort, this.state.seso.order];
+            }
+            return [];
+        },
         content() {
             const content = this.fcontent(this.resultSink);
 
@@ -41,7 +64,6 @@ module.exports = {
                 return [];
             }
 
-            console.log(content.map(c => c._id).join('\n'));
             return content;
         },
         matrix_content() {

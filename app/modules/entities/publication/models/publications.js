@@ -8,6 +8,8 @@ const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
+const XMLUtils = require('../../../utils/xml');
+const Importers = require('../../importer/controllers');
 
 // Pipelines
 const PipelineTypeFiles = require('./pipeline_type_files');
@@ -43,6 +45,7 @@ const Formatting: Array<any> = [
         files: a => FormatFunctions.oarray_to_array(a),
         ids: a => FormatFunctions.oarray_to_array(a),
         keywords: a => FormatFunctions.oarray_to_array(a),
+        demovoc_keywords: a => FormatFunctions.oarray_to_array(a),
         resources: a => FormatFunctions.oarray_to_array(a),
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
@@ -50,7 +53,14 @@ const Formatting: Array<any> = [
         parents: async (result, object) => {
             if ('parent' in object) {
                 result.push({ _id: object.parent });
+
+                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                if (pub) {
+                    pub.source.has_other_version = true;
+                    await pub.oupdate();
+                }
             }
+
 
             return result;
         },
@@ -72,7 +82,7 @@ const Formatting: Array<any> = [
         'diffusion.research_teams': FormatFunctions.filter_empty_or_null_objects,
         ids: FormatFunctions.filter_empty_or_null_objects,
         keywords: FormatFunctions.filter_empty_or_null_objects,
-        dkeywords: FormatFunctions.filter_empty_or_null_objects,
+        demovoc_keywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
         'dates.update': async () => +moment(),
@@ -81,6 +91,13 @@ const Formatting: Array<any> = [
         subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         titles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
         abstracts: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
+        contributors: async result => result.reduce((arr, co) => {
+            if (co.role == null) {
+                co.role = 'author';
+            }
+            arr.push(co);
+            return arr;
+        }, []),
         files: async (result, object) => {
             if (!result) {
                 return [];
@@ -115,11 +132,30 @@ const Formatting: Array<any> = [
             return files;
         },
         keywords: async (result, object) => {
-            const demovoc = object.dkeywords || [];
             const keywords = result.map(k => ({ value: k.value, type: 'user' }));
-            // TODO Change ._id when final Demovoc
-            const dkeywords = demovoc.map(k => ({ value: k._id, type: 'demovoc' }));
-            return [...keywords, ...dkeywords];
+            return keywords;
+        },
+        ids: async (result, object) => {
+            const journal = Utils.find_value_with_path(object, 'journal'.split('.'));
+            if (!journal) {
+                return result;
+            }
+
+            const relevant_ids = result.filter(i => i.type === 'eissn' || i.type === 'issn');
+            if (relevant_ids.length > 0) {
+                return result;
+            }
+            const journal_source = await EntitiesUtils.retrieve_and_get_source('journal', journal);
+            if (journal_source && 'ids' in journal_source) {
+                const issns = journal_source.ids.reduce((arr, i) => {
+                    if (i.type === 'issn' || i.type === 'eissn') {
+                        arr.push({ type: i.type, _id: i.value });
+                    }
+                    return arr;
+                }, []);
+                result = result.concat(issns);
+            }
+            return result;
         },
     },
 ];
@@ -136,6 +172,14 @@ const Completion: Array<any> = [
             return { authors: potential_authors.map(pa => ({ _id: pa.label })) };
         },
         classifications: async () => ({ classifications: [] }),
+        has_other_version: async () => ({ has_other_version: false }),
+        depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
+        reviewer: (obj, path, info) => {
+            if (obj.review_mode) {
+                return { reviewer: info.papi ? info.papi._id : null };
+            }
+            return {};
+        },
     },
     {
         'dates.update': async () => ({ dates: { update: +moment() } }),
@@ -151,13 +195,16 @@ const Completion: Array<any> = [
         'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
+        'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'abbreviation', false, false, 'value'),
+    },
+    {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
     },
     {
-        'denormalization.diffusion.anr_projects': ComplFunctions.denormalization('project', 'diffusion.anr_projects._id', 'name', false),
+        'denormalization.diffusion.anr_projects': ComplFunctions.denormalization('anr_project', 'diffusion.anr_projects._id', 'name', false),
     },
     {
-        'denormalization.diffusion.european_projects': ComplFunctions.denormalization('project', 'diffusion.european_projects._id', 'name', false),
+        'denormalization.diffusion.european_projects': ComplFunctions.denormalization('european_project', 'diffusion.european_projects._id', 'name', false),
     },
     {
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
@@ -184,7 +231,22 @@ const Completion: Array<any> = [
         'denormalization.conference': ComplFunctions.denormalization('conference', 'conference', 'name', true),
     },
     {
+        'denormalization.depositor.lastname': ComplFunctions.denormalization('user', 'depositor', 'lastname', false),
+    },
+    {
+        'denormalization.reviewer.lastname': ComplFunctions.denormalization('user', 'reviewer', 'lastname', false),
+    },
+    {
+        'denormalization.depositor.firstname': ComplFunctions.denormalization('user', 'depositor', 'firstname', false),
+    },
+    {
+        'denormalization.reviewer.firstname': ComplFunctions.denormalization('user', 'reviewer', 'firstname', false),
+    },
+    {
         'denormalization.type.type': ComplFunctions.denormalization('typology', 'type', 'label', false),
+    },
+    {
+        'denormalization.demovoc_keywords': ComplFunctions.denormalization('demovoc', 'demovoc_keywords._id', 'label', false),
     },
     {
         'denormalization.type.template': ComplFunctions.denormalization('typology', 'type', 'template', false),
@@ -196,7 +258,7 @@ const Completion: Array<any> = [
         'denormalization.localisation.country': ComplFunctions.denormalization('country', 'localisation.country', 'label', true),
     },
     {
-        parents: (o, p, i) => {
+        parents: async (o, p, i) => {
             if ('parents' in o) {
                 return { parents: o.parents };
             }
@@ -206,7 +268,53 @@ const Completion: Array<any> = [
     {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
-        depositor: (obj, path, info) => ({ depositor: info.papi ? info.papi._id : null }),
+    },
+    {
+        sherpa: async (object, path) => {
+            if ('sherpa' in object) {
+                return {};
+            }
+
+            const ids = Utils.find_value_with_path(object, 'ids'.split('.'));
+            if (!ids) {
+                return {};
+            }
+
+
+            const issns = ids.filter(i => (i.type === 'eissn' || i.type === 'issn'));
+            if (issns.length === 0) {
+                return {};
+            }
+
+            const issn = issns[0]._id;
+
+            const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
+            const conditions = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.conditions.0.condition'.split('.'));
+            const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));
+            const sherpa_final = {};
+            if (conditions) {
+                sherpa_final.conditions = conditions.map((c, i) =>
+                    ({ label: XMLUtils.strip_xhtml_tags(c), value: i }));
+            }
+            if (color) {
+                switch (color) {
+                case 'blue':
+                    sherpa_final.color = '#3273DC';
+                    break;
+                case 'green':
+                    sherpa_final.color = '#23D161';
+                    break;
+                case 'yellow':
+                    sherpa_final.color = '#544300';
+                    break;
+                default:
+                case 'white':
+                    sherpa_final.color = '#FFFFFF';
+                    break;
+                }
+            }
+            return { sherpa: sherpa_final };
+        },
     },
 ];
 
@@ -217,9 +325,31 @@ const Resetting: Object = {
 
 const Defaults: Object = {
     version: 1,
+    abstracts: [],
+    keywords: [],
+    demovoc_keywords: [],
+    subtitles: [],
+    translated_titles: [],
+    classifications: [],
+    resources: [],
+    dates: {},
+    denormalization: {},
+    authors: [],
+    contributors: [],
+    diffusion: {
+        research_teams: [],
+        projects: [],
+        surveys: [],
+        european_projects: [],
+        anr_projects: [],
+    },
+    files: [],
+    ids: [],
+    parents: [],
+    sources: [],
 };
 
-const Filtering: Array<string> = ['parent', 'dkeywords'];
+const Filtering: Array<string> = [];
 
 const Messages: Object = {
     set: 'Publication is successfully added',
@@ -238,7 +368,21 @@ module.exports = {
         Resetting,
         Completion,
         Defaults,
-    }, PipelineDiffusion],
+    }, {
+        Validation,
+        Formatting,
+        Completion,
+        Filtering,
+        Resetting,
+        Defaults,
+    }, PipelineDiffusion, {
+        Validation: [],
+        Formatting: [],
+        Completion: [],
+        Filtering: ['sherpa', 'parent', 'review_mode'],
+        Resetting: {},
+        Defaults: {},
+    }],
     Messages,
     Name: 'Publication',
 };

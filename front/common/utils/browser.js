@@ -37,8 +37,30 @@ function localGet(name) {
     }
 }
 
+function localRemove(name) {
+    localStorage.removeItem(name);
+}
+
 function getURLHost(location) {
     return `${location.protocol}//${location.hostname}${location.port ? `:${location.port}` : ''}`;
+}
+
+function utf8ToB64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function getQueryParams(query) {
+    if (!query) {
+        return { };
+    }
+
+    return (/^[?#]/.test(query) ? query.slice(1) : query)
+    .split('&')
+    .reduce((params, param) => {
+        const [key, value] = param.split('=');
+        params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+        return params;
+    }, { });
 }
 
 module.exports = {
@@ -46,5 +68,8 @@ module.exports = {
     normalizeBrowserLanguage,
     localGet,
     localSet,
+    localRemove,
     getURLHost,
+    utf8ToB64,
+    getQueryParams,
 };

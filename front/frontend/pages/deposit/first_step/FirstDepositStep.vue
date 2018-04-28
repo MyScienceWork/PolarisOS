@@ -29,7 +29,7 @@
                             :hiddenValue="parentPublication"
                             name="parent"
                             :form="creationSink"
-                            v-if="modification"
+                            v-if="newVersion"
                         />
                     </div>
                 </div> 
@@ -59,7 +59,7 @@
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
                     <div class="column" v-if="Object.keys(upload_form).length > 0">
                         <div class="card card-equal-height">
-                            <div class="card-content card-equal-height">
+                            <div class="card-content card-equal-height" v-if="!modification">
                                 <div class="columns is-centered">
                                     <div class="column has-text-centered">
                                         <h4 class="title is-4">{{lang('f_upload_deposit_file')}}
@@ -81,6 +81,14 @@
                                         <p v-if="state.analyze_state === 'loading'">{{lang('l_analyze_in_progress')}}</p>
                                         <p v-else-if="state.analyze_state === 'fail'">{{lang('l_analyze_failed')}}</p>
                                         <p v-else-if="state.analyze_state === 'success'">{{lang('l_analyze_succeeded')}}</p>
+                                    </div>
+                                </div>
+                            </div> <!-- card-content not in modification -->
+                            <div v-else class="card-content card-equal-height">
+                                <div class="columns is-centered">
+                                    <div class="column has-text-centered">
+                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}</h4>
+                                        <p v-html="lang('f_upload_deposit_file_modification_help')"></p>
                                     </div>
                                 </div>
                             </div>

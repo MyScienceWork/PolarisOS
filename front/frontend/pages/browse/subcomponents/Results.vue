@@ -37,12 +37,57 @@
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </a>
                         </template>
-                        <a class="level-item" :alt="lang('f_share_on_fb')" :title="lang('f_share_on_fb')">
-                            <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
-                        </a>
-                        <a class="level-item" :alt="lang('f_share_on_twitter')" :title="lang('f_share_on_twitter')">
-                            <span class="icon is-small"><i class="fa fa-twitter"></i></span>
-                        </a>
+                        <router-link 
+                            class="level-item"
+                            v-if="loggedIn"
+                            :alt="lang('f_use_as_model')" 
+                            :title="lang('f_use_as_model')" 
+                            :to="`/deposit?type=model&_id=${info._id}`"
+                        >
+                            <span class="icon is-small"><i class="fa fa-book"></i></span>
+                        </router-link>
+                        <router-link 
+                            v-if="loggedIn && can_modify(info)"
+                            class="level-item" 
+                            :alt="lang('f_modify_publication')" 
+                            :title="lang('f_modify_publication')"
+                            :to="`/deposit?type=modify&_id=${info._id}`"
+                        >
+                            <span class="icon is-small"><i class="fa fa-pencil"></i></span>
+                        </router-link>
+                        <router-link 
+                            v-if="loggedIn && can_modify(info)"
+                            class="level-item" 
+                            :alt="lang('f_deposit_new_file_version')" 
+                            :title="lang('f_deposit_new_file_version')"
+                            :to="`/deposit?type=new_version&_id=${info._id}`"
+                        >
+                            <span class="icon is-small"><i class="fa fa-pencil-square-o"></i></span>
+                        </router-link>
+                        <social-sharing :url="`${host}/view/${info._id}`"
+                          :title="info.title.content"
+                          :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
+                          quote=""
+                          hashtags="ined"
+                          twitter-user="ined"
+                          network-tag="a"
+                          inline-template>
+                            <network network="facebook" class="level-item">
+                                <span class="icon is-small"><i class="fa fa-facebook-official"></i></span>
+                            </network>
+                        </social-sharing>
+                        <social-sharing :url="`${host}/view/${info._id}`"
+                          :title="info.title.content"
+                          :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
+                          quote=""
+                          hashtags="ined"
+                          twitter-user="ined"
+                          network-tag="a"
+                          inline-template>
+                            <network network="twitter" class="level-item">
+                                <span class="icon is-small"><i class="fa fa-twitter"></i></span>
+                            </network>
+                        </social-sharing>
                     </div>
                 </div>
             </div>

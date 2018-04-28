@@ -1,33 +1,25 @@
-const Navbar = require('../navbar/Navbar.vue');
 const LangMixin = require('../../../../../../common/mixins/LangMixin');
 const Auth = require('../../../../../../common/utils/auth');
 const Browser = require('../../../../../../common/utils/browser');
 const SearchBar = require('../../../../../../common/components/main/search_bar/SearchBar.vue');
 
+const Navbar = require('../navbar/Navbar.vue');
+const Search = require('../../../../../pages/home/subcomponents/Search.vue');
+
 module.exports = {
     mixins: [LangMixin],
+    props: {
+        menu: { type: Object, required: true },
+    },
     components: {
         navbar: Navbar,
         searchbar: SearchBar,
     },
     methods: {
-        logout() {
-            Auth.logout();
-            this.$router.push({ path: '/' });
-            location.reload();
-        },
-        change_language(lang, e) {
-            e.preventDefault();
-            Browser.localSet('default_lang', lang);
-            location.reload();
-        },
     },
     computed: {
-        fullname() {
-            return Auth.fullname();
-        },
-        user_id() {
-            return Auth.user_id();
+        languages() {
+            return this.$store.state.global_config.langs.map(l => l.value);
         },
     },
 };

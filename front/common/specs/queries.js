@@ -31,4 +31,35 @@ module.exports = {
     publication_search,
     publication_search_with_author,
     author_search,
+    published_publication_search: {
+        $and: [
+            { has_other_version: false },
+            { status: 'published' },
+            { $or: publication_search.$or },
+        ],
+    },
+    no_other_version: {
+        has_other_version: false,
+    },
+    published: {
+        status: 'published',
+    },
+    last_deposits: {
+        $and: [
+            { has_other_version: false },
+            { status: 'published' },
+        ],
+    },
+    form: {
+        $or: [
+            { name: '{{{search}}}' },
+            { label: '{{{search}}}' },
+            { 'fields.name': '{{{search}}}' },
+            { 'fields.label': '{{{search}}}' },
+            { 'fields.type': '{{{search}}}' },
+            { 'fields.placeholder': '{{{search}}}' },
+            { 'fields.multiple_name': '{{{search}}}' },
+            { 'fields.help.content': '{{{search}}}' },
+        ],
+    },
 };

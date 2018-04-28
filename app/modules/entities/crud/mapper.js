@@ -89,6 +89,8 @@ class Mapper {
                 const matches = value.map((elt) => {
                     if (elt instanceof Object) {
                         return Mapper.special_shortcut_query(key, type, elt);
+                    } else if (elt.startsWith('"') && elt.endsWith('"')) {
+                        return new queries.MatchPhrase().match({ [key]: elt.slice(1, -1) });
                     }
                     return new queries.Match().match({ [key]: elt });
                 }).filter(elt => elt != null);
@@ -99,6 +101,14 @@ class Mapper {
                     return outer_query;
                 }
                 return bool;
+            }
+            case 'date': {
+                const range = value.reduce((q, elt) => q.operators(elt), new queries.Range().field(key));
+                if (outer_query != null) {
+                    most_inner_query.query(range);
+                    return outer_query;
+                }
+                return range;
             }
             default: {
                 const terms = new queries.Terms({ [key]: value });
@@ -115,11 +125,25 @@ class Mapper {
                 most_inner_query.query(q);
                 return outer_query;
             }
+
+            if (q == null && type === 'date') {
+                const range = new queries.Range().field(key).operators(value);
+                if (outer_query != null) {
+                    most_inner_query.query(range);
+                    return outer_query;
+                }
+                return range;
+            }
             return q;
         } else {
             switch (type) {
             case 'text': {
-                const q = new queries.Match().match({ [key]: value });
+                let q = null;
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    q = new queries.MatchPhrase().match({ [key]: value.slice(1, -1) });
+                } else {
+                    q = new queries.Match().match({ [key]: value });
+                }
                 if (outer_query != null) {
                     most_inner_query.query(q);
                     return outer_query;
@@ -206,7 +230,7 @@ class Mapper {
 
     static bool_query(obj, mapping) {
         let bool = new queries.Bool();
-        ['$and', '$fand', '$nfand', '$or'].forEach((op) => {
+        ['$and', '$fand', '$nfand', '$or', '$msm', '$minimum_should_match'].forEach((op) => {
             if (!(op in obj)) {
                 return;
             }
@@ -214,6 +238,8 @@ class Mapper {
             const val = obj[op];
             if (val instanceof Array) {
                 bool = Mapper.visit_list(bool, val, op, mapping);
+            } else if (op === '$msm' || op === '$minimum_should_match') {
+                bool.minimum_should_match(val);
             } else {
                 bool = Mapper.visit_bool_query(bool, val, op, mapping);
             }
@@ -405,6 +431,8 @@ class AggregationMapper {
             return new aggs.CardinalityAggregation(name, aggregation).field(field);
         case 'terms':
             return new aggs.TermsAggregation(name, aggregation).field(field);
+        case 'date_histogram':
+            return new aggs.DateHistogramAggregation(name, aggregation).field(field);
         case 'filter': {
             if (!('$query' in aggregation)) {
                 return null;
@@ -441,12 +469,30 @@ function transform_to_search(body, mapping) {
 }
 
 function transform_to_sort(body, mapping) {
+    const get_sort = (sorts) => {
+        if (!sorts || sorts.length === 0) {
+            return [];
+        }
+
+        return sorts.map((sort) => {
+            if (_.isString(sort)) {
+                const fc = sort[0];
+                if (fc === '-') {
+                    return { [sort.slice(1)]: 'desc' };
+                }
+                return { [sort]: 'asc' };
+            }
+            return sort;
+        });
+    };
+
     if (!('sort' in body)) {
         return null;
     }
 
     const sort = body.sort;
-    const result = SortMapper.visit_object(sort, mapping);
+    const sort_transformed = get_sort(sort);
+    const result = SortMapper.visit_object(sort_transformed, mapping);
     return result;
 }
 

@@ -14,10 +14,29 @@ module.exports = {
         single: { type: Boolean, default: false },
         readonly: { type: Boolean, default: false },
     },
+    data() {
+        return {
+            state: {
+                show: {},
+            },
+        };
+    },
     components: {
         CrudForm,
     },
     methods: {
+        form_is_of_type(type, field) {
+            if (type === 'section' || type === 'widget' || type === 'hidden') {
+                return field.type === 'subform'
+                    && field.subform_information
+                    && field.subform_information.type === type
+                    && field.subform_information.title;
+            }
+            return false;
+        },
+        show_hidden_form(field) {
+            this.$set(this.state.show, field.name, !this.state.show[field.name]);
+        },
         crud_form_change(val) {
             this.$emit('crud-form-change', val);
         },

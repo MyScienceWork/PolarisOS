@@ -2,6 +2,10 @@
 .generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
+    .card-border-color-@{name} {
+        border: 2px solid @@name;
+    }
+
     .card-@{name} {
         background-color: @@name;
         
@@ -39,7 +43,7 @@
 
     .clickable-card-@{name}, .info-card-@{name} {
         .card-header {
-            background-color: @grey-3;
+            background-color: @@name;
 
             .card-header-title {
                 color: @white !important;
@@ -74,7 +78,7 @@
     }
 
     .card-header-@{name} {
-        background-color: @grey-3;
+        background-color: @@name;
         border-radius: 5px 5px 0 0;
         padding: 1%;
         border-bottom: 0px solid @white !important;
@@ -189,6 +193,10 @@
     .tag {
         border-radius: 0px;
     }
+    
+    &.is-left:first-child > .tag {
+        border-top-left-radius: 5px;
+    }
 
     &:last-child > .tag {
         border-top-right-radius: 5px;
@@ -197,6 +205,14 @@
     &:not(last-child) > .tag {
         border-right: 1px solid @white;
     }
+}
+
+.card-border-color-deep-blue {
+    border: 2px solid @deep-blue;
+}
+
+.card-border-color-turquoise {
+    border: 2px solid @turquoise;
 }
 
 .generate-colored-cards();

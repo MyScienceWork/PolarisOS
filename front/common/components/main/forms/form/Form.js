@@ -41,6 +41,7 @@ module.exports = {
             });
         },
         send_information(sink) {
+            console.log(this.path, this.name, this.dispatch_method);
             if (this.name !== sink) {
                 return;
             }
@@ -58,7 +59,7 @@ module.exports = {
             });
         },
         show_success(sink) {
-            if (this.state.method !== 'validate' || this.noReinitializeAfterSuccess) {
+            if ((this.state.method !== 'validate' && this.state.method !== '') || this.noReinitializeAfterSuccess) {
                 this.state.timeout = setTimeout(() => {
                     this.$store.commit(Messages.INITIALIZE, {
                         form: this.name,

@@ -56,6 +56,12 @@ module.exports = {
         state.forms[form_name].state = 'noop';
     },
 
+    [Messages.FORCE_COMPLETION]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'completed';
+    },
+
     [Messages.COMPLETE_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
@@ -140,6 +146,7 @@ module.exports = {
                 state.forms[form_name].validations = validations;
                 payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
             } else if (action === 'validate') {
+                state.forms[form_name].content = content;
                 payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
             } else if (action === 'delete') {
                 // Noop
@@ -198,6 +205,14 @@ module.exports = {
         const object = payload.body;
         create_form_if_needed(state, form_name);
         const form = state.forms[form_name];
-        form.content = Utils.merge_with_replacement(form.content, object);
+        form.state = 'transfer';
+        Vue.nextTick(() => {
+            if (object === undefined) {
+                form.content = {};
+            } else {
+                form.content = Utils.merge_with_replacement(form.content, object);
+            }
+            form.state = 'initial';
+        });
     },
 };

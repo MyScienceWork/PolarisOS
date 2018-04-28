@@ -23,8 +23,32 @@
     ></input>
     <div :class="[{'field': !isAddon}]" v-else-if="type === 'html-editor'">
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== '' && !readonly"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
             <wysiwyg v-model="state.value" :placeholder="placeholder"  />
+        </div>
+    </div>
+    <div :class="[{'field': !isAddon}]" v-else-if="type === 'ide-editor'">
+        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== '' && !readonly"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
+        <div :class="['control', {'is-expanded': hasAddons}]">
+            <ace-editor @init="IDEInit" v-model="state.value" lang="json" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
@@ -33,7 +57,7 @@
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -41,7 +65,9 @@
               </span>
             </a>
         </b-tooltip>
-        <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
+        <div :class="[{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}]">
+            <slot v-if="hasAddons" name="left-input-addons" />
+            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <input v-if="type === 'text'" 
                     type="text"
@@ -120,7 +146,7 @@
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -156,7 +182,7 @@
     <div v-else-if="type === 'radio'" class="field">
         <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -182,7 +208,9 @@
             <input
             type="checkbox"
             :name="name"
-            v-model="state.value"
+            :value="state.value"
+            :checked="state.value"
+            @change="update_value"
             :disabled="readonly"
             />
         </span>
@@ -194,14 +222,16 @@
                 <input
                 type="checkbox"
                 :name="name"
-                v-model="state.value"
+                :value="state.value"
+                :checked="state.value"
+                @change="update_value"
                 :disabled="readonly"
                 />
                 {{label}}
             </label>
         </div>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">

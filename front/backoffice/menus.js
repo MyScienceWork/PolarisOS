@@ -18,12 +18,14 @@ const Widget = require('./pages/widget/Widget.vue');
 const Template = require('./pages/template/Template.vue');
 const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
+const Query = require('./pages/query/Query.vue');
+const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 
 module.exports.menu = [
     [
         {
-            section: 'General',
-            name: 'Overview',
+            section: 'l_general_section',
+            name: 'l_overview_page',
             access: 'overview',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'admin',
@@ -32,8 +34,8 @@ module.exports.menu = [
             component: Overview,
         },
         {
-            section: 'General',
-            name: 'Users',
+            section: 'l_general_section',
+            name: 'l_users_page',
             access: '',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'user',
@@ -42,8 +44,8 @@ module.exports.menu = [
             component: User,
         },
         {
-            section: 'General',
-            name: 'Roles',
+            section: 'l_general_section',
+            name: 'l_roles_page',
             access: '',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'role',
@@ -52,8 +54,8 @@ module.exports.menu = [
             component: Role,
         },
         {
-            section: 'General',
-            name: 'Reviews',
+            section: 'l_general_section',
+            name: 'l_reviews_page',
             access: 'publication',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'review',
@@ -65,8 +67,8 @@ module.exports.menu = [
 
     [
         {
-            section: 'Administration',
-            name: 'Entities',
+            section: 'l_admin_section',
+            name: 'l_entities_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'entity',
@@ -75,8 +77,8 @@ module.exports.menu = [
             component: PEntity,
         },
         {
-            section: 'Administration',
-            name: 'Pipelines',
+            section: 'l_admin_section',
+            name: 'l_pipelines_page',
             access: 'pipeline',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'pipeline',
@@ -85,8 +87,8 @@ module.exports.menu = [
             component: Pipeline,
         },
         {
-            section: 'Administration',
-            name: 'Forms',
+            section: 'l_admin_section',
+            name: 'l_forms_page',
             access: 'form',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'form',
@@ -95,8 +97,8 @@ module.exports.menu = [
             component: Form,
         },
         {
-            section: 'Administration',
-            name: 'Langs',
+            section: 'l_admin_section',
+            name: 'l_langs_page',
             access: 'lang',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'lang',
@@ -104,12 +106,32 @@ module.exports.menu = [
             submenu: [],
             component: Lang,
         },
+        {
+            section: 'l_admin_section',
+            name: 'l_queries_page',
+            access: 'entity',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'query',
+            routes: [Routes.query],
+            submenu: [],
+            component: Query,
+        },
+        {
+            section: 'l_admin_section',
+            name: 'l_mails_page',
+            access: 'mail_template',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'mail_template',
+            routes: [Routes.mail_template],
+            submenu: [],
+            component: MailTemplate,
+        },
     ],
 
     [
         {
-            section: 'UI / UX',
-            name: 'Menus',
+            section: 'l_ui_ux_section',
+            name: 'l_menus_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'menu',
@@ -118,8 +140,8 @@ module.exports.menu = [
             component: Menu,
         },
         {
-            section: 'UI / UX',
-            name: 'Templates',
+            section: 'l_ui_ux_section',
+            name: 'l_templates_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'template',
@@ -127,19 +149,19 @@ module.exports.menu = [
             submenu: [],
             component: Template,
         },
-        {
-            section: 'UI / UX',
-            name: 'Widgets',
+        /* {
+            section: 'l_ui_ux_section',
+            name: 'l_widgets_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'widget',
             routes: [Routes.widget],
             submenu: [],
             component: Widget,
-        },
+        },*/
         {
-            section: 'UI / UX',
-            name: 'Pages',
+            section: 'l_ui_ux_section',
+            name: 'l_pages_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'page',
@@ -149,10 +171,10 @@ module.exports.menu = [
         },
     ],
 
-    [
+    /* [
         {
-            section: 'Import / Export',
-            name: 'Connectors',
+            section: 'l_import_export_section',
+            name: 'l_connectors_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'connector',
@@ -161,8 +183,8 @@ module.exports.menu = [
             component: Connector,
         },
         {
-            section: 'Import / Export',
-            name: 'Importers',
+            section: 'l_import_export_section',
+            name: 'l_importers_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'importer',
@@ -171,8 +193,8 @@ module.exports.menu = [
             component: Importer,
         },
         {
-            section: 'Import / Export',
-            name: 'Exporters',
+            section: 'l_import_export_section',
+            name: 'l_exporters_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'exporter',
@@ -180,12 +202,12 @@ module.exports.menu = [
             submenu: [],
             component: Widget,
         },
-    ],
+    ],*/
 
     [
         {
-            section: 'Advanced',
-            name: 'Functions',
+            section: 'l_advanced_section',
+            name: 'l_functions_page',
             access: '',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'function',
@@ -194,17 +216,8 @@ module.exports.menu = [
             component: PFunction,
         },
         {
-            section: 'Advanced',
-            name: 'API Management',
-            access: '',
-            key: 'api',
-            routes: [Routes.api],
-            submenu: [],
-            component: Overview,
-        },
-        {
-            section: 'Advanced',
-            name: 'Config',
+            section: 'l_advanced_section',
+            name: 'l_config_page',
             access: 'config',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'config',

@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const _ = require('lodash');
 const Handlebars = require('../../../app/modules/utils/templating');
 const Messages = require('../api/messages');
@@ -22,10 +23,21 @@ module.exports = {
             currentPage: 1,
             state: {
                 seso: this.update_state(this.$route.query),
+                loading: false,
             },
         };
     },
     methods: {
+        show_success_read(sink) {
+            if (sink === this.searchSink) {
+                this.state.loading = false;
+            }
+        },
+        switch_to_loading(sink) {
+            if (sink === this.searchSink) {
+                this.state.loading = true;
+            }
+        },
         get_information(query, opt, default_value) {
             if (!query) {
                 return default_value;
@@ -115,7 +127,12 @@ module.exports = {
             const sa = [backward ? 'before' : 'after'];
             const _id = source._id;
             if (seso.sort) {
-                const val = Utils.find_value_with_path(source, seso.sort.split('.'));
+                const segments = seso.sort.split('.');
+                if (segments[segments.length - 1] === 'raw') {
+                    segments.pop();
+                }
+                console.log(segments, source);
+                const val = Utils.find_value_with_path(source, segments);
                 if (val) {
                     sa.push(val);
                 }
@@ -152,6 +169,8 @@ module.exports = {
                 sort: [],
             };
 
+            console.log(this.state.seso);
+
             let where = {};
             if (this.state.seso.filters.length > 0) {
                 where.$and = this.state.seso.filters.reduce((arr, filter) => {
@@ -176,20 +195,28 @@ module.exports = {
             if ((!content.search || content.search.trim() === '')) {
                 if (this.useDefaultQuery) {
                     const squery = JSON.parse(Handlebars.compile(this.defaultQuery)({}));
-                    if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
-                        where.$and.push(squery);
-                    } else {
-                        where = squery;
+
+                    if (Object.keys(squery).length > 0) {
+                        if (this.state.seso.filters.length > 0
+                            || this.state.seso.extra_filters.length > 0) {
+                            where.$and.push(squery);
+                        } else {
+                            where = squery;
+                        }
                     }
                 }
 
-                if (this.state.seso.filters.length === 0 && this.state.seso.extra_filters.length === 0 && !this.useDefaultQuery) {
+                if (this.state.seso.filters.length === 0
+                    && this.state.seso.extra_filters.length === 0
+                    && !this.useDefaultQuery) {
                     return;
                 }
 
                 body.where = where;
             } else {
-                const squery = JSON.parse(Handlebars.compile(this.searchQuery)(content));
+                const new_content = _.cloneDeep(content);
+                new_content.search = new_content.search.replace(new RegExp('"', 'g'), '\\"');
+                const squery = JSON.parse(Handlebars.compile(this.searchQuery)(new_content));
                 if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
                     where.$and.push(squery);
                 } else {
@@ -281,7 +308,6 @@ module.exports = {
     mounted() {
         const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
-
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
@@ -306,6 +332,9 @@ module.exports = {
             body,
         });
         this.add_extra_filters(this.searchSink, 'pos_aggregate', '*');
-        this.send_information(this.searchSink);
+
+        Vue.nextTick(() => {
+            this.send_information(this.searchSink);
+        });
     },
 };

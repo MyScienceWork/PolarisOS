@@ -63,11 +63,28 @@ function fetch_menu(part) {
 
 function get_menu_item(menu, page) {
     if (!('elements' in menu)) {
-        return -1;
+        return [-1, -1];
     }
 
     const elements = menu.elements;
-    return _.findIndex(elements, elt => elt.page === page._id);
+    const idx = _.findIndex(elements, elt => elt.page === page._id);
+
+    if (idx === -1) {
+        const [pidx, cidx] = elements.reduce((arr, elt, i) => {
+            if (!('submenus' in elt) || elt.submenus.length === 0) {
+                return [-1, -1];
+            }
+            const ci = _.findIndex(elt.submenus, celt => (celt.page === page._id && !('$route' in celt)));
+            if (arr.length === 0) {
+                return [i, ci];
+            } else if (arr[1] === -1) {
+                return [i, ci];
+            }
+            return arr;
+        }, []);
+        return [pidx, cidx];
+    }
+    return [idx, -1];
 }
 
 function get_default_component(page) {
@@ -117,10 +134,9 @@ async function render_router(part) {
     }
 
     const routes = pages.map((page) => {
-        const menu_item = get_menu_item(menu, page);
         const obj = {
             path: page.route,
-            name: menu_item !== -1 ? menu.elements[menu_item].name : page.name,
+            name: page.route,
             meta: {
                 requiresAuth: page.global_access.access != null && page.global_access.access !== '',
                 access: page.global_access.access,
@@ -131,9 +147,8 @@ async function render_router(part) {
                     }
                     return null;
                 }).filter(a => a != null),
-                menu_item,
+                page_id: page._id,
             },
-            navbar: menu_item !== -1,
             components: {
                 default: /* Meta,*/ get_default_component(page),
                 header: Header,
@@ -154,7 +169,21 @@ async function render_router(part) {
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
 
-    routes.sort((r1, r2) => r1.meta.menu_item - r2.meta.menu_item);
+    menu.elements.forEach((elt) => {
+        if (elt.submenus && elt.submenus.length > 0) {
+            elt.submenus.forEach((celt) => {
+                const idx = _.findIndex(routes, route => route.meta.page_id === celt.page);
+                if (idx !== -1) {
+                    celt.$route = routes[idx].path;
+                }
+            });
+        } else {
+            const idx = _.findIndex(routes, route => route.meta.page_id === elt.page);
+            if (idx !== -1) {
+                elt.$route = routes[idx].path;
+            }
+        }
+    });
 
     return {
         menu,

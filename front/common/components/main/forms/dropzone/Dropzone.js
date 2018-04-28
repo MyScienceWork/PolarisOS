@@ -2,11 +2,13 @@ const _ = require('lodash');
 const VueDropzone = require('vue2-dropzone');
 const APIRoutes = require('../../../../api/routes');
 const LangMixin = require('../../../../mixins/LangMixin');
+const FormMixin = require('../../../../mixins/FormMixin');
 const Messages = require('../../../../api/messages');
+const Utils = require('../../../../utils/utils');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
 
 module.exports = {
-    mixins: [LangMixin],
+    mixins: [LangMixin, FormMixin],
     components: {
         'vue-dropzone': VueDropzone,
     },
@@ -35,10 +37,23 @@ module.exports = {
             },
             state: {
                 files: { order: [], content: {} },
+                master_files: {},
+
             },
         };
     },
     methods: {
+        update_master_files(i, val) {
+            if (!val && i in this.state.master_files) {
+                delete this.state.master_files[i];
+                this.state.master_files = Object.assign({}, this.state.master_files);
+                return;
+            }
+
+            if (val) {
+                this.state.master_files = Object.assign({}, this.state.master_files, { [i]: val });
+            }
+        },
         dropzone_added(file) {
             const name = `${file.name}_${file.lastModified}`;
             this.state.files.order.push(name);
@@ -78,7 +93,7 @@ module.exports = {
         removeFile(filename, e) {
             e.preventDefault();
             this.$refs.dropzone.removeFile(this.state.files.content[filename]);
-            const idx = _.findIndex(this.state.files.order, n => n === name);
+            const idx = _.findIndex(this.state.files.order, n => n === filename);
             if (idx !== -1) {
                 this.state.files.order.splice(idx, 1);
                 delete this.state.files.content[filename];
@@ -91,11 +106,42 @@ module.exports = {
             const file = this.state.files.content[filename];
             return Handlebars.compile(this.lang('l_dropzone_filename_help'))(file);
         },
+        initialize(s) {
+            if (s !== this.form) {
+                return;
+            }
+
+            if (this.state.files.order.length > 0) {
+                return;
+            }
+
+            const content = this.fcontent(s);
+            if (!content || Object.keys(content).length === 0) {
+                return;
+            }
+
+            const files = Utils.find_value_with_path(content, this.files.split('.'));
+            if (!files) {
+                return;
+            }
+
+            this.state.files.order = files.map(f => f[this.name]);
+            this.state.files.content = files.reduce((obj, f) => {
+                obj[f[this.name]] = { name: f[this.name],
+                    [this.master]: f[this.master],
+                    upload: { progress: 100 },
+                    status: 'success',
+                    size: 0 };
+                return obj;
+            }, {});
+        },
     },
     mounted() {
         if (this.restore_files && Object.keys(this.keeperContent).length > 0) {
             this.state.files = this.keeperContent;
         }
+
+        this.initialize(this.form);
     },
     beforeDestroy() {
         if (this.keep_files) {
@@ -111,6 +157,10 @@ module.exports = {
                 return this.$store.state.forms[this.keeper].content;
             }
             return {};
+        },
+        dropzoneData() {
+            this.dropzone.dictFileTooBig = this.lang('l_dropzone_file_too_big');
+            return this.dropzone;
         },
     },
     watch: {

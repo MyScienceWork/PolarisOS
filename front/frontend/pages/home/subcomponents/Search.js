@@ -1,36 +1,53 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const AdvancedSearchSpecs = require('../../../../common/specs/AdvancedSearchSpecs');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin],
     props: {
+        showAdvancedSearch: { type: Boolean, default: true },
+        showFavorites: { type: Boolean, default: true },
+        collapsible: { type: Boolean, default: false },
+        searchSink: { type: String, default: 'search_sink' },
     },
     data() {
         return {
             state: {
+                collapse_opened: false,
                 more_options: false,
                 search: '',
                 showAdvanced: false,
-                forms: {
-                    ssink: 'search_sink',
-                    collector_sink: 'search_collector_sink',
+                sinks: {
+                    reads: {
+                        collector_sink: 'search_collector_sink',
+                    },
                 },
             },
         };
     },
     methods: {
         trigger_click() {
+            if (this.collapsible) {
+                if (!this.state.collapse_opened) {
+                    this.state.collapse_opened = !this.state.collapse_opened;
+                    return;
+                }
+            }
             this.$store.commit(Messages.COLLECT, {
-                form: this.state.forms.ssink,
+                form: this.searchSink,
             });
         },
         initialize() {
             this.send_information();
         },
         send_information() {
-            const content = this.fcontent(this.state.forms.ssink);
+            if (this.collapsible) {
+                this.state.collapse_opened = false;
+            }
+
+            const content = this.fcontent(this.searchSink);
             let search = '';
 
             const defined = 'search' in content && content.search && content.search.trim !== '';
@@ -48,7 +65,7 @@ module.exports = {
             }
 
             if (extra_filters) {
-                params.push(`sink=${encodeURIComponent(this.state.forms.ssink)}`);
+                params.push(`sink=${encodeURIComponent(this.state.sinks.reads.ssink)}`);
             }
 
             const strings = params.reduce((arr, val) => {
@@ -62,7 +79,7 @@ module.exports = {
     },
     computed: {
         current_state() {
-            return this.fstate(this.state.forms.ssink);
+            return this.fstate(this.searchSink);
         },
         specs() {
             return AdvancedSearchSpecs;
@@ -70,7 +87,13 @@ module.exports = {
     },
     watch: {
         current_state(s) {
-            this.dispatch(s, this, this.state.forms.ssink);
+            this.dispatch(s, this, this.searchSink);
         },
+    },
+    mounted() {
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.searchSink,
+            keep_content: false,
+        });
     },
 };
