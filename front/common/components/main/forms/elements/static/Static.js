@@ -42,6 +42,14 @@ module.exports = {
                 this.state.value = this.hlang(info);
             }
         },
+        start_collection() {
+            const info = this.state.value;
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info,
+            });
+        },
     },
     watch: {
         current_state(s) {
