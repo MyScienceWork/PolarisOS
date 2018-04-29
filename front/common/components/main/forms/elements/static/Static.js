@@ -1,5 +1,6 @@
 const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
+const Messages = require('../../../../../api/messages');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const Handlebars = require('../../../../../../../app/modules/utils/templating');
