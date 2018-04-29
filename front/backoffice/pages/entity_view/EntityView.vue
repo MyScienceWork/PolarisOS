@@ -13,7 +13,7 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             :search-type="entity()"
-                            :table-classes="{'has-small-font': Object.keys(state.columns).length > 5}"
+                            :table-classes="{'has-small-font': state.visible_columns > 5}"
                             :detailed="true"
                             detail-key="_id"
                             :checkable="true"

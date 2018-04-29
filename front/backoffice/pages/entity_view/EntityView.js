@@ -36,6 +36,7 @@ module.exports = {
                 columns: this.columns || {},
                 checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
+                visible_columns: 0,
             },
         };
     },
@@ -102,6 +103,7 @@ module.exports = {
         columns(cols) {
             if (cols) {
                 this.state.columns = cols;
+                this.state.visible_columns = cols.filter(c => c.visible).length;
             }
         },
     },
