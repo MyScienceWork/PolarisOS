@@ -64,7 +64,7 @@ module.exports = {
         on_column_update(obj) {
             // console.log('on column update', obj);
             this.state.columns[obj.key].visible = obj.checked;
-            this.state.visible_columns = this.state.columns.filter(c => c.visible).length;
+            this.state.visible_columns = _.filter(this.state.columns, c => c.visible).length;
             this.$set(this.state, 'columns', this.state.columns);
             this.$forceUpdate();
         },
