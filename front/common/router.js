@@ -21,7 +21,7 @@ const NewsPage = require('../frontend/pages/news/NewsPage.vue');
 const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
 const ForumThread = require('../frontend/pages/forum/Forum.vue');
 
-const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
+const USPCUserProfile = require('../frontend/pages/user_profile/USPCUserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
 
@@ -102,7 +102,7 @@ function get_default_component(page) {
         return View;
     case '/u/:id/profile':
     case '/a/:id/profile':
-        return UserProfile;
+        return USPCUserProfile;
     case '/deposit':
         return Deposit;
     case '/about':
