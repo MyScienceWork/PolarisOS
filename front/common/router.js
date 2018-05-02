@@ -122,7 +122,7 @@ async function render_router(part) {
         name: 'f_nav_login',
         navbar: false,
         components: {
-            default: get_default_component('/login'),
+            default: get_default_component({ route: '/login' }),
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
