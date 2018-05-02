@@ -104,12 +104,6 @@ module.exports = {
         },
     },
     computed: {
-        hasAddress() {
-            return this.author && this.author.address && this.author.address.address;
-        },
-        hasExternal() {
-            return this.author && this.author.external && Object.keys(this.author.external).filter(k => this.author.external[k]).length > 0;
-        },
         user() {
             if (this.state.author_mode) {
                 const content = this.fcontent(this.state.sinks.reads.user);

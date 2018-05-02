@@ -124,7 +124,7 @@
                             <a class="button is-info" @click="props.add">+</a>
                         </div>
                         <div class="control">
-                            <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                            <a class="button is-info" @click="props.remove(props.id, props.order)">-</a>
                         </div>
                     </template>
                 </finput>
@@ -180,7 +180,7 @@
                             <a class="button is-info" @click="props.add">+</a>
                         </div>
                         <div class="control">
-                            <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                            <a class="button is-info" @click="props.remove(props.id, props.order)">-</a>
                         </div>
                     </template>
                 </fselect>
@@ -232,7 +232,7 @@
                                                 <a class="button is-info" @click="props.add">+</a>
                                             </div>
                                             <div class="control">
-                                                <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                                <a class="button is-info" @click="props.remove(props.id, props.order)">-</a>
                                             </div>
                                         </div>
                                     </template>
@@ -265,7 +265,7 @@
                                         <a class="button is-info" @click="props.add">+</a>
                                     </div>
                                     <div class="control">
-                                        <a class="button is-info" @click="props.remove(props.id, $event)">-</a>
+                                        <a class="button is-info" @click="props.remove(props.id, props.order)">-</a>
                                     </div>
                                 </div>
                             </template>

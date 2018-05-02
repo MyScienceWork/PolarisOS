@@ -13,6 +13,7 @@ module.exports = {
     REMOVE_ALL_FORMS: 'remove_all_forms',
     COLLECT: 'collect',
     COMPLETE_FORM_ELEMENT: 'complete_form_element',
+    REMOVE_FORM_ELEMENT: 'remove_form_element',
     REGISTER_FORM_ELEMENT: 'register_form_element',
     UNREGISTER_FORM_ELEMENT: 'unregister_form_element',
     UNREGISTER_FORM_ELEMENTS: 'unregister_form_elements',

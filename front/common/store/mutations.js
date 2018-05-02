@@ -87,6 +87,16 @@ module.exports = {
         }
     },
 
+    [Messages.REMOVE_FORM_ELEMENT]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+
+        const segs = payload.name.split('.');
+        const form = state.forms[form_name];
+        form.content = Object.assign({}, Utils.traverse_and_execute(
+            form.content, segs, async () => undefined));
+    },
+
     [Messages.COLLECT]: (state, payload) => {
         const form_name = payload.form;
         const remove_content = payload.remove_content;
@@ -187,7 +197,16 @@ module.exports = {
     [Messages.UNREGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
-        delete state.forms[form_name].elements[payload.name];
+
+        if (payload.pattern) {
+            const all_matched = _.filter(state.forms[form_name].elements,
+                    (val, key) => key.indexOf(payload.name) !== -1);
+            all_matched.forEach((m) => {
+                delete state.forms[form_name].elements[m];
+            });
+        } else {
+            delete state.forms[form_name].elements[payload.name];
+        }
     },
 
 

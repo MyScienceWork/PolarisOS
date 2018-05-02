@@ -12,6 +12,7 @@
                     :remove="remove"
                 >
                 </slot>
+
             </div>
         </template>
         <template v-else>
@@ -25,7 +26,7 @@
             <div class="columns" v-if="tabs && state.elements.length > 0">
                 <div class="column is-1">
                     <p
-                        v-for="show in state.elements" 
+                        v-for="(show, idx) in state.elements" 
                         v-if="show.a" 
                         :key="show.i"
                     >
@@ -34,7 +35,7 @@
                                 {{show.i+1}} 
                             </span>
                         </a>
-                        <a href='#' class="icon is-small has-text-danger" @click.prevent="remove(show.i)">
+                        <a href='#' class="icon is-small has-text-danger" @click.prevent="remove(show.i, idx)">
                             <i class="fa fa-times"></i>
                         </a>
                     </p>
@@ -76,7 +77,7 @@
                                     </button>
                                 </p>
                                 <p class="control">
-                                    <button class="button is-danger" @click.prevent="remove(show.i)">
+                                    <button class="button is-danger" @click.prevent="remove(show.i, idx)">
                                         <span class="icon">
                                             <i class="fa fa-times"></i>
                                         </span>
@@ -96,10 +97,10 @@
                 </draggable>
             </div>
             <div v-else-if="!tabs && state.elements.length > 0">
-                <div v-for="show in state.elements" class="columns" v-if="show.a" :key="show.i">
+                <div v-for="(show, idx) in state.elements" class="columns" v-if="show.a" :key="show.i">
                     <div class="column">
                         <div class="is-pulled-right">
-                            <a href='#' class="icon has-text-danger" @click.prevent="remove(show.i)">
+                            <a href='#' class="icon has-text-danger" @click.prevent="remove(show.i, idx)">
                                 <i class="fa fa-times"></i>
                             </a>
                         </div>
