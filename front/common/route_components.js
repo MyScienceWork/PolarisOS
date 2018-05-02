@@ -29,7 +29,7 @@ module.exports = {
     '/news': News,
     '/news/:id': NewsPage,
     '/events': Events,
-    '/events/id': Events,
+    '/events/:id': Events,
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
     '/login': LoginView,
