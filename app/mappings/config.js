@@ -8,6 +8,13 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
+                    gui: {
+                        properties: {
+                            logo: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     mail: {
                         properties: {
                             smtp: {

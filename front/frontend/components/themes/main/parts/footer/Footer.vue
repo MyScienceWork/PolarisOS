@@ -59,7 +59,7 @@
             </div>
         </div>-->
         <div class="columns footer-disclaimer">
-            <p class="column">&copy; Ined 2018</p>
+            <p class="column" v-html="lang('l_footer_disclaimer')"></p>
         </div>
     </div>
     </footer>

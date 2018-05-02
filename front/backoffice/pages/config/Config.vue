@@ -83,6 +83,19 @@
                                 </div>
                             </widget>
                             <widget :collapsed="true">
+                                <span slot="title">{{lang('l_ui_setting', {}, 'other')}}</span>
+                                <div slot="body">
+                                    <finput
+                                        name="gui.logo" 
+                                        :label="lang('l_ui_logo')" 
+                                        :placeholder="lang('l_ui_logo')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
                                 <span slot="title">{{lang('l_upload_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <finput
