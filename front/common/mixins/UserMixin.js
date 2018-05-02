@@ -32,6 +32,13 @@ module.exports = {
                 return obj;
             }, {});
         },
+        author() {
+            if (!this.user) {
+                return null;
+            }
+
+            return this.user.author;
+        },
     },
     methods: {
         logout() {

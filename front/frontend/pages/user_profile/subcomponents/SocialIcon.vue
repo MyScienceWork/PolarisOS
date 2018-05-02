@@ -10,7 +10,7 @@
             :href='url'>
             {{socialId}}
         </a>
-        <span v-else class="has-small-left-margin">{{id}}</span></p>
+        <span v-else class="has-small-left-margin">{{id}}</span>
     </p>
     <p 
         class="has-text-vcentered has-small-bottom-margin"
