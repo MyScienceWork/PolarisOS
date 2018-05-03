@@ -4,6 +4,6 @@ module.exports = {
         imgUrl: { default: '', type: String },
         hasUrl: { default: false, type: Boolean },
         url: { default: '', type: String },
-        socialId: { required: true, type: 'String' },
+        socialId: { required: true, type: String },
     },
 };
