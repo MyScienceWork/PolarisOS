@@ -7,13 +7,13 @@ module.exports = {
     data() {
         return {
             state: {
+                isActive: true,
             },
         };
     },
     components: {
     },
     methods: {
-
     },
     mounted() {
     },
