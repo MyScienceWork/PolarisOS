@@ -41,7 +41,7 @@ module.exports = {
                 path: this.state.paths.reads[e],
                 body: {
                     size: 10,
-                    population: ['author'],
+                    population: ['creator'],
                 },
             },
         }));
