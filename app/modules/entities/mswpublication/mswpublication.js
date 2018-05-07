@@ -1,6 +1,6 @@
 // @flow
 const ODM = require('../crud/odm');
-const Model = require('./models/publications');
+const Model = require('./models/mswpublications');
 const Mapping = require('../crud/mapping');
 const Config = require('../../../config');
 
