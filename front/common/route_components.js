@@ -13,6 +13,7 @@ const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
 const ForumThread = require('../frontend/pages/forum/Forum.vue');
 const USPCUserProfile = require('../frontend/pages/user_profile/USPCUserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
+const UserList = require('../frontend/pages/user_list/UserList.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
 
 module.exports = {
@@ -33,4 +34,5 @@ module.exports = {
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
     '/login': LoginView,
+    '/user_list': UserList,
 };

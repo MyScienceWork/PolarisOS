@@ -21,6 +21,7 @@ const connector = require('./connector');
 const query = require('./query');
 
 const publication = require('./publication');
+const mswpublication = require('./mswpublication');
 
 module.exports = {
     user: user.msw,
@@ -46,4 +47,5 @@ module.exports = {
     query: query.msw,
 
     // publication: publication.msw,
+    mswpublication: mswpublication.msw,
 };
