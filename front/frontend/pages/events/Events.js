@@ -1,13 +1,14 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 // const FormMixin = require('../../../common/mixins/FormMixin');
-const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
-const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
+// const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+// const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const moment = require('moment');
 
 module.exports = {
-    mixins: [LangMixin, PaginationSearchMixin, ESQueryMixin],
+    mixins: [LangMixin, ReaderMixin],
     data() {
         return {
             state: {
@@ -77,17 +78,28 @@ module.exports = {
         // },
     },
     mounted() {
+        this.$store.state.requests = ['events'].map(e => ({
+            name: 'search',
+            type: 'dispatch',
+            content: {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                bodu: {
+                    size: 10,
+                },
+            },
+        }));
     },
     computed: {
         incoming_events() {
-            const content = this.fcontent(this.state.sinks.reads.get_incoming_events);
+            const content = this.mcontent(this.state.sinks.reads.get_incoming_events);
             if (content instanceof Array) {
                 return content;
             }
             return [];
         },
         past_events() {
-            const content = this.fcontent(this.state.sinks.reads.get_past_events);
+            const content = this.mcontent(this.state.sinks.reads.get_past_events);
             if (content instanceof Array) {
                 return content;
             }

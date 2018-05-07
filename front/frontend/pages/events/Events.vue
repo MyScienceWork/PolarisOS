@@ -8,7 +8,7 @@
         </ul>
       </div>
       <div class="container">
-        <container :class="{'is-hidden': state.isActive}">
+        <div :class="{'is-hidden': state.isActive}">
 
           Pictures past content, Card by default
           <div class="columns is-multiline">
@@ -41,9 +41,9 @@
                   </div>
           </div>
 
-        </container >
+      </div>
 
-        <container :class="{'is-hidden': !state.isActive}">
+        <div :class="{'is-hidden': !state.isActive}">
           Music futur content, card by default
 
           <div class="columns is-multiline">
@@ -76,7 +76,7 @@
                   </div>
           </div>
 
-        </container >
+      </div >
       </div>
 
     </div>
