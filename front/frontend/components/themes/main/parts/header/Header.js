@@ -1,6 +1,7 @@
 const LangMixin = require('../../../../../../common/mixins/LangMixin');
 const Auth = require('../../../../../../common/utils/auth');
 const Browser = require('../../../../../../common/utils/browser');
+const SearchBar = require('../../../../../../common/components/main/search_bar/SearchBar.vue');
 
 const Navbar = require('../navbar/Navbar.vue');
 const Search = require('../../../../../pages/home/subcomponents/Search.vue');
@@ -11,8 +12,8 @@ module.exports = {
         menu: { type: Object, required: true },
     },
     components: {
-        Navbar,
-        Search,
+        navbar: Navbar,
+        searchbar: SearchBar,
     },
     methods: {
     },

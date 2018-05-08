@@ -103,6 +103,8 @@ module.exports = {
                 content.push({ type: 'entity' });
                 content.push({ type: 'form' });
                 content.push({ type: 'pipeline' });
+                content.push({ type: 'user' });
+                content.push({ type: 'role' });
                 return content;
             }
             return [];

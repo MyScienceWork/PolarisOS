@@ -39,7 +39,7 @@ module.exports = {
             this.state.elements.push({ i: this.state.elements.length, a: true });
             this.state.total += 1;
         },
-        remove(id) {
+        remove(id, order) {
             if ((this.isRequired || this.single) && this.state.total === 1) {
                 return;
             }
@@ -51,6 +51,17 @@ module.exports = {
             this.state.elements[real_idx].a = false;
             this.state.elements = this.state.elements.filter(e => e.a);
             this.state.total = this.state.elements.length;
+
+            this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+                form: this.form,
+                name: `${this.name}.${order}`,
+            });
+
+            this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, {
+                form: this.form,
+                name: `${this.name}.${order}`,
+                pattern: true,
+            });
         },
         initialize(sink) {
             const form = this.$store.state.forms[sink];

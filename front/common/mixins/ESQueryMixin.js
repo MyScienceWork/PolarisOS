@@ -17,6 +17,7 @@ module.exports = {
                     },
                 },
                 es_query_id: '',
+                es_query_ids: [],
             },
         };
     },
@@ -25,12 +26,18 @@ module.exports = {
     watch: {
         es_query_id(q) {
             if (q && q.trim() !== '') {
+                this.state.es_query_ids.push(q);
+            }
+        },
+        es_query_ids(q) {
+            const queries = q.filter(_q => _q && _q.trim() !== '');
+            if (queries.length > 0) {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.query_grabber,
                     path: this.state.paths.reads.query_grabber,
                     body: {
                         where: {
-                            id: this.state.es_query_id,
+                            id: queries,
                         },
                     },
                 });
@@ -38,10 +45,17 @@ module.exports = {
         },
     },
     computed: {
-        es_query() {
+        es_queries() {
             const content = this.fcontent(this.state.sinks.reads.query_grabber);
             if (content && content instanceof Array && content.length > 0) {
-                return content[0];
+                return content;
+            }
+            return [];
+        },
+        es_query() {
+            const queries = this.es_queries.filter(q => q.id === this.es_query_id);
+            if (queries.length > 0) {
+                return queries[0];
             }
             return null;
         },
@@ -53,8 +67,22 @@ module.exports = {
             }
             return JSON.stringify({});
         },
+        es_query_contents() {
+            if (this.es_queries.length > 0) {
+                // WARN TODO
+                // Content is already stringified!
+                return this.es_queries.reduce((obj, q) => {
+                    obj[q.id] = q.content;
+                    return obj;
+                }, {});
+            }
+            return {};
+        },
         es_query_id() {
             return this.state.es_query_id;
+        },
+        es_query_ids() {
+            return this.state.es_query_ids;
         },
     },
     mounted() {
@@ -63,7 +91,7 @@ module.exports = {
             path: this.state.paths.reads.query_grabber,
             body: {
                 where: {
-                    id: this.state.es_query_id,
+                    id: this.state.es_query_ids,
                 },
             },
         });

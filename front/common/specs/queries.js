@@ -1,24 +1,36 @@
 const publication_search = {
     $or: [
-        { 'title.content': '{{{search}}}' },
-        { 'subtitles.content': '{{{search}}}' },
-        { 'translated_titles.content': '{{{search}}}' },
-        { 'abstracts.content': '{{{search}}}' },
-        { 'denormalization.authors._id.fullname': '{{{search}}}' },
-        { 'denormalization.classifications._id.label': '{{{search}}}' },
-        { 'denormalization.contributors.label.fullname': '{{{search}}}' },
-        { 'denormalization.diffusion.internal_collection': '{{{search}}}' },
-        { 'denormalization.diffusion.projects._id.name': '{{{search}}}' },
-        { 'denormalization.diffusion.research_teams._id.name': '{{{search}}}' },
-        { 'denormalization.diffusion.surveys._id.name': '{{{search}}}' },
-        { 'denormalization.journal': '{{{search}}}' },
-        { 'denormalization.type': '{{{search}}}' },
-        { 'denormalization.subtype': '{{{search}}}' },
+        { 'contributors.affiliations.name': '{{search}}' },
+        { 'contributors.affiliations.address': '{{search}}' },
+        { 'contributions.affiliations.city': '{{search}}' },
+        { 'contributors.firstName': '{{search}}' },
+        { 'contributors.lastName': '{{search}}' },
+        { 'contributors.fullName': '{{search}}' },
+        { 'contributors.middleName': '{{search}}' },
+        { 'institutionContributors.name': '{{search}}' },
+        { 'journal.name': '{{search}}' },
+        { 'journal.publisher': '{{search}}' },
+        { 'keywords.label': '{{search}}' },
+        { 'publicationIds.value': '{{search}}' },
+        { publicationType: '{{search}}' },
+        { publicationSubtype: '{{search}}' },
+        { 'titles.value': '{{search}}' },
     ],
 };
 
+const author_search = id => ({ $and: [{ 'contributors.contributorIds.type': 'msw' }, { 'contributors.contributorIds.value': id }] });
+
+const publication_search_with_author = id => ({
+    $and: [
+        { $or: publication_search.$or },
+        author_search(id),
+    ],
+});
+
 module.exports = {
     publication_search,
+    publication_search_with_author,
+    author_search,
     published_publication_search: {
         $and: [
             { has_other_version: false },
