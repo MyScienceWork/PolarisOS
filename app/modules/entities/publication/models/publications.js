@@ -112,7 +112,7 @@ const Formatting: Array<any> = [
             const access_description = await EntitiesUtils
                 .retrieve_and_get_source('access_level', access);
 
-            const files = result.reduce((arr, file) => {
+            const myfiles = result.reduce((arr, file) => {
                 if (!file) {
                     return arr;
                 }
@@ -126,36 +126,14 @@ const Formatting: Array<any> = [
                 return arr;
             }, []);
 
-            if (files.length === 1) {
-                files[0].is_master = true;
+            if (myfiles.length === 1) {
+                myfiles[0].is_master = true;
             }
-            return files;
+            return myfiles;
         },
         keywords: async (result, object) => {
             const keywords = result.map(k => ({ value: k.value, type: 'user' }));
             return keywords;
-        },
-        ids: async (result, object) => {
-            const journal = Utils.find_value_with_path(object, 'journal'.split('.'));
-            if (!journal) {
-                return result;
-            }
-
-            const relevant_ids = result.filter(i => i.type === 'eissn' || i.type === 'issn');
-            if (relevant_ids.length > 0) {
-                return result;
-            }
-            const journal_source = await EntitiesUtils.retrieve_and_get_source('journal', journal);
-            if (journal_source && 'ids' in journal_source) {
-                const issns = journal_source.ids.reduce((arr, i) => {
-                    if (i.type === 'issn' || i.type === 'eissn') {
-                        arr.push({ type: i.type, _id: i.value });
-                    }
-                    return arr;
-                }, []);
-                result = result.concat(issns);
-            }
-            return result;
         },
     },
 ];
@@ -275,19 +253,23 @@ const Completion: Array<any> = [
                 return {};
             }
 
-            const ids = Utils.find_value_with_path(object, 'ids'.split('.'));
-            if (!ids) {
+            const journal = Utils.find_value_with_path(object, 'journal'.split('.'));
+            if (!journal) {
                 return {};
             }
 
-
-            const issns = ids.filter(i => (i.type === 'eissn' || i.type === 'issn'));
-            if (issns.length === 0) {
-                return {};
+            const journal_source = await EntitiesUtils.retrieve_and_get_source('journal', journal);
+            let issns = [];
+            if (journal_source && 'ids' in journal_source) {
+                issns = journal_source.ids.reduce((arr, i) => {
+                    if (i.type === 'issn' || i.type === 'eissn') {
+                        arr.push({ type: i.type, _id: i.value });
+                    }
+                    return arr;
+                }, []);
             }
 
             const issn = issns[0]._id;
-
             const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
             const conditions = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.conditions.0.condition'.split('.'));
             const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));

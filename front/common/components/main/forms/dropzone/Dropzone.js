@@ -131,7 +131,8 @@ module.exports = {
                     [this.master]: f[this.master],
                     upload: { progress: 100 },
                     status: 'success',
-                    size: 0 };
+                    pathOnServer: f.url || '',
+                    size: parseFloat(f.size || 0.0) * 1024 };
                 return obj;
             }, {});
         },

@@ -36,7 +36,7 @@
                         </ul>
                     </div>
                     <div v-if="state.current_tab === 0"> <!-- overview -->
-                        <div class="columns is-centered" v-if="affiliations.length === 0 && !author">
+                        <div class="columns is-centered" v-if="affiliations.length === 0 && (!author || !author._id)">
                             <p v-html="lang('l_no_information_for_author_yet')" />
                         </div>
                         <div class="columns is-centered" v-if="affiliations.length > 0">
@@ -59,7 +59,7 @@
                                 </article>
                             </div>
                         </div>
-                        <div class="columns is-centered" v-if="author">
+                        <div class="columns is-centered" v-if="author && author._id">
                             <div class="column">
                                 <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
                                 <div class="columns is-centered">
@@ -98,7 +98,7 @@
                         <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations')}}</h4>
                         <hr class="hr-section" />
                         
-                        <dynamic-form v-if="author" :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.user"/>
+                        <dynamic-form v-if="author && author._id" :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.user"/>
                         <div v-else>
                             <p>{{lang('f_no_author_connected')}}</p>
                             <div class="field is-grouped">
@@ -143,10 +143,10 @@
                                 :search-sink="state.sinks.creations.deposit_search"
                                 :result-sink="state.sinks.reads.deposit"
                                 :search-path="state.paths.reads.publication"
-                                :search-query="search_query"
+                                :search-query="deposit_query"
                                 search-type="publication"
                                 :use-default-query="true"
-                                :default-query="default_search_query"
+                                :default-query="default_deposit_query"
                                 />
                             </div>
                         </div>

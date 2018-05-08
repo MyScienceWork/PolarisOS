@@ -165,12 +165,15 @@ module.exports = {
         search_param_in_query() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
         },
-        default_search_query() {
+        default_deposit_query() {
             return JSON.stringify({
-                depositor: this.user ? this.user._id : null,
+                $and: [
+                    Queries.no_other_version,
+                    { depositor: this.user ? this.user._id : null },
+                ],
             });
         },
-        search_query() {
+        deposit_query() {
             const s = {
                 $and: [
                     Queries.no_other_version,
@@ -181,7 +184,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         default_search_publications_query() {
-            const a = { 'authors._id': this.user.author ? this.user.author._id : null };
+            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {
@@ -202,7 +205,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         search_publications_query() {
-            const a = { 'authors._id': this.user.author ? this.user.author._id : null };
+            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {

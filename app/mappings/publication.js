@@ -604,6 +604,9 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            size: {
+                                type: 'float',
+                            },
                             access: {
                                 properties: {
                                     restricted: {
