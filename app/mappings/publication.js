@@ -787,6 +787,9 @@ module.exports = {
                     },
                     system: {
                         properties: {
+                            depositor_comment: {
+                                type: 'text',
+                            },
                             email: {
                                 properties: {
                                     remark: {

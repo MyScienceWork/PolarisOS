@@ -111,26 +111,8 @@ module.exports = {
                 return [];
             }
 
-            const tpl = '{{#people_join authors}}{{#if mswId}}<a href="/a/{{mswId}}/profile">{{fullName}}</a>{{else}}{{fullName}}{{/if}}{{/people_join}}, {{moment date=dates.publication format="YYYY"}}. {{titles.0.value}}.';
             return content.map((c) => {
-                const masterDates = c.dates.filter(d => d.dateType === 'masterDate');
-                if (masterDates.length > 0) {
-                    c._dates = {
-                        publication: parseInt(masterDates[0].date),
-                    };
-                } else {
-                    c._dates = {
-                        publication: 0,
-                    };
-                }
-
-                c.authors = c.contributors.filter(contrib => contrib.role === 'Author');
-                c.authors = c.authors.map((a) => {
-                    const ids = a.contributorIds.filter(cid => cid.type === 'msw');
-                    a.mswId = ids.length === 0 ? null : ids[0].value;
-                    return a;
-                });
-                c.html = this.hlang(Handlebars.compile(tpl)(c));
+                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
                 return c;
             });
         },

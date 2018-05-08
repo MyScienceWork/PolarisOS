@@ -97,6 +97,16 @@ module.exports = {
             if (idx !== -1) {
                 this.state.files.order.splice(idx, 1);
                 delete this.state.files.content[filename];
+                this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: `${this.files}.${idx}`,
+                });
+
+                this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, {
+                    form: this.form,
+                    name: `${this.files}.${idx}`,
+                    pattern: true,
+                });
             }
         },
         analyze(filename) {

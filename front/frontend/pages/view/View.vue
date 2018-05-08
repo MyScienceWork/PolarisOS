@@ -78,7 +78,10 @@
                                     <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
-                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> {{lang(license)}}</p>
+                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> 
+                                        <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                        <span v-else>{{lang(license.label)}}</span>
+                                    </p>
                                     <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
@@ -194,7 +197,10 @@
                                 <p class="card-header-title">{{lang('f_publication_license_title')}}</p>
                             </header>
                             <div class="card-content">
-                                <p>{{lang(license)}}</p>
+                                <p>
+                                    <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                    <span v-else>{{lang(license.label)}}</span>
+                                </p>
                             </div>
                         </div>
                     </div>

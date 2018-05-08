@@ -135,6 +135,36 @@ const Formatting: Array<any> = [
             const keywords = result.map(k => ({ value: k.value, type: 'user' }));
             return keywords;
         },
+        'dates.publication': async (result, object) => {
+            if (object.model_mode) {
+                return +moment();
+            }
+            return result;
+        },
+        depositor: async (result, object, path, info) => {
+            if (object.model_mode) {
+                return (info.papi ? info.papi._id : null);
+            }
+            return result;
+        },
+        reviewer: async (result, object) => {
+            if (object.model_mode) {
+                return undefined;
+            }
+            return result;
+        },
+        version: async (result, object) => {
+            if (object.model_mode) {
+                return 1;
+            }
+            return result;
+        },
+        status: async (result, object) => {
+            if (object.model_mode) {
+                return 'pending';
+            }
+            return result;
+        },
     },
 ];
 
@@ -246,6 +276,7 @@ const Completion: Array<any> = [
     {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
+        'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment() } } }),
     },
     {
         sherpa: async (object, path) => {
@@ -269,11 +300,17 @@ const Completion: Array<any> = [
                 }, []);
             }
 
+            if (issns.length === 0) {
+                return {};
+            }
+
             const issn = issns[0]._id;
             const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
             const conditions = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.conditions.0.condition'.split('.'));
             const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));
-            const sherpa_final = {};
+            const sherpa_final = {
+                journal: journal_source.name,
+            };
             if (conditions) {
                 sherpa_final.conditions = conditions.map((c, i) =>
                     ({ label: XMLUtils.strip_xhtml_tags(c), value: i }));
@@ -361,7 +398,7 @@ module.exports = {
         Validation: [],
         Formatting: [],
         Completion: [],
-        Filtering: ['sherpa', 'parent', 'review_mode'],
+        Filtering: ['sherpa', 'parent', 'review_mode', 'model_mode'],
         Resetting: {},
         Defaults: {},
     }],

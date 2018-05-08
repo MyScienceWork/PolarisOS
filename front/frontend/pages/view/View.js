@@ -5,6 +5,7 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
@@ -14,7 +15,7 @@ const BrowserUtils = require('../../../common/utils/browser');
 require('moment/min/locales.min');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin],
     components: {
         CopyRequester,
     },
@@ -24,6 +25,7 @@ module.exports = {
                 sinks: {
                     reads: {
                         item: 'item_read',
+                        license: 'license_read',
                         contributor: 'contributor_read',
                         contributor_role: 'contributor_role_read',
                         depositor: 'depositor_read',
@@ -34,6 +36,7 @@ module.exports = {
                 paths: {
                     reads: {
                         item: APIRoutes.entity('publication', 'POST', true),
+                        license: APIRoutes.entity('license', 'POST', true),
                         contributor: APIRoutes.entity('author', 'POST', true),
                         contributor_role: APIRoutes.entity('contributor_role', 'POST', true),
                         depositor: APIRoutes.entity('user', 'POST', true),
@@ -147,6 +150,19 @@ module.exports = {
                         body: {
                             where: {
                                 value: ci.lang,
+                            },
+                        },
+                    });
+                }
+
+                const license = this._oa_find(ci, 'diffusion.rights.license');
+                if (license) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.license,
+                        path: this.state.paths.reads.license,
+                        body: {
+                            where: {
+                                _id: license,
                             },
                         },
                     });
@@ -484,11 +500,11 @@ module.exports = {
             };
         },
         license() {
-            const item = this.content_item;
-            if (!item) {
-                return '';
+            const license = this.fcontent(this.state.sinks.reads.license);
+            if (!license || !(license instanceof Array) || license.length === 0) {
+                return null;
             }
-            return Utils.find_value_with_path(item, 'denormalization.diffusion.rights.license'.split('.')) || '';
+            return license[0];
         },
         publication_version() {
             const item = this.content_item;

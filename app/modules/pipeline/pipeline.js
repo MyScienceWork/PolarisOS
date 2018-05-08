@@ -126,7 +126,7 @@ class Pipeline {
             break;
         }
         case 'format': {
-            ctx.request.body = await Formatter(ctx.request.body, pipeline.Formatting);
+            ctx.request.body = await Formatter(ctx.request.body, pipeline.Formatting, ctx.__md || {});
             break;
         }
         case 'complete': {

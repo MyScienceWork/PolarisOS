@@ -31,6 +31,13 @@
                             :form="creationSink"
                             v-if="newVersion"
                         />
+                        <finput 
+                            label=""
+                            :form="creationSink"
+                            name="model_mode"
+                            type="hidden"
+                            :hidden-value="model"
+                        />
                     </div>
                 </div> 
                 <div class="columns is-centered"

@@ -1,11 +1,11 @@
 <template>
 <div>
-    <!--<results 
+    <results 
         :is-selectable="false" 
         :user="user" 
         :logged-in="state.loggedIn"
         :items="items"
-        />-->
+    />
 </div>
 </template>
 

@@ -8,6 +8,13 @@
         }
     }
     
+    .message.is-@{name} {
+        background-color: @@name;
+        .message-body {
+            color: white;
+        }
+    }
+    
     .generate-colored((@i - 1));
 }
 

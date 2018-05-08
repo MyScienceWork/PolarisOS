@@ -167,7 +167,7 @@ function traverse_and_execute(object: Object, path: Array<string>, f: Function):
                     path.slice(1), f);
             return object;
         }
-    } else if (object != null && 'key' in object) {
+    } else if (object != null && key in object) {
         const result = traverse_and_execute(object[key], path.slice(1), f);
         object[key] = result;
         return object;

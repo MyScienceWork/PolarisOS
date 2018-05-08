@@ -94,7 +94,7 @@ module.exports = {
         const segs = payload.name.split('.');
         const form = state.forms[form_name];
         form.content = Object.assign({}, Utils.traverse_and_execute(
-            form.content, segs, async () => undefined));
+                    form.content, segs, () => undefined));
     },
 
     [Messages.COLLECT]: (state, payload) => {
