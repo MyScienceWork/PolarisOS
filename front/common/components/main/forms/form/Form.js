@@ -65,7 +65,7 @@ module.exports = {
                         form: this.name,
                     });
                     this.$emit('form-success-reset');
-                }, 5000);
+                }, 2500);
             }
         },
         initialize(sink) {

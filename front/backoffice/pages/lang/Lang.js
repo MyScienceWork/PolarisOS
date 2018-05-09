@@ -54,10 +54,10 @@ module.exports = {
         search_query() {
             return JSON.stringify({
                 $or: [
-                    { key: '{{search}}' },
-                    { 'values.value': '{{search}}' },
-                    { 'parts.value': '{{search}}' },
-                    { lang: '{{search}}' },
+                    { key: '{{{search}}}' },
+                    { 'values.value': '{{{search}}}' },
+                    { 'parts.value': '{{{search}}}' },
+                    { lang: '{{{search}}}' },
                 ],
             });
         },

@@ -1,5 +1,6 @@
 const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
+const Messages = require('../../../../../api/messages');
 const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const Handlebars = require('../../../../../../../app/modules/utils/templating');
@@ -41,6 +42,14 @@ module.exports = {
             } else {
                 this.state.value = this.hlang(info);
             }
+        },
+        start_collection() {
+            const info = this.state.value;
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info,
+            });
         },
     },
     watch: {

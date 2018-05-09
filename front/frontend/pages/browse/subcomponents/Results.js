@@ -58,7 +58,7 @@ module.exports = {
                 return false;
             }
 
-            return item.depositor === this.user._id;
+            return item.depositor === this.user._id || item.contributors.filter(c => c.label === this.user.author).length > 0;
         },
     },
     computed: {

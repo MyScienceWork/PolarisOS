@@ -5,6 +5,7 @@ const Compose = require('koa-compose');
 const Config = require('../config');
 const RouterUtils = require('../modules/utils/router');
 const BackRoutes = require('../../front/backoffice/routes');
+const CommonRoutes = require('../../front/common/routes');
 const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
 const UserRoutes = require('../modules/entities/user/routes');
@@ -16,45 +17,10 @@ const RssRoutes = require('../modules/3rdparty/rss/routes');
 async function initialize_routes() {
     const router = new Router();
 
-    router.get('/', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-
-    router.get('/news', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/about', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/project', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/browse', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/search', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/deposit', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/help', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/view/:id', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/u/:id/profile', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/a/:id/profile', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/u/:id/favorites', async (ctx) => {
-        await ctx.render('front/views/front');
-    });
-    router.get('/login', async (ctx) => {
-        await ctx.render('front/views/front');
+    CommonRoutes.forEach((route) => {
+        router.get(route, async (ctx) => {
+            await ctx.render('front/views/front');
+        });
     });
 
     _.each(BackRoutes, (route) => {

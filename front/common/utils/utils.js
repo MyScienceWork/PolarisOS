@@ -146,6 +146,35 @@ function crunch_data_for_fetch(action: string, success: boolean, content: any): 
     return { error, data, success: success_, total, validations };
 }
 
+function traverse_and_execute(object: Object, path: Array<string>, f: Function): any {
+    if (path.length === 0) {
+        const info = _return_inner_object(object);
+        const result = f(info);
+        return result;
+    }
+
+    const key = path[0];
+    const idx = parseInt(key, 10);
+
+    if (object instanceof Array) {
+        if (isNaN(idx)) {
+            for (const i in object) {
+                object[i] = traverse_and_execute(object[i], path, f);
+            }
+            return object;
+        } else if (key < object.length) {
+            object[key] = traverse_and_execute(object[key],
+                    path.slice(1), f);
+            return object;
+        }
+    } else if (object != null && key in object) {
+        const result = traverse_and_execute(object[key], path.slice(1), f);
+        object[key] = result;
+        return object;
+    }
+    return object;
+}
+
 module.exports = {
     truncate,
     to_matrix,
@@ -154,4 +183,5 @@ module.exports = {
     make_nested_object_from_path,
     merge_with_replacement,
     crunch_data_for_fetch,
+    traverse_and_execute,
 };

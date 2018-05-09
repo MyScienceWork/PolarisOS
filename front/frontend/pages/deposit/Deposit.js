@@ -211,6 +211,7 @@ module.exports = {
             });
             break;
         }
+
         this.execute_requests().then(() => {}).catch(err => console.error(err));
     },
     computed: {
@@ -268,6 +269,9 @@ module.exports = {
         },
         is_modification_mode() {
             return this.$route.query && this.$route.query.type && this.$route.query.type === 'modify';
+        },
+        is_model_mode() {
+            return this.$route.query && this.$route.query.type && this.$route.query.type === 'model';
         },
         is_new_version_mode() {
             return this.$route.query && this.$route.query.type && this.$route.query.type === 'new_version';

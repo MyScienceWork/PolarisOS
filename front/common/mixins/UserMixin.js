@@ -16,9 +16,6 @@ module.exports = {
         user_id() {
             return Auth.user_id();
         },
-        author() {
-            return (this.user ? this.user.author : null);
-        },
         avatar() {
             if (this.user && this.user.avatar && this.user.avatar.trim() !== '') {
                 return `/public/front/imgs/avatars/${this.user.avatar}`;
@@ -34,6 +31,13 @@ module.exports = {
                 obj[role._id.id] = role._id;
                 return obj;
             }, {});
+        },
+        author() {
+            if (!this.user) {
+                return null;
+            }
+
+            return this.user.author;
         },
     },
     methods: {

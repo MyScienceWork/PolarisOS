@@ -12,6 +12,7 @@ const Validation: Array<any> = [
         id: Joi.string().required().label('ID'),
     }),
     ValFunctions.checks.is_valid_json('content'),
+    ValFunctions.checks.is_unique('id', 'query'),
 ];
 
 const Formatting: Array<any> = [];

@@ -4,44 +4,56 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                <span slot="title">{{lang('l_list_of_menus')}}</span>
+                    <span slot="title">{{lang('l_list_of_menus')}}</span>
                     <div slot="body">
-                        <div v-for="row in read_content_menu" class="columns is-centered">
-                            <div v-for="info in row" class="column">
-                                <widget>
-                                    <span slot="title">{{info.name}}
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(info, 'menu')"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(info, 'menu')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_menu" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.menu"
+                            :search-path="state.paths.reads.menu"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="menu"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="has-text-blue"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="update(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="use_as_model(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.name}}
+                                </span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                     <span slot="title">{{lang('l_add_or_modify_menu')}}</span>
                     <div slot="body">
                         <fform

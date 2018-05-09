@@ -93,6 +93,10 @@ class Pipeline extends ODM {
                 switch (f.function.name) {
                 case 'oarray_to_array':
                     return { [f.field]: a => FormatFunctions.oarray_to_array(a) };
+                case 'filter_empty_or_null_objects':
+                    return { [f.field]: FormatFunctions.filter_empty_or_null_objects };
+                case 'format_string':
+                    return { [f.field]: a => FormatFunctions.format_string(args[0].value)(a) };
                 case 'generic_formatter':
                     return { [f.field]: (a, o, k) => FormatFunctions.generic_formatter(args[0].value)(a, o, k) };
                 default:

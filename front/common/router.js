@@ -6,21 +6,8 @@ const API = require('./api');
 const Header = require('../frontend/components/themes/main/parts/header/Header.vue');
 const Footer = require('../frontend/components/themes/main/parts/footer/Footer.vue');
 const Meta = require('./meta/Meta.vue');
+const Routes = require('./route_components');
 
-const Home = require('../frontend/pages/home/Home.vue');
-
-const Deposit = require('../frontend/pages/deposit/Deposit.vue');
-const Browse = require('../frontend/pages/browse/Browse.vue');
-const Search = require('../frontend/pages/search/Search.vue');
-const View = require('../frontend/pages/view/View.vue');
-const Project = require('../frontend/pages/project/Project.vue');
-const About = require('../frontend/pages/about/About.vue');
-const Help = require('../frontend/pages/help/Help.vue');
-const News = require('../frontend/pages/news/News.vue');
-
-const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
-const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
-const LoginView = require('../frontend/pages/login/Login.vue');
 
 function fetch_page() {
     const method = 'GET';
@@ -85,30 +72,10 @@ function get_menu_item(menu, page) {
 }
 
 function get_default_component(page) {
-    switch (page.route) {
-    default:
-    case '/':
-        return Home;
-    case '/browse':
-        return Browse;
-    case '/search':
-        return Search;
-    case '/project':
-        return Project;
-    case '/view/:id':
-        return View;
-    case '/u/:id/profile':
-    case '/a/:id/profile':
-        return UserProfile;
-    case '/deposit':
-        return Deposit;
-    case '/about':
-        return About;
-    case '/help':
-        return Help;
-    case '/news':
-        return News;
+    if (page.route in Routes) {
+        return Routes[page.route];
     }
+    return Routes['/'];
 }
 
 async function render_router(part) {
@@ -155,7 +122,7 @@ async function render_router(part) {
         name: 'f_nav_login',
         navbar: false,
         components: {
-            default: LoginView,
+            default: get_default_component({ route: '/login' }),
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });

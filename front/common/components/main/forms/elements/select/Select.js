@@ -31,6 +31,7 @@ module.exports = {
         ajax: { default: false, type: Boolean },
         ajaxUrl: { default: '', type: String },
         ajaxValueUrl: { default: '', type: String },
+        translateThroughHlang: { default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -204,7 +205,11 @@ module.exports = {
         translate_options(options) {
             if (this.translatable) {
                 return options.map((data) => {
-                    data[this.fieldLabel] = this.lang(data[this.fieldLabel]);
+                    if (this.translateThroughHlang) {
+                        data[this.fieldLabel] = this.hlang(data[this.fieldLabel]);
+                    } else {
+                        data[this.fieldLabel] = this.lang(data[this.fieldLabel]);
+                    }
                     return data;
                 });
             }

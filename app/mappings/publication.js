@@ -126,6 +126,19 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    role: {
+                                        properties: {
+                                            abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                             demovoc_keywords: {
@@ -591,6 +604,9 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            size: {
+                                type: 'float',
+                            },
                             access: {
                                 properties: {
                                     restricted: {
@@ -771,6 +787,9 @@ module.exports = {
                     },
                     system: {
                         properties: {
+                            depositor_comment: {
+                                type: 'text',
+                            },
                             email: {
                                 properties: {
                                     remark: {

@@ -4,7 +4,7 @@
         <div class="tile is-ancestor has-header-top-margin">
             <div class="tile is-parent is-2 is-vertical is-hidden-touch">
                 <div class="image tile is-child">
-                    <router-link to="/"><img src='/public/front/imgs/logo/logo.svg' alt='Logo' title='App Logo' /></router-link>
+                    <router-link to="/"><img :src='$store.state.global_config.gui.logo' alt='Logo' title='App Logo' /></router-link>
                 </div>
             </div>
             <div class="tile is-vertical is-parent">
@@ -17,10 +17,10 @@
                 </div>
             </div>
             <div class="tile is-parent is-2 is-vertical">
-                <login-lang :languages="languages" :back-to-website="true" website="https://www.ined.fr" />
+                <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
             </div>
+            <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
         </div>
-        <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
     </div>
     <navbar :menu="menu" />
 </div>

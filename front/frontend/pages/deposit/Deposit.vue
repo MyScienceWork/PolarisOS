@@ -40,6 +40,7 @@
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="is_review_mode"
                                                 :new-version="is_new_version_mode"
+                                                :model="is_model_mode"
                                                 :modification="is_modification_mode"
                                                 :parent-publication="publication_id"
                                             />

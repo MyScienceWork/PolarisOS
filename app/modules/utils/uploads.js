@@ -7,6 +7,7 @@ const EntitiesUtils = require('./entities');
 
 async function add_single(ctx) {
     const file = ctx.request.file;
+    console.log(file);
     await MinioUtils.create_bucket_if_needed(MinioUtils.default_bucket);
     await MinioUtils.put_into_bucket(MinioUtils.default_bucket, file);
 
