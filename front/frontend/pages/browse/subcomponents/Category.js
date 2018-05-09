@@ -173,7 +173,13 @@ module.exports = {
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
                         const count = info ? info.count : 0;
-                        c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                        if (this.use_hlang) {
+                            c[this.label] = `${this.hlang(c[this.label])} (${count})`;
+                        } else {
+                            c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                        }
+                    } else if (this.use_hlang) {
+                        c[this.label] = this.hlang(c[this.label]);
                     } else {
                         c[this.label] = this.lang(c[this.label]);
                     }
@@ -211,12 +217,19 @@ module.exports = {
                 return [];
             }
             return content.map((c) => {
-                c[this.label] = this.lang(c[this.label]);
+                if (this.use_hlang) {
+                    c[this.label] = this.hlang(c[this.label]);
+                } else {
+                    c[this.label] = this.lang(c[this.label]);
+                }
                 return c;
             });
         },
         label() {
             return this.state.query.label || '_id';
+        },
+        use_hlang() {
+            return this.state.query.use_hlang || false;
         },
         abc() {
             return this.state.query.abc;
