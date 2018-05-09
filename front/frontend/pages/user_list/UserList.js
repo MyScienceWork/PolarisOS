@@ -1,4 +1,4 @@
-const _ = require('lodash');
+// const _ = require('lodash');
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
 const LangMixin = require('../../../common/mixins/LangMixin');
@@ -7,32 +7,37 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 // const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
-const SearchResults = require('../browse/subcomponents/SearchResults.vue');
-const SearchBar = require('../browse/subcomponents/SearchBar.vue');
+// const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+// const SearchBar = require('../browse/subcomponents/SearchBar.vue');
+const UsersSearching = require('./UsersSearching.vue');
 
 module.exports = {
     mixins: [LangMixin, FormCleanerMixin, OAMixin, ESQueryMixin],
     components: {
-        SearchResults,
-        SearchBar,
+        // SearchResults,
+        // SearchBar,
+        UsersSearching,
     },
     data() {
         return {
             state: {
                 sinks: {
+                    filter: [],
                     creations: {
                         search: 'user_list_search',
                     },
                     reads: {
                         users: 'users_read',
+                        search: 'user_list_search',
                     },
                 },
                 paths: {
                     creations: {
-                        search: APIRoutes.entity('author', 'POST', true),
+                        search: APIRoutes.entity('user', 'POST', true),
                     },
                     reads: {
-                        users: APIRoutes.entity('author', 'POST', true),
+                        users: APIRoutes.entity('user', 'POST', true),
+                        authors: APIRoutes.entity('author', 'POST', true),
                     },
                 },
                 es_query_ids: ['frontoffice-userlist-default-query', 'frontoffice-userlist-query'],
@@ -64,5 +69,13 @@ module.exports = {
                 },
             },
         }));
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.users,
+            path: this.state.paths.reads.authors,
+            body: {
+                population: ['author'],
+                where: {},
+            },
+        });
     },
 };
