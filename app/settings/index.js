@@ -47,5 +47,5 @@ module.exports = {
     query: query.msw,
 
     publication: publication.msw,
-    mswpublication: mswpublication.msw,
+    // mswpublication: mswpublication.msw,
 };

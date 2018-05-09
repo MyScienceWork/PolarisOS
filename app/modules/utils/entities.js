@@ -59,8 +59,8 @@ const MenuModel = require('../entities/menu/models/menus');
 const Publication = require('../entities/publication/publication');
 const PublicationModel = require('../entities/publication/models/publications');
 
-const MSWPublication = require('../entities/mswpublication/mswpublication');
-const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
+// const MSWPublication = require('../entities/mswpublication/mswpublication');
+// const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
 
 const MailTemplate = require('../entities/mail_template/mail_template');
 const MailTemplateModel = require('../entities/mail_template/models/mail_templates');
@@ -249,8 +249,8 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
-    case 'mswpublication':
-        return MSWPublicationModel;
+    /* case 'mswpublication':
+      return MSWPublicationModel;*/
     case 'mail_template':
         return MailTemplateModel;
     default: {
@@ -295,8 +295,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'publication':
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'mswpublication':
-        return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
+    /* case 'mswpublication':
+      return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);*/
     case 'mail_template':
         return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
