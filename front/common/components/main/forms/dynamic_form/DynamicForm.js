@@ -105,7 +105,11 @@ module.exports = {
 
                 if (field.datasource.translatable) {
                     return content.map((dc) => {
-                        dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
+                        if (field.datasource.use_hlang) {
+                            dc[field.datasource.label] = this.hlang(dc[field.datasource.label]);
+                        } else {
+                            dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
+                        }
                         return dc;
                     });
                 }

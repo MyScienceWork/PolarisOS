@@ -25,6 +25,7 @@
             :ajax-url="generate_ajax_url(form.fields[0])"
             :ajax-value-url="generate_ajax_url(form.fields[0], 'value')"
             :translate-through-hlang="form.fields[0].datasource ? form.fields[0].datasource.use_hlang : false"
+            :translatable="form.fields[0].datasource ? form.fields[0].datasource.translatable : false"
         >
             <template slot="input-addons">
                 <slot name="top-form-addons"></slot>
@@ -83,6 +84,7 @@
                     :modal_help="field.help ? field.help.use_modal : false"
                     :view-validation-texts="false"
                     :translate-through-hlang="field.datasource.use_hlang"
+                    :translatable="field.datasource.translatable"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -177,6 +179,7 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 :view-validation-texts="false"
                 :translate-through-hlang="field.datasource.use_hlang"
+                :translatable="field.datasource.translatable"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -338,6 +341,7 @@
             :modal_help="field.help ? field.help.use_modal : false"
             :view-validation-texts="false"
             :translate-through-hlang="field.datasource.use_hlang"
+            :translatable="field.datasource.translatable"
             />
             <crud-form 
                 :text="field.datasource.action_text"
