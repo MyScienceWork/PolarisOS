@@ -24,7 +24,7 @@
             :ajax="form.fields[0].datasource ? form.fields[0].datasource.ajax : ''"
             :ajax-url="generate_ajax_url(form.fields[0])"
             :ajax-value-url="generate_ajax_url(form.fields[0], 'value')"
-            :translate-through-hlang="form.fields[0].datasource.use_hlang"
+            :translate-through-hlang="form.fields[0].datasource ? form.fields[0].datasource.use_hlang : false"
         >
             <template slot="input-addons">
                 <slot name="top-form-addons"></slot>
