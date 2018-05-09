@@ -126,6 +126,9 @@ module.exports = {
                                     translatable: {
                                         type: 'boolean',
                                     },
+                                    use_hlang: {
+                                        type: 'boolean',
+                                    },
                                     add: {
                                         type: 'boolean',
                                     },

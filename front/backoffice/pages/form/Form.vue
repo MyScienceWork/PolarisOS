@@ -274,6 +274,13 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.id}.datasource.use_hlang`" 
+                                            :key="`${props.fname}.${props.id}.datasource.use_hlang`" 
+                                            :label="lang('b_datasource_use_hlang')"
+                                            type="checkbox"
+                                            :form="state.sinks.creations.form"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.id}.datasource.add`" 
                                             :key="`${props.fname}.${props.id}.datasource.add`" 
                                             :label="lang('b_datasource_add')"
