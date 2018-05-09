@@ -46,6 +46,6 @@ module.exports = {
     connector: connector.msw,
     query: query.msw,
 
-    // publication: publication.msw,
-    mswpublication: mswpublication.msw,
+    publication: publication.msw,
+    // mswpublication: mswpublication.msw,
 };
