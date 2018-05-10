@@ -4,12 +4,13 @@ const APIRoutes = require('../../../api/routes');
 const Messages = require('../../../api/messages');
 const LangMixin = require('../../../mixins/LangMixin');
 const FormMixin = require('../../../mixins/FormMixin');
+const FiltersMixin = require('../../../mixins/FiltersMixin');
 const RequestMixin = require('../../../mixins/RequestsMixin');
 const FormCleanerMixin = require('../../../mixins/FormCleanerMixin');
 const CSLSpecs = require('../../../specs/csl');
 
 module.exports = {
-    mixins: [LangMixin, RequestMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, RequestMixin, FormMixin, FormCleanerMixin, FiltersMixin],
     props: {
         showGlobalHelp: { default: true, type: Boolean },
     },

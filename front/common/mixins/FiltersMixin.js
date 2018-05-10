@@ -34,6 +34,23 @@ module.exports = {
             }
             return '';
         },
+        translate(value, use_hlang, key) {
+            if (value instanceof Array) {
+                return value.map((v) => {
+                    if (key) {
+                        v[key] = use_hlang ? this.hlang(v[key]) : this.lang(v[key]);
+                    } else {
+                        v = use_hlang ? this.hlang(v) : this.lang(v);
+                    }
+                    return v;
+                });
+            }
+
+            if (key) {
+                return (use_hlang ? this.hlang(value[key]) : this.lang(value[key]));
+            }
+            return (use_hlang ? this.hlang(value) : this.lang(value));
+        },
     },
 
 };

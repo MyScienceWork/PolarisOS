@@ -36,6 +36,7 @@ module.exports = {
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
+                active_results: false,
             },
         };
     },

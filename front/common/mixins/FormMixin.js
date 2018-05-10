@@ -23,6 +23,18 @@ module.exports = {
                 return {};
             };
         },
+        acontent() {
+            return (sink) => {
+                const _content = this.fcontent(sink);
+                if (!_content) {
+                    return [];
+                }
+                if (!(_content instanceof Array) || _content.length === 0) {
+                    return [];
+                }
+                return _content;
+            };
+        },
         fstate() {
             return (sink) => {
                 const myform = this.fform(sink);
