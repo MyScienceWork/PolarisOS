@@ -2,7 +2,7 @@
 <div>
     <div class="columns is-centered" v-if="showGlobalHelp">
         <div class="column has-text-centered is-8">
-            <p v-html="lang('l_bibliograhic_export_help')"></p>
+            <p v-html="lang('l_bibliographic_export_help')"></p>
         </div>
     </div>
     <div class="columns">
@@ -27,29 +27,32 @@
                 field-value="_id"
                 :options="content(state.sinks.reads.author)"
                 v-if="state.activeSelectTab === 0"
+                key="select-author"
                 :multi="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
-                name="author"
+                name="laboratory"
                 :label="lang('l_lab_bexport')"
                 :placeholder="lang('l_lab_bexport')"
                 field-label="name"
                 field-value="_id"
                 :options="content(state.sinks.reads.laboratory)"
                 v-if="state.activeSelectTab === 1"
+                key="select-laboratory"
                 :translatable="true"
                 :multi="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
-                name="author"
+                name="project"
                 :label="lang('l_project_bexport')"
                 :placeholder="lang('l_project_bexport')"
                 field-label="label"
                 field-value="_id"
                 :options="content(state.sinks.reads.project)"
                 :translatable="true"
+                key="select-project"
                 v-if="state.activeSelectTab === 2"
                 :multi="true"
             />        
@@ -69,7 +72,6 @@
                 name="start_year"
                 :label="lang('l_start_year_bexport')"
                 :placeholder="lang('l_start_year_bexport')"
-                :help="lang('l_start_year_bexport_help')"
                 type="date-year"
                 :year-range-start="1500"
                 :year-range-end="next_year(4)"
@@ -80,7 +82,6 @@
                 name="end_year"
                 :label="lang('l_end_year_bexport')"
                 :placeholder="lang('l_end_year_bexport')"
-                :help="lang('l_end_year_bexport_help')"
                 type="date-year"
                 :year-range-start="1500"
                 :year-range-end="next_year(4)"
