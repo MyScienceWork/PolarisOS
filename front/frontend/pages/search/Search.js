@@ -37,7 +37,7 @@ module.exports = {
     },
     computed: {
         query() {
-            return JSON.stringify(Queries.publication_search);
+            return JSON.stringify(Queries.published_publication_search);
         },
         query_search() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';

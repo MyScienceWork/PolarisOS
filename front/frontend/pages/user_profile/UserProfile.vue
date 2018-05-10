@@ -11,9 +11,24 @@
                     </div>
                 </div> <!-- card image user profile -->
                 <h4 class="has-small-top-margin title is-4">{{fullname}}</h4>
-                <h5 v-if="user.about_me" class="title is-5">{{lang('l_about_me')}}</h5>
-                <p v-if="user.about_me">{{user.about_me}}</p>
-                <!--<h5 class="title is-5">{{lang('l_get_social')}}</h5>-->
+                <div class="" v-if="affiliations.length > 0">
+                    <!--<h5 class="title is-5">{{lang('l_affiliation', {}, 'other')}}</h5>-->
+                    <article class="media" v-for="aff in affiliations">
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <strong>{{lang(aff.institution.name)}}</strong>
+                                    <br />
+                                    <span v-if="aff.to">{{aff.from}} - {{aff.to}}</span>
+                                    <span v-else>{{lang('l_from')}} {{aff.from}}</span>
+                                    <br />
+                                    <small v-for="team in aff.teams">{{lang(team._id)}}<br /></small>
+                                    <small><strong>{{lang(aff.institution.country)}}</strong></small>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </div>
             <div class="column is-9">
                 <div class="card card-equal-height">
@@ -44,26 +59,6 @@
                         <div class="columns is-centered" v-if="affiliations.length === 0 && (!author || !author._id)">
                             <p v-html="lang('l_no_information_for_author_yet')" />
                         </div>
-                        <div class="columns is-centered" v-if="affiliations.length > 0">
-                            <div class="column">
-                                <h5 class="title is-5">{{lang('l_affiliation', {}, 'other')}}</h5>
-                                <article class="media" v-for="aff in affiliations">
-                                    <div class="media-content">
-                                        <div class="content">
-                                            <p>
-                                                <strong>{{lang(aff.institution.name)}}</strong>
-                                                <br />
-                                                <span v-if="aff.to">{{aff.from}} - {{aff.to}}</span>
-                                                <span v-else>{{lang('l_from')}} {{aff.from}}</span>
-                                                <br />
-                                                <small v-for="team in aff.teams">{{lang(team._id)}}<br /></small>
-                                                <small><strong>{{lang(aff.institution.country)}}</strong></small>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
                         <div class="columns is-centered" v-if="author && author._id">
                             <div class="column">
                                 <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
@@ -89,6 +84,7 @@
                                         search-type="publication"
                                         :use-default-query="true"
                                         :default-query="default_search_publications_query"
+                                        :show-status="loggedIn"
                                         />
                                     </div>
                                 </div>
@@ -152,6 +148,7 @@
                                 search-type="publication"
                                 :use-default-query="true"
                                 :default-query="default_deposit_query"
+                                :show-status="true"
                                 />
                             </div>
                         </div>

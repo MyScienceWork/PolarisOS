@@ -10,7 +10,24 @@
                 />
             </div>
             <div class="media-content">
-                <p v-html="info.html"></p>
+                <p class="has-small-bottom-margin">
+                    <span v-html="info.html"></span>
+                    <span class="has-small-left-margin is-pulled-right tag is-warning" v-if="info.status === 'pending' && showStatus">
+                        {{lang(`l_${info.status}_status`)}}
+                    </span>
+                    <span class="has-small-left-margin is-pulled-right tag is-danger" v-else-if="info.status === 'rejected' && showStatus">
+                        {{lang(`l_${info.status}_status`)}}
+                    </span>
+                    <span class="has-small-left-margin is-pulled-right tag is-info" v-else-if="info.status === 'incomplete' && showStatus">
+                        {{lang(`l_${info.status}_status`)}}
+                    </span>
+                    <span class="has-small-left-margin is-pulled-right tag is-light" v-else-if="info.status === 'withdrawn' && showStatus">
+                        {{lang(`l_${info.status}_status`)}}
+                    </span>
+                    <span class="has-small-left-margin is-pulled-right tag is-success" v-else-if="showStatus">
+                        {{lang(`l_${info.status}_status`)}}
+                    </span>
+                </p>
                 <div class="is-pulled-right level is-mobile">
                     <div class="level-left">
                         <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${info._id}`">

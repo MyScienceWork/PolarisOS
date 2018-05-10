@@ -284,7 +284,7 @@ module.exports = {
         },
         status_options() {
             return ['pending', 'rejected',
-                'incomplete', 'published', 'withdrawn']
+                'incomplete', 'published', 'withdrawn', 'unpublished']
             .map(s => ({ label: this.lang(`l_${s}_status`), value: s }));
         },
     },

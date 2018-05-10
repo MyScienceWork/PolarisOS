@@ -11,6 +11,7 @@ module.exports = {
         loggedIn: { default: false, type: Boolean },
         user: { required: true, type: Object },
         isSelectable: { default: true, type: Boolean },
+        showStatus: { default: false, type: Boolean },
         exportSink: { default: 'dummy-export-sink', type: String },
     },
     data() {

@@ -119,6 +119,7 @@
     </div>
     <results 
     :is-selectable="true" 
+    :show-status="showStatus"
     :user="user" 
     :logged-in="state.loggedIn"
     :items="content"

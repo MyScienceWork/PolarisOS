@@ -34,6 +34,23 @@ module.exports = {
             }
             return '';
         },
+        translate(value, fn, key) {
+            if (value instanceof Array) {
+                return value.map((v) => {
+                    if (key) {
+                        v[key] = fn(v[key]);
+                    } else {
+                        v = fn(v);
+                    }
+                    return v;
+                });
+            }
+
+            if (key) {
+                return fn(value[key]);
+            }
+            return fn(value);
+        },
     },
 
 };

@@ -2,7 +2,7 @@
 <div>
     <div class="columns is-centered" v-if="showGlobalHelp">
         <div class="column has-text-centered is-8">
-            <p v-html="lang('l_bibliograhic_export_help')"></p>
+            <p v-html="lang('l_bibliographic_export_help')"></p>
         </div>
     </div>
     <div class="columns">
@@ -27,29 +27,30 @@
                 field-value="_id"
                 :options="content(state.sinks.reads.author)"
                 v-if="state.activeSelectTab === 0"
+                key="select-author"
                 :multi="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
-                name="author"
+                name="laboratory"
                 :label="lang('l_lab_bexport')"
                 :placeholder="lang('l_lab_bexport')"
                 field-label="name"
                 field-value="_id"
-                :options="content(state.sinks.reads.laboratory)"
+                :options="content(state.sinks.reads.laboratory) | translate(lang, 'name')"
                 v-if="state.activeSelectTab === 1"
-                :translatable="true"
+                key="select-laboratory"
                 :multi="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
-                name="author"
+                name="project"
                 :label="lang('l_project_bexport')"
                 :placeholder="lang('l_project_bexport')"
                 field-label="label"
                 field-value="_id"
-                :options="content(state.sinks.reads.project)"
-                :translatable="true"
+                :options="content(state.sinks.reads.project) | translate(hlang, 'label')"
+                key="select-project"
                 v-if="state.activeSelectTab === 2"
                 :multi="true"
             />        
@@ -69,7 +70,6 @@
                 name="start_year"
                 :label="lang('l_start_year_bexport')"
                 :placeholder="lang('l_start_year_bexport')"
-                :help="lang('l_start_year_bexport_help')"
                 type="date-year"
                 :year-range-start="1500"
                 :year-range-end="next_year(4)"
@@ -80,7 +80,6 @@
                 name="end_year"
                 :label="lang('l_end_year_bexport')"
                 :placeholder="lang('l_end_year_bexport')"
-                :help="lang('l_end_year_bexport_help')"
                 type="date-year"
                 :year-range-start="1500"
                 :year-range-end="next_year(4)"
@@ -93,9 +92,8 @@
                 :placeholder="lang('l_internal_collection_bexport')"
                 field-label="label"
                 field-value="_id"
-                :translatable="true"
                 :multi="true"
-                :options="content(state.sinks.reads.internal_collection)"
+                :options="content(state.sinks.reads.internal_collection) | translate(lang, 'label')"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -104,10 +102,9 @@
                 :placeholder="lang('l_typology_bexport')"
                 field-label="label"
                 field-value="_id"
-                :translatable="true"
                 :multi="true"
                 :select-all-values="true"
-                :options="content(state.sinks.reads.typology)"
+                :options="content(state.sinks.reads.typology) | translate(lang, 'label')"
             /> 
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -116,17 +113,15 @@
                 :placeholder="lang('l_language_bexport')"
                 field-label="label"
                 field-value="value"
-                :translatable="true"
                 :select-first-value="true"
-                :options="langref_content"
+                :options="langref_content | translate(lang, 'label')"
             />       
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="sort"
                 :label="lang('l_sort_bexport')"
                 :placeholder="lang('l_sort_bexport')"
-                :translatable="true"
-                :options="sort_content"
+                :options="sort_content | translate(lang, 'label')"
                 :select-first-value="true"
             />        
             <fselect
@@ -134,8 +129,7 @@
                 name="group"
                 :label="lang('l_grouping_bexport')"
                 :placeholder="lang('l_grouping_bexport')"
-                :translatable="true"
-                :options="group_content"
+                :options="group_content | translate(lang, 'label')"
                 :select-first-value="true"
             />        
             <fselect

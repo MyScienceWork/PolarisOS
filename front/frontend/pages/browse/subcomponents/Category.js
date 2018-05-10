@@ -9,11 +9,13 @@ const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const AggregationSpecs = require('../../../../common/specs/aggs');
+const Queries = require('../../../../common/specs/queries');
 
 module.exports = {
     mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
     props: {
         filters: { type: Array, default: () => [] },
+        activeResults: { type: Boolean, default: false },
     },
     data() {
         return {
@@ -30,6 +32,7 @@ module.exports = {
                     },
                 },
                 active_abc: null,
+                active_result: false,
             },
         };
     },
@@ -48,6 +51,7 @@ module.exports = {
                     form: this.state.sinks.creations.selected,
                     body: {
                         browsing_terms: [{ _id: term }],
+                        browsing_dates: undefined,
                     },
                 });
             } else if (type === 'date') {
@@ -55,10 +59,13 @@ module.exports = {
                     form: this.state.sinks.creations.selected,
                     body: {
                         browsing_dates: term,
+                        browsing_terms: undefined,
                     },
                 });
             }
 
+            this.state.active_abc = null;
+            this.$emit('update:activeResults', true);
             Vue.nextTick(() => {
                 this.send_information(this.state.sinks.creations.selected);
             });
@@ -99,11 +106,18 @@ module.exports = {
                 default:
                     break;
                 }
+
+                let where = {};
+                if (query.agge === 'publication') {
+                    where = { $and: [Queries.published, Queries.no_other_version] };
+                }
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
                     path: APIRoutes.entity(query.agge, 'POST', true),
                     body: {
                         size: 0,
+                        where,
                         aggregations: aggregation,
                     },
                 });
@@ -117,10 +131,10 @@ module.exports = {
         send_information(sink) {
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
-                if ('browsing_terms' in content) {
+                if ('browsing_terms' in content && content.browsing_terms) {
                     const ids = content.browsing_terms.map(b => b._id);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
-                } else if ('browsing_dates' in content) {
+                } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: {
                         '>=': date,
@@ -177,14 +191,18 @@ module.exports = {
                             return null;
                         }
                         if (this.use_hlang) {
-                            c[this.label] = `${this.hlang(c[this.label])} (${count})`;
+                            c.label_count = `${this.hlang(c[this.label])} (${count})`;
+                            c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
                         } else {
-                            c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                            c.label_count = `${this.lang(c[this.label])} (${count})`;
+                            c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
                         }
                     } else if (this.use_hlang) {
-                        c[this.label] = this.hlang(c[this.label]);
+                        c.label_count = this.hlang(c[this.label]);
+                        c.html = this.hlang(c[this.label]);
                     } else {
-                        c[this.label] = this.lang(c[this.label]);
+                        c.label_count = this.lang(c[this.label]);
+                        c.html = this.lang(c[this.label]);
                     }
                     return c;
                 }).filter(f => f != null);
