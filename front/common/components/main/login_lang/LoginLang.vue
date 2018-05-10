@@ -19,8 +19,12 @@
                     <a v-if="!backoffice" class="dropdown-item" href="/admin" target="_blank">{{lang('f_admin')}}</a>
                     <router-link v-else class="dropdown-item" to="/admin">{{lang('f_admin')}}</router-link>
                 </b-dropdown-item>
+                <b-dropdown-item has-link>
+                    <router-link  v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile?t=3`">{{lang('f_bibliograhic_report', {}, 'other')}}</router-link>
+                    <a v-else class="dropdown-item" :href="`/u/${user_id}/profile?t=3`" target="_blank">{{lang('f_bibliographic_report', {}, 'other')}}</a>
+                </b-dropdown-item>
                 <!--<b-dropdown-item has-link>
-                    <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=3`">
+                    <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=4`">
                         {{lang('f_registered_search', {}, 'other')}}
                     </router-link>
                     </b-dropdown-item>-->

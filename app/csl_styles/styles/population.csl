@@ -154,10 +154,7 @@
     </layout>
   </citation>
   <bibliography>
-    <sort>
-      <key macro="author-last"/>
-      <key variable="issued"/>
-    </sort>
+    
     <layout suffix=".">
       <text macro="author-last" suffix=", "/>
       <text macro="year-date-short" suffix=", "/>

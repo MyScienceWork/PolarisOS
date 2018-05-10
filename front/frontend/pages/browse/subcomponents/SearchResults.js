@@ -2,6 +2,7 @@ const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Auth = require('../../../../common/utils/auth');
@@ -130,16 +131,7 @@ module.exports = {
             return Auth.user();
         },
         csl_export_styles() {
-            return [
-                { label: 'APA', value: 'apa' },
-                { label: 'Vancouver', value: 'vancouver' },
-                { label: 'Harvard (1)', value: 'havard1' },
-                { label: 'Population', value: 'population' },
-                { label: 'Chicago', value: 'chicago' },
-                { label: 'Springer Humanities', value: 'springer-humanities' },
-                { label: 'ISO-690', value: 'iso690' },
-                { label: 'HCERES', value: 'ined-hceres' },
-            ];
+            return CSLSpecs;
         },
         export_data() {
             return [

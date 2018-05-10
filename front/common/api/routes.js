@@ -63,6 +63,10 @@ module.exports = {
         return `${prefix}/export`;
     },
 
+    export_bibliography() {
+        return `${prefix}/export/bibliography`;
+    },
+
     multi_download(type, id, names, filenames) {
         return `/downloads/${type}/${id}/${names.join('|')}/${filenames.join('|')}`;
     },

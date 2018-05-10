@@ -342,11 +342,7 @@
     </layout>
   </citation>
   <bibliography>
-    <sort>
-      <key macro="responsability"/>
-      <key macro="year-date"/>
-      <key macro="title"/>
-    </sort>
+
     <layout>
       <choose>
         <if type="book map" match="any">

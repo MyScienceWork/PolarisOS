@@ -1,4 +1,4 @@
-function years_aggregation(field, name) {
+function years_aggregation(field, name, min_doc_count = 0) {
     return {
         [field]:
         {
@@ -7,17 +7,19 @@ function years_aggregation(field, name) {
             interval: 'year',
             format: 'YYYY',
             keyed: true,
+            min_doc_count,
         },
     };
 }
 
-function terms_aggregation(field, name) {
+function terms_aggregation(field, name, min_doc_count = 0) {
     return {
         [field]:
         {
             $name: name,
             $type: 'terms',
             size: 100000,
+            min_doc_count,
             // WARNING TODO
             // Deprecated in 6.0.0, use _key instead of _term
             order: { _term: 'asc' },
