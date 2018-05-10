@@ -6,10 +6,12 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const QueryMixin = require('../../../common/mixins/QueryMixin');
 const BrowserUtils = require('../../../common/utils/browser');
+const Queries = require('../../../common/specs/queries');
 
 const BrowsingList = require('../../lists/browse');
 const Category = require('./subcomponents/Category.vue');
 const SearchResults = require('./subcomponents/SearchResults.vue');
+
 
 module.exports = {
     mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
@@ -72,6 +74,12 @@ module.exports = {
                 return {};
             }
             return {};
+        },
+        search_query() {
+            return JSON.stringify(Queries.published_publication_search);
+        },
+        default_query() {
+            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published] });
         },
     },
     mounted() {

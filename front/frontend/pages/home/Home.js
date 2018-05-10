@@ -20,6 +20,8 @@ module.exports = {
                 sinks: {
                     reads: {
                         publication: 'publication_read',
+                        stats_publication: 'stats_publication_read',
+                        stats_open_access: 'stats_oap_read',
                         menu: 'menu_read',
                         search: 'search_home_sink',
                     },
@@ -62,10 +64,57 @@ module.exports = {
                 },
             },
         });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.stats_publication,
+            path: this.state.paths.reads.publication,
+            body: {
+                size: 0,
+                where: {
+                    $and: [
+                        Queries.published,
+                        Queries.no_other_version,
+                    ],
+                },
+            },
+        });
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.stats_open_access,
+            path: this.state.paths.reads.publication,
+            body: {
+                size: 0,
+                where: {
+                    $and: [{ 'diffusion.rights.access': ['AWF0ZQmRfoecpXq21Jl9'] },
+                        Queries.published,
+                        Queries.no_other_version],
+                },
+            },
+        });
     },
     computed: {
         content() {
             return this.fcontent(this.state.sinks.reads.publication);
+        },
+        stats_count() {
+            return (sink) => {
+                const f = this.fform(sink);
+                if (f && 'total' in f) {
+                    return f.total;
+                }
+                return 0;
+            };
+        },
+        stats() {
+            return [
+                { label: 'l_deposit',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_publication),
+                    icon: 'fa-file-text' },
+                { label: 'l_open_access',
+                    label_count: 'l_publication',
+                    count: this.stats_count(this.state.sinks.reads.stats_open_access),
+                    icon: 'fa-unlock-alt' },
+            ];
         },
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {

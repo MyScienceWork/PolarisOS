@@ -50,7 +50,7 @@
                         </card>
                     </div>
                     <div class="column is-12">
-                        <widget-stats form="test_form" :infos="[]" />
+                        <widget-stats :items="stats" />
                     </div>
                 </div>
             </div>

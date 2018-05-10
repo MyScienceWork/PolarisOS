@@ -47,7 +47,7 @@ module.exports = {
                             },
                             rights: {
                                 license: 'license',
-                                access: 'publication_access',
+                                access: 'access_level',
                             },
                         },
                         publication_version: 'publication_version',

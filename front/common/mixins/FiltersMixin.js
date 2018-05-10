@@ -34,22 +34,22 @@ module.exports = {
             }
             return '';
         },
-        translate(value, use_hlang, key) {
+        translate(value, fn, key) {
             if (value instanceof Array) {
                 return value.map((v) => {
                     if (key) {
-                        v[key] = use_hlang ? this.hlang(v[key]) : this.lang(v[key]);
+                        v[key] = fn(v[key]);
                     } else {
-                        v = use_hlang ? this.hlang(v) : this.lang(v);
+                        v = fn(v);
                     }
                     return v;
                 });
             }
 
             if (key) {
-                return (use_hlang ? this.hlang(value[key]) : this.lang(value[key]));
+                return fn(value[key]);
             }
-            return (use_hlang ? this.hlang(value) : this.lang(value));
+            return fn(value);
         },
     },
 

@@ -9,6 +9,7 @@ const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const AggregationSpecs = require('../../../../common/specs/aggs');
+const Queries = require('../../../../common/specs/queries');
 
 module.exports = {
     mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
@@ -105,11 +106,18 @@ module.exports = {
                 default:
                     break;
                 }
+
+                let where = {};
+                if (query.agge === 'publication') {
+                    where = { $and: [Queries.published, Queries.no_other_version] };
+                }
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
                     path: APIRoutes.entity(query.agge, 'POST', true),
                     body: {
                         size: 0,
+                        where,
                         aggregations: aggregation,
                     },
                 });

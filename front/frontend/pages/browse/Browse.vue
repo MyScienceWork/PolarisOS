@@ -41,9 +41,10 @@
                                 :search-path="state.paths.reads.publication"
                                 :filters="state.filters"
                                 :search-when-filters-change="true"
-                                :use-default-query="false"
+                                :use-default-query="true"
                                 search-type="publication"
-                                search-query="{}"
+                                :search-query="search_query"
+                                :default-query="default_query"
                             />
                         </div>
                     </div>

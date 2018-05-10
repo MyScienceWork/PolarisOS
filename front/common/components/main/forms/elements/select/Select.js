@@ -236,13 +236,16 @@ module.exports = {
         select_default_value() {
             if (this.defaultValue == null) {
                 if (this.state.options.length === 0) {
+                    this.state.selected = null;
                     return;
                 }
 
                 if (this.selectFirstValue) {
-                    this.set_selected([this.state.options[0]]);
+                    this.set_selected([this.options[0]]);
                 } else if (this.selectAllValues && this.multi) {
-                    this.set_selected(this.state.options);
+                    this.set_selected(this.options);
+                } else {
+                    this.state.selected = null;
                 }
             } else {
                 this.state.selected = this.defaultValue;

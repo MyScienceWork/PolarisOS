@@ -14,6 +14,7 @@ const Results = require('./Results.vue');
 module.exports = {
     mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin],
     props: {
+        showStatus: { default: false, type: Boolean },
     },
     components: {
         Results,
