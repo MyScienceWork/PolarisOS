@@ -1,7 +1,7 @@
 module.exports = [
-    { label: 'APA', value: 'apa' },
-    { label: 'Vancouver', value: 'vancouver' },
-    { label: 'Harvard (1)', value: 'havard1' },
+    { label: 'APA', value: 'ined-apa' },
+    { label: 'Vancouver', value: 'ined-vancouver' },
+    { label: 'Harvard', value: 'ined-harvard' },
     { label: 'Population', value: 'population' },
     { label: 'Chicago', value: 'chicago' },
     { label: 'Springer Humanities', value: 'springer-humanities' },
