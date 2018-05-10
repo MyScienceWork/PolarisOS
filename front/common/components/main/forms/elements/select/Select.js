@@ -32,6 +32,8 @@ module.exports = {
         ajaxUrl: { default: '', type: String },
         ajaxValueUrl: { default: '', type: String },
         translateThroughHlang: { default: false, type: Boolean },
+        selectFirstValue: { default: false, type: Boolean },
+        selectAllValues: { default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -160,7 +162,7 @@ module.exports = {
             const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
-                this.state.selected = this.defaultValue;
+                this.select_default_value();
                 return;
             }
 
@@ -220,10 +222,10 @@ module.exports = {
             // to -> to vue-select
             // from -> from vue-select
             if (direction === 'to') {
-                return options.map(opt => ({
+                return this.translate_options(options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
-                }));
+                })));
             }
 
             return options.map(opt => ({
@@ -231,10 +233,26 @@ module.exports = {
                 [this.fieldValue]: opt.value,
             }));
         },
+        select_default_value() {
+            if (this.defaultValue == null) {
+                if (this.state.options.length === 0) {
+                    return;
+                }
+
+                if (this.selectFirstValue) {
+                    this.set_selected([this.state.options[0]]);
+                } else if (this.selectAllValues && this.multi) {
+                    this.set_selected(this.state.options);
+                }
+            } else {
+                this.state.selected = this.defaultValue;
+            }
+        },
     },
     watch: {
         options() {
             this.state.options = this.format_options(this.options, 'to');
+            this.select_default_value();
         },
         current_state(s) {
             this.dispatch(s, this);

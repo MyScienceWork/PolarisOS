@@ -91,10 +91,10 @@ module.exports = {
                 let aggregation = {};
                 switch (query.aggt) {
                 case 'terms':
-                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation', 1);
                     break;
                 case 'date':
-                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation', 1);
                     break;
                 default:
                     break;
@@ -173,6 +173,9 @@ module.exports = {
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
                         const count = info ? info.count : 0;
+                        if (count === 0) {
+                            return null;
+                        }
                         if (this.use_hlang) {
                             c[this.label] = `${this.hlang(c[this.label])} (${count})`;
                         } else {
@@ -184,7 +187,7 @@ module.exports = {
                         c[this.label] = this.lang(c[this.label]);
                     }
                     return c;
-                });
+                }).filter(f => f != null);
             }
             return [];
         },

@@ -28,8 +28,13 @@
                             <li :class="{'is-active': state.current_tab === 2, 'is-red': true}">
                                 <a @click.prevent="update_tab(2)">{{lang('f_my_deposit', {}, 'other')}}</a>
                             </li>
-                            <!--<li :class="{'is-active': state.current_tab === 3, 'is-red': true}">
+                            <li :class="{'is-active': state.current_tab === 3, 'is-red': true}">
                                 <a @click.prevent="update_tab(3)">
+                                    {{lang('f_bibliographic_report', {}, 'other')}}
+                                </a>
+                            </li>
+                            <!--<li :class="{'is-active': state.current_tab === 4, 'is-red': true}">
+                                <a @click.prevent="update_tab(4)">
                                     {{lang('f_registered_search', {}, 'other')}}
                                 </a>
                                 </li>-->
@@ -148,6 +153,13 @@
                                 :use-default-query="true"
                                 :default-query="default_deposit_query"
                                 />
+                            </div>
+                        </div>
+                    </div> <!-- my deposits -->
+                    <div v-else-if="state.current_tab === 3"> <!-- bibliographic reports -->
+                        <div class="columns">
+                            <div class="column">
+                                <bibliographic-export />
                             </div>
                         </div>
                     </div>

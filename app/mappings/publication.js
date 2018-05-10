@@ -740,6 +740,9 @@ module.exports = {
                             content: {
                                 type: 'text',
                                 analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
                             },
                             lang: {
                                 type: 'keyword',

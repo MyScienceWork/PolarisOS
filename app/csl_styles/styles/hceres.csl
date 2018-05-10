@@ -451,10 +451,7 @@
     </layout>
   </citation>
   <bibliography hanging-indent="true" et-al-min="30" et-al-use-first="7" subsequent-author-substitute="&#8212;&#8212;&#8212;" entry-spacing="0">
-    <sort>
-      <key macro="contributors"/>
-      <key variable="issued"/>
-    </sort>
+
     <layout suffix=".">
       <group delimiter=". ">
         <text macro="contributors"/>
