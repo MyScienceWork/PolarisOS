@@ -102,7 +102,7 @@ module.exports = {
         const remove_content = payload.remove_content;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'collect';
-
+        state.forms[form_name].claims = {};
         if (remove_content) {
             state.forms[form_name].content = {};
         }
