@@ -148,7 +148,12 @@ module.exports = {
             }
 
             const obj = content[obj_name];
-            const filters = _.map(obj, (value) => {
+            let filters = _.map(obj, (value) => {
+                // Only the __bool is in the object, so it's empty
+                if (Object.keys(value).length === 1) {
+                    return null;
+                }
+
                 const result = _.reduce(value, (acc, val, key) => {
                     if (!val || _.isEmpty(val)) {
                         return acc;
@@ -157,8 +162,33 @@ module.exports = {
                     acc[key.replace(dot_replacer, '.')] = val;
                     return acc;
                 }, {});
-                return JSON.stringify(result);
-            });
+                return result;
+            }).filter(f => f != null);
+
+            filters = filters.reduce((o, f, i) => {
+                if (i === 0 && filters.length > 1) {
+                    delete f.__bool;
+                    o.$first = [f];
+                    return o;
+                }
+
+                if ('__bool' in f) {
+                    const bool = f.__bool;
+                    delete f.__bool;
+                    if (bool in o) {
+                        o[bool].push(f);
+                    } else {
+                        o[bool] = [f];
+                    }
+
+                    if (i === 1) {
+                        o[bool] = o[bool].concat(o.$first);
+                        delete o.$first;
+                    }
+                }
+
+                return o;
+            }, {});
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -171,6 +201,7 @@ module.exports = {
 
             console.log(this.state.seso);
 
+            const extra_filters = this.state.seso.extra_filters || {};
             let where = {};
             if (this.state.seso.filters.length > 0) {
                 where.$and = this.state.seso.filters.reduce((arr, filter) => {
@@ -179,16 +210,11 @@ module.exports = {
                 }, []);
             }
 
-            if (this.state.seso.extra_filters.length > 0) {
-                const extra = this.state.seso.extra_filters.reduce((arr, filter) => {
-                    arr.push(JSON.parse(filter));
-                    return arr;
-                }, []);
-
+            if (Object.keys(extra_filters).length > 0) {
                 if (where.$and) {
-                    where.$and.concat(extra);
+                    where.$and = where.$and.concat(extra_filters);
                 } else {
-                    where.$and = extra;
+                    where.$and = [extra_filters];
                 }
             }
 
@@ -198,7 +224,7 @@ module.exports = {
 
                     if (Object.keys(squery).length > 0) {
                         if (this.state.seso.filters.length > 0
-                            || this.state.seso.extra_filters.length > 0) {
+                            || Object.keys(extra_filters).length > 0) {
                             where.$and.push(squery);
                         } else {
                             where = squery;
@@ -207,7 +233,7 @@ module.exports = {
                 }
 
                 if (this.state.seso.filters.length === 0
-                    && this.state.seso.extra_filters.length === 0
+                    && Object.keys(extra_filters).length === 0
                     && !this.useDefaultQuery) {
                     return;
                 }
@@ -217,7 +243,7 @@ module.exports = {
                 const new_content = _.cloneDeep(content);
                 new_content.search = new_content.search.replace(new RegExp('"', 'g'), '\\"');
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(new_content));
-                if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
+                if (this.state.seso.filters.length > 0 || Object.keys(extra_filters).length > 0) {
                     where.$and.push(squery);
                 } else {
                     where = squery;

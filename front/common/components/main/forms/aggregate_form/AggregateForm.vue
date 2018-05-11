@@ -21,12 +21,13 @@
                     <fselect 
                         label=""
                         placeholder=""
-                        :name="`${props.id}.bool`"
-                        :form="state.sinks.creations.dummy"
+                        :name="`${state.variadic_name}.${props.id}.__bool`"
+                        :form="sink"
                         :options="bool_options"
                         :is-addon="true"
                         :key="`${props.id}.bool`"
                         class="fix-selected-tag"
+                        :select-first-value="true"
                     />
                 </template>
                 <template slot="input-addons">
