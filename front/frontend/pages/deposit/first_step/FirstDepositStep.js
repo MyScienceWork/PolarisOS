@@ -42,14 +42,14 @@ module.exports = {
         grab_typology_form(form) {
             if (form == null) {
                 this.state.typology.form = '';
-                this.$emit('typology-change', this.state.typology.form, undefined);
+                this.$emit('typology-change', this.state.typology.form, undefined, undefined);
                 return;
             }
 
             const _id = form.value;
             const typology = this.typology_options.filter(t => t._id === _id);
             this.state.typology.form = typology[0].children[0].form;
-            this.$emit('typology-change', this.state.typology.form, typology[0].children);
+            this.$emit('typology-change', this.state.typology.form, typology[0].children, _id);
         },
         import_from_id(e) {
             e.preventDefault();
@@ -81,6 +81,9 @@ module.exports = {
         },
         show_success_read(sink) {
             const state = this.generate_import_state(sink);
+            if (state === '') {
+                return;
+            }
             const content = this.fcontent(sink);
             if (Object.keys(content).length === 0) {
                 this.state[state] = 'fail';
@@ -94,6 +97,9 @@ module.exports = {
         },
         show_error(sink) {
             const state = this.generate_import_state(sink);
+            if (state === '') {
+                return;
+            }
             this.state[state] = 'fail';
         },
         generate_import_state(sink) {

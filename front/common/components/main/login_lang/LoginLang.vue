@@ -7,28 +7,28 @@
                     <b-icon icon="caret-down"></b-icon>
                 </a>
 
-                <b-dropdown-item has-link>
+                <b-dropdown-item has-link class="has-text-centered">
                     <router-link v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile`">{{lang('f_my_profile')}}</router-link>
                     <a v-else class="dropdown-item" :href="`/u/${user_id}/profile`" target="_blank">{{lang('f_my_profile')}}</a>
                 </b-dropdown-item>
-                <b-dropdown-item has-link>
+                <b-dropdown-item has-link class="has-text-centered">
                     <router-link  v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile?t=2`">{{lang('f_my_deposit', {}, 'other')}}</router-link>
                     <a v-else class="dropdown-item" :href="`/u/${user_id}/profile?t=2`" target="_blank">{{lang('f_my_deposit', {}, 'other')}}</a>
                 </b-dropdown-item>
-                <b-dropdown-item has-link v-if="'administrator' in roles">
+                <b-dropdown-item class="has-text-centered" has-link v-if="'administrator' in roles">
                     <a v-if="!backoffice" class="dropdown-item" href="/admin" target="_blank">{{lang('f_admin')}}</a>
                     <router-link v-else class="dropdown-item" to="/admin">{{lang('f_admin')}}</router-link>
                 </b-dropdown-item>
-                <b-dropdown-item has-link>
+                <b-dropdown-item has-link class="has-text-centered">
                     <router-link  v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile?t=3`">{{lang('f_bibliographic_report', {}, 'other')}}</router-link>
                     <a v-else class="dropdown-item" :href="`/u/${user_id}/profile?t=3`" target="_blank">{{lang('f_bibliographic_report', {}, 'other')}}</a>
                 </b-dropdown-item>
-                <!--<b-dropdown-item has-link>
+                <!--<b-dropdown-item has-link class="has-text-centered">
                     <router-link class="dropdown-item" :to="`/u/${user_id}/profile?t=4`">
                         {{lang('f_registered_search', {}, 'other')}}
                     </router-link>
                     </b-dropdown-item>-->
-                <b-dropdown-item has-link>
+                <b-dropdown-item has-link class="has-text-centered">
                     <a class="dropdown-item" @click="logout">
                         {{lang('f_logout')}}
                     </a>

@@ -58,7 +58,7 @@ module.exports = {
             this.state.prev_step = info.prev_step;
             this.state.current_step = info.step;
         },
-        update_typology_form(form, children) {
+        update_typology_form(form, children, type_id) {
             if (!form || form === '' ||
                 (form && form !== this.state.deposit_form_name && this.state.deposit_form_name)) {
                 this.$store.commit(Messages.INITIALIZE, {
@@ -76,6 +76,13 @@ module.exports = {
                 BrowserUtils.localRemove('saved_deposit');
             }
             if (form !== '') {
+                if (form !== this.state.deposit_form_name) {
+                    this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                        form: this.state.publication.sink,
+                        body: { type: type_id },
+                    });
+                }
+
                 this.state.deposit_form_name = form;
                 this.fetch_form(form, this.state.publication.specs);
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
