@@ -59,30 +59,34 @@ module.exports = {
             this.state.current_step = info.step;
         },
         update_typology_form(form, children, type_id) {
-            if (!form || form === '' ||
-                (form && form !== this.state.deposit_form_name && this.state.deposit_form_name)) {
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.publication.specs,
-                });
+            console.log('update', form, children, type_id);
+            if (this.state.deposit_form_name && this.state.deposit_form_name !== '') {
+                // Previously selected type
 
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.publication.sink,
-                });
-
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.typology.subsink,
-                });
-
-                BrowserUtils.localRemove('saved_deposit');
-            }
-            if (form !== '') {
+                // The type differ from the old one :
+                // -Either new form
+                // -Or form is now undefined (nothing selected)
+                // In each case, we clear everything
                 if (form !== this.state.deposit_form_name) {
-                    this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                        form: this.state.publication.sink,
-                        body: { type: type_id },
+                    this.$store.commit(Messages.INITIALIZE, {
+                        form: this.state.publication.specs,
                     });
-                }
 
+                    this.$store.commit(Messages.INITIALIZE, {
+                        form: this.state.publication.sink,
+                    });
+
+                    this.$store.commit(Messages.INITIALIZE, {
+                        form: this.state.typology.subsink,
+                    });
+
+                    BrowserUtils.localRemove('saved_deposit');
+                }
+            }
+
+            // New type has been selected
+            if (form && form !== '') {
+                // Aknowledge the change and go on with your life
                 this.state.deposit_form_name = form;
                 this.fetch_form(form, this.state.publication.specs);
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {

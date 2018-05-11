@@ -157,7 +157,12 @@ module.exports = {
                 this.state.showHelpModal = !this.state.showHelpModal;
             }
         },
-        initialize() {
+        initialize(sink) {
+            console.log(sink, this.form, 'select');
+            if (this.form !== sink) {
+                return;
+            }
+
             const form = this.$store.state.forms[this.form];
             const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
@@ -258,14 +263,15 @@ module.exports = {
             this.select_default_value();
         },
         current_state(s) {
-            this.dispatch(s, this);
+            console.log('dispatching select', s, this.form);
+            this.dispatch(s, this, this.form);
         },
     },
     beforeMount() {
         this.state.options = this.format_options(this.options, 'to');
     },
     mounted() {
-        this.initialize();
+        this.initialize(this.form);
     },
     computed: {
         isHidden() {
