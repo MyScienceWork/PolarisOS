@@ -1,7 +1,8 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
-const APIRoutes = require('../../../../common/api/routes');
-const Messages = require('../../../../common/api/messages');
+
+const FileDepositWidget = require('../subcomponents/FileDepositWidget.vue');
+const ImportCompletionWidget = require('../subcomponents/ImportCompletionWidget.vue');
 
 module.exports = {
     props: {
@@ -9,12 +10,17 @@ module.exports = {
         subtypologySink: { required: true, type: String },
         creationSink: { required: true, type: String },
         publicationSpecs: { required: true, type: String },
-        review: { default: false, type: Boolean },
-        validated: { default: false, type: Boolean },
-        modification: { default: false, type: Boolean },
-        model: { default: false, type: Boolean },
-        newVersion: { default: false, type: Boolean },
-        parentPublication: { default: '', type: String },
+        importSink: { required: true, type: String },
+        importForm: { required: true },
+        uploadForm: { required: true },
+        reviewMode: { default: false, type: Boolean },
+        modificationMode: { default: false, type: Boolean },
+        importState: { required: true, type: String },
+        analyzeState: { required: true, type: String },
+    },
+    components: {
+        FileDepositWidget,
+        ImportCompletionWidget,
     },
     mixins: [LangMixin, FormMixin],
     data() {
@@ -43,38 +49,8 @@ module.exports = {
         analyze_from_file(filename) {
             this.$emit('analyze-from-file', filename);
         },
-        show_success_read(sink) {
-            const state = this.generate_import_state(sink);
-            if (state === '') {
-                return;
-            }
-            const content = this.fcontent(sink);
-            if (Object.keys(content).length === 0) {
-                this.state[state] = 'fail';
-            } else {
-                this.state[state] = 'success';
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.creationSink,
-                    body: content,
-                });
-            }
-        },
-        show_error(sink) {
-            const state = this.generate_import_state(sink);
-            if (state === '') {
-                return;
-            }
-            this.state[state] = 'fail';
-        },
-        generate_import_state(sink) {
-            switch (sink) {
-            case this.state.sinks.reads.import:
-                return 'import_state';
-            case this.state.sinks.reads.analyze:
-                return 'analyze_state';
-            default:
-                return '';
-            }
+        import_from_id() {
+            this.$emit('import-from-id');
         },
     },
     watch: {
@@ -104,30 +80,6 @@ module.exports = {
             }
 
             return [];
-        },
-        upload_form() {
-            if (this.publicationSpecs in this.$store.state.forms) {
-                const sink = this.$store.state.forms[this.publicationSpecs];
-                const content = sink.content || {};
-                if ('fields' in content) {
-                    return Object.assign({}, content, { fields: content.fields.filter(field =>
-                        field.name === 'upload' && field.type === 'subform') });
-                }
-                return content;
-            }
-            return {};
-        },
-        import_form() {
-            if (this.publicationSpecs in this.$store.state.forms) {
-                const sink = this.$store.state.forms[this.publicationSpecs];
-                const content = sink.content || {};
-                if ('fields' in content) {
-                    return Object.assign({}, content, { fields: content.fields.filter(field =>
-                        field.name === 'import' && field.type === 'subform') });
-                }
-                return content;
-            }
-            return {};
         },
     },
 };

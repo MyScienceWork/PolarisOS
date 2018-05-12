@@ -1,5 +1,13 @@
 <template>
 <div class="hero-body">
+    <finput
+        type='hidden'
+        label=''
+        :hiddenValue="publication_id"
+        name="parent"
+        :form="state.sinks.creations.publication"
+        v-if="in_mode('new_version')"
+    />
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column">
@@ -15,74 +23,63 @@
                                         {{lang('f_deposit_step_details_' + props.id)}} 
                                     </template>
                                     <template slot="step-content" slot-scope="props">
-                                        <fform
-                                            :name="state.publication.sink" 
-                                            :post_path="path" 
-                                            :put_path="path" 
-                                            :get_path="state.publication.read_path"
-                                            :has-buttons="false"
-                                            get_form="dummy_sink"
-                                            :show-errors="false"
-                                            :mode="form_mode"
-                                            :validate-step="state.current_step"
-                                            :no_reinitialize_after_success="true"
-                                            @form-success-reset="go_after_success"
-                                        >
                                             <first-deposit-step
-                                                :creation-sink="state.publication.sink"
-                                                :typology-sink="state.typology.sink"
-                                                :subtypology-sink="state.typology.subsink"
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :typology-sink="state.sinks.reads.typology"
+                                                :subtypology-sink="state.sinks.reads.subtypology"
+                                                :import-sink="state.sinks.creations.import"
+                                                :publication-specs="state.sinks.creations.publication"
+                                                :upload-form="upload_form"
+                                                :import-form="import_form"
+                                                :deposit-form="state.deposit_form_name"
+                                                :modification-mode="in_mode('modify')"
+                                                :review-mode="in_mode('review')"
                                                 v-if="state.current_step === 0"
                                                 :key="state.current_step"
-                                                :validated="!unvalidated"
+                                                :analyze-state="state.analyze_state"
+                                                :import-state="state.import_state"
                                                 @typology-change="update_typology_form"
-                                                :publication-specs="state.publication.specs"
-                                                :deposit-form="state.deposit_form_name"
-                                                :review="is_review_mode"
-                                                :new-version="is_new_version_mode"
-                                                :model="is_model_mode"
-                                                :modification="is_modification_mode"
-                                                :parent-publication="publication_id"
+                                                @import-from-id="import_from_id"
+                                                @analyze-from-file="analyze_from_file"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 1"
-                                                :creation-sink="state.publication.sink"
-                                                :publication-specs="state.publication.specs"
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :publication-specs="state.sinks.creations.specs"
                                                 :key="state.current_step"
                                                 subform-name="required"
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
-                                                :review="is_review_mode"
+                                                :review="in_mode('review')"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 2 && !unvalidated"
-                                                :creation-sink="state.publication.sink"
-                                                :publication-specs="state.publication.specs"
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :publication-specs="state.sinks.creations.specs"
                                                 :key="state.current_step"
                                                 subform-name="optional"
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
-                                                :review="is_review_mode"
+                                                :review="in_mode('review')"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 3"
-                                                :creation-sink="state.publication.sink"
-                                                :publication-specs="state.publication.specs"
                                                 :key="state.current_step"
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :publication-specs="state.sinks.creations.specs"
                                                 subform-name="permission"
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
-                                                :review="is_review_mode"
+                                                :review="in_mode('review')"
                                             />
                                             <review-deposit-step 
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :publication-specs="state.sinks.creations.specs"
                                                 v-if="state.current_step === 4"
                                                 :key="state.current_step"
-                                                :publication-specs="state.publication.specs"
-                                                :creation-sink="state.publication.sink"
                                                 :success="success"
-                                                :review="is_review_mode"
+                                                :review="in_mode('review')"
                                             />
-                                        </fform>
                                     </template>
                                     <template slot="step-buttons" slot-scope="props">
                                         <div class="field is-grouped is-pulled-right">
@@ -105,11 +102,11 @@
                                             <div class="control" v-else>
                                                 <button @click.prevent="next(props.next, props.step, props.numberOfSteps)" 
                                                     :disabled="success"
-                                                    v-if="!is_review_mode"
+                                                    v-if="!in_mode('review')"
                                                     class="button">{{lang('f_finish_button_step')}}</button>
                                                 <button @click.prevent="open_review_modal(props)" 
                                                     :disabled="success"
-                                                    v-else-if="is_review_mode"
+                                                    v-else-if="in_mode('review')"
                                                     class="button">{{lang('f_finish_review_step')}}</button>
                                             </div>
                                         </div>
@@ -124,7 +121,7 @@
     </div>
     <review-modal 
         @review-publication="review_publication"
-        :sink="state.publication.sink"
+        :sink="state.sinks.creations.publication"
     />
 </div>
 </template>
