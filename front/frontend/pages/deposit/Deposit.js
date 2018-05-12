@@ -64,35 +64,21 @@ module.exports = {
     methods: {
         update_typology_form(form, children, type_id) {
             if (form && form.trim !== '') {
-                if (this.state.deposit_form_name !== form) {
+                if (this.state.deposit_form_name && this.state.deposit_form_name !== form) {
                     this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.sinks.creations.publication,
-                    });
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.sinks.reads.subtypology,
-                    });
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.sinks.creations.specs,
-                    });
-
-                    this.state.deposit_form_name = form;
-                    this.fetch_form(form, this.state.sinks.creations.specs);
-                    this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                        form: this.state.sinks.reads.subtypology,
-                        body: { children },
+                        form: this.state.sinks.creation.publication,
                     });
                 }
-            } else {
-                this.state.deposit_form_name = undefined;
 
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.sinks.creations.publication,
-                });
-                this.$store.commit(Messages.INITIALIZE, {
+                this.state.deposit_form_name = form;
+                this.fetch_form(form, this.state.sinks.creations.specs);
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.reads.subtypology,
+                    body: undefined,
                 });
-                this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.sinks.creations.specs,
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.reads.subtypology,
+                    body: { children },
                 });
             }
         },
@@ -285,9 +271,6 @@ module.exports = {
     watch: {
         current_state(s) {
             this.dispatch(s, this);
-        },
-        mode(nm) {
-            this.state.mode = nm;
         },
     },
     beforeDestroy() {

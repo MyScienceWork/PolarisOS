@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const APIRoutes = require('../api/routes');
+const Messages = require('../api/messages');
 const LangMixin = require('./LangMixin');
 
 module.exports = {
@@ -47,6 +48,9 @@ module.exports = {
     },
     methods: {
         fetch_form(id, sink) {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: sink,
+            });
             this.$store.dispatch('single_read', {
                 form: sink,
                 path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),
