@@ -39,9 +39,7 @@ module.exports = {
             this.state.export_type = format;
             this.state.export_subtype = subtype;
 
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.reads.export,
-            });
+            this.send_information(this.state.sinks.reads.export);
         },
         select_export_csl(value) {
             if (value) {
@@ -89,21 +87,18 @@ module.exports = {
         },
         select_all_to_export(s) {
             this.state.select_all_to_export = s;
-            if (s) {
-                const obj = this.content.reduce((o, info) => {
-                    o[info._id] = true;
-                    return o;
-                }, {});
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.state.sinks.reads.export,
-                    body: obj,
-                });
-            } else {
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.state.sinks.reads.export,
-                    body: undefined, // Force to remove content
-                });
-            }
+            const obj = this.content.reduce((o, info) => {
+                o[info._id] = !!s;
+                return o;
+            }, {});
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.reads.export,
+                body: obj,
+            });
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.export,
+                keep_content: true,
+            });
         },
     },
     computed: {

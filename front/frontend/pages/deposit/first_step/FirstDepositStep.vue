@@ -65,41 +65,12 @@
                 </div>
                 <div class="columns is-centered" v-if="Object.keys(upload_form).length > 0 || Object.keys(import_form).length > 0">
                     <div class="column" v-if="Object.keys(upload_form).length > 0">
-                        <div class="card card-equal-height">
-                            <div class="card-content card-equal-height" v-if="!modification">
-                                <div class="columns is-centered">
-                                    <div class="column has-text-centered">
-                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}
-                                            <b-tooltip class="is-dark is-tooltip-small" :label="lang('l_upload_deposit_file_help')" multilined>
-                                                <a href='#' alt="Tooltip">
-                                                    <span class="icon has-text-info">
-                                                        <i class="fa fa-question-circle"></i>
-                                                    </span>
-                                                </a>
-                                            </b-tooltip>
-                                        </h4>
-                                        <p v-html="lang('f_upload_deposit_file_help')"></p>
-                                    </div>
-                                </div>
-                                <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="upload_form" :cform="creationSink"/>
-                                <!--<fdropzone form="dummy_form" name="name" master="master" files="files" />-->
-                                <div class="columns is-centered">
-                                    <div class="column">
-                                        <p v-if="state.analyze_state === 'loading'">{{lang('l_analyze_in_progress')}}</p>
-                                        <p v-else-if="state.analyze_state === 'fail'">{{lang('l_analyze_failed')}}</p>
-                                        <p v-else-if="state.analyze_state === 'success'">{{lang('l_analyze_succeeded')}}</p>
-                                    </div>
-                                </div>
-                            </div> <!-- card-content not in modification -->
-                            <div v-else class="card-content card-equal-height">
-                                <div class="columns is-centered">
-                                    <div class="column has-text-centered">
-                                        <h4 class="title is-4">{{lang('f_upload_deposit_file')}}</h4>
-                                        <p v-html="lang('f_upload_deposit_file_modification_help')"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <file-deposit-widget 
+                            :modification-mode="modificationMode"
+                            :upload-form="upload_form"
+                            :sink="creationSink"
+                            @analyze-from-file="analyze_from_file"
+                        />
                     </div>
                     <div class="column" v-if="Object.keys(import_form).length > 0">
                         <div class="card card-equal-height">

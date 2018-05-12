@@ -14,6 +14,30 @@ module.exports = {
     data() {
         return {
             state: {
+                sinks: {
+                    creations: {
+                        publication: 'publication_creation',
+                        specs: 'publication_specs',
+                    },
+                    reads: {
+                        typology: 'typology_read',
+                        subtypology: 'subtypology_read',
+                    },
+                },
+                paths: {
+                    creations: {
+                        publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
+                        specs: 'publication_specs',
+                    },
+                    reads: {
+                        publication: APIRoutes.entity('publication', 'GET'),
+                        typology: APIRoutes.entity('typology', 'POST', true),
+                    },
+                    validations: {
+
+                        publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
+                    },
+                },
                 publication: {
                     sink: 'publication_creation',
                     specs: 'publication_specs',
@@ -39,10 +63,8 @@ module.exports = {
                     next: undefined,
                 },
                 deposit_form_name: undefined,
-                show_review_modal: false,
                 modal_has_been_validated: false,
                 step_props: {},
-                status_review: undefined,
             },
         };
     },
@@ -59,35 +81,7 @@ module.exports = {
             this.state.current_step = info.step;
         },
         update_typology_form(form, children, type_id) {
-            console.log('update', form, children, type_id);
-            if (this.state.deposit_form_name && this.state.deposit_form_name !== '') {
-                // Previously selected type
-
-                // The type differ from the old one :
-                // -Either new form
-                // -Or form is now undefined (nothing selected)
-                // In each case, we clear everything
-                if (form !== this.state.deposit_form_name) {
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.publication.specs,
-                    });
-
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.publication.sink,
-                    });
-
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.typology.subsink,
-                    });
-
-                    BrowserUtils.localRemove('saved_deposit');
-                }
-            }
-
-            // New type has been selected
-            if (form && form !== '') {
-                // Aknowledge the change and go on with your life
-                this.state.deposit_form_name = form;
+            if (form && form.trim !== '') {
                 this.fetch_form(form, this.state.publication.specs);
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.typology.subsink,
@@ -95,25 +89,18 @@ module.exports = {
                 });
             }
         },
-        next(func, step, total, no_collect = false) {
-            if (!no_collect) {
-                this.$store.commit(Messages.COLLECT, {
-                    form: this.state.publication.sink,
-                });
-            }
-
+        next(func, step, total) {
             this.state.stepper.next = func;
         },
         previous(func, step, total) {
             this.run_next_or_previous(func);
-            this.state.publication.validate_path = APIRoutes.entity('publication',
+            this.state.paths.validations.publication = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step + 1}`);
 
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.publication.sink,
-            });
+            this.send_information(this.state.sinks.creations.publication);
+            // TODO Change and keep if needed
             this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.publication.sink,
+                form: this.state.sinks.creations.publication,
                 keep_content: true,
             });
         },
@@ -121,24 +108,25 @@ module.exports = {
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
                     this.run_next_or_previous(this.state.stepper.next);
-                    this.state.publication.validate_path = APIRoutes.entity('publication',
+                    this.state.paths.validations.publication = APIRoutes.entity('publication',
                         'VALIDATE', false, `0-${this.state.current_step + 1}`);
                 }
 
                 this.$store.commit(Messages.INITIALIZE, {
-                    form: this.state.publication.sink,
+                    form: this.state.sinks.creations.publication,
                     keep_content: true,
                 });
-            } else if (this.is_review_mode && this.state.modal_has_been_validated) {
+            } else if (this.in_mode('review') && this.state.modal_has_been_validated) {
                 this.state.show_review_modal = false;
             }
         },
         show_success_validate() {
             this.run_next_or_previous(this.state.stepper.next);
-            this.state.publication.validate_path = APIRoutes.entity('publication',
+
+            this.state.paths.validations.publication = APIRoutes.entity('publication',
                 'VALIDATE', false, `0-${this.state.current_step + 1}`);
             this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.publication.sink,
+                form: this.state.sinks.creations.publication,
                 keep_content: true,
             });
         },
@@ -155,9 +143,6 @@ module.exports = {
             this.next(this.state.step_props.next, this.state.step_props.step,
                 this.state.step_props.numberOfSteps);
         },
-        status_review_change(val) {
-            this.state.status_review = val ? val.value : undefined;
-        },
     },
     components: {
         'first-deposit-step': FirstDepositStep,
@@ -169,8 +154,8 @@ module.exports = {
             name: 'search',
             type: 'dispatch',
             content: {
-                form: this.state.typology.sink,
-                path: this.state.typology.path,
+                form: this.state.sinks.reads.typology,
+                path: this.state.paths.creations.typology,
                 body: {
                     size: 10000,
                     sort: [{ order: 'asc' }, { _uid: 'desc' }],
@@ -186,7 +171,7 @@ module.exports = {
                     name: Messages.TRANSFERT_INTO_FORM,
                     type: 'commit',
                     content: {
-                        form: this.state.publication.sink,
+                        form: this.state.sinks.creations.publication,
                         body: saved_deposit,
                     },
                 });
@@ -208,7 +193,7 @@ module.exports = {
                 name: 'single_read',
                 type: 'dispatch',
                 content: {
-                    form: this.state.publication.sink,
+                    form: this.state.sinks.creations.publication,
                     path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });
@@ -216,7 +201,7 @@ module.exports = {
                 name: Messages.INITIALIZE,
                 type: 'commit',
                 content: {
-                    form: this.state.publication.sink,
+                    form: this.state.sinks.creations.publication,
                     keep_content: true,
                 },
             });
@@ -231,7 +216,7 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return 'validate';
-            } else if (this.is_review_mode || this.is_modification_mode) {
+            } else if (this.in_mode('review') || this.in_mode('modify')) {
                 return 'update';
             }
             return 'default';
@@ -240,63 +225,38 @@ module.exports = {
             if (this.state.current_step === 0) {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
-                return this.state.publication.validate_path;
+                return this.state.paths.validations.publication;
+            } else if (this.is_review_mode || this.is_modification_mode) {
+                return this.state.paths.creations.publication;
             }
-
-            if (this.is_review_mode || this.is_modification_mode) {
-                return this.state.publication.put_path;
-            }
-            return this.state.publication.path;
+            return this.state.paths.creations.publication;
         },
         current_state() {
             return this.fstate(this.state.publication.sink);
         },
         unvalidated() {
-            if (!this.state.deposit_form_name) {
-                return true;
-            }
-
-            let form = {};
-            if (this.state.publication.sink in this.$store.state.forms) {
-                form = this.$store.state.forms[this.state.publication.sink] || {};
-            }
+            const form = this.fform(this.state.sinks.creations.publication);
             return Object.keys(form.validations || {}).length > 0;
         },
         success() {
-            if (this.state.publication.sink in this.$store.state.forms) {
-                const form = this.$store.state.forms[this.state.publication.sink];
-                if (form.success) {
-                    if (form.success instanceof String) {
-                        return form.success.trim() !== '';
-                    }
-                    return true;
+            const form = this.fform(this.state.sinks.creations.publication);
+            if (form && form.success) {
+                if (form.success instanceof String) {
+                    return form.success.trim() !== '';
                 }
-                return false;
+                return true;
             }
             return false;
         },
-        is_review_mode() {
-            return this.$route.query && this.$route.query.type && this.$route.query.type === 'review';
-        },
-        is_modification_mode() {
-            return this.$route.query && this.$route.query.type && this.$route.query.type === 'modify';
-        },
-        is_model_mode() {
-            return this.$route.query && this.$route.query.type && this.$route.query.type === 'model';
-        },
-        is_new_version_mode() {
-            return this.$route.query && this.$route.query.type && this.$route.query.type === 'new_version';
+        in_mode() {
+            // m = review / modify / model / new_version
+            return m => this.$route.query && this.$route.query.type && this.$route.query.type === m;
         },
         publication_id() {
             if (this.$route.query && this.$route.query._id) {
                 return this.$route.query._id;
             }
             return '';
-        },
-        status_options() {
-            return ['pending', 'rejected',
-                'incomplete', 'published', 'withdrawn', 'unpublished']
-            .map(s => ({ label: this.lang(`l_${s}_status`), value: s }));
         },
     },
     watch: {

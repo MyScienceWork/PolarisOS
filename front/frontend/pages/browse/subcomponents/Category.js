@@ -41,9 +41,7 @@ module.exports = {
     },
     methods: {
         browse() {
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.creations.selected,
-            });
+            this.send_information(this.state.sinks.creations.selected);
         },
         browse_list(term, type = 'publication') {
             if (type === 'publication') {
@@ -132,7 +130,7 @@ module.exports = {
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
                 if ('browsing_terms' in content && content.browsing_terms) {
-                    const ids = content.browsing_terms.map(b => b._id);
+                    const ids = _.map(content.browsing_terms, b => b._id);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;

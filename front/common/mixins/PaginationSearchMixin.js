@@ -17,6 +17,7 @@ module.exports = {
         defaultQuery: { default: '{}', type: String },
         filters: { default: () => [], type: Array },
         searchWhenFiltersChange: { default: false, type: Boolean },
+        searchOnMount: { default: true, type: Boolean },
     },
     data() {
         return {
@@ -211,7 +212,7 @@ module.exports = {
             }
 
             if (Object.keys(extra_filters).length > 0) {
-                if (where.$and) {
+                if ('$and' in where) {
                     where.$and = where.$and.concat(extra_filters);
                 } else {
                     where.$and = [extra_filters];
@@ -332,12 +333,17 @@ module.exports = {
         },
     },
     mounted() {
+        if (!this.searchOnMount) {
+            return;
+        }
+
         const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
-
+        this.state.seso.filters = this.filters;
+        console.log('mounted PSM', this.state.seso);
         if ((search === '' && sink === '') && !this.useDefaultQuery) {
             return;
         }

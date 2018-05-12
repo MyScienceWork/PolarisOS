@@ -24,17 +24,6 @@ module.exports = {
                     name: '',
                     form: '',
                 },
-                search_id: '',
-                sinks: {
-                    reads: {
-                        import: 'import_read',
-                        analyze: 'analyze_read',
-                    },
-                },
-                import_in_progress: false,
-                import_state: 'nothing',
-                analyze_in_progress: false,
-                analyze_state: 'nothing',
             },
         };
     },
@@ -51,33 +40,8 @@ module.exports = {
             this.state.typology.form = typology[0].children[0].form;
             this.$emit('typology-change', this.state.typology.form, typology[0].children, _id);
         },
-        import_from_id(e) {
-            e.preventDefault();
-            this.$store.dispatch('fetch', {
-                path: APIRoutes.import(),
-                method: 'POST',
-                action: 'read',
-                form: this.state.sinks.reads.import,
-                body: {
-                    // TODO remove hack
-                    info: this.state.search_id,
-                    type: 'doi',
-                },
-            });
-            this.state.import_state = 'loading';
-        },
         analyze_from_file(filename) {
-            this.$store.dispatch('fetch', {
-                path: APIRoutes.import(),
-                method: 'POST',
-                action: 'read',
-                form: this.state.sinks.reads.analyze,
-                body: {
-                    info: filename,
-                    type: 'pdf',
-                },
-            });
-            this.state.analyze_state = 'loading';
+            this.$emit('analyze-from-file', filename);
         },
         show_success_read(sink) {
             const state = this.generate_import_state(sink);
@@ -114,12 +78,6 @@ module.exports = {
         },
     },
     watch: {
-        current_state_import(s) {
-            this.dispatch(s, this, this.state.sinks.reads.import);
-        },
-        current_state_analyze(s) {
-            this.dispatch(s, this, this.state.sinks.reads.analyze);
-        },
     },
     computed: {
         typology_options() {
@@ -171,23 +129,5 @@ module.exports = {
             }
             return {};
         },
-        current_state_import() {
-            return this.fstate(this.state.sinks.reads.import);
-        },
-        current_state_analyze() {
-            return this.fstate(this.state.sinks.reads.analyze);
-        },
-    },
-    mounted() {
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.import,
-            keep_content: false,
-        });
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.analyze,
-            keep_content: false,
-        });
-        this.state.import_state = 'nothing';
-        this.state.analyze_state = 'nothing';
     },
 };

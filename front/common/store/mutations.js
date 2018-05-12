@@ -244,12 +244,12 @@ module.exports = {
         create_form_if_needed(state, form_name);
         const form = state.forms[form_name];
         form.state = 'transfer';
+        if (object === undefined) {
+            form.content = {};
+        } else {
+            form.content = Object.assign({}, Utils.merge_with_replacement(form.content, object));
+        }
         Vue.nextTick(() => {
-            if (object === undefined) {
-                form.content = {};
-            } else {
-                form.content = Utils.merge_with_replacement(form.content, object);
-            }
             form.state = 'initial';
         });
     },

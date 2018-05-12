@@ -141,8 +141,9 @@ module.exports = {
             }
         },
         current_state(s) {
+            const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
             if (this.type === 'hidden' && s === 'initial') {
-                this.update({ target: { value: this.hiddenValue } });
+                this.update({ target: { [key]: this.hiddenValue } });
             }
         },
         readonlyValue(v) {

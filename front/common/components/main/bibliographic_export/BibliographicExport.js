@@ -50,9 +50,7 @@ module.exports = {
     methods: {
         submit() {
             this.state.link = null;
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.creations.export,
-            });
+            this.send_information(this.state.sinks.creations.export);
         },
         send_information(sink) {
             if (sink === this.state.sinks.creations.export) {

@@ -21,14 +21,16 @@ module.exports = {
     },
     methods: {
         trigger_click() {
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.forms.ssink,
-            });
+            this.send_information(this.state.forms.ssink);
         },
         initialize() {
-            this.send_information();
+            this.send_information(this.state.forms.ssink);
         },
-        send_information() {
+        send_information(sink) {
+            if (sink !== this.state.forms.ssink) {
+                return;
+            }
+
             const content = this.fcontent(this.state.forms.ssink);
             let search = '';
 
