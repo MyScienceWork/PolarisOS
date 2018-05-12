@@ -29,9 +29,7 @@ module.exports = {
     },
     methods: {
         search() {
-            this.$store.commit(Messages.COLLECT, {
-                form: this.searchSink,
-            });
+            this.send_information(this.searchSink);
         },
         send_information(sink) {
             if (sink === this.searchSink) {

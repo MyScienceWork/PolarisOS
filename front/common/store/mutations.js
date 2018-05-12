@@ -44,6 +44,7 @@ module.exports = {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'noop'; // In case of multiple updates...
+        console.log('READ', payload.content);
         Vue.nextTick(() => {
             state.forms[form_name].content = payload.content;
             state.forms[form_name].state = 'update';
@@ -67,14 +68,32 @@ module.exports = {
         create_form_if_needed(state, form_name);
 
         const name = payload.name;
-        const info = payload.info;
+        let info = payload.info;
         const form = state.forms[form_name];
+        const renumbering = payload.renumbering || false;
 
         const path = name.split('.');
         const content = state.forms[form_name].content;
-        const object = Utils.make_nested_object_from_path(path, info);
-        form.content = Utils.merge_with_replacement(content, object);
-        const claims = state.forms[form_name].claims;
+
+        if (renumbering) {
+            const information = Utils.find_value_with_path(content, path);
+            if (!information) {
+                return;
+            }
+            info = _.reduce(information, (o, val) => {
+                o[Object.keys(o).length] = val;
+                return o;
+            }, {});
+
+            const parent = Utils.find_parent_with_path(path, content);
+            parent[path[path.length - 1]] = info;
+        } else {
+            const object = Utils.make_nested_object_from_path(path, info);
+            form.content = Utils.merge_with_replacement(content, object);
+        }
+
+
+        /* const claims = state.forms[form_name].claims;
         form.claims = Object.assign({}, claims, { [payload.name]: 1 });
 
 
@@ -84,7 +103,7 @@ module.exports = {
             Vue.nextTick(() => {
                 form.state = 'completed';
             });
-        }
+        }*/
     },
 
     [Messages.REMOVE_FORM_ELEMENT]: (state, payload) => {

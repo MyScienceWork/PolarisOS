@@ -4,7 +4,6 @@ const VSelect = require('vue-select').VueSelect;
 const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
-const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const ASCIIFolder = require('fold-to-ascii');
 
@@ -38,7 +37,7 @@ module.exports = {
     components: {
         'v-select': VSelect,
     },
-    mixins: [RegisterMixin, InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin],
     data() {
         return {
             state: {
@@ -158,12 +157,17 @@ module.exports = {
             }
         },
         initialize(sink) {
-            console.log(sink, this.form, 'select');
             if (this.form !== sink) {
                 return;
             }
 
             const form = this.$store.state.forms[this.form];
+
+            if (form == null) {
+                this.select_default_value();
+                return;
+            }
+
             const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
@@ -184,17 +188,23 @@ module.exports = {
             info[this.fieldLabel] = '';
             this.set_selected([info]);
         },
-        start_collection() {
+        /* start_collection() {
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.form,
                 name: this.name,
                 info: this.extract_values(this.state.selected),
             });
-        },
+        },*/
         onChange(val) {
             if (this.readonly) {
-                // Noop
+
             } else {
+                console.log(this.form, this.name, this.extract_values(val));
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: this.extract_values(val),
+                });
                 this.state.selected = val;
                 this.$emit('select-change', val);
             }
@@ -263,7 +273,6 @@ module.exports = {
             this.select_default_value();
         },
         current_state(s) {
-            console.log('dispatching select', s, this.form);
             this.dispatch(s, this, this.form);
         },
     },

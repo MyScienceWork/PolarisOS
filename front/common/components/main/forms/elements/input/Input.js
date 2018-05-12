@@ -1,13 +1,13 @@
+const _ = require('lodash');
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
-const RegisterMixin = require('../../../../../mixins/RegisterMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
 
 module.exports = {
-    mixins: [RegisterMixin, InputMixin],
+    mixins: [InputMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -40,7 +40,7 @@ module.exports = {
     data() {
         return {
             state: {
-                value: this.defaultValue(),
+                       // value: this.defaultValue(),
                 showHelpModal: false,
             },
         };
@@ -66,21 +66,18 @@ module.exports = {
             e.preventDefault();
             this.$emit('input-action-emit', { action: a });
         },
-        initialize() {
-            const form = this.$store.state.forms[this.form];
-            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
-            if (value == null) {
-                this.state.value = this.defaultValue();
-            } else if (this.type === 'date') {
-                this.state.value = moment(value).toDate();
-            } else if (this.type === 'date-year') {
-                this.state.value = moment(value).format('YYYY');
+        update(e) {
+            let info = null;
+            if (_.isObject(e) && 'target' in e) {
+                if (this.type === 'checkbox') {
+                    info = e.target.checked;
+                } else {
+                    info = e.target.value;
+                }
             } else {
-                this.state.value = value;
+                info = e;
             }
-        },
-        start_collection() {
-            let info = this.state.value;
+
             if (this.type === 'date') {
                 if (typeof info !== 'string') {
                     info = +moment.utc(info.toISOString());
@@ -92,8 +89,8 @@ module.exports = {
                 if (typeof info !== 'string') {
                     info = moment.utc(info.toISOString()).format('HH:mm');
                 }
-            } else if (this.type === 'password-sha1' && this.state.value != null && this.state.value.trim() !== '') {
-                info = Crypto.createHash('sha1').update(this.state.value).digest('hex');
+            } else if (this.type === 'password-sha1' && info != null && info.trim() !== '') {
+                info = Crypto.createHash('sha1').update(info).digest('hex');
             }
 
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
@@ -101,6 +98,7 @@ module.exports = {
                 name: this.name,
                 info,
             });
+            this.$emit('value-change', info);
         },
         defaultValue() {
             if (this.default != null) {
@@ -134,20 +132,18 @@ module.exports = {
             }
             return v;
         },
-        update_value(e) {
-            this.state.value = e.target.checked;
-            this.$emit('value-change', this.state.value);
-        },
     },
 
     watch: {
         hiddenValue(n) {
-            if (this.type === 'hidden' && this.state.value !== n) {
-                this.initialize();
+            if (this.type === 'hidden' && this.value !== n) {
+                this.update({ target: { value: n } });
             }
         },
         current_state(s) {
-            this.dispatch(s, this);
+            if (this.type === 'hidden' && s === 'initial') {
+                this.update({ target: { value: this.hiddenValue } });
+            }
         },
         readonlyValue(v) {
             return this.computeReadonlyValue(v);
@@ -155,18 +151,36 @@ module.exports = {
     },
     computed: {
         emptyValue() {
-            return this.state.value === null ||
-                this.state.value === undefined ||
-                (this.state.value instanceof String && this.state.value.trim() === '');
+            return this.value === null ||
+                this.value === undefined ||
+                (this.value instanceof String && this.value.trim() === '');
         },
         current_state() {
             return this.fstate(this.form);
         },
         readonlyValue() {
-            return this.computeReadonlyValue(this.state.value);
+            return this.computeReadonlyValue(this.value);
+        },
+        value() {
+            const form = this.$store.state.forms[this.form];
+            if (form == null) {
+                return this.defaultValue();
+            }
+
+            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (value == null) {
+                return this.defaultValue();
+            } else if (this.type === 'date') {
+                return moment(value).toDate();
+            } else if (this.type === 'date-year') {
+                return moment(value).format('YYYY');
+            }
+            return value;
         },
     },
     mounted() {
-        this.initialize();
+        if (this.type === 'hidden') {
+            this.update({ target: { value: this.hiddenValue } });
+        }
     },
 };

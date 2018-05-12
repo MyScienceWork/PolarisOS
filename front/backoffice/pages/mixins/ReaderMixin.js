@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Vue = require('vue');
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
@@ -12,7 +13,7 @@ module.exports = {
             Vue.nextTick(() => {
                 this.$store.commit(Messages.READ, {
                     form: this.state.forms.csink,
-                    content: obj,
+                    content: _.cloneDeep(obj),
                 });
             });
         },

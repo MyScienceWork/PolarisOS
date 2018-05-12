@@ -108,7 +108,7 @@
                 <finput 
                 v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
-                :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
+                :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
                 :type="field.type"
                 :form="cform"
@@ -134,7 +134,7 @@
                 </finput>
                 <finput 
                 v-else-if="['hidden'].indexOf(field.type) !== -1"
-                :name="get_name(field.name)"
+                :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :type="field.type"
                 :form="cform"
                 :is-addon="true"
@@ -149,7 +149,7 @@
                 />
                 <fstatic
                 v-else-if="['static-html', 'static-text', 'static-list'].indexOf(field.type) !== -1"
-                :name="get_name(field.name)"
+                :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :type="field.type"
                 :form="cform"
                 :label="lang(field.label || '')"
@@ -162,7 +162,7 @@
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
                 :label="lang(field.label || '')"
                 :placeholder="lang(field.placeholder || '')"
-                :name="get_name(`${props.fname}.${props.id}.${field.name}`)"
+                :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :form="cform"
                 :fieldLabel="generate_select_label(field)"
                 :fieldValue="generate_select_value(field)"
@@ -204,7 +204,7 @@
                 <fdropzone 
                 v-else-if="field.type === 'file'"
                 :form="cform"
-                :files="get_name(`${props.fname}.${props.id}.${field.name}`)"
+                :files="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :name="field.file.file_name"
                 :master="field.file.master_name"
                 :url="field.file.url_name"
@@ -225,7 +225,7 @@
                                 <dynamic-form 
                                     :form="field.subform" 
                                     :cform="cform"
-                                    :prefix="`${props.fname}.${props.id}`"
+                                    :prefix="`${props.fname}.${props.order}`"
                                     :single="field.single_multiple"
                                     :readonly="readonly"
                                     :key="i"
@@ -257,7 +257,7 @@
                         <dynamic-form 
                             :form="field.subform" 
                             :cform="cform"
-                            :prefix="`${props.fname}.${props.id}`"
+                            :prefix="`${props.fname}.${props.order}`"
                             :single="field.single_multiple"
                             :readonly="readonly"
                             :key="i"
