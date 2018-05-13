@@ -39,7 +39,7 @@
                     :filterable="false"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected"
+                    :value="state.selected" 
                     :placeholder="placeholder"
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"

@@ -35,14 +35,16 @@ module.exports = {
                     return;
                 }
             }
-            this.$store.commit(Messages.COLLECT, {
-                form: this.searchSink,
-            });
+            this.send_information(this.searchSink);
         },
         initialize() {
             this.send_information();
         },
-        send_information() {
+        send_information(sink) {
+            if (sink !== this.searchSink) {
+                return;
+            }
+
             if (this.collapsible) {
                 this.state.collapse_opened = false;
             }

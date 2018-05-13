@@ -77,8 +77,8 @@
                             />
                             <fvariadic-element name="emails" :form="state.sinks.creations.user" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
-                                    <finput :name="`${props.fname}.${props.id}.email`" :label="lang('b_email')" :is-required="true" :placeholder="lang('b_email')" type="email" :form="state.sinks.creations.user" />
-                                    <finput :name="`${props.fname}.${props.id}.master`" :label="lang('b_principal_email')" placeholder="" type="checkbox" :form="state.sinks.creations.user" />
+                                    <finput :name="`${props.fname}.${props.order}.email`" :label="lang('b_email')" :is-required="true" :placeholder="lang('b_email')" type="email" :form="state.sinks.creations.user" />
+                                    <finput :name="`${props.fname}.${props.order}.master`" :label="lang('b_principal_email')" placeholder="" type="checkbox" :form="state.sinks.creations.user" />
                                 </template>
                             </fvariadic-element>
                             <finput name="hpassword" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.sinks.creations.user" />

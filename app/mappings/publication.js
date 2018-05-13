@@ -793,11 +793,21 @@ module.exports = {
                             depositor_comment: {
                                 type: 'text',
                             },
-                            email: {
+                            emails: {
+                                type: 'nested',
                                 properties: {
-                                    remark: {
+                                    body: {
                                         type: 'text',
                                         index: false,
+                                    },
+                                    reviewer: {
+                                        type: 'keyword',
+                                    },
+                                    created_at: {
+                                        type: 'date',
+                                    },
+                                    sent: {
+                                        type: 'boolean',
                                     },
                                 },
                             },

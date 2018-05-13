@@ -28,9 +28,7 @@ module.exports = {
     methods: {
         submit(e) {
             e.preventDefault();
-            this.$store.commit(Messages.COLLECT, {
-                form: this.name,
-            });
+            this.send_information(this.name);
         },
         cancel(e) {
             e.preventDefault();
@@ -41,7 +39,6 @@ module.exports = {
             });
         },
         send_information(sink) {
-            console.log(this.path, this.name, this.dispatch_method);
             if (this.name !== sink) {
                 return;
             }

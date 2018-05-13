@@ -45,6 +45,7 @@
                                 search-type="publication"
                                 :search-query="search_query"
                                 :default-query="default_query"
+                                :search-on-mount="false"
                             />
                         </div>
                     </div>

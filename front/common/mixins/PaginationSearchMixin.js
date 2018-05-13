@@ -17,6 +17,7 @@ module.exports = {
         defaultQuery: { default: '{}', type: String },
         filters: { default: () => [], type: Array },
         searchWhenFiltersChange: { default: false, type: Boolean },
+        searchOnMount: { default: true, type: Boolean },
     },
     data() {
         return {
@@ -148,7 +149,12 @@ module.exports = {
             }
 
             const obj = content[obj_name];
-            const filters = _.map(obj, (value) => {
+            let filters = _.map(obj, (value) => {
+                // Only the __bool is in the object, so it's empty
+                if (Object.keys(value).length === 1) {
+                    return null;
+                }
+
                 const result = _.reduce(value, (acc, val, key) => {
                     if (!val || _.isEmpty(val)) {
                         return acc;
@@ -157,12 +163,38 @@ module.exports = {
                     acc[key.replace(dot_replacer, '.')] = val;
                     return acc;
                 }, {});
-                return JSON.stringify(result);
-            });
+                return result;
+            }).filter(f => f != null);
+
+            filters = filters.reduce((o, f, i) => {
+                if (i === 0 && filters.length > 1) {
+                    delete f.__bool;
+                    o.$first = [f];
+                    return o;
+                }
+
+                if ('__bool' in f) {
+                    const bool = f.__bool;
+                    delete f.__bool;
+                    if (bool in o) {
+                        o[bool].push(f);
+                    } else {
+                        o[bool] = [f];
+                    }
+
+                    if (i === 1) {
+                        o[bool] = o[bool].concat(o.$first);
+                        delete o.$first;
+                    }
+                }
+
+                return o;
+            }, {});
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
             const content = this.fcontent(sink);
+            let new_content = {};
 
             const body = {
                 size: this.state.seso.size,
@@ -171,6 +203,7 @@ module.exports = {
 
             console.log(this.state.seso);
 
+            const extra_filters = this.state.seso.extra_filters || {};
             let where = {};
             if (this.state.seso.filters.length > 0) {
                 where.$and = this.state.seso.filters.reduce((arr, filter) => {
@@ -179,16 +212,11 @@ module.exports = {
                 }, []);
             }
 
-            if (this.state.seso.extra_filters.length > 0) {
-                const extra = this.state.seso.extra_filters.reduce((arr, filter) => {
-                    arr.push(JSON.parse(filter));
-                    return arr;
-                }, []);
-
-                if (where.$and) {
-                    where.$and.concat(extra);
+            if (Object.keys(extra_filters).length > 0) {
+                if ('$and' in where) {
+                    where.$and = where.$and.concat(extra_filters);
                 } else {
-                    where.$and = extra;
+                    where.$and = [extra_filters];
                 }
             }
 
@@ -198,7 +226,7 @@ module.exports = {
 
                     if (Object.keys(squery).length > 0) {
                         if (this.state.seso.filters.length > 0
-                            || this.state.seso.extra_filters.length > 0) {
+                            || Object.keys(extra_filters).length > 0) {
                             where.$and.push(squery);
                         } else {
                             where = squery;
@@ -207,17 +235,17 @@ module.exports = {
                 }
 
                 if (this.state.seso.filters.length === 0
-                    && this.state.seso.extra_filters.length === 0
+                    && Object.keys(extra_filters).length === 0
                     && !this.useDefaultQuery) {
                     return;
                 }
 
                 body.where = where;
             } else {
-                const new_content = _.cloneDeep(content);
+                new_content = _.cloneDeep(content);
                 new_content.search = new_content.search.replace(new RegExp('"', 'g'), '\\"');
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(new_content));
-                if (this.state.seso.filters.length > 0 || this.state.seso.extra_filters.length > 0) {
+                if (this.state.seso.filters.length > 0 || Object.keys(extra_filters).length > 0) {
                     where.$and.push(squery);
                 } else {
                     where = squery;
@@ -225,12 +253,11 @@ module.exports = {
                 body.where = where;
             }
 
-            if (content.search) {
-                const q = _.merge({}, this.$route.query, { s: content.search,
-                    seso_filter: this.state.seso.filters,
-                /* seso_extra_filter: this.state.seso.extra_filters*/ });
-                this.$router.push({ query: q });
-            }
+            const q = _.merge({}, this.$route.query, { s: new_content.search || undefined,
+                seso_filter: this.state.seso.filters,
+            /* seso_extra_filter: this.state.seso.extra_filters*/ });
+            console.log('query', q);
+            this.$router.replace({ query: q });
 
             if (this.state.seso.sort) {
                 body.sort.push({ [`${this.state.seso.sort}`]: this.state.seso.order });
@@ -251,6 +278,10 @@ module.exports = {
                 path: this.searchPath,
                 form: this.resultSink,
                 body,
+            });
+
+            this.$store.commit(Messages.NOOP, {
+                form: this.searchSink,
             });
         },
         update_state(q) {
@@ -306,12 +337,17 @@ module.exports = {
         },
     },
     mounted() {
+        if (!this.searchOnMount) {
+            return;
+        }
+
         const sink = this.get_information(this.$route.query, 'sink', '').trim();
         const search = this.get_information(this.$route.query, 's', '').trim();
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
-
+        this.state.seso.filters = this.filters;
+        console.log('mounted PSM', this.state.seso);
         if ((search === '' && sink === '') && !this.useDefaultQuery) {
             return;
         }

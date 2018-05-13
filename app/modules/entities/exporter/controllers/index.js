@@ -14,6 +14,7 @@ const BibTeXUtils = require('../../../utils/bibtex');
 const HtmlDocx = require('html-docx-js');
 const Cite = require('citation-js');
 const Errors = require('../../../exceptions/errors');
+const CSLUtils = require('../../../utils/csl');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -477,7 +478,7 @@ function export_information(): Function {
                 format: 'string',
                 type: 'html',
                 style: `citation-${subtype}`,
-                lang: 'en-US',
+                lang: CSLUtils.langs_mapping[ctx.__md.lang] || 'en-US',
             });
             results = JSON.parse(JSON.stringify(results));
             console.log(results);
@@ -604,7 +605,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
         format: 'string',
         type: 'html',
         style: `citation-${csl[0]}`,
-        lang: 'en-US',
+        lang: CSLUtils.langs_mapping[lang] || 'en-US',
     });
     results = JSON.parse(JSON.stringify(results));
 
