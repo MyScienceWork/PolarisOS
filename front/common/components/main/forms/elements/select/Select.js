@@ -44,7 +44,7 @@ module.exports = {
                 selected: null,
                 options: [],
                 showHelpModal: false,
-                form: `${name}_${+moment()}`,
+                form: `${this.name}_${+moment()}`,
             },
         };
     },
@@ -64,7 +64,7 @@ module.exports = {
             }
 
             const new_elements = selected.reduce((arr, data) => {
-                const elt = _.find(options, o => o[this.fieldValue] === data[this.fieldValue]);
+                const elt = _.find(options, o => o.value === data.value);
                 if (!elt) {
                     arr.push(data);
                 }
@@ -78,7 +78,7 @@ module.exports = {
                 if (typeof m === 'string') {
                     return m;
                 }
-                return m[this.fieldValue];
+                return m.value;
             });
 
             if (this.ajax) {
@@ -95,13 +95,13 @@ module.exports = {
                 });
 
                 promise.then((res) => {
-                    const opts = this.translate_options(res.data);
+                    const opts = this.translate_options(this.format_options(res.data));
                     if (this.multi) {
-                        this.state.options = this.format_options(this.merge_options_and_selected(opts, this.options), 'to');
-                        this.state.selected = this.format_options(opts, 'to');
+                        this.state.options = this.merge_options_and_selected(opts, this.state.options);
+                        this.state.selected = opts;
                     } else if (res.data.length > 0) {
-                        this.state.options = this.format_options(this.merge_options_and_selected(opts, this.options), 'to');
-                        this.state.selected = this.format_options(opts, 'to')[0];
+                        this.state.options = this.merge_options_and_selected(opts, this.state.options);
+                        this.state.selected = opts[0];
                     } else {
                         this.state.selected = null;
                     }
@@ -110,7 +110,7 @@ module.exports = {
             }
 
             const data = values.reduce((arr, v) => {
-                const elt = _.find(this.options, o => o[this.fieldValue] === v);
+                const elt = _.find(this.state.options, o => o.value === v);
                 if (elt) {
                     arr.push(elt);
                 }
@@ -118,11 +118,9 @@ module.exports = {
             }, []);
 
             if (this.multi) {
-                const fo = this.format_options(data, 'to');
-                this.state = Object.assign({}, this.state, { selected: fo });
+                this.state.selected = data;
             } else if (data.length > 0) {
-                const fo = this.format_options(data, 'to');
-                this.state = Object.assign({}, this.state, { selected: fo[0] });
+                this.state.selected = data[0];
             } else {
                 this.state.selected = null;
             }
@@ -145,9 +143,9 @@ module.exports = {
                     let selected = self.state.selected instanceof Array ?
                         self.state.selected : [self.state.selected];
                     selected = self.format_options(selected, 'from');
-                    self.state.options = self.format_options(self.merge_options_and_selected(selected, self.translate_options(res.data)), 'to');
+                    self.state.options = self.translate_options(self.format_options(self.merge_options_and_selected(selected, res.data), 'to'));
                 } else {
-                    self.state.options = self.format_options(self.translate_options(res.data), 'to');
+                    self.state.options = self.translate_options(self.format_options(res.data, 'to'));
                 }
             });
         }, 350),
@@ -177,16 +175,19 @@ module.exports = {
             }
 
             if (info instanceof Array) {
-                this.set_selected(info);
+                this.set_selected(info.map(i =>
+                    ({ label: i[this.fieldLabel], value: i[this.fieldValue] })));
                 return;
             }
 
             if (typeof info === 'string') {
-                this.set_selected([{ [this.fieldValue]: info }]);
+                this.set_selected([{ value: info }]);
                 return;
             }
 
-            info[this.fieldLabel] = '';
+            info.label = '';
+            info.value = info[this.fieldValue];
+            delete info[this.fieldValue];
             this.set_selected([info]);
         },
         /* start_collection() {
@@ -197,16 +198,14 @@ module.exports = {
             });
         },*/
         onChange(val) {
-            if (this.readonly) {
-
-            } else {
+            if (!this.readonly) {
+                this.$emit('select-change', val);
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: this.extract_values(val),
                 });
                 this.state.selected = val;
-                this.$emit('select-change', val);
             }
         },
         extract_values(infos) {
@@ -223,9 +222,9 @@ module.exports = {
             if (this.translatable) {
                 return options.map((data) => {
                     if (this.translateThroughHlang) {
-                        data[this.fieldLabel] = this.hlang(data[this.fieldLabel]);
+                        data.label = this.hlang(data.label);
                     } else {
-                        data[this.fieldLabel] = this.lang(data[this.fieldLabel]);
+                        data.label = this.lang(data.label);
                     }
                     return data;
                 });
@@ -237,10 +236,10 @@ module.exports = {
             // to -> to vue-select
             // from -> from vue-select
             if (direction === 'to') {
-                return this.translate_options(options.map(opt => ({
+                return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
-                })));
+                }));
             }
 
             return options.map(opt => ({
@@ -250,26 +249,26 @@ module.exports = {
         },
         select_default_value() {
             if (this.defaultValue == null) {
-                if (this.options.length === 0) {
+                if (this.state.options.length === 0) {
                     this.state.selected = null;
                     return;
                 }
 
                 if (this.selectFirstValue) {
-                    this.set_selected([this.options[0]]);
+                    this.set_selected([this.state.options[0]]);
                 } else if (this.selectAllValues && this.multi) {
-                    this.set_selected(this.options);
+                    this.set_selected(this.state.options);
                 } else {
                     this.state.selected = null;
                 }
             } else {
-                this.state.selected = this.defaultValue;
+                this.state.selected = this.set_selected([{ value: this.defaultValue }]);
             }
         },
     },
     watch: {
         options() {
-            this.state.options = this.format_options(this.options, 'to');
+            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
             this.select_default_value();
         },
         current_state(s) {
@@ -277,14 +276,14 @@ module.exports = {
         },
     },
     beforeMount() {
-        this.state.options = this.format_options(this.options, 'to');
+        this.state.options = this.translate_options(this.format_options(this.options, 'to'));
     },
     mounted() {
         this.initialize(this.form);
     },
     computed: {
         isHidden() {
-            return this.readonly && (this.state.selected == null ||
+            return this.readonly && (!this.state.selected ||
             (this.state.selected instanceof Array && this.state.selected.length === 0));
         },
         readonlyValue() {
