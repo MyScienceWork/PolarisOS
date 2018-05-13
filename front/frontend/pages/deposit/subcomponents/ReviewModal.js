@@ -9,6 +9,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin, FiltersMixin],
     props: {
         sink: { required: true, type: String },
+        show: { required: true, type: Boolean },
     },
     data() {
         return {
@@ -22,7 +23,11 @@ module.exports = {
         status_review_change(val) {
             this.state.status_review = val ? val.value : undefined;
         },
+        toggle(v) {
+            this.$emit('update:show', v);
+        },
         review_publication() {
+            this.$emit('update:show', false);
             this.$emit('review-publication');
         },
     },

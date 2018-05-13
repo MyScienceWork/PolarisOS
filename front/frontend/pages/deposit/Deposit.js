@@ -58,28 +58,47 @@ module.exports = {
                 deposit_form_name: undefined,
                 modal_has_been_validated: false,
                 step_props: {},
+                show_review_modal: false,
             },
         };
     },
     methods: {
+        reset_interface() {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.publication,
+            });
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.specs,
+            });
+        },
+        transfert_to_subtypology_sink(children) {
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.reads.subtypology,
+                body: undefined,
+            });
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.reads.subtypology,
+                body: { children },
+            });
+        },
         update_typology_form(form, children, type_id) {
-            if (form && form.trim !== '') {
-                if (this.state.deposit_form_name && this.state.deposit_form_name !== form) {
-                    this.$store.commit(Messages.INITIALIZE, {
-                        form: this.state.sinks.creation.publication,
-                    });
+            console.log('utf', form, this.state.deposit_form_name);
+            if (!form || form.trim() === '') {
+                if (this.state.deposit_form_name) {
+                    this.state.deposit_form_name = undefined;
+                    this.reset_interface();
+                    return;
                 }
+            }
 
+            if (form && form.trim() !== '') {
+                if (this.state.deposit_form_name
+                    && this.state.deposit_form_name !== form) {
+                    this.reset_interface();
+                }
                 this.state.deposit_form_name = form;
                 this.fetch_form(form, this.state.sinks.creations.specs);
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.state.sinks.reads.subtypology,
-                    body: undefined,
-                });
-                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                    form: this.state.sinks.reads.subtypology,
-                    body: { children },
-                });
+                this.transfert_to_subtypology_sink(children);
             }
         },
         run_next_or_previous(f) {
@@ -113,8 +132,6 @@ module.exports = {
                     this.state.paths.validations.publication = APIRoutes.entity('publication',
                         'VALIDATE', false, `0-${this.state.current_step + 1}`);
                 }
-            } else if (this.in_mode('review') && this.state.modal_has_been_validated) {
-                this.state.show_review_modal = false;
             } else {
                 const content = this.fcontent(this.state.sinks.creations.publication);
                 this.$store.dispatch(this.form_mode, {
@@ -134,9 +151,19 @@ module.exports = {
             this.handle_import(sink, this.state.sinks.creations.publication);
             this.handle_analyzed_file(sink, this.state.sinks.creations.publication);
         },
+        show_success(sink) {
+            console.log('success', sink);
+            if (sink !== this.state.sinks.creations.publication) {
+                return;
+            }
+            setTimeout(() => {
+                this.go_after_success();
+            }, 2500);
+        },
         show_error(sink) {
             this.acknowledge_import_error(sink);
             this.acknowledge_analyze_error(sink);
+            this.acknowledge_submission_error(sink);
         },
         go_after_success() {
             BrowserUtils.localRemove('saved_deposit');
@@ -151,6 +178,12 @@ module.exports = {
             this.next(this.state.step_props.next, this.state.step_props.step,
                 this.state.step_props.numberOfSteps);
         },
+        acknowledge_submission_error(sink) {
+            if (sink !== this.state.sinks.creations.publication) {
+                return;
+            }
+            console.log('submission error');
+        },
     },
     components: {
         'first-deposit-step': FirstDepositStep,
@@ -158,7 +191,7 @@ module.exports = {
         'review-deposit-step': ReviewStep,
         ReviewModal,
     },
-    mounted() {
+    beforeMount() {
         this.$store.state.requests.push({
             name: 'search',
             type: 'dispatch',
@@ -217,6 +250,22 @@ module.exports = {
             break;
         }
 
+        switch (type) {
+        case 'model':
+        case 'new_version':
+            this.$store.state.requests.push({
+                name: Messages.TRANSFERT_INTO_FORM,
+                type: 'commit',
+                content: {
+                    form: this.state.sinks.creations.publication,
+                    body: { files: [], _id: undefined },
+                },
+            });
+            break;
+        default:
+            break;
+        }
+
         this.execute_requests().then(() => {}).catch(err => console.error(err));
     },
     computed: {
@@ -267,10 +316,48 @@ module.exports = {
             }
             return '';
         },
+        typology_options() {
+            const content = this.fcontent(this.state.sinks.reads.typology);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+
+            return content.map((t, i) => {
+                t.label = this.lang(t.label);
+                t.children = t.children.map((ch, j) => {
+                    ch.tlabel = this.lang(ch.label);
+                    ch.path = `${i}.${j}`;
+                    return ch;
+                });
+                return t;
+            });
+        },
+        subtypology_options() {
+            const content = this.fcontent(this.state.sinks.reads.subtypology);
+
+            if ('children' in content) {
+                return content.children;
+            }
+
+            return [];
+        },
+        publication_type() {
+            const content = this.fcontent(this.state.sinks.creations.publication);
+            if ('type' in content) {
+                return content.type;
+            }
+            return null;
+        },
     },
     watch: {
         current_state(s) {
-            this.dispatch(s, this);
+            this.dispatch(s, this, this.state.sinks.creations.publication);
+        },
+        publication_type(nt) {
+            const typology = this.typology_options.filter(t => t._id === nt);
+            const children = typology[0].children;
+            const form_id = typology[0].children[0].form;
+            this.update_typology_form(form_id, children, nt);
         },
     },
     beforeDestroy() {

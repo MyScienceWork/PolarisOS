@@ -170,7 +170,12 @@ module.exports = {
 
             const value = Utils.find_value_with_path(form.content, this.name.split('.'));
             if (value == null) {
-                return this.defaultValue();
+                const dv = this.defaultValue();
+                if (dv) {
+                    const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
+                    this.update({ target: { [key]: dv } });
+                }
+                return dv;
             } else if (this.type === 'date') {
                 return moment(value).toDate();
             } else if (this.type === 'date-year') {

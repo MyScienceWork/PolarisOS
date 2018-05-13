@@ -117,11 +117,12 @@ module.exports = {
                 return arr;
             }, []);
 
-
             if (this.multi) {
-                this.state.selected = this.format_options(data, 'to');
+                const fo = this.format_options(data, 'to');
+                this.state = Object.assign({}, this.state, { selected: fo });
             } else if (data.length > 0) {
-                this.state.selected = this.format_options(data, 'to')[0];
+                const fo = this.format_options(data, 'to');
+                this.state = Object.assign({}, this.state, { selected: fo[0] });
             } else {
                 this.state.selected = null;
             }
@@ -199,7 +200,6 @@ module.exports = {
             if (this.readonly) {
 
             } else {
-                console.log(this.form, this.name, this.extract_values(val));
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
@@ -250,7 +250,7 @@ module.exports = {
         },
         select_default_value() {
             if (this.defaultValue == null) {
-                if (this.state.options.length === 0) {
+                if (this.options.length === 0) {
                     this.state.selected = null;
                     return;
                 }

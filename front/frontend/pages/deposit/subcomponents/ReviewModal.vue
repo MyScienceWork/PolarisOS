@@ -1,9 +1,9 @@
 <template>
-    <b-modal :active="state.show_review_modal">
+    <b-modal :active="show">
         <div class="modal-card is-height-three-quarters">
             <header class="modal-card-head">
                 <p class="modal-card-title">{{lang('l_review_modal')}}</p>
-                <button class="delete" aria-label="close" @click.prevent="state.show_review_modal = false"></button>
+                <button class="delete" aria-label="close" @click.prevent="toggle(false)"></button>
             </header>
             <div class="modal-card-body">
                 <div class="columns">
@@ -56,7 +56,7 @@
             </div>
             <footer class="modal-card-foot">
             <button class="button is-info" @click.prevent="review_publication">{{lang('b_validate')}}</button>
-                <button class="button" @click.prevent="state.show_review_modal = false">{{lang('b_cancel')}}</button>
+                <button class="button" @click.prevent="toggle(false)">{{lang('b_cancel')}}</button>
             </footer>
         </div>
     </b-modal>

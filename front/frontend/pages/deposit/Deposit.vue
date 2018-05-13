@@ -24,20 +24,21 @@
                                     </template>
                                     <template slot="step-content" slot-scope="props">
                                             <first-deposit-step
-                                                :creation-sink="state.sinks.creations.publication"
-                                                :typology-sink="state.sinks.reads.typology"
-                                                :subtypology-sink="state.sinks.reads.subtypology"
-                                                :import-sink="state.sinks.creations.import"
-                                                :publication-specs="state.sinks.creations.publication"
-                                                :upload-form="upload_form"
-                                                :import-form="import_form"
-                                                :deposit-form="state.deposit_form_name"
-                                                :modification-mode="in_mode('modify')"
-                                                :review-mode="in_mode('review')"
                                                 v-if="state.current_step === 0"
                                                 :key="state.current_step"
+                                                
+                                                :creation-sink="state.sinks.creations.publication"
+                                                :import-sink="state.sinks.creations.import"
+                                                :upload-form="upload_form"
+                                                :import-form="import_form"
+                                                :publication-type="publication_type"
+                                                :typology-options="typology_options"
+                                                :subtypology-options="subtypology_options"
+                                                :modification-mode="in_mode('modify')"
+                                                :review-mode="in_mode('review')"
                                                 :analyze-state="state.analyze_state"
                                                 :import-state="state.import_state"
+
                                                 @typology-change="update_typology_form"
                                                 @import-from-id="import_from_id"
                                                 @analyze-from-file="analyze_from_file"
@@ -122,6 +123,7 @@
     <review-modal 
         @review-publication="review_publication"
         :sink="state.sinks.creations.publication"
+        :show.sync="state.show_review_modal"
     />
 </div>
 </template>

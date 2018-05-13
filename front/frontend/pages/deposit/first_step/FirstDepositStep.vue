@@ -13,13 +13,12 @@
                         <fselect 
                             :label="lang('f_choose_document_type')"
                             :is-required="true"
-                            :options="typology_options"
+                            :options="typologyOptions"
                             :form="creationSink"
                             name="type"
                             class="has-text-centered"
                             fieldLabel="label"
                             fieldValue="_id"
-                            @select-change="grab_typology_form"
                             :view-validation-texts="false"
                             />
                     </div>
@@ -30,7 +29,7 @@
                     <div class="column">
                         <fselect 
                             :label="lang('b_subtype')"
-                            :options="subtypology_options"
+                            :options="subtypologyOptions"
                             :form="creationSink"
                             name="subtype"
                             class="has-text-centered"
@@ -66,7 +65,7 @@
                     </div>
                 </div>
                 <div class="columns is-centered" 
-                    v-else-if="Object.keys(uploadForm).length === 0 && Object.keys(importForm).length === 0 && state.typology.form !== ''">
+                    v-else-if="Object.keys(uploadForm).length === 0 && Object.keys(importForm).length === 0 && publicationType">
                     <loader />
                 </div>
             </div>
