@@ -1,9 +1,6 @@
 // @flow
 module.exports = {};
 
+async function post_action(publication: Object, options: Object) {}
 
-async function send_email(publication: Object, options: Object) {
-
-}
-
-module.exports.send_email;
+module.exports.post_action;

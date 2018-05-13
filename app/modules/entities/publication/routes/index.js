@@ -10,10 +10,12 @@ const CrudController = require('../../crud/controllers');
 function routes(router: KoaRouter) {
     const type = 'publication';
     const puprefix = `${config.api.public.prefix}/${config.api.public.version}`;
-    const put_mware = RouterUtils.put_middlewares;
-    /* router.put(`${puprefix}/publication`, compose([...put_mware(type, []),
-        CrudController.put_with_action('publication',
-        MyController.send_email, {})]));*/
+
+    RouterUtils.generate_gets_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_get_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_del_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_put_routes(router, puprefix, type, Middlewares, MyController.post_action, {});
+    RouterUtils.generate_post_routes(router, puprefix, type, Middlewares, MyController.post_action, {});
 }
 
 module.exports = routes;

@@ -800,6 +800,9 @@ module.exports = {
                                         type: 'text',
                                         index: false,
                                     },
+                                    reviewer: {
+                                        type: 'keyword',
+                                    },
                                     created_at: {
                                         type: 'date',
                                     },

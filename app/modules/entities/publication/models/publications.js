@@ -51,17 +51,14 @@ const Formatting: Array<any> = [
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
         parents: async (result, object) => {
-            if ('parent' in object) {
+            if ('parent' in object && !result.find(p => p === object.parent)) {
                 result.push({ _id: object.parent });
-
-                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                /* const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
                 if (pub) {
                     pub.source.has_other_version = true;
                     await pub.oupdate();
-                }
+                }*/
             }
-
-
             return result;
         },
     },
@@ -138,18 +135,6 @@ const Formatting: Array<any> = [
         'dates.publication': async (result, object) => {
             if (object.model_mode) {
                 return +moment();
-            }
-            return result;
-        },
-        depositor: async (result, object, path, info) => {
-            if (object.model_mode) {
-                return (info.papi ? info.papi._id : null);
-            }
-            return result;
-        },
-        reviewer: async (result, object) => {
-            if (object.model_mode) {
-                return undefined;
             }
             return result;
         },
@@ -366,6 +351,9 @@ const Defaults: Object = {
     ids: [],
     parents: [],
     sources: [],
+    system: {
+        emails: [],
+    },
 };
 
 const Filtering: Array<string> = [];
@@ -396,9 +384,29 @@ module.exports = {
         Defaults,
     }, PipelineDiffusion, {
         Validation: [],
+        Formatting: [{
+            'system.emails': async (result, object, path, info) => {
+                if (!('virtual_email' in object)) {
+                    return result;
+                }
+                const obj = {
+                    sent: false,
+                    body: object.virtual_email,
+                    created_at: +moment(),
+                    reviewer: info.papi ? info.papi._id : null,
+                };
+                result.push(obj);
+                return result;
+            } }],
+        Completion: [],
+        Filtering: [],
+        Resetting: {},
+        Defaults: {},
+    }, {
+        Validation: [],
         Formatting: [],
         Completion: [],
-        Filtering: ['sherpa', 'parent', 'review_mode', 'model_mode'],
+        Filtering: ['sherpa', 'parent', 'review_mode', 'model_mode', 'virtual_email'],
         Resetting: {},
         Defaults: {},
     }],

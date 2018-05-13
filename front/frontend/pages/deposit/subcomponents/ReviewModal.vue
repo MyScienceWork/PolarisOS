@@ -32,17 +32,10 @@
                             :label="lang('l_email_remark')"
                             :is-required="true"
                             :form="sink"
-                            name="system.email.body"
+                            name="virtual_email"
                             :rows="10"
                             type="textarea"
                             v-if="state.status_review === 'incomplete' || state.status_review === 'rejected' || state.status_review === 'withdrawn'"
-                        />
-                        <finput 
-                            label=""
-                            :form="sink"
-                            name="review_mode"
-                            type="hidden"
-                            :hidden-value="true"
                         />
                         <finput 
                             label=""

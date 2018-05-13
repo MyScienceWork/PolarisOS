@@ -194,6 +194,7 @@ module.exports = {
         },
         run_search(sink) {
             const content = this.fcontent(sink);
+            let new_content = {};
 
             const body = {
                 size: this.state.seso.size,
@@ -241,7 +242,7 @@ module.exports = {
 
                 body.where = where;
             } else {
-                const new_content = _.cloneDeep(content);
+                new_content = _.cloneDeep(content);
                 new_content.search = new_content.search.replace(new RegExp('"', 'g'), '\\"');
                 const squery = JSON.parse(Handlebars.compile(this.searchQuery)(new_content));
                 if (this.state.seso.filters.length > 0 || Object.keys(extra_filters).length > 0) {
@@ -252,12 +253,11 @@ module.exports = {
                 body.where = where;
             }
 
-            if (content.search) {
-                const q = _.merge({}, this.$route.query, { s: content.search,
-                    seso_filter: this.state.seso.filters,
-                /* seso_extra_filter: this.state.seso.extra_filters*/ });
-                this.$router.push({ query: q });
-            }
+            const q = _.merge({}, this.$route.query, { s: new_content.search || undefined,
+                seso_filter: this.state.seso.filters,
+            /* seso_extra_filter: this.state.seso.extra_filters*/ });
+            console.log('query', q);
+            this.$router.replace({ query: q });
 
             if (this.state.seso.sort) {
                 body.sort.push({ [`${this.state.seso.sort}`]: this.state.seso.order });
@@ -278,6 +278,10 @@ module.exports = {
                 path: this.searchPath,
                 form: this.resultSink,
                 body,
+            });
+
+            this.$store.commit(Messages.NOOP, {
+                form: this.searchSink,
             });
         },
         update_state(q) {

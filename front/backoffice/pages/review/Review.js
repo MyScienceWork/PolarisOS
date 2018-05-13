@@ -4,13 +4,14 @@ const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
+const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
 const SortLists = require('../../../common/specs/sorts');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin],
     data() {
         return {
             state: {

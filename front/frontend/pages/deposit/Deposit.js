@@ -258,7 +258,24 @@ module.exports = {
                 type: 'commit',
                 content: {
                     form: this.state.sinks.creations.publication,
-                    body: { files: [], _id: undefined },
+                    body: { files: [], _id: undefined, system: undefined },
+                },
+            });
+            break;
+        default:
+            break;
+        }
+
+        switch (type) {
+        case 'model':
+        case 'new_version':
+        case 'modify':
+            this.$store.state.requests.push({
+                name: Messages.TRANSFERT_INTO_FORM,
+                type: 'commit',
+                content: {
+                    form: this.state.sinks.creations.publication,
+                    body: { status: undefined, reviewer: undefined },
                 },
             });
             break;

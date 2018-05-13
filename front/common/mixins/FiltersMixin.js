@@ -19,6 +19,9 @@ module.exports = {
         format_date(d, f = 'LLLL') {
             return moment(d).format(f);
         },
+        eol_to_br(value) {
+            return value.replace('\\n', '<br />');
+        },
         format(value, default_val = '') {
             if (typeof value === 'boolean') {
                 if (value) {
