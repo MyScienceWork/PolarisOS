@@ -33,6 +33,9 @@ module.exports = {
                     enabled: {
                         type: 'boolean',
                     },
+                    public_profile: {
+                        type: 'boolean',
+                    },
                     locked: {
                         type: 'boolean',
                     },

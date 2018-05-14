@@ -112,10 +112,12 @@ module.exports = {
             const data = values.reduce((arr, v) => {
                 const elt = _.find(this.state.options, o => o.value === v);
                 if (elt) {
-                    arr.push(elt);
+                    arr.push(_.cloneDeep(elt));
                 }
                 return arr;
             }, []);
+
+            console.log('set selected data', this.form, this.name, data);
 
             if (this.multi) {
                 this.state.selected = data;
@@ -261,6 +263,8 @@ module.exports = {
                 } else {
                     this.state.selected = null;
                 }
+            } else if (this.defaultValue instanceof Array) {
+                this.state.selected = this.set_selected(this.defaultValue);
             } else {
                 this.state.selected = this.set_selected([{ value: this.defaultValue }]);
             }

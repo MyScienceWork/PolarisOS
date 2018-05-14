@@ -25,6 +25,7 @@ module.exports = {
                 sinks: {
                     creations: {
                         user: 'user_profile_creation',
+                        author: 'author_creation',
                         deposit_search: 'user_profile_deposit_creation',
                         publication_search: 'user_profile_publication_creation',
                     },
@@ -74,6 +75,11 @@ module.exports = {
                 } else {
                     body = _.cloneDeep(content);
                 }
+
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.author,
+                    body: body.author,
+                });
 
                 delete body.author;
                 delete body.roles;
@@ -246,8 +252,8 @@ module.exports = {
             body: {
                 where: {
                     name: ['user_front_general_settings', 'user_front_affiliations', 'user_front_external_ids'],
-                    population: ['fields.subform', 'fields.datasource'],
                 },
+                population: ['fields.subform', 'fields.datasource'],
             },
         });
 
