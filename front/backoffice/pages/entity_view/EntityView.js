@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
@@ -36,6 +37,7 @@ module.exports = {
                 columns: this.columns || {},
                 checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
+                visible_columns: 0,
             },
         };
     },
@@ -62,6 +64,7 @@ module.exports = {
         on_column_update(obj) {
             // console.log('on column update', obj);
             this.state.columns[obj.key].visible = obj.checked;
+            this.state.visible_columns = _.filter(this.state.columns, c => c.visible).length;
             this.$set(this.state, 'columns', this.state.columns);
             this.$forceUpdate();
         },
@@ -102,6 +105,7 @@ module.exports = {
         columns(cols) {
             if (cols) {
                 this.state.columns = cols;
+                this.state.visible_columns = _.filter(cols, c => c.visible).length;
             }
         },
     },

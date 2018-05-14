@@ -84,33 +84,24 @@ module.exports = {
         dropzone_analyze_file(filename) {
             this.$emit('dropzone-analyze-file', filename);
         },
+        datasource(field) {
+            if (field.type !== 'select' && field.type !== 'multi-select') {
+                return [];
+            }
+
+
+            let content = [];
+            if (field.datasource.fetch_from_sink) {
+                content = this.fcontent(field.datasource.sink);
+                if (field.datasource.info_in_sink && field.datasource.info_in_sink.trim() !== '') {
+                    content = Utils.find_value_with_path(content, field.datasource.info_in_sink.trim().split('.')) || [];
+                }
+            } else {
+                content = field.datasource.content || [];
+            }
+            return content;
+        },
     },
     computed: {
-        datasource() {
-            return (field) => {
-                if (field.type !== 'select' && field.type !== 'multi-select') {
-                    return [];
-                }
-
-
-                let content = [];
-                if (field.datasource.fetch_from_sink) {
-                    content = this.fcontent(field.datasource.sink);
-                    if (field.datasource.info_in_sink && field.datasource.info_in_sink.trim() !== '') {
-                        content = Utils.find_value_with_path(content, field.datasource.info_in_sink.trim().split('.')) || [];
-                    }
-                } else {
-                    content = field.datasource.content || [];
-                }
-
-                if (field.datasource.translatable) {
-                    return content.map((dc) => {
-                        dc[field.datasource.label] = this.lang(dc[field.datasource.label]);
-                        return dc;
-                    });
-                }
-                return content;
-            };
-        },
     },
 };

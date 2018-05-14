@@ -101,7 +101,13 @@
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
                                     <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p> 
                                     <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
-                                    </p> 
+                                    </p>
+                                    <p><strong>{{lang('l_publication_depositor_comment')}}</strong></p>
+                                    <p>{{_oa_find(props.row, 'system.depositor_comment', lang('l_na')) | eol_to_br}}</p>
+                                    <div v-for="email in _oa_find(props.row, 'system.emails', [])">
+                                        <p><strong>{{lang('l_comment')}} ({{_oa_find(email, 'created_at') | format_date('DD-MM-YYYY')}} {{lang('l_at')}} {{_oa_find(email, 'created_at') | format_date('HH:mm')}})</strong></p>
+                                        <p>{{_oa_find(email, 'body')}}</p>
+                                    </div>
                                 </div>
                             </template>
                         </fdata-table-searching>

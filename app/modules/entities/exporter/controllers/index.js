@@ -13,6 +13,8 @@ const LangUtils = require('../../../utils/lang');
 const BibTeXUtils = require('../../../utils/bibtex');
 const HtmlDocx = require('html-docx-js');
 const Cite = require('citation-js');
+const Errors = require('../../../exceptions/errors');
+const CSLUtils = require('../../../utils/csl');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -27,11 +29,12 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
     };
 
     const grab_date = async (pub, t) => {
+        const months_mapping = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         const dpublication = pub.dates.publication;
         if (t === 'year') {
             return `"${moment(dpublication).format('YYYY')}"`;
         } else if (t === 'month') {
-            return `"${moment(dpublication).format('M')}"`;
+            return `"${months_mapping[moment(dpublication).format('M') - 1]}"`;
         }
         return null;
     };
@@ -143,6 +146,7 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         url: () => grab_and_escape(publication, 'url', false),
         institution: () => grab_and_escape(publication, 'denormalization.delivery_institution'),
         address: () => grab_address(publication),
+        location: () => grab_address(publication),
     };
 
     const obj = {};
@@ -174,10 +178,10 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
 
     const fields_mapping = {
         journal: ['author', 'title', 'journal', 'year', 'volume', 'number', 'pages', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
-        book: ['author', 'publisher', 'title', 'year', 'volume', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
-        conference: ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
-        'book-chapter': ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
-        'book-proceedings': ['author', 'booktitle', 'title', 'year', 'publisher', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
+        book: ['author', 'publisher', 'title', 'year', 'volume', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url', 'location'],
+        conference: ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url', 'location'],
+        'book-chapter': ['author', 'booktitle', 'title', 'year', 'editor', 'pages', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url', 'lcation'],
+        'book-proceedings': ['author', 'booktitle', 'title', 'year', 'publisher', 'publisher', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url', 'location'],
         other: ['author', 'title', 'month', 'year', 'abstract', 'language', 'note', 'isbn', 'doi', 'url'],
         report: ['author', 'title', 'institution', 'year', 'number', 'address', 'month', 'note', 'abstract', 'language', 'isbn', 'doi', 'url'],
         'working-paper': ['author', 'title', 'note', 'month', 'year', 'abstract', 'language', 'isbn', 'url', 'doi'],
@@ -404,94 +408,229 @@ async function transform_to_json(publications: Array<Object>, ld): Promise<strin
     return JSON.stringify(publications, null, 4);
 }
 
-async function export_information(ctx: Object): Promise<any> {
-    const body = ctx.request.body;
+function export_information(): Function {
+    return async (ctx: Object): Promise<any> => {
+        const body = ctx.request.body;
 
-    const type = body.type;
-    const subtype = body.subtype;
-    const ids = body.ids;
+        const type = body.type;
+        const subtype = body.subtype;
+        const ids = body.ids;
 
-    if (type == null) {
-        ctx.body = {};
-        return;
+        if (type == null) {
+            ctx.body = {};
+            return;
+        }
+
+        if (type === 'csl' && subtype == null) {
+            ctx.body = {};
+            return;
+        }
+
+        if (ids == null || ids.length === 0) {
+            ctx.body = {};
+            return;
+        }
+
+        const infos = await EntitiesUtils.search('publication', {
+            where: {
+                _id: ids,
+            },
+            sort: ['-dates.publication'],
+        });
+
+        const publications = EntitiesUtils.get_hits(infos);
+
+        let results = '';
+        let ext = '.bib';
+
+        switch (type) {
+        default:
+        case 'bibtex':
+            results = await transform_to_bibtex(publications, ctx.__md);
+            ext = '.bib';
+            break;
+        case 'ris':
+            results = await transform_to_endnote(publications, ctx.__md);
+            ext = '.ris';
+            break;
+        case 'csv':
+            results = await transform_to_csv(publications);
+            ext = '.csv';
+            break;
+        case 'endnote':
+            results = await transform_to_endnote(publications, ctx.__md);
+            ext = '.ris';
+            break;
+        case 'jsonld':
+            results = await transform_to_json(publications, true);
+            ext = '.jsonld';
+            break;
+        case 'json':
+            results = await transform_to_json(publications, false);
+            ext = '.json';
+            break;
+        case 'csl': {
+            const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
+            console.log(bibtex_output);
+            const data = new Cite(bibtex_output);
+            results = data.get({
+                nosort: true,
+                format: 'string',
+                type: 'html',
+                style: `citation-${subtype}`,
+                lang: CSLUtils.langs_mapping[ctx.__md.lang] || 'en-US',
+            });
+            results = JSON.parse(JSON.stringify(results));
+            console.log(results);
+            console.log(subtype);
+            results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
+            results = HtmlDocx.asBlob(results);
+            ext = '.docx';
+            break;
+        }
+        }
+
+
+        const s = new Readable();
+        s.push(results);
+        s.push(null);
+
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${ext}`);
+        ctx.statusCode = 200;
+        ctx.body = s;
+    };
+}
+
+async function export_bibliography(ctx: Object): Promise<any> {
+    const query = ctx.query;
+
+    const types = query.typology || [];
+    const projects = query.project || [];
+    const authors = query.author || [];
+    const labs = query.laboratory || [];
+    const collections = query.internal_collection || [];
+    const sort = query.sort || [];
+    const group = query.group || [];
+    const export_type = query.export_type || ['.html'];
+    const csl = query.csl || [];
+    const lang = query.language || [];
+    const start_year = query.start_year || [];
+    const end_year = query.end_year || [];
+    let size = query.size || [1000];
+    size = [Math.max(1000, parseInt(size[0]), 10)];
+
+    if (lang.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_language_bexport';
+        throw e;
     }
 
-    if (type === 'csl' && subtype == null) {
-        ctx.body = {};
-        return;
+    if (projects.length === 0 && authors.length === 0 && labs.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_project_author_lab_bexport';
+        throw e;
     }
 
-    if (ids == null || ids.length === 0) {
-        ctx.body = {};
-        return;
+    if (types.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_typology_bexport';
+        throw e;
     }
 
-    const infos = await EntitiesUtils.search('publication', {
-        where: {
-            _id: ids,
-        },
+    if (sort.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_sort_bexport';
+        throw e;
+    }
+
+    /* if (group.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_group_bexport';
+        throw e;
+        }*/
+
+    if (csl.length === 0) {
+        const e = Errors.InvalidEntity;
+        e.message = 'l_err_no_style_bexport';
+        throw e;
+    }
+
+    const where = { $and: [] };
+
+    if (authors.length > 0) {
+        where.$and.push({ 'contributors.label': authors });
+    }
+
+    if (projects.length > 0) {
+        where.$and.push({ 'diffusion.projects._id': projects });
+    }
+
+    if (labs.length > 0) {
+        where.$and.push({ 'diffusion.research_teams._id': labs });
+    }
+
+    if (types.length > 0) {
+        where.$and.push({ type: types });
+    }
+
+    if (collections.length > 0) {
+        where.$and.push({ 'diffusion.internal_collection': collections });
+    }
+
+    if (start_year.length > 0) {
+        const range = { '>=': parseInt(start_year[0], 10) };
+
+        if (end_year.length > 0) {
+            range['<='] = parseInt(end_year[0], 10);
+        }
+        where.$and.push({ 'dates.publication': range });
+    }
+
+    console.log(where, size);
+    const pub_results = await EntitiesUtils.search('publication', {
+        where,
+        size: size[0],
+        sort,
     });
 
-    const publications = EntitiesUtils.get_hits(infos);
+    const publications = EntitiesUtils.get_hits(pub_results);
+    console.log(publications);
+    ctx.__md.lang = lang[0];
+    const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
+    console.log(bibtex_output);
 
-    let results = '';
-    let ext = '.bib';
+    const data = new Cite(bibtex_output);
+    let results = data.get({
+        nosort: true,
+        format: 'string',
+        type: 'html',
+        style: `citation-${csl[0]}`,
+        lang: CSLUtils.langs_mapping[lang] || 'en-US',
+    });
+    results = JSON.parse(JSON.stringify(results));
 
-    switch (type) {
-    default:
-    case 'bibtex':
-        results = await transform_to_bibtex(publications, ctx.__md);
-        ext = '.bib';
-        break;
-    case 'ris':
-        results = await transform_to_endnote(publications, ctx.__md);
-        ext = '.ris';
-        break;
-    case 'csv':
-        results = await transform_to_csv(publications);
-        ext = '.csv';
-        break;
-    case 'endnote':
-        results = await transform_to_endnote(publications, ctx.__md);
-        ext = '.ris';
-        break;
-    case 'jsonld':
-        results = await transform_to_json(publications, true);
-        ext = '.jsonld';
-        break;
-    case 'json':
-        results = await transform_to_json(publications, false);
-        ext = '.json';
-        break;
-    case 'csl': {
-        const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
-        console.log(bibtex_output);
-        const data = new Cite(bibtex_output);
-        results = data.get({
-            format: 'string',
-            type: 'html',
-            style: `citation-${subtype}`,
-            lang: 'en-US',
-        });
-        results = JSON.parse(JSON.stringify(results));
+    if (export_type[0] === '.docx') {
         console.log(results);
-        console.log(subtype);
+        console.log(csl[0]);
         results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
         results = HtmlDocx.asBlob(results);
-        ext = '.docx';
-        break;
+
+        const s = new Readable();
+        s.push(results);
+        s.push(null);
+
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${export_type[0]}`);
+        ctx.statusCode = 200;
+        ctx.body = s;
+        return;
     }
-    }
 
-
-    const s = new Readable();
-    s.push(results);
-    s.push(null);
-
-    ctx.set('Content-disposition', `attachment; filename=pos_exports${ext}`);
-    ctx.statusCode = 200;
-    ctx.body = s;
+    ctx.type = 'text/html';
+    results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
+    ctx.body = results;
 }
+
 module.exports = {
     export_information,
+    export_bibliography,
 };

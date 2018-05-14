@@ -164,17 +164,21 @@ function generate_del_routes(router: KoaRouter, prefix: string, type: string, em
     router.del(`${prefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
 }
 
-function generate_put_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_put_routes(router: KoaRouter, prefix: string,
+        type: string, emiddlewares: Array<Function>,
+        action: Function = async () => {}, action_options: Object = {}) {
     const put_mware = put_middlewares(type, emiddlewares);
-    router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
+    router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
     router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
 }
 
-function generate_post_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_post_routes(router: KoaRouter, prefix: string,
+    type: string, emiddlewares: Array<Function>,
+    action: Function = async () => {}, action_options: Object = {}) {
     const post_mware = post_middlewares(type, emiddlewares);
 
-    router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
+    router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
     router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
 }

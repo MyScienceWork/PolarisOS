@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const APIRoutes = require('../api/routes');
+const Messages = require('../api/messages');
 const LangMixin = require('./LangMixin');
 
 module.exports = {
@@ -23,6 +24,18 @@ module.exports = {
                 return {};
             };
         },
+        acontent() {
+            return (sink) => {
+                const _content = this.fcontent(sink);
+                if (!_content) {
+                    return [];
+                }
+                if (!(_content instanceof Array) || _content.length === 0) {
+                    return [];
+                }
+                return _content;
+            };
+        },
         fstate() {
             return (sink) => {
                 const myform = this.fform(sink);
@@ -35,6 +48,9 @@ module.exports = {
     },
     methods: {
         fetch_form(id, sink) {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: sink,
+            });
             this.$store.dispatch('single_read', {
                 form: sink,
                 path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),

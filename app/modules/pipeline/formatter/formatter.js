@@ -12,7 +12,7 @@ const Logger = require('../../../logger');
  * @param func - Formatting function
  * @param key - Path to access the field in object
  */
-async function formatting(object: Object, func: Function, key: string) {
+async function formatting(object: Object, func: Function, key: string, extra_info: ?Object) {
     const path = key.split('.');
     const last = path[path.length - 1];
     const results = [...Utils.find_popvalue_with_path(object, path)];
@@ -21,7 +21,7 @@ async function formatting(object: Object, func: Function, key: string) {
         for (const i in results) {
             const result = results[i];
             const outer_object = outer_objects[i];
-            outer_object[last] = await func(result, object, key);
+            outer_object[last] = await func(result, object, key, extra_info);
         }
     }
     return object;
@@ -34,10 +34,10 @@ async function formatting(object: Object, func: Function, key: string) {
  * @param formatters : Array of formatters
  * @returns formatted object
  */
-async function format(object: Object, formatters: Array<any>): Object {
+async function format(object: Object, formatters: Array<any>, extra_info: ?Object): Object {
     for (const formatter of formatters) {
         const promises = _.map(formatter,
-            (func: Function, key: string) => formatting(object, func, key));
+            (func: Function, key: string) => formatting(object, func, key, extra_info));
         await Promise.all(promises);
     }
     return object;

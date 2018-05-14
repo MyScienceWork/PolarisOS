@@ -74,7 +74,7 @@
                                             :is-required="false"
                                             :tabs="true">
                                             <template slot="variadic" slot-scope="props">
-                                                <finput :name="`${props.fname}.${props.id}.key`" 
+                                                <finput :name="`${props.fname}.${props.order}.key`" 
                                                     :label="lang('b_name')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('b_name')" 
@@ -82,7 +82,7 @@
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <finput 
-                                                    :name="`${props.fname}.${props.id}.value`" 
+                                                    :name="`${props.fname}.${props.order}.value`" 
                                                     :label="lang('b_value')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('b_value')" 
@@ -101,7 +101,7 @@
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 
-                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :name="`${props.fname}.${props.order}.field`" 
                                                     :label="lang('b_field')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
@@ -109,7 +109,7 @@
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
-                                                    :name="`${props.fname}.${props.id}.function.name`" 
+                                                    :name="`${props.fname}.${props.order}.function.name`" 
                                                     :label="lang('b_function_name')" 
                                                     :is-required="true"
                                                     :options="functions.formatter ? Object.values(functions.formatter) : []"
@@ -122,20 +122,20 @@
                                                 <div v-if="props.id in state.selected_functions.formatter">
                                                     <template v-for="(arg, i) in state.selected_functions.formatter[props.id].arguments">
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.value`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.value`" 
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
                                                             :form="state.sinks.creations.pipeline" 
                                                         /> 
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
                                                             :form="state.sinks.creations.pipeline" 
                                                         />
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.type`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.type`" 
                                                             type="hidden"
                                                             :hidden-value="arg.type"
                                                             :form="state.sinks.creations.pipeline" 
@@ -154,7 +154,7 @@
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 
-                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :name="`${props.fname}.${props.order}.field`" 
                                                     :label="lang('b_field')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
@@ -162,7 +162,7 @@
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
-                                                    :name="`${props.fname}.${props.id}.function.name`" 
+                                                    :name="`${props.fname}.${props.order}.function.name`" 
                                                     :label="lang('b_function_name')" 
                                                     :is-required="true"
                                                     :options="functions.completer ? Object.values(functions.completer) : []"
@@ -174,20 +174,20 @@
                                                 <div v-if="props.id in state.selected_functions.completer">
                                                     <template v-for="(arg, i) in state.selected_functions.completer[props.id].arguments">
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.value`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.value`" 
                                                             :label="`${arg.name} (${arg.type})`" 
                                                             :placeholder="`${arg.name} (${arg.type})`" 
                                                             type="text" 
                                                             :form="state.sinks.creations.pipeline" 
                                                         /> 
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.name`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.name`" 
                                                             type="hidden"
                                                             :hidden-value="arg.name"
                                                             :form="state.sinks.creations.pipeline" 
                                                         />
                                                         <finput
-                                                            :name="`${props.fname}.${props.id}.function.arguments.${i}.type`" 
+                                                            :name="`${props.fname}.${props.order}.function.arguments.${i}.type`" 
                                                             type="hidden"
                                                             :hidden-value="arg.type"
                                                             :form="state.sinks.creations.pipeline" 
@@ -217,7 +217,7 @@
                                             :key="tprops.id">
                                             <template slot="variadic" slot-scope="props">
                                                 <finput 
-                                                    :name="`${props.fname}.${props.id}.field`" 
+                                                    :name="`${props.fname}.${props.order}.field`" 
                                                     :label="lang('b_field')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('b_field')" 
@@ -225,7 +225,7 @@
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <fselect
-                                                    :name="`${props.fname}.${props.id}.type`" 
+                                                    :name="`${props.fname}.${props.order}.type`" 
                                                     :label="lang('b_validator_type')" 
                                                     :placeholder="lang('b_validator_type')"
                                                     :is-required="true"
@@ -233,7 +233,7 @@
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                                 <finput 
-                                                    :name="`${props.fname}.${props.id}.required`" 
+                                                    :name="`${props.fname}.${props.order}.required`" 
                                                     :label="lang('b_field_required')" 
                                                     type="checkbox" 
                                                     :form="state.sinks.creations.pipeline" 

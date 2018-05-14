@@ -8,6 +8,13 @@
         }
     }
     
+    .message.is-@{name} {
+        background-color: @@name;
+        .message-body {
+            color: white;
+        }
+    }
+    
     .generate-colored((@i - 1));
 }
 
@@ -17,6 +24,10 @@
         font-weight: bold;
         padding: 0.7rem;
     }
+}
+
+.is-font-abc-small {
+    font-size: 0.7rem;
 }
 
 .generate-colored();

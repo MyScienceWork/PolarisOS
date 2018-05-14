@@ -112,9 +112,9 @@
                                         </label>
                                     </div>
                                 </div>
-                                <finput v-if="!state.need_html_editor" :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.sinks.creations.lang" />
-                                <finput v-else :name="`${props.fname}.${props.id}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="html-editor" :form="state.sinks.creations.lang" />
-                                <fselect :name="`${props.fname}.${props.id}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.sinks.creations.lang" />
+                                <finput v-if="!state.need_html_editor" :name="`${props.fname}.${props.order}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="text" :form="state.sinks.creations.lang" />
+                                <finput v-else :name="`${props.fname}.${props.order}.value`" :label="lang('b_text')" :is-required="true" :placeholder="lang('b_text_to_show')" type="html-editor" :form="state.sinks.creations.lang" />
+                                <fselect :name="`${props.fname}.${props.order}.quantity`" :label="lang('b_quantity')" :is-required="true" :options="state.quantities" :form="state.sinks.creations.lang" />
                                 </template>
                             </fvariadic-element>
                         </fform>

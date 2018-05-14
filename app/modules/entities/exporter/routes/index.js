@@ -14,8 +14,12 @@ function routes(router: KoaRouter) {
     const post_mware = _.flatten([RouterUtils.koa_middlewares({}),
         RouterUtils.api_middlewares(type, 'c', { pass: true })]);
 
+    const get_mware = RouterUtils.get_middlewares(type, Middlewares);
+
     router.post(`${puprefix}/export`, compose([...post_mware,
-        MyController.export_information]));
+        MyController.export_information()]));
+    router.get(`${puprefix}/export/bibliography`, compose([...get_mware,
+        MyController.export_bibliography]));
 }
 
 module.exports = routes;

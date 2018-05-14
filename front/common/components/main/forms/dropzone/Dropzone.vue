@@ -85,7 +85,13 @@
                         v-if="!(i in state.master_files)"
                         :help="lang('l_not_master_file_help')"
                         type="checkbox" :form="form" />
-
+                        <finput
+                            :name="`${files}.${i}.size`"
+                            label=""
+                            type="hidden"
+                            :form="form"
+                            :hidden-value="parseFloat(state.files.content[filename].size / 1024).toFixed(2)"
+                        />
                 
                         <hr />
                     </div>
@@ -119,6 +125,21 @@
                                     :name="`${files}.${i}.${master}`" 
                                     label="" 
                                     type="checkbox" :form="form" />
+                                    <finput
+                                        :readonly="readonly"
+                                        :name="`${files}.${i}.size`"
+                                        label=""
+                                        type="hidden"
+                                        :form="form"
+                                        :hidden-value="parseFloat(state.files.content[filename].size / 1024).toFixed(2)"
+                                    />
+                                    <finput 
+                                        :readonly="readonly"
+                                        :name="`${files}.${i}.${url}`" 
+                                        label="" type="hidden" 
+                                        :form="form" 
+                                        :hidden-value="state.files.content[filename].pathOnServer || ''" 
+                                        />
                                 </td>
                                 <td>{{parseFloat(state.files.content[filename].size / 1024).toFixed(2)}} KB</td>
                             </tr>

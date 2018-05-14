@@ -73,7 +73,7 @@
                                     :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
-                                            :name="`${props.fname}.${props.id}.name`"
+                                            :name="`${props.fname}.${props.order}.name`"
                                             :label="lang('b_name')" 
                                             :is-required="true" 
                                             :placeholder="lang('b_name')" 
@@ -81,7 +81,7 @@
                                             :form="state.sinks.creations.function"
                                         />
                                         <finput 
-                                            :name="`${props.fname}.${props.id}.type`"
+                                            :name="`${props.fname}.${props.order}.type`"
                                             :label="lang('b_type')" 
                                             :is-required="true" 
                                             :placeholder="lang('b_type')" 
@@ -89,7 +89,7 @@
                                             :form="state.sinks.creations.function"
                                         />
                                         <finput 
-                                            :name="`${props.fname}.${props.id}.default`"
+                                            :name="`${props.fname}.${props.order}.default`"
                                             :label="lang('b_default_value')" 
                                             :is-required="true" 
                                             :placeholder="lang('b_default_value')" 

@@ -19,6 +19,9 @@ module.exports = {
         format_date(d, f = 'LLLL') {
             return moment(d).format(f);
         },
+        eol_to_br(value) {
+            return value.replace('\\n', '<br />');
+        },
         format(value, default_val = '') {
             if (typeof value === 'boolean') {
                 if (value) {
@@ -33,6 +36,23 @@ module.exports = {
                 return Utils.find_value_with_path(value, path.split('.'));
             }
             return '';
+        },
+        translate(value, fn, key) {
+            if (value instanceof Array) {
+                return value.map((v) => {
+                    if (key) {
+                        v[key] = fn(v[key]);
+                    } else {
+                        v = fn(v);
+                    }
+                    return v;
+                });
+            }
+
+            if (key) {
+                return fn(value[key]);
+            }
+            return fn(value);
         },
     },
 

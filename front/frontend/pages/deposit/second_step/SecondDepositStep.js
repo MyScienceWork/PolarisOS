@@ -12,9 +12,8 @@ module.exports = {
         validated: { type: Boolean, default: true },
     },
     methods: {
-        refetch_form(val) {
-            console.log('fetch form');
-            this.fetch_form(this.depositForm, this.publicationSpecs);
+        refetch_form() {
+            this.$emit('refetch-form');
         },
     },
     computed: {

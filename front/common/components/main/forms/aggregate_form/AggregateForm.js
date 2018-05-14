@@ -120,9 +120,9 @@ module.exports = {
         },
         bool_options() {
             return [
-            { label: this.lang('l_bool_and'), value: 'and' },
-            { label: this.lang('l_bool_or'), value: 'or' },
-            { label: this.lang('l_bool_not'), value: 'not' },
+            { label: this.lang('l_bool_and'), value: '$and' },
+            { label: this.lang('l_bool_or'), value: '$or' },
+            { label: this.lang('l_bool_not'), value: '$nand' },
             ];
         },
     },

@@ -9,11 +9,13 @@ const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const AggregationSpecs = require('../../../../common/specs/aggs');
+const Queries = require('../../../../common/specs/queries');
 
 module.exports = {
     mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
     props: {
         filters: { type: Array, default: () => [] },
+        activeResults: { type: Boolean, default: false },
     },
     data() {
         return {
@@ -30,6 +32,7 @@ module.exports = {
                     },
                 },
                 active_abc: null,
+                active_result: false,
             },
         };
     },
@@ -38,9 +41,7 @@ module.exports = {
     },
     methods: {
         browse() {
-            this.$store.commit(Messages.COLLECT, {
-                form: this.state.sinks.creations.selected,
-            });
+            this.send_information(this.state.sinks.creations.selected);
         },
         browse_list(term, type = 'publication') {
             if (type === 'publication') {
@@ -48,6 +49,7 @@ module.exports = {
                     form: this.state.sinks.creations.selected,
                     body: {
                         browsing_terms: [{ _id: term }],
+                        browsing_dates: undefined,
                     },
                 });
             } else if (type === 'date') {
@@ -55,10 +57,13 @@ module.exports = {
                     form: this.state.sinks.creations.selected,
                     body: {
                         browsing_dates: term,
+                        browsing_terms: undefined,
                     },
                 });
             }
 
+            this.state.active_abc = null;
+            this.$emit('update:activeResults', true);
             Vue.nextTick(() => {
                 this.send_information(this.state.sinks.creations.selected);
             });
@@ -91,19 +96,26 @@ module.exports = {
                 let aggregation = {};
                 switch (query.aggt) {
                 case 'terms':
-                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation', 1);
                     break;
                 case 'date':
-                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation');
+                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation', 1);
                     break;
                 default:
                     break;
                 }
+
+                let where = {};
+                if (query.agge === 'publication') {
+                    where = { $and: [Queries.published, Queries.no_other_version] };
+                }
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
                     path: APIRoutes.entity(query.agge, 'POST', true),
                     body: {
                         size: 0,
+                        where,
                         aggregations: aggregation,
                     },
                 });
@@ -117,10 +129,10 @@ module.exports = {
         send_information(sink) {
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
-                if ('browsing_terms' in content) {
-                    const ids = content.browsing_terms.map(b => b._id);
+                if ('browsing_terms' in content && content.browsing_terms) {
+                    const ids = _.map(content.browsing_terms, b => b._id);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
-                } else if ('browsing_dates' in content) {
+                } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: {
                         '>=': date,
@@ -173,12 +185,25 @@ module.exports = {
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
                         const count = info ? info.count : 0;
-                        c[this.label] = `${this.lang(c[this.label])} (${count})`;
+                        if (count === 0) {
+                            return null;
+                        }
+                        if (this.use_hlang) {
+                            c.label_count = `${this.hlang(c[this.label])} (${count})`;
+                            c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
+                        } else {
+                            c.label_count = `${this.lang(c[this.label])} (${count})`;
+                            c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
+                        }
+                    } else if (this.use_hlang) {
+                        c.label_count = this.hlang(c[this.label]);
+                        c.html = this.hlang(c[this.label]);
                     } else {
-                        c[this.label] = this.lang(c[this.label]);
+                        c.label_count = this.lang(c[this.label]);
+                        c.html = this.lang(c[this.label]);
                     }
                     return c;
-                });
+                }).filter(f => f != null);
             }
             return [];
         },
@@ -211,12 +236,19 @@ module.exports = {
                 return [];
             }
             return content.map((c) => {
-                c[this.label] = this.lang(c[this.label]);
+                if (this.use_hlang) {
+                    c[this.label] = this.hlang(c[this.label]);
+                } else {
+                    c[this.label] = this.lang(c[this.label]);
+                }
                 return c;
             });
         },
         label() {
             return this.state.query.label || '_id';
+        },
+        use_hlang() {
+            return this.state.query.use_hlang || false;
         },
         abc() {
             return this.state.query.abc;

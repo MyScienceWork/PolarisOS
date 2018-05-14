@@ -2,33 +2,18 @@
     <div :class="['card', 'info-card', 'stats-card', extraClasses]">
         <div class="card-content">
             <div class="columns is-centered">
-                <div class="column">
+                <div class="column" v-for="item in items">
                     <div class="media">
                         <div class="media-left">
                             <figure class="image is-32x32">
                                 <span class="icon is-large">
-                                    <i class="fa fa-file-text fa-2x"></i>
+                                    <i :class="`fa ${item.icon} fa-2x`"></i>
                                 </span>
                             </figure>
                         </div>
                         <div class="media-content is-uppercase">
-                            <p class="title is-6">{{lang('l_deposit', {}, 'other')}}</p>
-                            <p class="subtitle is-6">12 000 {{lang('l_reference', {}, 'other')}}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="media">
-                        <div class="media-left">
-                            <figure class="image is-32x32">
-                                <span class="icon is-large">
-                                    <i class="fa fa-unlock-alt fa-2x"></i>
-                                </span>
-                            </figure>
-                        </div>
-                        <div class="media-content is-uppercase">
-                            <p class="title is-6">{{lang('l_open_access')}}</p>
-                            <p class="subtitle is-6">300 {{lang('l_reference', {}, 'other')}}</p>
+                            <p class="title is-6">{{lang(item.label, {}, item.count)}}</p>
+                            <p class="subtitle is-6">{{item.count}} {{lang(item.label_count, {}, item.count)}}</p>
                         </div>
                     </div>
                 </div>

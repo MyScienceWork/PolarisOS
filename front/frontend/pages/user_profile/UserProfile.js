@@ -6,21 +6,18 @@ const APIRoutes = require('../../../common/api/routes');
 const Auth = require('../../../common/utils/auth');
 const Queries = require('../../../common/specs/queries');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
-const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const Messages = require('../../../common/api/messages');
 
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
-const Overview = require('./subcomponents/Overview.vue');
 
 module.exports = {
-    mixins: [UserMixin, LangMixin, FormMixin, FormCleanerMixin, OAMixin],
+    mixins: [UserMixin, LangMixin, FormMixin, FormCleanerMixin],
     components: {
         LastDeposits,
         SearchResults,
         SearchBar,
-        Overview,
     },
     data() {
         return {
@@ -28,9 +25,13 @@ module.exports = {
                 sinks: {
                     creations: {
                         user: 'user_profile_creation',
+                        deposit_search: 'user_profile_deposit_creation',
+                        publication_search: 'user_profile_publication_creation',
                     },
                     reads: {
                         user: 'user_profile_read',
+                        publication: 'user_publication_read',
+                        deposit: 'user_deposit_read',
                         user_forms: 'user_forms_read',
                     },
                 },
@@ -42,6 +43,7 @@ module.exports = {
                         user: APIRoutes.entity('user', 'POST', true),
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
+                        publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 current_tab: 0,
@@ -92,6 +94,10 @@ module.exports = {
             } else {
                 this.switch_tab(0);
             }
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.publication_search,
+                keep_content: false,
+            });
         },
         current_state_user(s) {
             this.dispatch(s, this, this.state.sinks.reads.user);
@@ -103,16 +109,15 @@ module.exports = {
                 const content = this.fcontent(this.state.sinks.reads.user);
                 if (content instanceof Array && content.length > 0) {
                     return { author: content[0],
-                        firstname: content[0].firstName,
-                        lastname: content[0].lastName,
-                        fullname: content[0].fullName };
+                        firstname: content[0].firstname,
+                        lastname: content[0].lastname,
+                        fullname: content[0].fullname };
                 }
                 return {};
             }
             const content = this.fcontent(this.state.sinks.reads.user);
             if (content instanceof Array && content.length > 0) {
-                const c = content[0];
-                return c;
+                return content[0];
             }
             return {};
         },
@@ -129,6 +134,28 @@ module.exports = {
                 return [];
             };
         },
+        affiliations() {
+            const author = this.author;
+
+            if (author && author.denormalization && author.denormalization.affiliations) {
+                let aff = author.denormalization.affiliations;
+                if (!(aff instanceof Array)) {
+                    aff = [aff];
+                }
+
+                aff.sort((a, b) => (b.from - a.from));
+                return aff;
+            }
+
+            return [];
+        },
+        publications() {
+            const content = this.fcontent(this.state.sinks.reads.publication);
+            if (content instanceof Array) {
+                return content;
+            }
+            return content;
+        },
         loggedIn() {
             return this.state.loggedIn;
         },
@@ -137,6 +164,68 @@ module.exports = {
         },
         search_param_in_query() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
+        },
+        default_deposit_query() {
+            return JSON.stringify({
+                $and: [
+                    Queries.no_other_version,
+                    { depositor: this.user ? this.user._id : null },
+                ],
+            });
+        },
+        deposit_query() {
+            const s = {
+                $and: [
+                    Queries.no_other_version,
+                    { $or: Queries.publication_search.$or },
+                    { depositor: this.user ? this.user._id : null },
+                ],
+            };
+            return JSON.stringify(s);
+        },
+        default_search_publications_query() {
+            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            let s = {};
+            if (this.loggedIn) {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        a,
+                    ],
+                };
+            } else {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        Queries.published,
+                        a,
+                    ],
+                };
+            }
+            return JSON.stringify(s);
+        },
+        search_publications_query() {
+            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            let s = {};
+            if (this.loggedIn) {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        { $or: Queries.publication_search.$or },
+                        a,
+                    ],
+                };
+            } else {
+                s = {
+                    $and: [
+                        Queries.no_other_version,
+                        Queries.published,
+                        { $or: Queries.publication_search.$or },
+                        a,
+                    ],
+                };
+            }
+            return JSON.stringify(s);
         },
         current_state_user() {
             return this.fstate(this.state.sinks.reads.user);
@@ -169,7 +258,7 @@ module.exports = {
                 path: this.state.paths.reads.author,
                 body: {
                     where: {
-                        id: this.$route.params.id,
+                        _id: this.$route.params.id,
                     },
                     size: 1,
                 },

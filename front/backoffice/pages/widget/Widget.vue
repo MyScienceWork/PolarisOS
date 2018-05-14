@@ -73,7 +73,7 @@
                                 <fvariadic-element name="texts" :form="state.sinks.creations.widget" :is-required="false" :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.name`" 
+                                        :name="`${props.fname}.${props.order}.name`" 
                                         label="Text name" 
                                         :is-required="true" 
                                         placeholder="Text name" 
@@ -81,7 +81,7 @@
                                         :form="state.sinks.creations.widget" 
                                         />
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.help`" 
+                                        :name="`${props.fname}.${props.order}.help`" 
                                         label="Text help" 
                                         :is-required="true" 
                                         placeholder="Text help" 
@@ -98,7 +98,7 @@
                                 <fvariadic-element name="variables" :form="state.sinks.creations.widget" :is-required="false" :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.name`" 
+                                        :name="`${props.fname}.${props.order}.name`" 
                                         label="Variable name" 
                                         :is-required="true" 
                                         placeholder="Variable name" 
@@ -106,7 +106,7 @@
                                         :form="state.sinks.creations.widget" 
                                         />
                                         <fselect 
-                                        :name="`${props.fname}.${props.id}.type`" 
+                                        :name="`${props.fname}.${props.order}.type`" 
                                         label="Variable type" 
                                         :is-required="true" 
                                         placeholder="Variable type" 
@@ -114,7 +114,7 @@
                                         :form="state.sinks.creations.widget" 
                                         />
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.value`" 
+                                        :name="`${props.fname}.${props.order}.value`" 
                                         label="Default value"
                                         :is-required="true" 
                                         placeholder="Default value" 
@@ -122,7 +122,7 @@
                                         :form="state.sinks.creations.widget" 
                                         />
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.help`" 
+                                        :name="`${props.fname}.${props.order}.help`" 
                                         label="Variable help" 
                                         :is-required="true" 
                                         placeholder="Variable help" 
@@ -139,7 +139,7 @@
                                 <fvariadic-element name="events" :form="state.sinks.creations.widget" :is-required="false" :tabs="true">
                                     <template slot="variadic" slot-scope="props">
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.name`" 
+                                        :name="`${props.fname}.${props.order}.name`" 
                                         label="Event name" 
                                         :is-required="true" 
                                         placeholder="Event name" 
@@ -147,7 +147,7 @@
                                         :form="state.sinks.creations.widget" 
                                         />
                                         <finput 
-                                        :name="`${props.fname}.${props.id}.help`" 
+                                        :name="`${props.fname}.${props.order}.help`" 
                                         label="Event help" 
                                         :is-required="true" 
                                         placeholder="Event help" 

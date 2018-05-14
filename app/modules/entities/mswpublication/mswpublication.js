@@ -6,7 +6,7 @@ const Config = require('../../../config');
 
 const mapping = new Mapping(Model.Mapping);
 
-class Publication extends ODM {
+class MSWPublication extends ODM {
     static get model(): Object {
         return Model;
     }
@@ -24,4 +24,4 @@ class Publication extends ODM {
     }
 }
 
-module.exports = Publication;
+module.exports = MSWPublication;

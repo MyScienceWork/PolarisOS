@@ -29,44 +29,9 @@
                                 </a>
                             </b-dropdown-item>
                             <hr class="dropdown-divider">
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'apa')">
-                                    {{lang('f_export_csl')}} (APA)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'vancouver')">
-                                    {{lang('f_export_csl')}} (Vancouver)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'havard1')">
-                                    {{lang('f_export_csl')}} (Harvard (1))
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'population')">
-                                    {{lang('f_export_csl')}} (Population)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'chicago')">
-                                    {{lang('f_export_csl')}} (Chicago)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'springer-humanities')">
-                                    {{lang('f_export_csl')}} (Springer Humanities)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'iso690')">
-                                    {{lang('f_export_csl')}} (ISO-690)
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', 'ined-hceres')">
-                                    {{lang('f_export_csl')}} (HCERES)
+                            <b-dropdown-item has-link v-for="obj in csl_export_styles">
+                                <a class="navbar-item swap" @click.prevent="export_format('csl', obj.value)">
+                                    {{lang('f_export_csl')}} ({{obj.label}})
                                 </a>
                             </b-dropdown-item>
                         </b-dropdown>
@@ -154,6 +119,7 @@
     </div>
     <results 
     :is-selectable="true" 
+    :show-status="showStatus"
     :user="user" 
     :logged-in="state.loggedIn"
     :items="content"

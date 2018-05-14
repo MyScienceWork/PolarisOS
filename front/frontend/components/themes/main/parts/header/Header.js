@@ -13,6 +13,7 @@ module.exports = {
     },
     components: {
         navbar: Navbar,
+        search: Search,
         searchbar: SearchBar,
     },
     methods: {

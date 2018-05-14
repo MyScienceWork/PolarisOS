@@ -52,7 +52,7 @@ module.exports = {
             this.state.elements = this.state.elements.filter(e => e.a);
             this.state.total = this.state.elements.length;
 
-            this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+            /* this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
                 form: this.form,
                 name: `${this.name}.${order}`,
             });
@@ -61,16 +61,28 @@ module.exports = {
                 form: this.form,
                 name: `${this.name}.${order}`,
                 pattern: true,
+            });*/
+            this.update(order);
+            // Re-number elements
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info: undefined,
+                renumbering: true,
             });
         },
         initialize(sink) {
-            const form = this.$store.state.forms[sink];
+            if (sink !== this.form) {
+                return;
+            }
+
+            const form = this.$store.state.forms[this.form];
             let object = null;
 
             if (form && 'content' in form) {
                 object = Utils.find_value_with_path(form.content, this.name.split('.'));
             }
-
+            console.log('variadic', this.name, this.form, form ? form.content : null);
             if (object != null) {
                 if (object instanceof Array && object.length > 0) {
                     this.state.elements = object.map((o, i) => ({ i, a: true }));
@@ -83,17 +95,41 @@ module.exports = {
                 }
             } else if (this.single || this.isRequired) {
                 this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
+                if (this.mutation_state === 'initial') {
+                    this.update();
+                }
             } else {
                 this.state = Object.assign({}, { elements: [], tab_active: -1, total: 0 });
+                if (this.mutation_state === 'initial') {
+                    this.update();
+                }
             }
         },
-        start_collection(sink) {
+        /* start_collection(sink) {
             const active_elements = this.state.elements.filter(e => e.a);
             if (active_elements.length === 0) {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: [],
+                });
+            }
+        },*/
+        update(id) {
+            console.log('update ve', id);
+            console.log(this.fcontent(this.form));
+            if (id != null) {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: `${this.name}.${id}`,
+                    info: undefined,
+                });
+            } else if (this.state.elements.length === 0) {
+                console.log('update ve zero');
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: {},
                 });
             }
         },
@@ -104,14 +140,23 @@ module.exports = {
     },
 
     computed: {
-        current_state() {
-            return this.fstate(this.form);
+        mutation_state() {
+            const form = this.$store.state.forms[this.form];
+            if (form == null) {
+                return 'initial';
+            }
+            return form.state;
         },
     },
 
     watch: {
-        current_state(s) {
-            this.dispatch(s, this, this.form);
+        mutation_state(ns) {
+            if (ns === 'update') {
+                this.fcontent(this.form);
+                this.initialize(this.form);
+            } else if (ns === 'initial') {
+                this.initialize(this.form);
+            }
         },
     },
 };

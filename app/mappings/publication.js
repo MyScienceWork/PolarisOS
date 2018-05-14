@@ -47,7 +47,7 @@ module.exports = {
                             },
                             rights: {
                                 license: 'license',
-                                access: 'publication_access',
+                                access: 'access_level',
                             },
                         },
                         publication_version: 'publication_version',
@@ -604,6 +604,9 @@ module.exports = {
                             url: {
                                 type: 'keyword',
                             },
+                            size: {
+                                type: 'float',
+                            },
                             access: {
                                 properties: {
                                     restricted: {
@@ -737,6 +740,9 @@ module.exports = {
                             content: {
                                 type: 'text',
                                 analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
                             },
                             lang: {
                                 type: 'keyword',
@@ -784,11 +790,24 @@ module.exports = {
                     },
                     system: {
                         properties: {
-                            email: {
+                            depositor_comment: {
+                                type: 'text',
+                            },
+                            emails: {
+                                type: 'nested',
                                 properties: {
-                                    remark: {
+                                    body: {
                                         type: 'text',
                                         index: false,
+                                    },
+                                    reviewer: {
+                                        type: 'keyword',
+                                    },
+                                    created_at: {
+                                        type: 'date',
+                                    },
+                                    sent: {
+                                        type: 'boolean',
                                     },
                                 },
                             },

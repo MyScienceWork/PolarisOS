@@ -442,11 +442,11 @@ class ODM {
     }
 
     oupdate(): Promise<?ODM> {
-        return this.update(this.index, this.type, this.client, this.model, this.source);
+        return ODM.update(this.index, this.type, this.client, this.model, this.source);
     }
 
     ocreate(): Promise<?ODM> {
-        return this.update(this.index, this.type, this.client, this.model, this.source);
+        return ODM.create(this.index, this.type, this.client, this.model, this.source);
     }
 
     toJSON(): Object {

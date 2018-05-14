@@ -74,23 +74,23 @@
                             />
                             <fvariadic-element name="fields" :form="state.sinks.creations.form" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
-                                    <finput :name="`${props.fname}.${props.id}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.readonly`" :label="lang('l_field_readonly')" :is-required="true" :placeholder="lang('l_field_readonly')" type="checkbox" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.help.content`" :label="lang('l_help')" :placeholder="lang('l_help')" type="text" :form="state.sinks.creations.form" :is-required="true" />
-                                    <finput :name="`${props.fname}.${props.id}.help.use_modal`" :label="lang('l_show_help_as_modal')" :placeholder="lang('l_show_help_as_modal')" type="checkbox" :form="state.sinks.creations.form" :is-required="true" />
-                                    <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.id}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.sinks.creations.form" />
-                                    <finput :name="`${props.fname}.${props.id}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.readonly`" :label="lang('l_field_readonly')" :is-required="true" :placeholder="lang('l_field_readonly')" type="checkbox" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.help.content`" :label="lang('l_help')" :placeholder="lang('l_help')" type="text" :form="state.sinks.creations.form" :is-required="true" />
+                                    <finput :name="`${props.fname}.${props.order}.help.use_modal`" :label="lang('l_show_help_as_modal')" :placeholder="lang('l_show_help_as_modal')" type="checkbox" :form="state.sinks.creations.form" :is-required="true" />
+                                    <finput v-if="state.selected_types[props.id] !== 'hidden'" :name="`${props.fname}.${props.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.sinks.creations.form" />
+                                    <finput :name="`${props.fname}.${props.order}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.sinks.creations.form" />
                                     <finput 
-                                        :name="`${props.fname}.${props.id}.single_multiple`" 
+                                        :name="`${props.fname}.${props.order}.single_multiple`" 
                                         :label="lang('b_single_multiple')"
                                         type="checkbox"
                                         :form="state.sinks.creations.form"
                                     />
                                     <fselect 
-                                        :name="`${props.fname}.${props.id}.type`" 
+                                        :name="`${props.fname}.${props.order}.type`" 
                                         :label="lang('b_field_type')" 
                                         :is-required="true" 
                                         :options="fieldtypes" 
@@ -100,21 +100,21 @@
                                     <div v-if="props.id in state.selected_types"> 
                                         <div v-if="['select', 'multi-select'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.placeholder`" 
-                                            :key="`${props.fname}.${props.id}.placeholder`" 
+                                            :name="`${props.fname}.${props.order}.placeholder`" 
+                                            :key="`${props.fname}.${props.order}.placeholder`" 
                                             :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.sinks.creations.form" />
                                             <hr />
                                             <h4 class="title h4">{{lang('l_use_range')}}</h4>
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.range.enabled`" 
-                                            :key="`${props.fname}.${props.id}.range.enabled`" 
+                                            :name="`${props.fname}.${props.order}.range.enabled`" 
+                                            :key="`${props.fname}.${props.order}.range.enabled`" 
                                             :label="lang('l_range_enabled')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.range.start`" 
-                                            :key="`${props.fname}.${props.id}.range.start`" 
+                                            :name="`${props.fname}.${props.order}.range.start`" 
+                                            :key="`${props.fname}.${props.order}.range.start`" 
                                             :label="lang('l_range_start')"
                                             :is-required="true"
                                             :placeholder="lang('l_range_start')"
@@ -122,8 +122,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.range.end`" 
-                                            :key="`${props.fname}.${props.id}.range.end`" 
+                                            :name="`${props.fname}.${props.order}.range.end`" 
+                                            :key="`${props.fname}.${props.order}.range.end`" 
                                             :label="lang('l_range_end')"
                                             :is-required="true"
                                             :placeholder="lang('l_range_end')"
@@ -131,16 +131,16 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.range.step`" 
-                                            :key="`${props.fname}.${props.id}.range.step`" 
+                                            :name="`${props.fname}.${props.order}.range.step`" 
+                                            :key="`${props.fname}.${props.order}.range.step`" 
                                             :label="lang('l_range_step')"
                                             :placeholder="lang('l_range_step')"
                                             type="text"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.range.sort`" 
-                                            :key="`${props.fname}.${props.id}.range.sort`" 
+                                            :name="`${props.fname}.${props.order}.range.sort`" 
+                                            :key="`${props.fname}.${props.order}.range.sort`" 
                                             :label="lang('l_sort')"
                                             :placeholder="lang('l_sort')"
                                             type="text"
@@ -149,23 +149,23 @@
                                             </hr>
                                             <h4 class="title h4">{{lang('l_use_datasource')}}</h4>
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.datasource.name`" 
-                                            :key="`${props.fname}.${props.id}.datasource.name`" 
+                                            :name="`${props.fname}.${props.order}.datasource.name`" 
+                                            :key="`${props.fname}.${props.order}.datasource.name`" 
                                             :label="lang('b_datasource_name')" :is-required="true"
                                             :options="entities"
                                             fieldLabel="type"
                                             fieldValue="type"
                                             :form="state.sinks.creations.form" />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.fetch_from_sink`" 
-                                            :key="`${props.fname}.${props.id}.datasource.fetch_from_sink`" 
+                                            :name="`${props.fname}.${props.order}.datasource.fetch_from_sink`" 
+                                            :key="`${props.fname}.${props.order}.datasource.fetch_from_sink`" 
                                             :label="lang('b_datasource_fetch_from_sink')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.sink`" 
-                                            :key="`${props.fname}.${props.id}.datasource.sink`" 
+                                            :name="`${props.fname}.${props.order}.datasource.sink`" 
+                                            :key="`${props.fname}.${props.order}.datasource.sink`" 
                                             :label="lang('b_datasource_sink')"
                                             :is-required="false"
                                             :placeholder="lang('b_datasource_sink')"
@@ -173,16 +173,16 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.datasource.query`" 
-                                            :key="`${props.fname}.${props.id}.datasource.query`" 
+                                            :name="`${props.fname}.${props.order}.datasource.query`" 
+                                            :key="`${props.fname}.${props.order}.datasource.query`" 
                                             :label="lang('l_query')" 
                                             :options="queries"
                                             fieldLabel="name"
                                             fieldValue="id"
                                             :form="state.sinks.creations.form" />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.info_in_sink`" 
-                                            :key="`${props.fname}.${props.id}.datasource.info_in_sink`" 
+                                            :name="`${props.fname}.${props.order}.datasource.info_in_sink`" 
+                                            :key="`${props.fname}.${props.order}.datasource.info_in_sink`" 
                                             :label="lang('b_datasource_info_sink')"
                                             :is-required="false"
                                             :placeholder="lang('b_datasource_info_sink')"
@@ -190,8 +190,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.label`" 
-                                            :key="`${props.fname}.${props.id}.datasource.label`" 
+                                            :name="`${props.fname}.${props.order}.datasource.label`" 
+                                            :key="`${props.fname}.${props.order}.datasource.label`" 
                                             :label="lang('b_datasource_label')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_label')"
@@ -199,8 +199,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.value`" 
-                                            :key="`${props.fname}.${props.id}.datasource.value`" 
+                                            :name="`${props.fname}.${props.order}.datasource.value`" 
+                                            :key="`${props.fname}.${props.order}.datasource.value`" 
                                             :label="lang('b_datasource_value')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_value')"
@@ -208,8 +208,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.sort`" 
-                                            :key="`${props.fname}.${props.id}.datasource.sort`" 
+                                            :name="`${props.fname}.${props.order}.datasource.sort`" 
+                                            :key="`${props.fname}.${props.order}.datasource.sort`" 
                                             :label="lang('l_sort')"
                                             :is-required="true"
                                             :placeholder="lang('l_sort')"
@@ -217,8 +217,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.action_text`" 
-                                            :key="`${props.fname}.${props.id}.datasource.action_text`" 
+                                            :name="`${props.fname}.${props.order}.datasource.action_text`" 
+                                            :key="`${props.fname}.${props.order}.datasource.action_text`" 
                                             :label="lang('b_datasource_action_text')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_action_text')"
@@ -226,8 +226,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.header_text`" 
-                                            :key="`${props.fname}.${props.id}.datasource.header_text`" 
+                                            :name="`${props.fname}.${props.order}.datasource.header_text`" 
+                                            :key="`${props.fname}.${props.order}.datasource.header_text`" 
                                             :label="lang('b_datasource_header_text')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_header_text')"
@@ -235,8 +235,8 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.help_text`" 
-                                            :key="`${props.fname}.${props.id}.datasource.help_text`" 
+                                            :name="`${props.fname}.${props.order}.datasource.help_text`" 
+                                            :key="`${props.fname}.${props.order}.datasource.help_text`" 
                                             :label="lang('b_datasource_help_text')"
                                             :is-required="true"
                                             :placeholder="lang('b_datasource_help_text')"
@@ -244,59 +244,66 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.ajax`" 
-                                            :key="`${props.fname}.${props.id}.datasource.ajax`" 
+                                            :name="`${props.fname}.${props.order}.datasource.ajax`" 
+                                            :key="`${props.fname}.${props.order}.datasource.ajax`" 
                                             :label="lang('b_datasource_ajax')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.ajax_path`" 
-                                            :key="`${props.fname}.${props.id}.datasource.ajax_path`" 
+                                            :name="`${props.fname}.${props.order}.datasource.ajax_path`" 
+                                            :key="`${props.fname}.${props.order}.datasource.ajax_path`" 
                                             :label="lang('b_datasource_ajax_path')"
                                             :placeholder="lang('b_datasource_ajax_path')"
                                             type="text"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
-                                            :key="`${props.fname}.${props.id}.datasource.ajax_value_path`" 
+                                            :name="`${props.fname}.${props.order}.datasource.ajax_value_path`" 
+                                            :key="`${props.fname}.${props.order}.datasource.ajax_value_path`" 
                                             :label="lang('b_datasource_ajax_value_path')"
                                             :placeholder="lang('b_datasource_ajax_value_path')"
                                             type="text"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.translatable`" 
-                                            :key="`${props.fname}.${props.id}.datasource.translatable`" 
+                                            :name="`${props.fname}.${props.order}.datasource.translatable`" 
+                                            :key="`${props.fname}.${props.order}.datasource.translatable`" 
                                             :label="lang('b_datasource_translatable')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.add`" 
-                                            :key="`${props.fname}.${props.id}.datasource.add`" 
+                                            :name="`${props.fname}.${props.order}.datasource.use_hlang`" 
+                                            :key="`${props.fname}.${props.order}.datasource.use_hlang`" 
+                                            :label="lang('b_datasource_use_hlang')"
+                                            type="checkbox"
+                                            :form="state.sinks.creations.form"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.order}.datasource.add`" 
+                                            :key="`${props.fname}.${props.order}.datasource.add`" 
                                             :label="lang('b_datasource_add')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.modify`" 
-                                            :key="`${props.fname}.${props.id}.datasource.modify`" 
+                                            :name="`${props.fname}.${props.order}.datasource.modify`" 
+                                            :key="`${props.fname}.${props.order}.datasource.modify`" 
                                             :label="lang('b_datasource_modify')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.datasource.remove`" 
-                                            :key="`${props.fname}.${props.id}.datasource.remove`" 
+                                            :name="`${props.fname}.${props.order}.datasource.remove`" 
+                                            :key="`${props.fname}.${props.order}.datasource.remove`" 
                                             :label="lang('b_datasource_remove')"
                                             type="checkbox"
                                             :form="state.sinks.creations.form"
                                             />
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.datasource.form`" 
-                                            :key="`${props.fname}.${props.id}.datasource.form`" 
+                                            :name="`${props.fname}.${props.order}.datasource.form`" 
+                                            :key="`${props.fname}.${props.order}.datasource.form`" 
                                             :label="lang('b_form')" 
                                             :is-required="true"
                                             :options="forms"
@@ -306,32 +313,32 @@
                                             <card color="red">
                                                 <div slot="card-content">
                                                     <finput 
-                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.get`" 
-                                                    :key="`${props.fname}.${props.id}.datasource.form_paths.get`" 
+                                                    :name="`${props.fname}.${props.order}.datasource.form_paths.get`" 
+                                                    :key="`${props.fname}.${props.order}.datasource.form_paths.get`" 
                                                     :label="lang('b_datasource_get_path')"
                                                     :placeholder="lang('b_datasource_get_path')"
                                                     type="text"
                                                     :form="state.sinks.creations.form"
                                                     />
                                                     <finput 
-                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.delete`" 
-                                                    :key="`${props.fname}.${props.id}.datasource.form_paths.delete`" 
+                                                    :name="`${props.fname}.${props.order}.datasource.form_paths.delete`" 
+                                                    :key="`${props.fname}.${props.order}.datasource.form_paths.delete`" 
                                                     :label="lang('b_datasource_remove_path')"
                                                     :placeholder="lang('b_datasource_remove_path')"
                                                     type="text"
                                                     :form="state.sinks.creations.form"
                                                     />
                                                     <finput 
-                                                    :key="`${props.fname}.${props.id}.datasource.form_paths.post`" 
-                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.post`" 
+                                                    :key="`${props.fname}.${props.order}.datasource.form_paths.post`" 
+                                                    :name="`${props.fname}.${props.order}.datasource.form_paths.post`" 
                                                     :label="lang('b_datasource_post_path')"
                                                     :placeholder="lang('b_datasource_post_path')"
                                                     type="text"
                                                     :form="state.sinks.creations.form"
                                                     />
                                                     <finput 
-                                                    :name="`${props.fname}.${props.id}.datasource.form_paths.put`" 
-                                                    :key="`${props.fname}.${props.id}.datasource.form_paths.put`" 
+                                                    :name="`${props.fname}.${props.order}.datasource.form_paths.put`" 
+                                                    :key="`${props.fname}.${props.order}.datasource.form_paths.put`" 
                                                     :label="lang('b_datasource_put_path')"
                                                     :placeholder="lang('b_datasource_put_path')"
                                                     type="text"
@@ -342,13 +349,13 @@
                                         </div>
                                         <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.placeholder`" 
-                                            :key="`${props.fname}.${props.id}.placeholder`" 
+                                            :name="`${props.fname}.${props.order}.placeholder`" 
+                                            :key="`${props.fname}.${props.order}.placeholder`" 
                                             :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.sinks.creations.form" />
                                             <template v-if="state.selected_types[props.id] === 'date-year'">
                                                 <finput 
-                                                :name="`${props.fname}.${props.id}.range.start`" 
-                                                :key="`${props.fname}.${props.id}.range.start`" 
+                                                :name="`${props.fname}.${props.order}.range.start`" 
+                                                :key="`${props.fname}.${props.order}.range.start`" 
                                                 :label="lang('l_range_start')"
                                                 :is-required="true"
                                                 :placeholder="lang('l_range_start')"
@@ -356,8 +363,8 @@
                                                 :form="state.sinks.creations.form"
                                                 />
                                                 <finput 
-                                                :name="`${props.fname}.${props.id}.range.end`" 
-                                                :key="`${props.fname}.${props.id}.range.end`" 
+                                                :name="`${props.fname}.${props.order}.range.end`" 
+                                                :key="`${props.fname}.${props.order}.range.end`" 
                                                 :label="lang('l_range_end')"
                                                 :is-required="true"
                                                 :placeholder="lang('l_range_end')"
@@ -365,8 +372,8 @@
                                                 :form="state.sinks.creations.form"
                                                 />
                                                 <finput 
-                                                :name="`${props.fname}.${props.id}.range.step`" 
-                                                :key="`${props.fname}.${props.id}.range.step`" 
+                                                :name="`${props.fname}.${props.order}.range.step`" 
+                                                :key="`${props.fname}.${props.order}.range.step`" 
                                                 :label="lang('l_range_step')"
                                                 :placeholder="lang('l_range_step')"
                                                 type="text"
@@ -376,14 +383,14 @@
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.hiddenValue`" 
-                                            :key="`${props.fname}.${props.id}.hiddenValue`" 
+                                            :name="`${props.fname}.${props.order}.hiddenValue`" 
+                                            :key="`${props.fname}.${props.order}.hiddenValue`" 
                                             :label="lang('b_hidden_value')" :is-required="true" :placeholder="lang('b_hidden_value')" type="text" :form="state.sinks.creations.form" />
                                         </div>
                                         <div v-else-if="['static-html'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.hiddenValue`" 
-                                            :key="`${props.fname}.${props.id}.hiddenValue`" 
+                                            :name="`${props.fname}.${props.order}.hiddenValue`" 
+                                            :key="`${props.fname}.${props.order}.hiddenValue`" 
                                             :label="lang('l_html_template')" 
                                             :is-required="true" 
                                             :placeholder="lang('l_html_template')" 
@@ -392,8 +399,8 @@
                                         </div>
                                         <div v-else-if="['subform'].indexOf(state.selected_types[props.id]) !== -1">
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.subform`" 
-                                            :key="`${props.fname}.${props.id}.subform`" 
+                                            :name="`${props.fname}.${props.order}.subform`" 
+                                            :key="`${props.fname}.${props.order}.subform`" 
                                             :label="lang('b_subform')" 
                                             :is-required="true"
                                             :options="forms"
@@ -401,8 +408,8 @@
                                             fieldValue="_id"
                                             :form="state.sinks.creations.form" />
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.subform_information.type`" 
-                                            :key="`${props.fname}.${props.id}.subform_information.type`" 
+                                            :name="`${props.fname}.${props.order}.subform_information.type`" 
+                                            :key="`${props.fname}.${props.order}.subform_information.type`" 
                                             :label="lang('l_subform_type')" 
                                             :is-required="true"
                                             :options="subform_types"
@@ -410,8 +417,8 @@
                                             :form="state.sinks.creations.form" />
                                             <template v-if="['section', 'widget', 'hidden'].indexOf(state.selected_subform_types[props.id]) !== -1">
                                                 <finput 
-                                                    :key="`${props.fname}.${props.id}.subform_information.title`" 
-                                                    :name="`${props.fname}.${props.id}.subform_information.title`" 
+                                                    :key="`${props.fname}.${props.order}.subform_information.title`" 
+                                                    :name="`${props.fname}.${props.order}.subform_information.title`" 
                                                     :label="lang('l_subform_title')" 
                                                     :is-required="true" 
                                                     :placeholder="lang('l_subform_title')" 
@@ -421,30 +428,30 @@
                                         </div>
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
-                                                :key="`${props.fname}.${props.id}.file.file_name`" 
+                                                :key="`${props.fname}.${props.order}.file.file_name`" 
                                                 :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.sinks.creations.form" />
                                             <finput 
-                                            :name="`${props.fname}.${props.id}.file.master_name`" 
-                                            :key="`${props.fname}.${props.id}.file.master_name`" 
+                                            :name="`${props.fname}.${props.order}.file.master_name`" 
+                                            :key="`${props.fname}.${props.order}.file.master_name`" 
                                             :label="lang('b_master_fieldname')" :is-required="true" :placeholder="lang('b_master_fieldname')" type="text" :form="state.sinks.creations.form" />
                                             <finput 
-                                                :name="`${props.fname}.${props.id}.file.url_name`" 
-                                                :key="`${props.fname}.${props.id}.file.url_name`" 
+                                                :name="`${props.fname}.${props.order}.file.url_name`" 
+                                                :key="`${props.fname}.${props.order}.file.url_name`" 
                                                 :label="lang('b_url_fieldname')" :is-required="true" :placeholder="lang('b_url_fieldname')" type="text" :form="state.sinks.creations.form" />
                                             <finput 
-                                                :key="`${props.fname}.${props.id}.file.keeper_sink`" 
+                                                :key="`${props.fname}.${props.order}.file.keeper_sink`" 
                                                 :label="lang('b_keeper_sink')" :placeholder="lang('b_keeper_sink')" type="text" :form="state.sinks.creations.form" />
                                             <finput 
-                                                :name="`${props.fname}.${props.id}.file.keep`" 
-                                                :key="`${props.fname}.${props.id}.file.keep`" 
+                                                :name="`${props.fname}.${props.order}.file.keep`" 
+                                                :key="`${props.fname}.${props.order}.file.keep`" 
                                                 :label="lang('b_keep_files_across_components')" type="checkbox" :form="state.sinks.creations.form" />
-                                            <finput :name="`${props.fname}.${props.id}.file.restore`" 
+                                            <finput :name="`${props.fname}.${props.order}.file.restore`" 
                                                 :label="lang('b_restore_files_across_components')" type="checkbox" :form="state.sinks.creations.form" />
                                         </div>
                                         <div v-else-if="['importer'].indexOf(state.selected_types[props.id]) !== -1">
                                             <fselect 
-                                            :name="`${props.fname}.${props.id}.importer`" 
-                                            :key="`${props.fname}.${props.id}.importer`" 
+                                            :name="`${props.fname}.${props.order}.importer`" 
+                                            :key="`${props.fname}.${props.order}.importer`" 
                                             :label="lang('b_importer')" 
                                             :is-required="true"
                                             :options="importers"
