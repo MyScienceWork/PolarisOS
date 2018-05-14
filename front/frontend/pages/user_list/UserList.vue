@@ -7,7 +7,8 @@
                 :search-path="state.paths.reads.users"
                 :search-query="es_query_ids[1]"
                 :use-default-query="true"
-                search-type="author"
+                :default-query="es_query_ids[0]"
+                search-type="user"
             >
                 <div class="container is-fluid" slot="search-users-result" slot-scope="props">
                        <div class="columns is-centered">

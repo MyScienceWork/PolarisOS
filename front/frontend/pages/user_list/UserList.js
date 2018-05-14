@@ -65,17 +65,19 @@ module.exports = {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
                 body: {
-                    size: 20,
+                    // size: this.state.seso.size,
+                    population: ['author'],
+                    where: {},
                 },
             },
         }));
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.users,
-            path: this.state.paths.reads.authors,
-            body: {
-                population: ['author'],
-                where: {},
-            },
-        });
+        // this.$store.dispatch('search', {
+        //     form: this.state.sinks.reads.users,
+        //     path: this.state.paths.reads.users,
+        //     body: {
+        //         population: ['author'],
+        //         where: {},
+        //     },
+        // });
     },
 };
