@@ -84,8 +84,8 @@ module.exports = {
             content: {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
-                bodu: {
-                    size: 10,
+                body: {
+                    size: 50,
                 },
             },
         }));

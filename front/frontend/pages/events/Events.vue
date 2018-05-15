@@ -11,9 +11,9 @@
         <div :class="{'is-hidden': state.isActive}">
 
           Pictures past content, Card by default
-          <div class="columns is-multiline">
-                  <div class="column is-4">
-                      <div v-for="row in past_events" class="card">
+          <div class="columns is-multiline is-mobile">
+                  <div v-for="row in past_events" class="column is-4">
+                      <div class="card">
                           <div class="card-image">
                               <figure class="image is-4by3">
                               <img :src="row.picturePath" alt="Placeholder image">
@@ -21,20 +21,14 @@
                           </div>
                           <div class="card-content">
                               <div class="content">
-                                  {{row.header}}
+                                  {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.startDate">{{row.startDate}}</time>
                               </div>
                               <div class="media">
-                                  <div class="media-content">
-                                      <div class="media-content is-pulled-right">
+                                      <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
+                                          <span> {{row.body}} </span>
                                       </div>
-                                      <div class="media-left is-pulled-right">
-                                          <figure class="image is-48x48">
-                                          <img :src="row.picturePath" alt="Placeholder image">
-                                          </figure>
-                                      </div>
-                                  </div>
                               </div>
                           </div>
                       </div>
@@ -46,9 +40,9 @@
         <div :class="{'is-hidden': !state.isActive}">
           Music futur content, card by default
 
-          <div class="columns is-multiline">
-                  <div class="column is-4">
-                      <div v-for="row in incoming_events" class="card">
+          <div class="columns is-multiline is-mobile">
+                  <div v-for="row in incoming_events" class="column is-4">
+                      <div class="card">
                           <div class="card-image">
                               <figure class="image is-4by3">
                               <img :src="row.picturePath" alt="Placeholder image">
@@ -56,20 +50,14 @@
                           </div>
                           <div class="card-content">
                               <div class="content">
-                                  {{row.header}}
+                                  {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.startDate">{{row.startDate}}</time>
                               </div>
                               <div class="media">
-                                  <div class="media-content">
-                                      <div class="media-content is-pulled-right">
+                                      <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
+                                          <span> {{row.body}} </span>
                                       </div>
-                                      <div class="media-left is-pulled-right">
-                                          <figure class="image is-48x48">
-                                          <img :src="row.picturePath" alt="Placeholder image">
-                                          </figure>
-                                      </div>
-                                  </div>
                               </div>
                           </div>
                       </div>

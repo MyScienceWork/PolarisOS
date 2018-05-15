@@ -40,8 +40,9 @@ module.exports = {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
                 body: {
-                    size: 10,
-                    population: ['creator'],
+                    size: 20,
+                    population: ['auhtor'],
+                    where: {},
                 },
             },
         }));

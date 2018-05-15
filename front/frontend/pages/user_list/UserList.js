@@ -27,16 +27,16 @@ module.exports = {
                         search: 'user_list_search',
                     },
                     reads: {
-                        users: 'users_read',
-                        search: 'user_list_search',
+                        authors: 'users_read',
+                        // search: 'user_list_search',
                     },
                 },
                 paths: {
                     creations: {
-                        search: APIRoutes.entity('user', 'POST', true),
+                        search: APIRoutes.entity('author', 'POST', true),
                     },
                     reads: {
-                        users: APIRoutes.entity('user', 'POST', true),
+                        // users: APIRoutes.entity('author', 'POST', true),
                         authors: APIRoutes.entity('author', 'POST', true),
                     },
                 },
@@ -49,28 +49,28 @@ module.exports = {
     watch: {
     },
     computed: {
-        users() {
-            const content = this.fcontent(this.state.sinks.reads.users);
-            if (content instanceof Array) {
-                return content;
-            }
-            return [];
-        },
+        // users() {
+        //     const content = this.fcontent(this.state.sinks.reads.users);
+        //     if (content instanceof Array) {
+        //         return content;
+        //     }
+        //     return [];
+        // },
     },
     mounted() {
-        this.$store.state.requests = ['users'].map(e => ({
-            name: 'search',
-            type: 'dispatch',
-            content: {
-                form: this.state.sinks.reads[e],
-                path: this.state.paths.reads[e],
-                body: {
-                    // size: this.state.seso.size,
-                    population: ['author'],
-                    where: {},
-                },
-            },
-        }));
+        // this.$store.state.requests = ['authors'].map(e => ({
+        //     name: 'search',
+        //     type: 'dispatch',
+        //     content: {
+        //         form: this.state.sinks.reads[e],
+        //         path: this.state.paths.reads[e],
+        //         // body: {
+        //         //     // size: this.state.seso.size,
+        //         //     population: ['author'],
+        //         //     where: {},
+        //         // },
+        //     },
+        // }));
         // this.$store.dispatch('search', {
         //     form: this.state.sinks.reads.users,
         //     path: this.state.paths.reads.users,
