@@ -11,6 +11,7 @@ module.exports = {
       // form: { required: true, type: String }, //InputMixin
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
+        useIcons: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
         draggable: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
