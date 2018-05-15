@@ -105,10 +105,11 @@
                             </a>
                         </div>
                         <slot 
-                        name="variadic" 
-                        :id="show.i"
-                        :fname="name"
-                        :total="state.total"
+                            name="variadic" 
+                            :id="show.i"
+                            :order="idx"
+                            :fname="name"
+                            :total="state.total"
                         >
                         </slot>
                         <hr />

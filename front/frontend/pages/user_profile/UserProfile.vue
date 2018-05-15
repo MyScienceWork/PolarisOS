@@ -96,10 +96,10 @@
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
                         
-                        <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations')}}</h4>
+                        <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations', {}, 'other')}}</h4>
                         <hr class="hr-section" />
                         
-                        <dynamic-form v-if="author && author._id" :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.user"/>
+                        <dynamic-form v-if="author && author._id" :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
                         <div v-else>
                             <p>{{lang('f_no_author_connected')}}</p>
                             <div class="field is-grouped">
