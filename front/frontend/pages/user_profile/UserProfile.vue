@@ -11,7 +11,10 @@
                     </div>
                 </div> <!-- card image user profile -->
                 <h4 class="has-small-top-margin title is-4">{{fullname}}</h4>
-                <div class="" v-if="affiliations.length > 0">
+                <div v-if="!user.public_profile">
+                    <p>{{lang('l_profile_not_public')}}</p>
+                </div>
+                <div class="" v-else-if="affiliations.length > 0">
                     <!--<h5 class="title is-5">{{lang('l_affiliation', {}, 'other')}}</h5>-->
                     <article class="media" v-for="aff in affiliations">
                         <div class="media-content">
@@ -95,35 +98,67 @@
                         <h4 class="title is-4 has-no-bottom-margin">{{lang('f_user_general_settings')}}</h4>
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
-                        
+                        <hr class="hr-section" />
+                        <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
+                        <button 
+                            @click.prevent="save('user')"
+                            class="button button-background-green has-small-top-margin has-small-bottom-margin">
+                            {{lang('f_save')}}
+                        </button>
+                        <article class="message is-success" v-if="state.statuses.creations.user === 'ok'">
+                            <div class="message-body">
+                                {{lang('f_user_save_success')}}
+                            </div>
+                        </article>
+                        <article class="message is-danger" v-if="state.statuses.creations.user === 'nok'">
+                            <div class="message-body">
+                                {{lang('f_user_save_failed')}}
+                            </div>
+                        </article>
+                
                         <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations', {}, 'other')}}</h4>
                         <hr class="hr-section" />
                         
-                        <dynamic-form v-if="author && author._id" :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
+                        <div v-if="author && author._id">
+                            <dynamic-form :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
+                            <a
+                                @click.prevent="save('author')"
+                                class="button button-background-green has-small-top-margin has-small-bottom-margin">
+                                {{lang('f_save')}}
+                            </a>
+                            <article class="message is-success" v-if="state.statuses.creations.author === 'ok'">
+                                <div class="message-body">
+                                    {{lang('f_affiliations_save_success')}}
+                                </div>
+                            </article>
+                            <article class="message is-danger" v-if="state.statuses.creations.author === 'nok'">
+                                <div class="message-body">
+                                    {{lang('f_affiliations_save_failed')}}
+                                </div>
+                            </article>
+                        </div>
                         <div v-else>
-                            <p>{{lang('f_no_author_connected')}}</p>
+                            <p class="has-text-centered" v-html="lang('f_no_author_connected')"></p>
                             <div class="field is-grouped">
                                 <div class="control">
-                                    <button 
+                                    <a
                                         type="submit" @click.prevent="send_author_request"
                                         class="button button-background-blue"
-                                        >{{lang('f_click_here_to_send_author_request')}}</button>
+                                        >{{lang('f_click_here_to_send_author_request')}}
+                                    </a>
                                 </div>
                             </div>
                             <article class="message is-success">
-                            <div class="message-body">
-                                {{lang('f_author_request_successfully_sent')}}
-                            </div>
+                                <div class="message-body">
+                                    {{lang('f_author_request_successfully_sent')}}
+                                </div>
                             </article>
                             <article class="message is-danger">
-                            <div class="message-body">
-                                {{lang('f_author_request_failed')}}
-                            </div>
+                                <div class="message-body">
+                                    {{lang('f_author_request_failed')}}
+                                </div>
                             </article>
                         </div>
-                        <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_external_ids')}}</h4>
-                        <hr class="hr-section" />
-                        <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
                     </div> <!-- account -->
                     <div v-else-if="state.current_tab === 2 && state.loggedIn && user && user._id"> <!-- my deposits -->
                         <div class="columns is-centered">

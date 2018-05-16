@@ -38,13 +38,20 @@ module.exports = {
                 },
                 paths: {
                     creations: {
-                        user: APIRoutes.entity('my_user', 'POST'),
+                        user: APIRoutes.entity('user', 'POST'),
+                        author: APIRoutes.entity('author', 'POST'),
                     },
                     reads: {
                         user: APIRoutes.entity('user', 'POST', true),
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
+                    },
+                },
+                statuses: {
+                    creations: {
+                        user: 'nc',
+                        author: 'nc',
                     },
                 },
                 current_tab: 0,
@@ -81,13 +88,43 @@ module.exports = {
                     body: body.author,
                 });
 
-                delete body.author;
-                delete body.roles;
+                body.author = '_id' in body.author ? body.author._id : undefined;
+                body.roles = body.roles.map(r => ({ _id: r._id._id }));
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.user,
                     body,
                 });
             }
+        },
+        show_success(sink) {
+            if (sink === this.state.sinks.creations.user) {
+                this.state.statuses.creations.user = 'ok';
+            } else if (sink === this.state.sinks.creations.author) {
+                this.state.statuses.creations.author = 'ok';
+            }
+
+            setTimeout(() => {
+                this.state.statuses.creations.user = 'nc';
+                this.state.statuses.creations.author = 'nc';
+            }, 3000);
+        },
+        show_error(sink) {
+            if (sink === this.state.sinks.creations.user) {
+                this.state.statuses.creations.user = 'nok';
+            } else if (sink === this.state.sinks.creations.author) {
+                this.state.statuses.creations.author = 'nok';
+            }
+            setTimeout(() => {
+                this.state.statuses.creations.user = 'nc';
+                this.state.statuses.creations.author = 'nc';
+            }, 10000);
+        },
+        save(entity) {
+            this.$store.dispatch('create', {
+                form: this.state.sinks.creations[entity],
+                path: this.state.paths.creations[entity],
+                body: this.fcontent(this.state.sinks.creations[entity]),
+            });
         },
         send_author_request() {
 
@@ -107,6 +144,12 @@ module.exports = {
         },
         current_state_user(s) {
             this.dispatch(s, this, this.state.sinks.reads.user);
+        },
+        current_state_creation_author(s) {
+            this.dispatch(s, this, this.state.sinks.creations.author);
+        },
+        current_state_creation_user(s) {
+            this.dispatch(s, this, this.state.sinks.creations.user);
         },
     },
     computed: {
@@ -149,7 +192,7 @@ module.exports = {
                     aff = [aff];
                 }
 
-                aff.sort((a, b) => (b.from - a.from));
+                aff.sort((a, b) => (parseInt(b.from, 10) - parseInt(a.from, 10)));
                 return aff;
             }
 
@@ -235,6 +278,12 @@ module.exports = {
         },
         current_state_user() {
             return this.fstate(this.state.sinks.reads.user);
+        },
+        current_state_creation_user() {
+            return this.fstate(this.state.sinks.creations.user);
+        },
+        current_state_creation_author() {
+            return this.fstate(this.state.sinks.creations.author);
         },
     },
     beforeMount() {

@@ -217,6 +217,24 @@
                                             :form="state.sinks.creations.form"
                                             />
                                             <finput 
+                                            :name="`${props.fname}.${props.order}.datasource.search_fields`" 
+                                            :key="`${props.fname}.${props.order}.datasource.search_fields`"
+                                            :help="lang('l_search_fields_help')"
+                                            :label="lang('l_search_fields')"
+                                            :placeholder="lang('l_search_fields')"
+                                            type="text"
+                                            :form="state.sinks.creations.form"
+                                            />
+                                            <finput 
+                                            :name="`${props.fname}.${props.order}.datasource.size`" 
+                                            :key="`${props.fname}.${props.order}.datasource.size`" 
+                                            :label="lang('l_size')"
+                                            :is-required="false"
+                                            :placeholder="lang('l_size')"
+                                            type="text"
+                                            :form="state.sinks.creations.form"
+                                            />
+                                            <finput 
                                             :name="`${props.fname}.${props.order}.datasource.action_text`" 
                                             :key="`${props.fname}.${props.order}.datasource.action_text`" 
                                             :label="lang('b_datasource_action_text')"

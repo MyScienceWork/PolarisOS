@@ -75,6 +75,9 @@ module.exports = {
                             },
                         },
                     },
+                    about_me: {
+                        type: 'text',
+                    },
                     author: {
                         type: 'keyword',
                     },
