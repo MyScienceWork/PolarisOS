@@ -17,14 +17,14 @@ module.exports = {
                 es_query_id_past_events: 'front-past-event-query',
                 paths: {
                     reads: {
-                        get_incoming_events: APIRoutes.entity('events', 'POST', true),
-                        get_past_events: APIRoutes.entity('events', 'POST', true),
+                        incoming_event: APIRoutes.entity('event', 'POST', true),
+                        past_event: APIRoutes.entity('event', 'POST', true),
                     },
                 },
                 sinks: {
                     reads: {
-                        get_incoming_events: 'incoming_events_read',
-                        get_past_events: 'past_events_read',
+                        incoming_event: 'incoming_events_read',
+                        past_event: 'past_events_read',
                     },
                 },
             },
@@ -38,72 +38,34 @@ module.exports = {
         },
     },
     watch: {
-        es_query_id_incoming_events(q) {
-            if (q && q.trim() !== '') {
+        es_query_contents(new_content) {
+            if (this.state.es_query_id_incoming_events in new_content) {
                 this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.get_incoming_events,
-                    path: this.state.paths.reads.get_incoming_events,
+                    form: this.state.sinks.reads.incoming_event,
+                    path: this.state.paths.reads.incoming_event,
                     body: {
-                        where: {
-                            id: this.state.es_query_id_incoming_events,
-                        },
+                        where: JSON.parse(Handlebars.compile(new_content[this.state.es_query_id_incoming_events])({})),
+                    },
+                });
+            } else if (this.state.es_query_id_past_events in new_content) {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.past_event,
+                    path: this.state.paths.reads.past_event,
+                    body: {
+                        where: JSON.parse(Handlebars.compile(new_content[this.state.es_query_id_past_events])({})),
                     },
                 });
             }
         },
-        es_query_id_past_events(q) {
-            if (q && q.trim() !== '') {
-                this.$store.dispatch('search', {
-                    form: this.state.sinkks.reads.get_past_events,
-                    path: this.state.paths.reads.get_path_events,
-                    body: {
-                        where: {
-                            id: this.state.es_query_id_past_events,
-                        },
-                    },
-                });
-            }
-        },
-        // es_query_content(new_content) {
-        //     if (new_content) {
-        //         this.$store.dispatch('search', {
-        //             form: this.state.sinks.reads.get_events,
-        //             path: this.state.paths.reads.get_events,
-        //             body: {
-        //                 where: JSON.parse(Handlebars.compile(new_content)({search:
-        //                 "startDate": }))
-        //             },
-        //         });
-        //     }
-        // },
     },
     mounted() {
-        this.$store.state.requests = ['events'].map(e => ({
-            name: 'search',
-            type: 'dispatch',
-            content: {
-                form: this.state.sinks.reads[e],
-                path: this.state.paths.reads[e],
-                body: {
-                    size: 50,
-                },
-            },
-        }));
     },
     computed: {
         incoming_events() {
-            const content = this.mcontent(this.state.sinks.reads.get_incoming_events);
-            if (content instanceof Array) {
-                return content;
-            }
-            return [];
+            return this.mcontent(this.state.sinks.reads.incoming_event);
         },
         past_events() {
-            const content = this.mcontent(this.state.sinks.reads.get_past_events);
-            if (content instanceof Array) {
-                return content;
-            }
-            return [];
+            return this.mcontent(this.state.sinks.reads.past_event);
         },
     },
 };
