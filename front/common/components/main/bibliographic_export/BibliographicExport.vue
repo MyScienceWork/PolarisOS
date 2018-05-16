@@ -102,9 +102,19 @@
                 :placeholder="lang('l_typology_bexport')"
                 field-label="label"
                 field-value="_id"
-                :multi="true"
                 :select-all-values="true"
+                :multi="true"
                 :options="content(state.sinks.reads.typology) | translate(lang, 'label')"
+            /> 
+            <fselect
+                :form="this.state.sinks.creations.export"
+                name="subtypology"
+                :label="lang('l_subtypology_bexport')"
+                :placeholder="lang('l_subtypology_bexport')"
+                field-label="label"
+                field-value="value"
+                :multi="true"
+                :options="subtypology_content | translate(lang, 'label')"
             /> 
             <fselect
                 :form="this.state.sinks.creations.export"

@@ -33,6 +33,9 @@ module.exports = {
                     enabled: {
                         type: 'boolean',
                     },
+                    public_profile: {
+                        type: 'boolean',
+                    },
                     locked: {
                         type: 'boolean',
                     },
@@ -71,6 +74,9 @@ module.exports = {
                                 type: 'keyword',
                             },
                         },
+                    },
+                    about_me: {
+                        type: 'text',
                     },
                     author: {
                         type: 'keyword',

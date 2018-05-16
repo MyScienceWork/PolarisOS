@@ -83,6 +83,10 @@
                             </fvariadic-element>
                             <finput name="hpassword" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.sinks.creations.user" />
                             <finput name="retype_hpassword" :label="lang('b_retype_password')" :is-required="true" :placeholder="lang('b_retype_password')" type="password-sha1" :form="state.sinks.creations.user" />
+                            <finput 
+                                name="public_profile" :label="lang('b_is_profile_public')" 
+                                type="checkbox" :form="state.sinks.creations.user" 
+                            />
                             <fselect 
                                 name="roles" 
                                 :label="lang('b_role', {}, 'other')" 
@@ -100,7 +104,7 @@
                                 :options="authors" 
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"
-                                fieldLabel="fullName"
+                                fieldLabel="fullname"
                             />
                         </fform>
                     </div>

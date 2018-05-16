@@ -41,6 +41,15 @@ module.exports = {
                         project: APIRoutes.entity('project', 'POST', true),
                     },
                 },
+                orders: {
+                    reads: {
+                        typology: ['order'],
+                        langref: ['order'],
+                        project: ['-in_progress', '-start_year', 'name.raw'],
+                        laboratory: ['-validity', '-types.ined', 'name.raw'],
+                        author: ['lastname.raw', 'fullname.raw'],
+                    },
+                },
                 link: null,
                 activeSelectTab: 0,
                 activeYearTab: 0,
@@ -52,13 +61,30 @@ module.exports = {
             this.state.link = null;
             this.send_information(this.state.sinks.creations.export);
         },
+        /* select_or_unselect(field, select, info, value) {
+            if (select) {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.export,
+                    body: {
+                        [field]: info.map(i => ({ [value]: i[value] })),
+                    },
+                });
+            } else {
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations.export,
+                    body: {
+                        [field]: undefined,
+                    },
+                });
+            }
+        },*/
         send_information(sink) {
             if (sink === this.state.sinks.creations.export) {
                 const content = this.fcontent(sink);
                 const myurl = APIRoutes.export_bibliography();
                 const params = {};
                 const single_values = ['language', 'sort', 'group', 'size', 'start_year', 'end_year', 'csl'];
-                const multi_values = ['project', 'author', 'laboratory', 'typology', 'internal_collection'];
+                const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypogy', 'internal_collection'];
 
                 single_values.forEach((n) => {
                     if (n in content && content[n]) {
@@ -122,6 +148,32 @@ module.exports = {
         export_state() {
             return this.fstate(this.state.sinks.creations.export);
         },
+        /* typology() {
+            const content = this.fcontent(this.state.sinks.creations.export);
+            if ('typology' in content) {
+                return content.typology;
+            }
+            return null;
+        },
+        subtypology() {
+            const content = this.fcontent(this.state.sinks.creations.export);
+            if ('subtypology' in content) {
+                return content.subtypology;
+            }
+            return null;
+        },
+        all_types_selected() {
+            if (!this.typology) {
+                return false;
+            }
+            return this.typology.length === this.content(this.state.sinks.reads.typology).length;
+        },
+        all_subtypes_selected() {
+            if (!this.subtypology) {
+                return false;
+            }
+            return this.subtypology.length === this.subtypology_content.length;
+        },*/
         content() {
             return (sink) => {
                 const _content = this.fcontent(sink);
@@ -133,6 +185,14 @@ module.exports = {
                 }
                 return _content;
             };
+        },
+        subtypology_content() {
+            const typology = this.content(this.state.sinks.reads.typology);
+            const children = _.flatten(typology.map(t => t.children)).reduce((arr, st) => {
+                arr.push({ label: st.label, value: st.name });
+                return arr;
+            }, []);
+            return children;
         },
         langref_content() {
             const c = this.content(this.state.sinks.reads.langref);
@@ -176,6 +236,9 @@ module.exports = {
                 content: {
                     form: this.state.sinks.reads[name],
                     path: this.state.paths.reads[name],
+                    body: {
+                        sort: this.state.orders.reads[name] || [],
+                    },
                 },
             });
         });

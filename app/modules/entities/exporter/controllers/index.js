@@ -505,6 +505,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
     const query = ctx.query;
 
     const types = query.typology || [];
+    const subtypes = query.subtypology || [];
     const projects = query.project || [];
     const authors = query.author || [];
     const labs = query.laboratory || [];
@@ -531,7 +532,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
         throw e;
     }
 
-    if (types.length === 0) {
+    if (types.length === 0 && subtypes.length === 0) {
         const e = Errors.InvalidEntity;
         e.message = 'l_err_no_typology_bexport';
         throw e;
@@ -571,6 +572,10 @@ async function export_bibliography(ctx: Object): Promise<any> {
 
     if (types.length > 0) {
         where.$and.push({ type: types });
+    }
+
+    if (subtypes.length > 0) {
+        where.$and.push({ subtype: subtypes });
     }
 
     if (collections.length > 0) {

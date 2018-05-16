@@ -112,7 +112,7 @@
                     </div>
                 </div><!-- Level buttons -->
                 <div
-                    v-if="_oa_find(info, 'system.emails', []).length > 0 || _oa_find(info, 'system.depositor_comment')" 
+                    v-if="(_oa_find(info, 'system.emails', []).length > 0 || _oa_find(info, 'system.depositor_comment')) && showStatus" 
                 > 
                     <p v-if="_oa_find(info, 'system.depositor_comment')"><strong>{{lang('l_your_depositor_comment')}}</strong></p>
                     <p v-if="_oa_find(info, 'system.depositor_comment')">{{_oa_find(info, 'system.depositor_comment') | eol_to_br}}</p>

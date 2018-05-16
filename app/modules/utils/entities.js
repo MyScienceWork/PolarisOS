@@ -315,9 +315,9 @@ async function create(info: Object, type: string): Promise<*> {
         return null;
     }
 
-    if ('_id' in info) {
+    /* if ('_id' in info) {
         delete info._id;
-    }
+    }*/
 
     const model = cls.model;
     const response = await cls.constructor.create(get_index(type), type, es_client,
