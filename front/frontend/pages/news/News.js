@@ -1,10 +1,11 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const moment = require('moment');
 
 module.exports = {
-    mixins: [LangMixin, ReaderMixin],
+    mixins: [LangMixin, ReaderMixin, FiltersMixin],
     data() {
         return {
             state: {
@@ -27,11 +28,6 @@ module.exports = {
     },
     components: {
     },
-    methods: {
-        date_format(date) {
-            return moment(date).fromNow();
-        },
-    },
     mounted() {
         this.$store.state.requests = ['news'].map(e => ({
             name: 'search',
@@ -49,11 +45,7 @@ module.exports = {
     },
     computed: {
         news() {
-            const content = this.mcontent(this.state.sinks.reads.news);
-            if (content instanceof Array) {
-                return content;
-            }
-            return [];
+            return this.mcontent(this.state.sinks.reads.news);
         },
     },
 };
