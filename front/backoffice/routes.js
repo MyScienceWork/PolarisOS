@@ -15,7 +15,6 @@ module.exports = {
     publication: '/admin/publication',
     csl: '/admin/csl',
     form: '/admin/form',
-    menu: '/admin/menu',
     lang: '/admin/lang',
     external_repo: '/admin/external_repository',
     export_format: '/admin/export_format',

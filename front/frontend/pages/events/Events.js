@@ -5,7 +5,6 @@ const APIRoutes = require('../../../common/api/routes');
 // const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
-const moment = require('moment');
 
 module.exports = {
     mixins: [LangMixin, ReaderMixin],
@@ -33,9 +32,6 @@ module.exports = {
     components: {
     },
     methods: {
-        date_format(date) {
-            return moment(date).fromNow();
-        },
     },
     watch: {
         es_query_contents(new_content) {

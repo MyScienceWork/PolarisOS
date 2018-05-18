@@ -23,6 +23,7 @@ const Formatting: Array<any> = [
 const Completion: Array<any> = [];
 
 const Defaults: Object = {
+    global_access: {},
 };
 
 const Messages: Object = {

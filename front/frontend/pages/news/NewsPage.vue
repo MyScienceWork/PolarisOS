@@ -5,6 +5,15 @@
             <div class="column is-10 has-text-centered">
                 <h4 class="title is-4">{{message.title}}</h4>
             </div>
+        </div>        
+        <div class="columns is-centered">
+            <div class="column is-10">
+                <article class="message is-link">
+                    <div class="message-body">
+                        <p><strong v-html="message.header"></strong></p>
+                    </div>
+                </article>
+            </div>
         </div>
         <div class="columns is-centered">
             <div class="column is-10 has-text-centered">
@@ -17,16 +26,7 @@
         </div>
         <div class="columns is-centered">
             <div class="column is-10">
-                <article class="message is-link">
-                    <div class="message-body">
-                        <p><strong v-html="message.header"></strong></p>
-                    </div>
-                </article>
-            </div>
-        </div>
-        <div class="columns is-centered">
-            <div class="column is-10">
-                <p v-html="message.content"></p>
+                <p v-html="message.body"></p>
             </div>
         </div>
     </div>

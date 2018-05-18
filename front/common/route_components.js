@@ -11,6 +11,7 @@ const Events = require('../frontend/pages/events/Events.vue');
 const NewsPage = require('../frontend/pages/news/NewsPage.vue');
 const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
 const ForumThread = require('../frontend/pages/forum/Forum.vue');
+const ForumNewSubject = require('../frontend/pages/forum/ForumNewSubject.vue');
 const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
 const UserList = require('../frontend/pages/user_list/UserList.vue');
@@ -33,6 +34,7 @@ module.exports = {
     '/events/:id': Events,
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
+    '/forum/newsubject': ForumNewSubject,
     '/login': LoginView,
     '/user_list': UserList,
 };

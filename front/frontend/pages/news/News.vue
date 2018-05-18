@@ -6,13 +6,15 @@
                 <div class="column is-full">
                     <div class="card is-full">
                         <header class="card-header">
+                            <router-link :to="`/news/${mnew._id}`">
                             <p class="card-header-title">
                                 {{mnew.title}}
                             </p>
                             <p class="subtitle is-6 is-pulled-right">
                                 {{mnew.creator.fullName}}
-                                 <time :datetime="mnew.updatedAt">{{mnew.updatedAt}}</time>
+                                 <time :datetime="mnew.updatedAt">{{format_date(mnew.updatedAt, 'fromNow')}}</time>
                             </p>
+                            </router-link>
                         </header>
                         <div class="card-content">
                             <div class="columns">
@@ -23,7 +25,7 @@
                                 </div>
                                 <div class="column">
                                     <div class="content">
-                                        {{mnew.body}}
+                                        {{mnew.header}}
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="columns"></div>
+            <br/>
         </div>
     </div>
 </div>

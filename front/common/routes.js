@@ -16,6 +16,7 @@ module.exports = [
     '/events/id',
     '/forum',
     '/forum/thread/:id',
+    '/forum/newsubject',
     '/login',
     '/user_list',
 ];

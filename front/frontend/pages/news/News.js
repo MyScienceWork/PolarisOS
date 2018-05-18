@@ -2,7 +2,6 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
-const moment = require('moment');
 
 module.exports = {
     mixins: [LangMixin, ReaderMixin, FiltersMixin],
@@ -37,7 +36,7 @@ module.exports = {
                 path: this.state.paths.reads[e],
                 body: {
                     size: 20,
-                    population: ['auhtor'],
+                    population: ['author'],
                     where: {},
                 },
             },

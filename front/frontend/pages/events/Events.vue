@@ -22,12 +22,12 @@
                           <div class="card-content">
                               <div class="content">
                                   {{row.location.country}}, {{row.location.city}}
-                                  <time class="is-pulled-right" :datetime="row.startDate">{{row.startDate}}</time>
+                                  <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
-                                          <span> {{row.body}} </span>
+                                          <span> {{row.header}} </span>
                                       </div>
                               </div>
                           </div>
@@ -51,12 +51,12 @@
                           <div class="card-content">
                               <div class="content">
                                   {{row.location.country}}, {{row.location.city}}
-                                  <time class="is-pulled-right" :datetime="row.startDate">{{row.startDate}}</time>
+                                  <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
-                                          <span> {{row.body}} </span>
+                                          <span> {{row.header}} </span>
                                       </div>
                               </div>
                           </div>
