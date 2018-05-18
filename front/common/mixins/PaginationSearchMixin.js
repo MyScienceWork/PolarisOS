@@ -132,7 +132,6 @@ module.exports = {
                 if (segments[segments.length - 1] === 'raw') {
                     segments.pop();
                 }
-                console.log(segments, source);
                 const val = Utils.find_value_with_path(source, segments);
                 if (val) {
                     sa.push(val);
@@ -201,8 +200,6 @@ module.exports = {
                 sort: [],
             };
 
-            console.log(this.state.seso);
-
             const extra_filters = this.state.seso.extra_filters || {};
             let where = {};
             if (this.state.seso.filters.length > 0) {
@@ -253,10 +250,9 @@ module.exports = {
                 body.where = where;
             }
 
-            const q = _.merge({}, this.$route.query, { s: new_content.search || undefined,
+            const q = _.merge({}, this.$route.query, { s: new_content.search || '',
                 seso_filter: this.state.seso.filters,
             /* seso_extra_filter: this.state.seso.extra_filters*/ });
-            console.log('query', q);
             this.$router.replace({ query: q });
 
             if (this.state.seso.sort) {
@@ -347,7 +343,6 @@ module.exports = {
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;
         this.state.seso.filters = this.filters;
-        console.log('mounted PSM', this.state.seso);
         if ((search === '' && sink === '') && !this.useDefaultQuery) {
             return;
         }

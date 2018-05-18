@@ -45,7 +45,10 @@ class Pipeline extends ODM {
             return source.resetters.reduce((obj, d) => {
                 if (d.value != null && d.key != null) {
                     const t = Handlebars.compile(d.value)({});
-                    const small = Utils.make_nested_object_from_path(d.key, t);
+                    let myobj = t;
+                    try { myobj = JSON.parse(t); } catch (err) {}
+
+                    const small = Utils.make_nested_object_from_path(d.key.split('.'), myobj);
                     obj = Utils.merge_with_replacement(obj, small);
                 }
                 return obj;

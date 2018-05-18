@@ -64,7 +64,7 @@
                             :get_form="state.sinks.reads.pipeline"
                         >
                             <finput name="name" :label="lang('b_pipeline_name')" :is-required="true" :placeholder="lang('b_pipeline_name')" type="text" :form="state.sinks.creations.pipeline" />
-                            <tabber :tabs="[lang('b_defaults', {}, 'other'), lang('b_formatters', {}, 'other'), lang('b_completers', {}, 'other'), lang('b_transformers', {}, 'other'), lang('b_validations', {}, 'other')]">
+                            <tabber :tabs="[lang('b_defaults', {}, 'other'), lang('b_formatters', {}, 'other'), lang('b_completers', {}, 'other'), lang('b_transformers', {}, 'other'), lang('b_validations', {}, 'other'), lang('b_reset')]">
                                 <template slot="body" slot-scope="tprops">
                                     <template v-if="tprops.id === 0">
                                         <fvariadic-element
@@ -236,6 +236,33 @@
                                                     :name="`${props.fname}.${props.order}.required`" 
                                                     :label="lang('b_field_required')" 
                                                     type="checkbox" 
+                                                    :form="state.sinks.creations.pipeline" 
+                                                />
+                                            </template>
+                                        </fvariadic-element>
+                                    </template>
+                                    <template v-else-if="tprops.id === 5"> <!-- reset -->
+                                        <fvariadic-element 
+                                            name="resetters" 
+                                            :form="state.sinks.creations.pipeline" 
+                                            :tabs="true"
+                                            :is-required="false"
+                                            :key="tprops.id">
+                                            <template slot="variadic" slot-scope="props">
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.key`" 
+                                                    :label="lang('b_key')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('b_key')" 
+                                                    type="text" 
+                                                    :form="state.sinks.creations.pipeline" 
+                                                />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.value`" 
+                                                    :label="lang('b_value')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('b_value')" 
+                                                    type="text" 
                                                     :form="state.sinks.creations.pipeline" 
                                                 />
                                             </template>

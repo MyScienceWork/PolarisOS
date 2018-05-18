@@ -169,6 +169,12 @@ module.exports = {
                                     sort: {
                                         type: 'text',
                                     },
+                                    search_fields: {
+                                        type: 'keyword',
+                                    },
+                                    size: {
+                                        type: 'integer',
+                                    },
                                     query: {
                                         type: 'keyword',
                                     },
