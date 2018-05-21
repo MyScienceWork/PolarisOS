@@ -23,6 +23,7 @@ const HierarchicalSelect = require('../common/components/main/forms/elements/hie
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
 const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
+const LoginChoice = require('../common/components/main/login_choice/LoginChoice.vue');
 const RSSC = require('../common/components/main/rss/RSS.vue');
 const BibliographicExport = require('../common/components/main/bibliographic_export/BibliographicExport.vue');
 
@@ -74,6 +75,7 @@ Vue.component('hierarchical-structure', HierarchicalStructure);
 Vue.component('card', Card);
 Vue.component('widget', Widget);
 Vue.component('login-lang', LoginLang);
+Vue.component('login-choice', LoginChoice);
 Vue.component('rss-feed-icon', RSSC);
 Vue.component('bibliographic-export', BibliographicExport);
 

@@ -15,6 +15,7 @@ const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
 const UserList = require('../frontend/pages/user_list/UserList.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
+const LoginChoiceView = require('../frontend/pages/login_choice/LoginChoice.vue');
 
 module.exports = {
     '/': Home,
@@ -34,5 +35,6 @@ module.exports = {
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
     '/login': LoginView,
+    '/login/choice': LoginChoiceView,
     '/user_list': UserList,
 };

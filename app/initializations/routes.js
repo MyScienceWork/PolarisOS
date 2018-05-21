@@ -8,6 +8,7 @@ const BackRoutes = require('../../front/backoffice/routes');
 const CommonRoutes = require('../../front/common/routes');
 const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
+const AuthUtils = require('../modules/utils/auth');
 const UserRoutes = require('../modules/entities/user/routes');
 const EntityRoutes = require('../modules/entities/entity/routes');
 const ImporterRoutes = require('../modules/entities/importer/routes');
@@ -57,6 +58,7 @@ async function initialize_routes() {
         `${Config.root}/public/uploads`), UploadUtils.add_single]));
     router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
     router.get('/downloads/:entity/:eid/:names/:filenames', Compose([UploadUtils.multi_download]));
+    router.get(`${puprefix}/login/cas`, Compose([AuthUtils.cas_sso]));
     return router;
 }
 

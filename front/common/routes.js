@@ -17,5 +17,6 @@ module.exports = [
     '/forum',
     '/forum/thread/:id',
     '/login',
+    '/login/choice',
     '/user_list',
 ];
