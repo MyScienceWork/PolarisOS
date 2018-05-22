@@ -171,6 +171,8 @@ function generate_put_routes(router: KoaRouter, prefix: string,
     router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
     router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
+
+    // router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
 }
 
 function generate_post_routes(router: KoaRouter, prefix: string,
@@ -181,6 +183,8 @@ function generate_post_routes(router: KoaRouter, prefix: string,
     router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
     router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
+
+    // router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
 }
 
 function generate_entity_routes(router: KoaRouter,

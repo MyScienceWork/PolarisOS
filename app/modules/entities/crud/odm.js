@@ -373,7 +373,7 @@ class ODM {
     }
 
     static async _bulk_create_or_update(index: string, type: string, client: Object,
-            body: Object, action: string = 'create'): Promise<?ODM> {
+            body: Array<Object>, action: string = 'create'): Promise<?ODM> {
         try {
             const content = {
                 index,
@@ -438,12 +438,12 @@ class ODM {
     }
 
     static async bulk_create(index: string, type: string, client: Object,
-            body: Object): Promise<?ODM> {
+            body: Array<Object>): Promise<?ODM> {
         return this._bulk_create_or_update(index, type, client, body, 'create');
     }
 
     static async bulk_update(index: string, type: string, client: Object,
-            body: Object): Promise<?ODM> {
+            body: Array<Object>): Promise<?ODM> {
         return this._bulk_create_or_update(index, type, client, body, 'update');
     }
 

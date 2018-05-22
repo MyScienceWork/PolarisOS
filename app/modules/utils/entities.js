@@ -315,13 +315,33 @@ async function create(info: Object, type: string): Promise<*> {
         return null;
     }
 
-    /* if ('_id' in info) {
+    if ('_id' in info) {
         delete info._id;
-    }*/
+    }
 
     const model = cls.model;
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
+    return response;
+}
+
+async function creates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_create(get_index(type), type, es_client, items);
+    return response;
+}
+
+async function updates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_update(get_index(type), type, es_client, items);
     return response;
 }
 
@@ -489,7 +509,9 @@ module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
 module.exports.create = create;
+module.exports.creates = creates;
 module.exports.update = update;
+module.exports.updates = updates;
 module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
