@@ -157,6 +157,43 @@
                                     />
                                 </div>
                             </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_auth_setting', {}, 'other')}}</span>
+                                <div slot="body">
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{lang('l_cas_sso')}}</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="authentication.use_cas_sso" 
+                                                :label="lang('l_config_use_cas_sso')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="authentication.cas_sso.base" 
+                                                :label="lang('l_config_cas_base_url')" 
+                                                :placeholder="lang('l_config_cas_base_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="authentication.cas_sso.service" 
+                                                :label="lang('l_config_cas_service_url')" 
+                                                :placeholder="lang('l_config_cas_service_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                        </div>
+                                    </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{lang('l_ldap')}}</span>
+                                        <div slot="body">
+                                        </div>
+                                    </widget>
+                                </div>
+                            </widget>
                         </fform>
                     </div>
                 </widget>

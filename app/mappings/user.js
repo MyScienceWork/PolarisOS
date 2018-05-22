@@ -30,6 +30,9 @@ module.exports = {
                             },
                         },
                     },
+                    uid: {
+                        type: 'keyword',
+                    },
                     enabled: {
                         type: 'boolean',
                     },

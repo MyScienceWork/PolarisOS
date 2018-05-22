@@ -19,19 +19,19 @@
                     </router-link>
                 </card>
             </div>
-            <div class="column is-2 is-vcentered is-justify-center">
+            <div class="column is-2 is-vcentered is-justify-center" v-if="cas_url">
                 <p class="is-4 title"><strong>{{lang('l_or')}}</strong></p>
             </div>
-            <div class="column is-4">
+            <div class="column is-4" v-if="cas_url">
                 <card class="card-equal-height clickable-card-red has-cursor-pointer">
-                    <router-link tag="div" to="/login/cas" slot="card-content">
+                    <div slot="card-content" @click.prevent="redirect_to_cas">
                         <h2 class="has-text-centered icon title is-2 is-large">
                             <i class="fa fa-lock"></i>
                         </h2>
                         <p class="is-4 subtitle">
                             {{lang('l_use_cas_sso_login')}} 
                         </p>
-                    </router-link>
+                    </div>
                 </card>
             </div>
         </div>
