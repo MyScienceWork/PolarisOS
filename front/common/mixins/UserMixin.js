@@ -1,7 +1,9 @@
 const Auth = require('../utils/auth');
+const OAMixin = require('../mixins/ObjectAccessMixin');
 const Browser = require('../utils/browser');
 
 module.exports = {
+    mixins: [OAMixin],
     computed: {
         user() {
             const u = Auth.user();
@@ -41,10 +43,39 @@ module.exports = {
         },
     },
     methods: {
+        redirect_to_cas(url) {
+            window.location.href = url;
+            // window.location.reload();
+        },
+        generate_cas_sso_url(redirect, logout = false) {
+            const use_cas_sso = this._oa_find(this.$store.state.global_config, 'authentication.use_cas_sso', false);
+            const url = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.base');
+            const service = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.service');
+
+            if (use_cas_sso && url && service) {
+                let service_redirection = service;
+
+                if (redirect && !logout) {
+                    service_redirection = `${service}?redirect=${encodeURIComponent(redirect)}`;
+                }
+
+                if (logout) {
+                    return `${url}/logout?service=${encodeURIComponent(redirect)}`;
+                }
+                return `${url}/login?service=${encodeURIComponent(service_redirection)}`;
+            }
+            return null;
+        },
         logout() {
+            const is_sso = this.user.sso;
             Auth.logout();
-            this.$router.push({ path: '/' });
-            location.reload();
+            if (is_sso) {
+                const url = Browser.getURLHost(window.location);
+                this.redirect_to_cas(this.generate_cas_sso_url(url, true));
+            } else {
+                this.$router.push({ path: '/' });
+                location.reload();
+            }
         },
         change_language(lang) {
             Browser.localSet('default_lang', lang);

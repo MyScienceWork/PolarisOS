@@ -22,6 +22,14 @@ module.exports = {
     },
     mounted() {
         this.$store.commit(Messages.LOGIN_PASS, { status: 'na' });
+        if (this.$router.query.ticket) {
+            this.$store.dispatch('authenticate', {
+                email: null,
+                password: null,
+                redirect: this.$route.query.redirect,
+                ticket: this.$router.query.ticket,
+            });
+        }
     },
     watch: {
         login_status(ns) {

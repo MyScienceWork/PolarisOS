@@ -160,6 +160,12 @@
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_auth_setting', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <finput
+                                        name="authentication.default_cas_sso" 
+                                        :label="lang('l_config_use_cas_sso_by_default')" 
+                                        :form="state.sinks.creations.config" 
+                                        type="checkbox"
+                                    />
                                     <widget :collapsed="true">
                                         <span slot="title">{{lang('l_cas_sso')}}</span>
                                         <div slot="body">

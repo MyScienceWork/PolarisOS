@@ -1,3 +1,4 @@
+require('babel-polyfill'); // For very very old browser
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');

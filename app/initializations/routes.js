@@ -58,7 +58,6 @@ async function initialize_routes() {
         `${Config.root}/public/uploads`), UploadUtils.add_single]));
     router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
     router.get('/downloads/:entity/:eid/:names/:filenames', Compose([UploadUtils.multi_download]));
-    router.get(`${puprefix}/login/cas`, Compose([AuthUtils.cas_sso]));
     return router;
 }
 

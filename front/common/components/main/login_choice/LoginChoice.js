@@ -1,24 +1,26 @@
 const LangMixin = require('../../../mixins/LangMixin');
+const UserMixin = require('../../../mixins/UserMixin');
 const OAMixin = require('../../../mixins/ObjectAccessMixin');
 
 module.exports = {
-    mixins: [LangMixin, OAMixin],
+    mixins: [LangMixin, UserMixin, OAMixin],
     methods: {
-        redirect_to_cas() {
-            window.location.href = this.cas_url;
-            // window.location.reload();
-        },
+    },
+    mounted() {
+        if (this.default_cas_sso) {
+            console.log('default_cas_sso', this.default_cas_sso);
+            this.redirect_to_cas(this.generate_cas_sso_url(this.$route.query.redirect));
+        }
     },
     computed: {
-        cas_url() {
-            const use_cas_sso = this._oa_find(this.$store.state.global_config, 'authentication.use_cas_sso', false);
-            const url = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.base');
-            const service = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.service');
-
-            if (use_cas_sso && url && service) {
-                return `${url}/login?service=${encodeURIComponent(service)}`;
+        default_cas_sso() {
+            return this._oa_find(this.$store.state.global_config, 'authentication.default_cas_sso', false);
+        },
+        login_url() {
+            if (this.$route.query.redirect) {
+                return `/login?redirect=${encodeURIComponent(this.$route.query.redirect)}`;
             }
-            return null;
+            return '/login';
         },
     },
 };

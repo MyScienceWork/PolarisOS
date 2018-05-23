@@ -18,13 +18,13 @@ function my_router(routes) {
                     next();
                 } else {
                     next({
-                        path: '/login',
+                        path: '/login/choice',
                         query: { redirect: to.fullPath },
                     });
                 }
             }).catch(() => {
                 next({
-                    path: '/login',
+                    path: '/login/choice',
                     query: { redirect: to.fullPath },
                 });
             });

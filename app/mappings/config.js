@@ -68,6 +68,9 @@ module.exports = {
                     },
                     authentication: {
                         properties: {
+                            default_cas_sso: {
+                                type: 'boolean',
+                            },
                             use_cas_sso: {
                                 type: 'boolean',
                             },
