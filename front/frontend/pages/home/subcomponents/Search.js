@@ -19,7 +19,7 @@ module.exports = {
     data() {
         return {
             state: {
-                as_query: _.merge({}, { as: 'advanced_search' }),
+                as_query: _.merge({}, { show_advanced_search: 'advanced_search' }),
                 collapse_opened: false,
                 more_options: false,
                 search: '',

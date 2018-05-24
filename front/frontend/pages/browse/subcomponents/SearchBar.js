@@ -12,27 +12,30 @@ module.exports = {
         useFavorites: { default: false, type: Boolean },
         color: { default: 'purple' },
         placeholder: { default: 'f_search_in_archive', type: String },
-        as: { default: undefined, type: String },
+        show_advanced_search: { default: false, type: Boolean },
     },
     data() {
         return {
             state: {
-                showAdvanced: false,
+                // showAdvanced: false,
             },
         };
     },
-    watch: {
-        as(value) {
-            if (value === 'advanced_search') {
-                this.state.showAdvanced = true;
-            }
-        },
-    },
+    // watch: {
+    //     as(value) {
+    //         if (value === 'advanced_search') {
+    //             this.state.showAdvanced = true;
+    //         }
+    //     },
+    // },
     methods: {
         search() {
             this.$store.commit(Messages.FORCE_COMPLETION, {
                 form: this.searchSink,
             });
+        },
+        showAdvancedSearch() {
+            this.$emit('update:show_advanced_search', !this.show_advanced_search);
         },
     },
     computed: {
