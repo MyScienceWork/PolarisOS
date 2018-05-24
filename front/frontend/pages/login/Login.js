@@ -41,6 +41,7 @@ module.exports = {
                 } else {
                     this.$router.push({ path: redirect });
                 }
+                location.reload();
             }
         },
     },
