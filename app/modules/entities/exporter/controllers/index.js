@@ -19,7 +19,7 @@ const CSLUtils = require('../../../utils/csl');
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
 async function transform_to_bibtex_type(publication: Object, extra: Object,
-    fields: Array<string> = [], type: string = 'other'): Promise<Object> {
+    fields: Array<string> = [], type: string = 'other', memoizer: Object): Promise<Object> {
     const grab_abstract = async (pub) => {
         const ab = pub.abstracts.filter(a => a.lang === pub.lang);
         if (ab.length > 0) {
@@ -69,16 +69,31 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
             return null;
         }
 
-        const roles = await EntitiesUtils.search_and_get_sources('contributor_role', {
-            size: 50,
-            where: {},
-            population: ['abbreviation'],
-        });
+        let roles = [];
 
-        const authors = await Promise.all(authors_et_al.map(a => EntitiesUtils.retrieve_and_get_source('author', a.label)));
+        if ('roles' in memoizer.contributor_role) {
+            roles = memoizer.contributor_role.roles;
+        } else {
+            roles = await EntitiesUtils.search_and_get_sources('contributor_role', {
+                size: 50,
+                where: {},
+                population: ['abbreviation'],
+            });
+            memoizer.contributor_role.roles = roles;
+        }
+
+        const authors = await Promise.all(authors_et_al.map(async (a) => {
+            if (a.label in memoizer.author) {
+                return memoizer.author[a.label];
+            }
+            const author = await EntitiesUtils.retrieve_and_get_source('author', a.label);
+            memoizer.author[a.label] = author;
+            return author;
+        }));
+
         const authors_roles = authors_et_al.map(a => roles.find(r => r.value === a.role));
 
-        const names = authors.map((a, i) => {
+        const names = authors.filter(a => a != null).map((a, i) => {
             const role = authors_roles[i];
             if (role.value !== 'author') {
                 const abbreviation = role.abbreviation
@@ -163,6 +178,21 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
 }
 
 async function transform_to_bibtex(publications: Array<Object>, extra: Object): Promise<string> {
+    const memoizer = {
+        typology: {
+
+        },
+        contributor_role: {
+
+        },
+        author: {
+
+        },
+        lang: {
+
+        },
+    };
+
     const results = [];
     const typology_mapping = {
         journal: 'article',
@@ -197,13 +227,21 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
             type = publication.subtype;
             lines.push(`@${typology_mapping[type]}{${publication._id}`);
         } else {
-            const typologys = await EntitiesUtils.search_and_get_sources('typology', {
-                size: 1,
-                where: {
-                    _id: [publication.type],
-                },
-            });
-            const typology = typologys[0];
+            let typology = null;
+
+            if (publication.type in memoizer.typology) {
+                typology = memoizer.typology[publication.type];
+            } else {
+                const typologys = await EntitiesUtils.search_and_get_sources('typology', {
+                    size: 1,
+                    where: {
+                        _id: [publication.type],
+                    },
+                });
+                typology = typologys[0];
+                memoizer.typology[publication.type] = typology;
+            }
+
             const name = typology.name;
             if (name in typology_mapping) {
                 type = name;
@@ -213,7 +251,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
             }
         }
 
-        const obj = await transform_to_bibtex_type(publication, extra, fields_mapping[type], type);
+        const obj = await transform_to_bibtex_type(publication, extra, fields_mapping[type], type, memoizer);
         lines = lines.concat(_.reduce(obj, (arr, val, key) => {
             arr.push(`${key} = ${val}`);
             return arr;
@@ -594,15 +632,48 @@ async function export_bibliography(ctx: Object): Promise<any> {
     console.log(where, size);
     const pub_results = await EntitiesUtils.search('publication', {
         where,
-        size: size[0],
-        sort,
+        size: 0, // size[0],
+        aggregations: {
+            'dates.publication':
+            {
+                $name: 'dates_publication',
+                $type: 'date_histogram',
+                interval: 'year',
+                format: 'YYYY',
+                keyed: true,
+                min_doc_count: 1,
+                order: { _time: 'desc' },
+                $aggregations: {
+                    subtype: {
+                        $name: 'subtype',
+                        $type: 'terms',
+                        keyed: true,
+                        min_doc_count: 1,
+                        order: { _term: 'asc' },
+                        $aggregations: {
+                            dummy_field: {
+                                $name: 'publications',
+                                $type: 'top_hits',
+                                size: size[0],
+                                _source: {
+                                    includes: ['dates.publication', 'title.content', 'lang'],
+                                },
+                                sort: [{ 'dates.publication': 'desc' }],
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        // sort,
+
     });
 
     const publications = EntitiesUtils.get_hits(pub_results);
-    console.log(publications);
+    const aggregations = EntitiesUtils.get_aggs(pub_results);
+    console.log(JSON.stringify(aggregations));
     ctx.__md.lang = lang[0];
     const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
-    console.log(bibtex_output);
 
     const data = new Cite(bibtex_output);
     let results = data.get({
@@ -615,8 +686,6 @@ async function export_bibliography(ctx: Object): Promise<any> {
     results = JSON.parse(JSON.stringify(results));
 
     if (export_type[0] === '.docx') {
-        console.log(results);
-        console.log(csl[0]);
         results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
         results = HtmlDocx.asBlob(results);
 

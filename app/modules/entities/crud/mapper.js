@@ -336,6 +336,15 @@ class AggregationMapper {
         }, []);
     }
 
+    static check_aggregation_with_required_field(agg_type) {
+        switch (agg_type) {
+        case 'top_hits':
+            return false; // Does not require a field to work
+        default:
+            return true;
+        }
+    }
+
 
     static visit_object(aggregations, mapping) {
         const a = _.reduce(aggregations, (obj, value, key) => {
@@ -367,7 +376,7 @@ class AggregationMapper {
         }
 
         const types = mapping.get_all_type(field);
-        if (types.length === 0) {
+        if (types.length === 0 && AggregationMapper.check_aggregation_with_required_field(type)) {
             return null;
         }
 
@@ -433,6 +442,8 @@ class AggregationMapper {
             return new aggs.TermsAggregation(name, aggregation).field(field);
         case 'date_histogram':
             return new aggs.DateHistogramAggregation(name, aggregation).field(field);
+        case 'top_hits':
+            return new aggs.TopHitsAggregation(name, aggregation);
         case 'filter': {
             if (!('$query' in aggregation)) {
                 return null;
@@ -503,6 +514,7 @@ function transform_to_aggregation(body, mapping) {
 
     const agg = body.aggregations;
     const result = AggregationMapper.visit_object(agg, mapping);
+    console.log('agg result', result);
     return result;
 }
 

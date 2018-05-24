@@ -26,6 +26,63 @@ class Aggregation {
     }
 }
 
+class TopHitsAggregation extends Aggregation {
+    _size: number;
+    _from: number;
+    _sort: Array<Object>;
+    _source: ?Object;
+
+    constructor(name: string, object: Object = {}) {
+        super(name, object);
+        this._name = name;
+        this._object = object;
+        this._size = 'size' in object ? object.size : 0;
+        this._from = 'from' in object ? object.from : 0;
+        this._sort = 'sort' in object ? object.sort : [];
+        this._source = '_source' in object ? object._source : null;
+    }
+
+    size(s: number): TopHitsAggregation {
+        this._size = s;
+        return this;
+    }
+
+    from(f: number): TopHitsAggregation {
+        this._from = f;
+        return this;
+    }
+
+    sort(s: Array): TopHitsAggregation {
+        this._sort = s;
+        return this;
+    }
+
+    source(s: ?Object): TopHitsAggregation {
+        this._source = source;
+        return this;
+    }
+
+    generate(): Object {
+        const obj = {
+            [this._name]: {},
+        };
+
+        obj[this._name] = {
+            top_hits: {
+                sort: this._sort,
+                size: this._size,
+                from: this._from,
+            },
+        };
+
+        if (this._source) {
+            obj[this._name].top_hits._source = this._source;
+        }
+
+        return obj;
+    }
+}
+
 class MetricAggregation extends Aggregation {
 }
 
@@ -369,6 +426,7 @@ class DateHistogramAggregation extends BucketAggregation {
     _missing: any;
     _shard_size: number;
     _min_doc_count: number;
+    _order: ?Object;
 
     constructor(name: string, object: Object = {}) {
         super(name, object);
@@ -380,6 +438,19 @@ class DateHistogramAggregation extends BucketAggregation {
         this._timezone = 'timezone' in object ? object.timezone : null;
         this._interval = 'interval' in object ? object.interval : null;
         this._offset = 'offset' in object ? object.offset : null;
+        this._order = 'order' in object ? this._extract_order(object.order) : null;
+    }
+
+    _extract_order(order: Object): ?Object {
+        if (order && Object.keys(order).length === 1) {
+            const keys = Object.keys(order);
+            const key = keys[0];
+            if (order[key] === 'desc' || order[key] === 'asc') {
+                return order;
+            }
+            return null;
+        }
+        return null;
     }
 
     missing(m: any) {
@@ -409,6 +480,11 @@ class DateHistogramAggregation extends BucketAggregation {
 
     interval(inter: string): DateHistogramAggregation {
         this._interval = inter;
+        return this;
+    }
+
+    order(o: ?Object): DateHistogramAggregation {
+        this._order = this._extract_order(o);
         return this;
     }
 
@@ -445,6 +521,10 @@ class DateHistogramAggregation extends BucketAggregation {
             obj[this._name].date_histogram.missing = this._missing;
         }
 
+        if (this._order != null) {
+            obj[this._name].date_histogram.order = this._order;
+        }
+
         if (this._sub_aggregations.length > 0) {
             obj[this._name].aggs = {};
             obj[this._name].aggs = this._sub_aggregations.reduce((o, agg) => {
@@ -476,4 +556,5 @@ module.exports = {
     FilterAggregation,
     TermsAggregation,
     DateHistogramAggregation,
+    TopHitsAggregation,
 };
