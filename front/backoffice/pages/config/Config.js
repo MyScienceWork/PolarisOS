@@ -19,6 +19,7 @@ module.exports = {
                     },
                     reads: {
                         config: 'config_read',
+                        role: 'role_read',
                     },
                 },
                 paths: {
@@ -27,6 +28,7 @@ module.exports = {
                     },
                     reads: {
                         config: APIRoutes.entity('config', 'POST', true),
+                        role: APIRoutes.entity('role', 'POST', true),
                     },
                 },
                 es_query_id: 'backoffice-config-query',
@@ -34,5 +36,20 @@ module.exports = {
                 environments: Environments,
             },
         };
+    },
+    mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.role,
+            path: this.state.paths.reads.role,
+            body: {
+                size: 10000,
+                projection: ['name'],
+            },
+        });
+    },
+    computed: {
+        roles() {
+            return this.mcontent(this.state.sinks.reads.role);
+        },
     },
 };

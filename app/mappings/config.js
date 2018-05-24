@@ -8,6 +8,9 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
+                    base_url: {
+                        type: 'keyword',
+                    },
                     gui: {
                         properties: {
                             logo: {
@@ -71,6 +74,9 @@ module.exports = {
                             default_cas_sso: {
                                 type: 'boolean',
                             },
+                            default_assigned_role: {
+                                type: 'keyword',
+                            },
                             use_cas_sso: {
                                 type: 'boolean',
                             },
@@ -90,6 +96,9 @@ module.exports = {
                             ldap: {
                                 properties: {
                                     base: {
+                                        type: 'keyword',
+                                    },
+                                    dns: {
                                         type: 'keyword',
                                     },
                                     attributes: {
