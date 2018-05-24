@@ -12,7 +12,7 @@
                 <search-bar
                     :search-sink="state.sinks.creations.search"
                     :default-search="query_search"
-                    :show_advanced_search.sync="show_advanced_search"
+                    :show-advanced-search.sync="show_advanced_search"
                 />
             </div>
         </div>

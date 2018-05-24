@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
@@ -16,7 +18,6 @@ module.exports = {
     data() {
         return {
             state: {
-                // as: undefined,
                 paths: {
                     creations: {
                         search: APIRoutes.entity('publication', 'POST', true),
@@ -48,8 +49,24 @@ module.exports = {
         query_search() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
         },
-        show_advanced_search() {
-            return (this.$route.query && this.$route.query.show_advanced_search === 'advanced_search');
+        show_advanced_search: {
+            get() {
+                return (this.$route.query && this.$route.query.show_advanced_search === 'advanced_search');
+            },
+            set(nv) {
+                const q = _.cloneDeep(this.$route.query || {});
+
+                if (!nv) {
+                    delete q.show_advanced_search;
+                } else {
+                    q.show_advanced_search = 'advanced_search';
+                }
+                if (Object.keys(q).length === 0) {
+                    this.$router.replace({ query: null });
+                } else {
+                    this.$router.replace({ query: q });
+                }
+            },
         },
     },
 };

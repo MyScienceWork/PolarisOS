@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const Messages = require('../../../../api/messages');
 const APIRoutes = require('../../../../api/routes');
 const Utils = require('../../../../utils/utils');
@@ -5,9 +6,10 @@ const Utils = require('../../../../utils/utils');
 const FormMixin = require('../../../../mixins/FormMixin');
 const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
 const LangMixin = require('../../../../mixins/LangMixin');
+const RequestsMixin = require('../../../../mixins/RequestsMixin.js');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin],
     props: {
         selectPlaceholder: { default: 'l_select_content', type: String },
         label: { default: '', type: String },
@@ -107,6 +109,28 @@ module.exports = {
                 return 'type';
             }
             return entity[type];
+        },
+        reset() {
+            const sinks = [this.sink, this.state.sinks.creations.dummy,
+                this.state.sinks.creations.aggregate];
+            sinks.map(sink => this.$store.state.requests.push({
+                type: 'commit',
+                name: Messages.NOOP,
+                content: {
+                    form: sink,
+                },
+            }));
+
+            this.execute_requests().then(() => {
+                sinks.map(sink => this.$store.state.requests.push({
+                    type: 'commit',
+                    name: Messages.INITIALIZE,
+                    content: {
+                        form: sink,
+                    },
+                }));
+                Vue.nextTick(() => this.execute_requests().then(() => {}));
+            });
         },
     },
     watch: {
