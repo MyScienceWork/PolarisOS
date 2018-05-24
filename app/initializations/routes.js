@@ -19,6 +19,16 @@ const RssRoutes = require('../modules/3rdparty/rss/routes');
 async function initialize_routes() {
     const router = new Router();
 
+    const send_opts = {
+        root: Config.root,
+    };
+
+    if (Config._env === 'production') {
+        send_opts.maxage = 1000 * 60 * 60 * 24 * 7; // 7 days;
+    } else {
+        send_opts.maxage = 0;
+    }
+
     CommonRoutes.forEach((route) => {
         router.get(route, async (ctx) => {
             await ctx.render('front/views/front');
@@ -32,7 +42,7 @@ async function initialize_routes() {
     });
 
     router.get('/public/*', async (ctx) => {
-        await Send(ctx, ctx.path, { root: Config.root });
+        await Send(ctx, ctx.path, send_opts);
     });
 
 

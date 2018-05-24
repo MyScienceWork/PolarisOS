@@ -5,6 +5,7 @@ const gulp = require('gulp');
 const browserify = require('browserify');
 const envify = require('envify/custom');
 const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
 const gutil = require('gulp-util');
 const gulpif = require('gulp-if');
 const autoprefixer = require('gulp-autoprefixer');
@@ -17,7 +18,8 @@ const revision = require('gulp-rev');
 const gzip = require('gulp-gzip');
 const htmlreplace = require('gulp-html-replace');
 const clean = require('gulp-clean');
-const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify-es').default;
+// const gbabelify = require('gulp-babel');
 const vueify = require('vueify');
 const unflowify = require('unflowify');
 
@@ -45,6 +47,19 @@ class GulpFrontend {
             'vue-router',
             'lodash',
             'moment',
+            'fold-to-ascii',
+            'highcharts',
+            'buefy',
+            'superagent',
+            'crypto',
+            'file-saver',
+            'vue-grid-layout',
+            'vue-select',
+            'vuedraggable',
+            'vue-social-sharing',
+            'vue-wysiwyg',
+            'vue2-ace-editor',
+            'vue2-dropzone',
         ];
 
         this.external_dependencies = [
@@ -85,9 +100,10 @@ class GulpFrontend {
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
         .bundle()
-        .on('error', gutil.log)
         .pipe(source('bundle.js'))
-        // .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .pipe(buffer())
+        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .on('error', gutil.log)
         .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
@@ -99,14 +115,16 @@ class GulpFrontend {
         .transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
+        .transform(vueify)
         .transform('babelify', {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
         .bundle()
-        .on('error', gutil.log)
         .pipe(source('vendors.js'))
-        // .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .pipe(buffer())
+        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .on('error', gutil.log)
         .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 

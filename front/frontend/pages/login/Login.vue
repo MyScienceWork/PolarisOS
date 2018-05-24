@@ -4,7 +4,8 @@
         <div class="columns is-centered">
             <div class="column is-6">
                 <h3 class="title has-text-grey">{{lang('f_login_header')}}</h3>
-                <p class="subtitle has-text-grey">{{lang('f_login_to_proceed')}}</p>
+                <p class="subtitle has-text-grey">{{lang('f_login_to_proceed')}}
+                </p>
             </div>
         </div>
         <div class="columns is-centered">
