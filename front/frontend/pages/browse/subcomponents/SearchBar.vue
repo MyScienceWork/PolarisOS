@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="columns is-centered has-small-bottom-pargin">
-        <div class="column has-no-bottom-padding">
+        <div v-if="!show_advanced_search" class="column has-no-bottom-padding">
             <form @submit.prevent="search">
                 <div class="field has-addons">
                     <p class="control has-icons-left is-expanded">
@@ -26,10 +26,11 @@
     </div>
     <div class="columns is-pulled-right has-no-bottom-margin">
         <div class="column">
-            <a :class="`has-text-${color} swap`" href='' @click.prevent="state.showAdvanced = !state.showAdvanced" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
+            <a v-if="!show_advanced_search" :class="`has-text-${color} swap`" href='' @click.prevent=showAdvancedSearch() :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
+            <a v-else :class="`has-text-${color} swap`" href='' @click.prevent=showAdvancedSearch() :alt="lang('f_advanced_search')">{{lang('f_normal_search')}}</a>
         </div>
     </div>
-    <div class="columns is-clearfix" v-if="state.showAdvanced"> 
+    <div class="columns is-clearfix" v-if="show_advanced_search">
         <div class="column">
             <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="search">
             </faggregate-form>

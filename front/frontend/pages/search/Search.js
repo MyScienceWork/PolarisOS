@@ -16,6 +16,7 @@ module.exports = {
     data() {
         return {
             state: {
+                // as: undefined,
                 paths: {
                     creations: {
                         search: APIRoutes.entity('publication', 'POST', true),
@@ -32,6 +33,11 @@ module.exports = {
             },
         };
     },
+    // mounted() {
+    //     if (this.$route.query.as && this.$route.query.as === 'advanced_search') {
+    //         this.state.as = 'advanced_search';
+    //     }
+    // },
     methods: {
 
     },
@@ -41,6 +47,9 @@ module.exports = {
         },
         query_search() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
+        },
+        show_advanced_search() {
+            return (this.$route.query && this.$route.query.show_advanced_search === 'advanced_search');
         },
     },
 };
