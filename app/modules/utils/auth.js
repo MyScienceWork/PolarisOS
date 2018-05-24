@@ -190,7 +190,7 @@ async function cas_auth(ticket: string, redirect: string): Promise<Object> {
         }
 
         if (info.status) {
-            const uid = info.username;
+            const uid = info.username.toLowerCase();
             let user = await find_user(uid, 'uid');
 
             if (!user) {
