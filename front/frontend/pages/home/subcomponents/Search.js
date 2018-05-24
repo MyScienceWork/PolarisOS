@@ -3,6 +3,10 @@ const FormMixin = require('../../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const AdvancedSearchSpecs = require('../../../../common/specs/AdvancedSearchSpecs');
+const _ = require('lodash');
+// const Vue = require('vue');
+
+// Vue.use(_);
 
 module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin],
@@ -15,6 +19,7 @@ module.exports = {
     data() {
         return {
             state: {
+                as_query: _.merge({}, { as: 'advanced_search' }),
                 collapse_opened: false,
                 more_options: false,
                 search: '',
