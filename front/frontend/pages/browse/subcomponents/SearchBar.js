@@ -12,6 +12,7 @@ module.exports = {
         useFavorites: { default: false, type: Boolean },
         color: { default: 'purple' },
         placeholder: { default: 'f_search_in_archive', type: String },
+        as: { default: undefined, type: String },
     },
     data() {
         return {
@@ -19,6 +20,13 @@ module.exports = {
                 showAdvanced: false,
             },
         };
+    },
+    watch: {
+        as(value) {
+            if (value === 'advanced_search') {
+                this.state.showAdvanced = true;
+            }
+        },
     },
     methods: {
         search() {

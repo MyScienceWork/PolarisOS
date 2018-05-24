@@ -16,6 +16,7 @@ module.exports = {
     data() {
         return {
             state: {
+                as: undefined,
                 paths: {
                     creations: {
                         search: APIRoutes.entity('publication', 'POST', true),
@@ -31,6 +32,11 @@ module.exports = {
                 },
             },
         };
+    },
+    mounted() {
+        if (this.$route.fullPath === '/search?as=advanced_search') {
+            this.state.as = 'advanced_search';
+        }
     },
     methods: {
 
