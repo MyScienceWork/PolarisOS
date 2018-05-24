@@ -117,6 +117,7 @@ async function find_through_ldap(uid: string, config: Object): Promise<?Object> 
 
     const users = await promised_users;
 
+
     if (users.length === 0) {
         return null;
     }
@@ -217,6 +218,14 @@ async function cas_auth(ticket: string, redirect: string): Promise<Object> {
                     const response = await Request.post(`${pos_base_url}${puprefix}/user`)
                         .send(user);
                     if (!response) {
+                        return { ok: false, user: {} };
+                    }
+
+                    const json_response = JSON.parse(response.text);
+
+                    if ('change' in json_response && 'entity' in json_response) {
+                        user = json_response.entity.source;
+                    } else {
                         return { ok: false, user: {} };
                     }
                 } catch (err) {
