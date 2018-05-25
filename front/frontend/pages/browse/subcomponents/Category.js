@@ -33,11 +33,13 @@ module.exports = {
                 },
                 active_abc: null,
                 active_result: false,
+                current_page: 1,
+                per_page: 30,
             },
         };
     },
     mounted() {
-        this.post_hook_query_changed(this.state.query);
+        this.post_hook_query_changed(this.state.query, {});
     },
     methods: {
         browse() {
@@ -68,56 +70,69 @@ module.exports = {
                 this.send_information(this.state.sinks.creations.selected);
             });
         },
-        post_hook_query_changed(query) {
-            const entity = query.entity;
-            const label = query.label;
+        post_hook_query_changed(query, old_query) {
+            console.log(query, old_query);
+            const { agge, aggf, aggt, entity, label } = query;
+            if (old_query.agge === agge && old_query.aggf === aggf
+                    && old_query.aggt === aggt && old_query.entity === entity) {
+                console.log('should return');
+                return;
+            }
+
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.browse,
                 keep_content: false,
             });
 
-            if (entity != null && entity.trim() !== '') {
-                const body = {
-                    projection: [label],
-                    size: 1000,
-                };
-                if (query.order) {
-                    body.sort = query.order.split('|');
-                }
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.creations.browse,
-                    path: APIRoutes.entity(entity, 'POST', true),
-                    body,
-                });
-            }
-
-            if (query.agge && query.aggf && query.aggt) {
+            if (agge && aggf && aggt) {
                 let aggregation = {};
                 switch (query.aggt) {
                 case 'terms':
-                    aggregation = AggregationSpecs.terms_aggregation(query.aggf, 'myaggregation', 1);
+                    aggregation = AggregationSpecs.terms_aggregation(aggf, 'myaggregation', 1);
                     break;
                 case 'date':
-                    aggregation = AggregationSpecs.years_aggregation(query.aggf, 'myaggregation', 1);
+                    aggregation = AggregationSpecs.years_aggregation(aggf, 'myaggregation', 1);
                     break;
                 default:
                     break;
                 }
 
                 let where = {};
-                if (query.agge === 'publication') {
+                if (agge === 'publication') {
                     where = { $and: [Queries.published, Queries.no_other_version] };
                 }
 
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
-                    path: APIRoutes.entity(query.agge, 'POST', true),
+                    path: APIRoutes.entity(agge, 'POST', true),
                     body: {
                         size: 0,
                         where,
                         aggregations: aggregation,
                     },
+                }).then((results) => {
+                    const content = results.data;
+                    const agg_info = this.retrieve_aggregation_content(content);
+                    const keys = agg_info.map(ai => ai.key);
+
+                    if (entity != null && entity.trim() !== '') {
+                        const body = {
+                            projection: [label],
+                            where: {
+                                _id: keys,
+                            },
+                            size: 1000,
+                        };
+                        if (query.order) {
+                            body.sort = query.order.split('|');
+                        }
+
+                        this.$store.dispatch('search', {
+                            form: this.state.sinks.creations.browse,
+                            path: APIRoutes.entity(entity, 'POST', true),
+                            body,
+                        });
+                    }
                 });
             } else {
                 this.$store.commit(Messages.REMOVE_FORM, {
@@ -152,9 +167,9 @@ module.exports = {
             if (entity != null && entity.trim() !== '' && label != null) {
                 const body = {
                     projection: [label],
-                    size: 1000,
+                    size: 10000,
                     where: {
-                        [field]: letter,
+                        $and: [{ [field]: letter }],
                     },
                 };
                 if (order) {
@@ -168,6 +183,28 @@ module.exports = {
                 });
             }
         },
+        retrieve_aggregation_content(content) {
+            if (!content) {
+                return [];
+            }
+
+            let ct = content;
+            let keys = Object.keys(ct);
+            while (keys.length === 1 && keys[0] !== 'myaggregation') {
+                ct = ct[keys[0]];
+                keys = Object.keys(ct);
+            }
+
+            if (!('myaggregation' in ct)) {
+                return [];
+            }
+
+            return ct.myaggregation.buckets.map((b) => {
+                const key = b.key_as_string || b.key;
+                const count = b.doc_count;
+                return { key, count };
+            });
+        },
     },
     watch: {
         current_state(s) {
@@ -175,12 +212,22 @@ module.exports = {
         },
     },
     computed: {
+        paginated() {
+            return (content) => {
+                const end = this.state.current_page * this.state.per_page;
+                const start = end - this.state.per_page;
+                const sliced = content.slice(start, end);
+                return sliced;
+            };
+        },
         options() {
             if (this.picker !== 'date') {
                 const content = this.fcontent(this.state.sinks.creations.browse);
                 if (!(content instanceof Array)) {
                     return [];
                 }
+
+
                 return content.map((c) => {
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
@@ -209,26 +256,7 @@ module.exports = {
         },
         aggregations() {
             const content = this.fcontent(this.state.sinks.creations.aggregation);
-            if (!content) {
-                return [];
-            }
-
-            let ct = content;
-            let keys = Object.keys(ct);
-            while (keys.length === 1 && keys[0] !== 'myaggregation') {
-                ct = ct[keys[0]];
-                keys = Object.keys(ct);
-            }
-
-            if (!('myaggregation' in ct)) {
-                return [];
-            }
-
-            return ct.myaggregation.buckets.map((b) => {
-                const key = b.key_as_string || b.key;
-                const count = b.doc_count;
-                return { key, count };
-            });
+            return this.retrieve_aggregation_content(content);
         },
         options_abc() {
             const content = this.fcontent(this.state.sinks.creations.browse_abc);
@@ -263,6 +291,23 @@ module.exports = {
         },
         current_state() {
             return this.fstate(this.state.sinks.creations.selected);
+        },
+        total() {
+            if (this.state.query.aggt !== 'date') {
+                const content = this.fcontent(this.state.sinks.creations.browse);
+                if (!(content instanceof Array)) {
+                    return 0;
+                }
+                return content.length;
+            }
+            return this.aggregations.length;
+        },
+        total_abc() {
+            const content = this.fcontent(this.state.sinks.creations.browse_abc);
+            if (!(content instanceof Array)) {
+                return 0;
+            }
+            return content.length;
         },
     },
 
