@@ -68,14 +68,14 @@ class Auth {
         return user;
     }
 
-    static async authenticate(email, password, ticket, redirect) {
+    static async authenticate(email, password, ticket, fullPath) {
         const route = APIRoutes.authenticate();
         try {
             const res = await Request.post(route).send({
                 email,
                 password: password ? Crypto.createHash('sha1').update(password).digest('hex') : null,
                 ticket,
-                redirect,
+                fullPath,
             });
 
             if ('ok' in res.body && res.body.ok) {

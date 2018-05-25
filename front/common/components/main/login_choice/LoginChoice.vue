@@ -19,12 +19,12 @@
                     </router-link>
                 </card>
             </div>
-            <div class="column is-2 is-vcentered is-justify-center" v-if="generate_cas_sso_url($route.query.redirect)">
+            <div class="column is-2 is-vcentered is-justify-center" v-if="generate_cas_sso_url($route.query.redirect, backoffice)">
                 <p class="is-4 title"><strong>{{lang('l_or')}}</strong></p>
             </div>
-            <div class="column is-4" v-if="generate_cas_sso_url($route.query.redirect)">
+            <div class="column is-4" v-if="generate_cas_sso_url($route.query.redirect, backoffice)">
                 <card color="red" class="card-equal-height clickable-card-red has-cursor-pointer">
-                    <div slot="card-content" @click.prevent="redirect_to_cas(generate_cas_sso_url($route.query.redirect))">
+                    <div slot="card-content" @click.prevent="redirect_to_cas(generate_cas_sso_url($route.query.redirect, backoffice))">
                         <h2 class="has-text-centered icon title is-2 is-large">
                             <i class="fa fa-lock"></i>
                         </h2>

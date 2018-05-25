@@ -11,11 +11,11 @@ async function authenticate(ctx: Object) {
     const password = body.password;
     const email = body.email;
     const ticket = body.ticket;
-    const redirect = body.redirect;
+    const url = body.fullPath;
 
     if (!password && !email) {
         if (ticket) {
-            ctx.body = await AuthUtils.cas_auth(ticket, redirect);
+            ctx.body = await AuthUtils.cas_auth(ticket, url);
         } else {
             ctx.body = { ok: false, user: {} };
         }

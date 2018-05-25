@@ -22,12 +22,12 @@ module.exports = {
     },
     mounted() {
         this.$store.commit(Messages.LOGIN_PASS, { status: 'na' });
-        if (this.$router.query.ticket) {
+        if (this.$route.query.ticket) {
             this.$store.dispatch('authenticate', {
                 email: null,
                 password: null,
-                redirect: this.$route.query.redirect,
-                ticket: this.$router.query.ticket,
+                fullPath: this.$route.fullPath,
+                ticket: this.$route.query.ticket,
             });
         }
     },
@@ -40,7 +40,6 @@ module.exports = {
                 } else {
                     this.$router.push({ path: redirect });
                 }
-                location.reload();
             }
         },
     },

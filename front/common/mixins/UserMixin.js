@@ -47,10 +47,16 @@ module.exports = {
             window.location.href = url;
             // window.location.reload();
         },
-        generate_cas_sso_url(redirect, logout = false) {
+        generate_cas_sso_url(redirect, backoffice, logout = false) {
             const use_cas_sso = this._oa_find(this.$store.state.global_config, 'authentication.use_cas_sso', false);
             const url = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.base');
-            const service = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.service');
+            let service = this._oa_find(this.$store.state.global_config, 'authentication.cas_sso.service');
+
+            if (backoffice) {
+                service += '/admin/login';
+            } else {
+                service += '/login';
+            }
 
             if (use_cas_sso && url && service) {
                 let service_redirection = service;
@@ -66,12 +72,12 @@ module.exports = {
             }
             return null;
         },
-        logout() {
+        logout(backoffice) {
             const is_sso = this.user.sso;
             Auth.logout();
             if (is_sso) {
                 const url = Browser.getURLHost(window.location);
-                this.redirect_to_cas(this.generate_cas_sso_url(url, true));
+                this.redirect_to_cas(this.generate_cas_sso_url(url, backoffice, true));
             } else {
                 this.$router.push({ path: '/' });
                 location.reload();

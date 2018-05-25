@@ -28,7 +28,7 @@ module.exports = {
                 email: null,
                 password: null,
                 ticket: this.$route.query.ticket,
-                redirect: this.$route.query.redirect,
+                fullPath: this.$route.fullPath,
             });
         }
     },
@@ -41,7 +41,6 @@ module.exports = {
                 } else {
                     this.$router.push({ path: redirect });
                 }
-                location.reload();
             }
         },
     },

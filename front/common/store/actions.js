@@ -161,8 +161,8 @@ module.exports = {
         }, {});
     },
 
-    authenticate: async (ctx, { email, password, ticket, redirect }) => {
-        const ok = await Auth.authenticate(email, password, ticket, redirect);
+    authenticate: async (ctx, { email, password, ticket, fullPath }) => {
+        const ok = await Auth.authenticate(email, password, ticket, fullPath);
         const status = ok ? 'success' : 'fail';
         ctx.commit(Messages.LOGIN_PASS, { status });
     },

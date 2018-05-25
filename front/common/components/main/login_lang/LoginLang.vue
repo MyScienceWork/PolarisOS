@@ -29,7 +29,7 @@
                     </router-link>
                     </b-dropdown-item>-->
                 <b-dropdown-item has-link class="has-text-centered">
-                    <a class="dropdown-item" @click="logout">
+                    <a class="dropdown-item" @click="logout(backoffice)">
                         {{lang('f_logout')}}
                     </a>
                 </b-dropdown-item>

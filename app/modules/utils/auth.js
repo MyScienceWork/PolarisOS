@@ -9,6 +9,7 @@ const LangUtils = require('./lang');
 const Utils = require('./utils');
 const Errors = require('../exceptions/errors');
 const LDAP = require('ldapjs');
+const MURL = require('url');
 
 async function find_user(info: string, field: string = 'emails.email'): Promise<?Object> {
     const sources = await EntitiesUtils.search_and_get_sources('user', {
@@ -150,7 +151,7 @@ async function map_ldap_to_pos(ldap_user: Object, config: Object): Promise<?Obje
     return pos_user;
 }
 
-async function cas_auth(ticket: string, redirect: string): Promise<Object> {
+async function cas_auth(ticket: string, url: string): Promise<Object> {
     const global_config = await LangUtils.get_config(Config._env);
 
     if (!global_config) {
@@ -163,15 +164,15 @@ async function cas_auth(ticket: string, redirect: string): Promise<Object> {
         return { ok: false, user: {} };
     }
 
+    const my_url = new MURL.URL(`${cas_info.service}${url}`);
+    my_url.searchParams.delete('ticket');
+
+    console.log(my_url.href, cas_info.service, url);
     const obj = {
         base_url: cas_info.base,
-        service: cas_info.service,
+        service: my_url.href,
         version: 2.0,
     };
-
-    if (redirect) {
-        obj.service = `${obj.service}?redirect=${encodeURIComponent(redirect)}`;
-    }
 
     const cas = new CAS(obj);
     const promise = new Promise((resolve, reject) => {
@@ -185,6 +186,7 @@ async function cas_auth(ticket: string, redirect: string): Promise<Object> {
 
     try {
         const info = await promise;
+        console.log('cas', info);
         if (!('status' in info) || !('username' in info)) {
             return { ok: false, user: {} };
         }
