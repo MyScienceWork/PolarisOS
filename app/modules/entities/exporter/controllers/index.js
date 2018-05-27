@@ -177,21 +177,12 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
     return obj;
 }
 
-async function transform_to_bibtex(publications: Array<Object>, extra: Object): Promise<string> {
-    const memoizer = {
-        typology: {
-
-        },
-        contributor_role: {
-
-        },
-        author: {
-
-        },
-        lang: {
-
-        },
-    };
+async function transform_to_bibtex(publications: Array<Object>, extra: Object, memoizer: Object): Promise<string> {
+    if (!memoizer) {
+        memoizer = {
+            typology: {}, contributor_role: {}, author: {}, lang: {},
+        };
+    }
 
     const results = [];
     const typology_mapping = {
@@ -225,7 +216,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
 
         if (publication.subtype && publication.subtype in typology_mapping) {
             type = publication.subtype;
-            lines.push(`@${typology_mapping[type]}{${publication._id}`);
+            lines.push(`@${typology_mapping[type]}{${publication._id.replace('@', '__')}`);
         } else {
             let typology = null;
 
@@ -509,7 +500,6 @@ function export_information(): Function {
             break;
         case 'csl': {
             const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
-            console.log(bibtex_output);
             const data = new Cite(bibtex_output);
             results = data.get({
                 nosort: true,
@@ -519,8 +509,6 @@ function export_information(): Function {
                 lang: CSLUtils.langs_mapping[ctx.__md.lang] || 'en-US',
             });
             results = JSON.parse(JSON.stringify(results));
-            console.log(results);
-            console.log(subtype);
             results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
             results = HtmlDocx.asBlob(results);
             ext = '.docx';
@@ -537,6 +525,65 @@ function export_information(): Function {
         ctx.statusCode = 200;
         ctx.body = s;
     };
+}
+
+async function process_aggregations(aggs: Object, lang: string): Promise<Array> {
+    const root_key = Object.keys(aggs).length > 0 ? Object.keys(aggs)[0] : null;
+
+    if (!root_key) {
+        return [];
+    }
+
+    const buckets = aggs[root_key].buckets || [];
+
+    if (buckets.length === 0) {
+        return [];
+    }
+
+    let typology_children = [];
+    if (root_key.indexOf('subtype') === -1) {
+        const publications = buckets.map((bucket) => {
+            const key = bucket.key_as_string || bucket.key;
+            const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
+            return { key,
+                publications: pubs.map((p) => {
+                    p._source._id = p._id;
+                    return { source: p._source };
+                }) };
+        });
+        return publications;
+    }
+
+    const typologies = await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+        where: {},
+    });
+    const children = _.flatten(typologies.map(type => type.children));
+    children.sort((a, b) => a.order_view.localeCompare(b.order_view));
+    const children_lang_keys = children.map(child => child.label);
+    const lang_items = await LangUtils.get_language_values_from_langs_and_keys(children_lang_keys, [lang]);
+
+    typology_children = children.reduce((obj, child) => {
+        const it = lang_items[lang][child.label] || child.label;
+        child.label = it;
+        obj[child.name] = child;
+        return obj;
+    }, {});
+
+    const publications = buckets.map((bucket) => {
+        const key = bucket.key_as_string || bucket.key;
+        const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
+        return {
+            key: typology_children[key] ? typology_children[key].label : key,
+            order_view: typology_children[key] ? typology_children[key].order_view : '0',
+            publications: pubs.map((p) => {
+                p._source._id = p._id;
+                return { source: p._source };
+            }) };
+    });
+
+    publications.sort((a, b) => a.order_view.localeCompare(b.order_view));
+    return publications;
 }
 
 async function export_bibliography(ctx: Object): Promise<any> {
@@ -629,14 +676,61 @@ async function export_bibliography(ctx: Object): Promise<any> {
         where.$and.push({ 'dates.publication': range });
     }
 
-    console.log(where, size);
-    const pub_results = await EntitiesUtils.search('publication', {
-        where,
-        size: 0, // size[0],
-        aggregations: {
-            'dates.publication':
-            {
-                $name: 'dates_publication',
+    const source_includes = ['title.content', 'lang',
+        'journal', 'contributors.*', 'ids.*', 'volume', 'pagination', 'abstract',
+        'denormalization.*', 'url', 'dates.*', 'description',
+        'localisation.*', 'authors.*', 'number', 'editor'];
+
+        // ['title.content'];
+    let aggregations = {};
+    if (group[0] === 'dates.publication') {
+        aggregations = {
+            [group[0]]: {
+                $name: group[0],
+                $type: 'date_histogram',
+                interval: 'year',
+                format: 'YYYY',
+                keyed: true,
+                min_doc_count: 1,
+                order: { _time: 'desc' }, // Deprecated in ES 6.x TODO
+                $aggregations: {
+                    dummy_field: {
+                        $name: 'publications',
+                        $type: 'top_hits',
+                        size: size[0],
+                        /* _source: {
+                            includes: source_includes,
+                            },*/
+                        sort,
+                    },
+                },
+            },
+        };
+    } else if (group[0] === 'subtype') {
+        aggregations = {
+            [group[0]]: {
+                $name: group[0],
+                $type: 'terms',
+                keyed: true,
+                min_doc_count: 1,
+                // order: { _term: 'asc' },
+                $aggregations: {
+                    dummy_field: {
+                        $name: 'publications',
+                        $type: 'top_hits',
+                        size: size[0],
+                        sort,
+                        /* _source: {
+                            includes: source_includes,
+                            },*/
+                    },
+                },
+            },
+        };
+    } else if (group[0] === 'dates.publication+subtype') {
+        aggregations = {
+            'dates.publication': {
+                $name: 'year',
                 $type: 'date_histogram',
                 interval: 'year',
                 format: 'YYYY',
@@ -655,38 +749,51 @@ async function export_bibliography(ctx: Object): Promise<any> {
                                 $name: 'publications',
                                 $type: 'top_hits',
                                 size: size[0],
-                                _source: {
-                                    includes: ['dates.publication', 'title.content', 'lang'],
-                                },
-                                sort: [{ 'dates.publication': 'desc' }],
+                                sort,
+                                /* _source: {
+                                    includes: source_includes,
+                                    },*/
                             },
                         },
                     },
                 },
             },
-        },
-        // sort,
+        };
+    }
 
+    const pub_results = await EntitiesUtils.search('publication', {
+        where,
+        size: 0,
+        aggregations,
     });
 
-    const publications = EntitiesUtils.get_hits(pub_results);
-    const aggregations = EntitiesUtils.get_aggs(pub_results);
-    console.log(JSON.stringify(aggregations));
+    const aggs = EntitiesUtils.get_aggs(pub_results);
+
+    const list_of_publications = await process_aggregations(aggs, lang[0]);
+
     ctx.__md.lang = lang[0];
-    const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
+    let final_results = '';
 
-    const data = new Cite(bibtex_output);
-    let results = data.get({
-        nosort: true,
-        format: 'string',
-        type: 'html',
-        style: `citation-${csl[0]}`,
-        lang: CSLUtils.langs_mapping[lang] || 'en-US',
-    });
-    results = JSON.parse(JSON.stringify(results));
+    const memoizer = {
+        typology: {}, contributor_role: {}, author: {}, lang: {},
+    };
+    for (const publications of list_of_publications) {
+        const bibtex_output = await transform_to_bibtex(publications.publications, ctx.__md, memoizer);
+        const data = new Cite(bibtex_output);
+        const results = data.get({
+            nosort: true,
+            format: 'string',
+            type: 'html',
+            style: `citation-${csl[0]}`,
+            lang: CSLUtils.langs_mapping[lang[0]] || 'en-US',
+        });
+        final_results += `<h2>${publications.key}</h2>`;
+        final_results += results;
+    }
+
 
     if (export_type[0] === '.docx') {
-        results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
+        let results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${final_results}</body></html>`;
         results = HtmlDocx.asBlob(results);
 
         const s = new Readable();
@@ -700,7 +807,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
     }
 
     ctx.type = 'text/html';
-    results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
+    const results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${final_results}</body></html>`;
     ctx.body = results;
 }
 

@@ -28,6 +28,7 @@ function _return_inner_object(object: ?Object, copy: boolean = true): any {
     return object;
 }
 
+
 function _test_inner_object(object: ?Object, key: string | number): Array<any> {
     if (!isNaN(parseInt(key, 10))) {
         key = parseInt(key, 10);

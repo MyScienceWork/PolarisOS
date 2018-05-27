@@ -93,16 +93,24 @@ module.exports = {
                 return [];
             }
 
-            const entity = this.state.inputs[id].entity;
-            const label_key = entity.label;
-            const translatable = entity.translatable;
-            if (translatable) {
-                return content.map((e) => {
-                    e[label_key] = this.lang(e[label_key]);
-                    return e;
-                });
-            }
             return content;
+        },
+        get_translatable(id) {
+            if (!(id in this.state.inputs)) {
+                return false;
+            }
+            const entity = this.state.inputs[id].entity;
+            const translatable = entity.translatable;
+            return translatable;
+        },
+        get_use_hlang(id) {
+            if (!(id in this.state.inputs)) {
+                return false;
+            }
+
+            const entity = this.state.inputs[id].entity;
+            const use_hlang = entity.hlang;
+            return use_hlang;
         },
         get_field(type, entity) {
             if (!entity) {

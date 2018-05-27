@@ -6,6 +6,23 @@ const errors = require('../../exceptions/errors');
 const SortOrder = require('./enums/sort_order');
 const SortMode = require('./enums/sort_mode');
 
+function get_sort(sorts) {
+    if (!sorts || sorts.length === 0) {
+        return [];
+    }
+
+    return sorts.map((sort) => {
+        if (_.isString(sort)) {
+            const fc = sort[0];
+            if (fc === '-') {
+                return { [sort.slice(1)]: 'desc' };
+            }
+            return { [sort]: 'asc' };
+        }
+        return sort;
+    });
+}
+
 class Mapper {
     static check_wellform_object(obj) {
         const keys = Object.keys(obj);
@@ -443,6 +460,10 @@ class AggregationMapper {
         case 'date_histogram':
             return new aggs.DateHistogramAggregation(name, aggregation).field(field);
         case 'top_hits':
+            if ('sort' in aggregation) {
+                const transformed_sort = SortMapper.visit_object(get_sort(aggregation.sort), mapping);
+                aggregation.sort = transformed_sort;
+            }
             return new aggs.TopHitsAggregation(name, aggregation);
         case 'filter': {
             if (!('$query' in aggregation)) {
@@ -480,23 +501,6 @@ function transform_to_search(body, mapping) {
 }
 
 function transform_to_sort(body, mapping) {
-    const get_sort = (sorts) => {
-        if (!sorts || sorts.length === 0) {
-            return [];
-        }
-
-        return sorts.map((sort) => {
-            if (_.isString(sort)) {
-                const fc = sort[0];
-                if (fc === '-') {
-                    return { [sort.slice(1)]: 'desc' };
-                }
-                return { [sort]: 'asc' };
-            }
-            return sort;
-        });
-    };
-
     if (!('sort' in body)) {
         return null;
     }

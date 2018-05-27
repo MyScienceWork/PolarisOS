@@ -13,6 +13,8 @@
                 :key="`${props.id}.input`"
                 :multi="state.inputs[props.id] ? state.inputs[props.order].element === 'multi-select' : false"
                 :options="get_options(props.id, state.inputs[props.order] ? state.inputs[props.id].sink : null)"
+                :translatable="get_translatable(props.id)"
+                :translate-through-hlang="get_use_hlang(props.id)"
                 :fieldValue="get_field('value', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
                 :fieldLabel="get_field('label', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
                 class="has-small-bottom-margin"
