@@ -8,6 +8,7 @@ const store = require('../common/store');
 
 const Loader = require('./components/loader/Loader.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
+const ColorInput = require('../common/components/main/forms/elements/color/Color.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
 const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
@@ -40,6 +41,7 @@ Vue.use(VueWysiwyg.default, {
 Vue.component('loader', Loader);
 Vue.component('fform', Form);
 Vue.component('finput', Input);
+Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
 Vue.component('fstatic', Static);
 Vue.component('fgrid', Grid);

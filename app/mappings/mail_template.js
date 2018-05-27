@@ -30,6 +30,9 @@ module.exports = {
                                     value: {
                                         type: 'keyword',
                                     },
+                                    length: {
+                                        type: 'integer',
+                                    },
                                 },
                             },
                         },
