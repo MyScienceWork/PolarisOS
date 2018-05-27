@@ -1,6 +1,7 @@
 const Home = require('../frontend/pages/home/Home.vue');
 const Deposit = require('../frontend/pages/deposit/Deposit.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
+const ListForWebsite = require('../frontend/pages/list_for_website/ListForWebsite.vue');
 const Search = require('../frontend/pages/search/Search.vue');
 const View = require('../frontend/pages/view/View.vue');
 const Project = require('../frontend/pages/project/Project.vue');
@@ -37,4 +38,5 @@ module.exports = {
     '/login': LoginView,
     '/login/choice': LoginChoiceView,
     '/user_list': UserList,
+    '/list': ListForWebsite,
 };

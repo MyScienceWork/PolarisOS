@@ -236,7 +236,7 @@ class ODM {
                 body.search_after = opts.search_after;
             } else if ('search_before' in opts) {
                 body.sort = body.sort.map(s => _.reduce(s, (obj, value, key) => {
-                    obj[key] = value.order === 'asc' ? { order: 'desc' } : { order: 'asc' };
+                    obj[key] = value.order === 'asc' ? _.merge({}, value, { order: 'desc' }) : _.merge({}, value, { order: 'asc' });
                     return obj;
                 }, {}));
 

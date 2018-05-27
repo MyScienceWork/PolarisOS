@@ -17,8 +17,16 @@ const publication_search = {
     ],
 };
 
+const author_name_or_id = {
+    $or: [
+        { 'denormalization.contributors.label.fullname': '{{{search}}}' },
+        { 'contributors.label': '{{{search}}}' },
+    ],
+};
+
 module.exports = {
     publication_search,
+    author_name_or_id,
     published_publication_search: {
         $and: [
             { has_other_version: false },

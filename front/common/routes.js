@@ -2,6 +2,7 @@
 module.exports = [
     '/',
     '/browse',
+    '/list',
     '/search',
     '/project',
     '/view/:id',
