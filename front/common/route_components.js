@@ -1,6 +1,7 @@
 const Home = require('../frontend/pages/home/Home.vue');
 const Deposit = require('../frontend/pages/deposit/Deposit.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
+const ListForWebsite = require('../frontend/pages/list_for_website/ListForWebsite.vue');
 const Search = require('../frontend/pages/search/Search.vue');
 const View = require('../frontend/pages/view/View.vue');
 const Project = require('../frontend/pages/project/Project.vue');
@@ -15,6 +16,7 @@ const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
 const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
 const UserList = require('../frontend/pages/user_list/UserList.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
+const LoginChoiceView = require('../frontend/pages/login_choice/LoginChoice.vue');
 
 module.exports = {
     '/': Home,
@@ -34,5 +36,7 @@ module.exports = {
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
     '/login': LoginView,
+    '/login/choice': LoginChoiceView,
     '/user_list': UserList,
+    '/list': ListForWebsite,
 };

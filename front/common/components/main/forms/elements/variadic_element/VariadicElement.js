@@ -15,6 +15,7 @@ module.exports = {
         tabs: { type: Boolean, default: false },
         draggable: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
+        defaultSize: { type: Number, default: 0 },
     },
 
     components: {
@@ -83,7 +84,9 @@ module.exports = {
             if (form && 'content' in form) {
                 object = Utils.find_value_with_path(form.content, this.name.split('.'));
             }
-            console.log('variadic', this.name, this.form, form ? form.content : null);
+
+            console.log('initialize ve,', sink, object);
+
             if (object != null) {
                 if (object instanceof Array && object.length > 0) {
                     this.state.elements = object.map((o, i) => ({ i, a: true }));
@@ -91,11 +94,21 @@ module.exports = {
                 } else if (object instanceof Object && Object.keys(object).length > 0) {
                     this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
-                } else if (this.single || this.isRequired) {
+                } else if (this.single || this.isRequired || this.defaultSize > 0) {
+                    if (this.defaultSize > 0) {
+                        const elements = _.range(this.defaultSize).map(i => ({ a: true, i }));
+                        this.state = Object.assign({}, { elements, tab_active: 0, total: elements.length });
+                    } else {
+                        this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
+                    }
+                }
+            } else if (this.single || this.isRequired || this.defaultSize > 0) {
+                if (this.defaultSize > 0) {
+                    const elements = _.range(this.defaultSize).map(i => ({ a: true, i }));
+                    this.state = Object.assign({}, { elements, tab_active: 0, total: elements.length });
+                } else {
                     this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
                 }
-            } else if (this.single || this.isRequired) {
-                this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
                 if (this.mutation_state === 'initial') {
                     this.update();
                 }
@@ -117,8 +130,6 @@ module.exports = {
             }
         },*/
         update(id) {
-            console.log('update ve', id);
-            console.log(this.fcontent(this.form));
             if (id != null) {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
@@ -126,7 +137,6 @@ module.exports = {
                     info: undefined,
                 });
             } else if (this.state.elements.length === 0) {
-                console.log('update ve zero');
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,

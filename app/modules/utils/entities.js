@@ -84,6 +84,18 @@ function get_hits(result: Object): Array<any> {
     return [];
 }
 
+function get_aggs(result: Object): Array<any> {
+    if ('aggs' in result) {
+        return result.aggs;
+    }
+
+    if ('result' in result && 'aggs' in result.result) {
+        return result.result.aggs;
+    }
+
+    return [];
+}
+
 
 function get_index(type: string): string {
     return `${config.elasticsearch.index_prefix}_${type}`;
@@ -325,6 +337,26 @@ async function create(info: Object, type: string): Promise<*> {
     return response;
 }
 
+async function creates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_create(get_index(type), type, es_client, items);
+    return response;
+}
+
+async function updates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_update(get_index(type), type, es_client, items);
+    return response;
+}
+
 async function update(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
     if (cls == null) {
@@ -489,12 +521,15 @@ module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
 module.exports.create = create;
+module.exports.creates = creates;
 module.exports.update = update;
+module.exports.updates = updates;
 module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
 module.exports.get_hits = get_hits;
+module.exports.get_aggs = get_aggs;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
 module.exports.search_and_get_sources = search_and_get_sources;

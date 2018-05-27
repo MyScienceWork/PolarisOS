@@ -236,7 +236,7 @@ class ODM {
                 body.search_after = opts.search_after;
             } else if ('search_before' in opts) {
                 body.sort = body.sort.map(s => _.reduce(s, (obj, value, key) => {
-                    obj[key] = value.order === 'asc' ? { order: 'desc' } : { order: 'asc' };
+                    obj[key] = value.order === 'asc' ? _.merge({}, value, { order: 'desc' }) : _.merge({}, value, { order: 'asc' });
                     return obj;
                 }, {}));
 
@@ -373,7 +373,7 @@ class ODM {
     }
 
     static async _bulk_create_or_update(index: string, type: string, client: Object,
-            body: Object, action: string = 'create'): Promise<?ODM> {
+            body: Array<Object>, action: string = 'create'): Promise<?ODM> {
         try {
             const content = {
                 index,
@@ -438,12 +438,12 @@ class ODM {
     }
 
     static async bulk_create(index: string, type: string, client: Object,
-            body: Object): Promise<?ODM> {
+            body: Array<Object>): Promise<?ODM> {
         return this._bulk_create_or_update(index, type, client, body, 'create');
     }
 
     static async bulk_update(index: string, type: string, client: Object,
-            body: Object): Promise<?ODM> {
+            body: Array<Object>): Promise<?ODM> {
         return this._bulk_create_or_update(index, type, client, body, 'update');
     }
 

@@ -297,11 +297,15 @@ module.exports = {
                 const affiliation_numbers = [];
                 if (my_affiliations.length > 0) {
                     my_affiliations.forEach((affiliation) => {
-                        const uid = `${affiliation.institution.name}_${affiliation.teams.map(t => t._id).join('_')}`;
-                        if (!(uid in affiliations)) {
-                            affiliations[uid] = { a: affiliation, order: Object.keys(affiliations).length + 1 };
+                        const iname = this._oa_find(affiliation, 'institution.name');
+                        const teams = this._oa_find(affiliation, 'teams', []);
+                        if (iname) {
+                            const uid = `${affiliation.institution.name}_${teams.map(t => t._id).join('_')}`;
+                            if (!(uid in affiliations)) {
+                                affiliations[uid] = { a: affiliation, order: Object.keys(affiliations).length + 1 };
+                            }
+                            affiliation_numbers.push(affiliations[uid].order);
                         }
-                        affiliation_numbers.push(affiliations[uid].order);
                     });
                 }
 

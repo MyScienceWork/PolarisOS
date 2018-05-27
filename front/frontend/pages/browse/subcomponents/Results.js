@@ -1,13 +1,14 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const OAMixin = require('../../../../common/mixins/ObjectAccessMixin');
 const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
+const TypeColorMixin = require('./mixins/TypeColorMixin');
 const BrowserUtils = require('../../../../common/utils/browser');
 const _ = require('lodash');
 const moment = require('moment');
 const CopyRequester = require('../../view/subcomponents/CopyRequester.vue');
 
 module.exports = {
-    mixins: [LangMixin, OAMixin, FiltersMixin],
+    mixins: [LangMixin, OAMixin, FiltersMixin, TypeColorMixin],
     props: {
         items: { required: true, type: Array },
         loggedIn: { default: false, type: Boolean },

@@ -13,6 +13,7 @@ function create_form_if_needed(state, name) {
             state: 'initial',
             success: '',
             content: {},
+            raw_content: {},
             total: 0,
         } });
     }
@@ -31,6 +32,7 @@ module.exports = {
         state.forms[form_name].success = '';
         if (!keep_content) {
             state.forms[form_name].content = {};
+            state.forms[form_name].raw_content = {};
         }
     },
 
@@ -44,9 +46,9 @@ module.exports = {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'noop'; // In case of multiple updates...
-        console.log('READ', payload.content);
         Vue.nextTick(() => {
             state.forms[form_name].content = payload.content;
+            state.forms[form_name].raw_content = payload.content;
             state.forms[form_name].state = 'update';
         });
     },
@@ -168,6 +170,7 @@ module.exports = {
         if (succeeded) {
             if (action === 'read') {
                 state.forms[form_name].content = data;
+                state.forms[form_name].raw_content = content;
                 state.forms[form_name].total = total;
                 payload.commit(Messages.SUCCESS, { type: action, form: form_name });
             } else if ('change' in content
@@ -176,6 +179,7 @@ module.exports = {
                 payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
             } else if (action === 'validate') {
                 state.forms[form_name].content = content;
+                state.forms[form_name].raw_content = content;
                 payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
             } else if (action === 'delete') {
                 // Noop

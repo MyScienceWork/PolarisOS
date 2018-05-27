@@ -67,6 +67,14 @@
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_general_setting', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <finput
+                                        name="base_url" 
+                                        :label="lang('l_pos_base_url')" 
+                                        :placeholder="lang('l_pos_base_url')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
                                     <fselect 
                                         name="environment" :label="lang('b_environment')" 
                                         :is-required="true" 
@@ -155,6 +163,99 @@
                                         :form="state.sinks.creations.config" 
                                         type="password"
                                     />
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_auth_setting', {}, 'other')}}</span>
+                                <div slot="body">
+                                    <fselect 
+                                        name="authentication.default_assigned_role" :label="lang('l_default_assigned_role')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        :options="roles"
+                                        field-label="name"
+                                        field-value="_id"
+                                    />
+                                    <finput
+                                        name="authentication.default_cas_sso" 
+                                        :label="lang('l_config_use_cas_sso_by_default')" 
+                                        :form="state.sinks.creations.config" 
+                                        type="checkbox"
+                                    />
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{lang('l_cas_sso')}}</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="authentication.use_cas_sso" 
+                                                :label="lang('l_config_use_cas_sso')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="authentication.cas_sso.base" 
+                                                :label="lang('l_config_cas_base_url')" 
+                                                :placeholder="lang('l_config_cas_base_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="authentication.cas_sso.service" 
+                                                :label="lang('l_config_cas_service_url')" 
+                                                :placeholder="lang('l_config_cas_service_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                        </div>
+                                    </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{lang('l_ldap')}}</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="authentication.use_ldap" 
+                                                :label="lang('l_config_use_ldap')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="authentication.ldap.base" 
+                                                :label="lang('l_config_ldap_base_url')" 
+                                                :placeholder="lang('l_config_ldap_base_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="authentication.ldap.dns" 
+                                                :label="lang('l_config_ldap_dn')" 
+                                                :placeholder="lang('l_config_ldap_dn')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <fvariadic-element name="authentication.ldap.attributes" :form="state.sinks.creations.config" :tabs="true">
+                                                <template slot="variadic" slot-scope="props">
+                                                    <finput 
+                                                        :name="`${props.fname}.${props.order}.key`" 
+                                                        :label="lang('l_ldap_attribute_name')" 
+                                                        :is-required="true" 
+                                                        :placeholder="lang('l_ldap_attribute_name')" 
+                                                        type="text" 
+                                                        :form="state.sinks.creations.config" 
+                                                    />
+                                                    <finput 
+                                                        :name="`${props.fname}.${props.order}.value`" 
+                                                        :label="lang('l_pos_user_field')" 
+                                                        :is-required="true" 
+                                                        :placeholder="lang('l_pos_user_field')" 
+                                                        type="text" 
+                                                        :form="state.sinks.creations.config" 
+                                                    />
+                                                </template>
+                                            </fvariadic-element>
+                                        </div>
+                                    </widget>
                                 </div>
                             </widget>
                         </fform>

@@ -117,8 +117,6 @@ module.exports = {
                 return arr;
             }, []);
 
-            console.log('set selected data', this.form, this.name, data);
-
             if (this.multi) {
                 this.state.selected = data;
             } else if (data.length > 0) {

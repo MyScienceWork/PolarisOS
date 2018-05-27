@@ -7,6 +7,7 @@ const Transformer = require('./transformer/transformer');
 const Formatter = require('./formatter/formatter');
 const EntitiesUtils = require('../utils/entities');
 const Utils = require('../utils/utils');
+const Logger = require('../../logger');
 
 /**
  * Completion and validation pipeline
@@ -106,41 +107,82 @@ class Pipeline {
         return [pnum];
     }
 
-    static async _evaluate_pipeline(ctx: Object, pipeline: Object,
+    static async _evaluate_pipeline(item: Object, extra_info: Object, pipeline: Object,
         type: string, action: string, method: string) {
         switch (action) {
         case 'transform': {
-            ctx.request.body = await Transformer(ctx.request.body, pipeline.Transforming || []);
-            break;
+            item = await Transformer(item, pipeline.Transforming || []);
+            return { item, errors: null };
         }
         case 'filter': {
-            ctx.request.body = Pipeline._filter(ctx.request.body, pipeline.Filtering || []);
-            break;
+            item = Pipeline._filter(item, pipeline.Filtering || []);
+            return { item, errors: null };
         }
         case 'reset': {
-            ctx.request.body = await Pipeline._reset(ctx.request.body, pipeline.Resetting || {});
-            break;
+            item = await Pipeline._reset(item, pipeline.Resetting || {});
+            return { item, errors: null };
         }
         case 'defaults': {
-            ctx.request.body = Pipeline._merge_defaults(ctx.request.body, pipeline.Defaults);
-            break;
+            item = Pipeline._merge_defaults(item, pipeline.Defaults || {});
+            return { item, errors: null };
         }
         case 'format': {
-            ctx.request.body = await Formatter(ctx.request.body, pipeline.Formatting, ctx.__md || {});
-            break;
+            item = await Formatter(item, pipeline.Formatting, extra_info);
+            return { item, errors: null };
         }
         case 'complete': {
-            ctx.request.body = await Completer(ctx.request.body, pipeline.Completion, ctx.__md || {});
-            break;
+            item = await Completer(item, pipeline.Completion, extra_info);
+            return { item, errors: null };
         }
         default:
         case 'validate': {
             const validator = new Validator();
             const errors = await validator
-                    .validate(ctx.request.body, pipeline.Validation, method);
-            return errors;
+                .validate(item, pipeline.Validation, method);
+            return { item, errors };
         }
         }
+    }
+
+    static async _papply(item: Object, extra_info: Object, type: string,
+            pipelines: Array<Object>, action: string, method: string,
+            range: Array<any>, bulk_mode: boolean): Promise<Object> {
+        if (action === 'check' && !bulk_mode) {
+            if (method === 'put') {
+                const exists = await Pipeline._check_if_entity_exists(item, type);
+                if (!exists) {
+                    return Errors.InvalidEntity;
+                }
+            }
+            return item;
+        } else if (action === 'merge' && !bulk_mode) {
+            if (method === 'put') {
+                const entity = await EntitiesUtils.retrieve(item._id, type);
+                if (!entity) {
+                    return Errors.InvalidEntity;
+                }
+                item = Pipeline._merge_put(item, entity.source);
+            }
+            return item;
+        }
+
+        let errors = {};
+        let info = { errors: null, item };
+
+        const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
+        for (const i of prange) {
+            const pipeline = pipelines[i];
+            info = await Pipeline._evaluate_pipeline(info.item, extra_info, pipeline,
+                    type, action, method);
+            if (action === 'validate') {
+                errors = Utils.merge_with_concat({}, errors, info.errors);
+            }
+        }
+
+        if (Object.keys(errors).length > 0) {
+            return { change: 'Validation', errors };
+        }
+        return info.item;
     }
 
     /**
@@ -150,49 +192,37 @@ class Pipeline {
      * @param m - Part of the pipeline to apply
      * @returns Koa middleware
      */
-    static _action(type: string, m: string): Function {
+    static _action(type: string, m: string, bulk_mode: boolean): Function {
         return async function afunc(ctx: Object, next: Function): Promise<*> {
-            const body = ctx.request.body;
+            let items = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = ctx.__md.model;
             const pipelines = model.Pipelines || [];
 
             const range = Pipeline._format_range(ctx.params.range, pipelines.length);
 
-            if (m === 'check') {
-                if (method === 'put') {
-                    const exists = await Pipeline._check_if_entity_exists(body, type);
-                    if (exists) {
-                        await next();
-                    } else {
-                        throw Errors.InvalidEntity;
-                    }
-                } else {
-                    await next();
-                }
-            } else if (m === 'merge') {
-                if (method === 'put') {
-                    const entity = await EntitiesUtils.retrieve(ctx.request.body._id, type);
-                    ctx.request.body = Pipeline._merge_put(ctx.request.body, entity.db.source);
-                }
-                await next();
-            } else {
-                let errors = {};
-                const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
-                for (const i of prange) {
-                    const pipeline = pipelines[i];
-                    const ret = await Pipeline._evaluate_pipeline(ctx, pipeline,
-                        type, m, method);
-                    if (m === 'validate') {
-                        errors = Utils.merge_with_concat({}, errors, ret);
-                    }
-                }
+            if (!(items instanceof Array)) {
+                items = [items];
+            }
 
-                if (Object.keys(errors).length > 0) {
-                    ctx.body = { change: 'Validation', errors };
-                } else {
-                    await next();
+            const promises = items.map(item => Pipeline._papply(item, ctx.__md || {},
+                type, pipelines, m, method, range, bulk_mode));
+            try {
+                if (!bulk_mode) {
+                    const ret = await promises[0];
+                    if ('change' in ret) {
+                        ctx.body = ret;
+                    } else {
+                        ctx.request.body = ret;
+                        await next();
+                    }
+                    return;
                 }
+                ctx.body = await promises;
+            } catch (err) {
+                Logger.error('Error when processing pipelines');
+                Logger.error(err);
+                throw Errors.UnableToProcessPipelines;
             }
         };
     }
@@ -215,8 +245,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static format(type: string): Function {
-        return Pipeline._action(type, 'format');
+    static format(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'format', bulk_mode);
     }
 
     /**
@@ -225,8 +255,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static validate(type: string): Function {
-        return Pipeline._action(type, 'validate');
+    static validate(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'validate', bulk_mode);
     }
 
     /**
@@ -235,8 +265,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static complete(type: string): Function {
-        return Pipeline._action(type, 'complete');
+    static complete(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'complete', bulk_mode);
     }
 
     /**
@@ -245,8 +275,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static transform(type: string): Function {
-        return Pipeline._action(type, 'transform');
+    static transform(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'transform', bulk_mode);
     }
 
     /**
@@ -255,8 +285,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static filter(type: string): Function {
-        return Pipeline._action(type, 'filter');
+    static filter(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'filter', bulk_mode);
     }
 
     /**
@@ -265,8 +295,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static reset(type: string): Function {
-        return Pipeline._action(type, 'reset');
+    static reset(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'reset', bulk_mode);
     }
 
     /**
@@ -275,8 +305,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static merge(type: string): Function {
-        return Pipeline._action(type, 'merge');
+    static merge(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'merge', bulk_mode);
     }
 
     /**
@@ -285,8 +315,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static defaults(type: string): Function {
-        return Pipeline._action(type, 'defaults');
+    static defaults(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'defaults', bulk_mode);
     }
 
     /**
@@ -295,8 +325,8 @@ class Pipeline {
      * @param type - Entity type;
      * @returns Koa middleware
      */
-    static check(type: string): Function {
-        return Pipeline._action(type, 'check');
+    static check(type: string, bulk_mode: boolean = false): Function {
+        return Pipeline._action(type, 'check', bulk_mode);
     }
 }
 

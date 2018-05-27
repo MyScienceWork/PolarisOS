@@ -57,6 +57,7 @@ const Defaults: Object = {
     locked: false,
     enabled: true,
     force_deconnection: true,
+    authentication: {},
 };
 
 const Resetting: Object = {

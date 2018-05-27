@@ -2,6 +2,7 @@
 module.exports = [
     '/',
     '/browse',
+    '/list',
     '/search',
     '/project',
     '/view/:id',
@@ -17,5 +18,6 @@ module.exports = [
     '/forum',
     '/forum/thread/:id',
     '/login',
+    '/login/choice',
     '/user_list',
 ];

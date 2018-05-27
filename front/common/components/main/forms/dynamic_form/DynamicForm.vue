@@ -2,8 +2,8 @@
 <div>
     <template v-if="form.addons && form.fields.length > 0">
         <component
-            :is="['multi-select', 'select'].indexOf(form.fields[0].type) !== -1 ? 'fselect' : 'finput'"
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select'].indexOf(form.fields[0].type) !== -1"
+            :is="get_component(form.fields[0].type)"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select', 'color'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
             :name="get_name(form.fields[0].name)"
             :key="get_name(form.fields[0].name)"
@@ -141,6 +141,18 @@
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
                 label=""
+                :readonly="readonly || field.readonly"
+                :is-required="field.required"
+                :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :view-validation-texts="false"
+                />
+                <fcolor
+                v-else-if="['color'].indexOf(field.type) !== -1"
+                :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
+                :form="cform"
+                :label="lang(field.label || '')"
                 :readonly="readonly || field.readonly"
                 :is-required="field.required"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
@@ -308,6 +320,17 @@
             :is-addon="true"
             :hidden-value="field.hiddenValue"
             label=""
+            :readonly="readonly || field.readonly"
+            :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :view-validation-texts="false"
+            />
+            <fcolor
+            v-else-if="['color'].indexOf(field.type) !== -1"
+            :name="get_name(field.name)"
+            :form="cform"
+            :label="lang(field.label || '')"
             :readonly="readonly || field.readonly"
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"

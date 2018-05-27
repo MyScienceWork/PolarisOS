@@ -29,6 +29,9 @@
                 v-if="state.activeSelectTab === 0"
                 key="select-author"
                 :multi="true"
+                :ajax="true"
+                ajax-url="/api/public/v2/authors/search"
+                ajax-value-url="/api/public/v2/authors/search"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -93,7 +96,8 @@
                 field-label="label"
                 field-value="_id"
                 :multi="true"
-                :options="content(state.sinks.reads.internal_collection) | translate(lang, 'label')"
+                :options="content(state.sinks.reads.internal_collection)"
+                :translatable="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -104,7 +108,8 @@
                 field-value="_id"
                 :select-all-values="true"
                 :multi="true"
-                :options="content(state.sinks.reads.typology) | translate(lang, 'label')"
+                :options="content(state.sinks.reads.typology)"
+                :translatable="true"
             /> 
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -114,7 +119,8 @@
                 field-label="label"
                 field-value="value"
                 :multi="true"
-                :options="subtypology_content | translate(lang, 'label')"
+                :options="subtypology_content"
+                :translatable="true"
             /> 
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -124,14 +130,16 @@
                 field-label="label"
                 field-value="value"
                 :select-first-value="true"
-                :options="langref_content | translate(lang, 'label')"
+                :options="langref_content"
+                :translatable="true"
             />       
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="sort"
                 :label="lang('l_sort_bexport')"
                 :placeholder="lang('l_sort_bexport')"
-                :options="sort_content | translate(lang, 'label')"
+                :options="sort_content"
+                :translatable="true"
                 :select-first-value="true"
             />        
             <fselect
@@ -139,8 +147,9 @@
                 name="group"
                 :label="lang('l_grouping_bexport')"
                 :placeholder="lang('l_grouping_bexport')"
-                :options="group_content | translate(lang, 'label')"
+                :options="group_content"
                 :select-first-value="true"
+                :translatable="true"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"

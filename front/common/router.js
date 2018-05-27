@@ -127,6 +127,16 @@ async function render_router(part) {
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
 
+    routes.push({
+        path: '/login/choice',
+        name: 'f_nav_login_choice',
+        navbar: false,
+        components: {
+            default: get_default_component({ route: '/login/choice' }),
+        },
+        meta: { requiresAuth: false, access: '', subaccess: [] },
+    });
+
     menu.elements.forEach((elt) => {
         if (elt.submenus && elt.submenus.length > 0) {
             elt.submenus.forEach((celt) => {

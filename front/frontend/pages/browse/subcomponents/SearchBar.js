@@ -12,11 +12,11 @@ module.exports = {
         useFavorites: { default: false, type: Boolean },
         color: { default: 'purple' },
         placeholder: { default: 'f_search_in_archive', type: String },
+        showAdvancedSearch: { default: false, type: Boolean },
     },
     data() {
         return {
             state: {
-                showAdvanced: false,
             },
         };
     },
@@ -25,6 +25,9 @@ module.exports = {
             this.$store.commit(Messages.FORCE_COMPLETION, {
                 form: this.searchSink,
             });
+        },
+        show_advanced_search() {
+            this.$emit('update:showAdvancedSearch', !this.showAdvancedSearch);
         },
     },
     computed: {

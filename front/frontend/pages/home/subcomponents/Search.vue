@@ -6,7 +6,7 @@
                 <div class="field has-addons">
                     <b-collapse :open.sync="state.collapse_opened" v-if="collapsible">
                         <p class="control has-icons-left is-expanded">
-                            <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
+                            <finput type="text" :placeholder="lang('f_search_in_archive')" name="search"
                                 :form="searchSink" label="" class="has-no-bottom-margin" />
                             <span class="icon is-left">
                                 <i class="fa fa-search"></i>
@@ -14,14 +14,14 @@
                         </p>
                     </b-collapse>
                     <p class="control has-icons-left is-expanded" v-else>
-                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search" 
+                        <finput type="text" :placeholder="lang('f_search_in_archive')" name="search"
                             :form="searchSink" label="" class="has-no-bottom-margin" />
                         <span class="icon is-left">
                             <i class="fa fa-search"></i>
                         </span>
                     </p>
                     <p class="control">
-                        <a :class="['button has-text-red swap']" :alt="lang('f_search')" :title="lang('f_search')" 
+                        <a :class="['button has-text-red swap']" :alt="lang('f_search')" :title="lang('f_search')"
                             @click.prevent="trigger_click"
                         >
                             <i :class="['fa fa-search']"></i>
@@ -38,14 +38,14 @@
     </div>
     <div class="columns is-pulled-right" v-if="showAdvancedSearch">
         <div class="column">
-            <router-link 
-                :class="`has-text-${color} swap`" 
+            <router-link
+                :class="`has-text-${color} swap`"
                 :alt="lang('f_advanced_search')"
-                to="/search"
+                :to="{ path: '/search', query: state.as_query }"
             >{{lang('f_advanced_search')}}</router-link>
         </div>
     </div>
-    <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch"> 
+    <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch">
         <div class="column">
             <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="trigger_click">
             </faggregate-form>

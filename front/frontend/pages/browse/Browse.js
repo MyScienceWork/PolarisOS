@@ -81,6 +81,9 @@ module.exports = {
         default_query() {
             return JSON.stringify({ $and: [Queries.no_other_version, Queries.published] });
         },
+        nav_changed() {
+            this.state.need_update = true;
+        },
     },
     mounted() {
         this.$store.dispatch('search', {

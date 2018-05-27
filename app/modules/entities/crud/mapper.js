@@ -6,6 +6,23 @@ const errors = require('../../exceptions/errors');
 const SortOrder = require('./enums/sort_order');
 const SortMode = require('./enums/sort_mode');
 
+function get_sort(sorts) {
+    if (!sorts || sorts.length === 0) {
+        return [];
+    }
+
+    return sorts.map((sort) => {
+        if (_.isString(sort)) {
+            const fc = sort[0];
+            if (fc === '-') {
+                return { [sort.slice(1)]: 'desc' };
+            }
+            return { [sort]: 'asc' };
+        }
+        return sort;
+    });
+}
+
 class Mapper {
     static check_wellform_object(obj) {
         const keys = Object.keys(obj);
@@ -267,6 +284,13 @@ class SortMapper {
         }
 
         const key = keys[0];
+
+        // We don't analyze scripted sort
+        if (key === '_script') {
+            final_sort_obj[key] = sort[key];
+            return final_sort_obj;
+        }
+
         const types = mapping.get_all_type(key);
 
         const nested_fields = types.filter(elt => elt[elt.length - 1] === 'nested');
@@ -336,6 +360,15 @@ class AggregationMapper {
         }, []);
     }
 
+    static check_aggregation_with_required_field(agg_type) {
+        switch (agg_type) {
+        case 'top_hits':
+            return false; // Does not require a field to work
+        default:
+            return true;
+        }
+    }
+
 
     static visit_object(aggregations, mapping) {
         const a = _.reduce(aggregations, (obj, value, key) => {
@@ -367,7 +400,7 @@ class AggregationMapper {
         }
 
         const types = mapping.get_all_type(field);
-        if (types.length === 0) {
+        if (types.length === 0 && AggregationMapper.check_aggregation_with_required_field(type)) {
             return null;
         }
 
@@ -433,6 +466,12 @@ class AggregationMapper {
             return new aggs.TermsAggregation(name, aggregation).field(field);
         case 'date_histogram':
             return new aggs.DateHistogramAggregation(name, aggregation).field(field);
+        case 'top_hits':
+            if ('sort' in aggregation) {
+                const transformed_sort = SortMapper.visit_object(get_sort(aggregation.sort), mapping);
+                aggregation.sort = transformed_sort;
+            }
+            return new aggs.TopHitsAggregation(name, aggregation);
         case 'filter': {
             if (!('$query' in aggregation)) {
                 return null;
@@ -469,23 +508,6 @@ function transform_to_search(body, mapping) {
 }
 
 function transform_to_sort(body, mapping) {
-    const get_sort = (sorts) => {
-        if (!sorts || sorts.length === 0) {
-            return [];
-        }
-
-        return sorts.map((sort) => {
-            if (_.isString(sort)) {
-                const fc = sort[0];
-                if (fc === '-') {
-                    return { [sort.slice(1)]: 'desc' };
-                }
-                return { [sort]: 'asc' };
-            }
-            return sort;
-        });
-    };
-
     if (!('sort' in body)) {
         return null;
     }

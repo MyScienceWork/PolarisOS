@@ -30,7 +30,7 @@ function initial(name_path: string, use_dash_split: boolean = true) {
             return {};
         }
 
-        const stopwords = ['de', 'le', 'la', 'les', 'van', 'von', 'du'];
+        const stopwords = ['de', 'le', 'la', 'les', 'van', 'von', 'du', 'den', 'der', 'die'];
         const parts = name.split(' ');
         const info = parts.reduce((arr, p) => {
             if (stopwords.indexOf(p.toLowerCase()) !== -1) {

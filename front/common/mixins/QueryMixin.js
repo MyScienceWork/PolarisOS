@@ -12,9 +12,9 @@ module.exports = {
         },
     },
     watch: {
-        query(q) {
+        query(q, old) {
             this.state.query = q;
-            this.post_hook_query_changed(q);
+            this.post_hook_query_changed(q, old);
         },
     },
     computed: {

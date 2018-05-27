@@ -29,17 +29,17 @@
                     </router-link>
                     </b-dropdown-item>-->
                 <b-dropdown-item has-link class="has-text-centered">
-                    <a class="dropdown-item" @click="logout">
+                    <a class="dropdown-item" @click="logout(backoffice)">
                         {{lang('f_logout')}}
                     </a>
                 </b-dropdown-item>
             </b-dropdown>
         </p>
         <p v-else class="tile is-child has-text-centered">
-            <router-link v-if="!backoffice" class="navbar-item is-justify-center" slot="trigger" to="/login?redirect=%2F">
+            <router-link v-if="!backoffice" class="navbar-item is-justify-center" slot="trigger" to="/login/choice?redirect=%2F">
                 <span>{{lang('f_login')}}</span>
             </router-link>
-            <router-link v-else class="navbar-item is-justify-center" slot="trigger" to="/admin/login?redirect=%2F">
+            <router-link v-else class="navbar-item is-justify-center" slot="trigger" to="/admin/login/choice?redirect=%2F">
                 <span>{{lang('f_login')}}</span>
             </router-link>
         </p>
