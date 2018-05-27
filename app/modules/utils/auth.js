@@ -148,6 +148,7 @@ async function map_ldap_to_pos(ldap_user: Object, config: Object): Promise<?Obje
     }, {});
 
     pos_user.roles = [{ _id: default_role }];
+    pos_user.ldap = true;
     return pos_user;
 }
 
@@ -206,6 +207,9 @@ async function cas_auth(ticket: string, url: string): Promise<Object> {
                 }
 
                 user = await map_ldap_to_pos(ldap_user, global_config);
+
+                // Update to say that the user is using SSO
+                user.sso = true;
 
                 if (!user) {
                     return { ok: false, user: {} };
