@@ -96,9 +96,12 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         const names = authors.filter(a => a != null).map((a, i) => {
             const role = authors_roles[i];
             if (role.value !== 'author') {
-                const abbreviation = role.abbreviation
-                    .filter(ab => ab.lang === extra.lang)[0].values
-                    .filter(v => (v.quantity === 'n/a' || v.quantity === '1'))[0].value;
+                let abbreviation = '?';
+                if ('abbreviation' in role) {
+                    abbreviation = role.abbreviation
+                        .filter(ab => ab.lang === extra.lang)[0].values
+                        .filter(v => (v.quantity === 'n/a' || v.quantity === '1'))[0].value;
+                }
                 return `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)} (${BibTeXUtils.escape_to_bibtex(abbreviation.toLowerCase())})`;
             }
             return `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`;
@@ -121,7 +124,7 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         const r = Utils.find_value_with_path(pub, path.split('.'));
         if (r) {
             if (bracketing) {
-                return `"{${BibTeXUtils.escape_to_bibtex(r)}}"`;
+                return `{${BibTeXUtils.escape_to_bibtex(r)}}`;
             }
             return `${BibTeXUtils.escape_to_bibtex(r)}`;
         }
@@ -570,20 +573,61 @@ async function process_aggregations(aggs: Object, lang: string): Promise<Array> 
         return obj;
     }, {});
 
-    const publications = buckets.map((bucket) => {
-        const key = bucket.key_as_string || bucket.key;
-        const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
-        return {
-            key: typology_children[key] ? typology_children[key].label : key,
-            order_view: typology_children[key] ? typology_children[key].order_view : '0',
-            publications: pubs.map((p) => {
-                p._source._id = p._id;
-                return { source: p._source };
-            }) };
-    });
 
-    publications.sort((a, b) => a.order_view.localeCompare(b.order_view));
+    let publications = [];
+    if (root_key.indexOf('subtype') !== -1 && root_key.indexOf('year') !== -1) {
+        publications = buckets.map((bucket) => {
+            const key = bucket.key_as_string || bucket.key;
+            const infos = bucket.subtype.buckets.map((subbucket) => {
+                const subkey = subbucket.key_as_string || subbucket.key;
+                const pubs = Utils.find_value_with_path(subbucket, 'publications.hits.hits'.split('.')) || [];
+                return {
+                    key: typology_children[subkey] ? typology_children[subkey].label : key,
+                    order_view: typology_children[subkey] ? typology_children[subkey].order_view : '0',
+                    publications: pubs.map((p) => {
+                        p._source._id = p._id;
+                        return { source: p._source };
+                    }) };
+            });
+            infos.sort((a, b) => a.order_view.localeCompare(b.order_view));
+
+            if (infos.length === 0) {
+                return null;
+            }
+            return { key, information: infos };
+        }).filter(i => i != null);
+    } else {
+        publications = buckets.map((bucket) => {
+            const key = bucket.key_as_string || bucket.key;
+            const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
+            return {
+                key: typology_children[key] ? typology_children[key].label : key,
+                order_view: typology_children[key] ? typology_children[key].order_view : '0',
+                publications: pubs.map((p) => {
+                    p._source._id = p._id;
+                    return { source: p._source };
+                }) };
+        });
+
+        publications.sort((a, b) => a.order_view.localeCompare(b.order_view));
+    }
     return publications;
+}
+
+async function format_bibliography_results(publications: Array<Object>,
+        lang: string,
+        csl: string,
+        info: Object, memoizer: Object): Promise<string> {
+    const bibtex_output = await transform_to_bibtex(publications, info, memoizer);
+    const data = new Cite(bibtex_output);
+    const results = data.get({
+        nosort: true,
+        format: 'string',
+        type: 'html',
+        style: `citation-${csl}`,
+        lang: CSLUtils.langs_mapping[lang] || 'en-US',
+    });
+    return results;
 }
 
 async function export_bibliography(ctx: Object): Promise<any> {
@@ -730,7 +774,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
     } else if (group[0] === 'dates.publication+subtype') {
         aggregations = {
             'dates.publication': {
-                $name: 'year',
+                $name: 'year_subtype',
                 $type: 'date_histogram',
                 interval: 'year',
                 format: 'YYYY',
@@ -772,23 +816,31 @@ async function export_bibliography(ctx: Object): Promise<any> {
     const list_of_publications = await process_aggregations(aggs, lang[0]);
 
     ctx.__md.lang = lang[0];
-    let final_results = '';
 
     const memoizer = {
         typology: {}, contributor_role: {}, author: {}, lang: {},
     };
-    for (const publications of list_of_publications) {
-        const bibtex_output = await transform_to_bibtex(publications.publications, ctx.__md, memoizer);
-        const data = new Cite(bibtex_output);
-        const results = data.get({
-            nosort: true,
-            format: 'string',
-            type: 'html',
-            style: `citation-${csl[0]}`,
-            lang: CSLUtils.langs_mapping[lang[0]] || 'en-US',
-        });
-        final_results += `<h2>${publications.key}</h2>`;
-        final_results += results;
+
+
+    let final_results = '';
+
+    if (group[0] === 'dates.publication+subtype') {
+        for (const infos of list_of_publications) {
+            final_results += `<h2>${infos.key}</h2>`;
+            for (const publications of infos.information) {
+                const results = await format_bibliography_results(publications.publications,
+                    lang[0], csl[0], ctx.__md, memoizer);
+                final_results += `<h3>${publications.key}</h3>`;
+                final_results += results;
+            }
+        }
+    } else {
+        for (const publications of list_of_publications) {
+            const results = await format_bibliography_results(publications.publications,
+                lang[0], csl[0], ctx.__md, memoizer);
+            final_results += `<h2>${publications.key}</h2>`;
+            final_results += results;
+        }
     }
 
 

@@ -910,7 +910,7 @@ function escape_to_bibtex(str) {
     str = str.replace(new RegExp('\\{', 'g'), '\\{');
     str = str.replace(new RegExp('\\}', 'g'), '\\}');
     str = str.replace(new RegExp('\\$', 'g'), '\\$');
-    str = str.replace(new RegExp('"', 'g'), '\\"');
+    str = str.replace(new RegExp('"', 'g'), '{"}');
 
     return Object.keys(to_bibtex).reduce((s, k) => {
         s = s.replace(new RegExp(k, 'g'), to_bibtex[k]);
@@ -927,7 +927,7 @@ function escape_from_bibtex(str) {
     str = str.replace(new RegExp('\\\\{', 'g'), '{');
     str = str.replace(new RegExp('\\\\}', 'g'), '}');
     str = str.replace(new RegExp('\\\\$', 'g'), '$');
-    str = str.replace(new RegExp('\\\\"', 'g'), '"');
+    str = str.replace(new RegExp('\\{"\\}', 'g'), '"');
     return str;
 }
 

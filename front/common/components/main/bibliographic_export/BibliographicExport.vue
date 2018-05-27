@@ -29,6 +29,9 @@
                 v-if="state.activeSelectTab === 0"
                 key="select-author"
                 :multi="true"
+                :ajax="true"
+                ajax-url="/api/public/v2/authors/search"
+                ajax-value-url="/api/public/v2/authors/search"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"

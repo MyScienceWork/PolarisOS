@@ -97,15 +97,19 @@
                                 fieldValue="_id"
                                 fieldLabel="name"
                                 :multi="true"
+                                :translatable="true"
                             />
                             <fselect 
                                 name="author" 
                                 :label="lang('l_author')" 
                                 :is-required="true" 
-                                :options="authors" 
+                                :options="[]" 
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"
                                 fieldLabel="fullname"
+                                :ajax="true"
+                                ajax-url="/api/public/v2/authors/search"
+                                ajax-value-url="/api/public/v2/authors/search"
                             />
                         </fform>
                     </div>
