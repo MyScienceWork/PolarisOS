@@ -38,13 +38,25 @@ module.exports = {
     },
     computed: {
         default_query() {
-            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published] });
+            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published],
+                $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         default_sorts() {
             return Sortings.sort_with_type_and_subtype(this.typology_order, this.subtypology_order, 'asc');
         },
         search_query() {
-            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published, Queries.author_name_or_id] });
+            return JSON.stringify({ $and: [Queries.no_other_version/* , Queries.published*/, Queries.author_name_or_id],
+                $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
+        },
+        no_types() {
+            const content = this.fcontent(this.state.sinks.reads.typology);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content.filter(t => t.name === 'other' || t.name === 'press' || t.name === 'conference').map(t => t._id);
+        },
+        no_subtypes() {
+            return ['official-report'];
         },
         typology_order() {
             const content = this.fcontent(this.state.sinks.reads.typology);

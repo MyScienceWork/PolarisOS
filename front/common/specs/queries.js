@@ -24,9 +24,19 @@ const author_name_or_id = {
     ],
 };
 
+const filter_out_types_and_subtypes = (types, subtypes) =>
+({
+    $nfand: [
+    { type: types },
+    { subtype: subtypes },
+    ],
+});
+
+
 module.exports = {
     publication_search,
     author_name_or_id,
+    filter_out_types_and_subtypes,
     published_publication_search: {
         $and: [
             { has_other_version: false },
