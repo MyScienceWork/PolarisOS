@@ -98,13 +98,13 @@
                         <h4 class="title is-4 has-no-bottom-margin">{{lang('f_user_general_settings')}}</h4>
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
-                        <hr class="hr-section" />
-                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>
+                        <!--<hr class="hr-section" />
+                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>-->
                         <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
                         <button
                             @click.prevent="save('user')"
                             class="button button-background-green has-small-top-margin has-small-bottom-margin">
-                            {{lang('f_save')}}
+                            {{lang('f_save_user_profile')}}
                         </button>
                         <article class="message is-success" v-if="state.statuses.creations.user === 'ok'">
                             <div class="message-body">
@@ -125,7 +125,7 @@
                             <a
                                 @click.prevent="save('author')"
                                 class="button button-background-green has-small-top-margin has-small-bottom-margin">
-                                {{lang('f_save')}}
+                                {{lang('f_save_affiliations')}}
                             </a>
                             <article class="message is-success" v-if="state.statuses.creations.author === 'ok'">
                                 <div class="message-body">
