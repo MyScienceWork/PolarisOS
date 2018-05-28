@@ -34,18 +34,17 @@
                                     :multi="true"
                                     :form="state.sinks.creations.forum"
                                     :ajax="true"
-                                    :ajax-url="`/api/public/v2/demovocs/search`"
+                                    :ajax-url="`/api/public/v2/discipline/search`"
                                     :ajax-value-url="state.paths.reads.discipline"
                                 />
                             </div>
                             <div class="column">
                                 <fselect
                                     name="visibility"
-                                    :label="lang('b_visibility_name')"
+                                    :label="lang('b_visibility_discussion')"
                                     :is-required="true"
-                                    :options="visibility || ['all']"
-                                    fieldLabel="name"
-                                    fieldValue="_id"
+                                    :options="[{value: 'polaris_member_restricted', label: 'Restrained to Polaris member'},
+                                        {value: 'participant_restricted', label: 'Restrained to participant'}]"
                                     :form="state.sinks.creations.forum"
                                 />
                             </div>
