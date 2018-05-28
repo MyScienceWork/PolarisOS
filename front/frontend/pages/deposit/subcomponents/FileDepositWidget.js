@@ -10,6 +10,7 @@ module.exports = {
         uploadForm: { required: true },
         analyzeState: { required: true, type: String },
         modificationMode: { default: false, type: Boolean },
+        noDepositedFiles: { default: false, type: Boolean },
     },
     data() {
         return {

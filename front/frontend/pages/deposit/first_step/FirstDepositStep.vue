@@ -20,6 +20,7 @@
                             fieldLabel="label"
                             fieldValue="_id"
                             :view-validation-texts="false"
+                            :translatable="true"
                             />
                     </div>
                 </div> 
@@ -36,6 +37,7 @@
                             fieldLabel="tlabel"
                             fieldValue="name"
                             :view-validation-texts="false"
+                            :translatable="true"
                             />
                     </div>
                 </div>
@@ -50,6 +52,7 @@
                     <div class="column" v-if="Object.keys(uploadForm).length > 0">
                         <file-deposit-widget 
                             :modification-mode="modificationMode"
+                            :no-deposited-files="noDepositedFiles"
                             :upload-form="uploadForm"
                             :sink="creationSink"
                             @analyze-from-file="analyze_from_file"

@@ -104,6 +104,40 @@
                                 </div>
                             </widget>
                             <widget :collapsed="true">
+                                <span slot="title">{{lang('l_api_setting', {}, 'other')}}</span>
+                                <div slot="body">
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{HAL}}</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.hal.url" 
+                                                :label="lang('l_hal_url')" 
+                                                :placeholder="lang('l_hal_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.hal.login" 
+                                                :label="lang('l_hal_login')" 
+                                                :placeholder="lang('l_hal_login')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.hal.password" 
+                                                :label="lang('l_hal_password')" 
+                                                :placeholder="lang('l_hal_password')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="password"
+                                            />
+                                        </div>
+                                    </widget>
+                                </div>
+                            </widget>
+                            <widget :collapsed="true">
                                 <span slot="title">{{lang('l_upload_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <finput

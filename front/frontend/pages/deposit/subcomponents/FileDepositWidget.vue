@@ -1,6 +1,6 @@
 <template>
     <div class="card card-equal-height">
-        <div class="card-content card-equal-height" v-if="!modificationMode">
+        <div class="card-content card-equal-height" v-if="!modificationMode || noDepositedFiles">
             <div class="columns is-centered">
                 <div class="column has-text-centered">
                     <h4 class="title is-4">{{lang('f_upload_deposit_file')}}
