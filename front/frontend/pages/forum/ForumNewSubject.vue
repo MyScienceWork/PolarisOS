@@ -34,7 +34,7 @@
                                     :multi="true"
                                     :form="state.sinks.creations.forum"
                                     :ajax="true"
-                                    :ajax-url="`/api/public/v2/discipline/search`"
+                                    :ajax-url="`/api/public/v2/disciplines/search`"
                                     :ajax-value-url="state.paths.reads.discipline"
                                 />
                             </div>
