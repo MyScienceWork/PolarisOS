@@ -105,6 +105,7 @@ module.exports = {
                 content.push({ type: 'pipeline' });
                 content.push({ type: 'user' });
                 content.push({ type: 'role' });
+                content.push({ type: 'identifier' });
                 return content;
             }
             return [];

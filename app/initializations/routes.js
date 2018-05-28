@@ -50,7 +50,7 @@ async function initialize_routes() {
     const extra_entities = response.result.hits.map(e => e.db.source.type);
     const entities = ['user', 'role', 'config', 'lang', 'form', 'function',
         'pipeline', 'widget', 'page', 'template', 'menu', 'query',
-        'importer', 'exporter', 'connector', ...extra_entities];
+        'importer', 'exporter', 'connector', 'identifier', ...extra_entities];
 
     entities.forEach((e) => {
         RouterUtils.generate_entity_routes(router, e, []);
