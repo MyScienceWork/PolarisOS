@@ -35,6 +35,7 @@
                                                 :typology-options="typology_options"
                                                 :subtypology-options="subtypology_options"
                                                 :modification-mode="in_mode('modify')"
+                                                :no-deposited-files="deposited_files.length === 0"
                                                 :review-mode="in_mode('review')"
                                                 :analyze-state="state.analyze_state"
                                                 :import-state="state.import_state"
@@ -84,6 +85,11 @@
                                     </template>
                                     <template slot="step-buttons" slot-scope="props">
                                         <div class="field is-grouped is-pulled-right">
+                                            <div class="control">
+                                                <button 
+                                                    :disabled="success"
+                                                    @click.prevent="give_up" class="button">{{lang('f_give_up_button')}}</button>
+                                            </div>
                                             <div class="control" v-if="props.step > 0">
                                                 <button 
                                                     :disabled="success"
@@ -125,6 +131,25 @@
         :sink="state.sinks.creations.publication"
         :show.sync="state.show_review_modal"
     />
+    <b-modal :active.sync="state.show_give_up_modal">
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">{{lang('l_please_confirm')}}</p>
+                <button class="delete" aria-label="close" @click.prevent="state.show_give_up_modal = false"></button>
+            </header>
+            <div class="modal-card-body">
+                <div class="columns">
+                    <div class="column">
+                        <h4 class="has-text-centered title is-4">{{lang('l_sure_give_up')}}</h4>
+                    </div>
+                </div>
+            </div>
+            <footer class="modal-card-foot">
+                <button class="button is-info" @click.prevent="give_up">{{lang('l_give_up_deposit')}}</button>
+                <button class="button" @click.prevent="state.show_give_up_modal = false">{{lang('b_cancel')}}</button>
+            </footer>
+        </div>
+    </b-modal>
 </div>
 </template>
 

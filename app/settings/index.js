@@ -1,5 +1,6 @@
 const user = require('./user');
 const role = require('./role');
+const identifier = require('./identifier');
 
 const form = require('./form');
 const entity = require('./entity');
@@ -26,6 +27,7 @@ const mswpublication = require('./mswpublication');
 module.exports = {
     user: user.msw,
     role: role.msw,
+    identifier: identifier.msw,
 
     form: form.msw,
     entity: entity.msw,

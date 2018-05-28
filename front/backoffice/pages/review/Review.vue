@@ -81,7 +81,14 @@
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
                                 <b-table-column field="depositor" :label="lang('l_p_action', {}, 'other')" centered :visible="state.columns.depositor.visible">
-                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a>
+                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
+                                    <action-button
+                                        class="has-text-red"
+                                        tag="a"
+                                        :confirmation="lang('l_remove_confirmation')"
+                                        :two-steps="true"
+                                        @action-click="remove(props.row, 'publication')"
+                                    >{{lang('l_review_remove_button')}}</action-button>
                                 </b-table-column>
                                 <b-table-column field="denormalization.reviewer.lastname.raw" :label="lang('l_p_reviewer')" sortable centered :visible="state.columns['denormalization.reviewer.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}

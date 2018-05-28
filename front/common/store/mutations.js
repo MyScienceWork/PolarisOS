@@ -87,7 +87,7 @@ module.exports = {
                 return o;
             }, {});
 
-            const parent = Utils.find_parent_with_path(path, content);
+            const parent = Utils.find_object_with_path(path, content);
             parent[path[path.length - 1]] = info;
         } else {
             const object = Utils.make_nested_object_from_path(path, info);

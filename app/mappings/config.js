@@ -18,6 +18,23 @@ module.exports = {
                             },
                         },
                     },
+                    api: {
+                        properties: {
+                            hal: {
+                                properties: {
+                                    url: {
+                                        type: 'keyword',
+                                    },
+                                    login: {
+                                        type: 'keyword',
+                                    },
+                                    password: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                        },
+                    },
                     mail: {
                         properties: {
                             smtp: {
