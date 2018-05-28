@@ -94,6 +94,17 @@ module.exports = {
                             },
                         },
                     },
+                    identifiers: {
+                        type: 'nested',
+                        properties: {
+                            type: {
+                                type: 'keyword',
+                            },
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     ids: {
                         properties: {
                             twitter: {

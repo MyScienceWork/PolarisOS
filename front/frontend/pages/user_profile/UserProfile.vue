@@ -67,7 +67,7 @@
                                 <h5 class="title is-5">{{lang('l_publication', {}, 'other')}}</h5>
                                 <div class="columns is-centered">
                                     <div class="column is-10">
-                                        <search-bar 
+                                        <search-bar
                                         :search-sink="state.sinks.creations.publication_search"
                                         :default-search="search_param_in_query"
                                         :use-favorites="false"
@@ -79,7 +79,7 @@
                                 <hr />
                                 <div class="columns is-centered">
                                     <div class="column">
-                                        <search-results 
+                                        <search-results
                                         :search-sink="state.sinks.creations.publication_search"
                                         :result-sink="state.sinks.reads.publication"
                                         :search-path="state.paths.reads.publication"
@@ -99,8 +99,9 @@
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
                         <hr class="hr-section" />
+                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>
                         <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
-                        <button 
+                        <button
                             @click.prevent="save('user')"
                             class="button button-background-green has-small-top-margin has-small-bottom-margin">
                             {{lang('f_save')}}
@@ -115,10 +116,10 @@
                                 {{lang('f_user_save_failed')}}
                             </div>
                         </article>
-                
+
                         <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations', {}, 'other')}}</h4>
                         <hr class="hr-section" />
-                        
+
                         <div v-if="author && author._id">
                             <dynamic-form :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
                             <a
@@ -163,7 +164,7 @@
                     <div v-else-if="state.current_tab === 2 && state.loggedIn && user && user._id"> <!-- my deposits -->
                         <div class="columns is-centered">
                             <div class="column is-10">
-                                <search-bar 
+                                <search-bar
                                     :search-sink="state.sinks.creations.deposit_search"
                                     :default-search="search_param_in_query"
                                     :use-favorites="false"
@@ -175,7 +176,7 @@
                         <hr />
                         <div class="columns is-centered">
                             <div class="column">
-                                <search-results 
+                                <search-results
                                 :search-sink="state.sinks.creations.deposit_search"
                                 :result-sink="state.sinks.reads.deposit"
                                 :search-path="state.paths.reads.publication"
