@@ -183,7 +183,6 @@ module.exports = {
             if (this.type === 'hidden' && s === 'initial') {
                 this.update({ target: { [key]: this.hiddenValue } });
             }*/
-
             if (s === 'update' || s === 'initial') {
                 this.init();
             }
