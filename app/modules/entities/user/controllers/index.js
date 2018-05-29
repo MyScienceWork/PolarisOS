@@ -1,50 +1,27 @@
 // @flow
 module.exports = {};
 
+const AuthUtils = require('../../../utils/auth');
 const EntitiesUtils = require('../../../utils/entities');
-const Crypto = require('crypto');
 const Errors = require('../../../exceptions/errors');
+const Request = require('superagent');
 
 async function authenticate(ctx: Object) {
     const body = ctx.request.body;
     const password = body.password;
     const email = body.email;
+    const ticket = body.ticket;
+    const url = body.fullPath;
 
-    // const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
-
-    const sources = await EntitiesUtils.search_and_get_sources('user', {
-        where: {
-            'emails.email': email,
-        },
-        size: 1,
-        population: ['roles._id'],
-    });
-
-    if (sources.length === 0) {
-        ctx.body = { ok: false, user: {} };
-        return;
+    if (!password && !email) {
+        if (ticket) {
+            ctx.body = await AuthUtils.cas_auth(ticket, url);
+        } else {
+            ctx.body = { ok: false, user: {} };
+        }
+    } else {
+        ctx.body = await AuthUtils.login_auth(email, password);
     }
-
-    const db = sources[0];
-
-    if (db.locked) {
-        throw Errors.AccountIsLocked;
-    }
-
-    // let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
-
-    const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
-
-    if (hpassword === db.password) {
-        // info.set('force_deconnection', false);
-        // await info.update();
-
-        ctx.body = { ok: true,
-            user: db };
-        return;
-    }
-
-    ctx.body = { ok: false, user: {} };
 }
 
 async function access(ctx: Object) {

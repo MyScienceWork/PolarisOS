@@ -203,7 +203,20 @@ module.exports = {
             return CSLSpecs;
         },
         group_content() {
-            return [];
+            return [
+                {
+                    label: 'l_group_by_years_bexport',
+                    value: 'dates.publication',
+                },
+                {
+                    label: 'l_group_by_type_bexport',
+                    value: 'subtype',
+                },
+                {
+                    label: 'l_group_by_year_type',
+                    value: 'dates.publication+subtype',
+                },
+            ];
         },
         sort_content() {
             return [

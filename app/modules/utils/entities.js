@@ -59,6 +59,9 @@ const MenuModel = require('../entities/menu/models/menus');
 const Publication = require('../entities/publication/publication');
 const PublicationModel = require('../entities/publication/models/publications');
 
+const Identifier = require('../entities/identifier/identifier');
+const IdentifierModel = require('../entities/identifier/models/identifiers');
+
 // const MSWPublication = require('../entities/mswpublication/mswpublication');
 // const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
 
@@ -79,6 +82,18 @@ function get_hits(result: Object): Array<any> {
 
     if ('result' in result && 'hits' in result.result) {
         return result.result.hits;
+    }
+
+    return [];
+}
+
+function get_aggs(result: Object): Array<any> {
+    if ('aggs' in result) {
+        return result.aggs;
+    }
+
+    if ('result' in result && 'aggs' in result.result) {
+        return result.result.aggs;
     }
 
     return [];
@@ -249,6 +264,8 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
+    case 'identifier':
+        return IdentifierModel;
     /* case 'mswpublication':
       return MSWPublicationModel;*/
     case 'mail_template':
@@ -293,6 +310,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'page':
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'identifier':
+        return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'publication':
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
     /* case 'mswpublication':
@@ -322,6 +341,26 @@ async function create(info: Object, type: string): Promise<*> {
     const model = cls.model;
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
+    return response;
+}
+
+async function creates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_create(get_index(type), type, es_client, items);
+    return response;
+}
+
+async function updates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_update(get_index(type), type, es_client, items);
     return response;
 }
 
@@ -489,12 +528,15 @@ module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
 module.exports.create = create;
+module.exports.creates = creates;
 module.exports.update = update;
+module.exports.updates = updates;
 module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
 module.exports.get_hits = get_hits;
+module.exports.get_aggs = get_aggs;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
 module.exports.search_and_get_sources = search_and_get_sources;

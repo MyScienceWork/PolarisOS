@@ -116,6 +116,7 @@ const Formatting: Array<any> = [
 
                 file.access = {
                     restricted: access_description ? access_description.restricted : false,
+                    confidential: access_description ? access_description.confidential : false,
                     delayed: access_description ? access_description.delayed : false,
                 };
 
@@ -262,6 +263,7 @@ const Completion: Array<any> = [
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
         'dates.deposit': () => ({ dates: { deposit: +moment() } }),
         'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment() } } }),
+        'diffusion.rights.exports.nowhere': object => ({ diffusion: { rights: { exports: { nowhere: false } } } }),
     },
     {
         sherpa: async (object, path) => {

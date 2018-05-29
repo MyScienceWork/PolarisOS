@@ -52,9 +52,27 @@ function get_language_values_from_langs(key, langs) {
     return get_language_values(key, { langs });
 }
 
+async function get_language_values_from_langs_and_keys(keys, langs) {
+    const values = await EntitiesUtils.search_and_get_sources('lang', {
+        size: keys.length * langs.length,
+        where: {
+            $and: [
+                { lang: langs },
+                { key: keys },
+            ],
+        },
+    });
+
+    const items = values.reduce((obj, src) => {
+        obj[src.lang][src.key] = retrieve_single_quantity(src.values);
+        return obj;
+    }, langs.reduce((o, l) => { o[l] = {}; return o; }, {}));
+    return items;
+}
 
 module.exports = {
     get_config,
     get_language_values,
     get_language_values_from_langs,
+    get_language_values_from_langs_and_keys,
 };

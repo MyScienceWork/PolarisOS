@@ -1,10 +1,11 @@
 <template>
 <div class="hero-body">
-    <div class="container has-text-centered">
+    <div class="container has-text-centered" v-if="!this.$route.query.ticket">
         <div class="columns is-centered">
             <div class="column is-6">
                 <h3 class="title has-text-grey">{{lang('f_login_header')}}</h3>
-                <p class="subtitle has-text-grey">{{lang('f_login_to_proceed')}}</p>
+                <p class="subtitle has-text-grey">{{lang('f_login_to_proceed')}}
+                </p>
             </div>
         </div>
         <div class="columns is-centered">
@@ -57,6 +58,11 @@
                 <a class="has-text-grey" href="../">{{lang('f_forgot_password')}}</a> 
                 </p>
             </div>
+        </div>
+    </div>
+    <div class="container" v-else>
+        <div class="columns is-centered">
+            <loader></loader>
         </div>
     </div>
 </div>

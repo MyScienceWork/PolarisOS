@@ -67,6 +67,7 @@
                         >
                             <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.sinks.creations.user" />
                             <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.sinks.creations.user" />
+                            <finput name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
                             <finput 
                                 name="sso" :label="lang('b_is_sso')" 
                                 type="checkbox" :form="state.sinks.creations.user" 
@@ -96,15 +97,19 @@
                                 fieldValue="_id"
                                 fieldLabel="name"
                                 :multi="true"
+                                :translatable="true"
                             />
                             <fselect 
                                 name="author" 
                                 :label="lang('l_author')" 
                                 :is-required="true" 
-                                :options="authors" 
+                                :options="[]" 
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"
                                 fieldLabel="fullname"
+                                :ajax="true"
+                                ajax-url="/api/public/v2/authors/search"
+                                ajax-value-url="/api/public/v2/authors/search"
                             />
                         </fform>
                     </div>

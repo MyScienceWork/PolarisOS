@@ -30,6 +30,9 @@ module.exports = {
                             },
                         },
                     },
+                    uid: {
+                        type: 'keyword',
+                    },
                     enabled: {
                         type: 'boolean',
                     },
@@ -87,6 +90,17 @@ module.exports = {
                                 type: 'keyword',
                             },
                             secret: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    identifiers: {
+                        type: 'nested',
+                        properties: {
+                            type: {
+                                type: 'keyword',
+                            },
+                            value: {
                                 type: 'keyword',
                             },
                         },

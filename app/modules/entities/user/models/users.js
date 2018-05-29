@@ -24,6 +24,7 @@ const Formatting: Array<any> = [
     {
         emails: a => FormatFunctions.oarray_to_array(a),
         roles: a => FormatFunctions.oarray_to_array(a),
+        identifiers: a => FormatFunctions.oarray_to_array(a),
         password: async (result, object) => {
             const hpassword = Utils.find_value_with_path(object, 'hpassword'.split('.'));
             if (!hpassword) {
@@ -57,6 +58,7 @@ const Defaults: Object = {
     locked: false,
     enabled: true,
     force_deconnection: true,
+    authentication: {},
 };
 
 const Resetting: Object = {

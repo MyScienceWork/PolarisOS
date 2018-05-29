@@ -20,7 +20,7 @@
                             />
                         </div>
                         <div class="control">
-                            <a class="button is-info" @click="import_from_id">
+                            <a class="button is-info" @click.prevent="import_from_id">
                                 {{lang('f_search')}} 
                             </a>
                         </div>

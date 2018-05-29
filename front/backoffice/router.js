@@ -60,13 +60,13 @@ router.beforeEach((to, from, next) => {
                 next();
             } else {
                 next({
-                    path: '/admin/login',
+                    path: '/admin/login/choice',
                     query: { redirect: to.fullPath },
                 });
             }
         }).catch(() => {
             next({
-                path: '/admin/login',
+                path: '/admin/login/choice',
                 query: { redirect: to.fullPath },
             });
         });

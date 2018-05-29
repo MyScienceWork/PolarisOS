@@ -1,3 +1,4 @@
+require('babel-polyfill'); // For very very old browser
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
@@ -7,6 +8,7 @@ const store = require('../common/store');
 
 const Loader = require('./components/loader/Loader.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
+const ColorInput = require('../common/components/main/forms/elements/color/Color.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
 const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
@@ -19,6 +21,7 @@ const Card = require('../common/components/main/card/Card.vue');
 const Searching = require('../common/components/main/forms/searching/Searching.vue');
 const DataTableSearching = require('../common/components/main/forms/searching/DataTableSearching.vue');
 const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
+const LoginChoice = require('../common/components/main/login_choice/LoginChoice.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -38,6 +41,7 @@ Vue.use(VueWysiwyg.default, {
 Vue.component('loader', Loader);
 Vue.component('fform', Form);
 Vue.component('finput', Input);
+Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
 Vue.component('fstatic', Static);
 Vue.component('fgrid', Grid);
@@ -51,6 +55,7 @@ Vue.component('fsearching', Searching);
 Vue.component('fdata-table-searching', DataTableSearching);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('login-lang', LoginLang);
+Vue.component('login-choice', LoginChoice);
 
 new Vue({
     el: '#app',

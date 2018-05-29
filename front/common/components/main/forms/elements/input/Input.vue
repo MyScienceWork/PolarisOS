@@ -18,7 +18,7 @@
     <input v-if="type === 'hidden'"
         type="hidden"
         :name="name"
-        :value="value"
+        :value="state.value"
         @input="update"
         :readonly="readonly"
     ></input>
@@ -34,7 +34,7 @@
             </a>
         </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
-            <wysiwyg @input="update" :value="value" :placeholder="placeholder"  />
+            <wysiwyg @input="update" :value="state.value" :placeholder="placeholder"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon}]" v-else-if="type === 'ide-editor'">
@@ -49,7 +49,7 @@
             </a>
         </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
-            <ace-editor @init="IDEInit" :value="value" @input="update" lang="json" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
+            <ace-editor @init="IDEInit" :value="state.value" @input="update" lang="json" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
@@ -75,7 +75,7 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :readonly="readonly"
 
@@ -85,7 +85,7 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :readonly="readonly"
                 />
@@ -94,13 +94,13 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :readonly="readonly"
                 />
                 <b-datepicker
                     v-else-if="type === 'date' && !readonly"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :first-day-of-week="1"
                     :readonly="readonly"
@@ -109,7 +109,7 @@
                     />
                 <input
                     v-else-if="type === 'date-year' && !readonly"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     type="number"
                     :min="yearRangeStart"
@@ -124,7 +124,7 @@
                 <b-timepicker
                     v-else-if="type === 'time' && !readonly"
                     :placeholder="placeholder"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :readonly="readonly"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
@@ -135,7 +135,7 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     :readonly="readonly"
                 />
@@ -170,7 +170,7 @@
                     :placeholder="placeholder"
                     :name="name"
                     :rows="rows"
-                    :value="value"
+                    :value="state.value"
                     @input="update"
                     v-if="!readonly"
                 />
@@ -204,7 +204,7 @@
                 <input
                 type="radio"
                 :name="name"
-                :value="value"
+                :value="state.value"
                 @input="update"
                 :disabled="readonly"
                 />
@@ -218,8 +218,8 @@
             <input
             type="checkbox"
             :name="name"
-            :value="value"
-            :checked="value"
+            :value="state.value"
+            :checked="state.value"
             @change="update"
             :disabled="readonly"
             />
@@ -232,8 +232,8 @@
                 <input
                 type="checkbox"
                 :name="name"
-                :value="value"
-                :checked="value"
+                :value="state.value"
+                :checked="state.value"
                 @change="update"
                 :disabled="readonly"
                 />

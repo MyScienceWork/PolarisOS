@@ -25,6 +25,17 @@ module.exports = {
         CrudForm,
     },
     methods: {
+        get_component(type) {
+            switch (type) {
+            case 'multi-select':
+            case 'select':
+                return 'fselect';
+            case 'color':
+                return 'fcolor';
+            default:
+                return 'finput';
+            }
+        },
         form_is_of_type(type, field) {
             if (type === 'section' || type === 'widget' || type === 'hidden') {
                 return field.type === 'subform'

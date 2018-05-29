@@ -12,6 +12,7 @@
             <div class="media-content">
                 <p class="has-small-bottom-margin">
                     <span v-html="info.html"></span>
+                    <span class="tag" :style="`background-color: ${get_color(info.type)}`">{{lang(info.denormalization.type.label)}}</span>
                     <span class="has-small-left-margin is-pulled-right tag is-warning" v-if="info.status === 'pending' && showStatus">
                         {{lang(`l_${info.status}_status`)}}
                     </span>
@@ -89,7 +90,7 @@
                               :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
                               quote=""
                               hashtags="ined"
-                              twitter-user="ined"
+                              twitter-user="InedFr"
                               network-tag="a"
                               inline-template>
                                 <network network="facebook" class="level-item">

@@ -101,5 +101,7 @@ module.exports = {
         new Error('Path does not exist'), 422),
 
     DownloadDoesNotExist: new GenericError('DownloadDoesNotExist',
-        new Error('The file you\'ve requested does not exist'), 422),
+            new Error('The file you\'ve requested does not exist'), 422),
+
+    UnableToProcessPipelines: new GenericError('UnableToProcessPipelines', new Error('Unable to process pipelines'), 500),
 };

@@ -15,6 +15,7 @@ module.exports = {
         subtypologyOptions: { required: true, type: Array },
         reviewMode: { default: false, type: Boolean },
         modificationMode: { default: false, type: Boolean },
+        noDepositedFiles: { default: false, type: Boolean },
         importState: { required: true, type: String },
         analyzeState: { required: true, type: String },
     },
@@ -40,5 +41,7 @@ module.exports = {
     watch: {
     },
     computed: {
+    },
+    mounted() {
     },
 };

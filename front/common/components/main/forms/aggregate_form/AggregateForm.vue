@@ -1,6 +1,6 @@
 <template>
 <div>
-    <fvariadic-element class="field" name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true">
+    <fvariadic-element class="field" name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
     <template slot="variadic" slot-scope="props">
             <component
                 :is="select_component(props.order)"
@@ -13,6 +13,8 @@
                 :key="`${props.id}.input`"
                 :multi="state.inputs[props.id] ? state.inputs[props.order].element === 'multi-select' : false"
                 :options="get_options(props.id, state.inputs[props.order] ? state.inputs[props.id].sink : null)"
+                :translatable="get_translatable(props.id)"
+                :translate-through-hlang="get_use_hlang(props.id)"
                 :fieldValue="get_field('value', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
                 :fieldLabel="get_field('label', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
                 class="has-small-bottom-margin"
@@ -52,6 +54,11 @@
                     <div class="control" v-if="props.order === props.total - 1">
                         <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
                             <i class="fa fa-search"></i>
+                        </a>
+                    </div>
+                    <div class="control" v-if="props.order === props.total - 1">
+                        <a class="button has-text-red swap" :alt="lang('f_reset')" :title="lang('f_reset')" @click.prevent="reset">
+                            <i class="fa fa-trash"></i>
                         </a>
                     </div>
                 </template> 

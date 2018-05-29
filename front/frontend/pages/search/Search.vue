@@ -9,9 +9,10 @@
         </div>-->
         <div class="columns is-centered">
             <div class="column is-10">
-                <search-bar 
+                <search-bar
                     :search-sink="state.sinks.creations.search"
                     :default-search="query_search"
+                    :show-advanced-search.sync="show_advanced_search"
                 />
             </div>
         </div>

@@ -25,7 +25,7 @@ module.exports = {
                     reads: {
                         role: 'role_read',
                         user: 'user_read',
-                        author: 'author_read',
+                        // author: 'author_read',
                     },
                     creations: {
                         search: 'search_creation_user',
@@ -39,7 +39,7 @@ module.exports = {
     methods: {
     },
     mounted() {
-        this.$store.state.requests = ['role', 'author'].map(e => ({
+        this.$store.state.requests = ['role'].map(e => ({
             name: 'search',
             type: 'dispatch',
             content: {
@@ -52,19 +52,16 @@ module.exports = {
         }));
     },
     computed: {
-        authors() {
+                  /* authors() {
             const content = this.mcontent(this.state.sinks.reads.author);
             if (content instanceof Array) {
                 return content;
             }
             return [];
-        },
+            },*/
         roles() {
             const content = this.mcontent(this.state.sinks.reads.role);
-            return content.map((c) => {
-                c.name = this.lang(c.name);
-                return c;
-            });
+            return content;
         },
     },
 };

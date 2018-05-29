@@ -12,6 +12,7 @@ const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
 const Review = require('./pages/review/Review.vue');
 const Login = require('./pages/login/Login.vue');
+const LoginChoice = require('./pages/login_choice/LoginChoice.vue');
 const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
@@ -245,5 +246,12 @@ module.exports.plain = [
         key: 'login',
         routes: [Routes.login],
         component: Login,
+    },
+    {
+        access: '',
+        subaccess: [],
+        key: 'login-choice',
+        routes: [Routes.login_choice],
+        component: LoginChoice,
     },
 ];

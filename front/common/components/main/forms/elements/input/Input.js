@@ -40,7 +40,7 @@ module.exports = {
     data() {
         return {
             state: {
-                       // value: this.defaultValue(),
+                value: undefined,
                 showHelpModal: false,
             },
         };
@@ -98,7 +98,14 @@ module.exports = {
                 name: this.name,
                 info,
             });
+
             this.$emit('value-change', info);
+
+            const formatted_info = this.formatValue(info);
+
+            if (this.type !== 'date') {
+                this.state.value = formatted_info;
+            }
         },
         defaultValue() {
             if (this.default != null) {
@@ -108,17 +115,21 @@ module.exports = {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {
-                return moment.utc().toDate();
+                return +moment.utc();
             } else if (this.type === 'date-year') {
-                return moment.utc().format('YYYY');
+                return +moment.utc(moment.utc().format('YYYY'), 'YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             } else if (this.type === 'ide-editor') {
                 return '';
             }
-            return undefined;
+            return '';
         },
         computeReadonlyValue(v) {
+            if (!v) {
+                return v;
+            }
+
             if (this.type === 'date' || this.type === 'date-year') {
                 if (typeof v === 'string') {
                     return v;
@@ -132,6 +143,33 @@ module.exports = {
             }
             return v;
         },
+        formatValue(info) {
+            if (this.type === 'date') {
+                return moment(info).toDate();
+            } else if (this.type === 'date-year') {
+                return moment(info).format('YYYY');
+            }
+            return info;
+        },
+        init() {
+            const form = this.$store.state.forms[this.form] || {};
+            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
+            if (value == null) {
+                const info = this.defaultValue();
+
+                if (this.type === 'hidden') {
+                    this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                        form: this.form,
+                        name: this.name,
+                        info,
+                    });
+                }
+
+                this.state.value = this.formatValue(info);
+            } else {
+                this.state.value = this.formatValue(value);
+            }
+        },
     },
 
     watch: {
@@ -141,9 +179,13 @@ module.exports = {
             }
         },
         current_state(s) {
-            const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
+            /* const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
             if (this.type === 'hidden' && s === 'initial') {
                 this.update({ target: { [key]: this.hiddenValue } });
+            }*/
+
+            if (s === 'update' || s === 'initial') {
+                this.init();
             }
         },
         readonlyValue(v) {
@@ -160,33 +202,12 @@ module.exports = {
             return this.fstate(this.form);
         },
         readonlyValue() {
-            return this.computeReadonlyValue(this.value);
-        },
-        value() {
-            const form = this.$store.state.forms[this.form];
-            if (form == null) {
-                return this.defaultValue();
-            }
-
-            const value = Utils.find_value_with_path(form.content, this.name.split('.'));
-            if (value == null) {
-                const dv = this.defaultValue();
-                if (dv) {
-                    const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
-                    this.update({ target: { [key]: dv } });
-                }
-                return dv;
-            } else if (this.type === 'date') {
-                return moment(value).toDate();
-            } else if (this.type === 'date-year') {
-                return moment(value).format('YYYY');
-            }
-            return value;
+            return this.computeReadonlyValue(this.state.value);
         },
     },
+    beforeMount() {
+        this.init();
+    },
     mounted() {
-        if (this.type === 'hidden') {
-            this.update({ target: { value: this.hiddenValue } });
-        }
     },
 };

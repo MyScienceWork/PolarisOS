@@ -4,6 +4,7 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const Queries = require('../../../common/specs/queries');
 const BrowserUtils = require('../../../common/utils/browser');
 const Handlebars = require('../../../../app/modules/utils/templating');
@@ -13,7 +14,7 @@ const LastDeposits = require('./subcomponents/LastDeposits.vue');
 const Search = require('./subcomponents/Search.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin],
     data() {
         return {
             state: {
@@ -74,6 +75,7 @@ module.exports = {
                     $and: [
                         Queries.published,
                         Queries.no_other_version,
+                        Queries.viewable(this.user._id, this.author),
                     ],
                 },
             },
@@ -86,7 +88,7 @@ module.exports = {
                 where: {
                     $and: [{ 'diffusion.rights.access': ['AWF0ZQmRfoecpXq21Jl9'] },
                         Queries.published,
-                        Queries.no_other_version],
+                        Queries.no_other_version, Queries.viewable(this.user._id, this.author)],
                 },
             },
         });
@@ -143,7 +145,7 @@ module.exports = {
             }));
         },
         lastDepositsQuery() {
-            return Queries.last_deposits;
+            return Queries.last_deposits(this.user._id, this.author);
         },
         rssMapping() {
             return {

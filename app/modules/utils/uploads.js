@@ -3,6 +3,8 @@ const Errors = require('../exceptions/errors');
 const MinioUtils = require('./minio');
 const Archiver = require('archiver');
 const EntitiesUtils = require('./entities');
+const Utils = require('./utils');
+const Logger = require('../../logger');
 
 
 async function add_single(ctx) {
@@ -26,7 +28,28 @@ async function download(ctx) {
         throw Errors.DownloadDoesNotExist;
     }
 
+    const information = await EntitiesUtils.retrieve_and_get_source(entity, eid);
+    if (!information) {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const files = Utils.find_value_with_path(information, 'files'.split('.'));
+
+    if (!files) {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const file = files.find(f => f.url === filename);
+
+    if (!file) {
+        Logger.error(`Unable to find file with URI: ${filename}`);
+        throw Errors.DownloadDoesNotExist;
+    }
+
+
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
+    ctx.set('Content-disposition', `attachment; filename=${file.name}`);
+    ctx.statusCode = 200;
     ctx.body = stream;
 }
 
