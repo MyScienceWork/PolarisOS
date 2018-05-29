@@ -447,6 +447,7 @@
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput 
                                                 :key="`${props.fname}.${props.order}.file.file_name`" 
+                                                :name="`${props.fname}.${props.order}.file.file_name`" 
                                                 :label="lang('b_deposit_fieldname')" :is-required="true" :placeholder="lang('b_deposit_fieldname')" type="text" :form="state.sinks.creations.form" />
                                             <finput 
                                             :name="`${props.fname}.${props.order}.file.master_name`" 

@@ -379,7 +379,7 @@ module.exports = {
         },
         deposited_files() {
             const content = this.fcontent(this.state.sinks.creations.publication);
-            if ('type' in content) {
+            if ('files' in content) {
                 return content.files;
             }
             return [];

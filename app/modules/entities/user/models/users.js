@@ -5,6 +5,7 @@ const UserMapping = require('../../../../mappings/user');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
+const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const Utils = require('../../../utils/utils');
 const Config = require('../../../../config');
 
@@ -18,6 +19,7 @@ const Validation: Array<any> = [
         hpassword: Joi.string().label('Password'),
         retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
     }),
+    ValFunctions.checks.is_unique('uid', 'user'),
 ];
 
 const Formatting: Array<any> = [
