@@ -13,6 +13,7 @@ const CrudController = require('../entities/crud/controllers');
 const Pipeline = require('./../pipeline/pipeline');
 const FS = require('fs');
 const Mime = require('mime');
+const Path = require('path');
 const Crypto = require('crypto');
 
 /**
@@ -109,8 +110,9 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
             cb(null, dest);
         },
         filename(req, file, cb) {
+            const ext = Mime.getExtension(file.mimetype) || Path.extname(file.originalname);
             Crypto.pseudoRandomBytes(16, (err, raw) => {
-                cb(null, `${raw.toString('hex') + Date.now()}.${Mime.getExtension(file.mimetype)}`);
+                cb(null, `${raw.toString('hex') + Date.now()}.${ext}`);
             });
         },
     });
