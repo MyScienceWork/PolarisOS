@@ -157,11 +157,11 @@ class Pipeline {
             return item;
         } else if (action === 'merge' && !bulk_mode) {
             if (method === 'put') {
-                const entity = await EntitiesUtils.retrieve_and_get_source(item._id, type);
+                const entity = await EntitiesUtils.retrieve(item._id, type);
                 if (!entity) {
                     return Errors.InvalidEntity;
                 }
-                item = Pipeline._merge_put(item, entity);
+                item = Pipeline._merge_put(item, entity.source);
             }
             return item;
         }
