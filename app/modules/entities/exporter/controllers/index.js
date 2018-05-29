@@ -769,7 +769,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
                     dummy_field: {
                         $name: 'publications',
                         $type: 'top_hits',
-                        size: Math.round(size[0] / (types.length + subtypes.length)),
+                        size: Math.round(size[0] / 10), // Estimate no more than 10y
                         /* _source: {
                             includes: source_includes,
                             },*/
