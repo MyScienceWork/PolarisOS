@@ -363,10 +363,10 @@ module.exports = {
                 return false;
             }
 
-            const is_depositor = item.depositor === this.author
-                || item.depositor === this.author._id;
+            const is_depositor = this.author && (item.depositor === this.author
+                || item.depositor === this.author._id);
             const is_contributor = item.contributors
-                .find(c => (c.label === this.author || c.label === this.author._id));
+                .find(c => (this.author && (c.label === this.author || c.label === this.author._id)));
 
             if (is_depositor || is_contributor) {
                 return true;
@@ -379,7 +379,11 @@ module.exports = {
 
             const file = files[0];
 
-            if (this.user) {
+            if (this.user && Object.keys(this.user).length > 0) {
+                if (file.access.confidential) {
+                    return false;
+                }
+
                 if (!file.access.delayed) {
                     return true;
                 }

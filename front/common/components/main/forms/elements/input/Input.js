@@ -156,11 +156,15 @@ module.exports = {
             const value = Utils.find_value_with_path(form.content, this.name.split('.'));
             if (value == null) {
                 const info = this.defaultValue();
-                /* this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info,
-                });*/
+
+                if (this.type === 'hidden') {
+                    this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                        form: this.form,
+                        name: this.name,
+                        info,
+                    });
+                }
+
                 this.state.value = this.formatValue(info);
             } else {
                 this.state.value = this.formatValue(value);

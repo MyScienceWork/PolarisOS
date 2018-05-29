@@ -116,7 +116,7 @@ const Formatting: Array<any> = [
 
                 file.access = {
                     restricted: access_description ? access_description.restricted : false,
-                    // confidential: access_description ? access_description.confidential : false,
+                    confidential: access_description ? access_description.confidential : false,
                     delayed: access_description ? access_description.delayed : false,
                 };
 

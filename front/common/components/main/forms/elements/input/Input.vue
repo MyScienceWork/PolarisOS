@@ -219,7 +219,7 @@
             type="checkbox"
             :name="name"
             :value="state.value"
-            :checked="value"
+            :checked="state.value"
             @change="update"
             :disabled="readonly"
             />
@@ -233,7 +233,7 @@
                 type="checkbox"
                 :name="name"
                 :value="state.value"
-                :checked="value"
+                :checked="state.value"
                 @change="update"
                 :disabled="readonly"
                 />

@@ -29,7 +29,7 @@ module.exports = {
     },
     methods: {
         is_accessable(item) {
-            if (this.can_modify) {
+            if (this.can_modify(item)) {
                 return true;
             }
 
@@ -40,7 +40,11 @@ module.exports = {
 
             const file = _.find(files, f => f.is_master) || files[0];
 
-            if (this.user) {
+            if (this.user && Object.keys(this.user).length > 0) {
+                if (file.access.confidential) {
+                    return false;
+                }
+
                 if (!file.access.delayed) {
                     return true;
                 }

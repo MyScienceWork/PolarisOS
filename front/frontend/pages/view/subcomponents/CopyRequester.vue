@@ -9,9 +9,51 @@
                 <div class="columns is-centered">
                     <div class="column" v-if="loggedIn">
                         <p v-html="lang('l_are_you_sure_request_copy')"></p>
+                        <finput 
+                            form="dummy"
+                            name="fistname"
+                            type="hidden"
+                            :hidden-value="this.user.firstname"
+                            :label="lang('l_firstname')"
+                        />
+                        <finput 
+                            form="dummy"
+                            name="lastname"
+                            type="hidden"
+                            :hidden-value="this.user.lastname"
+                            :label="lang('l_lastname')"
+                        />
+                        <finput 
+                            form="dummy"
+                            name="email"
+                            type="hidden"
+                            :hidden-value="(this.user.emails.find(e => e.is_master) || this.user.emails[0]).email"
+                            :label="lang('l_email')"
+                        />
                     </div>
                     <div class="column" v-else>
-                        <p v-html=""></p>
+                        <p v-html="lang('l_fill_form')"></p>
+                        <finput 
+                            form="dummy"
+                            name="fistname"
+                            type="text"
+                            :label="lang('l_firstname')"
+                            :placeholder="lang('l_firstname')"
+                        />
+                        <finput 
+                            form="dummy"
+                            name="lastname"
+                            type="text"
+                            :label="lang('l_lastname')"
+                            :placeholder="lang('l_lastname')"
+                        />
+                        <finput 
+                            form="dummy"
+                            name="email"
+                            type="text"
+                            :label="lang('l_email')"
+                            :placeholder="lang('l_email')"
+                        />
                     </div>
                 </div>
             </div>

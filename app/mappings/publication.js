@@ -612,6 +612,9 @@ module.exports = {
                                     restricted: {
                                         type: 'boolean',
                                     },
+                                    confidential: {
+                                        type: 'boolean',
+                                    },
                                     delayed: {
                                         type: 'boolean',
                                     },
