@@ -240,6 +240,7 @@ module.exports = {
                     $and: [
                         Queries.no_other_version,
                         a,
+                        Queries.viewable(this.my_user._id, this.my_author),
                     ],
                 };
             } else {
@@ -247,6 +248,7 @@ module.exports = {
                     $and: [
                         Queries.no_other_version,
                         Queries.published,
+                        Queries.viewable(this.my_user._id, this.my_author),
                         a,
                     ],
                 };
@@ -261,6 +263,7 @@ module.exports = {
                     $and: [
                         Queries.no_other_version,
                         { $or: Queries.publication_search.$or },
+                        Queries.viewable(this.my_user._id, this.my_author),
                         a,
                     ],
                 };
@@ -269,6 +272,7 @@ module.exports = {
                     $and: [
                         Queries.no_other_version,
                         Queries.published,
+                        Queries.viewable(this.my_user._id, this.my_author),
                         { $or: Queries.publication_search.$or },
                         a,
                     ],

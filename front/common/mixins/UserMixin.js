@@ -12,10 +12,20 @@ module.exports = {
             }
             return u;
         },
+        my_user() {
+            const u = Auth.user();
+            if (u.firstname && u.lastname && !u.fullname) {
+                u.fullname = `${u.firstname} ${u.lastname}`;
+            }
+            return u;
+        },
         fullname() {
             return this.user ? this.user.fullname : 'Default User';
         },
         user_id() {
+            return Auth.user_id();
+        },
+        my_user_id() {
             return Auth.user_id();
         },
         avatar() {
@@ -40,6 +50,13 @@ module.exports = {
             }
 
             return this.user.author;
+        },
+        my_author() {
+            if (!this.my_user) {
+                return null;
+            }
+
+            return this.my_user.author;
         },
     },
     methods: {

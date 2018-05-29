@@ -3,6 +3,7 @@ const _ = require('lodash');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Queries = require('../../../common/specs/queries');
 
@@ -10,7 +11,7 @@ const SearchResults = require('../browse/subcomponents/SearchResults.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin],
     components: {
         SearchBar,
         SearchResults,
@@ -44,7 +45,7 @@ module.exports = {
     },
     computed: {
         query() {
-            return JSON.stringify(Queries.published_publication_search);
+            return JSON.stringify(Queries.published_publication_search(this.user._id, this.author));
         },
         query_search() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
