@@ -120,7 +120,7 @@ module.exports = {
             }, 10000);
         },
         save(entity) {
-            this.$store.dispatch('create', {
+            this.$store.dispatch('update', {
                 form: this.state.sinks.creations[entity],
                 path: this.state.paths.creations[entity],
                 body: this.fcontent(this.state.sinks.creations[entity]),

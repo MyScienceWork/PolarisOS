@@ -193,9 +193,10 @@ module.exports = {
     },
     computed: {
         emptyValue() {
-            return this.value === null ||
-                this.value === undefined ||
-                (this.value instanceof String && this.value.trim() === '');
+            return this.state.value === null ||
+                this.state.value === undefined ||
+                ((this.state.value instanceof String ||
+                   typeof this.state.value === 'string') && this.state.value.trim() === '');
         },
         current_state() {
             return this.fstate(this.form);
