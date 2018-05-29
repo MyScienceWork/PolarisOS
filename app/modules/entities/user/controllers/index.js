@@ -5,6 +5,7 @@ const AuthUtils = require('../../../utils/auth');
 const EntitiesUtils = require('../../../utils/entities');
 const Errors = require('../../../exceptions/errors');
 const Request = require('superagent');
+const moment = require('moment');
 
 async function authenticate(ctx: Object) {
     const body = ctx.request.body;
@@ -15,12 +16,26 @@ async function authenticate(ctx: Object) {
 
     if (!password && !email) {
         if (ticket) {
-            ctx.body = await AuthUtils.cas_auth(ticket, url);
+            const result = await AuthUtils.cas_auth(ticket, url);
+
+            if ('ok' in result && result.ok) {
+                const user = result.user;
+                const up = { last_connection_at: +moment().utc(), _id: user._id };
+                // await EntitiesUtils.update(up, 'user');
+            }
+
+            ctx.body = result;
         } else {
             ctx.body = { ok: false, user: {} };
         }
     } else {
-        ctx.body = await AuthUtils.login_auth(email, password);
+        const result = await AuthUtils.login_auth(email, password);
+        if ('ok' in result && result.ok) {
+            const user = result.user;
+            const up = { last_connection_at: +moment().utc(), _id: user._id };
+            // await EntitiesUtils.update(up, 'user');
+        }
+        ctx.body = result;
     }
 }
 

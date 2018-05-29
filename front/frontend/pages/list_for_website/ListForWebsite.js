@@ -3,6 +3,7 @@ const _ = require('lodash');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Queries = require('../../../common/specs/queries');
 const Sortings = require('../../../common/specs/sortings');
@@ -11,7 +12,7 @@ const SearchResults = require('../browse/subcomponents/SearchResults.vue');
 
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin],
     components: {
         SearchResults,
     },
@@ -38,14 +39,16 @@ module.exports = {
     },
     computed: {
         default_query() {
-            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published],
+            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published,
+                Queries.viewable(this.user, this.author)],
                 $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         default_sorts() {
             return Sortings.sort_with_type_and_subtype(this.typology_order, this.subtypology_order, 'asc');
         },
         search_query() {
-            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published, Queries.author_name_or_id],
+            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published, Queries.author_name_or_id,
+                Queries.viewable(this.user, this.author)],
                 $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         no_types() {

@@ -19,6 +19,9 @@ module.exports = {
                     updated_at: {
                         type: 'date',
                     },
+                    last_connection_at: {
+                        type: 'date',
+                    },
                     emails: {
                         type: 'nested',
                         properties: {
