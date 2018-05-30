@@ -58,12 +58,6 @@
                             :form="state.sinks.creations.forum"
                         />
                         <dynamic-form :form="forum_forms" :cform="state.sinks.creations.forum"/>
-                        <!-- <file-deposit-widget
-                            :upload-form="uploadForm"
-                            :sink="state.sinks.creations.forum"
-                            @analyze-from-file="analyze_from_file"
-                            :analyze-state="state.analyze_state"
-                        /> -->
                     </fform>
                 </div>
             </article>
