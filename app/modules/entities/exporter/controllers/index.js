@@ -15,6 +15,10 @@ const HtmlDocx = require('html-docx-js');
 const Cite = require('citation-js');
 const Errors = require('../../../exceptions/errors');
 const CSLUtils = require('../../../utils/csl');
+const Cache = require('../../../utils/cache');
+const Logger = require('../../../../logger');
+
+const bibtexCache = new Cache(10000);
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -43,12 +47,18 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         const country = Utils.find_value_with_path(pub, 'denormalization.localisation.country'.split('.'));
         let tcountry = null;
         if (country) {
-            tcountry = await LangUtils.get_language_values_from_langs(country,
-                    [{ value: extra.lang }]);
-            if (tcountry.length > 0) {
-                tcountry = tcountry[0].value;
+            const key = `${country}__${extra.lang}`;
+            if (key in memoizer.lang) {
+                tcountry = memoizer.lang[key];
             } else {
-                tcountry = null;
+                tcountry = await LangUtils.get_language_values_from_langs(country,
+                    [{ value: extra.lang }]);
+                if (tcountry.length > 0) {
+                    tcountry = tcountry[0].value;
+                } else {
+                    tcountry = null;
+                }
+                memoizer.lang[key] = tcountry;
             }
         }
         const city = Utils.find_value_with_path(pub, 'localisation.city'.split('.'));
@@ -82,18 +92,18 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
             memoizer.contributor_role.roles = roles;
         }
 
-        const authors = await Promise.all(authors_et_al.map(async (a) => {
+        const authors = (await Promise.all(authors_et_al.map(async (a) => {
             if (a.label in memoizer.author) {
                 return memoizer.author[a.label];
             }
             const author = await EntitiesUtils.retrieve_and_get_source('author', a.label);
             memoizer.author[a.label] = author;
             return author;
-        }));
+        }))).filter(a => a != null);
 
         const authors_roles = authors_et_al.map(a => roles.find(r => r.value === a.role));
 
-        const names = authors.filter(a => a != null).map((a, i) => {
+        const names = authors.map((a, i) => {
             const role = authors_roles[i];
             if (role.value !== 'author') {
                 let abbreviation = '?';
@@ -106,6 +116,10 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
             }
             return `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`;
         });
+
+        if (names.length === 0) {
+            return null;
+        }
         return `"${names.join(' and ')}"`;
     };
 
@@ -115,7 +129,14 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
             return null;
         }
 
-        const editors = await Promise.all(editors_only.map(a => EntitiesUtils.retrieve_and_get_source('author', a.label)));
+        const editors = (await Promise.all(editors_only.map((a) => {
+            if (a.label in memoizer.author) {
+                return memoizer.author[a.label];
+            }
+            const author = EntitiesUtils.retrieve_and_get_source('author', a.label);
+            memoizer.author[a.label] = author;
+            return author;
+        }))).filter(a => a != null);
         const names = editors.map(a => `${BibTeXUtils.escape_to_bibtex(a.lastname)}, ${BibTeXUtils.escape_to_bibtex(a.firstname)}`);
         return `"${names.join(' and ')}"`;
     };
@@ -172,7 +193,7 @@ async function transform_to_bibtex_type(publication: Object, extra: Object,
         const field = fields[i];
         if (field in mapper) {
             const r = await mapper[field]();
-            if (r) {
+            if (r && r.trim() !== '') {
                 obj[field] = r;
             }
         }
@@ -217,6 +238,12 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object, m
         let lines = [];
         let type = 'other';
 
+        const cached = bibtexCache.get(publication._id);
+        if (cached) {
+            results.push(cached);
+            continue;
+        }
+
         if (publication.subtype && publication.subtype in typology_mapping) {
             type = publication.subtype;
             lines.push(`@${typology_mapping[type]}{${publication._id.replace('@', '__')}`);
@@ -254,6 +281,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object, m
         let str_obj = lines.join(',\n');
         str_obj += '\n}';
         results.push(str_obj);
+        bibtexCache.add(publication._id, str_obj);
     }
     return results.join('\n\n');
 }
@@ -741,7 +769,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
                     dummy_field: {
                         $name: 'publications',
                         $type: 'top_hits',
-                        size: size[0],
+                        size: Math.round(size[0] / 10), // Estimate no more than 10y
                         /* _source: {
                             includes: source_includes,
                             },*/
@@ -762,7 +790,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
                     dummy_field: {
                         $name: 'publications',
                         $type: 'top_hits',
-                        size: size[0],
+                        size: Math.round(size[0] / (types.length + subtypes.length)),
                         sort,
                         /* _source: {
                             includes: source_includes,
@@ -792,7 +820,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
                             dummy_field: {
                                 $name: 'publications',
                                 $type: 'top_hits',
-                                size: size[0],
+                                size: Math.round(size[0] / (types.length + subtypes.length)),
                                 sort,
                                 /* _source: {
                                     includes: source_includes,

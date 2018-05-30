@@ -102,7 +102,7 @@
                               :description="info.abstracts.length > 0 ? info.abstracts[0].content : ''"
                               quote=""
                               hashtags="ined"
-                              twitter-user="ined"
+                              twitter-user="InedFr"
                               network-tag="a"
                               inline-template>
                                 <network network="twitter" class="level-item">

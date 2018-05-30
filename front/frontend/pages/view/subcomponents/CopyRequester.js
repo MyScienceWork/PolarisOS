@@ -1,7 +1,8 @@
 const LangMixin = require('../../../../common/mixins/LangMixin');
+const UserMixin = require('../../../../common/mixins/UserMixin');
 
 module.exports = {
-    mixins: [LangMixin],
+    mixins: [LangMixin, UserMixin],
     props: {
         loggedIn: { default: false, type: Boolean },
         trigger: { default: false, type: Boolean },

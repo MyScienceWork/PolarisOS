@@ -14,7 +14,7 @@ class Cache {
         this._max_size = max_size <= 0 ? 1 : max_size;
     }
 
-    get(key: string): ?Object {
+    get(key: string): ?any {
         if (key in this._container) {
             this._key2freq[key] += 1;
             return this._container[key];
@@ -22,7 +22,7 @@ class Cache {
         return null;
     }
 
-    add(key: string, value: Object) {
+    add(key: string, value: any) {
         if (key in this._container) {
             return;
         }
@@ -46,7 +46,7 @@ class Cache {
         this._current_size += 1;
     }
 
-    find_smallest(): ?Object {
+    find_smallest(): ?any {
         if (this._current_size === 0) {
             return null;
         }

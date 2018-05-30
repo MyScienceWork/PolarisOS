@@ -4,6 +4,7 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const QueryMixin = require('../../../common/mixins/QueryMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
@@ -14,7 +15,7 @@ const SearchResults = require('./subcomponents/SearchResults.vue');
 
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin, UserMixin],
     components: {
         Category,
         SearchResults,
@@ -76,10 +77,11 @@ module.exports = {
             return {};
         },
         search_query() {
-            return JSON.stringify(Queries.published_publication_search);
+            return JSON.stringify(Queries.published_publication_search(this.user._id, this.author));
         },
         default_query() {
-            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published] });
+            return JSON.stringify({ $and: [Queries.no_other_version, Queries.published,
+                Queries.viewable(this.user._id, this.author)] });
         },
         nav_changed() {
             this.state.need_update = true;

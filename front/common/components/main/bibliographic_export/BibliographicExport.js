@@ -98,7 +98,7 @@ module.exports = {
 
                 multi_values.forEach((n) => {
                     if (n in content && content[n]) {
-                        content[n].forEach((p) => {
+                        _.forEach(content[n], (p) => {
                             if (n in params) {
                                 params[n].push(encodeURIComponent(p._id));
                             } else {

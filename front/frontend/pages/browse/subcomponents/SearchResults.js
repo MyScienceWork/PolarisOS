@@ -95,10 +95,10 @@ module.exports = {
                 form: this.state.sinks.reads.export,
                 body: obj,
             });
-            this.$store.commit(Messages.INITIALIZE, {
+            /* this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.export,
                 keep_content: true,
-            });
+            });*/
         },
     },
     computed: {

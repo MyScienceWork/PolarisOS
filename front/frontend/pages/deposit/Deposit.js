@@ -110,6 +110,9 @@ module.exports = {
                 this.transfert_to_subtypology_sink(children);
             }
         },
+        refetch_form() {
+            this.fetch_form(this.state.deposit_form_name, this.state.sinks.creations.specs);
+        },
         run_next_or_previous(f) {
             f();
             VueScrollTo.scrollTo('#deposit-stepper', 500);
@@ -379,7 +382,7 @@ module.exports = {
         },
         deposited_files() {
             const content = this.fcontent(this.state.sinks.creations.publication);
-            if ('type' in content) {
+            if ('files' in content) {
                 return content.files;
             }
             return [];

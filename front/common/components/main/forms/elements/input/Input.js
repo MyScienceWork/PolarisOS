@@ -156,11 +156,15 @@ module.exports = {
             const value = Utils.find_value_with_path(form.content, this.name.split('.'));
             if (value == null) {
                 const info = this.defaultValue();
-                /* this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info,
-                });*/
+
+                if (this.type === 'hidden') {
+                    this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                        form: this.form,
+                        name: this.name,
+                        info,
+                    });
+                }
+
                 this.state.value = this.formatValue(info);
             } else {
                 this.state.value = this.formatValue(value);
@@ -175,9 +179,12 @@ module.exports = {
             }
         },
         current_state(s) {
-            const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
+            /* const key = this.type === 'checkbox' || this.type === 'radio' ? 'checked' : 'value';
             if (this.type === 'hidden' && s === 'initial') {
                 this.update({ target: { [key]: this.hiddenValue } });
+            }*/
+            if (s === 'update' || s === 'initial') {
+                this.init();
             }
         },
         readonlyValue(v) {
@@ -186,9 +193,10 @@ module.exports = {
     },
     computed: {
         emptyValue() {
-            return this.value === null ||
-                this.value === undefined ||
-                (this.value instanceof String && this.value.trim() === '');
+            return this.state.value === null ||
+                this.state.value === undefined ||
+                ((this.state.value instanceof String ||
+                   typeof this.state.value === 'string') && this.state.value.trim() === '');
         },
         current_state() {
             return this.fstate(this.form);

@@ -32,30 +32,51 @@ const filter_out_types_and_subtypes = (types, subtypes) =>
     ],
 });
 
+function viewable(uid, aid) {
+    if (uid && aid) {
+        return {
+            $or: [{ 'diffusion.rights.exports.nowhere': false },
+                { 'contributors.label': aid }, { depositor: uid }],
+        };
+    } else if (aid) {
+        return {
+            $or: [{ 'diffusion.rights.exports.nowhere': false },
+                { 'contributors.label': aid }],
+        };
+    } else if (uid) {
+        return {
+            $or: [{ 'diffusion.rights.exports.nowhere': false }, { depositor: uid }],
+        };
+    }
+    return { $or: [{ 'diffusion.rights.exports.nowhere': false }] };
+}
 
 module.exports = {
     publication_search,
     author_name_or_id,
     filter_out_types_and_subtypes,
-    published_publication_search: {
+    published_publication_search: (uid, aid) => ({
         $and: [
             { has_other_version: false },
             { status: 'published' },
+            viewable(uid, aid),
             { $or: publication_search.$or },
         ],
-    },
+    }),
     no_other_version: {
         has_other_version: false,
     },
     published: {
         status: 'published',
     },
-    last_deposits: {
+    viewable,
+    last_deposits: (uid, aid) => ({
         $and: [
             { has_other_version: false },
             { status: 'published' },
+            viewable(uid, aid),
         ],
-    },
+    }),
     form: {
         $or: [
             { name: '{{{search}}}' },

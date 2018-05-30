@@ -6,6 +6,7 @@ const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
@@ -15,7 +16,7 @@ const BrowserUtils = require('../../../common/utils/browser');
 require('moment/min/locales.min');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin],
     components: {
         CopyRequester,
     },
@@ -359,7 +360,16 @@ module.exports = {
         is_files_accessible() {
             const item = this.content_item;
             if (!item) {
-                return [];
+                return false;
+            }
+
+            const is_depositor = this.author && (item.depositor === this.author
+                || item.depositor === this.author._id);
+            const is_contributor = item.contributors
+                .find(c => (this.author && (c.label === this.author || c.label === this.author._id)));
+
+            if (is_depositor || is_contributor) {
+                return true;
             }
 
             const files = item.files || [];
@@ -368,6 +378,21 @@ module.exports = {
             }
 
             const file = files[0];
+
+            if (this.user && Object.keys(this.user).length > 0) {
+                if (file.access.confidential) {
+                    return false;
+                }
+
+                if (!file.access.delayed) {
+                    return true;
+                }
+
+                if (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment()) {
+                    return true;
+                }
+            }
+
             return !file.access.restricted
                 || (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment());
         },

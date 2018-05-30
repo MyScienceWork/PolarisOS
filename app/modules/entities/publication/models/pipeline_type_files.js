@@ -29,6 +29,10 @@ const Formatting: Array<any> = [
                 f.size = parseFloat(f.size);
             }
 
+            if (!('name' in f) || f.name.trim() === '') {
+                f.name = f.url;
+            }
+
             return f;
         }),
     },
