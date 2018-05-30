@@ -1,16 +1,19 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
 // const FormMixin = require('../../../common/mixins/FormMixin');
-// const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 // const PaginationSearchMixin = require('../../../common/mixins/PaginationSearchMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
+const moment = require('moment');
 
 module.exports = {
-    mixins: [LangMixin, ReaderMixin],
+    mixins: [LangMixin, ReaderMixin, UserMixin, ESQueryMixin],
     data() {
         return {
             state: {
+                isAdministrator: false,
                 isActive: true,
                 es_query_id_incoming_events: 'front-incoming-event-query',
                 es_query_id_past_events: 'front-past-event-query',
@@ -55,13 +58,33 @@ module.exports = {
         },
     },
     mounted() {
+        if (this.roles.administrator && this.roles.administrator.id === 'administrator') {
+            this.state.isAdministrator = true;
+        }
+        console.log(`query::${this.es_query_contents}`);
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.incoming_event,
+            path: this.state.paths.reads.incoming_event,
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.past_event,
+            path: this.state.paths.reads.past_event,
+            body: {
+                where: {
+                    id: this.state.es_query_id_past_events,
+                },
+            },
+        });
     },
     computed: {
         incoming_events() {
-            return this.mcontent(this.state.sinks.reads.incoming_event);
+            const content = this.mcontent(this.state.sinks.reads.incoming_event);
+            return content.filter(elmt => elmt.endDate > moment());
         },
         past_events() {
-            return this.mcontent(this.state.sinks.reads.past_event);
+            return this.mcontent(this.state.sinks.reads.past_event).filter(elmt => elmt.endDate < moment());
         },
     },
 };

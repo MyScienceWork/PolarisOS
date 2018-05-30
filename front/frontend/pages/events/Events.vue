@@ -1,6 +1,16 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
+       <div class="columns is-centered">
+           <div class="column is-12 has-text-centered">
+               <h4 class="title is-4"> USPC Events </h4>
+           </div>
+       </div>
+        <div v-if="state.isAdministrator" class="column is-2 is-offset-9">
+            <router-link :to="`/events/create/event`">
+                <a class="button is-info">{{lang('l_new_event')}}</a>
+            </router-link>
+        </div>
       <div class="tabs is-centered is-medium">
         <ul>
           <li  :class="{'is-active': !state.isActive}" @click="state.isActive = !state.isActive" data-tab="Past-Content"><a>{{lang('l_past_events')}}</a></li>
@@ -13,6 +23,7 @@
           Pictures past content, Card by default
           <div class="columns is-multiline is-mobile">
                   <div v-for="row in past_events" class="column is-4">
+                      <router-link :to="`/events/${row._id}`">
                       <div class="card">
                           <div class="card-image">
                               <figure class="image is-4by3">
@@ -20,7 +31,7 @@
                               </figure>
                           </div>
                           <div class="card-content">
-                              <div class="content">
+                              <div v-if="row.location" class="content">
                                   {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
@@ -32,6 +43,7 @@
                               </div>
                           </div>
                       </div>
+                    </router-link>
                   </div>
           </div>
 
@@ -42,6 +54,7 @@
 
           <div class="columns is-multiline is-mobile">
                   <div v-for="row in incoming_events" class="column is-4">
+                      <router-link :to="`/events/${row._id}`">
                       <div class="card">
                           <div class="card-image">
                               <figure class="image is-4by3">
@@ -49,7 +62,7 @@
                               </figure>
                           </div>
                           <div class="card-content">
-                              <div class="content">
+                              <div v-if="row.location" class="content">
                                   {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
@@ -61,6 +74,7 @@
                               </div>
                           </div>
                       </div>
+                      </router-link>
                   </div>
           </div>
 

@@ -10,6 +10,8 @@ const Help = require('../frontend/pages/help/Help.vue');
 const News = require('../frontend/pages/news/News.vue');
 const Events = require('../frontend/pages/events/Events.vue');
 const NewsPage = require('../frontend/pages/news/NewsPage.vue');
+const EventPage = require('../frontend/pages/events/EventPage.vue');
+const NewEvent = require('../frontend/pages/events/NewEvent.vue');
 const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
 const ForumThread = require('../frontend/pages/forum/Forum.vue');
 const ForumNewSubject = require('../frontend/pages/forum/ForumNewSubject.vue');
@@ -18,6 +20,8 @@ const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vu
 const UserList = require('../frontend/pages/user_list/UserList.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
 const LoginChoiceView = require('../frontend/pages/login_choice/LoginChoice.vue');
+const CreateNews = require('../frontend/pages/news/CreateNews.vue');
+
 
 module.exports = {
     '/': Home,
@@ -33,7 +37,9 @@ module.exports = {
     '/news': News,
     '/news/:id': NewsPage,
     '/events': Events,
-    '/events/:id': Events,
+    '/events/:id': EventPage,
+    '/events/create/event': NewEvent,
+    '/news/create/news': CreateNews,
     '/forum': ForumDiscussion,
     '/forum/thread/:id': ForumThread,
     '/forum/newsubject': ForumNewSubject,

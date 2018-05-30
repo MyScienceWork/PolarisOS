@@ -1,6 +1,16 @@
 <template>
 <div class="hero-body">
     <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-12 has-text-centered">
+                <h4 class="title is-4"> USPC News </h4>
+            </div>
+        </div>
+        <div v-if="state.isAdministrator" class="column is-2 is-offset-9">
+            <router-link :to="`/news/create/news`">
+                <a class="button is-info">{{lang('l_new_news')}}</a>
+            </router-link>
+        </div>
         <div v-for="mnew in news">
             <div class="columns is-three-fifths is-offset-one-fifth">
                 <div class="column is-full">
@@ -10,9 +20,9 @@
                             <p class="card-header-title">
                                 {{mnew.title}}
                             </p>
-                            <p class="subtitle is-6 is-pulled-right">
+                            <p v-if="mnew.creator" class="subtitle is-6 is-pulled-right">
                                 {{mnew.creator.fullName}}
-                                 <time :datetime="mnew.updatedAt">{{format_date(mnew.updatedAt, 'fromNow')}}</time>
+                                 <time :datetime="mnew.createdAt">{{format_date(mnew.createdAt, 'fromNow')}}</time>
                             </p>
                             </router-link>
                         </header>

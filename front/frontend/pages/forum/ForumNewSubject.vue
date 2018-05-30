@@ -25,12 +25,12 @@
                         <div class="columns">
                             <div class="column">
                                 <fselect
-                                    name="discipline"
+                                    name="disciplines"
                                     :label="lang('b_discipline_name')"
                                     :is-required="true"
                                     :options="discipline || []"
-                                    fielLabel="name"
-                                    fieldValue="_id"
+                                    fielLabel="label"
+                                    fieldValue="value"
                                     :multi="true"
                                     :form="state.sinks.creations.forum"
                                     :ajax="true"
@@ -51,7 +51,7 @@
                         </div>
                         <br/><br/>
                         <finput
-                            name="descitption"
+                            name="description"
                             type="html-editor"
                             :placeholder="lang('l_post_description')"
                             :label="lang('l_post_description')"
