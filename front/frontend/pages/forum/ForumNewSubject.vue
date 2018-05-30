@@ -21,6 +21,19 @@
                             type="text"
                             :form="state.sinks.creations.forum"
                         />
+                        <fselect
+                            name="author"
+                            :label="lang('b_auhtor')"
+                            :is-required="true"
+                            :options="auhtor || []"
+                            fielLabel="fullName"
+                            fieldValue="_id"
+                            :multi="true"
+                            :form="state.sinks.creations.forum"
+                            :ajax="true"
+                            :ajax-url="`/api/public/v2/authors/search`"
+                            :ajax-value-url="`/api/public/v2/authors/search`"
+                        />
                         <br/>
                         <div class="columns">
                             <div class="column">
@@ -52,7 +65,7 @@
                         <br/><br/>
                         <finput
                             name="description"
-                            type="html-editor"
+                            type="textarea"
                             :placeholder="lang('l_post_description')"
                             :label="lang('l_post_description')"
                             :form="state.sinks.creations.forum"

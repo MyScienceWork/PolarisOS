@@ -4,6 +4,8 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 
+const moment = require('moment');
+
 module.exports = {
     mixins: [LangMixin, ReaderMixin, UserMixin, FiltersMixin],
     data() {
@@ -21,6 +23,16 @@ module.exports = {
                 },
             },
         };
+    },
+    methods: {
+        format_date(d, f = 'LLLL') {
+            switch (f) {
+            case 'fromNow':
+                return moment(d).fromNow();
+            default:
+                return moment(d).format(f);
+            }
+        },
     },
     mounted() {
         this.$store.state.requests = ['event'].map(e => ({

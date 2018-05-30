@@ -214,8 +214,8 @@ module.exports = {
             }
 
             if (infos instanceof Array) {
-                // return infos.map(o => ({ [this.fieldValue]: o.value }));
-                return infos.map(o => o.value);
+                return infos.map(o => ({ [this.fieldValue]: o.value }));
+                // return infos.map(o => o.value);
                 //a l'envoie du formulaire, tous mes fselect était refusé
                 //car là ou il attendait un String, il recevait un objet {value: ''}
                 //avec cette ligne, les fselect sont acceptés.

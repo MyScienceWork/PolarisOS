@@ -20,9 +20,9 @@
                             <p class="card-header-title">
                                 {{mnew.title}}
                             </p>
-                            <p v-if="mnew.creator" class="subtitle is-6 is-pulled-right">
-                                {{mnew.creator.fullName}}
-                                 <time :datetime="mnew.createdAt">{{format_date(mnew.createdAt, 'fromNow')}}</time>
+                            <p v-if="mnew.author" class="subtitle is-6 is-pulled-right">
+                                {{mnew.author.fullName}}
+                                 <time :datetime="mnew.createdAt">{{mnew.createdAt}}</time>
                             </p>
                             </router-link>
                         </header>
@@ -35,7 +35,8 @@
                                 </div>
                                 <div class="column">
                                     <div class="content">
-                                        {{mnew.header}}
+                                        <span v-for="tag in mnew.tags" class="tag is-info">{{tag.value}}</span>
+                                        <p>{{mnew.header}}</p>
                                     </div>
                                 </div>
                             </div>

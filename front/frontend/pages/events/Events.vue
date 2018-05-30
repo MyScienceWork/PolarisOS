@@ -35,6 +35,7 @@
                                   {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
+                              <span v-for="tag in row.tags" class="tag is-info">{{tag.value}}</span>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
@@ -66,6 +67,7 @@
                                   {{row.location.country}}, {{row.location.city}}
                                   <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
+                              <span v-for="tag in row.tags" class="tag is-info">{{tag.value}}</span>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>

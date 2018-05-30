@@ -42,7 +42,7 @@
                                 <tr v-for="row in props.results">
                                     <th>
                                         <p><router-link :to="`/forum/thread/${row._id}`">{{row.title}}</router-link><br />
-                                            <span> by {{row.author.fullName}}, </span>
+                                            <span v-if="row.author"> by {{row.author.fullName}}, </span>
                                             <small> format_date(row.createdAt, 'fromNow') </small>
                                             <small v-html="row.description"></small></p>
                                     </th>
