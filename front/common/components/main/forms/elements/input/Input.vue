@@ -174,7 +174,7 @@
                     @input="update"
                     v-if="!readonly"
                 />
-                <p v-else>{{value}}</p>
+                <p v-else>{{state.value}}</p>
             </div>
             <div class="column is-half has-no-right-spaces has-no-left-spaces">
                 <slot v-if="hasAddons" name="input-addons" />

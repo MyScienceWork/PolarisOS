@@ -53,6 +53,7 @@
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="in_mode('review')"
+                                                @refetch-form="refetch_form"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 2 && !unvalidated"
@@ -63,6 +64,7 @@
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="in_mode('review')"
+                                                @refetch-form="refetch_form"
                                             />
                                             <second-deposit-step 
                                                 v-if="state.current_step === 3"
@@ -73,6 +75,7 @@
                                                 :validated="!unvalidated"
                                                 :deposit-form="state.deposit_form_name"
                                                 :review="in_mode('review')"
+                                                @refetch-form="refetch_form"
                                             />
                                             <review-deposit-step 
                                                 :creation-sink="state.sinks.creations.publication"
