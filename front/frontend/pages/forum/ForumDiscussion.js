@@ -1,6 +1,6 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
-const FormMixin = require('../../../common/mixins/FormMixin');
+// const FormMixin = require('../../../common/mixins/FormMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const moment = require('moment');
@@ -61,7 +61,7 @@ module.exports = {
         discussions() {
             const content = this.mcontent(this.state.sinks.reads.forum_discussion);
             if (content instanceof Array) {
-                return content;
+                return content.filter(elmt => (!elmt.authorAuthorized || elmt.authorAuthorized.indexOf(this.user_id) !== -1));
             }
             return [];
         },

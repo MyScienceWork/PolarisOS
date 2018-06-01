@@ -43,7 +43,8 @@
                                     <th>
                                         <p><router-link :to="`/forum/thread/${row._id}`">{{row.title}}</router-link><br />
                                             <span v-if="row.author"> by {{row.author.fullName}}, </span>
-                                            <small> format_date(row.createdAt, 'fromNow') </small>
+                                            <!-- <small> {{date_format(row.createdAt, 'fromNow')}} </small><br/> -->
+                                            <small> {{row.createdAt | format_date('fromNow')}} </small><br/>
                                             <small v-html="row.description"></small></p>
                                     </th>
                                     <td>{{row.comments ? row.comments.length : 0}}</td>

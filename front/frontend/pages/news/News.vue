@@ -22,7 +22,7 @@
                             </p>
                             <p v-if="mnew.author" class="subtitle is-6 is-pulled-right">
                                 {{mnew.author.fullName}}
-                                 <time :datetime="mnew.createdAt">{{mnew.createdAt}}</time>
+                                 <time :datetime="mnew.createdAt">{{date_format(mnew.createdAt)}}</time>
                             </p>
                             </router-link>
                         </header>

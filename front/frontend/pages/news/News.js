@@ -3,6 +3,7 @@ const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
+const moment = require('moment');
 
 module.exports = {
     mixins: [LangMixin, ReaderMixin, FiltersMixin, UserMixin],
@@ -28,6 +29,11 @@ module.exports = {
         };
     },
     components: {
+    },
+    methods: {
+        date_format(date) {
+            return moment(date).fromNow();
+        },
     },
     mounted() {
         if (this.roles.administrator && this.roles.administrator.id === 'administrator') {

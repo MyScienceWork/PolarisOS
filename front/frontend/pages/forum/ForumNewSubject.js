@@ -13,6 +13,7 @@ module.exports = {
     data() {
         return {
             state: {
+                restraineVisibility: false,
                 paths: {
                     reads: {
                         forum: APIRoutes.entity('forum_discussion', 'POST', true),
@@ -41,10 +42,10 @@ module.exports = {
         },
     },
     mounted() {
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.forum_forms,
-            keep_content: true,
-        });
+        // this.$store.commit(Messages.INITIALIZE, {
+        //     form: this.state.sinks.reads.forum_forms,
+        //     keep_content: true,
+        // });
 
         // this.state.analyze_state = 'nothing';
 

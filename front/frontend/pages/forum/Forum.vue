@@ -2,13 +2,22 @@
 <div class="hero-body">
     <div class="container is-fluid">
         <div class="columns is-centered">
+            <div class="column is-12 has-text-centered">
+                <h4 class="title is-4"> USPC Forum </h4>
+            </div>
+        </div>
+        <div class="columns is-centered">
             <div class="column is-10 has-text-centered">
                 <h4 class="title is-4">{{message.title}}</h4>
             </div>
         </div>
         <div class="columns is-centered">
             <div class="column is-10 has-text-centered">
+                <article class="message">
+                    <div class="message-body">
                 <p v-html="message.description"></p>
+                    </div>
+                </article>
             </div>
         </div>
         <article v-if="message.comments" class="media" v-for="item in message.comments">
@@ -22,10 +31,10 @@
                 <p>
                     <strong></strong>
                     <br>
-                    <p>{{item}}</p>
-                    <!-- <p v-html="item.content" /> -->
+                    <!-- <p>{{item.content}}</p> -->
+                    <p v-html="item.content" />
                     <br>
-                    <small v-if="item.author">by {{item.author.fullName}}, {{date_format(item.created)}}</small>
+                    <small v-if="item.author">by {{item.author.fullName}}, {{item.createdAt | format_date('fromNow') }}</small>
                 </p>
             </div>
         </div>
@@ -42,8 +51,9 @@
                     :placeholder="lang('l_post_message')"
                     label=""
                     name="comments.content"
-                    :form="state.sinks.creations.forum_discussion"
+                    :form="state.sinks.creations.new_comment"
                 />
+                <dynamic-form :form="dropzone_forms" :cform="state.sinks.creations.new_comment"/>
                 <div class="field">
                     <p class="control">
                         <button @click="send" class="button">{{lang('l_post_message_btn')}}</button>
