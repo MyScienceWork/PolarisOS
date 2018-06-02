@@ -62,7 +62,7 @@
         </div>
         <div class="columns is-centered" v-else-if="view === 'abc'">
             <div class="column is-10">
-                <p v-if="lang('l_browse_abc')" class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><strong>{{lang('l_browse_abc')}}</strong></p>
+                <p v-if="lang('l_browse_abc') && picker === 'select'" class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_abc')}}</strong></p>
                 <div class="columns is-multiline is-centered">
                     <div class="column is-1" v-for="agg in aggregations">
                         <article :class="['message is-abc is-font-abc-small', {'is-active-purple': state.active_abc === agg.key}]" @click.prevent="click_on_abc(agg.key)">
