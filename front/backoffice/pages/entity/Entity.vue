@@ -64,7 +64,7 @@
                     {{lang('l_add_or_modify_entity')}}
                     </span>
                     <div slot="body">
-                        <mapping-builder />
+                        <!--<mapping-builder />-->
                         <fform
                             :name="state.sinks.creations.entity" 
                             :post_path="state.paths.creations.entity" 
