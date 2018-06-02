@@ -22,6 +22,7 @@ const Searching = require('../common/components/main/forms/searching/Searching.v
 const DataTableSearching = require('../common/components/main/forms/searching/DataTableSearching.vue');
 const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
 const LoginChoice = require('../common/components/main/login_choice/LoginChoice.vue');
+const MappingBuilder = require('../common/components/main/mapping_builder/MappingBuilder.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -56,6 +57,7 @@ Vue.component('fdata-table-searching', DataTableSearching);
 Vue.component('dynamic-form', DynamicForm);
 Vue.component('login-lang', LoginLang);
 Vue.component('login-choice', LoginChoice);
+Vue.component('mapping-builder', MappingBuilder);
 
 new Vue({
     el: '#app',
