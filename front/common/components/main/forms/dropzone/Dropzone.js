@@ -176,7 +176,9 @@ module.exports = {
     },
     watch: {
         keeperContent(kc) {
-            this.state.files = kc;
+            if (this.restore_files && Object.keys(this.keeperContent).length > 0) {
+                this.state.files = kc;
+            }
         },
     },
 };
