@@ -1,40 +1,65 @@
 <template>
-<div class="field has-addons">
-    <div class="control is-expanded">
-        <input class="input" type="text" placeholder="Find a repository" v-model="state.name" />
+<div class="has-small-bottom-margin">
+    <div class="field has-addons">
+        <div class="control is-expanded">
+            <input class="input" type="text" placeholder="Find a repository" v-model="state.name" />
+        </div>
+        <div class="control is-width-half">
+            <v-select 
+                :options="state.mapping_types"
+                v-model="state.type"
+                class="is-addon"
+            />
+        </div>
+        <div class="control" v-if="removable">
+            <a class="button is-info">
+                <span class="icon is-small">
+                    <i class="fa fa-minus"></i>
+                </span>
+            </a>
+        </div>
+        <div class="control" v-if="openable">
+            <a class="button is-info" @click="state.opened = !state.opened">
+                <span class="icon is-small">
+                    <i class="fa fa-chevron-down" v-if="!state.opened"></i>
+                    <i class="fa fa-chevron-up" v-else></i>
+                </span>
+            </a>
+        </div>
     </div>
-    <div class="control is-width-one-third">
-        <v-select 
-            :options="mapping_types"
-            placeholder=""
-            :reset-on-options-change="true"
-            :multiple="false"
-            :value="null"
-            class="is-addon"
-        />
+    <div class="field" v-if="state.opened && state.type && openable">
+        <div class="control"> 
+            <label class="checkbox has-small-right-margin">
+                <input type="checkbox" v-model="state.extra.indexable">
+                Indexable 
+            </label>
+            <label class="checkbox has-small-right-margin" v-if="['text', 'keyword'].indexOf(state.type.value) !== -1">
+                <input type="checkbox" v-model="state.extra.sortable">
+                Sortable 
+            </label>
+            <label class="checkbox" v-if="['text', 'keyword'].indexOf(state.type.value) !== -1">
+                <input type="checkbox" v-model="state.extra.completable">
+                Auto-completable 
+            </label>
+        </div>
     </div>
-    <div class="control" v-if="insertable">
-        <a class="button is-info">
-            <span class="icon is-small">
-                <i class="fa fa-plus"></i>
-            </span>
-        </a>
-    </div>
-    <div class="control" v-if="removable">
-        <a class="button is-info">
-            <span class="icon is-small">
-                <i class="fa fa-minus"></i>
-            </span>
-        </a>
-    </div>
-    <div class="control" v-if="openable">
-        <a class="button is-info" @click="state.opened = !state.opened">
-            <span class="icon is-small">
-                <i class="fa fa-chevron-down" v-if="!state.opened"></i>
-                <i class="fa fa-chevron-up" v-else></i>
-            </span>
-        </a>
-    </div>
+    <template v-if="state.type && state.type.value === 'object'">
+        <div class="field">
+            <div class="control"> 
+                <a href='#' class="has-text-success no-menu">
+                    {{lang('l_add_child')}}
+                </a>
+            </div>
+        </div>
+        <ul>
+            <li v-for="(value, key) in (content.properties || {})">
+                <mapping-item 
+                    :name="key" 
+                    :content="value"
+                /> 
+            </li>
+        </ul>
+    </template>
 </div>
 </template>
 

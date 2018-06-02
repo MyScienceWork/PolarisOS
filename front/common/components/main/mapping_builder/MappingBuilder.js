@@ -1,7 +1,7 @@
-const MappingItem = require('./subcomponents/MappingItem.vue');
+const LangMixin = require('../../../mixins/LangMixin');
 
 module.exports = {
-    mixins: [],
+    mixins: [LangMixin],
     data() {
         return {
             state: {
@@ -42,8 +42,5 @@ module.exports = {
                 },
             },
         };
-    },
-    components: {
-        MappingItem,
     },
 };
