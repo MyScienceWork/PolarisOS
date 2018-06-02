@@ -137,10 +137,10 @@ module.exports = {
             } else {
                 this.switch_tab(0);
             }
-            this.$store.commit(Messages.INITIALIZE, {
+            /* this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.publication_search,
                 keep_content: false,
-            });
+            });*/
         },
         current_state_user(s) {
             this.dispatch(s, this, this.state.sinks.reads.user);

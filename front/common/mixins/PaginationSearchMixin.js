@@ -61,7 +61,7 @@ module.exports = {
             return 'asc';
         },
         sort(type, order) {
-            const q = _.merge({}, this.$route.query, { seso_sort: type, seso_order: order });
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { seso_sort: type, seso_order: order });
 
             // Reset pagination;
             this.currentPage = 1;
@@ -77,7 +77,7 @@ module.exports = {
             this.send_information(this.searchSink);
         },
         size(number) {
-            const q = _.merge({}, this.$route.query, { seso_size: number });
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { seso_size: number });
 
             // Reset pagination;
             this.currentPage = 1;
@@ -106,10 +106,11 @@ module.exports = {
             const result = this.formatPaginate(sorts, this.state.seso, np < op);
             obj.seso_paginate = result;
 
-            const q = _.merge({}, this.$route.query, obj);
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), obj);
             this.state.seso = Object.assign({}, this.update_state(q));
-
+            console.log(q);
             this.$router.push({ query: q });
+            console.log(this.$route.query);
             this.send_information(this.searchSink);
         },
         formatPaginate(sorts, seso, backward) {
@@ -246,7 +247,7 @@ module.exports = {
                 body.where = where;
             }
 
-            const q = _.merge({}, this.$route.query, { s: content.search || '',
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { s: content.search || '',
                 seso_filter: this.state.seso.filters,
             /* seso_extra_filter: this.state.seso.extra_filters*/ });
             this.$router.replace({ query: q });
