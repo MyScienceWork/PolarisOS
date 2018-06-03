@@ -64,7 +64,6 @@
                     {{lang('l_add_or_modify_entity')}}
                     </span>
                     <div slot="body">
-                        <mapping-builder />
                         <fform
                             :name="state.sinks.creations.entity" 
                             :post_path="state.paths.creations.entity" 
@@ -167,7 +166,22 @@
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_configure_mapping')}}</span>
                                 <div slot="body">
-                                    <finput rows="30" name="mapping" :label="lang('b_entity_mapping')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
+                                    <tabber :tabs="[lang('l_interactive_mapping_mode'), lang('l_expert_mapping_mode')]">
+                                        <template slot="body" slot-scope="tprops">
+                                            <template v-if="tprops.id === 0">
+                                                <mapping-builder :mappingName="mapping_name" :mapping="mapping_object" />
+                                            </template>
+                                            <template v-else-if="tprops.id === 1">
+                                                <finput 
+                                                    rows="30" name="mapping" 
+                                                    :label="lang('b_entity_mapping')" 
+                                                    :is-required="true" 
+                                                    type="ide-editor" :form="state.sinks.creations.entity"
+                                                />
+                                            </template>
+                                        </template>
+                                    </tabber>
+                                    <hr />
                                     <finput rows="30" name="settings" :label="lang('b_entity_settings')" :is-required="true" type="ide-editor" :form="state.sinks.creations.entity" />
                                     <finput name="update_settings" :label="lang('b_update_settings')" placeholder="" type="checkbox" :form="state.sinks.creations.entity" />
                                 </div>

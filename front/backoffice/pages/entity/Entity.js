@@ -56,5 +56,24 @@ module.exports = {
         pipelines() {
             return this.mcontent(this.state.sinks.reads.pipeline);
         },
+        mapping_object() {
+            const content = this.fcontent(this.state.sinks.creations.entity);
+            if ('mapping' in content) {
+                try {
+                    return JSON.parse(content.mapping);
+                } catch (err) {
+                    return null;
+                }
+            }
+            return null;
+        },
+        mapping_name() {
+            const content = this.fcontent(this.state.sinks.creations.entity);
+
+            if ('name' in content) {
+                return content.name;
+            }
+            return '__dummy__';
+        },
     },
 };

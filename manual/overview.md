@@ -41,9 +41,16 @@ The frontend of the solution is subdivised into:
 
 Common has multiple directories:
 
-- 
+- `api`: everything related to backend discussion: routes used to call the backend, fetching functions, and messages used for mutations in Vuex.
+- `components`: every reusable Vue.js components used throughout the application.
+- `mixins` : every Vue.js mixins used throughout the application.
+- `store`: the Vuex's store.
+- `style`: CSS templates of the application (back-office & front-office).
+- `utils`:  couples of utility functions to help you build things faster.
 
-### Front-office
+### Front-office & Back-office folders
 
-### Back-office
-
+- `components`: every reusable Vue.js components only used for the front-office/back-office (it is the case for the header, navbar, footer of the application).
+- `fonts`: custom fonts that are copied to the public folder to be served and used (for custom website based on customers' graphic recommendations).
+- `imgs`: pictures, logos, ... used in the front-office/back-office.
+- `pages`: pages used in the front-office (deposit, publication view, and so on).

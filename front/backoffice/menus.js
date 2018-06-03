@@ -21,6 +21,7 @@ const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
+const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 
 module.exports.menu = [
     [
@@ -126,6 +127,16 @@ module.exports.menu = [
             routes: [Routes.mail_template],
             submenu: [],
             component: MailTemplate,
+        },
+        {
+            section: 'l_admin_section',
+            name: 'l_charts_page',
+            access: 'chart',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'chart',
+            routes: [Routes.chart],
+            submenu: [],
+            component: ChartConfiguration,
         },
     ],
 
