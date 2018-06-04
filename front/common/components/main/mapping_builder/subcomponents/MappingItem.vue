@@ -12,19 +12,19 @@
             />
         </div>
         <div class="control" v-if="removable">
-            <a class="button is-info" @click.prevent="remove_child(name)" href='#'>
+            <button class="button is-info" @click.prevent="remove_child(name)">
                 <span class="icon is-small">
                     <i class="fa fa-minus"></i>
                 </span>
-            </a>
+            </button>
         </div>
         <div class="control" v-if="openable">
-            <a class="button is-info" @click="state.opened = !state.opened">
+            <button class="button is-info" @click="state.opened = !state.opened">
                 <span class="icon is-small">
                     <i class="fa fa-chevron-down" v-if="!state.opened"></i>
                     <i class="fa fa-chevron-up" v-else></i>
                 </span>
-            </a>
+            </button>
         </div>
     </div>
     <div class="field" v-if="state.opened && state.type && openable">
@@ -43,7 +43,7 @@
             </label>
         </div>
     </div>
-    <template v-if="state.type && state.type.value === 'object'">
+    <template v-if="state.type && (state.type.value === 'object' || state.type.value === 'nested')">
         <div class="field">
             <div class="control"> 
                 <a href='#' class="has-text-success no-menu" @click.prevent="add_child">

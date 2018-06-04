@@ -74,7 +74,7 @@ module.exports = {
                 };
 
                 if (type === 'nested') {
-                    obj.type = 'nested';
+                    obj[this.state.name].type = 'nested';
                 }
                 return obj;
             }

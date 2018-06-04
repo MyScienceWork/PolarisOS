@@ -1,3 +1,4 @@
+const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
@@ -56,22 +57,31 @@ module.exports = {
         pipelines() {
             return this.mcontent(this.state.sinks.reads.pipeline);
         },
-        mapping_object() {
-            const content = this.fcontent(this.state.sinks.creations.entity);
-            if ('mapping' in content) {
-                try {
-                    return JSON.parse(content.mapping);
-                } catch (err) {
-                    return null;
+        mapping_object: {
+            get() {
+                const content = this.fcontent(this.state.sinks.creations.entity);
+                if ('mapping' in content) {
+                    try {
+                        return JSON.parse(content.mapping);
+                    } catch (err) {
+                        return null;
+                    }
                 }
-            }
-            return null;
+                return null;
+            },
+            set(mapping) {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.state.sinks.creations.entity,
+                    name: 'mapping',
+                    info: JSON.stringify(mapping, null, 4),
+                });
+            },
         },
         mapping_name() {
             const content = this.fcontent(this.state.sinks.creations.entity);
 
-            if ('name' in content) {
-                return content.name;
+            if ('type' in content) {
+                return content.type;
             }
             return '__dummy__';
         },

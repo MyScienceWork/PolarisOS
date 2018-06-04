@@ -169,7 +169,7 @@
                                     <tabber :tabs="[lang('l_interactive_mapping_mode'), lang('l_expert_mapping_mode')]">
                                         <template slot="body" slot-scope="tprops">
                                             <template v-if="tprops.id === 0">
-                                                <mapping-builder :mappingName="mapping_name" :mapping="mapping_object" />
+                                                <mapping-builder :mappingName="mapping_name" :mapping.sync="mapping_object" />
                                             </template>
                                             <template v-else-if="tprops.id === 1">
                                                 <finput 
