@@ -19,6 +19,9 @@ module.exports = {
                     updated_at: {
                         type: 'date',
                     },
+                    last_connection_at: {
+                        type: 'date',
+                    },
                     emails: {
                         type: 'nested',
                         properties: {
@@ -30,7 +33,13 @@ module.exports = {
                             },
                         },
                     },
+                    uid: {
+                        type: 'keyword',
+                    },
                     enabled: {
+                        type: 'boolean',
+                    },
+                    public_profile: {
                         type: 'boolean',
                     },
                     locked: {
@@ -41,6 +50,12 @@ module.exports = {
                     },
                     password: {
                         type: 'keyword',
+                    },
+                    sso: {
+                        type: 'boolean',
+                    },
+                    ldap: {
+                        type: 'boolean',
                     },
                     firstname: {
                         type: 'text',
@@ -66,6 +81,9 @@ module.exports = {
                             },
                         },
                     },
+                    about_me: {
+                        type: 'text',
+                    },
                     author: {
                         type: 'keyword',
                     },
@@ -75,6 +93,42 @@ module.exports = {
                                 type: 'keyword',
                             },
                             secret: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    identifiers: {
+                        type: 'nested',
+                        properties: {
+                            type: {
+                                type: 'keyword',
+                            },
+                            value: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    ids: {
+                        properties: {
+                            twitter: {
+                                type: 'keyword',
+                            },
+                            linkedin: {
+                                type: 'keyword',
+                            },
+                            orcid: {
+                                type: 'keyword',
+                            },
+                            facebook: {
+                                type: 'keyword',
+                            },
+                            hal: {
+                                type: 'keyword',
+                            },
+                            idref: {
+                                type: 'keyword',
+                            },
+                            pubmedid: {
                                 type: 'keyword',
                             },
                         },

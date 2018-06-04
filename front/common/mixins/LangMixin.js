@@ -3,10 +3,18 @@ const StringUtils = require('../utils/strings');
 module.exports = {
     methods: {
         lang(key, obj, n) {
-            return StringUtils.lang(key, obj, n, this.clang);
+            let l = {};
+            if (this.clang) {
+                l = this.clang;
+            }
+            return StringUtils.lang(key, obj, n, l);
         },
         hlang(key, obj, n) {
-            return StringUtils.hlang(key, obj, n, this.clang);
+            let l = {};
+            if (this.clang) {
+                l = this.clang;
+            }
+            return StringUtils.hlang(key, obj, n, l);
         },
     },
     computed: {

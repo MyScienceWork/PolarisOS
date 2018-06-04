@@ -8,6 +8,60 @@ module.exports = {
                     environment: {
                         type: 'keyword',
                     },
+                    base_url: {
+                        type: 'keyword',
+                    },
+                    gui: {
+                        properties: {
+                            logo: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    api: {
+                        properties: {
+                            hal: {
+                                properties: {
+                                    url: {
+                                        type: 'keyword',
+                                    },
+                                    login: {
+                                        type: 'keyword',
+                                    },
+                                    password: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    mail: {
+                        properties: {
+                            smtp: {
+                                properties: {
+                                    host: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'integer',
+                                    },
+                                    secure: {
+                                        type: 'boolean',
+                                    },
+                                    auth: {
+                                        properties: {
+                                            user: {
+                                                type: 'keyword',
+                                            },
+                                            pass: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     upload: {
                         properties: {
                             maxFileSizeInMB: {
@@ -29,6 +83,53 @@ module.exports = {
                         properties: {
                             value: {
                                 type: 'keyword',
+                            },
+                        },
+                    },
+                    authentication: {
+                        properties: {
+                            default_cas_sso: {
+                                type: 'boolean',
+                            },
+                            default_assigned_role: {
+                                type: 'keyword',
+                            },
+                            use_cas_sso: {
+                                type: 'boolean',
+                            },
+                            use_ldap: {
+                                type: 'boolean',
+                            },
+                            cas_sso: {
+                                properties: {
+                                    service: {
+                                        type: 'keyword',
+                                    },
+                                    base: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            ldap: {
+                                properties: {
+                                    base: {
+                                        type: 'keyword',
+                                    },
+                                    dns: {
+                                        type: 'keyword',
+                                    },
+                                    attributes: {
+                                        type: 'nested',
+                                        properties: {
+                                            key: {
+                                                type: 'keyword',
+                                            },
+                                            value: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
                             },
                         },
                     },

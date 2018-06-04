@@ -1,12 +1,16 @@
+const _ = require('lodash');
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
@@ -15,7 +19,7 @@ module.exports = {
                         [this.entity()]: APIRoutes.entity(this.entity(), 'POST'),
                     },
                     reads: {
-                        [this.entity()]: APIRoutes.entity(this.entity(), 'GET'),
+                        [this.entity()]: APIRoutes.entity(this.entity(), 'POST', true),
                         entity: APIRoutes.entity('entity', 'POST', true),
                     },
                 },
@@ -27,10 +31,13 @@ module.exports = {
                     },
                     creations: {
                         [this.entity()]: 'datainstance_creation',
+                        search: 'datainstance_creation_search',
                     },
                 },
-                itemsPerPage: 20,
-                itemsPerRow: 2,
+                columns: this.columns || {},
+                checked_rows: [],
+                es_query_id: this.search_query || '__no__search__query__',
+                visible_columns: 0,
             },
         };
     },
@@ -50,25 +57,27 @@ module.exports = {
             }
 
             const content = this.content_entity;
-            if (content.length > 0) {
-                this.fetch_form(content[0].form, this.state.sinks.reads.form);
+            if (content) {
+                this.fetch_form(content.form, this.state.sinks.reads.form);
             }
+        },
+        on_column_update(obj) {
+            // console.log('on column update', obj);
+            this.state.columns[obj.key].visible = obj.checked;
+            this.state.visible_columns = _.filter(this.state.columns, c => c.visible).length;
+            this.$set(this.state, 'columns', this.state.columns);
+            this.$forceUpdate();
+        },
+        on_checked_rows_update(obj) {
+            this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
     },
     mounted() {
         Object.keys(this.state.sinks.reads).forEach((sink) => {
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads[sink],
-                keepContent: false,
+                keep_content: false,
             });
-        });
-
-        this.$store.state.requests.push({
-            name: 'single_read',
-            content: {
-                form: this.state.sinks.reads[this.entity()],
-                path: this.state.paths.reads[this.entity()],
-            },
         });
 
         this.$store.state.requests.push({
@@ -85,41 +94,49 @@ module.exports = {
         });
     },
     watch: {
-        error_datainstance(n) {
-            return this.mwerror(this.state.sinks.reads[this.entity()])(n);
-        },
-        current_read_state_datainstance(s) {
-            return this.mwcurrent_read_state(this.state.sinks.reads[this.entity()])(s);
-        },
         current_read_state_entity(s) {
             return this.mwcurrent_read_state(this.state.sinks.reads.entity)(s);
         },
+        search_query(q) {
+            if (q) {
+                this.state.es_query_id = q;
+            }
+        },
+        columns(cols) {
+            if (cols) {
+                this.state.columns = cols;
+                this.state.visible_columns = _.filter(cols, c => c.visible).length;
+            }
+        },
     },
     computed: {
-        content_datainstance() {
-            const content = this.mcontent(this.state.sinks.reads[this.entity()]);
-            return content;
-        },
-        length_datainstance() {
-            return this.mlength(this.state.sinks.reads[this.entity()]);
-        },
-        read_content_datainstance() {
-            const content = this.content_datainstance;
-            return Utils.to_matrix(content, this.state.itemsPerRow);
-        },
-        error_datainstance() {
-            return this.merror(this.state.sinks.reads[this.entity()]);
-        },
-        current_read_state_datainstance() {
-            return this.mcurrent_read_state(this.state.sinks.reads[this.entity()]);
-        },
-
         current_read_state_entity() {
             return this.mcurrent_read_state(this.state.sinks.reads.entity);
         },
         content_entity() {
             const content = this.mcontent(this.state.sinks.reads.entity);
-            return content;
+            if (content.length > 0) {
+                return content[0];
+            }
+            return null;
+        },
+        search_query() {
+            if (this.content_entity) {
+                return this.content_entity.search_query;
+            }
+            return '__no__search__query__';
+        },
+        columns() {
+            if (this.content_entity && this.content_entity.backoffice) {
+                return this.content_entity.backoffice.columns.reduce((obj, c) => {
+                    const l = c.lang && c.lang.trim() !== '' ? c.lang : undefined;
+                    obj[c.field] = c;
+                    obj[c.field].visible = true;
+                    obj[c.field].lang = l;
+                    return obj;
+                }, {});
+            }
+            return {};
         },
     },
 };

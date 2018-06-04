@@ -24,6 +24,15 @@ const Formatting: Array<any> = [
             if ('not_is_master' in f) {
                 delete f.not_is_master;
             }
+
+            if ('size' in f) {
+                f.size = parseFloat(f.size);
+            }
+
+            if (!('name' in f) || f.name.trim() === '') {
+                f.name = f.url;
+            }
+
             return f;
         }),
     },

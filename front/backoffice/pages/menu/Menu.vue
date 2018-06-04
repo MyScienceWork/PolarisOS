@@ -4,44 +4,56 @@
         <div class="columns">
             <div class="column">
                 <widget>
-                <span slot="title">{{lang('l_list_of_menus')}}</span>
+                    <span slot="title">{{lang('l_list_of_menus')}}</span>
                     <div slot="body">
-                        <div v-for="row in read_content_menu" class="columns is-centered">
-                            <div v-for="info in row" class="column">
-                                <widget>
-                                    <span slot="title">{{info.name}}
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(info, 'menu')"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(info, 'menu')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_menu" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.menu"
+                            :search-path="state.paths.reads.menu"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="menu"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="has-text-blue"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="update(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange"
+                                    tag="a"
+                                    v-scroll-to="'#mwidget'"
+                                    @action-click="use_as_model(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-red"
+                                    tag="a"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'menu')"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.name}}
+                                </span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                     <span slot="title">{{lang('l_add_or_modify_menu')}}</span>
                     <div slot="body">
                         <fform
@@ -84,6 +96,14 @@
                                             fieldLabel="route" 
                                             fieldValue="_id"
                                         />
+                                        <finput 
+                                            :name="`${fprops.fname}.${fprops.order}.query`" 
+                                            :key="`${fprops.fname}.${fprops.id}.query`" 
+                                            :label="lang('l_menu_query')" 
+                                            :is-required="true" 
+                                            :placeholder="lang('l_menu_query')" type="text" 
+                                            :form="state.sinks.creations.menu"
+                                        />
                                         <fvariadic-element 
                                             :name="`${fprops.fname}.${fprops.order}.submenus`" 
                                             :key="`${fprops.fname}.${fprops.id}.submenus`" 
@@ -120,6 +140,14 @@
                                                     fieldValue="_id"
                                                     :form="state.sinks.creations.menu" 
                                                     :options="content_page"
+                                                />
+                                                <finput 
+                                                    :name="`${props.fname}.${props.order}.query`" 
+                                                    :key="`${props.fname}.${props.id}.query`" 
+                                                    :label="lang('l_menu_query')" 
+                                                    :is-required="true" 
+                                                    :placeholder="lang('l_menu_query')" type="text" 
+                                                    :form="state.sinks.creations.menu"
                                                 />
                                             </template>
                                         </fvariadic-element>

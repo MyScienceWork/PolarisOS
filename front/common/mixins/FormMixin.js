@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const APIRoutes = require('../api/routes');
+const Messages = require('../api/messages');
 const LangMixin = require('./LangMixin');
 
 module.exports = {
@@ -14,6 +15,15 @@ module.exports = {
                 return {};
             };
         },
+        fsuccess() {
+            return (sink) => {
+                const form = this.fform(sink);
+                if ('success' in form) {
+                    return form.success;
+                }
+                return null;
+            };
+        },
         fcontent() {
             return (sink) => {
                 const myform = this.fform(sink);
@@ -21,6 +31,18 @@ module.exports = {
                     return myform.content;
                 }
                 return {};
+            };
+        },
+        acontent() {
+            return (sink) => {
+                const _content = this.fcontent(sink);
+                if (!_content) {
+                    return [];
+                }
+                if (!(_content instanceof Array) || _content.length === 0) {
+                    return [];
+                }
+                return _content;
             };
         },
         fstate() {
@@ -35,6 +57,9 @@ module.exports = {
     },
     methods: {
         fetch_form(id, sink) {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: sink,
+            });
             this.$store.dispatch('single_read', {
                 form: sink,
                 path: APIRoutes.entity('form', 'GET', false, id, '', 'fields.subform,fields.datasource'),
@@ -58,6 +83,9 @@ module.exports = {
         show_success_validate(form) {
 
         },
+        show_success_delete(form) {
+
+        },
         show_validation(form) {
 
         },
@@ -71,6 +99,7 @@ module.exports = {
             switch (s) {
             default:
             case 'noop':
+            case 'transfer':
                 break;
             case 'update':
             case 'initial':
@@ -90,6 +119,9 @@ module.exports = {
                 break;
             case 'success_read':
                 self.show_success_read(form);
+                break;
+            case 'success_delete':
+                self.show_success_delete(form);
                 break;
             case 'success_validate':
                 self.show_success_validate(form);

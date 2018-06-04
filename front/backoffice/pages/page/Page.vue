@@ -6,42 +6,54 @@
                 <widget>
                 <span slot="title">{{lang('l_list_of_pages')}}</span>
                     <div slot="body">
-                        <div v-for="row in read_content_page" class="columns is-centered">
-                            <div v-for="info in row" class="column">
-                                <widget>
-                                    <span slot="title">{{info.name}} ({{info.route}})
-                                        <action-button
-                                        class="button is-small button-background-blue"
-                                        @action-click="update(info, 'page')"
-                                        >
-                                        <i class="fa fa-pencil"></i>
-                                        </action-button>
-                                        <action-button
-                                        class="button is-small button-background-red"
-                                        confirmation="Are you sure?"
-                                        :two-steps="true"
-                                        @action-click="remove(info, 'page')"
-                                        >
-                                        <i class="fa fa-times"></i>
-                                        </action-button>
-                                    </span>
-                                    <div slot="body">
-                                    </div>
-                                </widget>
-                            </div>
-                        </div>
-                        <div class="columns is-centered">
-                            <div class="column">
-                                <paginator class="pagination-purple" :skip="0" :number-of-items="length_page" :items-per-page="state.itemsPerPage" />
-                            </div>
-                        </div>
+                        <fsearching
+                            :search-sink="state.sinks.creations.search"
+                            :result-sink="state.sinks.reads.page"
+                            :search-path="state.paths.reads.page"
+                            :search-query="es_query_content"
+                            :use-default-query="true"
+                            search-type="page"
+                        >
+                            <widget slot="search-result" slot-scope="props">
+                                <span slot="title">
+                                    <action-button
+                                    class="share-icon has-text-blue"
+                                    @action-click="update(props.info, 'page')"
+                                    v-scroll-to="'#mwidget'"
+                                    tag="a"
+                                    >
+                                    <i class="fa fa-pencil"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="has-text-orange share-icon"
+                                    tag="a"
+                                    @action-click="use_as_model(props.info, 'page')"
+                                    v-scroll-to="'#mwidget'"
+                                    >
+                                        <i class="fa fa-clone"></i>
+                                    </action-button>
+                                    <action-button
+                                    class="share-icon has-text-red"
+                                    confirmation="Are you sure?"
+                                    :two-steps="true"
+                                    @action-click="remove(props.info, 'page')"
+                                    tag="a"
+                                    >
+                                    <i class="fa fa-times"></i>
+                                    </action-button>
+                                    {{props.info.name}} ({{props.info.route}})
+                                </span>
+                                <div slot="body">
+                                </div>
+                            </widget>
+                        </fsearching>
                     </div>
                 </widget>
             </div>
         </div>
         <div class="columns">
             <div class="column">
-                <widget>
+                <widget id="mwidget">
                     <span slot="title">{{lang('l_add_or_modify_page')}}</span>
                     <div slot="body">
                         <fform
@@ -121,26 +133,31 @@
                                     />
                                 </div>
                             </widget>
-                            <widget>
-                                <span slot="title">{{lang('l_header')}}</span>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_page_configuration')}}</span>
                                 <div slot="body">
-                                    <finput name="header.enabled" :label="lang('l_has_header')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
-                                    <fgrid :widgets="content_widget"></fgrid>
-                                </div>
-                            </widget>
-                            <widget>
-                                <span slot="title">{{lang('l_main')}}</span>
-                                <div slot="body">
-                                <div slot="body">
-                                    <fgrid :widgets="content_widget"></fgrid>
-                                </div>
-                                </div>
-                            </widget>
-                            <widget>
-                                <span slot="title">{{lang('l_footer')}}</span>
-                                <div slot="body">
-                                    <finput name="footer.enabled" :label="lang('l_has_footer')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
-                                    <fgrid :widgets="content_widget"></fgrid>
+                                    <widget>
+                                        <span slot="title">{{lang('l_header')}}</span>
+                                        <div slot="body">
+                                            <finput name="header.enabled" :label="lang('l_has_header')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                                            <fgrid :widgets="content_widget"></fgrid>
+                                        </div>
+                                    </widget>
+                                    <widget>
+                                        <span slot="title">{{lang('l_main')}}</span>
+                                        <div slot="body">
+                                        <div slot="body">
+                                            <fgrid :widgets="content_widget"></fgrid>
+                                        </div>
+                                        </div>
+                                    </widget>
+                                    <widget>
+                                        <span slot="title">{{lang('l_footer')}}</span>
+                                        <div slot="body">
+                                            <finput name="footer.enabled" :label="lang('l_has_footer')" :is-required="true" placeholder="" type="checkbox" :form="state.sinks.creations.page" />
+                                            <fgrid :widgets="content_widget"></fgrid>
+                                        </div>
+                                    </widget>
                                 </div>
                             </widget>
                         </fform>

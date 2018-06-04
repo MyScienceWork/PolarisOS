@@ -3,135 +3,654 @@ module.exports = {
         mappings: {
             publication: {
                 dynamic: 'strict',
+                _meta: {
+                    refs: {
+                        type: 'typology',
+                        journal: 'journal',
+                        authors: {
+                            _id: 'author',
+                        },
+                        contributors: {
+                            label: 'author',
+                        },
+                        conference: 'conference',
+                        delivery_institution: 'institution',
+                        depositor: 'user',
+                        reviewer: 'user',
+                        editor: 'editor',
+                        classification: {
+                            _id: 'classification',
+                        },
+                        collection: 'collection',
+                        keywords: {
+                            value: 'keyword',
+                        },
+                        demovoc_keywords: {
+                            value: 'demovoc_keyword',
+                        },
+                        diffusion: {
+                            internal_collection: 'internal_collection',
+                            surveys: {
+                                _id: 'survey',
+                            },
+                            research_teams: {
+                                _id: 'laboratory',
+                            },
+                            projects: {
+                                _id: 'project',
+                            },
+                            anr_projects: {
+                                _id: 'anr_project',
+                            },
+                            european_projects: {
+                                _id: 'european_project',
+                            },
+                            rights: {
+                                license: 'license',
+                                access: 'access_level',
+                            },
+                        },
+                        publication_version: 'publication_version',
+                        localisation: {
+                            country: 'country',
+                        },
+                    },
+                },
                 dynamic_date_formats: [],
                 properties: {
-                    id: {
+                    denormalization: {
+                        properties: {
+                            type: {
+                                properties: {
+                                    label: {
+                                        type: 'text',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            authors: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        properties: {
+                                            fullname: {
+                                                analyzer: 'folding',
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            _id: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            classifications: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        properties: {
+                                            label: {
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            contributors: {
+                                type: 'nested',
+                                properties: {
+                                    label: {
+                                        properties: {
+                                            fullname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    role: {
+                                        properties: {
+                                            abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            demovoc_keywords: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        properties: {
+                                            label: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            delivery_institution: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            depositor: {
+                                properties: {
+                                    lastname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    firstname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            reviewer: {
+                                properties: {
+                                    lastname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    firstname: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            journal: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            conference: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            publication_version: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            editor: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            subtype: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            template: {
+                                type: 'text',
+                            },
+                            type: {
+                                properties: {
+                                    label: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    template: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                },
+                            },
+                            localisation: {
+                                properties: {
+                                    country: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            diffusion: {
+                                properties: {
+                                    internal_collection: {
+                                        type: 'text',
+                                        analyzer: 'folding',
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    research_teams: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    anr_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    european_projects: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    surveys: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    rights: {
+                                        properties: {
+                                            license: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            access: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    abstracts: {
+                        type: 'nested',
+                        properties: {
+                            content: {
+                                type: 'text',
+                                analyzer: 'folding',
+                            },
+                            lang: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    authors: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    classifications: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                            type: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    collection: {
                         type: 'keyword',
                     },
-                    master: {
+                    conference: {
                         type: 'keyword',
                     },
-                    state: {
-                        type: 'keyword',
+                    contributors: {
+                        type: 'nested',
+                        properties: {
+                            label: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            role: {
+                                type: 'keyword',
+                            },
+                        },
                     },
-                    version: {
-                        type: 'keyword',
+                    dates: {
+                        properties: {
+                            creation: {
+                                type: 'date',
+                            },
+                            deposit: {
+                                type: 'date',
+                            },
+                            end: {
+                                type: 'date',
+                            },
+                            publication: {
+                                type: 'date',
+                            },
+                            production: {
+                                type: 'date',
+                            },
+                            start: {
+                                type: 'date',
+                            },
+                            update: {
+                                type: 'date',
+                            },
+                        },
                     },
-                    volume: {
-                        type: 'keyword',
-                        index: false,
-                    },
-                    slug: {
+                    delivery_institution: {
                         type: 'keyword',
                     },
                     description: {
                         type: 'text',
                     },
-                    disciplines: {
-                        type: 'nested',
+                    diffusion: {
                         properties: {
-                            label: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                            internal_collection: { type: 'keyword' },
+                            projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            anr_projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            european_projects: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            research_teams: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            rights: {
+                                properties: {
+                                    access: {
+                                        type: 'keyword',
+                                    },
+                                    comment: {
+                                        type: 'text',
+                                    },
+                                    embargo: {
+                                        type: 'date',
+                                    },
+                                    exports: {
+                                        properties: {
+                                            hal: {
+                                                type: 'boolean',
+                                            },
+                                            nowhere: {
+                                                type: 'boolean',
+                                            },
+                                            openaire: {
+                                                type: 'boolean',
+                                            },
+                                            repec: {
+                                                type: 'boolean',
+                                            },
+                                            website: {
+                                                type: 'boolean',
+                                            },
+                                        },
+                                    },
+                                    license: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            surveys: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
                     },
-                    exhaustiveContributorLists: {
+                    editor: {
+                        type: 'keyword',
+                    },
+                    files: {
                         type: 'nested',
                         properties: {
-                            role: {
+                            format: {
                                 type: 'keyword',
                             },
-                            isExhaustiveList: {
+                            is_master: {
                                 type: 'boolean',
                             },
-                        },
-                    },
-                    language: {
-                        type: 'keyword',
-                    },
-                    firstPage: {
-                        type: 'keyword',
-                        index: false,
-                    },
-                    lastPage: {
-                        type: 'keyword',
-                        index: false,
-                    },
-                    pageCount: {
-                        type: 'integer',
-                        index: false,
-                    },
-                    license: {
-                        type: 'keyword',
-                    },
-                    source: {
-                        type: 'keyword',
-                    },
-                    publicationType: {
-                        type: 'keyword',
-                    },
-                    publicationSubtype: {
-                        type: 'text',
-                        fields: { raw: { type: 'keyword' } },
-                    },
-                    issue: {
-                        type: 'keyword',
-                        index: false,
-                    },
-                    copyright: {
-                        properties: {
-                            holder: {
-                                type: 'text',
-                            },
-                            statement: {
-                                type: 'text',
-                            },
-                            year: {
-                                type: 'date',
-                                format: 'year',
-                            },
-                        },
-                    },
-                    institutionContributors: {
-                        type: 'nested',
-                        properties: {
-                            role: {
-                                type: 'keyword',
-                            },
-                            countryCode: {
-                                type: 'keyword',
-                                index: false,
-                            },
-                            id: {
-                                type: 'keyword',
-                            },
-                            uri: {
-                                type: 'keyword',
-                                index: false,
-                            },
                             name: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                        },
-                    },
-                    titles: {
-                        type: 'nested',
-                        properties: {
-                            language: {
                                 type: 'keyword',
                             },
-                            value: {
-                                type: 'text',
-                                analyzer: 'text_analyzer',
-                                search_analyzer: 'search_analyzer',
+                            url: {
+                                type: 'keyword',
+                            },
+                            size: {
+                                type: 'float',
+                            },
+                            access: {
+                                properties: {
+                                    restricted: {
+                                        type: 'boolean',
+                                    },
+                                    confidential: {
+                                        type: 'boolean',
+                                    },
+                                    delayed: {
+                                        type: 'boolean',
+                                    },
+                                },
                             },
                         },
                     },
-                    publicationIds: {
+                    ids: {
                         type: 'nested',
                         properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                            type: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    journal: {
+                        type: 'keyword',
+                    },
+                    newspaper: {
+                        type: 'text',
+                        analyzer: 'folding',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    keywords: {
+                        type: 'nested',
+                        properties: {
+                            lang: {
+                                type: 'keyword',
+                            },
                             type: {
                                 type: 'keyword',
                             },
@@ -140,142 +659,160 @@ module.exports = {
                             },
                         },
                     },
-                    contributors: {
+                    demovoc_keywords: {
                         type: 'nested',
                         properties: {
-                            contributorIds: {
-                                type: 'nested',
-                                properties: {
-                                    type: {
-                                        type: 'keyword',
-                                    },
-                                    value: {
-                                        type: 'keyword',
-                                    },
-                                },
-                            },
-                            firstName: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                            middleName: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                            lastName: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                            fullName: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                            role: {
+                            _id: {
                                 type: 'keyword',
-                            },
-                            suffix: {
-                                type: 'text',
-                                index: false,
-                            },
-                            affiliations: {
-                                type: 'nested',
-                                properties: {
-                                    address: {
-                                        type: 'text',
-                                    },
-                                    city: {
-                                        type: 'keyword',
-                                        index: false,
-                                    },
-                                    countryCode: {
-                                        type: 'keyword',
-                                        index: false,
-                                    },
-                                    id: {
-                                        type: 'integer',
-                                    },
-                                    name: {
-                                        type: 'text',
-                                        fields: { raw: { type: 'keyword' } },
-                                    },
-                                },
                             },
                         },
                     },
-                    dates: {
-                        type: 'nested',
+                    lang: {
+                        type: 'keyword',
+                    },
+                    localisation: {
                         properties: {
-                            date: {
-                                type: 'date',
+                            city: {
+                                type: 'text',
                             },
-                            precision: {
-                                type: 'keyword',
-                                index: false,
-                            },
-                            dateType: {
+                            country: {
                                 type: 'keyword',
                             },
                         },
+                    },
+                    number: {
+                        type: 'keyword',
+                    },
+                    pagination: {
+                        type: 'keyword',
+                    },
+                    parents: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    publication_title: {
+                        type: 'text',
+                        analyzer: 'folding',
+                    },
+                    publication_version: {
+                        type: 'keyword',
                     },
                     resources: {
                         type: 'nested',
-                        include_in_parent: true,
                         properties: {
-                            label: {
+                            description: {
                                 type: 'text',
-                                index: false,
                             },
-                            resourceType: {
+                            type: {
                                 type: 'keyword',
                             },
                             url: {
                                 type: 'keyword',
-                                index: false,
                             },
                         },
                     },
-                    journal: {
-                        properties: {
-                            abbreviation: {
-                                type: 'keyword',
-                                index: false,
-                            },
-                            copyright: {
-                                type: 'text',
-                                index: false,
-                            },
-                            issn: {
-                                type: 'keyword',
-                            },
-                            journalIds: {
-                                type: 'nested',
-                                properties: {
-                                    type: {
-                                        type: 'keyword',
-                                    },
-                                    value: {
-                                        type: 'keyword',
-                                    },
-                                },
-                            },
-                            name: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                            publisher: {
-                                type: 'text',
-                                fields: { raw: { type: 'keyword' } },
-                            },
-                        },
-                    },
-                    keywords: {
+                    sources: {
                         type: 'nested',
                         properties: {
-                            language: {
+                            _id: {
                                 type: 'keyword',
                             },
-                            label: {
+                        },
+                    },
+                    status: {
+                        type: 'keyword',
+                    },
+                    subtitles: {
+                        type: 'nested',
+                        properties: {
+                            content: {
+                                type: 'text',
+                                analyzer: 'folding',
+                            },
+                            lang: {
                                 type: 'keyword',
+                            },
+                        },
+                    },
+                    title: {
+                        properties: {
+                            content: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            lang: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    translated_titles: {
+                        type: 'nested',
+                        properties: {
+                            content: {
+                                type: 'text',
+                                analyzer: 'folding',
+                            },
+                            lang: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    type: {
+                        type: 'keyword',
+                    },
+                    subtype: {
+                        type: 'keyword',
+                    },
+                    version: {
+                        type: 'integer',
+                    },
+                    has_other_version: {
+                        type: 'boolean',
+                    },
+                    volume: {
+                        type: 'keyword',
+                    },
+                    url: {
+                        type: 'keyword',
+                    },
+                    depositor: {
+                        type: 'keyword',
+                    },
+                    reviewer: {
+                        type: 'keyword',
+                    },
+                    duration: {
+                        type: 'integer',
+                    },
+                    system: {
+                        properties: {
+                            depositor_comment: {
+                                type: 'text',
+                            },
+                            emails: {
+                                type: 'nested',
+                                properties: {
+                                    body: {
+                                        type: 'text',
+                                        index: false,
+                                    },
+                                    reviewer: {
+                                        type: 'keyword',
+                                    },
+                                    created_at: {
+                                        type: 'date',
+                                    },
+                                    sent: {
+                                        type: 'boolean',
+                                    },
+                                },
                             },
                         },
                     },

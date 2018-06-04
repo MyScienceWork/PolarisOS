@@ -3,15 +3,15 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
-                itemsPerPage: 1000,
-                itemsPerRow: 1,
                 paths: {
                     creations: {
                         page: APIRoutes.entity('page', 'POST'),
@@ -19,7 +19,7 @@ module.exports = {
                     reads: {
                         widget: APIRoutes.entity('widget', 'GET'),
                         template: APIRoutes.entity('template', 'GET'),
-                        page: APIRoutes.entity('page', 'GET'),
+                        page: APIRoutes.entity('page', 'POST', true),
                     },
                 },
                 sinks: {
@@ -30,25 +30,27 @@ module.exports = {
                     },
                     creations: {
                         page: 'page_creation',
+                        search: 'page_creation_search',
                     },
                 },
+                es_query_id: 'backoffice-page-query',
             },
         };
     },
     mounted() {
-        Object.keys(this.state.sinks.reads).forEach((sink) => {
+        ['template', 'widget'].forEach((e) => {
             this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.reads[sink],
-                keepContent: false,
+                form: this.state.sinks.reads[e],
+                keep_content: false,
             });
         });
 
-        Object.keys(this.state.sinks.reads).forEach((sink) => {
+        ['template', 'widget'].forEach((e) => {
             this.$store.state.requests.push({
                 name: 'single_read',
                 content: {
-                    form: this.state.sinks.reads[sink],
-                    path: this.state.paths.reads[sink],
+                    form: this.state.sinks.reads[e],
+                    path: this.state.paths.reads[e],
                 },
             });
         });
@@ -60,12 +62,6 @@ module.exports = {
         current_read_state_widget(s) {
             return this.mwcurrent_read_state(this.state.sinks.reads.widget)(s);
         },
-        error_page(n) {
-            return this.mwerror(this.state.sinks.reads.page)(n);
-        },
-        current_read_state_page(s) {
-            return this.mwcurrent_read_state(this.state.sinks.reads.page)(s);
-        },
         error_template(n) {
             return this.mwerror(this.state.sinks.reads.template)(n);
         },
@@ -74,24 +70,6 @@ module.exports = {
         },
     },
     computed: {
-        content_page() {
-            const content = this.mcontent(this.state.sinks.reads.page);
-            return content;
-        },
-        length_page() {
-            return this.mlength(this.state.sinks.reads.page);
-        },
-        read_content_page() {
-            const content = this.content_page;
-            return Utils.to_matrix(content, this.state.itemsPerRow);
-        },
-        error_page() {
-            return this.merror(this.state.sinks.reads.page);
-        },
-        current_read_state_page() {
-            return this.mcurrent_read_state(this.state.sinks.reads.page);
-        },
-
         content_widget() {
             const content = this.mcontent(this.state.sinks.reads.widget);
             return content;

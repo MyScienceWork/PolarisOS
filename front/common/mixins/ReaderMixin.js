@@ -47,7 +47,25 @@ module.exports = {
             Vue.nextTick(() => {
                 this.$store.commit(Messages.READ, {
                     form: this.state.sinks.creations[entity],
-                    content: obj,
+                    content: _.cloneDeep(obj),
+                });
+            });
+        },
+        use_as_model(obj, entity) {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations[entity],
+                keep_content: false,
+            });
+            this.$store.commit(Messages.NOOP, {
+                form: this.state.sinks.creations[entity],
+            });
+
+            Vue.nextTick(() => {
+                const body = _.cloneDeep(obj);
+                delete body._id;
+                this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                    form: this.state.sinks.creations[entity],
+                    body,
                 });
             });
         },

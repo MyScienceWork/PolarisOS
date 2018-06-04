@@ -463,4 +463,36 @@ describe('Utils#merge_with_remplacement', () => {
         defaults.default_array.should.have.lengthOf(2);
         result.default_array.should.have.lengthOf(2);
     });
+
+    it('should not replace by null or undefined', () => {
+        const source = {
+            lang: 'FR',
+            version: 1,
+        };
+
+        const defaults = {
+            lang: null,
+            version: undefined,
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+        result.lang.should.equal('FR');
+        result.version.should.equal(1);
+    });
+
+    it('should replace null or undefined', () => {
+        const source = {
+            lang: null,
+            version: undefined,
+        };
+
+        const defaults = {
+            lang: 'FR',
+            version: 1,
+        };
+
+        const result = utils.merge_with_replacement({}, source, defaults);
+        result.lang.should.equal('FR');
+        result.version.should.equal(1);
+    });
 });

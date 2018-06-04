@@ -2,6 +2,7 @@
 const Joi = require('joi');
 const ConfigMapping = require('../../../../mappings/config');
 const MMapping = require('../../crud/mapping');
+const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
 const Mapping: Object = ConfigMapping.msw
 .mappings.config.properties;
@@ -34,6 +35,7 @@ const Formatting: Array<any> = [
             })
             .filter(lang => lang != null)
            .map(lang => ({ value: lang })),
+        'authentication.ldap.attributes': async a => FormatFunctions.oarray_to_array(a),
     },
 ];
 

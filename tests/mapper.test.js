@@ -188,6 +188,39 @@ describe('Mapper#transform_to_search#Bool', () => {
         json.bool.must_not.should.have.lengthOf(1);
         json.bool.must_not[0].should.have.property('term');
     });
+
+    it('should handle bool query correctly (7)', () => {
+        const body = {
+            where: {
+                $or: [
+                    { $$term: { test: 'OK' } },
+                    { $$term: { test: 'NOK' } },
+                ],
+                $msm: 2,
+            },
+        };
+
+        const body_2 = {
+            where: {
+                $or: [
+                    { $$term: { test: 'OK' } },
+                    { $$term: { test: 'NOK' } },
+                ],
+                $minimum_should_match: 2,
+            },
+        };
+
+        [body, body_2].map((b) => {
+            const search = mapper.transform_to_search(b);
+            const json = search.generate();
+            json.should.have.property('bool');
+            expect(json.bool).to.have.property('should');
+            expect(json.bool.should).to.have.lengthOf(2);
+            expect(json.bool.should[0]).to.have.property('term');
+            expect(json.bool.should[1]).to.have.property('term');
+            expect(json.bool).to.property('minimum_should_match', 2);
+        });
+    });
 });
 
 describe('Mapper#transform_to_search#Shortcut', () => {
@@ -341,6 +374,39 @@ describe('Mapper#transform_to_search#Shortcut', () => {
         json.match.masterTitle.should.have.property('query', q);
         json.match.masterTitle.should.have.property('operator', 'and');
         json.match.masterTitle.should.have.property('minimum_should_match', '100%');
+    });
+
+    it('should create range query with used with date type field', () => {
+        const body = {
+            where: {
+                updatedAt: { '<': 'now', '>': 'now-1d' },
+            },
+        };
+
+        const mapping = new Mapping(es_mapping);
+        const search = mapper.transform_to_search(body, mapping);
+        const json = search.generate();
+
+        json.should.have.property('range');
+        json.range.should.have.property('updatedAt');
+        json.range.updatedAt.should.have.property('lt', 'now');
+        json.range.updatedAt.should.have.property('gt', 'now-1d');
+    });
+
+    it('should create range query with used with date type field and an array of operators', () => {
+        const body = {
+            where: {
+                updatedAt: [{ '<': 'now' }, { '>': 'now-1d' }],
+            },
+        };
+
+        const mapping = new Mapping(es_mapping);
+        const search = mapper.transform_to_search(body, mapping);
+        const json = search.generate();
+        json.should.have.property('range');
+        json.range.should.have.property('updatedAt');
+        json.range.updatedAt.should.have.property('lt', 'now');
+        json.range.updatedAt.should.have.property('gt', 'now-1d');
     });
 });
 

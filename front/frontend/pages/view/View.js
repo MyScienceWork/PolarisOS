@@ -5,14 +5,18 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
+const BrowserUtils = require('../../../common/utils/browser');
 
 require('moment/min/locales.min');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin],
     components: {
         CopyRequester,
     },
@@ -22,7 +26,9 @@ module.exports = {
                 sinks: {
                     reads: {
                         item: 'item_read',
-                        author: 'author_read',
+                        license: 'license_read',
+                        contributor: 'contributor_read',
+                        contributor_role: 'contributor_role_read',
                         depositor: 'depositor_read',
                         lang: 'lang_read',
                         typology: 'typology_read',
@@ -31,7 +37,9 @@ module.exports = {
                 paths: {
                     reads: {
                         item: APIRoutes.entity('publication', 'POST', true),
-                        author: APIRoutes.entity('author', 'GET', true),
+                        license: APIRoutes.entity('license', 'POST', true),
+                        contributor: APIRoutes.entity('author', 'POST', true),
+                        contributor_role: APIRoutes.entity('contributor_role', 'POST', true),
                         depositor: APIRoutes.entity('user', 'POST', true),
                         lang: APIRoutes.entity('langref', 'POST', true),
                         typology: APIRoutes.entity('typology', 'POST', true),
@@ -53,10 +61,27 @@ module.exports = {
                 },
                 more_metadata: false,
                 show_extra_files: false,
+                selected_files: {
+
+                },
             },
         };
     },
     methods: {
+        run_export(format) {
+            this.$store.dispatch('download', {
+                path: APIRoutes.export(),
+                body: {
+                    ids: [this.content_item._id],
+                    type: format || null,
+                },
+            });
+        },
+        select_all_extra_files(s) {
+            this.$lodash.forEach(this.state.selected_files, (f) => {
+                f.s = s;
+            });
+        },
         generate_download_link(status) {
             const files = this.content_item.files || [];
             if (files.length === 0) {
@@ -107,30 +132,82 @@ module.exports = {
                 this.activate_lang('title', ci.lang);
                 this.activate_lang('abstract', ci.lang);
 
-
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.depositor,
-                    path: this.state.paths.reads.depositor,
-                    body: {
-                        where: {
-                            _id: ci.depositor,
+                if (ci.depositor) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.depositor,
+                        path: this.state.paths.reads.depositor,
+                        body: {
+                            where: {
+                                _id: ci.depositor,
+                            },
                         },
-                    },
-                });
+                    });
+                }
 
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.lang,
-                    path: this.state.paths.reads.lang,
-                    body: {
-                        where: {
-                            value: ci.lang,
+                if (ci.lang) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.lang,
+                        path: this.state.paths.reads.lang,
+                        body: {
+                            where: {
+                                value: ci.lang,
+                            },
                         },
-                    },
-                });
+                    });
+                }
+
+                const license = this._oa_find(ci, 'diffusion.rights.license');
+                if (license) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.license,
+                        path: this.state.paths.reads.license,
+                        body: {
+                            where: {
+                                _id: license,
+                            },
+                        },
+                    });
+                }
+
+                if (ci.contributors && ci.contributors.length > 0) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.contributor,
+                        path: this.state.paths.reads.contributor,
+                        body: {
+                            where: {
+                                _id: ci.contributors.map(co => co.label),
+                            },
+                        },
+                    });
+                }
             }
         },
     },
     computed: {
+        multi_download_link() {
+            const names = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
+                if (f.s) {
+                    arr.push(f.name);
+                }
+                return arr;
+            }, []);
+
+            const filenames = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
+                if (f.s) {
+                    arr.push(f.url);
+                }
+                return arr;
+            }, []);
+
+            if (!this.content_item || names.length === 0 || filenames.length === 0) {
+                return '#';
+            }
+
+            return APIRoutes.multi_download('publication', this.content_item._id, names, filenames);
+        },
+        is_all_extra_files_selected() {
+            return this.$lodash.every(this.state.selected_files, f => f.s);
+        },
         item_id() {
             return this.$route.params.id || '';
         },
@@ -142,6 +219,15 @@ module.exports = {
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
                 item.html = this.hlang(Handlebars.compile(item.denormalization.type.template)(item));
+                this.state.selected_files = item.files.reduce((obj, file) => {
+                    obj[file.name] = {
+                        name: file.name,
+                        url: file.url,
+                        s: false,
+                    };
+                    return obj;
+                }, {});
+
                 return item;
             }
             return content;
@@ -170,20 +256,85 @@ module.exports = {
 
             return item.abstracts;
         },
-        authors() {
+        contributors() {
             const item = this.content_item;
             if (!item) {
                 return '';
             }
 
-            const authors = item.denormalization.authors || [];
+            const publication_date = parseInt(moment(item.dates.publication).format('YYYY'), 10);
+            const contributors_content = this.fcontent(this.state.sinks.reads.contributor);
+            if (!(contributors_content instanceof Array) || contributors_content.length === 0) {
+                return '';
+            }
 
-            const names = authors
-                .map(a => (a._id.fullname || ''))
-                .filter(a => a !== '')
-                .map(a => `<strong>${a}</strong>`)
-                .join(', ');
-            return names;
+            const contributor_roles_content =
+                this.fcontent(this.state.sinks.reads.contributor_role);
+            if (!(contributor_roles_content instanceof Array)
+                    || contributor_roles_content.length === 0) {
+                return '';
+            }
+
+            console.log(contributor_roles_content);
+
+            const authors = item.contributors.filter(co => co.role === 'author');
+            const others = item.contributors.filter(co => co.role !== 'author');
+
+            const affiliations = {};
+
+            const authors_content = authors.map((a) => {
+                const info = _.find(contributors_content, coc => (coc._id === a.label));
+                let my_affiliations = info.denormalization.affiliations.filter((aff) => {
+                    if (aff.to) {
+                        return aff.from >= publication_date && aff.to <= publication_date;
+                    }
+                    return aff.from >= publication_date;
+                });
+
+                if (my_affiliations.length === 0 && info.denormalization.affiliations.length > 0) {
+                    my_affiliations = [info.denormalization.affiliations[0]];
+                }
+
+                const affiliation_numbers = [];
+                if (my_affiliations.length > 0) {
+                    my_affiliations.forEach((affiliation) => {
+                        const iname = this._oa_find(affiliation, 'institution.name');
+                        const teams = this._oa_find(affiliation, 'teams', []);
+                        if (iname) {
+                            const uid = `${affiliation.institution.name}_${teams.map(t => t._id).join('_')}`;
+                            if (!(uid in affiliations)) {
+                                affiliations[uid] = { a: affiliation, order: Object.keys(affiliations).length + 1 };
+                            }
+                            affiliation_numbers.push(affiliations[uid].order);
+                        }
+                    });
+                }
+
+                if (affiliation_numbers.length > 0) {
+                    return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                }
+                return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong>`;
+            });
+
+            const others_content = others.map((a) => {
+                const info = _.find(contributors_content, coc => (coc._id === a.label));
+                const role = _.find(contributor_roles_content,
+                        co_role => (a.role === co_role.value));
+                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbreviation)})</strong>`;
+            });
+
+            return { contributors: [...authors_content, ...others_content].join(', '),
+                affiliations };
+        },
+        affiliations() {
+            const affiliations = _.sortBy(this.contributors.affiliations, 'order');
+            return affiliations.map((aff) => {
+                let teams = '';
+                if (aff.a.teams && aff.a.teams.length > 0) {
+                    teams = `<emph>${aff.a.teams.map(t => this.lang(t._id)).join(', ')}</emph><br />`;
+                }
+                return `${teams}<strong>${aff.a.institution.name}</strong>`;
+            });
         },
         titles() {
             const item = this.content_item;
@@ -209,7 +360,16 @@ module.exports = {
         is_files_accessible() {
             const item = this.content_item;
             if (!item) {
-                return [];
+                return false;
+            }
+
+            const is_depositor = this.author && (item.depositor === this.author
+                || item.depositor === this.author._id);
+            const is_contributor = item.contributors
+                .find(c => (this.author && (c.label === this.author || c.label === this.author._id)));
+
+            if (is_depositor || is_contributor) {
+                return true;
             }
 
             const files = item.files || [];
@@ -218,6 +378,21 @@ module.exports = {
             }
 
             const file = files[0];
+
+            if (this.user && Object.keys(this.user).length > 0) {
+                if (file.access.confidential) {
+                    return false;
+                }
+
+                if (!file.access.delayed) {
+                    return true;
+                }
+
+                if (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment()) {
+                    return true;
+                }
+            }
+
             return !file.access.restricted
                 || (file.access.delayed && +moment(item.diffusion.rights.embargo) < +moment());
         },
@@ -243,7 +418,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if issue}}, n°{{issue}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+            const tpl = "{{denormalization.journal}}{{#if volume}}, #POS#LANGl_vol {{volume}}{{/if}}{{#if number}}, n°{{number}}{{/if}}, {{moment date=dates.publication format=\"YYYY\"}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
 
             return this.hlang(Handlebars.compile(tpl)(item));
         },
@@ -257,7 +432,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return Handlebars.compile(tpl)(item);
         },
         chapter() {
@@ -271,7 +446,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}} DOI: {{_id}}{{/filter_nested}}";
+            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
@@ -285,7 +460,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD'}}-{{moment date=dates.end format='DD/MM/YYYY'}}.";
+            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}.";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         other_document() {
@@ -300,6 +475,19 @@ module.exports = {
             }
 
             const tpl = "{{#if localisation.city}}{{localisation.city}}, {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        working_paper() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'working-paper') {
+                return null;
+            }
+            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}},{{/if}} {{moment date=dates.publication format='YYYY'}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {
@@ -317,6 +505,17 @@ module.exports = {
                     return '';
                 }
 
+                if (type === 'demovoc') {
+                    const demovoc = Utils.find_value_with_path(item, 'denormalization.demovoc_keywords'.split('.'));
+                    if (!demovoc || demovoc.length === 0) {
+                        return '';
+                    }
+                    return demovoc.reduce((arr, k) => {
+                        arr.push(k._id.label);
+                        return arr;
+                    }, []).join(', ');
+                }
+
                 if (item.keywords.length === 0) {
                     return '';
                 }
@@ -330,11 +529,11 @@ module.exports = {
             };
         },
         license() {
-            const item = this.content_item;
-            if (!item) {
-                return '';
+            const license = this.fcontent(this.state.sinks.reads.license);
+            if (!license || !(license instanceof Array) || license.length === 0) {
+                return null;
             }
-            return Utils.find_value_with_path(item, 'denormalization.diffusion.rights.license'.split('.')) || '';
+            return license[0];
         },
         publication_version() {
             const item = this.content_item;
@@ -493,6 +692,9 @@ module.exports = {
 
             return item.resources.filter(r => (r.type != null && r.url != null));
         },
+        host() {
+            return BrowserUtils.getURLHost(window.location);
+        },
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {
@@ -519,6 +721,15 @@ module.exports = {
                 where: {
                     _id: this.item_id,
                 },
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.contributor_role,
+            path: this.state.paths.reads.contributor_role,
+            body: {
+                size: 10000,
+                where: {},
             },
         });
 

@@ -23,19 +23,74 @@ async function secret_complete(object: Object, path: string, info: Object = {}) 
     return result;
 }
 
+function initial(name_path: string, use_dash_split: boolean = true) {
+    return async (object: Object, path: string) => {
+        const name = Utils.find_value_with_path(object, name_path.split('.'));
+        if (name == null || name.trim() === '') {
+            return {};
+        }
+
+        const stopwords = ['de', 'le', 'la', 'les', 'van', 'von', 'du', 'den', 'der', 'die'];
+        const parts = name.split(' ');
+        const info = parts.reduce((arr, p) => {
+            if (stopwords.indexOf(p.toLowerCase()) !== -1) {
+                return arr;
+            }
+            arr.push(p);
+            return arr;
+        }, []);
+
+        if (info.length === 0) {
+            return {};
+        }
+
+        const first = info[0];
+
+        if (first.startsWith('d\'')) {
+            return Utils.make_nested_object_from_path(path.split('.'), first.slice(2)[0]);
+        }
+
+        if (use_dash_split) {
+            const dash_parts = first.split('-');
+            if (dash_parts.length > 1) {
+                const f = dash_parts.map(p => p[0]);
+                return Utils.make_nested_object_from_path(path.split('.'), f.join('-'));
+            }
+        }
+        return Utils.make_nested_object_from_path(path.split('.'), first[0]);
+    };
+}
+
 function denormalization(from_entity: string, from_path: string,
-        entity_path: string, flatten: boolean, translatable: boolean): Function {
+        entity_path: string, flatten: boolean, translatable: boolean, search_value: string = ''): Function {
     const ENV = process.env.NODE_ENV || 'local';
 
 
     return async (object: Object, path: string, info: Object = {}) => {
-        const func = (nr, from, eseg, flat) => async (id) => {
+        const func = (nr, from, eseg, flat, svalue) => async (id) => {
             if (!id) {
                 return null;
             }
             if (nr) {
-                const e = await EntitiesUtils.retrieve(id, from);
-                const eobj = Utils.find_object_with_path(e.source, eseg);
+                let source = null;
+
+                if (svalue !== '') {
+                    const sources = await EntitiesUtils.search_and_get_sources(from, {
+                        where: { [svalue]: id },
+                        size: 1,
+                    });
+                    if (sources.length > 0) {
+                        source = sources[0];
+                    }
+                } else {
+                    source = await EntitiesUtils.retrieve_and_get_source(from, id);
+                }
+
+                if (source == null) {
+                    return null;
+                }
+
+                const eobj = Utils.find_object_with_path(source, eseg);
                 if (eobj == null) {
                     return null;
                 }
@@ -55,7 +110,7 @@ function denormalization(from_entity: string, from_path: string,
 
         const from_path_segments = from_path.split('.');
         const result = await Utils.traverse_recreate_and_execute(object, from_path_segments,
-                func(need_to_retrieve, from_entity, entity_segments, flatten));
+                func(need_to_retrieve, from_entity, entity_segments, flatten, search_value));
         return { denormalization: result };
     };
 }
@@ -65,4 +120,5 @@ module.exports = {
     key_complete,
     secret_complete,
     denormalization,
+    initial,
 };

@@ -9,6 +9,7 @@ const MinioUtils = require('../../../utils/minio');
 const StreamUtils = require('../../../utils/streams');
 const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
+const parseString = require('xml2js-parser').parseString;
 
 function request_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
@@ -100,7 +101,7 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             let results = await Promise.all(author_search_promises);
             results = results.map(r => EntitiesUtils.get_hits(r))
             .filter(r => r != null && r.length > 0);
-            ctx.body.contributors = results.map(r => ({ _id: r[0].id }));
+            ctx.body.contributors = results.map(r => ({ label: r[0].id }));
         }
         return;
     }
@@ -141,7 +142,7 @@ async function extract_relevant_information_from_grobid(information) {
     let results = await Promise.all(author_search_promises);
     results = results.map(r => EntitiesUtils.get_hits(r))
     .filter(r => r != null && r.length > 0);
-    item.authors = results.map(r => ({ _id: r[0].id }));
+    item.contributors = results.map(r => ({ label: r[0].id }));
 
     if (profile_description) {
         const abstract = Utils.find_value_with_path(profile_description, 'abstract.0.p.0'.split('.'));
@@ -169,6 +170,18 @@ async function import_grobid(ctx: Object, info: string): Promise<*> {
     ctx.body = {};
 }
 
+async function import_sherpa_romeo(ctx: Object): Promise<any> {
+    const body = ctx.request.body;
+    const issn = body.issn;
+
+    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?issn=';
+    const final_url = url + issn;
+
+    const response = await Request.get(final_url).type('xml');
+    const result = await XMLUtils.to_object(response.text);
+    ctx.body = result;
+    return result;
+}
 
 async function import_information(ctx: Object): Promise<any> {
     const body = ctx.request.body;
@@ -246,4 +259,5 @@ async function import_information(ctx: Object): Promise<any> {
 
 module.exports = {
     import_information,
+    import_sherpa_romeo,
 };

@@ -18,7 +18,7 @@
                                 </span>
                             </a>
                         </p>
-                        <p class="control">
+                        <p class="control" v-if="filters.length > 0">
                             <a class="button is-info" :alt="lang('l_filter')" :title="lang('l_filter')">
                                 <span class="icon">
                                     <i class="fa fa-filter"></i>
@@ -29,39 +29,41 @@
                 </form>
             </div>
                 <div class="navbar-end">
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link swap">
+                    <b-dropdown>
+                        <a class="navbar-link swap" slot="trigger">
                             {{lang('f_items_per_page')}}
                         </a>
 
-                        <div class="navbar-dropdown">
-                            <a v-for="s in sizeList" :class="['navbar-item swap', {'is-active': state.seso.size === s}]" @click.prevent="size(s)">
+                        <b-dropdown-item v-for="s in sizeList" :class="['navbar-item', {'is-active': state.seso.size === s}]" @click="() => size(s)">
                                 {{s}} 
-                            </a>
-                        </div>
-                    </div>
+                            </b-dropdown-item>
+                    </b-dropdown>
 
-                    <div class="navbar-item has-dropdown is-hoverable" v-if="sortList.length > 0">
-                        <a class="navbar-link swap">
+                    <b-dropdown position="is-bottom-left" v-if="sortList.length > 0">
+                        <a class="navbar-link swap" slot="trigger">
                             {{lang('f_sort_by')}}
                         </a>
 
-                        <div class="navbar-dropdown">
-                            <a v-for="item in sortList" :class="['navbar-item swap', {'is-active': state.seso.sort === item.key}]" @click.prevent="sort(item.key, get_order(item.key))">
-                                {{lang(item.lang)}}
-                                <span class="icon">
-                                    <template v-if="state.seso.sort === item.key">
-                                        <i v-if="get_order(item.key) === 'desc'" class="fa fa-long-arrow-down"></i>
-                                        <i v-else="get_order(item.key) === 'asc'" class="fa fa-long-arrow-up"></i>
-                                    </template>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
+                        <b-dropdown-item v-for="item in sortList" :class="['navbar-item', {'is-active': state.seso.sort === item.key}]" @click="() => sort(item.key, get_order(item.key))">
+                            {{lang(item.lang)}}
+                            <span class="icon">
+                                <template v-if="state.seso.sort === item.key">
+                                    <i v-if="get_order(item.key) === 'desc'" class="fa fa-long-arrow-down"></i>
+                                    <i v-else="get_order(item.key) === 'asc'" class="fa fa-long-arrow-up"></i>
+                                </template>
+                            </span>
+                        </b-dropdown-item>
+                    </b-dropdown>
                 </div>
             </div>
-        </nav>
-    <div class="columns is-centered" v-for="row in matrix_content">
+    </nav>
+    <div v-if="getAllResults">
+        <slot name="search-results"
+            :results="content"
+        >
+        </slot>
+    </div>
+    <div v-else class="columns is-centered" v-for="row in matrix_content">
         <div class="column"
             v-for="(info, idx) in row" 
         >
@@ -89,5 +91,6 @@
 </template>
 
 <script>
-    module.exports = require('./Searching');
+    const _ = require('lodash');
+    module.exports = _.merge({}, {name: 'Searching'}, require('./Searching'));
 </script>

@@ -6,21 +6,8 @@ const API = require('./api');
 const Header = require('../frontend/components/themes/main/parts/header/Header.vue');
 const Footer = require('../frontend/components/themes/main/parts/footer/Footer.vue');
 const Meta = require('./meta/Meta.vue');
+const Routes = require('./route_components');
 
-const Home = require('../frontend/pages/home/Home.vue');
-
-const Deposit = require('../frontend/pages/deposit/Deposit.vue');
-const Browse = require('../frontend/pages/browse/Browse.vue');
-const Search = require('../frontend/pages/search/Search.vue');
-const View = require('../frontend/pages/view/View.vue');
-const Project = require('../frontend/pages/project/Project.vue');
-const About = require('../frontend/pages/about/About.vue');
-const Help = require('../frontend/pages/help/Help.vue');
-const News = require('../frontend/pages/news/News.vue');
-
-const UserProfile = require('../frontend/pages/user_profile/UserProfile.vue');
-const UserFavorites = require('../frontend/pages/user_favorites/UserFavorites.vue');
-const LoginView = require('../frontend/pages/login/Login.vue');
 
 function fetch_page() {
     const method = 'GET';
@@ -60,38 +47,35 @@ function fetch_menu(part) {
 
 function get_menu_item(menu, page) {
     if (!('elements' in menu)) {
-        return -1;
+        return [-1, -1];
     }
 
     const elements = menu.elements;
-    return _.findIndex(elements, elt => elt.page === page._id);
+    const idx = _.findIndex(elements, elt => elt.page === page._id);
+
+    if (idx === -1) {
+        const [pidx, cidx] = elements.reduce((arr, elt, i) => {
+            if (!('submenus' in elt) || elt.submenus.length === 0) {
+                return [-1, -1];
+            }
+            const ci = _.findIndex(elt.submenus, celt => (celt.page === page._id && !('$route' in celt)));
+            if (arr.length === 0) {
+                return [i, ci];
+            } else if (arr[1] === -1) {
+                return [i, ci];
+            }
+            return arr;
+        }, []);
+        return [pidx, cidx];
+    }
+    return [idx, -1];
 }
 
 function get_default_component(page) {
-    switch (page.route) {
-    default:
-    case '/':
-        return Home;
-    case '/browse':
-        return Browse;
-    case '/search':
-        return Search;
-    case '/project':
-        return Project;
-    case '/view/:id':
-        return View;
-    case '/u/:id/profile':
-    case '/a/:id/profile':
-        return UserProfile;
-    case '/deposit':
-        return Deposit;
-    case '/about':
-        return About;
-    case '/help':
-        return Help;
-    case '/news':
-        return News;
+    if (page.route in Routes) {
+        return Routes[page.route];
     }
+    return Routes['/'];
 }
 
 async function render_router(part) {
@@ -108,10 +92,9 @@ async function render_router(part) {
     }
 
     const routes = pages.map((page) => {
-        const menu_item = get_menu_item(menu, page);
         const obj = {
             path: page.route,
-            name: menu_item !== -1 ? menu.elements[menu_item].name : page.name,
+            name: page.route,
             meta: {
                 requiresAuth: page.global_access.access != null && page.global_access.access !== '',
                 access: page.global_access.access,
@@ -122,9 +105,8 @@ async function render_router(part) {
                     }
                     return null;
                 }).filter(a => a != null),
-                menu_item,
+                page_id: page._id,
             },
-            navbar: menu_item !== -1,
             components: {
                 default: /* Meta,*/ get_default_component(page),
                 header: Header,
@@ -140,12 +122,36 @@ async function render_router(part) {
         name: 'f_nav_login',
         navbar: false,
         components: {
-            default: LoginView,
+            default: get_default_component({ route: '/login' }),
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
 
-    routes.sort((r1, r2) => r1.meta.menu_item - r2.meta.menu_item);
+    routes.push({
+        path: '/login/choice',
+        name: 'f_nav_login_choice',
+        navbar: false,
+        components: {
+            default: get_default_component({ route: '/login/choice' }),
+        },
+        meta: { requiresAuth: false, access: '', subaccess: [] },
+    });
+
+    menu.elements.forEach((elt) => {
+        if (elt.submenus && elt.submenus.length > 0) {
+            elt.submenus.forEach((celt) => {
+                const idx = _.findIndex(routes, route => route.meta.page_id === celt.page);
+                if (idx !== -1) {
+                    celt.$route = routes[idx].path;
+                }
+            });
+        } else {
+            const idx = _.findIndex(routes, route => route.meta.page_id === elt.page);
+            if (idx !== -1) {
+                elt.$route = routes[idx].path;
+            }
+        }
+    });
 
     return {
         menu,

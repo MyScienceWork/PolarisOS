@@ -1,39 +1,55 @@
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const Environments = require('../../lists/environments');
 const Langs = require('../../lists/langs');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('config', 'POST'),
-                rpath: APIRoutes.entity('config', 'GET'),
-                itemsPerPage: 10,
-                itemsPerRow: 2,
-                forms: {
-                    csink: 'config_creation',
-                    rsink: 'config_read',
+                sinks: {
+                    creations: {
+                        config: 'config_creation',
+                        search: 'config_creation_search',
+                    },
+                    reads: {
+                        config: 'config_read',
+                        role: 'role_read',
+                    },
                 },
+                paths: {
+                    creations: {
+                        config: APIRoutes.entity('config', 'POST'),
+                    },
+                    reads: {
+                        config: APIRoutes.entity('config', 'POST', true),
+                        role: APIRoutes.entity('role', 'POST', true),
+                    },
+                },
+                es_query_id: 'backoffice-config-query',
                 langs: Langs.LangsList,
                 environments: Environments,
             },
         };
     },
-    methods: {
-    },
     mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.role,
+            path: this.state.paths.reads.role,
+            body: {
+                size: 10000,
+                projection: ['name'],
+            },
         });
     },
     computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
+        roles() {
+            return this.mcontent(this.state.sinks.reads.role);
         },
     },
 };

@@ -28,9 +28,7 @@ module.exports = {
     methods: {
         submit(e) {
             e.preventDefault();
-            this.$store.commit(Messages.COLLECT, {
-                form: this.name,
-            });
+            this.send_information(this.name);
         },
         cancel(e) {
             e.preventDefault();
@@ -58,13 +56,13 @@ module.exports = {
             });
         },
         show_success(sink) {
-            if (this.state.method !== 'validate' || this.noReinitializeAfterSuccess) {
+            if ((this.state.method !== 'validate' && this.state.method !== '') || this.noReinitializeAfterSuccess) {
                 this.state.timeout = setTimeout(() => {
                     this.$store.commit(Messages.INITIALIZE, {
                         form: this.name,
                     });
                     this.$emit('form-success-reset');
-                }, 5000);
+                }, 2500);
             }
         },
         initialize(sink) {

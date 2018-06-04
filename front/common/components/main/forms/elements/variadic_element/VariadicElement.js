@@ -11,9 +11,11 @@ module.exports = {
       // form: { required: true, type: String }, //InputMixin
         array: { type: Boolean, default: true },
         isRequired: { type: Boolean, default: true },
+        useIcons: { type: Boolean, default: true },
         tabs: { type: Boolean, default: false },
         draggable: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
+        defaultSize: { type: Number, default: 0 },
     },
 
     components: {
@@ -39,7 +41,7 @@ module.exports = {
             this.state.elements.push({ i: this.state.elements.length, a: true });
             this.state.total += 1;
         },
-        remove(id) {
+        remove(id, order) {
             if ((this.isRequired || this.single) && this.state.total === 1) {
                 return;
             }
@@ -51,14 +53,39 @@ module.exports = {
             this.state.elements[real_idx].a = false;
             this.state.elements = this.state.elements.filter(e => e.a);
             this.state.total = this.state.elements.length;
+
+            /* this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+                form: this.form,
+                name: `${this.name}.${order}`,
+            });
+
+            this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, {
+                form: this.form,
+                name: `${this.name}.${order}`,
+                pattern: true,
+            });*/
+            this.update(order);
+            // Re-number elements
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.form,
+                name: this.name,
+                info: undefined,
+                renumbering: true,
+            });
         },
         initialize(sink) {
-            const form = this.$store.state.forms[sink];
+            if (sink !== this.form) {
+                return;
+            }
+
+            const form = this.$store.state.forms[this.form];
             let object = null;
 
             if (form && 'content' in form) {
                 object = Utils.find_value_with_path(form.content, this.name.split('.'));
             }
+
+            console.log('initialize ve,', sink, object);
 
             if (object != null) {
                 if (object instanceof Array && object.length > 0) {
@@ -67,22 +94,53 @@ module.exports = {
                 } else if (object instanceof Object && Object.keys(object).length > 0) {
                     this.state.elements = Object.keys(object).map((o, i) => ({ i, a: true }));
                     this.state.total = this.state.elements.length;
-                } else if (this.single || this.isRequired) {
+                } else if (this.single || this.isRequired || this.defaultSize > 0) {
+                    if (this.defaultSize > 0) {
+                        const elements = _.range(this.defaultSize).map(i => ({ a: true, i }));
+                        this.state = Object.assign({}, { elements, tab_active: 0, total: elements.length });
+                    } else {
+                        this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
+                    }
+                }
+            } else if (this.single || this.isRequired || this.defaultSize > 0) {
+                if (this.defaultSize > 0) {
+                    const elements = _.range(this.defaultSize).map(i => ({ a: true, i }));
+                    this.state = Object.assign({}, { elements, tab_active: 0, total: elements.length });
+                } else {
                     this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
                 }
-            } else if (this.single || this.isRequired) {
-                this.state = Object.assign({}, { elements: [{ a: true, i: 0 }], tab_active: 0, total: 1 });
+                if (this.mutation_state === 'initial') {
+                    this.update();
+                }
             } else {
                 this.state = Object.assign({}, { elements: [], tab_active: -1, total: 0 });
+                if (this.mutation_state === 'initial') {
+                    this.update();
+                }
             }
         },
-        start_collection(sink) {
+        /* start_collection(sink) {
             const active_elements = this.state.elements.filter(e => e.a);
             if (active_elements.length === 0) {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: [],
+                });
+            }
+        },*/
+        update(id) {
+            if (id != null) {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: `${this.name}.${id}`,
+                    info: undefined,
+                });
+            } else if (this.state.elements.length === 0) {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: {},
                 });
             }
         },
@@ -93,14 +151,23 @@ module.exports = {
     },
 
     computed: {
-        current_state() {
-            return this.fstate(this.form);
+        mutation_state() {
+            const form = this.$store.state.forms[this.form];
+            if (form == null) {
+                return 'initial';
+            }
+            return form.state;
         },
     },
 
     watch: {
-        current_state(s) {
-            this.dispatch(s, this, this.form);
+        mutation_state(ns) {
+            if (ns === 'update') {
+                this.fcontent(this.form);
+                this.initialize(this.form);
+            } else if (ns === 'initial') {
+                this.initialize(this.form);
+            }
         },
     },
 };
