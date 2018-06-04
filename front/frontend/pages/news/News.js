@@ -1,22 +1,58 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
-const FormMixin = require('../../../common/mixins/FormMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const moment = require('moment');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, ReaderMixin],
     data() {
         return {
             state: {
+                paths: {
+                    reads: {
+                        news: APIRoutes.entity('news', 'POST', true),
+                    },
+                    creations: {
+                    },
+                },
+                sinks: {
+                    reads: {
+                        news: 'news_read',
+                    },
+                    creations: {
+                    },
+                },
             },
         };
     },
     components: {
     },
     methods: {
-
+        date_format(date) {
+            return moment(date).fromNow();
+        },
     },
     mounted() {
+        this.$store.state.requests = ['news'].map(e => ({
+            name: 'search',
+            type: 'dispatch',
+            content: {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    size: 10,
+                    population: ['creator'],
+                },
+            },
+        }));
     },
     computed: {
+        news() {
+            const content = this.mcontent(this.state.sinks.reads.news);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
+        },
     },
 };

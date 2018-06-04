@@ -41,6 +41,9 @@ const ExporterModel = require('../entities/exporter/models/exporters');
 const Connector = require('../entities/connector/connector');
 const ConnectorModel = require('../entities/connector/models/connectors');
 
+const Query = require('../entities/query/query');
+const QueryModel = require('../entities/query/models/queries');
+
 const Widget = require('../entities/widget/widget');
 const WidgetModel = require('../entities/widget/models/widgets');
 
@@ -56,6 +59,18 @@ const MenuModel = require('../entities/menu/models/menus');
 const Publication = require('../entities/publication/publication');
 const PublicationModel = require('../entities/publication/models/publications');
 
+const Identifier = require('../entities/identifier/identifier');
+const IdentifierModel = require('../entities/identifier/models/identifiers');
+
+// const MSWPublication = require('../entities/mswpublication/mswpublication');
+// const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
+
+const MailTemplate = require('../entities/mail_template/mail_template');
+const MailTemplateModel = require('../entities/mail_template/models/mail_templates');
+
+const Chart = require('../entities/chart/chart');
+const ChartModel = require('../entities/chart/models/charts');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -70,6 +85,18 @@ function get_hits(result: Object): Array<any> {
 
     if ('result' in result && 'hits' in result.result) {
         return result.result.hits;
+    }
+
+    return [];
+}
+
+function get_aggs(result: Object): Array<any> {
+    if ('aggs' in result) {
+        return result.aggs;
+    }
+
+    if ('result' in result && 'aggs' in result.result) {
+        return result.result.aggs;
     }
 
     return [];
@@ -166,8 +193,12 @@ function format_search(body: Object, model: Object): Object {
 
     if ('search_after' in body) {
         options.search_after = body.search_after;
+        delete options.scroll;
+        delete options.scroll_id;
     } else if ('search_before' in body) {
         options.search_before = body.search_before;
+        delete options.scroll;
+        delete options.scroll_id;
     }
 
     return { search: s, options };
@@ -182,14 +213,17 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
     }
 
     if (mode === 'model') {
-        const model_response = format_search({ where: { $$term: { _id: result.hits[0].source.pipeline } } }, PipelineModel);
-        const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline', es_client,
-                PipelineModel, model_response.search, model_response.options);
+        const model_response = format_search({ where: { _id: result.hits[0].source.pipelines.map(p => p._id) } }, PipelineModel);
+        const model_result = await Pipeline.search(get_index('pipeline'), 'pipeline'
+                , es_client, PipelineModel, model_response.search, model_response.options);
+
         if (model_result.hits.length === 0) {
             return null;
         }
-        const pipeline = model_result.hits[0];
-        const model = await pipeline.generate_model(get_index(type), type);
+
+        const pipelines = model_result.hits;
+        const model = await Pipeline.generate_model(get_index(type), type,
+            es_client, pipelines);
         return model;
     } else if (mode === 'class') {
         return ODM;
@@ -221,6 +255,8 @@ async function get_model_from_type(type: string): ?Object {
         return ExporterModel;
     case 'connector':
         return ConnectorModel;
+    case 'query':
+        return QueryModel;
     case 'widget':
         return WidgetModel;
     case 'template':
@@ -231,6 +267,14 @@ async function get_model_from_type(type: string): ?Object {
         return MenuModel;
     case 'publication':
         return PublicationModel;
+    case 'identifier':
+        return IdentifierModel;
+    /* case 'mswpublication':
+      return MSWPublicationModel;*/
+    case 'mail_template':
+        return MailTemplateModel;
+    case 'chart':
+        return ChartModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -257,6 +301,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new PFunction(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'importer':
         return new Importer(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'query':
+        return new Query(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'exporter':
         return new Exporter(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'connector':
@@ -269,8 +315,16 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Menu(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'page':
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'identifier':
+        return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'publication':
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
+    /* case 'mswpublication':
+      return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);*/
+    case 'mail_template':
+        return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'chart':
+        return new Chart(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
@@ -283,19 +337,37 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
 
 async function create(info: Object, type: string): Promise<*> {
     const cls = await get_info_from_type(type);
-
     if (cls == null) {
         return null;
     }
 
-    if ('_id' in info) {
+    /* if ('_id' in info) {
         delete info._id;
-    }
+    }*/
 
     const model = cls.model;
-
     const response = await cls.constructor.create(get_index(type), type, es_client,
        model, info);
+    return response;
+}
+
+async function creates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_create(get_index(type), type, es_client, items);
+    return response;
+}
+
+async function updates(items: Array<Object>, type: string): Promise<*> {
+    const cls = await get_info_from_type(type);
+    if (cls == null) {
+        throw Errors.InvalidEntity;
+    }
+
+    const response = await cls.constructor.bulk_update(get_index(type), type, es_client, items);
     return response;
 }
 
@@ -311,7 +383,6 @@ async function update(info: Object, type: string): Promise<*> {
     delete info._id;
     const response = await cls.constructor.update(get_index(type), type,
             es_client, model, info, id);
-    // console.log(response);
     return response;
 }
 
@@ -464,12 +535,15 @@ module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
 module.exports.create = create;
+module.exports.creates = creates;
 module.exports.update = update;
+module.exports.updates = updates;
 module.exports.count = count;
 module.exports.search = search;
 module.exports.remove = remove;
 module.exports.format_search = format_search;
 module.exports.get_index = get_index;
 module.exports.get_hits = get_hits;
+module.exports.get_aggs = get_aggs;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
 module.exports.search_and_get_sources = search_and_get_sources;

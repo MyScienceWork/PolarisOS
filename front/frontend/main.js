@@ -1,14 +1,21 @@
+require('babel-polyfill'); // For very very old browser
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
 const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
+const _ = require('lodash');
+const SocialSharing = require('vue-social-sharing');
+const VueScrollTo = require('vue-scrollto');
+
 
 const Loader = require('./components/loader/Loader.vue');
 const Stepper = require('../common/components/main/stepper/Stepper.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
+const ColorInput = require('../common/components/main/forms/elements/color/Color.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('../common/components/main/forms/form/Form.vue');
 const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
@@ -17,6 +24,10 @@ const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue'
 const HierarchicalSelect = require('../common/components/main/forms/elements/hierarchical_select/HierarchicalSelect.vue');
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
+const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
+const LoginChoice = require('../common/components/main/login_choice/LoginChoice.vue');
+const RSSC = require('../common/components/main/rss/RSS.vue');
+const BibliographicExport = require('../common/components/main/bibliographic_export/BibliographicExport.vue');
 
 const Indexer = require('../common/components/main/indexer/Indexer.vue');
 const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
@@ -35,6 +46,12 @@ const MediaWidget = require('./components/themes/main/widgets/media_widget/Media
 
 const App = require('./pages/App.vue');
 
+
+Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
+
+Vue.use(VueScrollTo);
+Vue.use(SocialSharing);
+
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
 });
@@ -47,7 +64,9 @@ Vue.component('loader', Loader);
 Vue.component('stepper', Stepper);
 Vue.component('fform', Form);
 Vue.component('finput', Input);
+Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
+Vue.component('fstatic', Static);
 Vue.component('fdropzone', Dropzone);
 Vue.component('fhselect', HierarchicalSelect);
 Vue.component('fvariadic-element', VariadicElement);
@@ -58,6 +77,10 @@ Vue.component('paginator', Paginator);
 Vue.component('hierarchical-structure', HierarchicalStructure);
 Vue.component('card', Card);
 Vue.component('widget', Widget);
+Vue.component('login-lang', LoginLang);
+Vue.component('login-choice', LoginChoice);
+Vue.component('rss-feed-icon', RSSC);
+Vue.component('bibliographic-export', BibliographicExport);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);
@@ -78,6 +101,7 @@ RouterRenderer.render_router('frontoffice').then((result) => {
         render: h => h(App, {
             props: {
                 pages: result.pages,
+                menu: result.menu,
             },
         }),
     });

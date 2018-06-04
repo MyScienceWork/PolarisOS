@@ -13,6 +13,7 @@ const CrudController = require('../entities/crud/controllers');
 const Pipeline = require('./../pipeline/pipeline');
 const FS = require('fs');
 const Mime = require('mime');
+const Path = require('path');
 const Crypto = require('crypto');
 
 /**
@@ -109,8 +110,9 @@ function upload_middlewares(type: string, dest: string, emid: Array<Function>, m
             cb(null, dest);
         },
         filename(req, file, cb) {
+            const ext = Mime.getExtension(file.mimetype) || Path.extname(file.originalname);
             Crypto.pseudoRandomBytes(16, (err, raw) => {
-                cb(null, `${raw.toString('hex') + Date.now()}.${Mime.getExtension(file.mimetype)}`);
+                cb(null, `${raw.toString('hex') + Date.now()}.${ext}`);
             });
         },
     });
@@ -164,19 +166,27 @@ function generate_del_routes(router: KoaRouter, prefix: string, type: string, em
     router.del(`${prefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
 }
 
-function generate_put_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_put_routes(router: KoaRouter, prefix: string,
+        type: string, emiddlewares: Array<Function>,
+        action: Function = async () => {}, action_options: Object = {}) {
     const put_mware = put_middlewares(type, emiddlewares);
-    router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put(type)]));
+    router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
     router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
+
+    // router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
 }
 
-function generate_post_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
+function generate_post_routes(router: KoaRouter, prefix: string,
+    type: string, emiddlewares: Array<Function>,
+    action: Function = async () => {}, action_options: Object = {}) {
     const post_mware = post_middlewares(type, emiddlewares);
 
-    router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post(type)]));
+    router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
     router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
+
+    // router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
 }
 
 function generate_entity_routes(router: KoaRouter,

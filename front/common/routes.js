@@ -1,0 +1,23 @@
+
+module.exports = [
+    '/',
+    '/browse',
+    '/list',
+    '/search',
+    '/project',
+    '/view/:id',
+    '/u/:id/profile',
+    '/a/:id/profile',
+    '/deposit',
+    '/about',
+    '/help',
+    '/news',
+    '/news/:id',
+    '/events',
+    '/events/id',
+    '/forum',
+    '/forum/thread/:id',
+    '/login',
+    '/login/choice',
+    '/user_list',
+];

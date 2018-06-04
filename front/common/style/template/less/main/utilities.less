@@ -67,6 +67,22 @@
     padding-left: 0 !important;
 }
 
+.has-no-top-margin {
+    margin-top: 0 !important;
+}
+
+.has-no-top-padding {
+    padding-top: 0 !important;
+}
+
+.has-no-bottom-margin {
+    margin-bottom: 0 !important;
+}
+
+.has-no-bottom-padding {
+    padding-bottom: 0 !important;
+}
+
 .has-no-left-spaces {
     margin-left: 0 !important;
     padding-left: 0 !important;
@@ -77,7 +93,39 @@
 }
 
 .has-small-bottom-margin {
-    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.has-small-left-margin {
+    margin-left: 0.5rem;
+}
+
+.has-small-right-margin {
+    margin-right: 0.5rem;
+}
+
+.has-medium-right-margin {
+    margin-right: 1rem;
+}
+
+.has-medium-top-margin {
+    margin-top: 1rem;
+}
+
+.has-medium-bottom-margin {
+    margin-bottom: 1rem;
+}
+
+.has-small-padding {
+    padding: 0.5rem;
+}
+
+.has-xmedium-padding{
+    padding: 0.75rem;
+}
+
+.has-medium-padding{
+    padding: 1rem;
 }
 
 .text-with-line {
@@ -130,12 +178,12 @@
     color: @red;
 }
 
-a {
+/*a {
     color: @text; 
     &:hover{
         color: @blue;
     }
-}
+}*/
 
 .is-justify-center {
     justify-content: center;
@@ -146,7 +194,35 @@ a {
     align-items: center;
 }
 
+.has-text-vcentered {
+    display: flex;
+    align-items: center;
+}
+
 .is-clearfix {
     clear: both;
 }
 
+.hr-section {
+    margin-top: 1rem;
+    margin-bottm: 1.5rem;
+}
+
+.is-fixed-right {
+    position:fixed;
+    z-index: 200;
+    top: 30vh;
+    right: 0;
+}
+
+.is-width-one-third {
+    width: 33%;
+}
+
+.is-width-half {
+    width: 50%;
+}
+
+.has-cursor-pointer {
+    cursor: pointer;
+}

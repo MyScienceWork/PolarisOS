@@ -4,20 +4,20 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
-                itemsPerPage: 20,
-                itemsPerRow: 2,
                 paths: {
                     creations: {
                         pipeline: APIRoutes.entity('pipeline', 'POST'),
                     },
                     reads: {
-                        pipeline: APIRoutes.entity('pipeline', 'GET'),
+                        pipeline: APIRoutes.entity('pipeline', 'POST', true),
                         function: APIRoutes.entity('function', 'POST', true),
                     },
                 },
@@ -28,12 +28,14 @@ module.exports = {
                     },
                     creations: {
                         pipeline: 'pipeline_creation',
+                        search: 'search_creation_pipeline',
                     },
                 },
                 selected_functions: {
                     completer: {},
                     formatter: {},
                 },
+                es_query_id: 'backoffice-pipeline-query',
             },
         };
     },
@@ -57,19 +59,6 @@ module.exports = {
             keepContent: false,
         });
 
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.pipeline,
-            keepContent: false,
-        });
-
-        this.$store.state.requests.push({
-            name: 'single_read',
-            content: {
-                form: this.state.sinks.reads.pipeline,
-                path: this.state.paths.reads.pipeline,
-            },
-        });
-
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.function,
             path: this.state.paths.reads.function,
@@ -79,13 +68,6 @@ module.exports = {
         });
     },
     watch: {
-        error_pipeline(n) {
-            return this.mwerror(this.state.sinks.reads.pipeline)(n);
-        },
-        current_read_state_pipeline(s) {
-            return this.mwcurrent_read_state(this.state.sinks.reads.pipeline)(s);
-        },
-
         error_function(n) {
             return this.mwerror(this.state.sinks.reads.function)(n);
         },
@@ -96,24 +78,6 @@ module.exports = {
     computed: {
         valtypes() {
             return ValTypes || [];
-        },
-
-        content_pipeline() {
-            const content = this.mcontent(this.state.sinks.reads.pipeline);
-            return content;
-        },
-        length_pipeline() {
-            return this.mlength(this.state.sinks.reads.pipeline);
-        },
-        read_content_pipeline() {
-            const content = this.content_pipeline;
-            return Utils.to_matrix(content, this.state.itemsPerRow);
-        },
-        error_pipeline() {
-            return this.merror(this.state.sinks.reads.pipeline);
-        },
-        current_read_state_pipeline() {
-            return this.mcurrent_read_state(this.state.sinks.reads.pipeline);
         },
 
         length_function() {

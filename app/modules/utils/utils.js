@@ -162,7 +162,11 @@ function forge_whitelist_blacklist_query(lists: Object): Object {
 
 function merge_with_replacement(object: Object, ...sources): Object {
     function customizer(objValue, srcValue) {
-        if (_.isArray(objValue)) {
+        if (srcValue == null) {
+            return objValue;
+        }
+
+        if (_.isArray(objValue) && srcValue != null) {
             objValue = srcValue;
             return objValue;
         }

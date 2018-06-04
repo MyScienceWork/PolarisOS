@@ -12,20 +12,22 @@ module.exports = {
         useFavorites: { default: false, type: Boolean },
         color: { default: 'purple' },
         placeholder: { default: 'f_search_in_archive', type: String },
+        showAdvancedSearch: { default: false, type: Boolean },
     },
     data() {
         return {
             state: {
-                showAdvanced: false,
             },
         };
     },
     methods: {
         search() {
-            this.$store.commit(Messages.COLLECT, {
+            this.$store.commit(Messages.FORCE_COMPLETION, {
                 form: this.searchSink,
-                remove_content: true,
             });
+        },
+        show_advanced_search() {
+            this.$emit('update:showAdvancedSearch', !this.showAdvancedSearch);
         },
     },
     computed: {

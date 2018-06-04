@@ -13,6 +13,9 @@ module.exports = {
                             },
                         },
                     },
+                    id: {
+                        type: 'keyword',
+                    },
                     rights: {
                         type: 'nested',
                         properties: {

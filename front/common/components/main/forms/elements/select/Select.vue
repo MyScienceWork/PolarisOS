@@ -5,7 +5,7 @@
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -13,7 +13,9 @@
               </span>
             </a>
         </b-tooltip>
-        <div :class="{'field': !isAddon, 'has-addons': hasAddons}">
+        <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
+            <slot v-if="hasAddons" name="left-input-addons" />
+            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li> 
@@ -37,7 +39,7 @@
                     :filterable="false"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected"
+                    :value="state.selected" 
                     :placeholder="placeholder"
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"

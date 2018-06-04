@@ -1,12 +1,11 @@
 <template>
-    <button @click="click">
+    <component :is="tag" @click="click">
         <slot v-if="!state.confirm">
 
         </slot>
-        <span v-else>
-            {{confirmation}}
+        <span v-else v-html="lang('confirmation')">
         </span>
-    </button>
+    </component>
 </template>
 
 <script>

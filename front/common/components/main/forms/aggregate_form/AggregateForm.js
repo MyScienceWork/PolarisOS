@@ -1,3 +1,4 @@
+const Vue = require('vue');
 const Messages = require('../../../../api/messages');
 const APIRoutes = require('../../../../api/routes');
 const Utils = require('../../../../utils/utils');
@@ -5,9 +6,10 @@ const Utils = require('../../../../utils/utils');
 const FormMixin = require('../../../../mixins/FormMixin');
 const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
 const LangMixin = require('../../../../mixins/LangMixin');
+const RequestsMixin = require('../../../../mixins/RequestsMixin.js');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin],
     props: {
         selectPlaceholder: { default: 'l_select_content', type: String },
         label: { default: '', type: String },
@@ -91,22 +93,52 @@ module.exports = {
                 return [];
             }
 
-            const entity = this.state.inputs[id].entity;
-            const label_key = entity.label;
-            const translatable = entity.translatable;
-            if (translatable) {
-                return content.map((e) => {
-                    e[label_key] = this.lang(e[label_key]);
-                    return e;
-                });
-            }
             return content;
+        },
+        get_translatable(id) {
+            if (!(id in this.state.inputs)) {
+                return false;
+            }
+            const entity = this.state.inputs[id].entity;
+            const translatable = entity.translatable;
+            return translatable;
+        },
+        get_use_hlang(id) {
+            if (!(id in this.state.inputs)) {
+                return false;
+            }
+
+            const entity = this.state.inputs[id].entity;
+            const use_hlang = entity.hlang;
+            return use_hlang;
         },
         get_field(type, entity) {
             if (!entity) {
                 return 'type';
             }
             return entity[type];
+        },
+        reset() {
+            const sinks = [this.sink, this.state.sinks.creations.dummy,
+                this.state.sinks.creations.aggregate];
+            sinks.map(sink => this.$store.state.requests.push({
+                type: 'commit',
+                name: Messages.NOOP,
+                content: {
+                    form: sink,
+                },
+            }));
+
+            this.execute_requests().then(() => {
+                sinks.map(sink => this.$store.state.requests.push({
+                    type: 'commit',
+                    name: Messages.INITIALIZE,
+                    content: {
+                        form: sink,
+                    },
+                }));
+                Vue.nextTick(() => this.execute_requests().then(() => {}));
+            });
         },
     },
     watch: {
@@ -117,6 +149,13 @@ module.exports = {
                 const object = this.specs[k];
                 return { label: this.lang(object.label), value: k };
             });
+        },
+        bool_options() {
+            return [
+            { label: this.lang('l_bool_and'), value: '$and' },
+            { label: this.lang('l_bool_or'), value: '$or' },
+            { label: this.lang('l_bool_not'), value: '$nand' },
+            ];
         },
     },
     beforeMount() {

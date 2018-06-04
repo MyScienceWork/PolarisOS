@@ -1,27 +1,35 @@
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const Langs = require('../../lists/langs');
 const Quantities = require('../../lists/quantities');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin],
     data() {
         return {
             state: {
                 need_html_editor: false,
-                path: APIRoutes.entity('lang', 'POST'),
-                rpath: APIRoutes.entity('lang', 'POST', true),
                 langs: Langs.LangsList,
                 quantities: Quantities,
-                forms: {
-                    csink: 'lang_creation',
-                    rsink: 'lang_read',
-                },
                 sinks: {
                     creations: {
                         search: 'search_creation_lang',
+                        lang: 'lang_creation',
+                    },
+                    reads: {
+                        lang: 'lang_read',
+                    },
+                },
+                paths: {
+                    creations: {
+                        lang: APIRoutes.entity('lang', 'POST'),
+                    },
+                    reads: {
+                        lang: APIRoutes.entity('lang', 'POST', true),
                     },
                 },
             },
@@ -46,10 +54,10 @@ module.exports = {
         search_query() {
             return JSON.stringify({
                 $or: [
-                    { key: '{{search}}' },
-                    { 'values.value': '{{search}}' },
-                    { 'parts.value': '{{search}}' },
-                    { lang: '{{search}}' },
+                    { key: '{{{search}}}' },
+                    { 'values.value': '{{{search}}}' },
+                    { 'parts.value': '{{{search}}}' },
+                    { lang: '{{{search}}}' },
                 ],
             });
         },

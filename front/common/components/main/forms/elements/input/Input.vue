@@ -18,13 +18,38 @@
     <input v-if="type === 'hidden'"
         type="hidden"
         :name="name"
-        v-model="state.value"
+        :value="state.value"
+        @input="update"
         :readonly="readonly"
     ></input>
     <div :class="[{'field': !isAddon}]" v-else-if="type === 'html-editor'">
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== '' && !readonly"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
-            <wysiwyg v-model="state.value" :placeholder="placeholder"  />
+            <wysiwyg @input="update" :value="state.value" :placeholder="placeholder"  />
+        </div>
+    </div>
+    <div :class="[{'field': !isAddon}]" v-else-if="type === 'ide-editor'">
+        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <b-tooltip class="is-dark" :label="lang(help)" multilined
+            v-if="help != null && help.trim() !== '' && !readonly"
+        >
+            <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
+                <span class="icon has-text-info">
+                  <i class="fa fa-question-circle"></i>
+              </span>
+            </a>
+        </b-tooltip>
+        <div :class="['control', {'is-expanded': hasAddons}]">
+            <ace-editor @init="IDEInit" :value="state.value" @input="update" lang="json" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
@@ -33,7 +58,7 @@
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -41,14 +66,17 @@
               </span>
             </a>
         </b-tooltip>
-        <div :class="[{'field': !isAddon, 'has-addons': hasAddons}]">
+        <div :class="[{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}]">
+            <slot v-if="hasAddons" name="left-input-addons" />
+            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <input v-if="type === 'text'" 
                     type="text"
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    v-model="state.value"
+                    :value="state.value"
+                    @input="update"
                     :readonly="readonly"
 
                 />
@@ -57,7 +85,8 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    v-model="state.value"
+                    :value="state.value"
+                    @blur="update"
                     :readonly="readonly"
                 />
                 <input v-else-if="type === 'password' || type === 'password-sha1'" 
@@ -65,12 +94,14 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    v-model="state.value"
+                    :value="state.value"
+                    @blur="update"
                     :readonly="readonly"
                 />
                 <b-datepicker
                     v-else-if="type === 'date' && !readonly"
-                    v-model="state.value"
+                    :value="state.value"
+                    @input="update"
                     :first-day-of-week="1"
                     :readonly="readonly"
                     :placeholder="placeholder"
@@ -78,7 +109,8 @@
                     />
                 <input
                     v-else-if="type === 'date-year' && !readonly"
-                    v-model="state.value"
+                    :value="state.value"
+                    @blur="update"
                     type="number"
                     :min="yearRangeStart"
                     :max="yearRangeEnd"
@@ -92,7 +124,8 @@
                 <b-timepicker
                     v-else-if="type === 'time' && !readonly"
                     :placeholder="placeholder"
-                    v-model="state.value"
+                    :value="state.value"
+                    @input="update"
                     :readonly="readonly"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     icon="clock-o" />
@@ -102,7 +135,8 @@
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    v-model="state.value"
+                    :value="state.value"
+                    @input="update"
                     :readonly="readonly"
                 />
             </div>
@@ -120,7 +154,7 @@
         <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -136,7 +170,8 @@
                     :placeholder="placeholder"
                     :name="name"
                     :rows="rows"
-                    v-model="state.value"
+                    :value="state.value"
+                    @input="update"
                     v-if="!readonly"
                 />
                 <p v-else>{{state.value}}</p>
@@ -156,7 +191,7 @@
     <div v-else-if="type === 'radio'" class="field">
         <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -169,7 +204,8 @@
                 <input
                 type="radio"
                 :name="name"
-                v-model="state.value"
+                :value="state.value"
+                @input="update"
                 :disabled="readonly"
                 />
                 {{btn[1]}}
@@ -182,7 +218,9 @@
             <input
             type="checkbox"
             :name="name"
-            v-model="state.value"
+            :value="state.value"
+            :checked="state.value"
+            @change="update"
             :disabled="readonly"
             />
         </span>
@@ -194,14 +232,16 @@
                 <input
                 type="checkbox"
                 :name="name"
-                v-model="state.value"
+                :value="state.value"
+                :checked="state.value"
+                @change="update"
                 :disabled="readonly"
                 />
                 {{label}}
             </label>
         </div>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== ''"
+            v-if="help != null && help.trim() !== '' && !readonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">

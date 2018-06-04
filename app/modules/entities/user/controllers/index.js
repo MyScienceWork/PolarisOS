@@ -1,49 +1,42 @@
 // @flow
 module.exports = {};
 
+const AuthUtils = require('../../../utils/auth');
 const EntitiesUtils = require('../../../utils/entities');
-const Crypto = require('crypto');
 const Errors = require('../../../exceptions/errors');
+const Request = require('superagent');
+const moment = require('moment');
 
 async function authenticate(ctx: Object) {
     const body = ctx.request.body;
     const password = body.password;
     const email = body.email;
+    const ticket = body.ticket;
+    const url = body.fullPath;
 
-    // const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
+    if (!password && !email) {
+        if (ticket) {
+            const result = await AuthUtils.cas_auth(ticket, url);
 
-    const info = await EntitiesUtils.search('user', {
-        where: {
-            'emails.email': email,
-        },
-    });
+            if ('ok' in result && result.ok) {
+                const user = result.user;
+                const up = { last_connection_at: +moment().utc(), _id: user._id };
+                // await EntitiesUtils.update(up, 'user');
+            }
 
-    if (info == null || info.result == null ||
-        info.result.hits.length === 0) {
-        ctx.body = { ok: false, user: {} };
-        return;
+            ctx.body = result;
+        } else {
+            ctx.body = { ok: false, user: {} };
+        }
+    } else {
+        const result = await AuthUtils.login_auth(email, password);
+        if ('ok' in result && result.ok) {
+            const user = result.user;
+            const up = { last_connection_at: +moment().utc(), _id: user._id };
+            // await EntitiesUtils.update(up, 'user');
+        }
+        ctx.body = result;
     }
-
-    const db = info.result.hits[0].source;
-
-    if (db.locked) {
-        throw Errors.AccountIsLocked;
-    }
-
-    // let hpassword = `${info.get('salt')}_${password}_${info.get('salt')}`;
-
-    const hpassword = Crypto.createHash('sha1').update(password).digest('hex');
-
-    if (hpassword === db.password) {
-        // info.set('force_deconnection', false);
-        // await info.update();
-
-        ctx.body = { ok: true,
-            user: db };
-        return;
-    }
-
-    ctx.body = { ok: false, user: {} };
 }
 
 async function access(ctx: Object) {

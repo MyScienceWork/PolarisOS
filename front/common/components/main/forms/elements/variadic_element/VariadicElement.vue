@@ -12,20 +12,22 @@
                     :remove="remove"
                 >
                 </slot>
+
             </div>
         </template>
         <template v-else>
             <div class="columns is-marginless">
                 <div class="column is-paddingless">
-                    <a href='#' class="icon has-text-success" @click.prevent="add">
-                        <i class="fa fa-plus"></i>
+                    <a href='#' :class="[{'icon': useIcons}, 'has-text-success']" @click.prevent="add">
+                        <i v-if="useIcons" class="fa fa-plus"></i>
+                        <span v-else>{{lang('l_variadic_add_'+name)}}</span>
                     </a>
                 </div>
             </div>
             <div class="columns" v-if="tabs && state.elements.length > 0">
                 <div class="column is-1">
                     <p
-                        v-for="show in state.elements" 
+                        v-for="(show, idx) in state.elements" 
                         v-if="show.a" 
                         :key="show.i"
                     >
@@ -34,7 +36,7 @@
                                 {{show.i+1}} 
                             </span>
                         </a>
-                        <a href='#' class="icon is-small has-text-danger" @click.prevent="remove(show.i)">
+                        <a href='#' class="icon is-small has-text-danger" @click.prevent="remove(show.i, idx)">
                             <i class="fa fa-times"></i>
                         </a>
                     </p>
@@ -76,7 +78,7 @@
                                     </button>
                                 </p>
                                 <p class="control">
-                                    <button class="button is-danger" @click.prevent="remove(show.i)">
+                                    <button class="button is-danger" @click.prevent="remove(show.i, idx)">
                                         <span class="icon">
                                             <i class="fa fa-times"></i>
                                         </span>
@@ -96,18 +98,20 @@
                 </draggable>
             </div>
             <div v-else-if="!tabs && state.elements.length > 0">
-                <div v-for="show in state.elements" class="columns" v-if="show.a" :key="show.i">
+                <div v-for="(show, idx) in state.elements" class="columns" v-if="show.a" :key="show.i">
                     <div class="column">
                         <div class="is-pulled-right">
-                            <a href='#' class="icon has-text-danger" @click.prevent="remove(show.i)">
-                                <i class="fa fa-times"></i>
+                            <a href='#' :class="[{'icon': useIcons}, 'has-text-danger']" @click.prevent="remove(show.i, idx)">
+                                <i v-if="useIcons" class="fa fa-times"></i>
+                                <span v-else>{{lang('l_variadic_remove_'+name)}}</span>
                             </a>
                         </div>
                         <slot 
-                        name="variadic" 
-                        :id="show.i"
-                        :fname="name"
-                        :total="state.total"
+                            name="variadic" 
+                            :id="show.i"
+                            :order="idx"
+                            :fname="name"
+                            :total="state.total"
                         >
                         </slot>
                         <hr />

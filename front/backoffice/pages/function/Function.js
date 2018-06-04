@@ -1,36 +1,33 @@
-const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
-const ReaderMixin = require('../mixins/ReaderMixin');
+const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
+const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
-                path: APIRoutes.entity('function', 'POST'),
-                rpath: APIRoutes.entity('function', 'GET'),
-                itemsPerPage: 20,
-                itemsPerRow: 2,
-                selected_types: {},
-                forms: {
-                    csink: 'function_creation',
-                    rsink: 'function_read',
+                paths: {
+                    reads: {
+                        function: APIRoutes.entity('function', 'POST', true),
+                    },
+                    creations: {
+                        function: APIRoutes.entity('function', 'POST'),
+                    },
                 },
+                sinks: {
+                    reads: {
+                        function: 'function_read',
+                    },
+                    creations: {
+                        search: 'function_creation_search',
+                    },
+                },
+                selected_types: {},
+                es_query_id: 'backoffice-function-query',
             },
         };
-    },
-    methods: {
-    },
-    mounted() {
-        this.$store.dispatch('single_read', {
-            form: this.state.forms.rsink,
-            path: this.state.rpath,
-        });
-    },
-    computed: {
-        readContent() {
-            return Utils.to_matrix(this.content, this.state.itemsPerRow);
-        },
     },
 };

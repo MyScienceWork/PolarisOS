@@ -44,7 +44,7 @@ function is_unique(path: string, type: string,
     };
 }
 
-function if_exists(path: string, type: string, error: ?Object): Function {
+function if_exists(path: string, type: string, error_in_parent: boolean = false, error: ?Object): Function {
     return async function func(object: Object, method: string): Promise<boolean> {
         const p = path.split('.');
         const info = [...Utils.find_popvalue_with_path(object, p)];
@@ -52,12 +52,18 @@ function if_exists(path: string, type: string, error: ?Object): Function {
         if (info.length === 0) {
             return true;
         }
-        const result = await EntitiesUtils.search(type, { where: { $$ids: { values: info } } });
-        if (result && Object.keys(result).length > 0 && result.result.hits.length > 0) {
+
+        const sources = await EntitiesUtils.search_and_get_sources(type, { where: { _id: info } });
+        if (sources.length === info.length) {
             return true;
         }
+
         error = error == null ? Errors.InvalidEntity : error;
-        error.path = path;
+        if (error_in_parent) {
+            error.path = p.slice(0, p.length - 1).join('.');
+        } else {
+            error.path = path;
+        }
         throw error;
     };
 }

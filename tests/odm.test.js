@@ -147,3 +147,71 @@ describe('ODM#Queries#Match', () => {
         });
     });
 });
+
+describe('ODM#Queries#Range', () => {
+    it('should be chainable', () => {
+        const m = new queries.Range();
+        const m2 = m.field('masterDate');
+        const m3 = m2.lt('now');
+
+        m2.should.be.an.instanceof(queries.Query);
+        m2.should.be.an.instanceof(queries.Range);
+        m3.should.be.an.instanceof(queries.Query);
+        m3.should.be.an.instanceof(queries.Range);
+    });
+
+    it('should generate empty query when field is not passed', () => {
+        const m = new queries.Range().lt('now').gte('now+1d');
+        const q = m.generate();
+        Object.keys(q).should.have.lengthOf(0);
+    });
+
+    it('should generate empty query when no comparator is not passed', () => {
+        const m = new queries.Range().field('masterDate');
+        const q = m.generate();
+        Object.keys(q).should.have.lengthOf(0);
+    });
+
+    it('should generate query with all set values', () => {
+        const m = new queries.Range().field('masterDate').lt('now')
+            .gt('now+1d').gte('now+2d').lte('now-1d').format('test').timezone('test');
+        const q = m.generate();
+
+        q.should.have.property('range');
+        q.range.should.have.property('masterDate');
+        q.range.masterDate.should.have.property('lt', 'now');
+        q.range.masterDate.should.have.property('gt', 'now+1d');
+        q.range.masterDate.should.have.property('gte', 'now+2d');
+        q.range.masterDate.should.have.property('lte', 'now-1d');
+        q.range.masterDate.should.have.property('format', 'test');
+        q.range.masterDate.should.have.property('time_zone', 'test');
+    });
+
+    it('should generate correct query when used with operators', () => {
+        const m = new queries.Range().field('masterDate')
+            .operators({ '<': 'now' })
+            .operators({ '<=': 'now-1d', '>=': 'now+2d', f: 'test', tz: 'test' });
+        const q = m.generate();
+
+        q.should.have.property('range');
+        q.range.should.have.property('masterDate');
+        q.range.masterDate.should.have.property('lt', 'now');
+        q.range.masterDate.should.have.property('gte', 'now+2d');
+        q.range.masterDate.should.have.property('lte', 'now-1d');
+        q.range.masterDate.should.have.property('format', 'test');
+        q.range.masterDate.should.have.property('time_zone', 'test');
+    });
+
+    it('should discard incorrect operators', () => {
+        const m = new queries.Range().field('masterDate')
+            .operators({ '<': 'now' })
+            .operators({ '<<=': 'now-1d', '>>=': 'now+2d', test: 'test', tz: 'test' });
+        const q = m.generate();
+
+        q.should.have.property('range');
+        q.range.should.have.property('masterDate');
+        q.range.masterDate.should.have.property('lt', 'now');
+        q.range.masterDate.should.have.property('time_zone', 'test');
+        Object.keys(q.range.masterDate).should.have.lengthOf(2);
+    });
+});

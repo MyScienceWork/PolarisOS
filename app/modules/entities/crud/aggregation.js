@@ -26,6 +26,63 @@ class Aggregation {
     }
 }
 
+class TopHitsAggregation extends Aggregation {
+    _size: number;
+    _from: number;
+    _sort: Array<Object>;
+    _source: ?Object;
+
+    constructor(name: string, object: Object = {}) {
+        super(name, object);
+        this._name = name;
+        this._object = object;
+        this._size = 'size' in object ? object.size : 0;
+        this._from = 'from' in object ? object.from : 0;
+        this._sort = 'sort' in object ? object.sort : [];
+        this._source = '_source' in object ? object._source : null;
+    }
+
+    size(s: number): TopHitsAggregation {
+        this._size = s;
+        return this;
+    }
+
+    from(f: number): TopHitsAggregation {
+        this._from = f;
+        return this;
+    }
+
+    sort(s: Array): TopHitsAggregation {
+        this._sort = s;
+        return this;
+    }
+
+    source(s: ?Object): TopHitsAggregation {
+        this._source = source;
+        return this;
+    }
+
+    generate(): Object {
+        const obj = {
+            [this._name]: {},
+        };
+
+        obj[this._name] = {
+            top_hits: {
+                sort: this._sort,
+                size: this._size,
+                from: this._from,
+            },
+        };
+
+        if (this._source) {
+            obj[this._name].top_hits._source = this._source;
+        }
+
+        return obj;
+    }
+}
+
 class MetricAggregation extends Aggregation {
 }
 
@@ -180,9 +237,11 @@ class PercentileRanksAggregation extends PercentilesAggregation {
 
 class BucketAggregation extends Aggregation {
     _sub_aggregations: Array<Aggregation>;
+    _keyed: boolean;
     constructor(name: string, object: Object = {}) {
         super(name, object);
         this._sub_aggregations = [];
+        this._keyed = 'keyed' in object ? object.keyed : false;
     }
 
     aggregation(agg: Aggregation) {
@@ -251,6 +310,7 @@ class TermsAggregation extends BucketAggregation {
     _shard_size: number;
     _min_doc_count: number;
     _shard_min_doc_count: number;
+    _order: ?Object;
 
     constructor(name: string, object: Object = {}) {
         super(name, object);
@@ -259,14 +319,25 @@ class TermsAggregation extends BucketAggregation {
         this._missing = 'missing' in object ? object.missing : null;
         this._size = 'size' in object ? object.size : 10;
         this._shard_size = 'shard_size' in object ? object.shard_size : this._size;
-        this._order_types = [];
-        this._orders = [];
         this._min_doc_count = 'min_doc_count' in object ?
             object.min_doc_count : 1;
         this._shard_min_doc_count = 'shard_min_doc_count' in object ?
             object.shard_min_doc_count : 1;
         // Check with an enum TODO
         this._collect_mode = 'collect_mode' in object ? object.collect_mode : null;
+        this._order = 'order' in object ? this._extract_order(object.order) : null;
+    }
+
+    _extract_order(order: Object): ?Object {
+        if (order && Object.keys(order).length === 1) {
+            const keys = Object.keys(order);
+            const key = keys[0];
+            if (order[key] === 'desc' || order[key] === 'asc') {
+                return order;
+            }
+            return null;
+        }
+        return null;
     }
 
     include(inc: string | Array<string>) {
@@ -331,6 +402,129 @@ class TermsAggregation extends BucketAggregation {
             obj[this._name].terms.exclude = this._exclude;
         }
 
+        if (this._order != null) {
+            obj[this._name].terms.order = this._order;
+        }
+
+        if (this._sub_aggregations.length > 0) {
+            obj[this._name].aggs = {};
+            obj[this._name].aggs = this._sub_aggregations.reduce((o, agg) => {
+                o = _.merge(o, agg.generate());
+                return o;
+            }, obj[this._name].aggs);
+        }
+
+        return obj;
+    }
+}
+
+class DateHistogramAggregation extends BucketAggregation {
+    _timezone: ?string;
+    _offset: ?string;
+    _format: ?string;
+    _interval: ?string;
+    _missing: any;
+    _shard_size: number;
+    _min_doc_count: number;
+    _order: ?Object;
+
+    constructor(name: string, object: Object = {}) {
+        super(name, object);
+        this._missing = 'missing' in object ? object.missing : null;
+        this._shard_size = 'shard_size' in object ? object.shard_size : this._size;
+        this._min_doc_count = 'min_doc_count' in object ?
+            object.min_doc_count : 1;
+        this._format = 'format' in object ? object.format : null;
+        this._timezone = 'timezone' in object ? object.timezone : null;
+        this._interval = 'interval' in object ? object.interval : null;
+        this._offset = 'offset' in object ? object.offset : null;
+        this._order = 'order' in object ? this._extract_order(object.order) : null;
+    }
+
+    _extract_order(order: Object): ?Object {
+        if (order && Object.keys(order).length === 1) {
+            const keys = Object.keys(order);
+            const key = keys[0];
+            if (order[key] === 'desc' || order[key] === 'asc') {
+                return order;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    missing(m: any) {
+        this._missing = m;
+        return this;
+    }
+
+    shard_size(s: number) {
+        this._shard_size = s;
+        return this;
+    }
+
+    min_doc_count(dc: number) {
+        this._min_doc_count = dc;
+        return this;
+    }
+
+    format(f: string): DateHistogramAggregation {
+        this._format = f;
+        return this;
+    }
+
+    timezone(tz: string): DateHistogramAggregation {
+        this._timezone = tz;
+        return this;
+    }
+
+    interval(inter: string): DateHistogramAggregation {
+        this._interval = inter;
+        return this;
+    }
+
+    order(o: ?Object): DateHistogramAggregation {
+        this._order = this._extract_order(o);
+        return this;
+    }
+
+    generate() {
+        const obj = {
+            [this._name]: {
+                date_histogram: {
+                    field: this._field,
+                },
+            },
+        };
+
+        obj[this._name].date_histogram.shard_size = this._shard_size;
+        obj[this._name].date_histogram.shard_size = this._shard_size;
+        obj[this._name].date_histogram.min_doc_count = this._min_doc_count;
+
+        if (this._format) {
+            obj[this._name].date_histogram.format = this._format;
+        }
+
+        if (this._timezone) {
+            obj[this._name].date_histogram.time_zone = this._timezone;
+        }
+
+        if (this._interval) {
+            obj[this._name].date_histogram.interval = this._interval;
+        }
+
+        if (this._offset) {
+            obj[this._name].date_histogram.offset = this._offset;
+        }
+
+        if (this._missing != null) {
+            obj[this._name].date_histogram.missing = this._missing;
+        }
+
+        if (this._order != null) {
+            obj[this._name].date_histogram.order = this._order;
+        }
+
         if (this._sub_aggregations.length > 0) {
             obj[this._name].aggs = {};
             obj[this._name].aggs = this._sub_aggregations.reduce((o, agg) => {
@@ -361,4 +555,6 @@ module.exports = {
     NestedAggregation,
     FilterAggregation,
     TermsAggregation,
+    DateHistogramAggregation,
+    TopHitsAggregation,
 };

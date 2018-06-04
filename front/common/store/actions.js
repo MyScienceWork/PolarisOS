@@ -3,6 +3,7 @@ const API = require('../api');
 const Messages = require('../api/messages');
 const Auth = require('../utils/auth');
 const Utils = require('../utils/utils');
+const FileSaver = require('file-saver');
 
 function run_fetch_mutation(action, response, form, ctx) {
     const succeeded = response.type === Messages.SUCCESS;
@@ -44,7 +45,7 @@ async function create_or_update_or_validate(ctx, { path, body, form, rform, rpat
 }
 
 module.exports = {
-    fetch: async (ctx, { path, method, body, action, form }) => {
+    fetch: async (ctx, { path, method, body, action, form, no_fetch }) => {
         const payload = {
             path,
             method,
@@ -55,8 +56,11 @@ module.exports = {
 
         ctx.commit(Messages.LOADING, { form });
         const response = await API.fetch(payload);
-        const results = run_fetch_mutation(action, response, form, ctx);
-        return results;
+        if (!no_fetch) {
+            const results = run_fetch_mutation(action, response, form, ctx);
+            return results;
+        }
+        return [];
     },
 
     create: async (ctx, payload) => await create_or_update_or_validate(ctx, payload, 'create'),
@@ -157,9 +161,21 @@ module.exports = {
         }, {});
     },
 
-    authenticate: async (ctx, { email, password }) => {
-        const ok = await Auth.authenticate(email, password);
+    authenticate: async (ctx, { email, password, ticket, fullPath }) => {
+        const ok = await Auth.authenticate(email, password, ticket, fullPath);
         const status = ok ? 'success' : 'fail';
         ctx.commit(Messages.LOGIN_PASS, { status });
+    },
+
+    download: async (ctx, { body, path }) => {
+        const method = 'POST';
+        const payload = {
+            method,
+            path,
+            body,
+            signature: Auth.get_api_headers(method, path),
+        };
+        const response = await API.download(payload);
+        FileSaver.saveAs(response.blob, response.filename);
     },
 };

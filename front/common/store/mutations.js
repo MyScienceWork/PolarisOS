@@ -13,6 +13,7 @@ function create_form_if_needed(state, name) {
             state: 'initial',
             success: '',
             content: {},
+            raw_content: {},
             total: 0,
         } });
     }
@@ -31,6 +32,7 @@ module.exports = {
         state.forms[form_name].success = '';
         if (!keep_content) {
             state.forms[form_name].content = {};
+            state.forms[form_name].raw_content = {};
         }
     },
 
@@ -46,6 +48,7 @@ module.exports = {
         state.forms[form_name].state = 'noop'; // In case of multiple updates...
         Vue.nextTick(() => {
             state.forms[form_name].content = payload.content;
+            state.forms[form_name].raw_content = payload.content;
             state.forms[form_name].state = 'update';
         });
     },
@@ -56,19 +59,43 @@ module.exports = {
         state.forms[form_name].state = 'noop';
     },
 
+    [Messages.FORCE_COMPLETION]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+        state.forms[form_name].state = 'completed';
+    },
+
     [Messages.COMPLETE_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
 
         const name = payload.name;
-        const info = payload.info;
+        let info = payload.info;
         const form = state.forms[form_name];
+        const renumbering = payload.renumbering || false;
 
         const path = name.split('.');
         const content = state.forms[form_name].content;
-        const object = Utils.make_nested_object_from_path(path, info);
-        form.content = Utils.merge_with_replacement(content, object);
-        const claims = state.forms[form_name].claims;
+
+        if (renumbering) {
+            const information = Utils.find_value_with_path(content, path);
+            if (!information) {
+                return;
+            }
+            info = _.reduce(information, (o, val) => {
+                o[Object.keys(o).length] = val;
+                return o;
+            }, {});
+
+            const parent = Utils.find_object_with_path(path, content);
+            parent[path[path.length - 1]] = info;
+        } else {
+            const object = Utils.make_nested_object_from_path(path, info);
+            form.content = Utils.merge_with_replacement(content, object);
+        }
+
+
+        /* const claims = state.forms[form_name].claims;
         form.claims = Object.assign({}, claims, { [payload.name]: 1 });
 
 
@@ -78,7 +105,17 @@ module.exports = {
             Vue.nextTick(() => {
                 form.state = 'completed';
             });
-        }
+        }*/
+    },
+
+    [Messages.REMOVE_FORM_ELEMENT]: (state, payload) => {
+        const form_name = payload.form;
+        create_form_if_needed(state, form_name);
+
+        const segs = payload.name.split('.');
+        const form = state.forms[form_name];
+        form.content = Object.assign({}, Utils.traverse_and_execute(
+                    form.content, segs, () => undefined));
     },
 
     [Messages.COLLECT]: (state, payload) => {
@@ -86,7 +123,7 @@ module.exports = {
         const remove_content = payload.remove_content;
         create_form_if_needed(state, form_name);
         state.forms[form_name].state = 'collect';
-
+        state.forms[form_name].claims = {};
         if (remove_content) {
             state.forms[form_name].content = {};
         }
@@ -133,6 +170,7 @@ module.exports = {
         if (succeeded) {
             if (action === 'read') {
                 state.forms[form_name].content = data;
+                state.forms[form_name].raw_content = content;
                 state.forms[form_name].total = total;
                 payload.commit(Messages.SUCCESS, { type: action, form: form_name });
             } else if ('change' in content
@@ -140,9 +178,12 @@ module.exports = {
                 state.forms[form_name].validations = validations;
                 payload.commit(Messages.ERROR, { type: 'validate', form: form_name });
             } else if (action === 'validate') {
+                state.forms[form_name].content = content;
+                state.forms[form_name].raw_content = content;
                 payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
             } else if (action === 'delete') {
-                // Noop
+                state.forms[form_name].success = success;
+                payload.commit(Messages.SUCCESS, { type: 'delete', form: form_name });
             } else {
                 state.forms[form_name].success = success;
                 payload.commit(Messages.SUCCESS, { type: 'create', form: form_name });
@@ -180,7 +221,16 @@ module.exports = {
     [Messages.UNREGISTER_FORM_ELEMENT]: (state, payload) => {
         const form_name = payload.form;
         create_form_if_needed(state, form_name);
-        delete state.forms[form_name].elements[payload.name];
+
+        if (payload.pattern) {
+            const all_matched = _.filter(state.forms[form_name].elements,
+                    (val, key) => key.indexOf(payload.name) !== -1);
+            all_matched.forEach((m) => {
+                delete state.forms[form_name].elements[m];
+            });
+        } else {
+            delete state.forms[form_name].elements[payload.name];
+        }
     },
 
 
@@ -198,6 +248,14 @@ module.exports = {
         const object = payload.body;
         create_form_if_needed(state, form_name);
         const form = state.forms[form_name];
-        form.content = Utils.merge_with_replacement(form.content, object);
+        form.state = 'transfer';
+        if (object === undefined) {
+            form.content = {};
+        } else {
+            form.content = Object.assign({}, Utils.merge_with_replacement(form.content, object));
+        }
+        Vue.nextTick(() => {
+            form.state = 'initial';
+        });
     },
 };
