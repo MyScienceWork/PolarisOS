@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">app/modules/utils/auth.js | PolarisOS</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:type" content="website"><meta property="og:url" content="https://www.mysciencework.com"><meta property="og:site_name" content="PolarisOS"><meta property="og:title" content="PolarisOS"><meta property="og:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"><meta property="og:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:author" content="MyScienceWork"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="PolarisOS"><meta property="twitter:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="twitter:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.png" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/MyScienceWork/PolarisOS"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-create">create</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-update">update</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#csl-styles">csl_styles</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add_styles">add_styles</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#initializations">initializations</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initialize_routes">initialize_routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-3rdparty-rss">modules/3rdparty/rss</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_rss_feed">generate_rss_feed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-auth">modules/auth</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-FilterSchema">FilterSchema</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud">modules/entities/crud</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/entities/crud/odm.js~ODM.html">ODM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_sort">get_sort</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_aggregation">transform_to_aggregation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_search">transform_to_search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_sort">transform_to_sort</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud-controllers">modules/entities/crud/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-count">count</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del">del</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get">get</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gets">gets</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post">post</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_with_action">post_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put">put</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_with_action">put_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-search">search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validate">validate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-exporter-controllers">modules/entities/exporter/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_author_info">get_author_info</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_edition_stmt">get_edition_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_monogr">get_monogr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_notes_stmt">get_notes_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_profile_desc">get_profile_desc</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_publication_stmt">get_publication_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_series_stmt">get_series_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_source_desc">get_source_desc</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_title_stmt">get_title_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_publication_to_hal">transform_publication_to_hal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-mswpublication-controllers">modules/entities/mswpublication/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email">send_email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-role-controllers">modules/entities/role/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-controllers">modules/entities/user/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-routes">modules/entities/user/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-exceptions">modules/exceptions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-GenericException">GenericException</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline">modules/pipeline</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/pipeline.js~Pipeline.html">Pipeline</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer">modules/pipeline/completer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-complete">complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer-complfunctions">modules/pipeline/completer/complfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-denormalization">denormalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_complete">generic_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initial">initial</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_complete">key_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-secret_complete">secret_complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter">modules/pipeline/formatter</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatting">formatting</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter-formatfunctions">modules/pipeline/formatter/formatfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format_string">format_string</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_formatter">generic_formatter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-oarray_to_array">oarray_to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-set_default_lang_for_array">set_default_lang_for_array</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer">modules/pipeline/transformer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-apply_transducer">apply_transducer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform">transform</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer-transfunctions">modules/pipeline/transformer/transfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_in_list">get_in_list</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-identity">identity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-template_identity">template_identity</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator">modules/pipeline/validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/validator/validator.js~Validator.html">Validator</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator-valfunctions">modules/pipeline/validator/valfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-if_exists">if_exists</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_conditioned_on">is_conditioned_on</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_unique">is_unique</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_json">is_valid_json</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-utils">modules/utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cas_auth">cas_auth</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-do_standard_checks">do_standard_checks</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_through_ldap">find_through_ldap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_user">find_user</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_cas_info">get_cas_info</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-login_auth">login_auth</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map_ldap_to_pos">map_ldap_to_pos</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escape_from_bibtex">escape_from_bibtex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escape_to_bibtex">escape_to_bibtex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_key">generate_key</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_secret">generate_secret</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_config">get_config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values">get_language_values</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values_from_langs">get_language_values_from_langs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values_from_langs_and_keys">get_language_values_from_langs_and_keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-retrieve_single_quantity">retrieve_single_quantity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_smtp_transport">get_smtp_transport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email">send_email</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email_through_smtp">send_email_through_smtp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email_with">send_email_with</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-api_middlewares">api_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-app_middlewares">app_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del_middlewares">del_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_del_routes">generate_del_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_entity_routes">generate_entity_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_get_routes">generate_get_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_gets_routes">generate_gets_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_post_routes">generate_post_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_put_routes">generate_put_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_middlewares">get_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-koa_middlewares">koa_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_middlewares">post_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_middlewares">put_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-upload_middlewares">upload_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_stream">is_valid_stream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_array">to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_buffer">to_buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add_single">add_single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-download">download</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-multi_download">multi_download</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_return_inner_object">_return_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_test_inner_object">_test_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_object_with_path">find_object_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_popvalue_with_path">find_popvalue_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_value_with_path">find_value_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_whitelist_blacklist_query">forge_whitelist_blacklist_query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasProperty">hasProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isNil">isNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-make_nested_object_from_path">make_nested_object_from_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_concat">merge_with_concat</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_replacement">merge_with_replacement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_superposition">merge_with_superposition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_and_execute">traverse_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_recreate_and_execute">traverse_recreate_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_ok_response">forge_ok_response</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-strip_xhtml_tags">strip_xhtml_tags</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_object">to_object</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/modules/utils/auth.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+const CAS = require(&apos;cas&apos;);
+const Request = require(&apos;superagent&apos;);
+const Crypto = require(&apos;crypto&apos;);
+const Config = require(&apos;../../config&apos;);
+const Logger = require(&apos;../../logger&apos;);
+const EntitiesUtils = require(&apos;./entities&apos;);
+const LangUtils = require(&apos;./lang&apos;);
+const Utils = require(&apos;./utils&apos;);
+const Errors = require(&apos;../exceptions/errors&apos;);
+const LDAP = require(&apos;ldapjs&apos;);
+const MURL = require(&apos;url&apos;);
+
+async function find_user(info: string, field: string = &apos;emails.email&apos;): Promise&lt;?Object&gt; {
+    const sources = await EntitiesUtils.search_and_get_sources(&apos;user&apos;, {
+        where: {
+            [field]: info,
+        },
+        size: 1,
+        population: [&apos;roles._id&apos;],
+    });
+
+    if (sources.length === 0) {
+        return null;
+    }
+    return sources[0];
+}
+
+function do_standard_checks(user: Object): boolean {
+    if (user.locked) {
+        throw Errors.AccountIsLocked;
+    }
+
+    return true;
+}
+
+
+async function login_auth(email: string, password: string): Promise&lt;Object&gt; {
+    const db = await find_user(email, &apos;emails.email&apos;);
+    if (!db) {
+        return { ok: false, user: {} };
+    }
+
+    do_standard_checks(db);
+
+    const hpassword = Crypto.createHash(&apos;sha1&apos;).update(password).digest(&apos;hex&apos;);
+    if (hpassword === db.password) {
+        return { ok: true,
+            user: db };
+    }
+
+    return { ok: false, user: {} };
+}
+
+async function get_cas_info(global_config: Object): Promise&lt;?Object&gt; {
+    const use_cas_sso = Utils.find_value_with_path(global_config,
+        &apos;authentication.use_cas_sso&apos;.split(&apos;.&apos;));
+
+    const use_ldap = Utils.find_value_with_path(global_config,
+        &apos;authentication.use_ldap&apos;.split(&apos;.&apos;));
+
+    if (!use_cas_sso) {
+        Logger.error(&apos;CAS-SSO is not configured&apos;);
+        return null;
+    }
+
+    const base = Utils.find_value_with_path(global_config, &apos;authentication.cas_sso.base&apos;.split(&apos;.&apos;));
+    const service = Utils.find_value_with_path(global_config, &apos;authentication.cas_sso.service&apos;.split(&apos;.&apos;));
+
+    if (!base || !service) {
+        Logger.error(&apos;CAS-SSO is not correctly configured&apos;);
+        return null;
+    }
+
+    return { base, service, use_cas_sso, use_ldap };
+}
+
+async function find_through_ldap(uid: string, config: Object): Promise&lt;?Object&gt; {
+    const base = Utils.find_value_with_path(config, &apos;authentication.ldap.base&apos;.split(&apos;.&apos;));
+    const dns = Utils.find_value_with_path(config, &apos;authentication.ldap.dns&apos;.split(&apos;.&apos;));
+    const attributes = Utils.find_value_with_path(config, &apos;authentication.ldap.attributes&apos;.split(&apos;.&apos;));
+
+    if (!base || !dns || !attributes) {
+        return null;
+    }
+
+    const uid_key = attributes.find(attr =&gt; attr.value === &apos;uid&apos;);
+
+    if (!uid_key) {
+        return null;
+    }
+
+    const keys = attributes.map(attr =&gt; attr.key);
+    const client = LDAP.createClient({
+        url: base,
+    });
+
+    const opts = {
+        attributes: keys,
+        scope: &apos;sub&apos;,
+        filter: `(${uid_key.key}=${uid})`,
+    };
+
+    const promised_users = new Promise((resolve, reject) =&gt; {
+        client.search(dns, opts, (err, res) =&gt; {
+            const entries = [];
+            res.on(&apos;searchEntry&apos;, (entry) =&gt; {
+                entries.push(entry.object);
+            });
+            res.on(&apos;error&apos;, (_err) =&gt; {
+                reject(_err);
+            });
+            res.on(&apos;end&apos;, () =&gt; {
+                resolve(entries);
+            });
+        });
+    });
+
+    const users = await promised_users;
+
+
+    if (users.length === 0) {
+        return null;
+    }
+
+    return users[0];
+}
+
+async function map_ldap_to_pos(ldap_user: Object, config: Object): Promise&lt;?Object&gt; {
+    const attributes = Utils.find_value_with_path(config, &apos;authentication.ldap.attributes&apos;.split(&apos;.&apos;));
+    const default_role = Utils.find_value_with_path(config, &apos;authentication.default_assigned_role&apos;.split(&apos;.&apos;));
+
+    if (!attributes || !default_role || default_role.trim() === &apos;&apos;) {
+        return null;
+    }
+
+    const pos_user = attributes.reduce((obj, attr) =&gt; {
+        const { key, value } = attr;
+
+        if (key in ldap_user) {
+            if (value === &apos;email&apos;) {
+                obj.emails = [{ email: ldap_user[key], master: true }];
+            } else {
+                obj[value] = ldap_user[key];
+            }
+        }
+        return obj;
+    }, {});
+
+    pos_user.roles = [{ _id: default_role }];
+    pos_user.ldap = true;
+    return pos_user;
+}
+
+async function cas_auth(ticket: string, url: string): Promise&lt;Object&gt; {
+    const global_config = await LangUtils.get_config(Config._env);
+
+    if (!global_config) {
+        Logger.error(&apos;No config found in ES...&apos;);
+        return { ok: false, user: {} };
+    }
+
+    const cas_info = await get_cas_info(global_config);
+    if (!cas_info) {
+        return { ok: false, user: {} };
+    }
+
+    const my_url = new MURL.URL(`${cas_info.service}${url}`);
+    my_url.searchParams.delete(&apos;ticket&apos;);
+
+    console.log(my_url.href, cas_info.service, url);
+    const obj = {
+        base_url: cas_info.base,
+        service: my_url.href,
+        version: 2.0,
+    };
+
+    const cas = new CAS(obj);
+    const promise = new Promise((resolve, reject) =&gt; {
+        cas.validate(ticket, (err, status, username, extended) =&gt; {
+            if (err) {
+                return reject(err);
+            }
+            return resolve({ username, status, extended });
+        });
+    });
+
+    try {
+        const info = await promise;
+        console.log(&apos;cas&apos;, info);
+        if (!(&apos;status&apos; in info) || !(&apos;username&apos; in info)) {
+            return { ok: false, user: {} };
+        }
+
+        if (info.status) {
+            const uid = info.username.toLowerCase();
+            let user = await find_user(uid, &apos;uid&apos;);
+
+            if (!user) {
+                if (!cas_info.use_ldap) {
+                    return { ok: false, user: {} };
+                }
+                const ldap_user = await find_through_ldap(uid, global_config);
+
+                if (!ldap_user) {
+                    return { ok: false, user: {} };
+                }
+
+                user = await map_ldap_to_pos(ldap_user, global_config);
+
+                // Update to say that the user is using SSO
+                user.sso = true;
+
+                if (!user) {
+                    return { ok: false, user: {} };
+                }
+
+                const pos_base_url = Utils.find_value_with_path(global_config, &apos;base_url&apos;.split(&apos;.&apos;));
+                const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
+                if (!pos_base_url || pos_base_url.trim() === &apos;&apos;) {
+                    return { ok: false, user: {} };
+                }
+                try {
+                    const response = await Request.post(`${pos_base_url}${puprefix}/user`)
+                        .send(user);
+                    if (!response) {
+                        return { ok: false, user: {} };
+                    }
+
+                    const json_response = JSON.parse(response.text);
+
+                    if (&apos;change&apos; in json_response &amp;&amp; &apos;entity&apos; in json_response) {
+                        user = json_response.entity.source;
+                    } else {
+                        return { ok: false, user: {} };
+                    }
+                } catch (err) {
+                    Logger.error(&apos;Error when creating user&apos;);
+                    Logger.error(err);
+                    return { ok: false, user: {} };
+                }
+            }
+            do_standard_checks(user);
+            return { ok: true, user };
+        }
+        return { ok: false, user: {} };
+    } catch (err) {
+        Logger.error(&apos;Error when authenticating user&apos;);
+        Logger.error(err);
+        return { ok: false, user: {} };
+    }
+}
+
+module.exports = {
+    login_auth,
+    cas_auth,
+    get_cas_info,
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

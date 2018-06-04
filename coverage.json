@@ -1,28 +1,19 @@
 {
-  "coverage": "43.63%",
-  "expectCount": 848,
-  "actualCount": 370,
+  "coverage": "78.85%",
+  "expectCount": 610,
+  "actualCount": 481,
   "files": {
     "app/app.js": {
-      "expectCount": 9,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
         10
       ]
     },
     "app/config/all.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        1,
         3
       ]
     },
@@ -41,20 +32,17 @@
       ]
     },
     "app/config/index.js": {
-      "expectCount": 4,
+      "expectCount": 2,
       "actualCount": 0,
       "undocumentLines": [
-        1,
-        2,
         4,
         13
       ]
     },
     "app/config/production.js": {
-      "expectCount": 7,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        1,
         3,
         5,
         6,
@@ -71,536 +59,273 @@
       ]
     },
     "app/create_indices.js": {
-      "expectCount": 8,
+      "expectCount": 3,
       "actualCount": 2,
       "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
+        8
+      ]
+    },
+    "app/csl_styles/register.js": {
+      "expectCount": 3,
+      "actualCount": 1,
+      "undocumentLines": [
         6,
         8
       ]
     },
     "app/initializations/routes.js": {
-      "expectCount": 14,
+      "expectCount": 1,
       "actualCount": 1,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13
-      ]
+      "undocumentLines": []
     },
-    "app/logger.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        2
-      ]
+    "app/modules/3rdparty/rss/controllers.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "app/modules/3rdparty/rss/routes.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
     },
     "app/modules/auth/access_schema.js": {
-      "expectCount": 5,
+      "expectCount": 4,
       "actualCount": 1,
       "undocumentLines": [
-        3,
         5,
         6,
         20
       ]
     },
     "app/modules/auth/right_enforcer.js": {
-      "expectCount": 9,
-      "actualCount": 6,
+      "expectCount": 8,
+      "actualCount": 7,
       "undocumentLines": [
-        2,
-        9,
-        13
+        9
       ]
     },
     "app/modules/entities/apiuser/apiuser.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2,
         4
       ]
     },
-    "app/modules/entities/apiuser/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
+    "app/modules/entities/chart/chart.js": {
+      "expectCount": 6,
+      "actualCount": 4,
       "undocumentLines": [
-        4,
-        1,
-        2,
-        5,
-        3
+        7,
+        9
       ]
     },
     "app/modules/entities/config/config.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2,
         4
       ]
     },
     "app/modules/entities/connector/connector.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/connector/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
     "app/modules/entities/crud/aggregation.js": {
-      "expectCount": 83,
-      "actualCount": 51,
+      "expectCount": 115,
+      "actualCount": 92,
       "undocumentLines": [
-        2,
-        29,
+        86,
         4,
-        9,
-        181,
-        183,
-        32,
-        34,
-        103,
-        71,
-        72,
-        73,
-        74,
-        75,
-        81,
-        83,
-        106,
-        108,
-        123,
-        129,
-        134,
-        164,
-        166,
-        194,
-        196,
-        221,
-        223,
-        246,
-        255,
-        262,
-        263,
-        269
-      ]
-    },
-    "app/modules/entities/crud/controllers/index.js": {
-      "expectCount": 13,
-      "actualCount": 10,
-      "undocumentLines": [
-        2,
-        3,
-        4
-      ]
-    },
-    "app/modules/entities/crud/enums/fuzziness.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        1,
-        3
-      ]
-    },
-    "app/modules/entities/crud/enums/operator.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        1,
-        3
-      ]
-    },
-    "app/modules/entities/crud/enums/sort_mode.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        1,
-        3
-      ]
-    },
-    "app/modules/entities/crud/enums/sort_order.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        1,
-        3
-      ]
-    },
-    "app/modules/entities/crud/enums/zero_terms_query.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        1,
-        3
-      ]
-    },
-    "app/modules/entities/crud/mapper.js": {
-      "expectCount": 31,
-      "actualCount": 21,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        9,
-        225,
-        285
-      ]
-    },
-    "app/modules/entities/crud/mapping.js": {
-      "expectCount": 7,
-      "actualCount": 4,
-      "undocumentLines": [
-        2,
-        4,
-        6
-      ]
-    },
-    "app/modules/entities/crud/odm.js": {
-      "expectCount": 41,
-      "actualCount": 37,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5
-      ]
-    },
-    "app/modules/entities/crud/query.js": {
-      "expectCount": 79,
-      "actualCount": 48,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        197,
-        203,
-        43,
-        6,
-        12,
-        134,
-        135,
-        50,
-        56,
+        238,
+        89,
+        160,
+        128,
         129,
         130,
         131,
         132,
-        164,
-        168,
-        193,
-        194,
-        195,
-        248,
-        250,
-        301,
-        295,
-        307,
-        310,
-        342,
-        344,
-        368,
-        370
+        138,
+        163,
+        180,
+        186,
+        221,
+        253,
+        280,
+        305,
+        327,
+        421,
+        29,
+        37,
+        38
       ]
     },
-    "app/modules/entities/crud/search.js": {
-      "expectCount": 23,
-      "actualCount": 17,
+    "app/modules/entities/crud/controllers/index.js": {
+      "expectCount": 10,
+      "actualCount": 10,
+      "undocumentLines": []
+    },
+    "app/modules/entities/crud/mapper.js": {
+      "expectCount": 26,
+      "actualCount": 23,
       "undocumentLines": [
-        2,
-        3,
-        5,
-        9,
-        14,
-        17
+        26,
+        268,
+        335
+      ]
+    },
+    "app/modules/entities/crud/mapping.js": {
+      "expectCount": 6,
+      "actualCount": 5,
+      "undocumentLines": [
+        4
+      ]
+    },
+    "app/modules/entities/crud/odm.js": {
+      "expectCount": 43,
+      "actualCount": 43,
+      "undocumentLines": []
+    },
+    "app/modules/entities/crud/query.js": {
+      "expectCount": 97,
+      "actualCount": 73,
+      "undocumentLines": [
+        198,
+        44,
+        7,
+        135,
+        51,
+        130,
+        131,
+        132,
+        133,
+        165,
+        194,
+        195,
+        196,
+        249,
+        251,
+        309,
+        296,
+        298,
+        315,
+        350,
+        352,
+        376,
+        378,
+        387
       ]
     },
     "app/modules/entities/entity/entity.js": {
-      "expectCount": 9,
-      "actualCount": 5,
+      "expectCount": 7,
+      "actualCount": 6,
       "undocumentLines": [
-        2,
-        3,
-        4,
         6
       ]
     },
-    "app/modules/entities/entity/routes/index.js": {
-      "expectCount": 8,
-      "actualCount": 1,
+    "app/modules/entities/exporter/controllers/hal.js": {
+      "expectCount": 11,
+      "actualCount": 10,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
         8
       ]
     },
-    "app/modules/entities/exporter/controllers/index.js": {
-      "expectCount": 2,
-      "actualCount": 1,
-      "undocumentLines": [
-        2
-      ]
-    },
     "app/modules/entities/exporter/exporter.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/exporter/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
-    "app/modules/entities/exporter/routes/index.js": {
-      "expectCount": 8,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ]
-    },
     "app/modules/entities/form/form.js": {
-      "expectCount": 6,
-      "actualCount": 2,
+      "expectCount": 4,
+      "actualCount": 3,
       "undocumentLines": [
-        2,
-        3,
-        4,
         6
       ]
     },
     "app/modules/entities/function/function.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2,
         4
       ]
     },
-    "app/modules/entities/importer/controllers/index.js": {
-      "expectCount": 15,
-      "actualCount": 5,
+    "app/modules/entities/identifier/identifier.js": {
+      "expectCount": 6,
+      "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
         7,
-        8,
-        9,
-        10,
-        11
+        9
       ]
     },
     "app/modules/entities/importer/importer.js": {
-      "expectCount": 11,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        4,
-        5,
-        6,
-        7,
-        8,
         10,
         12
       ]
     },
-    "app/modules/entities/importer/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
-    "app/modules/entities/importer/routes/index.js": {
-      "expectCount": 8,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ]
-    },
     "app/modules/entities/lang/lang.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2,
         4
       ]
     },
-    "app/modules/entities/menu/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
+    "app/modules/entities/mail_template/mail_template.js": {
+      "expectCount": 6,
+      "actualCount": 4,
       "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
+        7,
+        9
       ]
     },
     "app/modules/entities/menu/menu.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/menu/routes/index.js": {
-      "expectCount": 7,
+    "app/modules/entities/mswpublication/controllers/index.js": {
+      "expectCount": 1,
       "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
+      "undocumentLines": []
     },
-    "app/modules/entities/page/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
+    "app/modules/entities/mswpublication/mswpublication.js": {
+      "expectCount": 6,
+      "actualCount": 4,
       "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
+        7,
+        9
       ]
     },
     "app/modules/entities/page/page.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/page/routes/index.js": {
-      "expectCount": 7,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
-    },
     "app/modules/entities/pipeline/pipeline.js": {
-      "expectCount": 16,
-      "actualCount": 7,
+      "expectCount": 10,
+      "actualCount": 9,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
         11
       ]
     },
-    "app/modules/entities/publication/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
     "app/modules/entities/publication/models/pipeline_diffusion.js": {
-      "expectCount": 13,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
         10,
         19,
         22,
@@ -610,201 +335,76 @@
       ]
     },
     "app/modules/entities/publication/models/pipeline_type_files.js": {
-      "expectCount": 12,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
         9,
         15,
-        32,
         41,
-        45,
-        47
+        50,
+        54,
+        56
       ]
     },
     "app/modules/entities/publication/publication.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/publication/routes/index.js": {
-      "expectCount": 7,
-      "actualCount": 1,
+    "app/modules/entities/query/query.js": {
+      "expectCount": 6,
+      "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
+        7,
+        9
       ]
     },
     "app/modules/entities/role/controllers/index.js": {
-      "expectCount": 5,
+      "expectCount": 2,
       "actualCount": 2,
-      "undocumentLines": [
-        4,
-        5,
-        6
-      ]
-    },
-    "app/modules/entities/role/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
+      "undocumentLines": []
     },
     "app/modules/entities/role/role.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/role/routes/index.js": {
-      "expectCount": 7,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
-    },
-    "app/modules/entities/template/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
-    "app/modules/entities/template/routes/index.js": {
-      "expectCount": 7,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
-    },
     "app/modules/entities/template/template.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
     "app/modules/entities/user/controllers/index.js": {
-      "expectCount": 5,
+      "expectCount": 2,
       "actualCount": 2,
-      "undocumentLines": [
-        4,
-        5,
-        6
-      ]
-    },
-    "app/modules/entities/user/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
+      "undocumentLines": []
     },
     "app/modules/entities/user/routes/index.js": {
-      "expectCount": 7,
+      "expectCount": 1,
       "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
+      "undocumentLines": []
     },
     "app/modules/entities/user/user.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
     },
-    "app/modules/entities/widget/index.js": {
-      "expectCount": 5,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        1,
-        2,
-        3,
-        5
-      ]
-    },
-    "app/modules/entities/widget/routes/index.js": {
-      "expectCount": 7,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
-    },
     "app/modules/entities/widget/widget.js": {
-      "expectCount": 10,
+      "expectCount": 6,
       "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
         7,
         9
       ]
@@ -815,221 +415,133 @@
       "undocumentLines": []
     },
     "app/modules/pipeline/completer/completer.js": {
-      "expectCount": 4,
+      "expectCount": 1,
       "actualCount": 1,
-      "undocumentLines": [
-        3,
-        4,
-        5
-      ]
+      "undocumentLines": []
     },
     "app/modules/pipeline/completer/complfunctions/index.js": {
-      "expectCount": 10,
-      "actualCount": 4,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
     },
     "app/modules/pipeline/formatter/formatfunctions/index.js": {
-      "expectCount": 6,
-      "actualCount": 4,
-      "undocumentLines": [
-        2,
-        3
-      ]
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
     },
     "app/modules/pipeline/formatter/formatter.js": {
-      "expectCount": 5,
+      "expectCount": 2,
       "actualCount": 2,
-      "undocumentLines": [
-        3,
-        4,
-        5
-      ]
+      "undocumentLines": []
     },
     "app/modules/pipeline/pipeline.js": {
-      "expectCount": 27,
-      "actualCount": 19,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
-      ]
+      "expectCount": 20,
+      "actualCount": 20,
+      "undocumentLines": []
     },
     "app/modules/pipeline/transformer/transformer.js": {
-      "expectCount": 4,
-      "actualCount": 1,
-      "undocumentLines": [
-        3,
-        4,
-        5
-      ]
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
     },
     "app/modules/pipeline/transformer/transfunctions/index.js": {
-      "expectCount": 3,
-      "actualCount": 1,
-      "undocumentLines": [
-        2,
-        3
-      ]
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
     },
     "app/modules/pipeline/validator/valfunctions/checks.js": {
-      "expectCount": 9,
+      "expectCount": 4,
       "actualCount": 4,
-      "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6
-      ]
-    },
-    "app/modules/pipeline/validator/valfunctions/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
+      "undocumentLines": []
     },
     "app/modules/pipeline/validator/validator.js": {
-      "expectCount": 14,
-      "actualCount": 7,
+      "expectCount": 9,
+      "actualCount": 8,
       "undocumentLines": [
-        2,
-        3,
-        4,
-        5,
-        6,
-        8,
-        20
-      ]
-    },
-    "app/modules/rate_limit/limit.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        2,
-        3
+        8
       ]
     },
     "app/modules/rate_limit/memory_store.js": {
       "expectCount": 8,
-      "actualCount": 5,
+      "actualCount": 6,
       "undocumentLines": [
         2,
-        7,
         30
       ]
     },
     "app/modules/rate_limit/rate_limit.js": {
-      "expectCount": 6,
-      "actualCount": 2,
+      "expectCount": 4,
+      "actualCount": 3,
       "undocumentLines": [
-        2,
-        3,
-        5,
-        8
+        5
       ]
     },
-    "app/modules/utils/api.js": {
+    "app/modules/utils/auth.js": {
+      "expectCount": 7,
+      "actualCount": 7,
+      "undocumentLines": []
+    },
+    "app/modules/utils/bibtex.js": {
       "expectCount": 4,
-      "actualCount": 1,
+      "actualCount": 2,
       "undocumentLines": [
-        2,
-        3,
+        1,
+        456
+      ]
+    },
+    "app/modules/utils/cache.js": {
+      "expectCount": 9,
+      "actualCount": 8,
+      "undocumentLines": [
         4
       ]
     },
     "app/modules/utils/crypto.js": {
-      "expectCount": 6,
+      "expectCount": 2,
       "actualCount": 2,
+      "undocumentLines": []
+    },
+    "app/modules/utils/lang.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "app/modules/utils/mailer.js": {
+      "expectCount": 5,
+      "actualCount": 4,
       "undocumentLines": [
-        2,
-        3,
-        4,
         5
       ]
     },
-    "app/modules/utils/lang.js": {
-      "expectCount": 4,
-      "actualCount": 3,
-      "undocumentLines": [
-        3
-      ]
-    },
     "app/modules/utils/router.js": {
-      "expectCount": 28,
+      "expectCount": 14,
       "actualCount": 14,
-      "undocumentLines": [
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16
-      ]
+      "undocumentLines": []
     },
     "app/modules/utils/streams.js": {
       "expectCount": 3,
       "actualCount": 3,
       "undocumentLines": []
     },
-    "app/modules/utils/templating.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        2,
-        1
-      ]
-    },
     "app/modules/utils/uploads.js": {
-      "expectCount": 5,
-      "actualCount": 2,
-      "undocumentLines": [
-        1,
-        2,
-        3
-      ]
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
     },
     "app/modules/utils/utils.js": {
-      "expectCount": 17,
+      "expectCount": 15,
       "actualCount": 15,
-      "undocumentLines": [
-        2,
-        3
-      ]
+      "undocumentLines": []
     },
     "app/modules/utils/web.js": {
-      "expectCount": 2,
+      "expectCount": 1,
       "actualCount": 1,
-      "undocumentLines": [
-        2
-      ]
+      "undocumentLines": []
     },
     "app/modules/utils/xml.js": {
       "expectCount": 2,
-      "actualCount": 1,
-      "undocumentLines": [
-        2
-      ]
+      "actualCount": 2,
+      "undocumentLines": []
     }
   }
 }

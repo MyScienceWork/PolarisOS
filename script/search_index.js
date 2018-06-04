@@ -60,6 +60,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/csl_styles/register.js~add_styles",
+    "function/index.html#static-function-add_styles",
+    "<span>add_styles</span> <span class=\"search-result-import-path\">PolarisOS/app/csl_styles/register.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/router.js~api_middlewares",
     "function/index.html#static-function-api_middlewares",
     "<span>api_middlewares</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/router.js</span>",
@@ -72,6 +78,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/pipeline/transformer/transformer.js~apply_transducer",
+    "function/index.html#static-function-apply_transducer",
+    "<span>apply_transducer</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transformer.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/entities/role/controllers/index.js~authenticate",
     "function/index.html#static-function-authenticate",
     "<span>authenticate</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/role/controllers/index.js</span>",
@@ -81,6 +93,12 @@ window.esdocSearchIndex = [
     "polarisos/app/modules/entities/user/controllers/index.js~authenticate",
     "function/index.html#static-function-authenticate",
     "<span>authenticate</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/user/controllers/index.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/auth.js~cas_auth",
+    "function/index.html#static-function-cas_auth",
+    "<span>cas_auth</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
     "function"
   ],
   [
@@ -120,21 +138,27 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/utils/auth.js~do_standard_checks",
+    "function/index.html#static-function-do_standard_checks",
+    "<span>do_standard_checks</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/uploads.js~download",
     "function/index.html#static-function-download",
     "<span>download</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/uploads.js</span>",
     "function"
   ],
   [
-    "polarisos/app/modules/entities/exporter/controllers/index.js~export_information",
-    "function/index.html#static-function-export_information",
-    "<span>export_information</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/index.js</span>",
+    "polarisos/app/modules/utils/bibtex.js~escape_from_bibtex",
+    "function/index.html#static-function-escape_from_bibtex",
+    "<span>escape_from_bibtex</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/bibtex.js</span>",
     "function"
   ],
   [
-    "polarisos/app/modules/entities/importer/controllers/index.js~extract_relevant_information_from_grobid",
-    "function/index.html#static-function-extract_relevant_information_from_grobid",
-    "<span>extract_relevant_information_from_grobid</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/controllers/index.js</span>",
+    "polarisos/app/modules/utils/bibtex.js~escape_to_bibtex",
+    "function/index.html#static-function-escape_to_bibtex",
+    "<span>escape_to_bibtex</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/bibtex.js</span>",
     "function"
   ],
   [
@@ -162,9 +186,27 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/utils/auth.js~find_through_ldap",
+    "function/index.html#static-function-find_through_ldap",
+    "<span>find_through_ldap</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/auth.js~find_user",
+    "function/index.html#static-function-find_user",
+    "<span>find_user</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/utils.js~find_value_with_path",
     "function/index.html#static-function-find_value_with_path",
     "<span>find_value_with_path</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/pipeline/transformer/transfunctions/index.js~flatten",
+    "function/index.html#static-function-flatten",
+    "<span>flatten</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transfunctions/index.js</span>",
     "function"
   ],
   [
@@ -183,6 +225,12 @@ window.esdocSearchIndex = [
     "polarisos/app/modules/pipeline/formatter/formatter.js~format",
     "function/index.html#static-function-format",
     "<span>format</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/formatter/formatter.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/pipeline/formatter/formatfunctions/index.js~format_string",
+    "function/index.html#static-function-format_string",
+    "<span>format_string</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/formatter/formatfunctions/index.js</span>",
     "function"
   ],
   [
@@ -234,15 +282,15 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "polarisos/app/modules/utils/crypto.js~generate_secret",
-    "function/index.html#static-function-generate_secret",
-    "<span>generate_secret</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/crypto.js</span>",
+    "polarisos/app/modules/3rdparty/rss/controllers.js~generate_rss_feed",
+    "function/index.html#static-function-generate_rss_feed",
+    "<span>generate_rss_feed</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/3rdparty/rss/controllers.js</span>",
     "function"
   ],
   [
-    "polarisos/app/modules/utils/api.js~generate_signature",
-    "function/index.html#static-function-generate_signature",
-    "<span>generate_signature</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/api.js</span>",
+    "polarisos/app/modules/utils/crypto.js~generate_secret",
+    "function/index.html#static-function-generate_secret",
+    "<span>generate_secret</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/crypto.js</span>",
     "function"
   ],
   [
@@ -264,9 +312,33 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_author_info",
+    "function/index.html#static-function-get_author_info",
+    "<span>get_author_info</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/auth.js~get_cas_info",
+    "function/index.html#static-function-get_cas_info",
+    "<span>get_cas_info</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/lang.js~get_config",
     "function/index.html#static-function-get_config",
     "<span>get_config</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/lang.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_edition_stmt",
+    "function/index.html#static-function-get_edition_stmt",
+    "<span>get_edition_stmt</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/pipeline/transformer/transfunctions/index.js~get_in_list",
+    "function/index.html#static-function-get_in_list",
+    "<span>get_in_list</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transfunctions/index.js</span>",
     "function"
   ],
   [
@@ -276,9 +348,75 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/utils/lang.js~get_language_values_from_langs",
+    "function/index.html#static-function-get_language_values_from_langs",
+    "<span>get_language_values_from_langs</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/lang.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/lang.js~get_language_values_from_langs_and_keys",
+    "function/index.html#static-function-get_language_values_from_langs_and_keys",
+    "<span>get_language_values_from_langs_and_keys</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/lang.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/router.js~get_middlewares",
     "function/index.html#static-function-get_middlewares",
     "<span>get_middlewares</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/router.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_monogr",
+    "function/index.html#static-function-get_monogr",
+    "<span>get_monogr</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_notes_stmt",
+    "function/index.html#static-function-get_notes_stmt",
+    "<span>get_notes_stmt</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_profile_desc",
+    "function/index.html#static-function-get_profile_desc",
+    "<span>get_profile_desc</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_publication_stmt",
+    "function/index.html#static-function-get_publication_stmt",
+    "<span>get_publication_stmt</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_series_stmt",
+    "function/index.html#static-function-get_series_stmt",
+    "<span>get_series_stmt</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/mailer.js~get_smtp_transport",
+    "function/index.html#static-function-get_smtp_transport",
+    "<span>get_smtp_transport</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/mailer.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/crud/mapper.js~get_sort",
+    "function/index.html#static-function-get_sort",
+    "<span>get_sort</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/crud/mapper.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_source_desc",
+    "function/index.html#static-function-get_source_desc",
+    "<span>get_source_desc</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~get_title_stmt",
+    "function/index.html#static-function-get_title_stmt",
+    "<span>get_title_stmt</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
     "function"
   ],
   [
@@ -294,27 +432,21 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/pipeline/transformer/transfunctions/index.js~identity",
+    "function/index.html#static-function-identity",
+    "<span>identity</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transfunctions/index.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/pipeline/validator/valfunctions/checks.js~if_exists",
     "function/index.html#static-function-if_exists",
     "<span>if_exists</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/validator/valfunctions/checks.js</span>",
     "function"
   ],
   [
-    "polarisos/app/modules/entities/importer/controllers/index.js~import_crossref",
-    "function/index.html#static-function-import_crossref",
-    "<span>import_crossref</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/controllers/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/importer/controllers/index.js~import_grobid",
-    "function/index.html#static-function-import_grobid",
-    "<span>import_grobid</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/controllers/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/importer/controllers/index.js~import_information",
-    "function/index.html#static-function-import_information",
-    "<span>import_information</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/controllers/index.js</span>",
+    "polarisos/app/modules/pipeline/completer/complfunctions/index.js~initial",
+    "function/index.html#static-function-initial",
+    "<span>initial</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/completer/complfunctions/index.js</span>",
     "function"
   ],
   [
@@ -366,9 +498,21 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/utils/auth.js~login_auth",
+    "function/index.html#static-function-login_auth",
+    "<span>login_auth</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/utils/utils.js~make_nested_object_from_path",
     "function/index.html#static-function-make_nested_object_from_path",
     "<span>make_nested_object_from_path</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/auth.js~map_ldap_to_pos",
+    "function/index.html#static-function-map_ldap_to_pos",
+    "<span>map_ldap_to_pos</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/auth.js</span>",
     "function"
   ],
   [
@@ -387,6 +531,12 @@ window.esdocSearchIndex = [
     "polarisos/app/modules/utils/utils.js~merge_with_superposition",
     "function/index.html#static-function-merge_with_superposition",
     "<span>merge_with_superposition</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/uploads.js~multi_download",
+    "function/index.html#static-function-multi_download",
+    "<span>multi_download</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/uploads.js</span>",
     "function"
   ],
   [
@@ -432,75 +582,21 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "polarisos/app/modules/entities/importer/controllers/index.js~request_crossref",
-    "function/index.html#static-function-request_crossref",
-    "<span>request_crossref</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/controllers/index.js</span>",
-    "function"
-  ],
-  [
     "polarisos/app/modules/utils/lang.js~retrieve_single_quantity",
     "function/index.html#static-function-retrieve_single_quantity",
     "<span>retrieve_single_quantity</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/lang.js</span>",
     "function"
   ],
   [
-    "polarisos/app/modules/entities/entity/routes/index.js~routes",
+    "polarisos/app/modules/3rdparty/rss/routes.js~routes",
     "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/entity/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/exporter/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/importer/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/importer/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/menu/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/menu/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/page/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/page/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/publication/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/publication/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/role/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/role/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/template/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/template/routes/index.js</span>",
+    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/3rdparty/rss/routes.js</span>",
     "function"
   ],
   [
     "polarisos/app/modules/entities/user/routes/index.js~routes",
     "function/index.html#static-function-routes",
     "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/user/routes/index.js</span>",
-    "function"
-  ],
-  [
-    "polarisos/app/modules/entities/widget/routes/index.js~routes",
-    "function/index.html#static-function-routes",
-    "<span>routes</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/widget/routes/index.js</span>",
     "function"
   ],
   [
@@ -516,9 +612,45 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "polarisos/app/modules/entities/mswpublication/controllers/index.js~send_email",
+    "function/index.html#static-function-send_email",
+    "<span>send_email</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/mswpublication/controllers/index.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/mailer.js~send_email",
+    "function/index.html#static-function-send_email",
+    "<span>send_email</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/mailer.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/mailer.js~send_email_through_smtp",
+    "function/index.html#static-function-send_email_through_smtp",
+    "<span>send_email_through_smtp</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/mailer.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/mailer.js~send_email_with",
+    "function/index.html#static-function-send_email_with",
+    "<span>send_email_with</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/mailer.js</span>",
+    "function"
+  ],
+  [
     "polarisos/app/modules/pipeline/formatter/formatfunctions/index.js~set_default_lang_for_array",
     "function/index.html#static-function-set_default_lang_for_array",
     "<span>set_default_lang_for_array</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/formatter/formatfunctions/index.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/utils/xml.js~strip_xhtml_tags",
+    "function/index.html#static-function-strip_xhtml_tags",
+    "<span>strip_xhtml_tags</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/utils/xml.js</span>",
+    "function"
+  ],
+  [
+    "polarisos/app/modules/pipeline/transformer/transfunctions/index.js~template_identity",
+    "function/index.html#static-function-template_identity",
+    "<span>template_identity</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transfunctions/index.js</span>",
     "function"
   ],
   [
@@ -546,9 +678,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "polarisos/app/modules/pipeline/transformer/transfunctions/index.js~transform",
-    "function/index.html#static-function-transform",
-    "<span>transform</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/pipeline/transformer/transfunctions/index.js</span>",
+    "polarisos/app/modules/entities/exporter/controllers/hal.js~transform_publication_to_hal",
+    "function/index.html#static-function-transform_publication_to_hal",
+    "<span>transform_publication_to_hal</span> <span class=\"search-result-import-path\">PolarisOS/app/modules/entities/exporter/controllers/hal.js</span>",
     "function"
   ],
   [
@@ -930,6 +1062,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "app/csl_styles/register.js",
+    "file/app/csl_styles/register.js.html",
+    "app/csl_styles/register.js",
+    "file"
+  ],
+  [
     "app/initializations/routes.js",
     "file/app/initializations/routes.js.html",
     "app/initializations/routes.js",
@@ -939,6 +1077,18 @@ window.esdocSearchIndex = [
     "app/logger.js",
     "file/app/logger.js.html",
     "app/logger.js",
+    "file"
+  ],
+  [
+    "app/modules/3rdparty/rss/controllers.js",
+    "file/app/modules/3rdparty/rss/controllers.js.html",
+    "app/modules/3rdparty/rss/controllers.js",
+    "file"
+  ],
+  [
+    "app/modules/3rdparty/rss/routes.js",
+    "file/app/modules/3rdparty/rss/routes.js.html",
+    "app/modules/3rdparty/rss/routes.js",
     "file"
   ],
   [
@@ -975,6 +1125,24 @@ window.esdocSearchIndex = [
     "app/modules/entities/apiuser/routes/index.js",
     "file/app/modules/entities/apiuser/routes/index.js.html",
     "app/modules/entities/apiuser/routes/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/chart/chart.js",
+    "file/app/modules/entities/chart/chart.js.html",
+    "app/modules/entities/chart/chart.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/chart/controllers/index.js",
+    "file/app/modules/entities/chart/controllers/index.js.html",
+    "app/modules/entities/chart/controllers/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/chart/index.js",
+    "file/app/modules/entities/chart/index.js.html",
+    "app/modules/entities/chart/index.js",
     "file"
   ],
   [
@@ -1029,36 +1197,6 @@ window.esdocSearchIndex = [
     "app/modules/entities/crud/controllers/index.js",
     "file/app/modules/entities/crud/controllers/index.js.html",
     "app/modules/entities/crud/controllers/index.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/crud/enums/fuzziness.js",
-    "file/app/modules/entities/crud/enums/fuzziness.js.html",
-    "app/modules/entities/crud/enums/fuzziness.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/crud/enums/operator.js",
-    "file/app/modules/entities/crud/enums/operator.js.html",
-    "app/modules/entities/crud/enums/operator.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/crud/enums/sort_mode.js",
-    "file/app/modules/entities/crud/enums/sort_mode.js.html",
-    "app/modules/entities/crud/enums/sort_mode.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/crud/enums/sort_order.js",
-    "file/app/modules/entities/crud/enums/sort_order.js.html",
-    "app/modules/entities/crud/enums/sort_order.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/crud/enums/zero_terms_query.js",
-    "file/app/modules/entities/crud/enums/zero_terms_query.js.html",
-    "app/modules/entities/crud/enums/zero_terms_query.js",
     "file"
   ],
   [
@@ -1182,6 +1320,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "app/modules/entities/crud/odm.js~odm#ocreate",
+    "class/app/modules/entities/crud/odm.js~ODM.html#instance-method-ocreate",
+    "app/modules/entities/crud/odm.js~ODM#ocreate",
+    "method"
+  ],
+  [
+    "app/modules/entities/crud/odm.js~odm#oupdate",
+    "class/app/modules/entities/crud/odm.js~ODM.html#instance-method-oupdate",
+    "app/modules/entities/crud/odm.js~ODM#oupdate",
+    "method"
+  ],
+  [
     "app/modules/entities/crud/odm.js~odm#post_create_hook",
     "class/app/modules/entities/crud/odm.js~ODM.html#instance-method-post_create_hook",
     "app/modules/entities/crud/odm.js~ODM#post_create_hook",
@@ -1230,9 +1380,27 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "app/modules/entities/crud/odm.js~odm._bulk_create_or_update",
+    "class/app/modules/entities/crud/odm.js~ODM.html#static-method-_bulk_create_or_update",
+    "app/modules/entities/crud/odm.js~ODM._bulk_create_or_update",
+    "method"
+  ],
+  [
     "app/modules/entities/crud/odm.js~odm._create_or_update",
     "class/app/modules/entities/crud/odm.js~ODM.html#static-method-_create_or_update",
     "app/modules/entities/crud/odm.js~ODM._create_or_update",
+    "method"
+  ],
+  [
+    "app/modules/entities/crud/odm.js~odm.bulk_create",
+    "class/app/modules/entities/crud/odm.js~ODM.html#static-method-bulk_create",
+    "app/modules/entities/crud/odm.js~ODM.bulk_create",
+    "method"
+  ],
+  [
+    "app/modules/entities/crud/odm.js~odm.bulk_update",
+    "class/app/modules/entities/crud/odm.js~ODM.html#static-method-bulk_update",
+    "app/modules/entities/crud/odm.js~ODM.bulk_update",
     "method"
   ],
   [
@@ -1257,6 +1425,12 @@ window.esdocSearchIndex = [
     "app/modules/entities/crud/odm.js~odm.fetch_mapping",
     "class/app/modules/entities/crud/odm.js~ODM.html#static-method-fetch_mapping",
     "app/modules/entities/crud/odm.js~ODM.fetch_mapping",
+    "method"
+  ],
+  [
+    "app/modules/entities/crud/odm.js~odm.fetch_settings",
+    "class/app/modules/entities/crud/odm.js~ODM.html#static-method-fetch_settings",
+    "app/modules/entities/crud/odm.js~ODM.fetch_settings",
     "method"
   ],
   [
@@ -1308,27 +1482,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/crud/search.js",
-    "file/app/modules/entities/crud/search.js.html",
-    "app/modules/entities/crud/search.js",
-    "file"
-  ],
-  [
     "app/modules/entities/entity/entity.js",
     "file/app/modules/entities/entity/entity.js.html",
     "app/modules/entities/entity/entity.js",
     "file"
   ],
   [
-    "app/modules/entities/entity/routes/index.js",
-    "file/app/modules/entities/entity/routes/index.js.html",
-    "app/modules/entities/entity/routes/index.js",
+    "app/modules/entities/exporter/controllers/hal.js",
+    "file/app/modules/entities/exporter/controllers/hal.js.html",
+    "app/modules/entities/exporter/controllers/hal.js",
     "file"
   ],
   [
-    "app/modules/entities/exporter/controllers/index.js",
-    "file/app/modules/entities/exporter/controllers/index.js.html",
-    "app/modules/entities/exporter/controllers/index.js",
+    "app/modules/entities/exporter/controllers/repec.js",
+    "file/app/modules/entities/exporter/controllers/repec.js.html",
+    "app/modules/entities/exporter/controllers/repec.js",
     "file"
   ],
   [
@@ -1344,9 +1512,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/exporter/routes/index.js",
-    "file/app/modules/entities/exporter/routes/index.js.html",
-    "app/modules/entities/exporter/routes/index.js",
+    "app/modules/entities/exporter/pipeline/bibtex_collector.js",
+    "file/app/modules/entities/exporter/pipeline/bibtex_collector.js.html",
+    "app/modules/entities/exporter/pipeline/bibtex_collector.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/exporter/pipeline/bibtex_pipeline.js",
+    "file/app/modules/entities/exporter/pipeline/bibtex_pipeline.js.html",
+    "app/modules/entities/exporter/pipeline/bibtex_pipeline.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/exporter/pipeline/csv_collector.js",
+    "file/app/modules/entities/exporter/pipeline/csv_collector.js.html",
+    "app/modules/entities/exporter/pipeline/csv_collector.js",
     "file"
   ],
   [
@@ -1386,9 +1566,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/importer/controllers/index.js",
-    "file/app/modules/entities/importer/controllers/index.js.html",
-    "app/modules/entities/importer/controllers/index.js",
+    "app/modules/entities/identifier/controllers/index.js",
+    "file/app/modules/entities/identifier/controllers/index.js.html",
+    "app/modules/entities/identifier/controllers/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/identifier/identifier.js",
+    "file/app/modules/entities/identifier/identifier.js.html",
+    "app/modules/entities/identifier/identifier.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/identifier/index.js",
+    "file/app/modules/entities/identifier/index.js.html",
+    "app/modules/entities/identifier/index.js",
     "file"
   ],
   [
@@ -1401,12 +1593,6 @@ window.esdocSearchIndex = [
     "app/modules/entities/importer/index.js",
     "file/app/modules/entities/importer/index.js.html",
     "app/modules/entities/importer/index.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/importer/routes/index.js",
-    "file/app/modules/entities/importer/routes/index.js.html",
-    "app/modules/entities/importer/routes/index.js",
     "file"
   ],
   [
@@ -1428,6 +1614,24 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "app/modules/entities/mail_template/controllers/index.js",
+    "file/app/modules/entities/mail_template/controllers/index.js.html",
+    "app/modules/entities/mail_template/controllers/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/mail_template/index.js",
+    "file/app/modules/entities/mail_template/index.js.html",
+    "app/modules/entities/mail_template/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/mail_template/mail_template.js",
+    "file/app/modules/entities/mail_template/mail_template.js.html",
+    "app/modules/entities/mail_template/mail_template.js",
+    "file"
+  ],
+  [
     "app/modules/entities/menu/controllers/index.js",
     "file/app/modules/entities/menu/controllers/index.js.html",
     "app/modules/entities/menu/controllers/index.js",
@@ -1446,9 +1650,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/menu/routes/index.js",
-    "file/app/modules/entities/menu/routes/index.js.html",
-    "app/modules/entities/menu/routes/index.js",
+    "app/modules/entities/mswpublication/controllers/index.js",
+    "file/app/modules/entities/mswpublication/controllers/index.js.html",
+    "app/modules/entities/mswpublication/controllers/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/mswpublication/index.js",
+    "file/app/modules/entities/mswpublication/index.js.html",
+    "app/modules/entities/mswpublication/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/mswpublication/mswpublication.js",
+    "file/app/modules/entities/mswpublication/mswpublication.js.html",
+    "app/modules/entities/mswpublication/mswpublication.js",
     "file"
   ],
   [
@@ -1470,12 +1686,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/page/routes/index.js",
-    "file/app/modules/entities/page/routes/index.js.html",
-    "app/modules/entities/page/routes/index.js",
-    "file"
-  ],
-  [
     "app/modules/entities/pipeline/controllers/index.js",
     "file/app/modules/entities/pipeline/controllers/index.js.html",
     "app/modules/entities/pipeline/controllers/index.js",
@@ -1491,12 +1701,6 @@ window.esdocSearchIndex = [
     "app/modules/entities/pipeline/routes/index.js",
     "file/app/modules/entities/pipeline/routes/index.js.html",
     "app/modules/entities/pipeline/routes/index.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/publication/controllers/index.js",
-    "file/app/modules/entities/publication/controllers/index.js.html",
-    "app/modules/entities/publication/controllers/index.js",
     "file"
   ],
   [
@@ -1524,9 +1728,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/publication/routes/index.js",
-    "file/app/modules/entities/publication/routes/index.js.html",
-    "app/modules/entities/publication/routes/index.js",
+    "app/modules/entities/query/controllers/index.js",
+    "file/app/modules/entities/query/controllers/index.js.html",
+    "app/modules/entities/query/controllers/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/query/index.js",
+    "file/app/modules/entities/query/index.js.html",
+    "app/modules/entities/query/index.js",
+    "file"
+  ],
+  [
+    "app/modules/entities/query/query.js",
+    "file/app/modules/entities/query/query.js.html",
+    "app/modules/entities/query/query.js",
     "file"
   ],
   [
@@ -1548,12 +1764,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/entities/role/routes/index.js",
-    "file/app/modules/entities/role/routes/index.js.html",
-    "app/modules/entities/role/routes/index.js",
-    "file"
-  ],
-  [
     "app/modules/entities/template/controllers/index.js",
     "file/app/modules/entities/template/controllers/index.js.html",
     "app/modules/entities/template/controllers/index.js",
@@ -1563,12 +1773,6 @@ window.esdocSearchIndex = [
     "app/modules/entities/template/index.js",
     "file/app/modules/entities/template/index.js.html",
     "app/modules/entities/template/index.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/template/routes/index.js",
-    "file/app/modules/entities/template/routes/index.js.html",
-    "app/modules/entities/template/routes/index.js",
     "file"
   ],
   [
@@ -1611,12 +1815,6 @@ window.esdocSearchIndex = [
     "app/modules/entities/widget/index.js",
     "file/app/modules/entities/widget/index.js.html",
     "app/modules/entities/widget/index.js",
-    "file"
-  ],
-  [
-    "app/modules/entities/widget/routes/index.js",
-    "file/app/modules/entities/widget/routes/index.js.html",
-    "app/modules/entities/widget/routes/index.js",
     "file"
   ],
   [
@@ -1701,6 +1899,12 @@ window.esdocSearchIndex = [
     "app/modules/pipeline/pipeline.js~pipeline._merge_put",
     "class/app/modules/pipeline/pipeline.js~Pipeline.html#static-method-_merge_put",
     "app/modules/pipeline/pipeline.js~Pipeline._merge_put",
+    "method"
+  ],
+  [
+    "app/modules/pipeline/pipeline.js~pipeline._papply",
+    "class/app/modules/pipeline/pipeline.js~Pipeline.html#static-method-_papply",
+    "app/modules/pipeline/pipeline.js~Pipeline._papply",
     "method"
   ],
   [
@@ -1812,6 +2016,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "app/modules/pipeline/validator/validator.js~validator#constructor",
+    "class/app/modules/pipeline/validator/validator.js~Validator.html#instance-constructor-constructor",
+    "app/modules/pipeline/validator/validator.js~Validator#constructor",
+    "method"
+  ],
+  [
     "app/modules/pipeline/validator/validator.js~validator#validate",
     "class/app/modules/pipeline/validator/validator.js~Validator.html#instance-method-validate",
     "app/modules/pipeline/validator/validator.js~Validator#validate",
@@ -1854,9 +2064,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "app/modules/utils/api.js",
-    "file/app/modules/utils/api.js.html",
-    "app/modules/utils/api.js",
+    "app/modules/utils/auth.js",
+    "file/app/modules/utils/auth.js.html",
+    "app/modules/utils/auth.js",
+    "file"
+  ],
+  [
+    "app/modules/utils/bibtex.js",
+    "file/app/modules/utils/bibtex.js.html",
+    "app/modules/utils/bibtex.js",
+    "file"
+  ],
+  [
+    "app/modules/utils/cache.js",
+    "file/app/modules/utils/cache.js.html",
+    "app/modules/utils/cache.js",
     "file"
   ],
   [
@@ -1869,6 +2091,12 @@ window.esdocSearchIndex = [
     "app/modules/utils/lang.js",
     "file/app/modules/utils/lang.js.html",
     "app/modules/utils/lang.js",
+    "file"
+  ],
+  [
+    "app/modules/utils/mailer.js",
+    "file/app/modules/utils/mailer.js.html",
+    "app/modules/utils/mailer.js",
     "file"
   ],
   [

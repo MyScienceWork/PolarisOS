@@ -90,6 +90,7 @@
                   "column": 22
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -109,7 +110,6 @@
                 "name": "_windowMs"
               },
               "variance": null,
-              "static": false,
               "typeAnnotation": {
                 "type": "TypeAnnotation",
                 "start": 42,
@@ -162,6 +162,7 @@
                   "column": 17
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -181,7 +182,6 @@
                 "name": "_max"
               },
               "variance": null,
-              "static": false,
               "typeAnnotation": {
                 "type": "TypeAnnotation",
                 "start": 60,
@@ -234,6 +234,7 @@
                   "column": 18
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -253,7 +254,6 @@
                 "name": "_hits"
               },
               "variance": null,
-              "static": false,
               "typeAnnotation": {
                 "type": "TypeAnnotation",
                 "start": 79,
@@ -324,6 +324,7 @@
                   "column": 5
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -342,7 +343,6 @@
                 },
                 "name": "constructor"
               },
-              "static": false,
               "kind": "constructor",
               "id": null,
               "generator": false,
@@ -985,7 +985,13 @@
                   }
                 ],
                 "directives": []
-              }
+              },
+              "leadingComments": [
+                {
+                  "type": "CommentBlock",
+                  "value": "*\n * @param \n * {number} windowMs \n * @param \n * {number} max \n"
+                }
+              ]
             },
             {
               "type": "ClassMethod",
@@ -1001,6 +1007,7 @@
                   "column": 5
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -1019,7 +1026,6 @@
                 },
                 "name": "incr"
               },
-              "static": false,
               "kind": "method",
               "id": null,
               "generator": false,
@@ -1151,7 +1157,8 @@
                     },
                     "name": "Promise"
                   }
-                }
+                },
+                "predicate": null
               },
               "body": {
                 "type": "BlockStatement",
@@ -1731,7 +1738,7 @@
               "leadingComments": [
                 {
                   "type": "CommentBlock",
-                  "value": "*\n * @desc \n *  \n * @param \n * {string} key  \n * @return \n * {Promise} \n"
+                  "value": "*\n * @desc \n *  \n * @param \n * {string} key  \n * @return \n * {Promise<existentialtypeparam>} \n"
                 }
               ]
             },
@@ -1749,6 +1756,7 @@
                   "column": 5
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -1767,7 +1775,6 @@
                 },
                 "name": "resetAll"
               },
-              "static": false,
               "kind": "method",
               "id": null,
               "generator": false,
@@ -1851,7 +1858,8 @@
                     },
                     "name": "Promise"
                   }
-                }
+                },
+                "predicate": null
               },
               "body": {
                 "type": "BlockStatement",
@@ -1988,7 +1996,7 @@
               "leadingComments": [
                 {
                   "type": "CommentBlock",
-                  "value": "*\n * @desc \n *  \n * @return \n * {Promise} \n"
+                  "value": "*\n * @desc \n *  \n * @return \n * {Promise<existentialtypeparam>} \n"
                 }
               ]
             },
@@ -2006,6 +2014,7 @@
                   "column": 5
                 }
               },
+              "static": false,
               "computed": false,
               "key": {
                 "type": "Identifier",
@@ -2024,7 +2033,6 @@
                 },
                 "name": "resetKey"
               },
-              "static": false,
               "kind": "method",
               "id": null,
               "generator": false,
@@ -2156,7 +2164,8 @@
                     },
                     "name": "Promise"
                   }
-                }
+                },
+                "predicate": null
               },
               "body": {
                 "type": "BlockStatement",
@@ -2295,7 +2304,7 @@
               "leadingComments": [
                 {
                   "type": "CommentLine",
-                  "value": "*\n * @return \n * {Promise} \n",
+                  "value": "*\n * @return \n * {Promise<existentialtypeparam>} \n",
                   "start": 629,
                   "end": 691,
                   "loc": {
@@ -2428,6 +2437,7 @@
                     "column": 22
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -2447,7 +2457,6 @@
                   "name": "_windowMs"
                 },
                 "variance": null,
-                "static": false,
                 "typeAnnotation": {
                   "type": "TypeAnnotation",
                   "start": 42,
@@ -2500,6 +2509,7 @@
                     "column": 17
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -2519,7 +2529,6 @@
                   "name": "_max"
                 },
                 "variance": null,
-                "static": false,
                 "typeAnnotation": {
                   "type": "TypeAnnotation",
                   "start": 60,
@@ -2572,6 +2581,7 @@
                     "column": 18
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -2591,7 +2601,6 @@
                   "name": "_hits"
                 },
                 "variance": null,
-                "static": false,
                 "typeAnnotation": {
                   "type": "TypeAnnotation",
                   "start": 79,
@@ -2662,6 +2671,7 @@
                     "column": 5
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -2680,7 +2690,6 @@
                   },
                   "name": "constructor"
                 },
-                "static": false,
                 "kind": "constructor",
                 "id": null,
                 "generator": false,
@@ -3323,7 +3332,13 @@
                     }
                   ],
                   "directives": []
-                }
+                },
+                "leadingComments": [
+                  {
+                    "type": "CommentBlock",
+                    "value": "*\n * @param \n * {number} windowMs \n * @param \n * {number} max \n"
+                  }
+                ]
               },
               {
                 "type": "ClassMethod",
@@ -3339,6 +3354,7 @@
                     "column": 5
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -3357,7 +3373,6 @@
                   },
                   "name": "incr"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -3489,7 +3504,8 @@
                       },
                       "name": "Promise"
                     }
-                  }
+                  },
+                  "predicate": null
                 },
                 "body": {
                   "type": "BlockStatement",
@@ -4069,7 +4085,7 @@
                 "leadingComments": [
                   {
                     "type": "CommentBlock",
-                    "value": "*\n * @desc \n *  \n * @param \n * {string} key  \n * @return \n * {Promise} \n"
+                    "value": "*\n * @desc \n *  \n * @param \n * {string} key  \n * @return \n * {Promise<existentialtypeparam>} \n"
                   }
                 ]
               },
@@ -4087,6 +4103,7 @@
                     "column": 5
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -4105,7 +4122,6 @@
                   },
                   "name": "resetAll"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -4189,7 +4205,8 @@
                       },
                       "name": "Promise"
                     }
-                  }
+                  },
+                  "predicate": null
                 },
                 "body": {
                   "type": "BlockStatement",
@@ -4326,7 +4343,7 @@
                 "leadingComments": [
                   {
                     "type": "CommentBlock",
-                    "value": "*\n * @desc \n *  \n * @return \n * {Promise} \n"
+                    "value": "*\n * @desc \n *  \n * @return \n * {Promise<existentialtypeparam>} \n"
                   }
                 ]
               },
@@ -4344,6 +4361,7 @@
                     "column": 5
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -4362,7 +4380,6 @@
                   },
                   "name": "resetKey"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -4494,7 +4511,8 @@
                       },
                       "name": "Promise"
                     }
-                  }
+                  },
+                  "predicate": null
                 },
                 "body": {
                   "type": "BlockStatement",
@@ -4633,7 +4651,7 @@
                 "leadingComments": [
                   {
                     "type": "CommentLine",
-                    "value": "*\n * @return \n * {Promise} \n",
+                    "value": "*\n * @return \n * {Promise<existentialtypeparam>} \n",
                     "start": 629,
                     "end": 691,
                     "loc": {

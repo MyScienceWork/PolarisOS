@@ -138,10 +138,10 @@
                       }
                     },
                     "extra": {
-                      "rawValue": 3000,
-                      "raw": "3000"
+                      "rawValue": 4002,
+                      "raw": "4002"
                     },
-                    "value": 3000
+                    "value": 4002
                   }
                 },
                 {
@@ -971,10 +971,10 @@
                         }
                       },
                       "extra": {
-                        "rawValue": 3000,
-                        "raw": "3000"
+                        "rawValue": 4002,
+                        "raw": "4002"
                       },
-                      "value": 3000
+                      "value": 4002
                     }
                   },
                   {
@@ -1821,7 +1821,7 @@
         "binop": null,
         "updateContext": null
       },
-      "value": 3000,
+      "value": 4002,
       "start": 32,
       "end": 36,
       "loc": {

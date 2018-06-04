@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">app/modules/entities/exporter/controllers/hal.js | PolarisOS</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:type" content="website"><meta property="og:url" content="https://www.mysciencework.com"><meta property="og:site_name" content="PolarisOS"><meta property="og:title" content="PolarisOS"><meta property="og:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"><meta property="og:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="og:author" content="MyScienceWork"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="PolarisOS"><meta property="twitter:description" content="MyScienceWork provides a suite of data-driven solutions for research institutions, scientific publishers and private-sector R&amp;D companies. MyScienceWork&apos;s comprehensive database includes more than 70 million scientific publications and 12 million patents."><meta property="twitter:image" content="https://www.mysciencework.com/bundles/home/images/logo-primary-medium.png"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.png" style="width:34px;"></a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/MyScienceWork/PolarisOS"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-create">create</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-update">update</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#csl-styles">csl_styles</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add_styles">add_styles</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#initializations">initializations</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initialize_routes">initialize_routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-3rdparty-rss">modules/3rdparty/rss</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_rss_feed">generate_rss_feed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-auth">modules/auth</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-FilterSchema">FilterSchema</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud">modules/entities/crud</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/entities/crud/odm.js~ODM.html">ODM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_sort">get_sort</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_aggregation">transform_to_aggregation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_search">transform_to_search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_to_sort">transform_to_sort</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-crud-controllers">modules/entities/crud/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-count">count</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del">del</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get">get</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-gets">gets</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post">post</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_with_action">post_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put">put</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_with_action">put_with_action</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-search">search</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validate">validate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-exporter-controllers">modules/entities/exporter/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_author_info">get_author_info</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_edition_stmt">get_edition_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_monogr">get_monogr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_notes_stmt">get_notes_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_profile_desc">get_profile_desc</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_publication_stmt">get_publication_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_series_stmt">get_series_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_source_desc">get_source_desc</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_title_stmt">get_title_stmt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform_publication_to_hal">transform_publication_to_hal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-mswpublication-controllers">modules/entities/mswpublication/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email">send_email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-role-controllers">modules/entities/role/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-controllers">modules/entities/user/controllers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-access">access</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authenticate">authenticate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-entities-user-routes">modules/entities/user/routes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-routes">routes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-exceptions">modules/exceptions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-GenericException">GenericException</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline">modules/pipeline</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/pipeline.js~Pipeline.html">Pipeline</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer">modules/pipeline/completer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-complete">complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-completer-complfunctions">modules/pipeline/completer/complfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-denormalization">denormalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_complete">generic_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-initial">initial</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-key_complete">key_complete</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-secret_complete">secret_complete</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter">modules/pipeline/formatter</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format">format</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatting">formatting</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-formatter-formatfunctions">modules/pipeline/formatter/formatfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-format_string">format_string</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generic_formatter">generic_formatter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-oarray_to_array">oarray_to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-set_default_lang_for_array">set_default_lang_for_array</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer">modules/pipeline/transformer</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-apply_transducer">apply_transducer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-transform">transform</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-transformer-transfunctions">modules/pipeline/transformer/transfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_in_list">get_in_list</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-identity">identity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-template_identity">template_identity</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator">modules/pipeline/validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/modules/pipeline/validator/validator.js~Validator.html">Validator</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-pipeline-validator-valfunctions">modules/pipeline/validator/valfunctions</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-if_exists">if_exists</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_conditioned_on">is_conditioned_on</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_unique">is_unique</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_json">is_valid_json</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#modules-utils">modules/utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-cas_auth">cas_auth</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-do_standard_checks">do_standard_checks</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_through_ldap">find_through_ldap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_user">find_user</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_cas_info">get_cas_info</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-login_auth">login_auth</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-map_ldap_to_pos">map_ldap_to_pos</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escape_from_bibtex">escape_from_bibtex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escape_to_bibtex">escape_to_bibtex</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_key">generate_key</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_secret">generate_secret</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_config">get_config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values">get_language_values</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values_from_langs">get_language_values_from_langs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_language_values_from_langs_and_keys">get_language_values_from_langs_and_keys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-retrieve_single_quantity">retrieve_single_quantity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_smtp_transport">get_smtp_transport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email">send_email</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email_through_smtp">send_email_through_smtp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-send_email_with">send_email_with</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-api_middlewares">api_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-app_middlewares">app_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-del_middlewares">del_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_del_routes">generate_del_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_entity_routes">generate_entity_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_get_routes">generate_get_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_gets_routes">generate_gets_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_post_routes">generate_post_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generate_put_routes">generate_put_routes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-get_middlewares">get_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-koa_middlewares">koa_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-post_middlewares">post_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-put_middlewares">put_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-upload_middlewares">upload_middlewares</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-is_valid_stream">is_valid_stream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_array">to_array</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_buffer">to_buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add_single">add_single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-download">download</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-multi_download">multi_download</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_return_inner_object">_return_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-_test_inner_object">_test_inner_object</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filter_empty_or_null_objects">filter_empty_or_null_objects</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_object_with_path">find_object_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_popvalue_with_path">find_popvalue_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-find_value_with_path">find_value_with_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_whitelist_blacklist_query">forge_whitelist_blacklist_query</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasProperty">hasProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isNil">isNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-make_nested_object_from_path">make_nested_object_from_path</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_concat">merge_with_concat</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_replacement">merge_with_replacement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-merge_with_superposition">merge_with_superposition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_and_execute">traverse_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traverse_recreate_and_execute">traverse_recreate_and_execute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-forge_ok_response">forge_ok_response</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-strip_xhtml_tags">strip_xhtml_tags</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-to_object">to_object</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/modules/entities/exporter/controllers/hal.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// @flow
+const moment = require(&apos;moment&apos;);
+const Utils = require(&apos;../../../utils/utils&apos;);
+const EntitiesUtils = require(&apos;../../../utils/entities&apos;);
+
+// HAL DOMAIN: shs.socio
+
+async function get_hal_type(publication: Object): Promise&lt;string&gt; {
+    const type = Utils.find_value_with_path(publication, &apos;type&apos;.split(&apos;.&apos;));
+    const subtype = Utils.find_value_with_path(publication, &apos;subtype&apos;.split(&apos;.&apos;));
+    const typology = await EntitiesUtils.retrieve_and_get_source(&apos;typology&apos;, type);
+
+    if (!typology) {
+        return &apos;UNDEFINED&apos;;
+    }
+
+    if (subtype) {
+        const child = typology.children.find(c =&gt; c.name === &apos;subtype&apos;);
+        if (child) {
+            return child.hal || &apos;UNDEFINED&apos;;
+        }
+    }
+    return typology.hal || &apos;UNDEFINED&apos;;
+}
+
+async function get_author_info(author: Object, publication: Object): Promise&lt;string&gt; {
+    const author_id = author.label || &apos;__dummy__&apos;;
+    const author_info = await EntitiesUtils.retrieve_and_get_source(&apos;author&apos;, author_id);
+
+    if (!author_info) {
+        return &apos;&apos;;
+    }
+
+    let role_info = await EntitiesUtils.retrieve_and_get_source(&apos;contributor_role&apos;, author.role);
+
+    if (!role_info) {
+        role_info = { hal: &apos;aut&apos;, value: &apos;author&apos; };
+    }
+
+    const forename_ = author_info.firstname &amp;&amp; author_info.firstname.trim() !== &apos;&apos; ?
+        `&lt;forename type=&quot;first&quot;&gt;${author_info.firstname}&lt;/forename&gt;` : &apos;&apos;;
+
+    return `&lt;author role=&quot;${role_info.hal}&quot;&gt;`
+        + `&lt;persName&gt;${forename_}&lt;surname&gt;${author_info.lastname}&lt;/surname&gt;&lt;/persName&gt;&lt;/author&gt;`;
+}
+
+async function get_title_stmt(publication: Object, tag: string = &apos;titleStmt&apos;): Promise&lt;string&gt; {
+    const lang = Utils.find_value_with_path(publication, &apos;lang&apos;.split(&apos;.&apos;)).toLowerCase();
+
+    // Titles
+    const title = Utils.find_value_with_path(publication, &apos;title.content&apos;.split(&apos;.&apos;));
+    const ttitles = Utils.find_value_with_path(publication, &apos;translated_titles&apos;.split(&apos;.&apos;)) || [];
+
+    const ok_ttitles = ttitles.filter(t =&gt; t.lang != null &amp;&amp; t.lang.trim() !== &apos;&apos;);
+
+    let titles_ = [`&lt;title xml:lang=${lang}&gt;${title}&lt;/title&gt;`];
+    titles_ = titles_.concat(ok_ttitles.map(t =&gt; `&lt;title xml:lang=${t.lang.toLowerCase()}&gt;${t.content}&lt;/title&gt;`));
+    //------------------
+
+    // Subtitles
+    const subtitles = Utils.find_value_with_path(publication, &apos;subtitles&apos;.split(&apos;.&apos;)) || [];
+
+    const ok_subtitles = subtitles.filter(t =&gt; t.lang != null &amp;&amp; t.lang.trim() !== &apos;&apos;);
+
+    const subtitles_ = ok_subtitles.map(t =&gt; `&lt;title xml:lang=${t.lang.toLowerCase()}&gt;${t.content}&lt;/title&gt;`);
+    //------------------
+
+    const authors = Utils.find_value_with_path(publication, &apos;contributors&apos;.split(&apos;.&apos;)) || [];
+
+    const authors_ = await Promise.all(authors.map(a =&gt; get_author_info(a, publication)));
+
+    let enclosure = `&lt;${tag}&gt;`;
+    enclosure += titles_.join(&apos;\n&apos;);
+    enclosure += subtitles_.join(&apos;\n&apos;);
+    enclosure += authors_.join(&apos;\n&apos;);
+    enclosure += `&lt;/${tag}&gt;`;
+    return enclosure;
+}
+
+async function get_edition_stmt(publication: Object): Promise&lt;string&gt; {
+    const files = Utils.find_value_with_path(publication, &apos;files&apos;.split(&apos;.&apos;)) || [];
+    const dates = Utils.find_value_with_path(publication, &apos;dates&apos;.split(&apos;.&apos;)) || {};
+    if (files.length === 0) {
+        return &apos;&apos;;
+    }
+    const master = files.find(f =&gt; f.is_master) || files[0];
+    if (master.restricted) {
+        return &apos;&apos;;
+    }
+
+    const written = `&lt;date type=&quot;whenWritten&quot;&gt;${moment(dates.publication).format(&apos;YYYY-MM-DD&apos;)}&lt;/date&gt;`;
+
+
+    let enclosure = &apos;&lt;editionStmt&gt;&lt;edition&gt;&apos;;
+    enclosure += written;
+    enclosure += &apos;&lt;/edition&gt;&lt;/editionStmt&gt;&apos;;
+    return enclosure;
+}
+
+async function get_publication_stmt(publication: Object): Promise&lt;string&gt; {
+    const license = Utils.find_value_with_path(publication, &apos;diffusion.rights.license&apos;.split(&apos;.&apos;));
+
+    if (!license) {
+        return &apos;&apos;;
+    }
+    const license_info = await EntitiesUtils.retrieve_and_get_source(&apos;license&apos;, license);
+    if (!license_info) {
+        return &apos;&apos;;
+    }
+    if (!license_info.hal || license_info.hal.trim() === &apos;&apos;) {
+        return &apos;&apos;;
+    }
+
+    const license_ = `&lt;licence target=${license_info.hal} /&gt;`;
+
+    let enclosure = &apos;&lt;publicationStmt&gt;&lt;availability&gt;&apos;;
+    enclosure += license_;
+    enclosure += &apos;&lt;/availability&gt;&lt;/publicationStmt&gt;&apos;;
+    return enclosure;
+}
+
+async function get_series_stmt(publication: Object): Promise&lt;string&gt; {
+    return &apos;&apos;;
+    /* let enclosure = &apos;&lt;seriesStmt&gt;&apos;;
+    enclosure += &apos;&lt;/seriesStmt&gt;&apos;;
+    return enclosure;*/
+}
+
+async function get_notes_stmt(publication: Object): Promise&lt;string&gt; {
+    const description = Utils.find_value_with_path(publication, &apos;description&apos;.split(&apos;.&apos;)) || &apos;&apos;;
+    const description_ = `&lt;note type=&quot;description&quot;&gt;${description}&lt;/description&gt;`;
+
+    let enclosure = &apos;&lt;notesStmt&gt;&apos;;
+    enclosure += description_;
+    enclosure += &apos;&lt;/notesStmt&gt;&apos;;
+    return enclosure;
+}
+
+async function get_monogr(publication: Object): Promise&lt;string&gt; {
+    const ids = Utils.find_value_with_path(publication, &apos;ids&apos;.split(&apos;.&apos;)) || [];
+    const isbn = ids.find(id =&gt; id.type === &apos;isbn&apos;);
+    const journal = Utils.find_value_with_path(publication, &apos;journal&apos;.split(&apos;.&apos;)) || &apos;__dummy__&apos;;
+    const book_title = Utils.find_value_with_path(publication, &apos;publication_title&apos;.split(&apos;.&apos;));
+    const dates = Utils.find_value_with_path(publication, &apos;dates&apos;.split(&apos;.&apos;)) || {};
+    const conference = Utils.find_value_with_path(publication, &apos;conference&apos;.split(&apos;.&apos;)) || &apos;__dummy__&apos;;
+    const localisation = Utils.find_value_with_path(publication, &apos;localisation&apos;.split(&apos;.&apos;)) || {};
+    const editor = Utils.find_value_with_path(publication, &apos;editor&apos;.split(&apos;.&apos;)) || &apos;__dummy__&apos;;
+    const institution = Utils.find_value_with_path(publication, &apos;delivery_institution&apos;.split(&apos;.&apos;)) || &apos;__dummy__&apos;;
+    const volume = Utils.find_value_with_path(publication, &apos;volume&apos;.split(&apos;.&apos;));
+    const issue = Utils.find_value_with_path(publication, &apos;number&apos;.split(&apos;.&apos;));
+    const pagination = Utils.find_value_with_path(publication, &apos;pagination&apos;.split(&apos;.&apos;));
+    const serie = Utils.find_value_with_path(publication, &apos;collection&apos;.split(&apos;.&apos;));
+
+    const journal_info = await EntitiesUtils.retrieve_and_get_source(&apos;journal&apos;, journal);
+    const conference_info = await EntitiesUtils.retrieve_and_get_source(&apos;conference&apos;, conference);
+    const country_info = await EntitiesUtils.retrieve_and_get_source(&apos;country&apos;, localisation.country || &apos;__dummy__&apos;);
+    const editor_info = await EntitiesUtils.retrieve_and_get_source(&apos;editor&apos;, editor);
+    const institution_info = await EntitiesUtils.retrieve_and_get_source(&apos;institution&apos;, institution);
+
+
+    let journal_ = &apos;&apos;;
+    let isbn_ = &apos;&apos;;
+    let book_title_ = &apos;&apos;;
+    let meeting_ = &apos;&apos;;
+    let settlement_ = &apos;&apos;;
+    let country_ = &apos;&apos;;
+    let editor_ = &apos;&apos;;
+    let school_ = &apos;&apos;;
+    let institution_ = &apos;&apos;;
+    let imprint_ = &apos;&apos;;
+
+    if (journal_info) {
+        const jids = Utils.find_value_with_path(journal_info, &apos;ids&apos;.split(&apos;.&apos;)) || [];
+        const jname = Utils.find_value_with_path(journal_info, &apos;name&apos;.split(&apos;.&apos;)) || &apos;&apos;;
+        const issn = jids.find(id =&gt; id.type === &apos;issn&apos;);
+        const eissn = jids.find(id =&gt; id.type === &apos;eissn&apos;);
+
+        journal_ += `&lt;title level=&quot;j&quot;&gt;${jname}&lt;/title&gt;`;
+        if (issn) {
+            journal_ += `&lt;idno type=&quot;issn&quot;&gt;${issn}&lt;/idno&gt;`;
+        }
+        if (eissn) {
+            journal_ += `&lt;idno type=&quot;eissn&quot;&gt;${eissn}&lt;/idno&gt;`;
+        }
+    }
+
+    if (isbn) {
+        isbn_ = `&lt;idno type=&quot;isbn&quot;&gt;${isbn}&lt;/idno&gt;`;
+    }
+
+    if (book_title) {
+        book_title_ = `&lt;title level=&quot;m&quot;&gt;${book_title}&lt;/title&gt;`;
+    }
+
+    if (localisation.city) {
+        settlement_ += `&lt;settlement&gt;${localisation.city}&lt;/settlement&gt;`;
+    }
+
+    if (country_info) {
+        country_ += `&lt;country key=&quot;${country_info.value}&quot; /&gt;`;
+    }
+
+    if (conference_info) {
+        meeting_ += `&lt;title&gt;${conference_info.name}&lt;/title&gt;`;
+        if (dates.start) {
+            meeting_ += `&lt;date type=&quot;start&quot;&gt;${moment(dates.start).format(&apos;YYYY-MM-DD&apos;)}&lt;/date&gt;`;
+        }
+        if (dates.end) {
+            meeting_ += `&lt;date type=&quot;end&quot;&gt;${moment(dates.end).format(&apos;YYYY-MM-DD&apos;)}&lt;/date&gt;`;
+        }
+
+        meeting_ += settlement_;
+        meeting_ += country_;
+    }
+
+    if (editor_info) {
+        editor_ = `&lt;editor&gt;${editor_info.label}&lt;/editor&gt;`;
+    }
+
+    const hal_type = await get_hal_type(publication);
+
+    if (institution_info &amp;&amp; institution_info.name) {
+        if (hal_type === &apos;HDR&apos; || hal_type === &apos;THESE&apos;) {
+            school_ = `&lt;authority type=&quot;school&quot;&gt;${institution_info.name}&lt;/authority&gt;`;
+        } else {
+            institution_ = `&lt;authority type=&quot;school&quot;&gt;${institution_info.name}&lt;/authority&gt;`;
+        }
+    }
+
+    if (dates.publication) {
+        imprint_ += `&lt;date type=&quot;datePub&quot;&gt;${moment(dates.publication).format(&apos;YYYY-MM-DD&apos;)}&lt;/date&gt;`;
+    }
+
+    if (volume) {
+        imprint_ += `&lt;biblScope unit=&quot;volume&quot;&gt;${volume}&lt;/biblScope&gt;`;
+    }
+
+    if (serie) {
+        imprint_ += `&lt;biblScope unit=&quot;serie&quot;&gt;${serie}&lt;/biblScope&gt;`;
+    }
+
+    if (issue) {
+        imprint_ += `&lt;biblScope unit=&quot;issue&quot;&gt;${issue}&lt;/biblScope&gt;`;
+    }
+
+    if (pagination) {
+        imprint_ += `&lt;biblScope unit=&quot;pp&quot;&gt;${pagination}&lt;/biblScope&gt;`;
+    }
+
+    if (editor_info) {
+        imprint_ += `&lt;publisher&gt;${editor_info.label}&lt;/publisher&gt;`;
+    }
+
+    if (imprint_.trim() !== &apos;&apos;) {
+        imprint_ = `&lt;imprint&gt;${imprint_}&lt;/imprint&gt;`;
+    }
+
+    return `&lt;monogr&gt;${journal_}${isbn_}${book_title_
+         }${meeting_}${settlement_}${country_}${editor_}${school_}${institution_
+         }${imprint_}&lt;/monogr&gt;`;
+}
+
+async function get_source_desc(publication: Object): Promise&lt;string&gt; {
+    const ids = Utils.find_value_with_path(publication, &apos;ids&apos;.split(&apos;.&apos;)) || [];
+    const doi = ids.find(id =&gt; id.type === &apos;doi&apos;);
+    const handle = ids.find(id =&gt; id.type === &apos;handle&apos;);
+
+
+    const analytic_ = await get_title_stmt(publication, &apos;analytic&apos;);
+    const monogr_ = await get_monogr(publication);
+
+    const doi_ = doi ? `&lt;idno type=&quot;doi&quot;&gt;${doi._id}&lt;/idno&gt;` : &apos;&apos;;
+    const handle_ = handle ? `&lt;idno type=&quot;uri&quot;&gt;${handle._id}&lt;/idno&gt;` : &apos;&apos;;
+    const bibl_ = doi_ + handle_ + monogr_ + analytic_;
+    const recording_ = &apos;&apos;;
+
+    let enclosure = `&lt;sourceDesc&gt;&lt;biblStruct&gt;${bibl_}&lt;/biblStruct&gt;`;
+    enclosure += `&lt;recordingStmt&gt;${recording_}&lt;/recordingStmt&gt;&lt;/sourceDesc&gt;`;
+    return enclosure;
+}
+
+async function get_profile_desc(publication: Object): Promise&lt;string&gt; {
+    const hal_type = await get_hal_type(publication);
+    const abstracts = Utils.find_value_with_path(publication, &apos;abstracts&apos;.split(&apos;.&apos;)) || [];
+    const keywords = Utils.find_value_with_path(publication, &apos;keywords&apos;.split(&apos;.&apos;)) || [];
+    const lang = Utils.find_value_with_path(publication, &apos;lang&apos;.split(&apos;.&apos;));
+    const ok_abstracts = abstracts.filter(t =&gt; t.lang != null &amp;&amp; t.lang.trim() !== &apos;&apos;);
+
+    const user_keywords = keywords.filter(k =&gt; k.type === &apos;user&apos;);
+
+    const abstracts_ = ok_abstracts.map(a =&gt; `&lt;abstract xml:lang=&quot;${a.lang.toLowerCase()}&quot;&gt;${a.content}&lt;/abstract&gt;`).join(&apos;\n&apos;);
+
+    const lang_usage_ = `&lt;langUsage ident=&quot;${lang.toLowerCase()}&quot; /&gt;`;
+
+    let keywords_ = &apos;&lt;keywords scheme=&quot;author&quot;&gt;&apos;;
+    keywords_ += user_keywords.map(k =&gt; `&lt;term xml:lang=&quot;en&quot;&gt;${k.value}&lt;/term&gt;`).join(&apos;\n&apos;);
+    keywords_ += &apos;&lt;/keywords&apos;;
+
+    let text_class_ = &apos;&lt;classCode scheme=&quot;halDomain&quot; n=&quot;shs.socio&quot; /&gt;&apos;;
+    text_class_ += `&lt;classCode scheme=&quot;halTypology&quot; n=&quot;${hal_type}&quot; /&gt;`;
+    text_class_ += keywords_;
+
+
+    let enclosure = &apos;&lt;profileDesc&gt;&apos;;
+    enclosure += lang_usage_;
+    enclosure += text_class_;
+    enclosure += abstracts_;
+    enclosure += &apos;&lt;/profileDesc&gt;&apos;;
+    return enclosure;
+}
+
+async function transform_publication_to_hal(publication: Object): Promise&lt;string&gt; {
+    const title = await get_title_stmt(publication);
+    const edition = &apos;&apos;;// await get_edition_stmt(publication);
+    const publi = await get_publication_stmt(publication);
+    const series = await get_series_stmt(publication);
+    const notes = await get_notes_stmt(publication);
+    const source = await get_source_desc(publication);
+    const profile = await get_profile_desc(publication);
+    const info = title + edition + publi + series + notes + source + profile;
+
+    let enclosure = &apos;&lt;TEI xmlns=&quot;http://www.tei-c.org/ns/1.0&quot; xmlns:hal=&quot;http://hal.archives-ouvertes.fr&quot;&gt;&apos;;
+    enclosure += &apos;&lt;text&gt;&apos;;
+    enclosure += &apos;&lt;body&gt;&apos;;
+    enclosure += `&lt;listBibl&gt;&lt;biblFull&gt;${info}&lt;biblFull&gt;&lt;/listBibl&gt;`;
+    enclosure += &apos;&lt;back&gt;&lt;/back&gt;&apos;;
+    enclosure += &apos;&lt;/body&gt;&apos;;
+    enclosure += &apos;&lt;/text&gt;&apos;;
+    enclosure += &apos;&lt;/TEI&gt;&apos;;
+
+    return enclosure;
+}
+
+module.exports = {
+    transform_publication_to_hal,
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
