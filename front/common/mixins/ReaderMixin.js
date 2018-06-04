@@ -44,8 +44,6 @@ module.exports = {
                 form: this.state.sinks.creations[entity],
             });
 
-            console.log('read update', obj);
-
             Vue.nextTick(() => {
                 this.$store.commit(Messages.READ, {
                     form: this.state.sinks.creations[entity],

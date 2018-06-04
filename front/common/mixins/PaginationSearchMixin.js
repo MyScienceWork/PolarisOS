@@ -35,6 +35,11 @@ module.exports = {
                 this.state.loading = false;
             }
         },
+        show_success_delete(sink) {
+            if (sink === this.resultSink) {
+                this.run_search(this.searchSink);
+            }
+        },
         switch_to_loading(sink) {
             if (sink === this.searchSink) {
                 this.state.loading = true;
@@ -327,10 +332,16 @@ module.exports = {
         current_state_search(s) {
             this.dispatch(s, this, this.searchSink);
         },
+        current_state_result(s) {
+            this.dispatch(s, this, this.resultSink);
+        },
     },
     computed: {
         current_state_search() {
             return this.fstate(this.searchSink);
+        },
+        current_state_result() {
+            return this.fstate(this.resultSink);
         },
     },
     mounted() {

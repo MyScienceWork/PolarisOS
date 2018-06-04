@@ -3,10 +3,11 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const ChartTypes = require('../../../common/lists/charttypes');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin],
     data() {
         return {
             state: {
@@ -30,6 +31,7 @@ module.exports = {
                     },
                 },
                 es_query_id: 'backoffice-chart-configuration-query',
+                my_entity: 'chart',
             },
         };
     },
