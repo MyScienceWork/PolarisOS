@@ -182,7 +182,8 @@ module.exports = {
                 state.forms[form_name].raw_content = content;
                 payload.commit(Messages.SUCCESS, { type: 'validate', form: form_name });
             } else if (action === 'delete') {
-                // Noop
+                state.forms[form_name].success = success;
+                payload.commit(Messages.SUCCESS, { type: 'delete', form: form_name });
             } else {
                 state.forms[form_name].success = success;
                 payload.commit(Messages.SUCCESS, { type: 'create', form: form_name });

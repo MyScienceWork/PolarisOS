@@ -74,7 +74,7 @@
                 :label="lang('l_start_year_bexport')"
                 :placeholder="lang('l_start_year_bexport')"
                 type="date-year"
-                :year-range-start="1500"
+                :year-range-start="0"
                 :year-range-end="next_year(4)"
                 v-if="state.activeYearTab === 1 || state.activeYearTab === 2"
             />        
@@ -84,7 +84,7 @@
                 :label="lang('l_end_year_bexport')"
                 :placeholder="lang('l_end_year_bexport')"
                 type="date-year"
-                :year-range-start="1500"
+                :year-range-start="0"
                 :year-range-end="next_year(4)"
                 v-if="state.activeYearTab === 2"
             />

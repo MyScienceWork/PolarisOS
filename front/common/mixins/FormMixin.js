@@ -15,6 +15,15 @@ module.exports = {
                 return {};
             };
         },
+        fsuccess() {
+            return (sink) => {
+                const form = this.fform(sink);
+                if ('success' in form) {
+                    return form.success;
+                }
+                return null;
+            };
+        },
         fcontent() {
             return (sink) => {
                 const myform = this.fform(sink);
@@ -74,6 +83,9 @@ module.exports = {
         show_success_validate(form) {
 
         },
+        show_success_delete(form) {
+
+        },
         show_validation(form) {
 
         },
@@ -107,6 +119,9 @@ module.exports = {
                 break;
             case 'success_read':
                 self.show_success_read(form);
+                break;
+            case 'success_delete':
+                self.show_success_delete(form);
                 break;
             case 'success_validate':
                 self.show_success_validate(form);
