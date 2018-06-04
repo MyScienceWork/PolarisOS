@@ -1,6 +1,7 @@
 const Utils = require('../utils/utils');
 const moment = require('moment');
 const _ = require('lodash');
+const Handlebars = require('../../../app/modules/utils/templating');
 
 module.exports = {
     filters: {
@@ -53,6 +54,9 @@ module.exports = {
                 return fn(value[key]);
             }
             return fn(value);
+        },
+        render(value, obj = {}) {
+            return Handlebars.compile(value)(obj);
         },
     },
 

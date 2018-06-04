@@ -11,11 +11,29 @@ const Mapping: Object = MenuMapping.msw.mappings.chart.properties;
 const Validation: Array<any> = [];
 
 const Formatting: Array<any> = [
+    {
+        aggregations: a => FormatFunctions.oarray_to_array(a),
+    },
 ];
 
 const Completion: Array<any> = [];
 
 const Defaults: Object = {
+    query: '{}',
+    format: {
+        header: '{point.key}<br />',
+        footer: '',
+        point: '{serie.name}',
+    },
+    tooltip: {
+        use_html: true,
+        shared: true,
+    },
+    axis: {
+        y: {
+            title: '',
+        },
+    },
 };
 
 const Messages: Object = {

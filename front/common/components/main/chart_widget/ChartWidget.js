@@ -1,16 +1,20 @@
 const _ = require('lodash');
 const moment = require('moment');
+const APIRoutes = require('../../../api/routes');
+const Messages = require('../../../api/messages');
 const LangMixin = require('../../../mixins/LangMixin');
 const FormCleanerMixin = require('../../../mixins/FormCleanerMixin');
 const FormMixin = require('../../../mixins/FormMixin');
+const FiltersMixin = require('../../../mixins/FiltersMixin');
 const Handlebars = require('../../../../../app/modules/utils/templating');
 
+const VSelect = require('vue-select').VueSelect;
 const Bar = require('./charts/Bar.vue');
 const Histogram = require('./charts/Histogram.vue');
 const Pie = require('./charts/Pie.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, FiltersMixin],
     props: {
         charts: { type: Array, required: true },
     },
@@ -18,6 +22,7 @@ module.exports = {
         Pie,
         Histogram,
         Bar,
+        VSelect,
     },
     data() {
         return {
@@ -49,20 +54,28 @@ module.exports = {
                 return;
             }
 
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.chart,
+            });
+
             const info = this.state.choosen_info;
             const query = JSON.parse(Handlebars.compile(info.query)(this.state.dates));
-            const aggregation = JSON.parse(info.aggregation);
+            const aggregation = JSON.parse(info.aggregations[0].aggregation);
 
             this.$store.dispatch('search', {
-                form: this.sinks.creations.chart,
-                path: info.path,
+                form: this.state.sinks.creations.chart,
+                path: APIRoutes.entity(info.entity, 'POST', true),
                 body: {
                     size: 0,
                     where: query,
                     aggregations: aggregation,
                 },
             });
-            console.log(id);
+        },
+    },
+    watch: {
+        charts(new_charts) {
+            this.state.charts = new_charts.map(c => ({ label: this.lang(c.name), value: c._id }));
         },
     },
     computed: {
@@ -75,11 +88,44 @@ module.exports = {
                 return null;
             }
 
-            console.log(content);
-            return null;
+            let ct = content;
+            let keys = Object.keys(ct);
+            while (keys.length === 1 && keys[0] !== 'buckets') {
+                ct = ct[keys[0]];
+                keys = Object.keys(ct);
+            }
+
+            if (!('buckets' in ct)) {
+                return null;
+            }
+
+
+            if (this.info.chart === 'bar') {
+                const categories = ct.buckets.map(b => (this.lang(b.key_as_string || b.key)));
+                const data = ct.buckets.map(b => b.doc_count);
+                const xaxis = { crosshair: true, categories };
+                return {
+                    xaxis,
+                    series: [
+                        {
+                            name: this.info.aggregations[0].name,
+                            data,
+                            color: this.info.aggregations[0].color,
+                        },
+                    ],
+                };
+            } else if (this.info.chart === 'pie') {
+                const data = ct.buckets.map(b => ({
+                    name: this.lang(b.key_as_string || b.key),
+                    y: b.doc_count,
+                }));
+                return {
+                    series: data,
+                };
+            }
         },
     },
     mounted() {
-        this.state.charts = this.charts.map(c => ({ label: this.lang(c.label), value: c._id }));
+        this.state.charts = this.charts.map(c => ({ label: this.lang(c.name), value: c._id }));
     },
 };

@@ -24,6 +24,7 @@ const LoginLang = require('../common/components/main/login_lang/LoginLang.vue');
 const LoginChoice = require('../common/components/main/login_choice/LoginChoice.vue');
 const MappingBuilder = require('../common/components/main/mapping_builder/MappingBuilder.vue');
 const MappingItem = require('../common/components/main/mapping_builder/subcomponents/MappingItem.vue');
+const ChartWidget = require('../common/components/main/chart_widget/ChartWidget.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -60,6 +61,7 @@ Vue.component('login-lang', LoginLang);
 Vue.component('login-choice', LoginChoice);
 Vue.component('mapping-builder', MappingBuilder);
 Vue.component('mapping-item', MappingItem);
+Vue.component('chart-widget', ChartWidget);
 
 new Vue({
     el: '#app',
