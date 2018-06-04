@@ -17,6 +17,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin, FiltersMixin],
     props: {
         charts: { type: Array, required: true },
+        defaultState: { type: Object, default: () => ({}) },
     },
     components: {
         Pie,
@@ -45,9 +46,15 @@ module.exports = {
     },
     methods: {
         update_chart(val) {
+            if (!val) {
+                this.state.choosen_info = null;
+                this.state.choosen_chart = null;
+                return;
+            }
             const id = val.value;
             const info = this.charts.find(c => c._id === id);
             this.state.choosen_info = info;
+            this.state.choosen_chart = val;
         },
         load_chart() {
             if (!this.state.choosen_info) {
@@ -71,11 +78,18 @@ module.exports = {
                     aggregations: aggregation,
                 },
             });
+
+            this.$emit('update:defaultState', {
+                choosen_chart: this.state.choosen_chart,
+                dates: this.state.dates,
+            });
         },
     },
     watch: {
         charts(new_charts) {
             this.state.charts = new_charts.map(c => ({ label: this.lang(c.name), value: c._id }));
+            this.update_chart(this.state.choosen_chart);
+            this.load_chart();
         },
     },
     computed: {
@@ -123,9 +137,25 @@ module.exports = {
                     series: data,
                 };
             }
+            return { series: [] };
         },
     },
     mounted() {
         this.state.charts = this.charts.map(c => ({ label: this.lang(c.name), value: c._id }));
+
+        if (Object.keys(this.defaultState).length === 0) {
+            return;
+        }
+
+        if (this.defaultState.dates.start) {
+            this.defaultState.dates.start = new Date(this.defaultState.dates.start);
+        }
+        if (this.defaultState.dates.end) {
+            this.defaultState.dates.end = new Date(this.defaultState.dates.end);
+        }
+
+        this.state = _.merge({}, this.state, this.defaultState);
+        this.update_chart(this.state.choosen_chart);
+        this.load_chart();
     },
 };

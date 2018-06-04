@@ -7,7 +7,7 @@
                 <div class="control"> 
                     <v-select 
                         :options="state.charts"
-                        v-model="state.choosen_chart"
+                        :value="state.choosen_chart"
                         :on-change="update_chart"
                     />
                 </div>
