@@ -62,8 +62,8 @@ const PublicationModel = require('../entities/publication/models/publications');
 const Identifier = require('../entities/identifier/identifier');
 const IdentifierModel = require('../entities/identifier/models/identifiers');
 
-// const MSWPublication = require('../entities/mswpublication/mswpublication');
-// const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
+const MSWPublication = require('../entities/mswpublication/mswpublication');
+const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
 
 const MailTemplate = require('../entities/mail_template/mail_template');
 const MailTemplateModel = require('../entities/mail_template/models/mail_templates');
@@ -265,12 +265,14 @@ async function get_model_from_type(type: string): ?Object {
         return PageModel;
     case 'menu':
         return MenuModel;
-    case 'publication':
+    case 'publication': {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+            return MSWPublicationModel;
+        }
         return PublicationModel;
+    }
     case 'identifier':
         return IdentifierModel;
-    /* case 'mswpublication':
-      return MSWPublicationModel;*/
     case 'mail_template':
         return MailTemplateModel;
     case 'chart':
@@ -317,10 +319,12 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'identifier':
         return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'publication':
+    case 'publication': {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+            return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
+        }
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
-    /* case 'mswpublication':
-      return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);*/
+    }
     case 'mail_template':
         return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'chart':
