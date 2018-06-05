@@ -40,7 +40,13 @@ function create() {
             console.warn(`No settings for mapping ${name}`);
         }
 
+        if (['msw', 'uspc'].indexOf(index_prefix) !== -1 && name === 'publication') {
+            return;
+        }
+
         if (name === 'mswpublication') {
+            index = _.merge({}, { mappings: { publication: mapping.mappings[name] } },
+                settings[name]);
             name = 'publication';
         }
 
@@ -61,6 +67,10 @@ function create() {
 
 function update() {
     _.forEach(mappings, (mapping, name) => {
+        if (['msw', 'uspc'].indexOf(index_prefix) !== -1 && name === 'publication') {
+            return;
+        }
+
         if (name === 'mswpublication') {
             name = 'publication';
         }

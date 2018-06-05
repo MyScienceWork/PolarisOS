@@ -16,6 +16,8 @@ const ExporterRoutes = require('../modules/entities/exporter/routes');
 const PublicationRoutes = require('../modules/entities/publication/routes');
 const RssRoutes = require('../modules/3rdparty/rss/routes');
 
+const index_prefix = Config.elasticsearch.index_prefix;
+
 async function initialize_routes() {
     const router = new Router();
 
@@ -61,7 +63,12 @@ async function initialize_routes() {
     ImporterRoutes(router);
     ExporterRoutes(router);
     RssRoutes(router);
-    PublicationRoutes(router);
+
+    if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
+        PublicationRoutes(router);
+    } else {
+        RouterUtils.generate_entity_routes(router, 'publication', []);
+    }
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',

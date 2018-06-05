@@ -32,7 +32,11 @@ module.exports = {
                         properties: {
                             label: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
                     },
@@ -73,7 +77,11 @@ module.exports = {
                     },
                     publicationSubtype: {
                         type: 'text',
-                        fields: { raw: { type: 'keyword' } },
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
                     },
                     issue: {
                         type: 'keyword',
@@ -112,7 +120,11 @@ module.exports = {
                             },
                             name: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
                     },
@@ -124,8 +136,6 @@ module.exports = {
                             },
                             value: {
                                 type: 'text',
-                                analyzer: 'text_analyzer',
-                                search_analyzer: 'search_analyzer',
                             },
                         },
                     },
@@ -156,19 +166,35 @@ module.exports = {
                             },
                             firstName: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             middleName: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             lastName: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             fullName: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             role: {
                                 type: 'keyword',
@@ -196,7 +222,11 @@ module.exports = {
                                     },
                                     name: {
                                         type: 'text',
-                                        fields: { raw: { type: 'keyword' } },
+                                        fields: {
+                                            raw: {
+                                                type: 'keyword',
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -244,9 +274,6 @@ module.exports = {
                                 type: 'text',
                                 index: false,
                             },
-                            issn: {
-                                type: 'keyword',
-                            },
                             journalIds: {
                                 type: 'nested',
                                 properties: {
@@ -260,13 +287,52 @@ module.exports = {
                             },
                             name: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             publisher: {
                                 type: 'text',
-                                fields: { raw: { type: 'keyword' } },
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                         },
+                    },
+                    hashes: {
+                        properties: {
+                            hashFunction: {
+                                type: 'keyword',
+                            },
+                            title: {
+                                type: 'keyword',
+                            },
+                            hashedPublication: {
+            	type: 'keyword',
+                            },
+                            parties: {
+                                properties: {
+                                    affiliations: {
+                                        type: 'keyword',
+                                    },
+                                    identifiers: {
+                                        type: 'text',
+                                    },
+                                    names: {
+                                        type: 'keyword',
+                                    },
+                                    role: {
+                                        type: 'keyword',
+                                    },
+                                },
+                                type: 'nested',
+                            },
+                        },
+                        type: 'nested',
                     },
                     keywords: {
                         type: 'nested',
@@ -275,6 +341,9 @@ module.exports = {
                                 type: 'keyword',
                             },
                             label: {
+                                type: 'keyword',
+                            },
+                            value: {
                                 type: 'keyword',
                             },
                         },
