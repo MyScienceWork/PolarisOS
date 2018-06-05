@@ -71,15 +71,16 @@ function update() {
             return;
         }
 
-        if (name === 'mswpublication') {
-            name = 'publication';
-        }
         const body = {
             properties: mapping.mappings[name].properties,
         };
 
         if ('_meta' in mapping.mappings[name]) {
             body._meta = mapping.mappings[name]._meta;
+        }
+
+        if (name === 'mswpublication') {
+            name = 'publication';
         }
 
         const response = client.indices.putMapping({
