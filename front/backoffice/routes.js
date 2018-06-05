@@ -28,4 +28,5 @@ module.exports = {
     exporter: '/admin/exporter',
     query: '/admin/query',
     mail_template: '/admin/mail_template',
+    chart: '/admin/chart_configuration',
 };

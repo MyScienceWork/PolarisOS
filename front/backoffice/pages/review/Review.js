@@ -6,12 +6,13 @@ const LangMixin = require('../../../common/mixins/LangMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
 const SortLists = require('../../../common/specs/sorts');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin, RemoveMixin],
     data() {
         return {
             state: {
@@ -30,6 +31,7 @@ module.exports = {
                         search: 'search_creation_publication',
                     },
                 },
+                my_entity: 'publication',
                 columns: {
                     'denormalization.type.label': {
                         visible: true,

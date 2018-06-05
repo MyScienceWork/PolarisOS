@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="columns is-centered" v-if="picker === 'select'">
-            <div class="column is-8" v-if="total > 0">
+            <div class="column is-8" v-if="total > 0 || view === 'abc'">
                 <p class="has-text-centered has-small-bottom-margin"><strong>{{lang(`l_browse_by_${query.entity}_label`)}}</strong></p>
                 <div class="field is-grouped">
                     <div class="control is-expanded">
@@ -62,7 +62,7 @@
         </div>
         <div class="columns is-centered" v-else-if="view === 'abc'">
             <div class="column is-10">
-                <p class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><strong>{{lang('l_browse_abc')}}</strong></p>
+                <p v-if="lang('l_browse_abc') && picker === 'select'" class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_abc')}}</strong></p>
                 <div class="columns is-multiline is-centered">
                     <div class="column is-1" v-for="agg in aggregations">
                         <article :class="['message is-abc is-font-abc-small', {'is-active-purple': state.active_abc === agg.key}]" @click.prevent="click_on_abc(agg.key)">

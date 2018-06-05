@@ -21,6 +21,7 @@ const Connector = require('./pages/connector/Connector.vue');
 const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
+const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 
 module.exports.menu = [
     [
@@ -37,7 +38,7 @@ module.exports.menu = [
         {
             section: 'l_general_section',
             name: 'l_users_page',
-            access: '',
+            access: 'user',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'user',
             routes: [Routes.user],
@@ -47,7 +48,7 @@ module.exports.menu = [
         {
             section: 'l_general_section',
             name: 'l_roles_page',
-            access: '',
+            access: 'role',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'role',
             routes: [Routes.role],
@@ -117,7 +118,7 @@ module.exports.menu = [
             submenu: [],
             component: Query,
         },
-        {
+        /* {
             section: 'l_admin_section',
             name: 'l_mails_page',
             access: 'mail_template',
@@ -126,6 +127,16 @@ module.exports.menu = [
             routes: [Routes.mail_template],
             submenu: [],
             component: MailTemplate,
+        },*/
+        {
+            section: 'l_admin_section',
+            name: 'l_charts_page',
+            access: 'chart',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'chart',
+            routes: [Routes.chart],
+            submenu: [],
+            component: ChartConfiguration,
         },
     ],
 

@@ -1,30 +1,46 @@
 <template>
 <div class="holy-grail-content">
     <div class="container is-fluid">
-        <div class="columns">
-            <div class="column is-6">
-                <widget>
-                    <span slot="title">Number of deposits per month over 2017</span>
-                    <div slot="body" id="chart_1">
+        <div class="columns is-centered">
+            <div class="column is-12">
+                <card color="red">
+                    <div slot="card-content">
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <a class="button is-info" href="#" @click.prevent="add_chart">{{lang('l_add_custom_chart')}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-centered" 
+                            v-for="(chart, i) in state.charts"
+                            :key="i" 
+                        >
+                            <div class="column">
+                                <widget 
+                                    :is-removable="true" 
+                                    @remove="() => remove_chart(i)"
+                                >
+                                    <span slot="title">Chart #{{i}}</span>
+                                    <div slot="body">
+                                        <chart-widget :charts="charts" :defaultState="chart" @update:defaultState="(info) => update_chart_info(i, info)" />
+                                    </div>
+                                </widget>
+                            </div>
+                        </div>
+                        <div class="columns is-centered" v-if="state.charts && Object.keys(state.charts).length > 0">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <a class="button is-success" href="#" @click.prevent="save_dashboard">{{lang('l_save_dashboard_configuration')}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </widget>
-            </div>
-            <div class="column is-6">
-                <widget>
-                    <span slot="title">Type of accesses</span>
-                    <div slot="body" id="chart_2">
-                        
-                    </div>
-                </widget>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column">
-                <widget>
-                    <span slot="title">Repartition of publishing authors per country in Europe</span>
-                    <div slot="body" id="chart_3">
-                    </div>
-                </widget>
+                </card>
             </div>
         </div>
     </div>
