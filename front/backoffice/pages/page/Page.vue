@@ -79,6 +79,13 @@
                                 fieldLabel="name"
                                 fieldValue="_id"
                             />
+                            <fselect 
+                                name="predefined_page" :label="lang('l_predefined_component')" 
+                                :is-required="true" 
+                                :placeholder="lang('l_predefined_component')" 
+                                :form="state.sinks.creations.page" 
+                                :options="predefined_pages"
+                            />
                             <finput 
                                 name="route" 
                                 :label="lang('l_route')" 

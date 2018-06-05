@@ -5,7 +5,6 @@ const Compose = require('koa-compose');
 const Config = require('../config');
 const RouterUtils = require('../modules/utils/router');
 const BackRoutes = require('../../front/backoffice/routes');
-const CommonRoutes = require('../../front/common/routes');
 const EntitiesUtils = require('../modules/utils/entities');
 const UploadUtils = require('../modules/utils/uploads');
 const AuthUtils = require('../modules/utils/auth');
@@ -31,7 +30,10 @@ async function initialize_routes() {
         send_opts.maxage = 0;
     }
 
-    CommonRoutes.forEach((route) => {
+    const common_page_sources = await EntitiesUtils
+        .search_and_get_sources('page', { size: 10000, projection: ['route'] });
+    const common_routes = common_page_sources.map(src => src.route);
+    common_routes.forEach((route) => {
         router.get(route, async (ctx) => {
             await ctx.render('front/views/front');
         });
