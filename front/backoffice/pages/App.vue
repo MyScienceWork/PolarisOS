@@ -1,6 +1,6 @@
 <template>
 <loader class="is-absolute" id="app" v-if="Object.keys($store.state.lang_content).length === 0"></loader>
-<div v-else id="app" class="holy-grail">
+<div v-else id="app" :class="['holy-grail', $store.state.global_config.gui.css_template]">
     <router-view name="header"></router-view>
     <div class="holy-grail-body">
         <router-view></router-view>

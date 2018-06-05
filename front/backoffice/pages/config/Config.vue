@@ -101,6 +101,14 @@
                                         :form="state.sinks.creations.config" 
                                         type="text"
                                     />
+                                    <finput
+                                        name="gui.css_template" 
+                                        :label="lang('l_ui_css_template')" 
+                                        :placeholder="lang('l_ui_css_template')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
                                 </div>
                             </widget>
                             <widget :collapsed="true">

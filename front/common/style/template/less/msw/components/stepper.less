@@ -1,0 +1,37 @@
+.generate-colored-steps(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .steps {
+        .step-item {
+            &.is-@{name} {
+                &::before{
+                    background: linear-gradient(to left, #DBDBDB 50%, @@name 50%);
+                    background-size: 200% 100%;
+                    background-position: right bottom;
+                }
+                &.is-active{
+                    &::before{
+                        background-position: left bottom;
+                    }
+                    .step-marker {
+                        background-color: #FFF; 
+                        border-color: @@name;
+                        color: @@name;
+                    }
+                }
+                &.is-completed{
+                    &::before {
+                        background-position: left bottom;
+                    }
+                    .step-marker {
+                        background-color: @@name;
+                    }
+                }
+            } 
+        }
+    }
+    .generate-colored-steps((@i - 1));
+}
+
+.generate-colored-steps();
+

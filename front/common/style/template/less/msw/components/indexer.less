@@ -1,0 +1,24 @@
+.generate-colored-links(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+    
+    .indexer-@{name} {
+        a {
+            color: @@name;
+        }
+
+        .pagination-link.is-current {
+            border-color: @@name;
+            color: @white;
+            background-color: @@name;
+        }
+    }
+
+    .generate-colored-links((@i - 1));
+}
+
+
+nav.indexer {
+    background-color: transparent;
+}
+
+.generate-colored-links();
