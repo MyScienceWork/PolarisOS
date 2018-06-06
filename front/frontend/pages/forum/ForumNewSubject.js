@@ -34,16 +34,16 @@ module.exports = {
         };
     },
     mounted() {
-        // this.$store.dispatch('search', {
-        //     form: this.state.sinks.reads.forum_forms,
-        //     path: this.state.paths.reads.forum_forms,
-        //     body: {
-        //         where: {
-        //             name: 'forum_front_deposit_files',
-        //         },
-        //         population: ['fields.subform', 'fields.datasource'],
-        //     },
-        // });
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.forum_forms,
+            path: this.state.paths.reads.forum_forms,
+            body: {
+                where: {
+                    name: 'forum_discussion_form',
+                },
+                population: ['fields.subform', 'fields.datasource'],
+            },
+        });
         this.$store.commit(Messages.INITIALIZE, {
             form: this.state.sinks.reads.forum_forms,
         });

@@ -28,7 +28,7 @@
             >
             <div class="container is-full" slot="search-discussions-results" slot-scope="props">
                 <div class="columns is-centered">
-                    <div class="column is-narrow">
+                    <div class="column">
                         <table class="table is-striped is-hoverable">
                             <thead>
                                 <tr>
