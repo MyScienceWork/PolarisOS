@@ -9,6 +9,8 @@ For more information about please visit this [page](https://www.mysciencework.co
 
 ## Documentation
 
+Please refer to this [page](https://mysciencework.github.io/PolarisOS) for a detailed technical documentation.
+
 Everything that you need to getting started is grouped into the Manual section.
 
 You can browse the documentation of every bit of the source code using the Reference section.

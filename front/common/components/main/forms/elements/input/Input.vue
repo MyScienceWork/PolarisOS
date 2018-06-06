@@ -86,7 +86,7 @@
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
-                    @input="update"
+                    @blur="update"
                     :readonly="readonly"
                 />
                 <input v-else-if="type === 'password' || type === 'password-sha1'" 
@@ -95,7 +95,7 @@
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
-                    @input="update"
+                    @blur="update"
                     :readonly="readonly"
                 />
                 <b-datepicker
@@ -110,7 +110,7 @@
                 <input
                     v-else-if="type === 'date-year' && !readonly"
                     :value="state.value"
-                    @input="update"
+                    @blur="update"
                     type="number"
                     :min="yearRangeStart"
                     :max="yearRangeEnd"

@@ -16,6 +16,9 @@ module.exports = {
                             logo: {
                                 type: 'keyword',
                             },
+                            css_template: {
+                                type: 'keyword',
+                            },
                         },
                     },
                     api: {

@@ -6,6 +6,7 @@ const mappings = require('./mappings');
 const settings = require('./settings');
 
 const client = new elasticsearch.Client(config.elasticsearch);
+const index_prefix = config.elasticsearch.index_prefix;
 
 function create() {
     /* Object.keys(mappings).forEach((name) => {
@@ -38,6 +39,17 @@ function create() {
         } else {
             console.warn(`No settings for mapping ${name}`);
         }
+
+        if (['msw', 'uspc'].indexOf(index_prefix) !== -1 && name === 'publication') {
+            return;
+        }
+
+        if (name === 'mswpublication') {
+            index = _.merge({}, { mappings: { publication: mapping.mappings[name] } },
+                settings[name]);
+            name = 'publication';
+        }
+
         const response = client.indices.create({
             index: `${config.elasticsearch.index_prefix}_${name}`,
             body: index,
@@ -55,12 +67,20 @@ function create() {
 
 function update() {
     _.forEach(mappings, (mapping, name) => {
+        if (['msw', 'uspc'].indexOf(index_prefix) !== -1 && name === 'publication') {
+            return;
+        }
+
         const body = {
             properties: mapping.mappings[name].properties,
         };
 
         if ('_meta' in mapping.mappings[name]) {
             body._meta = mapping.mappings[name]._meta;
+        }
+
+        if (name === 'mswpublication') {
+            name = 'publication';
         }
 
         const response = client.indices.putMapping({

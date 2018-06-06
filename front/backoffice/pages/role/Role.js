@@ -66,6 +66,7 @@ module.exports = {
             content.push({ type: 'my_user' });
             content.push({ type: 'query' });
             content.push({ type: 'mail_template' });
+            content.push({ type: 'chart' });
 
             return content.map((c, i) => {
                 c.i = i;
