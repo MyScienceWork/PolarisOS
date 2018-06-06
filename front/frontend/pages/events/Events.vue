@@ -3,7 +3,7 @@
     <div class="container is-fluid">
        <div class="columns is-centered">
            <div class="column is-12 has-text-centered">
-               <h4 class="title is-4"> USPC Events </h4>
+               <h4 class="title is-4"> {{lang('l_uspc_events')}} </h4>
            </div>
        </div>
         <div v-if="state.isAdministrator" class="column is-2 is-offset-9">
@@ -20,7 +20,6 @@
       <div class="container">
         <div :class="{'is-hidden': state.isActive}">
 
-          Pictures past content, Card by default
           <div class="columns is-multiline is-mobile">
                   <div v-for="row in past_events" class="column is-4">
                       <router-link :to="`/events/${row._id}`">
@@ -33,9 +32,9 @@
                           <div class="card-content">
                               <div v-if="row.location" class="content">
                                   {{row.location.country}}, {{row.location.city}}
-                                  <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
+                                  <time class="is-pulled-right" :datetime="row.endDate">{{row.endDate | format_date('fromNow')}}</time>
                               </div>
-                              <span v-for="tag in row.tags" class="tag is-info">{{tag.value}}</span>
+                              <span v-for="tag in row.tags" class="tag is-info has-small-right-margin">{{tag.value}}</span>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>
@@ -51,7 +50,6 @@
       </div>
 
         <div :class="{'is-hidden': !state.isActive}">
-          Music futur content, card by default
 
           <div class="columns is-multiline is-mobile">
                   <div v-for="row in incoming_events" class="column is-4">
@@ -65,9 +63,9 @@
                           <div class="card-content">
                               <div v-if="row.location" class="content">
                                   {{row.location.country}}, {{row.location.city}}
-                                  <time class="is-pulled-right" :datetime="row.endDate">{{row.startDate}}-{{row.endDate}}</time>
                               </div>
-                              <span v-for="tag in row.tags" class="tag is-info">{{tag.value}}</span>
+                              <time class="is-pulled-right" :datetime="row.startDate">{{row.startDate | format_date('fromNow')}}</time>
+                              <span v-for="tag in row.tags" class="tag is-info has-small-right-margin">{{tag.value}}</span>
                               <div class="media">
                                       <div class="media-content">
                                           <p class="title is-4">{{row.title}}</p>

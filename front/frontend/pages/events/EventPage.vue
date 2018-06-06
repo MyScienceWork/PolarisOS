@@ -10,12 +10,12 @@
                 <div class="column is-10 has-text-centered">
                     <h4 class="title is-4">{{message.title}}</h4>
                     <h6 class="subtitle is-6">{{message.subtitle}}</h6>
-                    <h6 class="subtitle is-6">{{format_date(message.startDate)}}  --  {{format_date(message.endDate)}}</h6>
+                    <h6 class="subtitle is-6">{{message.startDate | format_date()}}  --  {{message.endDate | format_date()}}</h6>
                 </div>
             </div>
             <div class="columns is-centered">
                 <div class="column is-10 has-text-centered">
-                    <span v-for="tag in message.tags" class="tag is-info">{{tag.value}}</span>
+                    <span v-for="tag in message.tags" class="tag is-info has-small-right-margin">{{tag.value}}</span>
                     <figure class="figure">
                         <p class="image">
                             <img :src="message.main_picture" alt="Picture"/>

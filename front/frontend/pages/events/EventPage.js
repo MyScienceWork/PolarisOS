@@ -25,14 +25,6 @@ module.exports = {
         };
     },
     methods: {
-        format_date(d, f = 'LLLL') {
-            switch (f) {
-            case 'fromNow':
-                return moment(d).fromNow();
-            default:
-                return moment(d).format(f);
-            }
-        },
     },
     mounted() {
         this.$store.state.requests = ['event'].map(e => ({

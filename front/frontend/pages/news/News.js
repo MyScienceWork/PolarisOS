@@ -31,9 +31,6 @@ module.exports = {
     components: {
     },
     methods: {
-        date_format(date) {
-            return moment(date).fromNow();
-        },
     },
     mounted() {
         if (this.roles.administrator && this.roles.administrator.id === 'administrator') {

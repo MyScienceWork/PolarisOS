@@ -3,7 +3,7 @@
     <div class="container">
         <div class="columns is-centered">
             <div class="column is-12 has-text-centered">
-                <h4 class="title is-4"> USPC News </h4>
+                <h4 class="title is-4"> {{lang('l_uspc_news')}} </h4>
             </div>
         </div>
         <div v-if="state.isAdministrator" class="column is-2 is-offset-9">
@@ -20,9 +20,9 @@
                             <p class="card-header-title">
                                 {{mnew.title}}
                             </p>
-                            <p v-if="mnew.author" class="subtitle is-6 is-pulled-right">
-                                {{mnew.author.fullName}}
-                                 <time :datetime="mnew.createdAt">{{date_format(mnew.createdAt)}}</time>
+                            <p v-if="mnew.author" class="subtitle is-6">
+                                {{mnew.author.fullName}},
+                                <time class="is-pulled-right" :datetime="mnew.createdAt">{{mnew.createdAt | format_date()}}</time>
                             </p>
                             </router-link>
                         </header>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="column">
                                     <div class="content">
-                                        <span v-for="tag in mnew.tags" class="tag is-info">{{tag.value}}</span>
+                                        <span v-for="tag in mnew.tags" class="tag is-info has-small-right-margin">{{tag.value}}</span>
                                         <p>{{mnew.header}}</p>
                                     </div>
                                 </div>

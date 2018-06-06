@@ -3,12 +3,13 @@
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-12 has-text-centered">
-                <h4 class="title is-4"> USPC Forum </h4>
+                <h4 class="title is-4"> {{lang('l_uspc_forum')}} </h4>
             </div>
         </div>
         <div class="columns is-centered">
             <div class="column is-10 has-text-centered">
                 <h4 class="title is-4">{{message.title}}</h4>
+                <span v-for="tag in message.disciplines" class="tag is-info has-small-right-margin">{{tag.value}}</span>
             </div>
         </div>
         <div class="columns is-centered">

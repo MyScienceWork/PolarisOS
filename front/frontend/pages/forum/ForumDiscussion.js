@@ -38,9 +38,6 @@ module.exports = {
         DiscussionsSearching,
     },
     methods: {
-        date_format(date) {
-            return moment(date).fromNow();
-        },
     },
     mounted() {
         this.$store.state.requests = ['forum_discussion'].map(e => ({

@@ -3,7 +3,7 @@
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-12 has-text-centered">
-                    <h4 class="title is-4"> USPC News </h4>
+                    <h4 class="title is-4"> {{lang('l_uspc_news')}} </h4>
                 </div>
             </div>
             <article class="message is-centered">
