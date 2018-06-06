@@ -27,9 +27,13 @@ module.exports = {
     },
     computed: {
         active_idx() {
-            this.menu.elements.map(elt => console.log(elt));
-            const index = _.findIndex(this.menu.elements, r => this.$route.path === r.$route);
-
+            // this.menu.elements.map(elt => console.log(elt));
+            // console.log(`route::${this.$route.path}`);
+            const index = _.findIndex(this.menu.elements, (r) => {
+                console.log(r.$route);
+                return this.$route.path === r.$route;
+            });
+            // console.log(`index::${index}`);
             if (index === -1) {
                 return index;
             }

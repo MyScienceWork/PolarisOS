@@ -1,5 +1,5 @@
 <template>
-<div class="card-content">
+<div class="card-content" style="border: 3px blue solid;">
     <div class="level" v-if="content.length > 0">
         <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" /> <h4 class="is-subtitle is-2"><strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong></h4></div>
         <div class="level-right">
@@ -14,7 +14,7 @@
                                 <span>{{lang('f_export_publication')}}</span>
                             </a>
                             <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('bibtex')"> 
+                                <a class="navbar-item swap" @click.prevent="export_format('bibtex')">
                                     {{lang('f_export_bibtex')}}
                                 </a>
                             </b-dropdown-item>
@@ -48,7 +48,7 @@
                             </a>
                             <b-dropdown-item has-link>
                                 <a :class="['navbar-item swap', {'is-active': state.seso.size === 2}]" @click.prevent="size(2)">
-                                    2 
+                                    2
                                 </a>
                             </b-dropdown-item>
                             <b-dropdown-item has-link>
@@ -63,7 +63,7 @@
                             </b-dropdown-item>
                             <b-dropdown-item has-link>
                                 <a :class="['navbar-item swap', {'is-active':state.seso.size === 100}]" @click.prevent="size(100)">
-                                    100 
+                                    100
                                 </a>
                             </b-dropdown-item>
                         </b-dropdown>
@@ -102,7 +102,7 @@
                             </b-dropdown-item>
                             <b-dropdown-item has-link>
                                 <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', get_order('dates.deposit'))">
-                                    {{lang('f_sort_by_deposit_year')}} 
+                                    {{lang('f_sort_by_deposit_year')}}
                                     <span class="icon">
                                         <template v-if="state.seso.sort === 'dates.deposit'">
                                             <i v-if="get_order('dates.deposit') === 'desc'" class="fa fa-long-arrow-down"></i>
@@ -117,10 +117,10 @@
             </div>
         </div>
     </div>
-    <results 
-    :is-selectable="true" 
+    <results
+    :is-selectable="true"
     :show-status="showStatus"
-    :user="user" 
+    :user="user"
     :logged-in="state.loggedIn"
     :items="content"
     :export-sink="state.sinks.reads.export"

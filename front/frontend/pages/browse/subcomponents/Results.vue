@@ -9,7 +9,7 @@
                 label=""
                 />
             </div>
-            <div class="media-content">
+            <div class="media-content" style="border: 3px green solid;">
                 <p class="has-small-bottom-margin">
                     <span v-html="info.html"></span>
                     <span class="tag" :style="`background-color: ${get_color(info.type)}`">{{lang(info.denormalization.type.label)}}</span>
@@ -29,7 +29,7 @@
                         {{lang(`l_${info.status}_status`)}}
                     </span>
                 </p>
-                <div class="level">
+                <div class="level" style="border: 3px red solid;">
                     <div class="level-left">
                     </div>
                     <div class="level-right level is-mobile">
@@ -40,9 +40,9 @@
                             <template v-if="info.files && info.files.length > 0">
                                 <a
                                      v-if="is_accessable(info)"
-                                    :href="generate_download_link(info)" 
-                                    class="level-item" 
-                                    :alt="lang('f_download_file')" 
+                                    :href="generate_download_link(info)"
+                                    class="level-item"
+                                    :alt="lang('f_download_file')"
                                     :title="lang('f_download_file')"
                                     target="_blank"
                                 >
@@ -50,36 +50,36 @@
                                 </a>
                                 <a
                                     v-else
-                                    class="level-item" 
-                                    :alt="lang('f_request_copy')" 
+                                    class="level-item"
+                                    :alt="lang('f_request_copy')"
                                     :title="lang('f_request_copy')"
                                     @click.prevent="request_copy"
                                 >
                                     <span class="icon is-small"><i class="fa fa-lock"></i></span>
                                 </a>
                             </template>
-                            <router-link 
+                            <router-link
                                 class="level-item"
                                 v-if="loggedIn"
-                                :alt="lang('f_use_as_model')" 
-                                :title="lang('f_use_as_model')" 
+                                :alt="lang('f_use_as_model')"
+                                :title="lang('f_use_as_model')"
                                 :to="`/deposit?type=model&_id=${info._id}`"
                             >
                                 <span class="icon is-small"><i class="fa fa-book"></i></span>
                             </router-link>
-                            <router-link 
+                            <router-link
                                 v-if="loggedIn && can_modify(info)"
-                                class="level-item" 
-                                :alt="lang('f_modify_publication')" 
+                                class="level-item"
+                                :alt="lang('f_modify_publication')"
                                 :title="lang('f_modify_publication')"
                                 :to="`/deposit?type=modify&_id=${info._id}`"
                             >
                                 <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                             </router-link>
-                            <router-link 
+                            <router-link
                                 v-if="loggedIn && can_modify(info)"
-                                class="level-item" 
-                                :alt="lang('f_deposit_new_file_version')" 
+                                class="level-item"
+                                :alt="lang('f_deposit_new_file_version')"
                                 :title="lang('f_deposit_new_file_version')"
                                 :to="`/deposit?type=new_version&_id=${info._id}`"
                             >
@@ -113,8 +113,8 @@
                     </div>
                 </div><!-- Level buttons -->
                 <div
-                    v-if="(_oa_find(info, 'system.emails', []).length > 0 || _oa_find(info, 'system.depositor_comment')) && showStatus" 
-                > 
+                    v-if="(_oa_find(info, 'system.emails', []).length > 0 || _oa_find(info, 'system.depositor_comment')) && showStatus"
+                >
                     <p v-if="_oa_find(info, 'system.depositor_comment')"><strong>{{lang('l_your_depositor_comment')}}</strong></p>
                     <p v-if="_oa_find(info, 'system.depositor_comment')">{{_oa_find(info, 'system.depositor_comment') | eol_to_br}}</p>
                     <div  v-for="email in _oa_find(info, 'system.emails', [])">

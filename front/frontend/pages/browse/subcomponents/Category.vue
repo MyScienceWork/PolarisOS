@@ -5,7 +5,7 @@
                 <p class="has-text-centered has-small-bottom-margin"><strong>{{lang(`l_browse_by_${query.entity}_label`)}}</strong></p>
                 <div class="field is-grouped">
                     <div class="control is-expanded">
-                        <fselect 
+                        <fselect
                             label=""
                             :placeholder="lang('l_select_content')"
                             name="browsing_terms"
@@ -16,9 +16,9 @@
                             fieldValue="_id"
                             :reset-on-options-change="true"
                         />
-                    </div> 
+                    </div>
                     <div class="control">
-                        <a class="button" :alt="lang('f_search')" :title="lang('f_search')" 
+                        <a class="button" :alt="lang('f_search')" :title="lang('f_search')"
                             @click.prevent="browse" v-scroll-to="'#msearchresults'">
                             <i class="fa fa-search"></i>
                         </a>
@@ -52,7 +52,7 @@
                     :current.sync="state.current_page"
                     :simple="true"
                     :per-page="state.per_page"
-                    v-if="total > state.per_page"    
+                    v-if="total > state.per_page"
                 >
                 </b-pagination>
             </div>
@@ -64,7 +64,7 @@
             <div class="column is-10">
                 <p v-if="lang('l_browse_abc') && picker === 'select'" class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_abc')}}</strong></p>
                 <div class="columns is-multiline is-centered">
-                    <div class="column is-1" v-for="agg in aggregations">
+                    <div class="column is-narrow has-medium-right-margin has-medium-left-margin" v-for="agg in aggregations">
                         <article :class="['message is-abc is-font-abc-small', {'is-active-purple': state.active_abc === agg.key}]" @click.prevent="click_on_abc(agg.key)">
                             <div class="message-body has-text-centered">{{lang(agg.key)}}</div>
                         </article>
@@ -92,7 +92,7 @@
                     :total="total"
                     :current.sync="state.current_page"
                     :simple="true"
-                    v-if="total > state.per_page" 
+                    v-if="total > state.per_page"
                     :per-page="state.per_page">
                 </b-pagination>
             </div>
@@ -100,8 +100,8 @@
                 <p class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_list_empty')}}</strong></p>
             </div>
         </div>
-        <div class="columns" v-if="view === 'abc' && state.active_abc">
-            <div class="column is-10" v-if="total_abc > 0">
+        <div class="columns" v-if="view === 'abc' && state.active_abc" style="border: 3px green solid;">
+            <div class="column is-9 is-offset-1" v-if="total_abc > 0" style="border: 3px blue solid;">
                 <div class="content">
                     <ul class="list-styled is-square">
                         <li v-for="obj in paginated(options_abc)">
@@ -119,7 +119,7 @@
                     :total="total_abc"
                     :current.sync="state.current_page"
                     :simple="true"
-                    v-if="total_abc > state.per_page" 
+                    v-if="total_abc > state.per_page"
                     :per-page="state.per_page">
                 </b-pagination>
             </div>
