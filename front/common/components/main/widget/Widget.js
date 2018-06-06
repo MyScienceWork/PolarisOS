@@ -18,6 +18,7 @@ module.exports = {
         onCollapse(e) {
             e.preventDefault();
             this.state.collapsed = !this.state.collapsed;
+            this.$emit('update:collapsed', !this.state.collapsed);
         },
 
         onRefresh(e) {

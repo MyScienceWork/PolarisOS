@@ -40,6 +40,7 @@ module.exports = {
     },
     mounted() {
         this.post_hook_query_changed(this.state.query, {});
+        this.click_on_abc('a');
     },
     methods: {
         browse() {
