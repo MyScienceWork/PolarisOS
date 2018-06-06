@@ -44,7 +44,7 @@
                                         <p><router-link :to="`/forum/thread/${row._id}`">{{row.title}}</router-link><br/>
                                             <span v-for="tag in row.disciplines" class="tag is-info has-small-right-margin">{{tag.value}}</span>
                                             <br />
-                                            <span v-if="row.author"> by {{row.author.fullName}}, </span>
+                                            <span v-if="row.author"> by {{row.author.fullName}} , </span>
                                             <!-- <small> {{date_format(row.createdAt, 'fromNow')}} </small><br/> -->
                                             <small> {{row.createdAt | format_date('fromNow')}} </small><br/>
                                             <small v-html="row.description"></small></p>

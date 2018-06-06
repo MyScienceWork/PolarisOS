@@ -126,7 +126,7 @@ module.exports = {
             path: this.state.paths.reads.dropzone_form,
             body: {
                 where: {
-                    name: ['forum_front_deposit_files'],
+                    name: ['front_form_deposit_file'],
                 },
             },
         });

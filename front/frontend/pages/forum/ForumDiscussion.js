@@ -3,7 +3,6 @@ const APIRoutes = require('../../../common/api/routes');
 // const FormMixin = require('../../../common/mixins/FormMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
-const moment = require('moment');
 const DiscussionsSearching = require('./DiscussionSearching.vue');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 

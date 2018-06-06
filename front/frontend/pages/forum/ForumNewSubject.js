@@ -10,11 +10,11 @@ module.exports = {
     data() {
         return {
             state: {
-                restraineVisibility: false,
+                // restraineVisibility: false,
                 paths: {
                     reads: {
                         forum: APIRoutes.entity('forum_discussion', 'POST', true),
-                        discipline: APIRoutes.entity('discipline', 'POST', true),
+                        // discipline: APIRoutes.entity('discipline', 'POST', true),
                         forum_forms: APIRoutes.entity('form', 'POST', true),
                     },
                     creations: {
@@ -34,14 +34,27 @@ module.exports = {
         };
     },
     mounted() {
+        // this.$store.dispatch('search', {
+        //     form: this.state.sinks.reads.forum_forms,
+        //     path: this.state.paths.reads.forum_forms,
+        //     body: {
+        //         where: {
+        //             name: 'forum_front_deposit_files',
+        //         },
+        //         population: ['fields.subform', 'fields.datasource'],
+        //     },
+        // });
+        this.$store.commit(Messages.INITIALIZE, {
+            form: this.state.sinks.reads.forum_forms,
+        });
+
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.forum_forms,
             path: this.state.paths.reads.forum_forms,
             body: {
                 where: {
-                    name: 'forum_front_deposit_files',
+                    name: ['forum_discussion_form'],
                 },
-                population: ['fields.subform', 'fields.datasource'],
             },
         });
     },
