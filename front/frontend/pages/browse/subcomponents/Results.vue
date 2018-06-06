@@ -9,7 +9,7 @@
                 label=""
                 />
             </div>
-            <div class="media-content" style="border: 3px green solid;">
+            <div class="media-content">
                 <p class="has-small-bottom-margin">
                     <span v-html="info.html"></span>
                     <span class="tag" :style="`background-color: ${get_color(info.type)}`">{{lang(info.denormalization.type.label)}}</span>
@@ -29,7 +29,7 @@
                         {{lang(`l_${info.status}_status`)}}
                     </span>
                 </p>
-                <div class="level" style="border: 3px red solid;">
+                <div class="level">
                     <div class="level-left">
                     </div>
                     <div class="level-right level is-mobile">

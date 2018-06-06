@@ -28,7 +28,7 @@
         </div>
         <div class="columns is-centered" v-if="picker === 'select' && total > 0">
             <div class="colum has-text-centered">
-                <span class="is-uppercase">{{lang('l_or')}}</span>
+                <strong class="is-uppercase">{{lang('l_or')}}</strong>
             </div>
         </div>
         <div class="columns is-centered" v-if="view === 'list' && query.aggt !== 'date'">
@@ -100,8 +100,8 @@
                 <p class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_list_empty')}}</strong></p>
             </div>
         </div>
-        <div class="columns" v-if="view === 'abc' && state.active_abc" style="border: 3px green solid;">
-            <div class="column is-9 is-offset-1" v-if="total_abc > 0" style="border: 3px blue solid;">
+        <div class="columns" v-if="view === 'abc' && state.active_abc">
+            <div class="column is-9 is-offset-1" v-if="total_abc > 0">
                 <div class="content">
                     <ul class="list-styled is-square">
                         <li v-for="obj in paginated(options_abc)">
