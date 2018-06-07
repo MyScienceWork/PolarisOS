@@ -27,15 +27,12 @@ module.exports = {
     },
     computed: {
         active_idx() {
-            // this.menu.elements.map(elt => console.log(elt));
-            // console.log(`route::${this.$route.path}`);
-            const index = _.findIndex(this.menu.elements, (r) => {
-                console.log(r.$route);
-                return this.$route.path === r.$route;
-            });
-            // console.log(`index::${index}`);
+            if (this.$route.path === '/browse') {
+                return 1;
+            }
+            const index = _.findIndex(this.menu.elements, r => this.$route.path === r.$route);
             if (index === -1) {
-                return index;
+                return -1;
             }
 
             const info = this.menu.elements[index];

@@ -2,7 +2,7 @@
     <div>
         <div class="columns is-centered" v-if="picker === 'select'">
             <div class="column is-8" v-if="total > 0 || view === 'abc'">
-                <p class="has-text-centered has-small-bottom-margin"><strong>{{lang(`l_browse_by_${query.entity}_label`)}}</strong></p>
+                <p class="has-text-centered has-small-bottom-margin"><span>{{lang(`l_browse_by_${query.entity}_label`)}}</span></p>
                 <div class="field is-grouped">
                     <div class="control is-expanded">
                         <fselect
@@ -34,7 +34,7 @@
         <div class="columns is-centered" v-if="view === 'list' && query.aggt !== 'date'">
             <div class="column is-10" v-if="total > 0">
                 <div class="content">
-                    <p class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><strong>{{lang('l_browse_list')}}</strong></p>
+                    <p class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><span>{{lang('l_browse_list')}}</span></p>
                     <ul class="list-styled is-square">
                         <li v-for="obj in paginated(options)">
                             <a

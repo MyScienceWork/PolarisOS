@@ -44,6 +44,11 @@ module.exports = {
         };
     },
     methods: {
+        search_A_by_default(text) {
+            if (text === 'l_browse_by_author') {
+                this.click_on_abc('a');
+            }
+        },
     },
     computed: {
         navs() {
