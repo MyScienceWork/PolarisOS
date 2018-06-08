@@ -8,11 +8,12 @@
                 <aside class="menu">
                     <ul class="menu-list">
                         <li v-for="(obj, idx) in navs">
+                            <span @click="state.active_results = false">
                             <router-link
                                 :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]"
                                 :to="`/browse?${obj.query}`">
                             {{lang(obj.text)}}
-                            </router-link>
+                            </router-link></span>
                         </li>
                     </ul>
                 </aside>

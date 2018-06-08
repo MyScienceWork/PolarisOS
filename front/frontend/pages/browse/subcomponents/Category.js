@@ -31,7 +31,7 @@ module.exports = {
                         search: 'search_read',
                     },
                 },
-                active_abc: 'A',
+                active_abc: null,
                 active_result: false,
                 current_page: 1,
                 per_page: 30,
@@ -66,7 +66,6 @@ module.exports = {
                     },
                 });
             }
-
             this.state.active_abc = null;
             this.$emit('update:activeResults', true);
             Vue.nextTick(() => {
@@ -214,15 +213,14 @@ module.exports = {
             // console.log(`s::${s}`);
             this.dispatch(s, this, this.state.sinks.creations.selected);
         },
-        querry() {
-            if (this.$route.query && this.$route.query.agge === 'author') {
+        query() {
+            if (this.$route.query && this.$route.query.entity === 'author') {
                 this.click_on_abc('A');
             }
         },
     },
     computed: {
-        querry() {
-            console.log(this.$route.query);
+        query() {
             return this.$route.query;
         },
         paginated() {

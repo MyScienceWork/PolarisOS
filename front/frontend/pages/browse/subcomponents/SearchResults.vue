@@ -1,5 +1,5 @@
 <template>
-<div class="card-content" style="border: 3px blue solid;">
+<div class="card-content">
     <div class="level" v-if="content.length > 0">
         <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" /> <h4 class="is-subtitle is-2"><strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong></h4></div>
         <div class="level-right">
@@ -127,6 +127,7 @@
     v-if="content.length > 0"
     />
     <div v-else>
+        <!-- <div v-else-if="state.display_no_results"> -->
         <p class="has-text-centered" v-html="lang('l_no_search_results')"></p>
     </div>
     <b-pagination

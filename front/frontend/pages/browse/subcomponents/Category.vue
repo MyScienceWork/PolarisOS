@@ -1,38 +1,46 @@
 <template>
     <div>
-        <div class="columns is-centered" v-if="picker === 'select'">
-            <div class="column is-8" v-if="total > 0 || view === 'abc'">
-                <p class="has-text-centered has-small-bottom-margin"><span>{{lang(`l_browse_by_${query.entity}_label`)}}</span></p>
-                <div class="field is-grouped">
-                    <div class="control is-expanded">
-                        <fselect
-                            label=""
-                            :placeholder="lang('l_select_content')"
-                            name="browsing_terms"
-                            :form="state.sinks.creations.selected"
-                            :options="options"
-                            :multi="true"
-                            fieldLabel="label_count"
-                            fieldValue="_id"
-                            :reset-on-options-change="true"
-                        />
+        <div>
+            <div class="columns is-centered" v-if="picker === 'select'">
+                <div class="column is-8" v-if="total > 0 || view === 'abc'">
+                    <div :class="{'is-hidden': !activeResults}">
+                    <p class="has-text-centered has-small-bottom-margin"><span>{{lang(`l_browse_by_${query.entity}_label`)}}</span></p>
+                    <div class="field is-grouped">
+                        <div class="control is-expanded">
+                            <fselect
+                                label=""
+                                :placeholder="lang('l_select_content')"
+                                name="browsing_terms"
+                                :form="state.sinks.creations.selected"
+                                :options="options"
+                                :multi="true"
+                                fieldLabel="label_count"
+                                fieldValue="_id"
+                                :reset-on-options-change="true"
+                            />
+                        </div>
+                        <div class="control">
+                            <a class="button" :alt="lang('f_search')" :title="lang('f_search')"
+                                @click.prevent="browse" v-scroll-to="'#msearchresults'">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="control">
-                        <a class="button" :alt="lang('f_search')" :title="lang('f_search')"
-                            @click.prevent="browse" v-scroll-to="'#msearchresults'">
-                            <i class="fa fa-search"></i>
-                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="columns is-centered" v-if="picker === 'select' && total > 0">
-            <div class="colum has-text-centered">
-                <strong class="is-uppercase">{{lang('l_or')}}</strong>
+            <div class="columns is-centered" v-if="picker === 'select' && total > 0">
+                <div class="colum has-text-centered">
+                    <!-- <div :class="{'is-hidden': (view === 'list' && query.aggt !== 'date' && !activeResults)}"> -->
+                    <!-- <strong v-if="query.entity !== 'laboratory'" class="is-uppercase">{{lang('l_or')}}</strong> -->
+                    <strong v-if="['laboratory', 'project', 'survey'].indexOf(query.entity) === -1" class="is-uppercase">{{lang('l_or')}}</strong>
+                </div>
             </div>
         </div>
-        <div class="columns is-centered" v-if="view === 'list' && query.aggt !== 'date'">
+        <div v-if="view === 'list' && query.aggt !== 'date'">
+            <div  class="columns is-centered" >
             <div class="column is-10" v-if="total > 0">
+                <div :class="{'is-hidden': activeResults}">
                 <div class="content">
                     <p class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><span>{{lang('l_browse_list')}}</span></p>
                     <ul class="list-styled is-square">
@@ -54,10 +62,12 @@
                     :per-page="state.per_page"
                     v-if="total > state.per_page"
                 >
-                </b-pagination>
+            </b-pagination>
+            </div>
             </div>
             <div class="column is-10" v-else>
                 <p class="has-text-centered has-small-bottom-margin"><strong>{{lang('l_browse_list_empty')}}</strong></p>
+            </div>
             </div>
         </div>
         <div class="columns is-centered" v-else-if="view === 'abc'">

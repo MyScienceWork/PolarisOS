@@ -22,6 +22,7 @@ module.exports = {
     data() {
         return {
             state: {
+                display_no_results: false,
                 loggedIn: false,
                 export_type: '',
                 export_subtype: null,
@@ -99,6 +100,9 @@ module.exports = {
                 form: this.state.sinks.reads.export,
                 keep_content: true,
             });*/
+        },
+        content(nc) {
+            this.state.display_no_results = (nc === []);
         },
     },
     computed: {

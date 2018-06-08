@@ -8,6 +8,7 @@ const UserMixin = require('../../../common/mixins/UserMixin');
 const QueryMixin = require('../../../common/mixins/QueryMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
+const Messages = require('../../../common/api/messages');
 
 const BrowsingList = require('../../lists/browse');
 const Category = require('./subcomponents/Category.vue');
@@ -44,13 +45,20 @@ module.exports = {
         };
     },
     methods: {
-        search_A_by_default(text) {
-            if (text === 'l_browse_by_author') {
-                this.click_on_abc('a');
-            }
+    },
+    watch: {
+        route_query_entity() {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.publication,
+                keep_content: false,
+            });
+            this.state.active_results = false;
         },
     },
     computed: {
+        route_query_entity() {
+            return this.$route.query.entity;
+        },
         navs() {
             const content = this.fcontent(this.state.sinks.reads.menu);
             if (!content || !(content instanceof Array) || content.length === 0) {

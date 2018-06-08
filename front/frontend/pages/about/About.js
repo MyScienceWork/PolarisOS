@@ -53,7 +53,7 @@ module.exports = {
         },
         displayLegacyNotice: {
             get() {
-                return (this.$route.query && this.$route.query.legacy_notice === 'true');
+                return !(this.$route.query && this.$route.query.legacy_notice === 'true');
             },
             set(nv) {
                 const q = _.cloneDeep(this.$route.query || {});

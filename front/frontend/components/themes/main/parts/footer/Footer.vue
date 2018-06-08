@@ -63,7 +63,7 @@
             <div class="column">
             <router-link
                 :alt="lang('l_footer_disclaimer')"
-                :to="{ path: '/about', query: {legacy_notice: true}}">
+                :to="{ path: '/about', query: {legacy_notice: 'true'}}">
             <!-- <p>{{lang('l_footer_disclaimer')}}</p> -->
             <p v-html="lang('l_footer_disclaimer')"></p>
             </router-link>

@@ -9,16 +9,16 @@
         </div>
             <div v-for="about in content_about" class="columns is-centered">
                 <div class="column is-8">
-                    <widget v-if="about._id === 'AWPPGoIGXcbhEDzS_3Yk'" :collapsed.sync="displayLegacyNotice">
-                        <span slot="title">{{lang(about.subject)}}</span>
+                    <widget v-if="about.is_legacy_notice" :collapsed.sync="displayLegacyNotice">
+                        <span slot="title">{{lang(about.question)}}</span>
                         <div slot="body">
-                            <p v-html="lang(about.description)" />
+                            <p v-html="lang(about.answer)" />
                         </div>
                     </widget>
                     <widget v-else :collapsed="true">
-                        <span slot="title">{{lang(about.subject)}}</span>
+                        <span slot="title">{{lang(about.question)}}</span>
                         <div slot="body">
-                            <p v-html="lang(about.description)" />
+                            <p v-html="lang(about.answer)" />
                         </div>
                     </widget>
                 </div>
