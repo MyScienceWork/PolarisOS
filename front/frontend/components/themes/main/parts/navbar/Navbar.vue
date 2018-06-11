@@ -2,7 +2,7 @@
 <nav role="navigation" aria-label="main navigation" class="navigation-menu">
     <div class="columns is-centered">
         <router-link class="" to='/'> <span class="icon is-medium">
-            <i class="fa fa-2x fa-home" style="margin-top: 0.7em;"></i>
+            <i class="fa fa-2x fa-home is-white" style="margin-top: 0.7em;"></i>
             </span>
         </router-link>
         <div

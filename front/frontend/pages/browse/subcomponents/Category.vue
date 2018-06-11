@@ -38,6 +38,11 @@
             </div>
         </div>
         <div v-if="view === 'list' && query.aggt !== 'date'">
+            <div v-if="query.entity === 'laboratory' && state.URName" class="coloumns is-centered">
+                <div class="column has-text-centered">
+                    <strong v-html="state.URName" />
+                </div>
+            </div>
             <div  class="columns is-centered" >
             <div class="column is-10" v-if="total > 0">
                 <div :class="{'is-hidden': activeResults}">
@@ -47,7 +52,7 @@
                         <li v-for="obj in paginated(options)">
                             <a
                                 class="has-text-purple"
-                                @click.prevent="browse_list(obj._id)"
+                                @click.prevent="browse_list(obj._id, obj.html)"
                                 v-scroll-to="'#msearchresults'"
                                 v-html="obj.html"
                             >

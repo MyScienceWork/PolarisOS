@@ -35,6 +35,7 @@ module.exports = {
                 active_result: false,
                 current_page: 1,
                 per_page: 30,
+                URName: undefined,
             },
         };
     },
@@ -48,7 +49,8 @@ module.exports = {
         browse() {
             this.send_information(this.state.sinks.creations.selected);
         },
-        browse_list(term, type = 'publication') {
+        browse_list(term, name, type = 'publication') {
+            this.state.URName = name;
             if (type === 'publication') {
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.selected,
@@ -210,18 +212,22 @@ module.exports = {
     },
     watch: {
         current_state(s) {
-            // console.log(`s::${s}`);
             this.dispatch(s, this, this.state.sinks.creations.selected);
         },
-        query() {
-            if (this.$route.query && this.$route.query.entity === 'author') {
+        query_entity() {
+            if (this.$route.query.entity === 'author') {
                 this.click_on_abc('A');
+            }
+        },
+        activeResults() {
+            if (!this.activeResults) {
+                this.state.URName = undefined;
             }
         },
     },
     computed: {
-        query() {
-            return this.$route.query;
+        query_entity() {
+            return this.$route.query.entity;
         },
         paginated() {
             return (content) => {
@@ -239,7 +245,10 @@ module.exports = {
                 }
 
 
-                return content.map((c) => {
+                return content.filter(c => ['#POS#LANGl_ined_no_project', '#POS#LANGl_POS_NOP_2018_survey'].indexOf(c[this.label]) === -1)
+                    .map((c) => {
+                    // console.log(this.label);
+                    // console.log(c[this.label]);
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
                         const count = info ? info.count : 0;

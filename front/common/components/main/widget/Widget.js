@@ -14,6 +14,13 @@ module.exports = {
             },
         };
     },
+    watch: {
+        collapsed() {
+            if (this.state.collapsed !== this.collapsed) {
+                this.state.collapsed = this.collapsed;
+            }
+        },
+    },
     methods: {
         onCollapse(e) {
             e.preventDefault();
