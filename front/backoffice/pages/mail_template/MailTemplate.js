@@ -10,21 +10,23 @@ module.exports = {
             state: {
                 sinks: {
                     creations: {
-                        query: 'query_creation',
-                        search: 'search_creation_query',
+                        mail_template: 'mail_template_creation',
+                        search: 'search_creation_mail_template',
                     },
                     reads: {
-                        query: 'query_read',
+                        mail_template: 'mail_template_read',
                     },
                 },
                 paths: {
                     creations: {
-                        query: APIRoutes.entity('query', 'POST'),
+                        mail_template: APIRoutes.entity('mail_template', 'POST'),
                     },
                     reads: {
-                        query: APIRoutes.entity('query', 'POST', true),
+                        mail_template: APIRoutes.entity('mail_template', 'POST', true),
                     },
                 },
+                es_query_id: 'backoffice-mail-template-query',
+                need_ide: false,
             },
         };
     },
@@ -33,13 +35,5 @@ module.exports = {
     mounted() {
     },
     computed: {
-        search_query() {
-            return JSON.stringify({
-                $or: [
-                    { id: '{{search}}' },
-                    { name: '{{search}}' },
-                ],
-            });
-        },
     },
 };

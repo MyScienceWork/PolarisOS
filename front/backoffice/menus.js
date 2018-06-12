@@ -118,7 +118,7 @@ module.exports.menu = [
             submenu: [],
             component: Query,
         },
-        /* {
+        {
             section: 'l_admin_section',
             name: 'l_mails_page',
             access: 'mail_template',
@@ -127,7 +127,7 @@ module.exports.menu = [
             routes: [Routes.mail_template],
             submenu: [],
             component: MailTemplate,
-        },*/
+        },
         {
             section: 'l_admin_section',
             name: 'l_charts_page',
