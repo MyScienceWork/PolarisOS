@@ -67,15 +67,26 @@
                             >
                                 <span class="icon is-small"><i class="fa fa-book"></i></span>
                             </router-link>
-                            <router-link 
-                                v-if="loggedIn && can_modify(info)"
-                                class="level-item" 
-                                :alt="lang('f_modify_publication')" 
-                                :title="lang('f_modify_publication')"
-                                :to="`/deposit?type=modify&_id=${info._id}`"
-                            >
-                                <span class="icon is-small"><i class="fa fa-pencil"></i></span>
-                            </router-link>
+                            <template v-if="loggedIn && can_modify(info)">
+                                <router-link 
+                                    v-if="!info.files || info.files.length === 0"
+                                    class="level-item" 
+                                    :alt="lang('f_modify_publication')" 
+                                    :title="lang('f_modify_publication')"
+                                    :to="`/deposit?type=modify-nf&_id=${info._id}`"
+                                >
+                                    <span class="icon is-small"><i class="fa fa-pencil"></i></span>
+                                </router-link>
+                                <router-link 
+                                    v-else
+                                    class="level-item" 
+                                    :alt="lang('f_modify_publication')" 
+                                    :title="lang('f_modify_publication')"
+                                    :to="`/deposit?type=modify&_id=${info._id}`"
+                                >
+                                    <span class="icon is-small"><i class="fa fa-pencil"></i></span>
+                                </router-link>
+                            </template>
                             <router-link 
                                 v-if="loggedIn && can_modify(info)"
                                 class="level-item" 
