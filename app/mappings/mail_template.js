@@ -16,6 +16,28 @@ module.exports = {
                     id: {
                         type: 'keyword',
                     },
+                    recipients: {
+                        type: 'nested',
+                        properties: {
+                            entity: {
+                                type: 'keyword',
+                            },
+                            matches: {
+                                type: 'nested',
+                                properties: {
+                                    key: {
+                                        type: 'keyword',
+                                    },
+                                    value: {
+                                        type: 'keyword',
+                                    },
+                                    length: {
+                                        type: 'integer',
+                                    },
+                                },
+                            },
+                        },
+                    },
                     trigger: {
                         properties: {
                             entity: {

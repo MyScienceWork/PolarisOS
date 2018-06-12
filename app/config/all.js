@@ -34,6 +34,9 @@ const all = {
     auth: {
         default_password: 'default_pos_password',
     },
+    email: {
+        default_sender: 'noreply@polarisos.com',
+    },
 };
 
 module.exports = all;

@@ -4,7 +4,7 @@ const EntitiesUtils = require('./entities');
 
 const env = process.env.NODE_ENV || 'development';
 
-async function get_smtp_transport() {
+async function get_email_config() {
     const configs = await EntitiesUtils.search_and_get_sources('config', {
         where: {
             environment: env,
@@ -17,12 +17,25 @@ async function get_smtp_transport() {
     }
 
     const config = configs[0];
-
-    if (!('mail' in config) || !('smtp' in config.mail)) {
+    if (!('mail' in config)) {
         return null;
     }
 
-    const smtp = config.mail.smtp;
+    return config.mail;
+}
+
+async function get_smtp_transport() {
+    const email_config = await get_email_config();
+
+    if (!email_config) {
+        return null;
+    }
+
+    if (!('smtp' in email_config)) {
+        return null;
+    }
+
+    const smtp = email_config.smtp;
 
     if (!smtp.host || !smtp.port || !smtp.auth || !smtp.auth.user) {
         return null;
@@ -69,4 +82,5 @@ module.exports = {
     send_email,
     send_email_with,
     get_smtp_transport,
+    get_email_config,
 };

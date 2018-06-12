@@ -37,6 +37,9 @@ module.exports = {
                     },
                     mail: {
                         properties: {
+                            default_sender: {
+                                type: 'keyword',
+                            },
                             smtp: {
                                 properties: {
                                     host: {

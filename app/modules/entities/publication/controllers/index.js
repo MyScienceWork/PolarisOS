@@ -1,6 +1,10 @@
 // @flow
 const Utils = require('../../../utils/utils');
+const Config = require('../../../../config');
+const MailerUtils = require('../../../utils/mailer');
+const Handlebars = require('../../../utils/templating');
 const EntitiesUtils = require('../../../utils/entities');
+const Logger = require('../../../../logger');
 
 module.exports = {};
 
@@ -27,8 +31,6 @@ async function post_action(publication: Object, options: Object) {
         return;
     }
 
-    console.log(depositor);
-
     const emails = Utils.find_value_with_path(depositor, 'emails'.split('.'));
     if (!emails) {
         return;
@@ -40,13 +42,52 @@ async function post_action(publication: Object, options: Object) {
         master = emails[0];
     }
 
-    const template = await EntitiesUtils.search_and_get_sources('mail_template', {
-        $where: [
-            { 'trigger.entity': 'publication' },
-            { 'trigger.matches.key': 'status' },
-            { 'trigger.matches.value': 'pending' },
-        ],
+    const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+        $where:
+        {
+            $and: [
+                { 'trigger.entity': 'publication' },
+                { 'trigger.matches.key': 'status' },
+                { 'trigger.matches.value': publication.status },
+            ],
+        },
     });
+
+    if (templates.length === 0) {
+        return;
+    }
+
+    const email_config = await MailerUtils.get_email_config();
+
+    if (!email_config) {
+        return;
+    }
+
+    const default_sender = email_config.default_sender || Config.email.default_sender;
+
+    const template = templates[0];
+    const sent_messages = unsent_messages.map((msg) => {
+        const subject = Handlebars.compile(template.subject)({ user: depositor,
+            publication: publication.source,
+            message: msg.body });
+        const body = Handlebars.compile(template.body)({ user: depositor,
+            publication: publication.source,
+            message: msg.body });
+        return MailerUtils.send_email_with(default_sender, master.email, subject, body);
+    });
+
+    try {
+        await Promise.all(sent_messages);
+    } catch (err) {
+        Logger.error(err);
+    }
+
+    publication.source.system.emails = publication.source.system.emails.map((msg) => {
+        msg.sent = true;
+        return msg;
+    });
+
+    await publication.update();
 }
 
 module.exports.post_action = post_action;
