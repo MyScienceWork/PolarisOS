@@ -247,6 +247,7 @@ module.exports = {
         case 'model':
         case 'new_version':
         case 'modify':
+        case 'modify-nf':
             this.$store.state.requests.push({
                 name: 'single_read',
                 type: 'dispatch',
@@ -286,6 +287,7 @@ module.exports = {
         case 'model':
         case 'new_version':
         case 'modify':
+        case 'modify-nf':
             this.$store.state.requests.push({
                 name: Messages.TRANSFERT_INTO_FORM,
                 type: 'commit',
