@@ -1,11 +1,11 @@
 <template>
 <div>
-    <fvariadic-element class="field" name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
+    <fvariadic-element class="field" :name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
     <template slot="variadic" slot-scope="props">
             <component
                 :is="select_component(props.order)"
                 :label="lang(label)"
-                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : ''}`"
+                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : `${props.fname}.${props.order}.dummy`}`"
                 :placeholder="lang(placeholder)"
                 type="text"
                 :form="sink"
