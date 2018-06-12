@@ -117,6 +117,7 @@
             </div>
         </div>
     </div>
+    <div v-if="state.display_results">
     <results
     :is-selectable="true"
     :show-status="showStatus"
@@ -127,7 +128,6 @@
     v-if="content.length > 0"
     />
     <div v-else>
-        <!-- <div v-else-if="state.display_no_results"> -->
         <p class="has-text-centered" v-html="lang('l_no_search_results')"></p>
     </div>
     <b-pagination
@@ -138,6 +138,7 @@
         :rounded="false"
         :per-page="state.seso.size">
     </b-pagination>
+    </div>
 </div>
 </template>
 

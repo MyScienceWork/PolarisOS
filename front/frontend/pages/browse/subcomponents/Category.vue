@@ -21,7 +21,7 @@
                         </div>
                         <div class="control">
                             <a class="button" :alt="lang('f_search')" :title="lang('f_search')"
-                                @click.prevent="browse" v-scroll-to="'#msearchresults'">
+                                @click.prevent="browse" @keyup.enter="browse" v-scroll-to="'#msearchresults'">
                                 <i class="fa fa-search"></i>
                             </a>
                         </div>
@@ -40,7 +40,9 @@
         <div v-if="view === 'list' && query.aggt !== 'date'">
             <div v-if="query.entity === 'laboratory' && state.URName" class="coloumns is-centered">
                 <div class="column has-text-centered">
-                    <strong v-html="state.URName" />
+                    <p v-for="name in state.URName">
+                        <strong v-html="name" />
+                    </p>
                 </div>
             </div>
             <div  class="columns is-centered" >

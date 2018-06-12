@@ -11,7 +11,7 @@
                         </span>
                         </p>
                     <p class="control">
-                    <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
+                    <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search" @keyup.enter="search">
                             <i class="fa fa-search"></i>
                     </a>
                     </p>

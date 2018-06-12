@@ -6,13 +6,14 @@ const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 const QueryMixin = require('../../../../common/mixins/QueryMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const ReaderMixin = require('../../../../common/mixins/ReaderMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const AggregationSpecs = require('../../../../common/specs/aggs');
 const Queries = require('../../../../common/specs/queries');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin, ReaderMixin],
     props: {
         filters: { type: Array, default: () => [] },
         activeResults: { type: Boolean, default: false },
@@ -29,13 +30,14 @@ module.exports = {
                     },
                     reads: {
                         search: 'search_read',
+                        laboratory: 'laboratory_read',
                     },
                 },
                 active_abc: null,
                 active_result: false,
                 current_page: 1,
                 per_page: 30,
-                URName: undefined,
+                URName: [],
             },
         };
     },
@@ -44,13 +46,18 @@ module.exports = {
         if (this.$route.query && this.$route.query.agge === 'author') {
             this.click_on_abc('A');
         }
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.laboratory,
+            path: APIRoutes.entity('laboratory', 'POST', true),
+            body: {},
+        });
     },
     methods: {
         browse() {
             this.send_information(this.state.sinks.creations.selected);
         },
         browse_list(term, name, type = 'publication') {
-            this.state.URName = name;
+            this.state.URName = [name];
             if (type === 'publication') {
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.selected,
@@ -146,10 +153,12 @@ module.exports = {
         },
 
         send_information(sink) {
+            this.state.URName = [];
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
                 if ('browsing_terms' in content && content.browsing_terms) {
                     const ids = _.map(content.browsing_terms, b => b._id);
+                    ids.map(elt => this.state.URName.push(this.laboratory.find(x => x.key === elt).value));
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
@@ -226,6 +235,23 @@ module.exports = {
         },
     },
     computed: {
+        laboratory() {
+            const content = this.mcontent(this.state.sinks.reads.laboratory);
+            // console.log(content);
+            if (!content) {
+                return {};
+            }
+            return content.map((elmt) => {
+                const key = elmt._id;
+                let value;
+                if (this.use_hlang) {
+                    value = `${this.hlang(elmt.name)}`;
+                } else {
+                    value = `${this.lang(elmt.name)}`;
+                }
+                return { key, value };
+            });
+        },
         query_entity() {
             return this.$route.query.entity;
         },
@@ -247,7 +273,7 @@ module.exports = {
 
                 return content.filter(c => ['#POS#LANGl_ined_no_project', '#POS#LANGl_POS_NOP_2018_survey'].indexOf(c[this.label]) === -1)
                     .map((c) => {
-                    // console.log(this.label);
+                    // console.log(`label::${this.label}`);
                     // console.log(c[this.label]);
                     if (this.aggregations.length > 0 && this.query.agge === 'publication') {
                         const info = this.aggregations.find(a => a.key === c._id);
