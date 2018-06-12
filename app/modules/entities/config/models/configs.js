@@ -41,7 +41,10 @@ const Formatting: Array<any> = [
 
 const Completion: Array<any> = [];
 
-const Defaults: Object = {};
+const Defaults: Object = {
+    gui: {
+    },
+};
 
 const Messages: Object = {
     set: 'Config is successfully added',

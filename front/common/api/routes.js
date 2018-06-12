@@ -47,6 +47,13 @@ module.exports = {
         }
     },
 
+    ajax(entity, translatable, lang) {
+        if (translatable) {
+            return `${prefix}/${entity}s/search/true/${lang}`;
+        }
+        return `${prefix}/${entity}s/search`;
+    },
+
     access() {
         return `${prefix}/iuser/access`;
     },
