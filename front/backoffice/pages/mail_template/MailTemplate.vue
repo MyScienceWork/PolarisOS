@@ -132,6 +132,14 @@
                                     {{lang('l_trigger', {}, 'other')}}
                                 </span>
                                 <div slot="body">
+                                    <finput 
+                                        name="" 
+                                        :label="lang('l_key')" 
+                                        :is-required="true" 
+                                        :placeholder="lang('l_mail_message')" 
+                                        type="text" 
+                                        :form="state.sinks.creations.mail_template"
+                                    />
                                 </div>
                             </widget>
                         </fform>

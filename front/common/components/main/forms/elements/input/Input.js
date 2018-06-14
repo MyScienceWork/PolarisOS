@@ -28,7 +28,7 @@ module.exports = {
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
         dateFormat: { required: false, default: 'YYYY-MM-DD' },
-        ideLang: { default: 'json', required: true },
+        ideLang: { default: 'json', type: String },
         yearRangeStart: { required: false,
             default: parseInt(moment().subtract(150, 'y').format('YYYY'), 10),
             type: Number },

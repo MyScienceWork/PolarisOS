@@ -6,6 +6,7 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const Queries = require('../../../common/specs/queries');
 const FieldTypes = require('../../../common/lists/fieldtypes');
 const SubformTypes = require('../../../common/lists/subformtypes');
+const EntitiesList = require('../../../common/lists/entities');
 
 module.exports = {
     mixins: [LangMixin, ReaderMixin, FormCleanerMixin],
@@ -99,14 +100,7 @@ module.exports = {
         entities() {
             const content = this.fcontent(this.state.sinks.reads.entity);
             if (content instanceof Array) {
-                // TODO make this WAY cleaner;
-                content.push({ type: 'entity' });
-                content.push({ type: 'form' });
-                content.push({ type: 'pipeline' });
-                content.push({ type: 'user' });
-                content.push({ type: 'role' });
-                content.push({ type: 'identifier' });
-                return content;
+                return content.concat(EntitiesList);
             }
             return [];
         },

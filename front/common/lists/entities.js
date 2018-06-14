@@ -1,0 +1,21 @@
+const entities = ['user',
+    'role',
+    'identifier',
+    'form',
+    'entity',
+    'pipeline',
+    'function',
+    'lang',
+    'config',
+    'mail_template',
+    'chart',
+    'widget',
+    'menu',
+    'template',
+    'page',
+    'importer',
+    'exporter',
+    'connector',
+    'query'];
+
+module.exports = entities.map(e => ({ type: e }));

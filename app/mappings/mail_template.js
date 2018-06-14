@@ -31,6 +31,9 @@ module.exports = {
                                     value: {
                                         type: 'keyword',
                                     },
+                                    type: {
+                                        type: 'keyword',
+                                    },
                                     length: {
                                         type: 'integer',
                                     },
@@ -50,6 +53,9 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                     value: {
+                                        type: 'keyword',
+                                    },
+                                    type: {
                                         type: 'keyword',
                                     },
                                     length: {
