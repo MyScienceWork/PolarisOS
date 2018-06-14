@@ -1,18 +1,19 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns is-centered">
-        </div>
+        <!-- <div class="columns is-centered" style="border: 3px blue solid;">
+        </div> -->
         <div class="columns is-centered">
             <div class="column is-3">
                 <aside class="menu">
                     <ul class="menu-list">
                         <li v-for="(obj, idx) in navs">
+                            <span @click="state.active_results = false">
                             <router-link
-                                :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]" 
+                                :class="['swap is-purple', {'is-active': current_nav.type === obj.type}]"
                                 :to="`/browse?${obj.query}`">
                             {{lang(obj.text)}}
-                            </router-link>
+                            </router-link></span>
                         </li>
                     </ul>
                 </aside>
@@ -24,7 +25,7 @@
                         <p v-html="lang('f_browse_help')"></p>
                     </div>
                 </div>-->
-                <div class="columns"> 
+                <div class="columns">
                     <div class="column">
                         <category :filters.sync="state.filters" :active-results.sync="state.active_results" />
                     </div>
@@ -34,7 +35,7 @@
                 >
                     <div class="column">
                         <div class="card info-card-purple">
-                            <search-results 
+                            <search-results
                             id="msearchresults"
                                 :search-sink="state.sinks.creations.search"
                                 :result-sink="state.sinks.reads.publication"

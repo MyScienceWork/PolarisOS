@@ -17,5 +17,10 @@ module.exports = {
         has_cu_access(entity) {
             return this.has_c_access(entity) || this.has_u_access(entity);
         },
+        has_some_access(entity) {
+            return this.has_cu_access(entity)
+                || this.has_r_access(entity)
+                || this.has_d_access(entity);
+        },
     },
 };
