@@ -46,9 +46,9 @@ async function download(ctx) {
         throw Errors.DownloadDoesNotExist;
     }
 
-
+    const shown_name = file.name || file.url;
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
-    ctx.set('Content-disposition', `attachment; filename=${file.name}`);
+    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
     ctx.statusCode = 200;
     ctx.body = stream;
 }
