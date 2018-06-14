@@ -39,6 +39,14 @@ async function initialize_routes() {
         });
     });
 
+    router.get('/login', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+
+    router.get('/login/choice', async (ctx) => {
+        await ctx.render('front/views/front');
+    });
+
     _.each(BackRoutes, (route) => {
         router.get(route, async (ctx) => {
             await ctx.render('back/views/back');

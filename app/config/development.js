@@ -2,7 +2,7 @@ const development = {
     port: 4002,
     elasticsearch: {
         hosts: [
-            'http://localhost:39200',
+            'http://localhost:9200',
         ],
         apiVersion: '5.2',
     },
