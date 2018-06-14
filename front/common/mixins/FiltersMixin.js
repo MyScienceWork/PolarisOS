@@ -18,7 +18,12 @@ module.exports = {
             return value.map(v => Utils.find_value_with_path(v, subpath.split('.'))).filter(v => v != null).join(sep);
         },
         format_date(d, f = 'LLLL') {
-            return moment(d).format(f);
+            switch (f) {
+            case 'fromNow':
+                return moment(d).fromNow();
+            default:
+                return moment(d).format(f);
+            }
         },
         eol_to_br(value) {
             return value.replace('\\n', '<br />');

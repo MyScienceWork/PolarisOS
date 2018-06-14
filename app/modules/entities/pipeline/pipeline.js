@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const ODM = require('../crud/odm');
 const Joi = require('joi');
 const Handlebars = require('../../utils/templating');
@@ -72,7 +73,7 @@ class Pipeline extends ODM {
             return info.defaults.reduce((obj, d) => {
                 if (d.value != null && d.key != null) {
                     const t = Handlebars.compile(d.value)({});
-                    const small = Utils.make_nested_object_from_path(d.key, t);
+                    const small = Utils.make_nested_object_from_path(d.key.split('.'), t);
                     obj = Utils.merge_with_replacement(obj, small);
                 }
                 return obj;
@@ -178,19 +179,25 @@ class Pipeline extends ODM {
             }, { joi: [], functions: [] });
 
             validators.push(Joi.object(partitions.joi.reduce((obj, v) => {
+                let myinfo = null;
                 switch (v.type) {
-                default:
                 case 'string':
-                    obj[v.field] = Joi.string();
+                    myinfo = Joi.string();
                     break;
+                case 'number':
+                    myinfo = Joi.number();
+                    break;
+                default:
+                    myinfo = Joi.any();
                 }
 
                 if (v.required) {
-                    obj[v.field] = obj[v.field].required();
+                    myinfo = myinfo.required();
                 } else {
-                    obj[v.field] = obj[v.field].optional().empty('');
+                    myinfo = myinfo.optional().empty('');
                 }
-                return obj;
+                const nested = Utils.make_nested_object_from_path(v.field.split('.'), myinfo);
+                return _.merge(obj, nested);
             }, {})));
         }
         return validators;

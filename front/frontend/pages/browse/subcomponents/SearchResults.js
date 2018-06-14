@@ -22,6 +22,7 @@ module.exports = {
     data() {
         return {
             state: {
+                display_results: false,
                 loggedIn: false,
                 export_type: '',
                 export_subtype: null,
@@ -47,6 +48,7 @@ module.exports = {
             }
         },
         send_information(sink) {
+            this.state.display_results = true;
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {

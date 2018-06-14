@@ -19,6 +19,7 @@
                                     <router-link
                                     class="has-text-green"
                                     :to="`/admin/entity/${props.info.type}`"
+                                    v-if="has_some_access(props.info.type)"
                                     >
                                         <i class="fa fa-eye"></i>
                                     </router-link>
@@ -27,6 +28,7 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="update(props.info, 'entity')"
+                                    v-if="has_u_access('entity')"
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
@@ -35,6 +37,7 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="use_as_model(props.info, 'entity')"
+                                    v-if="has_c_access('entity')"
                                     >
                                     <i class="fa fa-clone"></i>
                                     </action-button>
@@ -44,6 +47,7 @@
                                     confirmation="Are you sure?"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'entity')"
+                                    v-if="has_d_access('entity')"
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
@@ -57,7 +61,7 @@
                 </widget>
             </div>
         </div>
-        <div class="columns">
+        <div class="columns" v-if="has_cu_access('entity')">
             <div class="column">
                 <widget id="mwidget">
                     <span slot="title">

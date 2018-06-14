@@ -16,6 +16,9 @@ module.exports = {
                             logo: {
                                 type: 'keyword',
                             },
+                            css_template: {
+                                type: 'keyword',
+                            },
                         },
                     },
                     api: {
@@ -37,6 +40,9 @@ module.exports = {
                     },
                     mail: {
                         properties: {
+                            default_sender: {
+                                type: 'keyword',
+                            },
                             smtp: {
                                 properties: {
                                     host: {

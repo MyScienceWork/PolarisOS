@@ -98,8 +98,8 @@
                         <h4 class="title is-4 has-no-bottom-margin">{{lang('f_user_general_settings')}}</h4>
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
-                        <!--<hr class="hr-section" />
-                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>-->
+                        <!--<hr class="hr-section" /> -->
+                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>
                         <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
                         <button
                             @click.prevent="save('user')"

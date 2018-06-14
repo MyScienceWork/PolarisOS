@@ -4,7 +4,7 @@
         <div class="navbar-menu is-vcentered">
             <div class="navbar-start">
                 <form @submit.prevent="search">
-                    <div class="field has-addons">
+                    <div class="field has-addons" v-intro="lang('l_backoffice_search_help')">
                         <p class="control has-icons-left is-expanded">
                             <finput type="text" :placeholder="lang('l_search')" name="search" :form="searchSink" label="" :is-addon="true" />
                             <span class="icon is-left">
@@ -30,7 +30,7 @@
             </div>
                 <div class="navbar-end">
                     <b-dropdown>
-                        <a class="navbar-link swap" slot="trigger">
+                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')">
                             {{lang('f_items_per_page')}}
                         </a>
 
@@ -39,7 +39,7 @@
                             </b-dropdown-item>
                     </b-dropdown>
 
-                    <b-dropdown position="is-bottom-left" v-if="sortList.length > 0">
+                    <b-dropdown position="is-bottom-left" v-if="sortList.length > 0" v-intro="lang('l_backoffice_sort_help')">
                         <a class="navbar-link swap" slot="trigger">
                             {{lang('f_sort_by')}}
                         </a>
@@ -63,13 +63,14 @@
         >
         </slot>
     </div>
-    <div v-else class="columns is-centered" v-for="row in matrix_content">
+    <div v-else class="columns is-centered" v-for="(row, row_idx) in matrix_content">
         <div class="column"
             v-for="(info, idx) in row" 
         >
             <slot 
                 name="search-result"
                 :id="idx"
+                :row_id="row_idx"
                 :info="info"
             >
             </slot>
@@ -83,6 +84,7 @@
                 :current.sync="currentPage"
                 :simple="true"
                 :rounded="false"
+                v-intro="lang('l_backoffice_pagination_help')"
                 :per-page="state.seso.size">
             </b-pagination>
         </div>

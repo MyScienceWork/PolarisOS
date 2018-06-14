@@ -3,6 +3,7 @@ const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
 const VueScrollTo = require('vue-scrollto');
+const VueIntro = require('vue-introjs').default;
 const router = require('./router');
 const store = require('../common/store');
 
@@ -32,6 +33,12 @@ const Widget = require('../common/components/main/widget/Widget.vue');
 const App = require('./pages/App.vue');
 
 Vue.use(VueScrollTo);
+
+
+const introJs = require('intro.js');
+
+window.introJs = introJs;
+Vue.use(VueIntro);
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',

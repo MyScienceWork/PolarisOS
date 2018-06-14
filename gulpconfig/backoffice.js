@@ -59,6 +59,7 @@ class GulpFrontend {
             'vue-wysiwyg',
             'vue2-ace-editor',
             'vue2-dropzone',
+            'intro.js',
         ];
 
         this.external_dependencies = [
@@ -68,6 +69,8 @@ class GulpFrontend {
             './node_modules/font-awesome/css/font-awesome.css',
             './node_modules/vue2-dropzone/dist/vue2Dropzone.css',
             './node_modules/vue-wysiwyg/dist/vueWysiwyg.css',
+            './node_modules/vue-wysiwyg/dist/vueWysiwyg.css',
+            './node_modules/intro.js/introjs.css',
         ];
 
         this.css_files = [

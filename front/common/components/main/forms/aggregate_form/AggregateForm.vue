@@ -1,11 +1,11 @@
 <template>
 <div>
-    <fvariadic-element class="field" name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
+    <fvariadic-element class="field" :name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
     <template slot="variadic" slot-scope="props">
             <component
                 :is="select_component(props.order)"
                 :label="lang(label)"
-                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : ''}`"
+                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : `${props.fname}.${props.order}.dummy`}`"
                 :placeholder="lang(placeholder)"
                 type="text"
                 :form="sink"
@@ -20,7 +20,7 @@
                 class="has-small-bottom-margin"
             >
                 <template slot="left-input-addons">
-                    <fselect 
+                    <fselect
                         label=""
                         placeholder=""
                         :name="`${state.variadic_name}.${props.order}.__bool`"
@@ -33,7 +33,7 @@
                     />
                 </template>
                 <template slot="input-addons">
-                    <fselect 
+                    <fselect
                     label=""
                     :placeholder="lang(selectPlaceholder)"
                     :name="`${props.order}.select`"
@@ -61,7 +61,7 @@
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
-                </template> 
+                </template>
             </component>
         </template>
     </fvariadic-element>

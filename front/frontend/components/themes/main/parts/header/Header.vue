@@ -19,7 +19,7 @@
             <div class="tile is-parent is-2 is-vertical">
                 <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
             </div>
-            <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
+            <!-- <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" /> -->
         </div>
     </div>
     <navbar :menu="menu" />

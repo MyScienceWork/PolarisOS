@@ -101,6 +101,14 @@
                                         :form="state.sinks.creations.config" 
                                         type="text"
                                     />
+                                    <finput
+                                        name="gui.css_template" 
+                                        :label="lang('l_ui_css_template')" 
+                                        :placeholder="lang('l_ui_css_template')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
                                 </div>
                             </widget>
                             <widget :collapsed="true">
@@ -159,6 +167,14 @@
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_email_setting', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <finput
+                                        name="mail.default_sender" 
+                                        :label="lang('l_config_mail_default_sender')" 
+                                        :placeholder="lang('l_config_mail_default_sender')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
                                     <finput
                                         name="mail.smtp.host" 
                                         :label="lang('l_config_smtp_host')" 
