@@ -23,7 +23,7 @@
                                 class="has-text-blue"
                                 tag="a"
                                 v-scroll-to="'#mwidget'"
-                                @action-click="update(props.info, 'role')"
+                                @action-click="update(props.info, 'role', transform_role)"
                                 >
                                 <i class="fa fa-pencil"></i>
                                 </action-button>
@@ -33,7 +33,7 @@
                                 class="has-text-orange"
                                 tag="a"
                                 v-scroll-to="'#mwidget'"
-                                @action-click="use_as_model(props.info, 'role')"
+                                @action-click="use_as_model(props.info, 'role', transform_role)"
                                 >
                                 <i class="fa fa-clone"></i>
                                 </action-button>
@@ -88,72 +88,81 @@
                             :form="state.sinks.creations.role"
                             :help="lang('l_back_entity_id_help')"
                             />
-                            <hr />
-                            <h4 class="title is-4">{{lang('l_rights_system_entities')}}</h4>
-                            <article class="message is-info">
-                                <div class="message-body" v-html="lang('l_rights_system_entities_help')">
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_rights_system_entities')}}</span>
+                                <div slot="body">
+                                    <article class="message is-info">
+                                        <div class="message-body" v-html="lang('l_rights_system_entities_help')">
+                                        </div>
+                                    </article>
+                                    <b-table :data="system_entities">
+                                        <template slot-scope="props">
+                                            <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
+                                                {{props.row.type}}
+                                            </b-table-column>    
+                                            <b-table-column field="entity.c" :label="lang('b_create')" centered>
+                                                <finput :name="`orights.${props.row.type}.c`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.r" :label="lang('b_read')" centered>
+                                                <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.u" :label="lang('b_update')" centered>
+                                                <finput :name="`orights.${props.row.type}.u`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.d" :label="lang('b_delete')" centered>
+                                                <finput :name="`orights.${props.row.type}.d`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                        </template>
+                                    </b-table>
                                 </div>
-                            </article>
-                            <b-table :data="system_entities">
-                                <template slot-scope="props">
-                                    <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
-                                        {{props.row.type}}
-                                    </b-table-column>    
-                                    <b-table-column field="entity.c" :label="lang('b_create')" centered>
-                                        <finput :name="`orights.${props.row.type}.c`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.r" :label="lang('b_read')" centered>
-                                        <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.u" :label="lang('b_update')" centered>
-                                        <finput :name="`orights.${props.row.type}.u`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.d" :label="lang('b_delete')" centered>
-                                        <finput :name="`orights.${props.row.type}.d`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                </template>
-                            </b-table>
-                            <hr />
-                            <h4 class="title is-4">{{lang('l_rights_custom_entities')}}</h4>
-                            <article class="message is-info">
-                                <div class="message-body" v-html="lang('l_rights_custom_entities_help')">
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_rights_custom_entities')}}</span>
+                                <div slot="body">
+                                    <article class="message is-info">
+                                        <div class="message-body" v-html="lang('l_rights_custom_entities_help')">
+                                        </div>
+                                    </article>
+                                    <b-table :data="custom_entities">
+                                        <template slot-scope="props">
+                                            <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
+                                                {{ props.row.type}}
+                                            </b-table-column>    
+                                            <b-table-column field="entity.c" :label="lang('b_create')" centered>
+                                                <finput :name="`orights.${props.row.type}.c`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.r" :label="lang('b_read')" centered>
+                                                <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.u" :label="lang('b_update')" centered>
+                                                <finput :name="`orights.${props.row.type}.u`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                            <b-table-column field="entity.d" :label="lang('b_delete')" centered>
+                                                <finput :name="`orights.${props.row.type}.d`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                        </template>
+                                    </b-table>
                                 </div>
-                            </article>
-                            <b-table :data="custom_entities">
-                                <template slot-scope="props">
-                                    <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
-                                        {{ props.row.type}}
-                                    </b-table-column>    
-                                    <b-table-column field="entity.c" :label="lang('b_create')" centered>
-                                        <finput :name="`orights.${props.row.type}.c`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.r" :label="lang('b_read')" centered>
-                                        <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.u" :label="lang('b_update')" centered>
-                                        <finput :name="`orights.${props.row.type}.u`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                    <b-table-column field="entity.d" :label="lang('b_delete')" centered>
-                                        <finput :name="`orights.${props.row.type}.d`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                </template>
-                            </b-table>
-                            <hr />
-                            <h4 v-if="pages.length > 0" class="title is-4">{{lang('l_rights_pages')}}</h4>
-                            <article class="message is-info">
-                                <div class="message-body" v-html="lang('l_rights_pages_help')">
+                            </widget>
+                            <widget :collapsed="true">
+                                <span slot="title">{{lang('l_rights_pages')}}</span>
+                                <div slot="body">
+                                    <article class="message is-info">
+                                        <div class="message-body" v-html="lang('l_rights_pages_help')">
+                                        </div>
+                                    </article>
+                                    <b-table :data="pages">
+                                        <template slot-scope="props">
+                                            <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
+                                                {{props.row.type}}
+                                            </b-table-column>    
+                                            <b-table-column field="entity.r" :label="lang('b_read')" centered>
+                                                <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
+                                            </b-table-column>    
+                                        </template>
+                                    </b-table>
                                 </div>
-                            </article>
-                            <b-table :data="pages">
-                                <template slot-scope="props">
-                                    <b-table-column field="type" :label="lang('l_e_entity_type')" centered sortable>
-                                        {{props.row.type}}
-                                    </b-table-column>    
-                                    <b-table-column field="entity.r" :label="lang('b_read')" centered>
-                                        <finput :name="`orights.${props.row.type}.r`" label="" placeholder="" type="checkbox" :form="state.sinks.creations.role" />
-                                    </b-table-column>    
-                                </template>
-                            </b-table>
+                            </widget>
                         </fform>
                     </div>
                 </widget>

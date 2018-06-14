@@ -39,19 +39,30 @@ module.exports = {
         mwcurrent_read_state(sink) {
             return s => this.dispatch(s, this, sink);
         },
-        update(obj, entity) {
+        update(obj, entity, beforeHook) {
+            let nobj = _.cloneDeep(obj);
+            if (beforeHook) {
+                nobj = beforeHook(nobj, entity);
+            }
+
             this.$store.commit(Messages.NOOP, {
                 form: this.state.sinks.creations[entity],
             });
 
+
             Vue.nextTick(() => {
                 this.$store.commit(Messages.READ, {
                     form: this.state.sinks.creations[entity],
-                    content: _.cloneDeep(obj),
+                    content: nobj,
                 });
             });
         },
-        use_as_model(obj, entity) {
+        use_as_model(obj, entity, beforeHook) {
+            let nobj = _.cloneDeep(obj);
+            if (beforeHook) {
+                nobj = beforeHook(nobj, entity);
+            }
+
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations[entity],
                 keep_content: false,
@@ -61,11 +72,10 @@ module.exports = {
             });
 
             Vue.nextTick(() => {
-                const body = _.cloneDeep(obj);
-                delete body._id;
+                delete nobj._id;
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations[entity],
-                    body,
+                    body: nobj,
                 });
             });
         },

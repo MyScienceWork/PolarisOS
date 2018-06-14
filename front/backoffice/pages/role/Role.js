@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Utils = require('../../../common/utils/utils');
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
@@ -47,6 +48,16 @@ module.exports = {
         };
     },
     methods: {
+        transform_role(role) {
+            role.orights = _.reduce(role.rights, (obj, info) => {
+                obj[info.entity] = { c: info.c || false,
+                    r: info.r || false,
+                    u: info.u || false,
+                    d: info.d || false };
+                return obj;
+            }, {});
+            return role;
+        },
     },
     mounted() {
         this.$store.state.requests = ['page', 'entity'].map(e => ({
