@@ -161,6 +161,13 @@ module.exports = {
                         return acc;
                     }
 
+                    if (_.isPlainObject(val)) {
+                        val = _.reduce(val, (arr, v) => {
+                            arr.push(v);
+                            return arr;
+                        }, []);
+                    }
+
                     acc[key.replace(dot_replacer, '.')] = val;
                     return acc;
                 }, {});

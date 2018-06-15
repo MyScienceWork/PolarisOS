@@ -20,6 +20,19 @@
             <div class="column">
                 <div class="card info-card-purple">
                     <search-results
+                        v-if="show_advanced_search"
+                        key="advanced_search_results"
+                        id="msearchresults"
+                        :search-sink="state.sinks.creations.search"
+                        :result-sink="state.sinks.reads.search"
+                        :search-path="state.paths.creations.search"
+                        search-query="{}"
+                        :filters="advanced_filters"
+                        search-type="publication"
+                    />
+                    <search-results
+                        v-else
+                        key="simple_search_results"
                         id="msearchresults"
                         :search-sink="state.sinks.creations.search"
                         :result-sink="state.sinks.reads.search"
