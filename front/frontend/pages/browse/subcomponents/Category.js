@@ -158,7 +158,18 @@ module.exports = {
                 const content = this.fcontent(this.state.sinks.creations.selected);
                 if ('browsing_terms' in content && content.browsing_terms) {
                     const ids = _.map(content.browsing_terms, b => b._id);
-                    ids.map(elt => this.state.URName.push(this.laboratory.find(x => x.key === elt).value));
+
+                    // TODO It's a hack, the page was designed to not encode any
+                    // particular information about which entity should be displayed
+                    if (this.query_entity === 'laboratory') {
+                        ids.forEach((elt) => {
+                            const info = this.laboratory.find(x => x.key === elt);
+                            if (info) {
+                                this.state.URName.push(info.value);
+                            }
+                        });
+                    }
+
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
@@ -275,28 +286,28 @@ module.exports = {
                     .map((c) => {
                     // console.log(`label::${this.label}`);
                     // console.log(c[this.label]);
-                    if (this.aggregations.length > 0 && this.query.agge === 'publication') {
-                        const info = this.aggregations.find(a => a.key === c._id);
-                        const count = info ? info.count : 0;
-                        if (count === 0) {
-                            return null;
-                        }
-                        if (this.use_hlang) {
-                            c.label_count = `${this.hlang(c[this.label])} (${count})`;
-                            c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
+                        if (this.aggregations.length > 0 && this.query.agge === 'publication') {
+                            const info = this.aggregations.find(a => a.key === c._id);
+                            const count = info ? info.count : 0;
+                            if (count === 0) {
+                                return null;
+                            }
+                            if (this.use_hlang) {
+                                c.label_count = `${this.hlang(c[this.label])} (${count})`;
+                                c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
+                            } else {
+                                c.label_count = `${this.lang(c[this.label])} (${count})`;
+                                c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
+                            }
+                        } else if (this.use_hlang) {
+                            c.label_count = this.hlang(c[this.label]);
+                            c.html = this.hlang(c[this.label]);
                         } else {
-                            c.label_count = `${this.lang(c[this.label])} (${count})`;
-                            c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
+                            c.label_count = this.lang(c[this.label]);
+                            c.html = this.lang(c[this.label]);
                         }
-                    } else if (this.use_hlang) {
-                        c.label_count = this.hlang(c[this.label]);
-                        c.html = this.hlang(c[this.label]);
-                    } else {
-                        c.label_count = this.lang(c[this.label]);
-                        c.html = this.lang(c[this.label]);
-                    }
-                    return c;
-                }).filter(f => f != null);
+                        return c;
+                    }).filter(f => f != null);
             }
             return [];
         },

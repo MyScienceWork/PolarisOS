@@ -5,6 +5,7 @@ const MailerUtils = require('../../../utils/mailer');
 const Handlebars = require('../../../utils/templating');
 const EntitiesUtils = require('../../../utils/entities');
 const Logger = require('../../../../logger');
+const Errors = require('../../../exceptions/errors');
 
 module.exports = {};
 
@@ -90,4 +91,11 @@ async function post_action(publication: Object, options: Object) {
     await publication.update();
 }
 
+async function request_copy(ctx: Object): Promise<any> {
+    const body = ctx.request.body;
+    console.log(body);
+    ctx.body = {};
+}
+
 module.exports.post_action = post_action;
+module.exports.request_copy = request_copy;

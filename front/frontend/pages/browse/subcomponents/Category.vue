@@ -38,7 +38,7 @@
             </div>
         </div>
         <div v-if="view === 'list' && query.aggt !== 'date'">
-            <div v-if="query.entity === 'laboratory' && state.URName" class="coloumns is-centered">
+            <div v-if="query.entity === 'laboratory' && state.URName" class="columns is-centered">
                 <div class="column has-text-centered">
                     <p v-for="name in state.URName">
                         <strong v-html="name" />

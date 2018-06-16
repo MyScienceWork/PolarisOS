@@ -277,6 +277,7 @@
         <copy-requester
             :logged-in="state.loggedIn"
             :trigger.sync="state.copyRequest"
+            :item="content_item._id"
         />
     </div>
 </div>
