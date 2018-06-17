@@ -86,6 +86,12 @@ module.exports = {
         },
     },
     mounted() {
+        if (this.state.es_query_id.trim() !== '') {
+            this.state.es_query_ids.push(this.state.es_query_id);
+        } else if (this.state.es_query_ids.length > 0) {
+            this.state.es_query_id = this.state.es_query_ids[0];
+        }
+
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.query_grabber,
             path: this.state.paths.reads.query_grabber,

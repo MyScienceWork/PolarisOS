@@ -19,6 +19,9 @@ module.exports = {
                             css_template: {
                                 type: 'keyword',
                             },
+                            cover_page: {
+                                type: 'keyword',
+                            },
                         },
                     },
                     api: {

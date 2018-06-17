@@ -82,7 +82,7 @@ const Formatting: Array<any> = [
         demovoc_keywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
-        'dates.update': async () => +moment(),
+        'dates.update': async () => +moment.utc(),
     },
     {
         subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
@@ -135,7 +135,7 @@ const Formatting: Array<any> = [
         },
         'dates.publication': async (result, object) => {
             if (object.model_mode) {
-                return +moment();
+                return +moment.utc();
             }
             return result;
         },
@@ -176,11 +176,21 @@ const Completion: Array<any> = [
         },
     },
     {
-        'dates.update': async () => ({ dates: { update: +moment() } }),
+        'dates.update': async () => ({ dates: { update: +moment.utc() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'fullname', false),
     },
     {
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', '_id', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', '_id', false),
+    },
+    {
+        'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'firstname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'firstname', false),
+    },
+    {
+        'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'lastname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'lastname', false),
     },
     {
         'denormalization.classifications': ComplFunctions.denormalization('subject', 'classifications._id', 'label', false),
@@ -189,7 +199,16 @@ const Completion: Array<any> = [
         'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'firstname', false),
+    },
+    {
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'lastname', false),
+    },
+    {
         'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'abbreviation', false, false, 'value'),
+    },
+    {
+        'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'label', false, false, 'value'),
     },
     {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
@@ -261,8 +280,8 @@ const Completion: Array<any> = [
     },
     {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
-        'dates.deposit': () => ({ dates: { deposit: +moment() } }),
-        'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment() } } }),
+        'dates.deposit': () => ({ dates: { deposit: +moment.utc() } }),
+        'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment.utc() } } }),
         'diffusion.rights.exports.nowhere': object => ({ diffusion: { rights: { exports: { nowhere: false } } } }),
     },
     {
@@ -355,6 +374,10 @@ const Defaults: Object = {
     sources: [],
     system: {
         emails: [],
+        stats: {
+            views: 0,
+            downloads: 0,
+        },
     },
 };
 
@@ -394,7 +417,7 @@ module.exports = {
                 const obj = {
                     sent: false,
                     body: object.virtual_email,
-                    created_at: +moment(),
+                    created_at: +moment.utc(),
                     reviewer: info.papi ? info.papi._id : null,
                 };
                 result.push(obj);

@@ -13,6 +13,8 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="config"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.config"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
@@ -108,6 +110,38 @@
                                         :is-required="true" 
                                         :form="state.sinks.creations.config" 
                                         type="text"
+                                    />
+                                    <div class="field">
+                                        <div class="checkbox">
+                                            <label for="dont-care">
+                                                <input
+                                                type="checkbox"
+                                                name="dont-care"
+                                                v-model="state.need_ide"
+                                                />
+                                                {{lang('l_need_ide')}} 
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <finput 
+                                    name="gui.cover_page" 
+                                    :label="lang('l_cover_page')" 
+                                    :is-required="true" 
+                                    :placeholder="lang('l_cover_page')" 
+                                    type="ide-editor" 
+                                    ide-lang="html"
+                                    :form="state.sinks.creations.config"
+                                    :rows="30"
+                                    v-if="state.need_ide"
+                                    />
+                                    <finput 
+                                    name="gui.cover_page" 
+                                    :label="lang('l_cover_page')" 
+                                    :is-required="true" 
+                                    :placeholder="lang('l_cover_page')" 
+                                    type="html-editor" 
+                                    :form="state.sinks.creations.config"
+                                    v-else
                                     />
                                 </div>
                             </widget>

@@ -130,7 +130,7 @@ module.exports.menu = [
         {
             section: 'l_admin_section',
             name: 'l_mails_page',
-            access: 'back-mail-template',
+            access: 'back-email-template',
             subaccess: ['c', 'r', 'u', 'd'],
             key: 'mail_template',
             routes: [Routes.mail_template],

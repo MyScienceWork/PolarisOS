@@ -24,7 +24,7 @@
                         <p v-html="lang('l_are_you_sure_request_copy')"></p>
                         <finput 
                             :form="state.sinks.creations.copy_request"
-                            name="fistname"
+                            name="firstname"
                             type="hidden"
                             :hidden-value="this.user.firstname"
                             :label="lang('l_firstname')"
@@ -48,7 +48,7 @@
                         <p v-html="lang('l_fill_form')"></p>
                         <finput 
                             :form="state.sinks.creations.copy_request"
-                            name="fistname"
+                            name="firstname"
                             type="text"
                             :label="lang('l_firstname')"
                             :placeholder="lang('l_firstname')"

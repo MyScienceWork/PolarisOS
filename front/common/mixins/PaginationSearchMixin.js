@@ -19,6 +19,8 @@ module.exports = {
         filters: { default: () => [], type: Array },
         searchWhenFiltersChange: { default: false, type: Boolean },
         searchOnMount: { default: true, type: Boolean },
+        changeWithCreateSuccess: { default: false, type: Boolean },
+        formCreateSuccess: { default: 'dummy', type: String },
     },
     data() {
         return {
@@ -37,6 +39,11 @@ module.exports = {
         },
         show_success_delete(sink) {
             if (sink === this.resultSink) {
+                this.run_search(this.searchSink);
+            }
+        },
+        show_success(sink) {
+            if (sink === this.formCreateSuccess) {
                 this.run_search(this.searchSink);
             }
         },
@@ -342,6 +349,9 @@ module.exports = {
         current_state_result(s) {
             this.dispatch(s, this, this.resultSink);
         },
+        create_state_result(s) {
+            this.dispatch(s, this, this.formCreateSuccess);
+        },
     },
     computed: {
         current_state_search() {
@@ -349,6 +359,12 @@ module.exports = {
         },
         current_state_result() {
             return this.fstate(this.resultSink);
+        },
+        create_state_result() {
+            if (this.changeWithCreateSuccess) {
+                return this.fstate(this.formCreateSuccess);
+            }
+            return null;
         },
     },
     mounted() {

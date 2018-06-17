@@ -24,8 +24,6 @@
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
-                                    <i class="fa fa-pencil"></i>
-                                    </action-button>
                                     <action-button
                                     class="has-text-orange"
                                     tag="a"
@@ -132,14 +130,34 @@
                                     {{lang('l_trigger', {}, 'other')}}
                                 </span>
                                 <div slot="body">
-                                    <finput 
-                                        name="" 
-                                        :label="lang('l_key')" 
-                                        :is-required="true" 
-                                        :placeholder="lang('l_mail_message')" 
-                                        type="text" 
-                                        :form="state.sinks.creations.mail_template"
-                                    />
+                                    <fvariadic-element name="trigger.matches" :form="state.sinks.creations.mail_template" :tabs="true">
+                                        <template slot="variadic" slot-scope="props">
+                                            <finput 
+                                                :name="`${props.fname}.${props.order}.key`" 
+                                                :label="lang('l_key')" 
+                                                :is-required="true" 
+                                                :placeholder="lang('l_key')" 
+                                                type="text" 
+                                                :form="state.sinks.creations.mail_template"
+                                            />
+                                            <finput 
+                                                :name="`${props.fname}.${props.order}.value`" 
+                                                :label="lang('l_value')" 
+                                                :is-required="true" 
+                                                :placeholder="lang('l_value')" 
+                                                type="text" 
+                                                :form="state.sinks.creations.mail_template"
+                                            />
+                                            <fselect 
+                                                :name="`${props.fname}.${props.order}.type`" 
+                                                :label="lang('l_type')" 
+                                                :is-required="true" 
+                                                :placeholder="lang('l_type')"
+                                                :options="types"
+                                                :form="state.sinks.creations.mail_template"
+                                            />
+                                        </template>
+                                    </fvariadic-element>
                                 </div>
                             </widget>
                         </fform>
