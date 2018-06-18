@@ -14,6 +14,8 @@
                             :use-default-query="true"
                             search-type="user"
                             :matrix-row-size="2"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.user"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
@@ -76,6 +78,14 @@
                         >
                             <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.sinks.creations.user" />
                             <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.sinks.creations.user" />
+                            <fselect
+                                name="preferred_language" 
+                                :label="lang('l_preferred_language')" 
+                                :is-required="true" 
+                                :placeholder="lang('l_preferred_language')" 
+                                :form="state.sinks.creations.user"
+                                :options="langs"
+                            />
                             <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
                             <finput 
                                 name="sso" :label="lang('b_is_sso')" 

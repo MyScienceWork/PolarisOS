@@ -163,7 +163,6 @@ async function request_copy(ctx: Object): Promise<any> {
 
     const template = templates[0];
 
-    const lang = ctx.__md ? ctx.__md.lang : 'EN';
     const recipients = await EntitiesUtils.search_and_get_sources('user', {
         where: {
             $or: [
@@ -179,16 +178,16 @@ async function request_copy(ctx: Object): Promise<any> {
     }
 
 
-    template.subject = await LangUtils.strings_to_translation(template.subject, lang);
-    template.body = await LangUtils.strings_to_translation(template.body, lang);
-
-
-    const promises = recipients.map((recipient) => {
-        const subject = Handlebars.compile(template.subject)({ publication, request, user: recipient });
-        const content = Handlebars.compile(template.body)({ publication, request, user: recipient });
+    const promises = recipients.map(async (recipient) => {
+        const lang = recipient.preferred_language || 'EN';
+        const template_subject = await LangUtils.strings_to_translation(template.subject, lang);
+        const template_content = await LangUtils.strings_to_translation(template.body, lang);
+        const subject = Handlebars.compile(template_subject)({ publication, request, user: recipient });
+        const content = Handlebars.compile(template_content)({ publication, request, user: recipient });
         const email = recipient.emails.find(e => e.is_master) || recipient.emails[0];
         const sender = email_config.default_sender;
-        return MailerUtils.send_email_with(sender, email.email, subject, content);
+        const r = await MailerUtils.send_email_with(sender, email.email, subject, content);
+        return r;
     });
 
     Promise.all(promises).then(() => {
