@@ -67,7 +67,6 @@ async function add_or_modify_handle(suffix: string, url: string,
             .send({
                 values: [hs_admin, hs_url],
             });
-        console.log(r);
         await r;
         return true;
     } catch (err) {
