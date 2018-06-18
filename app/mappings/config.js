@@ -28,6 +28,9 @@ module.exports = {
                         properties: {
                             hal: {
                                 properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
                                     url: {
                                         type: 'keyword',
                                     },
@@ -39,10 +42,35 @@ module.exports = {
                                     },
                                 },
                             },
+                            handle: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    ip: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'integer',
+                                    },
+                                    admin_handle: {
+                                        type: 'keyword',
+                                    },
+                                    admin_password: {
+                                        type: 'keyword',
+                                    },
+                                    prefix: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                         },
                     },
                     mail: {
                         properties: {
+                            enabled: {
+                                type: 'boolean',
+                            },
                             default_sender: {
                                 type: 'keyword',
                             },

@@ -177,6 +177,57 @@
                                             />
                                         </div>
                                     </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">{{Handle.net}}</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.handle.enabled" 
+                                                :label="lang('l_handle_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="api.handle.ip" 
+                                                :label="lang('l_handle_ip')" 
+                                                :placeholder="lang('l_handle_ip')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.port" 
+                                                :label="lang('l_handle_port')" 
+                                                :placeholder="lang('l_handle_port')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="number"
+                                            />
+                                            <finput
+                                                name="api.handle.prefix" 
+                                                :label="lang('l_handle_prefix')" 
+                                                :placeholder="lang('l_handle_prefix')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.admin_handle" 
+                                                :label="lang('l_handle_admin_login')" 
+                                                :placeholder="lang('l_handle_admin_login')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.admin_password" 
+                                                :label="lang('l_handle_admin_password')" 
+                                                :placeholder="lang('l_handle_admin_password')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="password"
+                                            />
+                                        </div>
+                                    </widget>
                                 </div>
                             </widget>
                             <widget :collapsed="true">
