@@ -7,11 +7,11 @@ const Request = require('superagent');
 async function get_handle_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
 
-    if (!myconfig || !('handle' in myconfig)) {
+    if (!myconfig || !('api' in myconfig) || !('handle' in myconfig.api)) {
         return null;
     }
 
-    return myconfig.handle;
+    return myconfig.api.handle;
 }
 
 function generate_hs_admin(handle: string, index: number = 100,
@@ -61,12 +61,14 @@ async function add_or_modify_handle(suffix: string, url: string,
     const hs_url = generate_url(url);
 
     try {
-        const r = await Request.put(`https://${ip}:${port}/api/handles/${prefix}/${suffix}`)
+        const r = Request.put(`https://${ip}:${port}/api/handles/${prefix}/${suffix}`)
             .query({ overwrite })
-            .auth(login, password)
+            .auth(encodeURIComponent(login), encodeURIComponent(password))
             .send({
                 values: [hs_admin, hs_url],
             });
+        console.log(r);
+        await r;
         return true;
     } catch (err) {
         Logger.error(`Unable to find add or modify handle ${prefix}/${suffix}`);
@@ -97,7 +99,7 @@ async function delete_handle(suffix: string): Promise<boolean> {
     const prefix = handle_config.prefix;
     try {
         const r = await Request.del(`https://${ip}:${port}/api/handles/${prefix}/${suffix}`)
-        .auth(login, password);
+        .auth(encodeURIComponent(login), encodeURIComponent(password));
         return true;
     } catch (err) {
         Logger.error(`Unable to delete handle ${prefix}/${suffix}`);
@@ -106,9 +108,36 @@ async function delete_handle(suffix: string): Promise<boolean> {
     }
 }
 
+async function get_handle(suffix: string, authenticated: boolean = true): Promise<?Object> {
+    const handle_config = await get_handle_config();
+    if (!handle_config) {
+        Logger.error('Unable to find handle config in ES');
+        return null;
+    }
+
+    const login = handle_config.admin_handle;
+    const password = handle_config.admin_password;
+    const ip = handle_config.ip;
+    const port = handle_config.port;
+    const prefix = handle_config.prefix;
+    try {
+        let r = Request.get(`https://${ip}:${port}/api/handles/${prefix}/${suffix}`);
+        if (authenticated) {
+            r = r.auth(encodeURIComponent(login), encodeURIComponent(password));
+        }
+        const result = await r;
+        return result.body;
+    } catch (err) {
+        Logger.error(`Unable to retrieve handle ${prefix}/${suffix}`);
+        Logger.error(err);
+        return null;
+    }
+}
+
 module.exports = {
     get_handle_config,
     add_handle,
     modify_handle,
     delete_handle,
+    get_handle,
 };

@@ -149,7 +149,7 @@
                                 <span slot="title">{{lang('l_api_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <widget :collapsed="true">
-                                        <span slot="title">{{HAL}}</span>
+                                        <span slot="title">HAL</span>
                                         <div slot="body">
                                             <finput
                                                 name="api.hal.url" 
@@ -178,7 +178,7 @@
                                         </div>
                                     </widget>
                                     <widget :collapsed="true">
-                                        <span slot="title">{{Handle.net}}</span>
+                                        <span slot="title">Handle.net</span>
                                         <div slot="body">
                                             <finput
                                                 name="api.handle.enabled" 
