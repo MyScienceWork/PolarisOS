@@ -47,7 +47,7 @@ async function get_smtp_transport() {
         secure: smtp.secure || false,
     };
 
-    if (smtp.auth && smtp.auth.user) {
+    if (smtp.auth && smtp.auth.user && smtp.auth.user.trim() !== '') {
         info.auth = {
             user: smtp.auth.user,
             pass: smtp.auth.pass,
