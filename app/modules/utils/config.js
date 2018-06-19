@@ -1,13 +1,12 @@
 // @flow
 
 const EntitiesUtils = require('./entities');
-
-const env = process.env.NODE_ENV || 'development';
+const EnvUtils = require('./env');
 
 async function get_config(): Promise<?Object> {
     const configs = await EntitiesUtils.search_and_get_sources('config', {
         where: {
-            environment: env,
+            environment: EnvUtils.get_current_environment(),
         },
         size: 1,
     });

@@ -37,6 +37,14 @@ const all = {
     email: {
         default_sender: 'noreply@polarisos.com',
     },
+    scheduler: {
+        app: {
+            interval: 120 * 1000,
+        },
+        api: {
+            interval: 60 * 60 * 1000,
+        },
+    },
 };
 
 module.exports = all;

@@ -17,7 +17,7 @@ const RssRoutes = require('../modules/3rdparty/rss/routes');
 
 const index_prefix = Config.elasticsearch.index_prefix;
 
-async function initialize_routes() {
+async function initialize_routes(singleton) {
     const router = new Router();
 
     const send_opts = {
@@ -68,14 +68,14 @@ async function initialize_routes() {
         RouterUtils.generate_entity_routes(router, e, []);
     });
 
-    EntityRoutes(router);
-    UserRoutes(router);
-    ImporterRoutes(router);
-    ExporterRoutes(router);
-    RssRoutes(router);
+    EntityRoutes(router, singleton);
+    UserRoutes(router, singleton);
+    ImporterRoutes(router, singleton);
+    ExporterRoutes(router, singleton);
+    RssRoutes(router, singleton);
 
     if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
-        PublicationRoutes(router);
+        PublicationRoutes(router, singleton);
     } else {
         RouterUtils.generate_entity_routes(router, 'publication', []);
     }

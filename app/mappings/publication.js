@@ -916,6 +916,16 @@ module.exports = {
                                     },
                                 },
                             },
+                            api: {
+                                properties: {
+                                    handle: {
+                                        type: 'boolean',
+                                    },
+                                    hal: {
+                                        type: 'boolean',
+                                    },
+                                },
+                            },
                         },
                     },
                 },

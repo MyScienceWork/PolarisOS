@@ -187,6 +187,10 @@ class Mapper {
         if ('$match' in object && 'query' in object.$match) {
             return new queries.Match(object.$match).match({ [key]: object.$match.query });
         }
+
+        if ('$exists' in object && 'field' in object.$exists) {
+            return new queries.Exists(object.$exists);
+        }
         return null;
     }
 

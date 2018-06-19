@@ -374,6 +374,10 @@ const Defaults: Object = {
     sources: [],
     system: {
         emails: [],
+        api: {
+            handle: false,
+            hal: false,
+        },
         stats: {
             views: 0,
             downloads: 0,

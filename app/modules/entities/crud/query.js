@@ -47,6 +47,20 @@ class RawQuery extends Query {
     }
 }
 
+class Exists extends Query {
+
+    field(f: string): Exists {
+        this._object.field = f;
+        return this;
+    }
+
+    generate(): Object {
+        if ('field' in this._object) {
+            return { exists: { field: this._object.field } };
+        }
+        return null;
+    }
+}
 
 class Bool extends Query {
     _must: Array<Query>;
@@ -532,4 +546,5 @@ module.exports = {
     Term,
     Terms,
     Range,
+    Exists,
 };
