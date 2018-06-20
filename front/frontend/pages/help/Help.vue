@@ -10,7 +10,7 @@
         <div v-for="faq in content_faq" class="columns is-centered">
             <div class="column is-8">
                 <widget :collapsed="true">
-                    <span slot="title">{{lang(faq.question)}}</span>
+                    <strong slot="title" class="is-uppercase has-text-blue">{{lang(faq.question)}}</strong>
                     <div slot="body">
                         <p v-html="lang(faq.answer)" />
                     </div>

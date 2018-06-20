@@ -10,14 +10,23 @@
             <div v-for="about in content_about" class="columns is-centered">
                 <div class="column is-8">
                     <widget v-if="about.is_legacy_notice" :collapsed.sync="displayLegacyNotice">
-                        <span slot="title">{{lang(about.question)}}</span>
+                        <strong slot="title" class="is-uppercase has-text-red">{{lang(about.question)}}</strong>
                         <div slot="body">
                             <p v-html="lang(about.answer)" />
                         </div>
                     </widget>
                     <widget v-else :collapsed="true">
-                        <span slot="title">{{lang(about.question)}}</span>
-                        <div slot="body">
+                        <strong slot="title" class="is-uppercase has-text-red">{{lang(about.question)}}</strong>
+                        <div v-if="about.subcards" slot="body">
+                            <p v-html="lang(about.answer)"/>
+                            <widget v-for="subcard in about.subcards" :collapsed="true">
+                                <strong slot="title">{{lang(subcard.question)}}</strong>
+                                <div slot="body">
+                                    <p v-html="lang(subcard.answer)"/>
+                                </div>
+                            </widget>
+                        </div>
+                        <div v-else slot="body">
                             <p v-html="lang(about.answer)" />
                         </div>
                     </widget>

@@ -18,7 +18,6 @@
         </div>
         <div class="columns is-centered">
             <div class="column">
-                <div class="card info-card-purple">
                     <search-results
                         v-if="show_advanced_search"
                         key="advanced_search_results"
@@ -40,7 +39,6 @@
                         :search-query="query"
                         search-type="publication"
                     />
-                </div>
             </div>
         </div>
     </div>

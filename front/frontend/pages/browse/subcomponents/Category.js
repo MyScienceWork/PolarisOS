@@ -17,6 +17,7 @@ module.exports = {
     props: {
         filters: { type: Array, default: () => [] },
         activeResults: { type: Boolean, default: false },
+        names: { type: Array, default: [] },
     },
     data() {
         return {
@@ -30,7 +31,7 @@ module.exports = {
                     },
                     reads: {
                         search: 'search_read',
-                        laboratory: 'laboratory_read',
+                        // laboratory: 'laboratory_read',
                     },
                 },
                 active_abc: null,
@@ -46,18 +47,19 @@ module.exports = {
         if (this.$route.query && this.$route.query.agge === 'author') {
             this.click_on_abc('A');
         }
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.laboratory,
-            path: APIRoutes.entity('laboratory', 'POST', true),
-            body: {},
-        });
+        // this.$store.dispatch('search', {
+        //     form: this.state.sinks.reads.laboratory,
+        //     path: APIRoutes.entity('laboratory', 'POST', true),
+        //     body: {},
+        // });
     },
     methods: {
         browse() {
             this.send_information(this.state.sinks.creations.selected);
         },
         browse_list(term, name, type = 'publication') {
-            this.state.URName = [name];
+            this.state.URName = [name.split('(')[0]];
+            this.$emit('update:names', this.state.URName);
             if (type === 'publication') {
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.selected,
@@ -153,7 +155,7 @@ module.exports = {
         },
 
         send_information(sink) {
-            this.state.URName = [];
+            // this.state.URName = [];
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
                 if ('browsing_terms' in content && content.browsing_terms) {
@@ -161,15 +163,15 @@ module.exports = {
 
                     // TODO It's a hack, the page was designed to not encode any
                     // particular information about which entity should be displayed
-                    if (this.query_entity === 'laboratory') {
-                        ids.forEach((elt) => {
-                            const info = this.laboratory.find(x => x.key === elt);
-                            if (info) {
-                                this.state.URName.push(info.value);
-                            }
-                        });
-                    }
-
+                    // if (this.query_entity === 'laboratory') {
+                    //     ids.forEach((elt) => {
+                    //         const info = this.laboratory.find(x => x.key === elt);
+                    //         if (info) {
+                    //             this.state.URName.push(info.value);
+                    //         }
+                    //     });
+                    // }
+                    // this.$emit('update:names', this.state.URName);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
@@ -244,27 +246,54 @@ module.exports = {
                 this.state.URName = undefined;
             }
         },
+        query_seso_filter() {
+            if (['laboratory', 'project', 'survey', 'auhtor'].indexOf(this.$route.query.entity) === -1) {
+                return;
+            }
+            this.state.URName = [];
+            const s_filter = this.state.query.seso_filter[0];
+            const ids = s_filter.split('[')[1].split('"').filter(elt => elt !== '' && elt !== ',' && elt !== ']}');
+            if (['laboratory', 'project', 'survey'].indexOf(this.$route.query.entity) !== -1) {
+                ids.forEach((elt) => {
+                    const info = this.options.find(x => x._id === elt);
+                    if (info) {
+                        this.state.URName.push(info.html.split('(')[0]);
+                    }
+                });
+            } else if (this.$route.query.entity === 'author') {
+                ids.forEach((elt) => {
+                    const info = this.options_abc.find(x => x._id === elt);
+                    if (info) {
+                        this.state.URName.push(info.fullname);
+                    }
+                });
+            }
+            this.$emit('update:names', this.state.URName);
+        },
     },
     computed: {
-        laboratory() {
-            const content = this.mcontent(this.state.sinks.reads.laboratory);
-            // console.log(content);
-            if (!content) {
-                return {};
-            }
-            return content.map((elmt) => {
-                const key = elmt._id;
-                let value;
-                if (this.use_hlang) {
-                    value = `${this.hlang(elmt.name)}`;
-                } else {
-                    value = `${this.lang(elmt.name)}`;
-                }
-                return { key, value };
-            });
-        },
+        // laboratory() {
+        //     const content = this.mcontent(this.state.sinks.reads.laboratory);
+        //     // console.log(content);
+        //     if (!content) {
+        //         return {};
+        //     }
+        //     return content.map((elmt) => {
+        //         const key = elmt._id;
+        //         let value;
+        //         if (this.use_hlang) {
+        //             value = `${this.hlang(elmt.name)}`;
+        //         } else {
+        //             value = `${this.lang(elmt.name)}`;
+        //         }
+        //         return { key, value };
+        //     });
+        // },
         query_entity() {
             return this.$route.query.entity;
+        },
+        query_seso_filter() {
+            return this.$route.query.seso_filter;
         },
         paginated() {
             return (content) => {
