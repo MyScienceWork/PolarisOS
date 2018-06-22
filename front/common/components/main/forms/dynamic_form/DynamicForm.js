@@ -96,7 +96,7 @@ module.exports = {
             switch (type) {
             case 'size': {
                 if (field.datasource && field.datasource.size) {
-                    return field.datasource.size;
+                    return parseInt(field.datasource.size, 10);
                 }
                 return 10;
             }

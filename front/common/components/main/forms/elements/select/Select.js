@@ -130,15 +130,15 @@ module.exports = {
         search: _.debounce((loading, search, self) => {
             const body = {
                 projection: [self.fieldLabel, self.fieldValue],
-                size: this.searchSize,
+                size: self.searchSize,
             };
 
-            if (this.searchFields.trim() === '') {
+            if (self.searchFields.trim() === '') {
                 body.where = {
                     [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
                 };
             } else {
-                const $or = this.searchFields.split(',').map(f => ({ [f.trim()]: search }));
+                const $or = self.searchFields.split(',').map(f => ({ [f.trim()]: search }));
                 body.where = { $or };
             }
 

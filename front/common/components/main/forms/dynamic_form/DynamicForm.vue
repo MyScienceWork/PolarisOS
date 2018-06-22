@@ -88,8 +88,8 @@
                     :view-validation-texts="false"
                     :translate-through-hlang="field.datasource.use_hlang"
                     :translatable="field.datasource.translatable"
-                    :search-size="generate_ajax_search(form.fields[0], 'size')"
-                    :search-fields="generate_ajax_search(form.fields[0], 'fields')"
+                    :search-size="generate_ajax_search(field, 'size')"
+                    :search-fields="generate_ajax_search(field, 'fields')"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -197,8 +197,8 @@
                 :view-validation-texts="false"
                 :translate-through-hlang="field.datasource.use_hlang"
                 :translatable="field.datasource.translatable"
-                :search-size="generate_ajax_search(form.fields[0], 'size')"
-                :search-fields="generate_ajax_search(form.fields[0], 'fields')"
+                :search-size="generate_ajax_search(field, 'size')"
+                :search-fields="generate_ajax_search(field, 'fields')"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -375,8 +375,8 @@
             :view-validation-texts="false"
             :translate-through-hlang="field.datasource.use_hlang"
             :translatable="field.datasource.translatable"
-            :search-size="generate_ajax_search(form.fields[0], 'size')"
-            :search-fields="generate_ajax_search(form.fields[0], 'fields')"
+            :search-size="generate_ajax_search(field, 'size')"
+            :search-fields="generate_ajax_search(field, 'fields')"
             />
             <crud-form 
                 :text="field.datasource.action_text"
