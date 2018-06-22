@@ -1,7 +1,7 @@
 <template>
 <div>
-    <div class="columns is-centered has-small-bottom-margin">
-        <div class="column has-no-bottom-padding">
+    <div :class="{'columns is-centered has-small-bottom-margin': !this.noColumn}">
+        <div :class="{'column has-no-bottom-padding': !this.noColumn}">
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons"  v-on-click-away="away">
                     <b-collapse :open.sync="state.collapse_opened" v-if="collapsible">
@@ -36,13 +36,20 @@
             </form>
         </div>
     </div>
-    <div class="columns is-pulled-right" v-if="showAdvancedSearch">
+    <div class="columns" v-if="showAdvancedSearch">
         <div class="column">
-            <router-link
-                :class="`has-text-${color} swap`"
-                :alt="lang('f_advanced_search')"
-                :to="{ path: '/search', query: state.as_query }"
-            >{{lang('f_advanced_search')}}</router-link>
+            <div class="level">
+                <div class="level-left">
+
+                </div>
+                <div class="level-right">
+                    <router-link
+                        :class="`has-text-${color} swap`"
+                        :alt="lang('f_advanced_search')"
+                        :to="{ path: '/search', query: state.as_query }"
+                        >{{lang('f_advanced_search')}}</router-link>
+                </div>
+            </div>
         </div>
     </div>
     <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch">

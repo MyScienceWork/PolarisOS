@@ -34,7 +34,8 @@
                 {{lang(item.name)}}
             </router-link>
         </div>
-        <search class="level-right is-paddingless" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
+            <search class="is-vcentered has-small-left-margin" :no-column="true" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" />
+        </div>
     </div>
     <div v-if="active_idx !== -1" :class="`breadcrumb breadcrumb-${state.colors[active_idx]}`">
         <div class="breadcrumb-content">

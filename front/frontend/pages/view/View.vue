@@ -18,6 +18,8 @@
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
                         <p v-html="contributors.contributors"></p>
+                        <p><span> {{date('deposit') | format_date('YYYY')}} </span><span v-if="country">{{country}}, </span><span v-if="city">{{city}}. </span></p>
+                        <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>
                         <ol>
                             <li v-for="affiliation in affiliations" v-html="affiliation"></li>
                         </ol>
@@ -78,7 +80,7 @@
                                     <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
-                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> 
+                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong>
                                         <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                         <span v-else>{{lang(license.label)}}</span>
                                     </p>
@@ -102,7 +104,7 @@
                                         </ul>
                                     </p>
                                     <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
-                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong> 
+                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="p in projects">
                                                 {{lang(p)}}
@@ -140,9 +142,9 @@
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_file')}}</p>
                             </header>
-                            <div 
+                            <div
                                 class="card-content has-text-centered"
-                                v-if="is_files_accessible"    
+                                v-if="is_files_accessible"
                             >
                                 <div>
                                     <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
@@ -224,9 +226,9 @@
                                 <p class="card-header-title">{{lang('f_publication_export')}}</p>
                             </header>
                             <div class="card-content">
-                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
-                                <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
-                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p> 
+                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> |
+                                <a @click.prevent="run_export('bibtex')">BibTeX</a> |
+                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p>
                             </div>
                         </div>
                     </div>
@@ -238,7 +240,7 @@
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
                             </header>
                             <div class="card-content has-text-centered">
-                                <social-sharing 
+                                <social-sharing
                                   :title="state.current_title.content"
                                   :description="state.current_abstract.content"
                                   quote=""
@@ -261,7 +263,7 @@
                                             <i class="fa fa-envelope fa-2x"></i>
                                         </network>
                                     </div>
-                                </social-sharing> 
+                                </social-sharing>
                             </div>
                         </div>
                     </div>

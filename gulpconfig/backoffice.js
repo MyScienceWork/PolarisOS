@@ -140,7 +140,7 @@ class GulpFrontend {
 
     watch() {
         gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
-        gulp.watch(['./front/{backoffice,common}/styles/**/*.*'], ['back-styles']);
+        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], ['back-styles']);
         gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
     }
 
