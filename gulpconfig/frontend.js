@@ -138,7 +138,7 @@ class GulpFrontend {
 
     watch() {
         gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], ['front-scripts']);
-        gulp.watch(['./front/{frontend,common}/styles/**/*.*'], ['front-styles']);
+        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], ['front-styles']);
         gulp.watch(['./front/frontend/views/*.*'], ['front-views']);
     }
 

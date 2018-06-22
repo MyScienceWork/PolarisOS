@@ -36,13 +36,20 @@
             </form>
         </div>
     </div>
-    <div class="columns is-pulled-right" v-if="showAdvancedSearch">
+    <div class="columns" v-if="showAdvancedSearch">
         <div class="column">
-            <router-link
-                :class="`has-text-${color} swap`"
-                :alt="lang('f_advanced_search')"
-                :to="{ path: '/search', query: state.as_query }"
-            >{{lang('f_advanced_search')}}</router-link>
+            <div class="level">
+                <div class="level-left">
+
+                </div>
+                <div class="level-right">
+                    <router-link
+                        :class="`has-text-${color} swap`"
+                        :alt="lang('f_advanced_search')"
+                        :to="{ path: '/search', query: state.as_query }"
+                        >{{lang('f_advanced_search')}}</router-link>
+                </div>
+            </div>
         </div>
     </div>
     <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch">

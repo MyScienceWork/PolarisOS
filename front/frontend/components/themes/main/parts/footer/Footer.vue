@@ -1,75 +1,15 @@
 <template>
 <div class="hero-foot">
     <footer>
-    <div class="container is-fluid">
-        <!--<div class="columns footer-menu">
-            <div class="column footer-menu-red">
-                <p class="footer-menu-title">L'institut</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-            <div class="column footer-menu-orange">
-                <p class="footer-menu-title">Le dépôt</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-            <div class="column footer-menu-purple">
-                <p class="footer-menu-title">La consultation</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-            <div class="column footer-menu-brown">
-                <p class="footer-menu-title">L'institut</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-            <div class="column footer-menu-green">
-                <p class="footer-menu-title">L'institut</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-            <div class="column footer-menu-blue">
-                <p class="footer-menu-title">L'institut</p>
-                <ul class="footer-menu-list">
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                    <li><a href='#'>Test</a></li>
-                </ul>
-            </div>
-        </div>-->
-        <div class="columns footer-disclaimer">
-            <!-- <p class="column" v-html="lang('l_footer_disclaimer')"></p> -->
+        <div class="columns footer-disclaimer is-centered">
             <div class="column">
-            <router-link
-                :alt="lang('l_footer_disclaimer')"
-                :to="{ path: '/about', query: {legacy_notice: 'true'}}">
-            <!-- <p>{{lang('l_footer_disclaimer')}}</p> -->
-            <p v-html="lang('l_footer_disclaimer')"></p>
-            </router-link>
+                <router-link
+                    :alt="lang('l_footer_disclaimer')"
+                    :to="{ path: '/about', query: {legacy_notice: 'true'}}">
+                    <span v-html="lang('l_footer_disclaimer')"></span>
+                </router-link>
+            </div>
         </div>
-        </div>
-    </div>
     </footer>
 </div>
 </template>

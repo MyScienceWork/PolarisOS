@@ -13,10 +13,16 @@
         :options="dropzoneData" 
         :include-styling="false">
             <div slot="inside">
-                <div class="columns is-pulled-right" v-if="!readonly">
+                <div class="columns" v-if="!readonly">
                     <div class="column">
-                        <div class="dz-message">
-                            <a href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
+                        <div class="level">
+                            <div class="level-left">
+                            </div>
+                            <div class="level-right">
+                                <div class="dz-message">
+                                    <a href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
