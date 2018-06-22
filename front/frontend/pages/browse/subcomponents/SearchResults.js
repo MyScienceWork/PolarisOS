@@ -17,6 +17,7 @@ module.exports = {
     props: {
         showStatus: { default: false, type: Boolean },
         catName: { default: [], type: Array },
+        display_l_for_list: { default: false, type: Boolean },
     },
     components: {
         Results,
