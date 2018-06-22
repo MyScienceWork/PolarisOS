@@ -5,6 +5,7 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
@@ -16,7 +17,7 @@ const BrowserUtils = require('../../../common/utils/browser');
 require('moment/min/locales.min');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin],
     components: {
         CopyRequester,
     },
