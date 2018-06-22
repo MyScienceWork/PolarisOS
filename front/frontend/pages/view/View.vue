@@ -18,7 +18,7 @@
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
                         <p v-html="contributors.contributors"></p>
-                        <p><span> {{date('deposit') | format_date('YYYY')}} </span><span v-if="country">{{country}}, </span><span v-if="city">{{city}}. </span></p>
+                        <p><span v-if="date('deposit')"> {{date('deposit') | format_date('YYYY')}} </span><span v-if="country">{{country}}, </span><span v-if="city">{{city}}. </span></p>
                         <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>
                         <ol>
                             <li v-for="affiliation in affiliations" v-html="affiliation"></li>
