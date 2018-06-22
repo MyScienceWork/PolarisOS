@@ -49,7 +49,7 @@ module.exports = {
             if (!(content instanceof Array)) {
                 return [];
             }
-            return content;
+            return content.sort((a, b) => a.order - b.order);
         },
         displayLegacyNotice: {
             get() {

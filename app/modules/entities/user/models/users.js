@@ -16,6 +16,7 @@ const Validation: Array<any> = [
         firstname: Joi.string().required().label('Firstname'),
         lastname: Joi.string().required().label('Lastname'),
         fullname: Joi.string().required().label('Fullname'),
+        preferred_language: Joi.string().required().label('Preferred language'),
         hpassword: Joi.string().label('Password'),
         retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
     }),

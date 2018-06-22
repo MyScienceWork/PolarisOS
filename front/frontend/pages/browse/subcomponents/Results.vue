@@ -53,7 +53,7 @@
                                     class="level-item"
                                     :alt="lang('f_request_copy')"
                                     :title="lang('f_request_copy')"
-                                    @click.prevent="request_copy"
+                                    @click.prevent="request_copy(info._id)"
                                 >
                                     <span class="icon is-small"><i class="fa fa-lock"></i></span>
                                 </a>
@@ -138,6 +138,7 @@
         <copy-requester
             :logged-in="loggedIn"
             :trigger.sync="state.copyRequest"
+            :item="state.clickedItem"
         />
     </div>
 </template>

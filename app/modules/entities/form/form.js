@@ -77,7 +77,7 @@ class Form extends ODM {
                 const query = await Form.generate_query(datasources[ds].query);
                 const datasource = await EntitiesUtils.search(ds, {
                     projection: Array.from(datasources[ds].projection),
-                    size: datasources[ds].ajax ? 20 : 800,
+                    size: datasources[ds].ajax ? 20 : 1000,
                     sort: [...sorts, { _uid: 'desc' }],
                     where: query,
                 });

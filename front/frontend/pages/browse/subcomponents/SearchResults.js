@@ -2,6 +2,7 @@ const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
@@ -12,9 +13,10 @@ const Toastr = require('toastr');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
     props: {
         showStatus: { default: false, type: Boolean },
+        catName: { default: [], type: Array },
     },
     components: {
         Results,

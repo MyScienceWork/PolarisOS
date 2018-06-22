@@ -3,7 +3,8 @@
         <div>
             <div class="columns is-centered" v-if="picker === 'select'">
                 <div class="column is-8" v-if="total > 0 || view === 'abc'">
-                    <div :class="{'is-hidden': !activeResults}">
+                    <div :class="{'is-hidden': !(activeResults || ['project', 'survey'].indexOf(query.entity) !== -1)}">
+                    <!-- <div v-if="activeResults || ['project', 'survey'].indexOf(query.entity) !== -1"> -->
                     <p class="has-text-centered has-small-bottom-margin"><span>{{lang(`l_browse_by_${query.entity}_label`)}}</span></p>
                     <div class="field is-grouped">
                         <div class="control is-expanded">
@@ -33,16 +34,21 @@
                 <div class="colum has-text-centered">
                     <!-- <div :class="{'is-hidden': (view === 'list' && query.aggt !== 'date' && !activeResults)}"> -->
                     <!-- <strong v-if="query.entity !== 'laboratory'" class="is-uppercase">{{lang('l_or')}}</strong> -->
-                    <strong v-if="['laboratory', 'project', 'survey'].indexOf(query.entity) === -1" class="is-uppercase">{{lang('l_or')}}</strong>
+                    <strong v-if="activeResults === false && ['project', 'survey'].indexOf(query.entity) !== -1" class="is-uppercase">{{lang('l_or')}}</strong>
                 </div>
             </div>
         </div>
         <div v-if="view === 'list' && query.aggt !== 'date'">
-            <div v-if="query.entity === 'laboratory' && state.URName" class="coloumns is-centered">
+            <div v-if="query.entity === 'laboratory' && state.URName" class="columns is-centered">
                 <div class="column has-text-centered">
                     <p v-for="name in state.URName">
                         <strong v-html="name" />
                     </p>
+                </div>
+            </div>
+            <div v-if="query.entity === 'internal_collection'" class="columns is-centered">
+                <div class="column has-text-centered">
+                    <strong>{{lang('l_collection_title')}}</strong>
                 </div>
             </div>
             <div  class="columns is-centered" >
@@ -89,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <div class="columns is-centered" v-else-if="view === 'list' && query.aggt === 'date'">
+        <div :class="['columns is-centered', {'is-hidden': activeResults}]" v-else-if="view === 'list' && query.aggt === 'date'">
             <div class="column is-10" v-if="total > 0">
                 <p class="has-text-centered has-small-bottom-margin" v-if="picker === 'select'"><strong>{{lang('l_browse_list')}}</strong></p>
                 <div class="content">
@@ -97,7 +103,7 @@
                         <li v-for="obj in paginated(aggregations)">
                             <a
                                 class="has-text-purple"
-                                @click.prevent="browse_list(obj.key, 'date')"
+                                @click.prevent="browse_list(obj.key, obj.key, 'date')"
                                 v-scroll-to="'#msearchresults'"
                             >
                                 {{obj.key}} (<strong>{{obj.count}}</strong>)
@@ -124,7 +130,7 @@
                         <li v-for="obj in paginated(options_abc)">
                             <a
                                 class="has-text-purple"
-                                @click.prevent="browse_list(obj._id)"
+                                @click.prevent="browse_list(obj._id, obj[label])"
                                 v-scroll-to="'#msearchresults'"
                                 v-html="obj[label]"
                             >

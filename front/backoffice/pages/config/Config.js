@@ -34,6 +34,7 @@ module.exports = {
                 es_query_id: 'backoffice-config-query',
                 langs: Langs.LangsList,
                 environments: Environments,
+                need_ide: false,
             },
         };
     },

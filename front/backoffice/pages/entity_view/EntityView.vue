@@ -21,6 +21,8 @@
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
                             @table-checked-rows-update="on_checked_rows_update"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations[entity()]"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column v-for="(value, key) in state.columns"

@@ -37,19 +37,24 @@ async function get_smtp_transport() {
 
     const smtp = email_config.smtp;
 
-    if (!smtp.host || !smtp.port || !smtp.auth || !smtp.auth.user) {
+    if (!smtp.host || !smtp.port) {
         return null;
     }
 
-    const transporter = Nodemailer.createTransport({
+    const info = {
         host: smtp.host,
         port: parseInt(smtp.port, 10),
         secure: smtp.secure || false,
-        auth: {
+    };
+
+    if (smtp.auth && smtp.auth.user && smtp.auth.user.trim() !== '') {
+        info.auth = {
             user: smtp.auth.user,
             pass: smtp.auth.pass,
-        },
-    });
+        };
+    }
+
+    const transporter = Nodemailer.createTransport(info);
     return transporter;
 }
 

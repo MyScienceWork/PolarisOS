@@ -141,6 +141,9 @@ module.exports = {
                             },
                         },
                     },
+                    preferred_language: {
+                        type: 'keyword',
+                    },
                     access: {
                         type: 'nested',
                         properties: {

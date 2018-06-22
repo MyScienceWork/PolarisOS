@@ -81,4 +81,8 @@ module.exports = {
     rss(entity, mapping, lang, query, sort, size) {
         return `${prefix}/rss/${entity}/${mapping}/${lang}/${query}/${sort}/${size}`;
     },
+
+    custom(suffix) {
+        return `${prefix}/${suffix}`;
+    },
 };

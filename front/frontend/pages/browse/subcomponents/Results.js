@@ -21,6 +21,7 @@ module.exports = {
         return {
             state: {
                 copyRequest: false,
+                clickedItem: null,
             },
         };
     },
@@ -69,7 +70,8 @@ module.exports = {
             const file = _.find(item.files, f => f.is_master) || item.files[0];
             return `/download/publication/${item._id}/${file.url}`;
         },
-        request_copy() {
+        request_copy(id) {
+            this.state.clickedItem = id;
             this.state.copyRequest = !this.state.copyRequest;
         },
         can_modify(item) {
