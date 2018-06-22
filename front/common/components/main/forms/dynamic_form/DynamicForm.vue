@@ -25,6 +25,8 @@
             :ajax="form.fields[0].datasource ? form.fields[0].datasource.ajax : ''"
             :ajax-url="generate_ajax_url(form.fields[0])"
             :ajax-value-url="generate_ajax_url(form.fields[0], 'value')"
+            :search-size="generate_ajax_search(form.fields[0], 'size')"
+            :search-fields="generate_ajax_search(form.fields[0], 'fields')"
             :translate-through-hlang="form.fields[0].datasource ? form.fields[0].datasource.use_hlang : false"
             :translatable="form.fields[0].datasource ? form.fields[0].datasource.translatable : false"
         >
@@ -86,6 +88,8 @@
                     :view-validation-texts="false"
                     :translate-through-hlang="field.datasource.use_hlang"
                     :translatable="field.datasource.translatable"
+                    :search-size="generate_ajax_search(form.fields[0], 'size')"
+                    :search-fields="generate_ajax_search(form.fields[0], 'fields')"
                     />
                 </template> 
                 <slot name="form-addons"></slot>
@@ -193,6 +197,8 @@
                 :view-validation-texts="false"
                 :translate-through-hlang="field.datasource.use_hlang"
                 :translatable="field.datasource.translatable"
+                :search-size="generate_ajax_search(form.fields[0], 'size')"
+                :search-fields="generate_ajax_search(form.fields[0], 'fields')"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -369,6 +375,8 @@
             :view-validation-texts="false"
             :translate-through-hlang="field.datasource.use_hlang"
             :translatable="field.datasource.translatable"
+            :search-size="generate_ajax_search(form.fields[0], 'size')"
+            :search-fields="generate_ajax_search(form.fields[0], 'fields')"
             />
             <crud-form 
                 :text="field.datasource.action_text"

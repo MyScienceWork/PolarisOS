@@ -33,6 +33,8 @@ module.exports = {
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
+        searchFields: { default: '', type: String },
+        searchSize: { default: 10, type: Number },
     },
     components: {
         'v-select': VSelect,
@@ -126,16 +128,24 @@ module.exports = {
             }
         },
         search: _.debounce((loading, search, self) => {
+            const body = {
+                projection: [self.fieldLabel, self.fieldValue],
+                size: this.searchSize,
+            };
+
+            if (this.searchFields.trim() === '') {
+                body.where = {
+                    [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
+                };
+            } else {
+                const $or = this.searchFields.split(',').map(f => ({ [f.trim()]: search }));
+                body.where = { $or };
+            }
+
             const promise = self.$store.dispatch('search', {
                 form: self.state.form,
                 path: self.ajaxUrl,
-                body: {
-                    where: {
-                        [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
-                    },
-                    projection: [self.fieldLabel, self.fieldValue],
-                    size: 10,
-                },
+                body,
             });
             promise.then((res) => {
                 loading(false);
@@ -216,9 +226,9 @@ module.exports = {
             if (infos instanceof Array) {
                 return infos.map(o => ({ [this.fieldValue]: o.value }));
                 // return infos.map(o => o.value);
-                //a l'envoie du formulaire, tous mes fselect était refusé
-                //car là ou il attendait un String, il recevait un objet {value: ''}
-                //avec cette ligne, les fselect sont acceptés.
+                // a l'envoie du formulaire, tous mes fselect était refusé
+                // car là ou il attendait un String, il recevait un objet {value: ''}
+                // avec cette ligne, les fselect sont acceptés.
             }
             return infos.value;
         },

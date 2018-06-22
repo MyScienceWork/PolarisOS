@@ -92,6 +92,24 @@ module.exports = {
             }
             return '';
         },
+        generate_ajax_search(field, type = 'size') {
+            switch (type) {
+            case 'size': {
+                if (field.datasource && field.datasource.size) {
+                    return field.datasource.size;
+                }
+                return 10;
+            }
+            case 'fields': {
+                if (field.datasource && field.datasource.search_fields) {
+                    return field.datasource.search_fields;
+                }
+                return '';
+            }
+            default:
+                return null;
+            }
+        },
         dropzone_analyze_file(filename) {
             this.$emit('dropzone-analyze-file', filename);
         },
