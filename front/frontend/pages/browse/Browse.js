@@ -41,6 +41,7 @@ module.exports = {
                     },
                 },
                 active_results: false,
+                category_name: [],
             },
         };
     },

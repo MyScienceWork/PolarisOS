@@ -27,14 +27,13 @@
                 </div>-->
                 <div class="columns">
                     <div class="column">
-                        <category :filters.sync="state.filters" :active-results.sync="state.active_results" />
+                        <category :filters.sync="state.filters" :active-results.sync="state.active_results" :names.sync="state.category_name"/>
                     </div>
                 </div>
                 <div class="columns is-centered"
                     v-if="state.active_results"
                 >
                     <div class="column">
-                        <div class="card info-card-purple">
                             <search-results
                             id="msearchresults"
                                 :search-sink="state.sinks.creations.search"
@@ -47,8 +46,8 @@
                                 :search-query="search_query"
                                 :default-query="default_query"
                                 :search-on-mount="false"
+                                :catName="state.category_name"
                             />
-                        </div>
                     </div>
                 </div>
             </div>
