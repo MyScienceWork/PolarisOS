@@ -1,7 +1,7 @@
 <template>
 <div>
-    <div class="columns is-centered has-small-bottom-margin">
-        <div class="column has-no-bottom-padding">
+    <div :class="{'columns is-centered has-small-bottom-margin': !this.noColumn}">
+        <div :class="{'column has-no-bottom-padding': !this.noColumn}">
             <form @submit.prevent="trigger_click">
                 <div class="field has-addons"  v-on-click-away="away">
                     <b-collapse :open.sync="state.collapse_opened" v-if="collapsible">
