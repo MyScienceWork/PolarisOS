@@ -51,7 +51,15 @@ module.exports = {
             const sink = `${val.value}_read`;
             const element = info.element;
             const entity = info.entity || {};
-            const path = element !== 'text' ? APIRoutes.entity(entity.name, 'POST', true) : '';
+            let path = '';
+
+            if (element !== 'text') {
+                if (entity.path) {
+                    path = entity.path;
+                } else {
+                    path = APIRoutes.entity(entity.name, 'POST', true);
+                }
+            }
 
             this.state.inputs = Object.assign({}, this.state.inputs, { [id]: {
                 element,
@@ -66,7 +74,7 @@ module.exports = {
                 form: sink,
             });
 
-            if (this.state.inputs[id].element !== 'text') {
+            if (this.state.inputs[id].element !== 'text' && !entity.ajax) {
                 this.$store.dispatch('search', {
                     form: sink,
                     path,
@@ -117,6 +125,28 @@ module.exports = {
                 return 'type';
             }
             return entity[type];
+        },
+        get_ajax(type, info) {
+            if (!info || !('entity' in info)) {
+                return undefined;
+            }
+
+            switch (type) {
+            default:
+            case 'ajax':
+                return info.entity.ajax || false;
+            case 'ajax-value-url':
+            case 'ajax-url':
+                return info.entity.path || '';
+            case 'search-fields':
+                return info.entity.searchFields || info.entity.label;
+            }
+        },
+        get_placeholder(info) {
+            if (!info || !('placeholder' in info)) {
+                return this.placeholder;
+            }
+            return info.placeholder;
         },
         reset() {
             const sinks = [this.sink, this.state.sinks.creations.dummy,

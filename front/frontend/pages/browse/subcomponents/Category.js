@@ -86,6 +86,8 @@ module.exports = {
         post_hook_query_changed(query, old_query) {
             console.log(query, old_query);
             const { agge, aggf, aggt, entity, label } = query;
+            let restrictions = query.restrictions || undefined;
+
             if (old_query.agge === agge && old_query.aggf === aggf
                     && old_query.aggt === aggt && old_query.entity === entity) {
                 console.log('should return');
@@ -113,6 +115,17 @@ module.exports = {
                 let where = {};
                 if (agge === 'publication') {
                     where = { $and: [Queries.published, Queries.no_other_version] };
+                }
+
+                if (restrictions) {
+                    if (!('$and' in where)) {
+                        where.$and = [];
+                    }
+
+                    if (!(restrictions instanceof Array)) {
+                        restrictions = [restrictions];
+                    }
+                    restrictions.forEach(r => where.$and.push(JSON.parse(window.atob(r))));
                 }
 
                 this.$store.dispatch('search', {
@@ -190,13 +203,24 @@ module.exports = {
             const label = this.query.label;
             const order = this.query.order;
             const field = this.query.aggf;
+            let restrictions = this.query.restrictions;
             if (entity != null && entity.trim() !== '' && label != null) {
+                const where = {
+                    $and: [{ [field]: letter }],
+                };
+
+                if (restrictions) {
+                    if (!(restrictions instanceof Array)) {
+                        restrictions = [restrictions];
+                    }
+
+                    restrictions.forEach(r => where.$and.push(JSON.parse(window.atob(r))));
+                }
+
                 const body = {
                     projection: [label],
                     size: 10000,
-                    where: {
-                        $and: [{ [field]: letter }],
-                    },
+                    where,
                 };
                 if (order) {
                     body.sort = order.split('|');
@@ -247,7 +271,7 @@ module.exports = {
             }
         },
         query_seso_filter() {
-            if (['laboratory', 'project', 'survey', 'auhtor'].indexOf(this.$route.query.entity) === -1) {
+            if (['laboratory', 'project', 'survey', 'author'].indexOf(this.$route.query.entity) === -1) {
                 return;
             }
             this.state.URName = [];
