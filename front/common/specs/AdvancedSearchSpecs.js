@@ -11,6 +11,19 @@ module.exports = {
         element: 'text',
         label: 'l_keyword',
     },
+    'demovoc_keywords*_id': {
+        entity: {
+            name: 'demovoc',
+            label: 'label',
+            value: '_id',
+            translatable: false,
+            ajax: true,
+            path: '/api/public/v2/demovocs/search',
+        },
+        element: 'multi-select',
+        placeholder: 'l_type_to_find',
+        label: 'l_demovoc_keyword',
+    },
     type: {
         entity: {
             name: 'typology',
@@ -31,14 +44,17 @@ module.exports = {
         element: 'multi-select',
         label: 'l_lang',
     },
-    'authors*_id': {
+    'contributors*_id': {
         entity: {
             name: 'author',
             label: 'fullname',
             value: '_id',
             translatable: false,
+            ajax: true,
+            path: '/api/public/v2/authors/search',
         },
         element: 'multi-select',
+        placeholder: 'l_type_to_find',
         label: 'l_author',
     },
     journal: {
@@ -47,8 +63,12 @@ module.exports = {
             label: 'name',
             value: '_id',
             translatable: false,
+            ajax: true,
+            path: '/api/public/v2/journals/search',
+            searchFields: 'name.__pauc',
         },
         element: 'multi-select',
+        placeholder: 'l_type_to_find',
         label: 'l_journal',
     },
     conference: {
@@ -67,8 +87,11 @@ module.exports = {
             label: 'label',
             value: '_id',
             translatable: false,
+            ajax: true,
+            path: '/api/public/v2/editors/search',
         },
         element: 'multi-select',
+        placeholder: 'l_type_to_find',
         label: 'l_editor',
     },
     'classifications*_id': {
