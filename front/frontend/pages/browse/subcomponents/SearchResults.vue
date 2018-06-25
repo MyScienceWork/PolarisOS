@@ -2,13 +2,12 @@
 <div class="card info-card-purple" v-if="state.display_results">
 <div class="card-content">
     <div class="level" v-if="content.length > 0">
-        <!-- <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
+        <div v-if="!display_l_for_list" class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
             <h4 class="is-subtitle is-2">
-                <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong><span v-if="display_l_for_list"> {{lang('l_for')}}</span> <br/>
-                <b v-if="display_l_for_list" v-for="name in catName"><strong> {{name | truncate(50)}} </strong><br></b>
+                <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong>
             </h4>
-        </div> -->
-        <div class="level-left">
+        </div>
+        <div v-else class="level-left">
         </div>
         <div class="level-right">
             <div class="level-item">
@@ -125,16 +124,14 @@
             </div>
         </div>
     </div>
-        <div class="columns">
+        <div v-if="display_l_for_list" class="columns">
             <div class="column">
-        <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
-            <h4 class="is-subtitle is-2">
-                <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong><span v-if="display_l_for_list"> {{lang('l_for')}}</span>
-                 <!-- <br/> -->
-                <!-- <b v-if="display_l_for_list" v-for="name in catName"><strong> {{name | truncate(50)}} </strong><br></b> -->
-                <b v-if="display_l_for_list" v-html="join_list(catName)"></b><br/>
-            </h4>
-        </div>
+                <div class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
+                    <h4 class="is-subtitle is-2">
+                        <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong><span> {{lang('l_for')}}</span>
+                        <span v-if="display_l_for_list" v-html="join_list(catName)"></span><br/>
+                    </h4>
+                </div>
             </div>
         </div>
     </div>
