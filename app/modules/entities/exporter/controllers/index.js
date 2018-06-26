@@ -288,32 +288,13 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object, m
 
 async function transform_to_endnote(publications: Array<Object>, extra: Object): Promise<string> {
     const results = [];
-    const typology_mapping = {
-        book: 'BOOK',
-        'other-blog': 'BLOG',
-        'book-chapter': 'CHAP',
-        'other-software': 'COMP',
-        'book-proceedings': 'CONF',
-        conference: 'CPAPER',
-        'book-chapter-dictionary-article': 'DICT',
-        'other-figure': 'FIGURE',
-        other: 'GEN',
-        journal: 'JOUR',
-        'other-maps': 'MAP',
-        press: 'NEWS',
-        report: 'REPORT',
-        'other-audio': 'SOUND',
-        thesis: 'THES',
-        'working-paper': 'UNPB',
-        'other-video': 'VIDEO',
-    };
-
     for (const i in publications) {
         const publication = publications[i].source;
         let lines = [];
-
-        if (publication.subtype && publication.subtype in typology_mapping) {
-            lines.push(`TY  - ${typology_mapping[publication.subtype]}`);
+        let ris_type = null;
+        if (publication.subtype && publication.subtype in EndNotePipeline.types) {
+            ris_type = EndNotePipeline.types[publication.subtype];
+            lines.push(`TY  - ${ris_type}`);
         } else {
             const typologys = await EntitiesUtils.search_and_get_sources('typology', {
                 size: 1,
@@ -323,107 +304,57 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
             });
             const typology = typologys[0];
             const name = typology.name;
-            if (name in typology_mapping) {
-                lines.push(`TY  - ${typology_mapping[name]}`);
+            if (name in EndNotePipeline.types) {
+                ris_type = EndNotePipeline.types[name];
+                lines.push(`TY  - ${ris_type}`);
             } else {
+                ris_type = 'GEN';
                 lines.push('TY  - GEN');
             }
         }
 
         lines.push(`ID  - ${publication._id}`);
-        if (publication.abstracts.length > 0) {
-            const rab = publication.abstracts.filter(a => a.lang === publication.lang);
-            if (rab.length === 0) {
-                lines.push(`AB  - ${publication.abstracts[0].content}`);
+
+        let obj = {};
+        for (const key in EndNotePipeline.mapping) {
+            const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+            if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                continue;
+            }
+
+            const info = EndNotePipeline.mapping[key];
+            let mapper = null;
+            if (ris_type in info) {
+                mapper = info[ris_type];
+            } else if ('__default' in info) {
+                mapper = info.__default;
+            }
+
+            if (!mapper) {
+                continue;
+            }
+
+            let subobj = await mapper.picker(pub_info, publication, extra.lang);
+            if (mapper.transformers.length > 0) {
+                subobj = await mapper.transformers.reduce((o, tr) => {
+                    o = tr(o);
+                    return o;
+                }, subobj);
+            }
+
+            obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                if (_.isArray(objValue)) {
+                    return objValue.concat(srcValue);
+                }
+            });
+        }
+        _.forEach(obj, (val, key) => {
+            if (_.isArray(val)) {
+                lines = lines.concat(val.map(v => `${key}  - ${v}`));
             } else {
-                lines.push(`AB  - ${rab[0].content}`);
+                lines.push(`${key}  - ${val}`);
             }
-        }
-
-        const authors = publication.denormalization.authors.map(a => `AU  - ${a._id.fullname}`);
-        lines = lines.concat(authors);
-
-        if (publication.localisation && publication.localisation.city) {
-            lines.push(`CY  - ${publication.localisation.city}`);
-        }
-
-        if (publication.denormalization.editor) {
-            lines.push(`ED  - ${publication.denormalization.editor}`);
-        }
-
-        if (publication.pagination) {
-            lines.push(`EP  - ${publication.pagination}`);
-        }
-
-        if (publication.number) {
-            lines.push(`IS  - ${publication.number}`);
-        }
-
-        if (publication.number) {
-            lines.push(`IS  - ${publication.number}`);
-        }
-
-        if (publication.denormalization.journal) {
-            lines.push(`JO  - ${publication.denormalization.journal}`);
-        }
-
-        const keywords = publication.keywords.map(k => `KW  - ${k.value}`);
-        lines = lines.concat(keywords);
-
-        if (publication.lang) {
-            lines.push(`LA  - ${publication.lang}`);
-        }
-
-        if (publication.url) {
-            lines.push(`LK  - ${publication.url}`);
-        }
-
-        if (publication.description) {
-            lines.push(`N1  - ${publication.description}`);
-        }
-
-        if (publication.denormalization.localisation && publication.denormalization.localisation.country) {
-            const country = publication.denormalization.localisation.country;
-            const tcountry = await LangUtils.get_language_values_from_langs(country,
-                    [{ value: extra.lang }]);
-
-            if (tcountry.length > 0) {
-                lines.push(`PP  - ${tcountry[0].value}`);
-            } else {
-                lines.push(`PP  - ${country}`);
-            }
-        }
-
-        if (publication.dates.publication) {
-            lines.push(`PY  - ${moment(publication.dates.publication).format('YYYY/MM/DD')}`);
-        }
-
-        if (publication.pagination) {
-            lines.push(`SP  - ${publication.pagination}`);
-        }
-
-        lines.push(`TI  - ${publication.title.content}`);
-
-        if (publication.translated_titles.length > 0) {
-            lines.push(`TT  - ${publication.translated_titles[0].content}`);
-        }
-
-        if (publication.volume) {
-            lines.push(`VL  - ${publication.volume}`);
-        }
-
-        if (publication.ids.length > 0) {
-            const DOI = publication.ids.filter(id => id.type === 'doi');
-            const ISBN = publication.ids.filter(id => id.type === 'isbn');
-
-            if (DOI.length > 0) {
-                lines.push(`DO  - ${DOI[0]._id}`);
-            }
-
-            if (ISBN.length > 0) {
-                lines.push(`SN  - ${ISBN[0]._id}`);
-            }
-        }
+        });
 
         lines.push('ER  - ');
         results.push(lines.join('\n'));
