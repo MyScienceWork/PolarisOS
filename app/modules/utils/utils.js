@@ -316,6 +316,15 @@ function filter_empty_or_null_objects(array: Array<any>): Array<any> {
     });
 }
 
+function filterIndexes(collection: Array<any>, pred: Function): Array<number> {
+    return collection.reduce((arr: Array<number>, val: any, i: number) => {
+        if (pred(val)) {
+            arr.push(i);
+        }
+        return arr;
+    }, []);
+}
+
 
 module.exports = {
     hasProperty,
@@ -331,4 +340,5 @@ module.exports = {
     make_nested_object_from_path,
     isNil,
     filter_empty_or_null_objects,
+    filterIndexes,
 };

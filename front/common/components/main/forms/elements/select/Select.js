@@ -30,6 +30,7 @@ module.exports = {
         ajax: { default: false, type: Boolean },
         ajaxUrl: { default: '', type: String },
         ajaxValueUrl: { default: '', type: String },
+        ajaxFilters: { default: () => [], type: Array },
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
@@ -140,6 +141,12 @@ module.exports = {
             } else {
                 const $or = self.searchFields.split(',').map(f => ({ [f.trim()]: search }));
                 body.where = { $or };
+            }
+
+            if (self.ajaxFilters.length > 0) {
+                body.where = {
+                    $and: [body.where].concat(self.ajaxFilters),
+                };
             }
 
             const promise = self.$store.dispatch('search', {

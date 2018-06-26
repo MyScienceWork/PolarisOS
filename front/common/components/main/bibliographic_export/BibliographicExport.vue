@@ -32,6 +32,7 @@
                 :ajax="true"
                 ajax-url="/api/public/v2/authors/search"
                 ajax-value-url="/api/public/v2/authors/search"
+                :ajax-filters="[{is_ined: true}]"
             />        
             <fselect
                 :form="this.state.sinks.creations.export"
