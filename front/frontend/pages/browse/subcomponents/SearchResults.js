@@ -16,7 +16,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
     props: {
         showStatus: { default: false, type: Boolean },
-        catName: { default: [], type: Array },
+        catName: { default: () => [], type: Array },
         display_l_for_list: { default: false, type: Boolean },
     },
     components: {

@@ -64,6 +64,8 @@ module.exports = {
     methods: {
         update_tab(idx) {
             this.state.current_tab = idx;
+            const q = _.merge({}, _.cloneDeep(this.query || {}), { t: this.state.current_tab });
+            this.$router.push({ query: q });
         },
         switch_tab(t) {
             try {
