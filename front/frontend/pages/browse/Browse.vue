@@ -48,6 +48,7 @@
                                 :search-on-mount="false"
                                 :catName="state.category_name"
                                 :display_l_for_list="true"
+                                :default-sorts="['-dates.publication']"
                             />
                     </div>
                 </div>

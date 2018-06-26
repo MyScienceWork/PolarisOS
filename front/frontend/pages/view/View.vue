@@ -18,15 +18,18 @@
                         <h3 class="title is-3">{{state.current_title.content}}</h3>
                         <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
                         <p v-html="contributors.contributors"></p>
-                        <p><span v-if="date('publication')"> {{date('publication') | format_date('YYYY')}} </span><span v-if="country">{{country}}, </span><span v-if="city">{{city}}. </span></p>
-                        <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>
                         <ol>
                             <li v-for="affiliation in affiliations" v-html="affiliation"></li>
                         </ol>
+                        <!--<p><span v-if="date('publication')"> {{date('publication') | format_date('YYYY')}} </span><span v-if="country">{{lang(country)}}, </span><span v-if="city">{{city}}. </span></p>
+                        <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>-->
                         <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>
+                        <p v-if="press" v-html="press"></p>
                         <p v-if="chapter" v-html="chapter"></p>
+                        <p v-if="report" v-html="report"></p>
+                        <p v-if="thesis" v-html="thesis"></p>
                         <p v-if="conference" v-html="conference"></p>
                         <p v-if="other_document" v-html="other_document"></p>
                         <p v-if="working_paper" v-html="working_paper"></p>
@@ -61,12 +64,15 @@
                                     </p>
                                 </div>
                             </widget>
-                            <widget v-if="ids.length > 0" :collapsed="true">
+                            <widget v-if="ids.length > 0 || _oa_find(content_item, 'system.api.handle', false)" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <p v-if="_oa_find(content_item, 'system.api.handle', false)">
+                                        <strong>{{lang('l_handle_id')}}</strong> : <a class="has-text-purple" target='_blank' :href='generate_handle_link(content_item)'>{{generate_handle_link(content_item)}}</a>
+                                    </p>
                                     <p v-for="id in ids">
                                         <template v-if="id.type.toUpperCase() === 'DOI'">
-                                            <strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
+                                            <strong>{{id.type.toUpperCase()}}</strong> : <a class="has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
                                         </template>
                                         <template v-else>
                                             <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
@@ -81,14 +87,14 @@
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
                                     <p v-if="license"><strong v-html="lang('f_publication_license')"></strong>
-                                        <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                        <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                         <span v-else>{{lang(license.label)}}</span>
                                     </p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a class="has-text-purple" target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources"><a target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
+                                            <li v-for="r in resources"><a class="has-text-purple" target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -200,7 +206,7 @@
                             </header>
                             <div class="card-content">
                                 <p>
-                                    <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                    <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                     <span v-else>{{lang(license.label)}}</span>
                                 </p>
                             </div>

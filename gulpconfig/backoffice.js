@@ -21,6 +21,7 @@ const clean = require('gulp-clean');
 const uglify = require('gulp-uglify-es').default;
 const vueify = require('vueify');
 const unflowify = require('unflowify');
+const aliasify = require('aliasify');
 
 class GulpFrontend {
     constructor(production) {
@@ -91,6 +92,13 @@ class GulpFrontend {
             appBundler.external(dep);
         });
 
+
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
         return appBundler
         .transform(unflowify)
         .transform(envify({
@@ -101,6 +109,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(buffer())
@@ -110,6 +119,12 @@ class GulpFrontend {
     }
 
     bundleVendors() {
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
         return browserify({
             require: this.dependencies,
             debug: true,
@@ -122,6 +137,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('vendors.js'))
         .pipe(buffer())

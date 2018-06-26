@@ -49,6 +49,10 @@ function utf8ToB64(str) {
     return window.btoa(unescape(encodeURIComponent(str)));
 }
 
+function getDefaultLanguage() {
+    return localGet('default_lang') || 'EN';
+}
+
 function getQueryParams(query) {
     if (!query) {
         return { };
@@ -72,4 +76,5 @@ module.exports = {
     getURLHost,
     utf8ToB64,
     getQueryParams,
+    getDefaultLanguage,
 };

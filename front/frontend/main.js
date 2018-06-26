@@ -8,6 +8,8 @@ const store = require('../common/store');
 const _ = require('lodash');
 const SocialSharing = require('vue-social-sharing');
 const VueScrollTo = require('vue-scrollto');
+const moment = require('moment');
+const BrowserUtils = require('../common/utils/browser');
 
 
 const Loader = require('./components/loader/Loader.vue');
@@ -46,6 +48,9 @@ const MediaWidget = require('./components/themes/main/widgets/media_widget/Media
 
 const App = require('./pages/App.vue');
 
+
+const LOCALE = BrowserUtils.getDefaultLanguage();
+moment.locale(LOCALE.toLowerCase());
 
 Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
 

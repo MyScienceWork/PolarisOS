@@ -37,6 +37,7 @@ const Formatting: Array<any> = [
         abstracts: a => FormatFunctions.oarray_to_array(a),
         classifications: a => FormatFunctions.oarray_to_array(a),
         contributors: a => FormatFunctions.oarray_to_array(a),
+        book_authors: a => FormatFunctions.oarray_to_array(a),
         'diffusion.projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.anr_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.european_projects': a => FormatFunctions.oarray_to_array(a),
@@ -72,6 +73,7 @@ const Formatting: Array<any> = [
         files: FormatFunctions.filter_empty_or_null_objects,
         classifications: FormatFunctions.filter_empty_or_null_objects,
         contributors: FormatFunctions.filter_empty_or_null_objects,
+        book_authors: FormatFunctions.filter_empty_or_null_objects,
         'diffusion.projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
@@ -91,6 +93,13 @@ const Formatting: Array<any> = [
         contributors: async result => result.reduce((arr, co) => {
             if (co.role == null) {
                 co.role = 'author';
+            }
+            arr.push(co);
+            return arr;
+        }, []),
+        book_authors: async result => result.reduce((arr, co) => {
+            if (co.role == null) {
+                co.role = 'editor';
             }
             arr.push(co);
             return arr;
@@ -179,6 +188,7 @@ const Completion: Array<any> = [
         'dates.update': async () => ({ dates: { update: +moment.utc() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
         'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'fullname', false),
+        'denormalization.delivery_institution': ComplFunctions.denormalization('institution', 'delivery_institution', 'name', true),
     },
     {
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', '_id', false),
@@ -206,9 +216,11 @@ const Completion: Array<any> = [
     },
     {
         'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'abbreviation', false, false, 'value'),
+        'denormalization.book_authors': ComplFunctions.denormalization('contributor_role', 'book_authors.role', 'abbreviation', false, false, 'value'),
     },
     {
         'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'label', false, false, 'value'),
+        'denormalization.book_authors': ComplFunctions.denormalization('contributor_role', 'book_authors.role', 'label', false, false, 'value'),
     },
     {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
