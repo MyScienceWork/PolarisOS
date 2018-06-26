@@ -39,6 +39,9 @@ module.exports = {
         };
     },
     methods: {
+        join_list(list) {
+            return list.map(elt => `<strong>${elt.trim()}</strong>`).join('; ');
+        },
         export_format(format, subtype) {
             this.state.export_type = format;
             this.state.export_subtype = subtype;
