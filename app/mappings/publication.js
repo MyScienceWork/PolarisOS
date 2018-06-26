@@ -148,6 +148,28 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    role: {
+                                        properties: {
+                                            abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            label: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                             classifications: {
@@ -531,6 +553,9 @@ module.exports = {
                         type: 'nested',
                         properties: {
                             _id: {
+                                type: 'keyword',
+                            },
+                            role: {
                                 type: 'keyword',
                             },
                         },

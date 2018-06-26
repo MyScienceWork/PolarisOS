@@ -14,8 +14,6 @@ const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
 
-require('moment/min/locales.min');
-
 module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin],
     components: {
@@ -96,6 +94,16 @@ module.exports = {
                 return '#';
             }
             return '#';
+        },
+        generate_handle_link(item) {
+            const config = this.$store.state.global_config;
+            const proxy = this._oa_find(config, 'api.handle.proxy');
+            const prefix = this._oa_find(config, 'api.handle.prefix');
+
+            if (!proxy || !prefix) {
+                return '#';
+            }
+            return `${proxy}/${prefix}/${item._id}`;
         },
         activate_lang(type, lang) {
             switch (type) {
@@ -447,7 +455,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}{{#if book_authors.length}}, {{/if}}{{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
@@ -489,6 +497,45 @@ module.exports = {
                 return null;
             }
             const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}},{{/if}} {{moment date=dates.publication format='YYYY'}}";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        press() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'press') {
+                return null;
+            }
+            const tpl = "{{newspaper}}{{#if number}}, n°{{number}}{{/if}}{{moment date=dates.publication format=', MMMM YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        thesis() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'thesis') {
+                return null;
+            }
+            const tpl = "{{localisation.city}}{{#if denormalization.delivery_institution}} : {{denormalization.delivery_institution}}{{/if}}{{moment date=dates.publication format=', YYYY'}}.";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        report() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'report') {
+                return null;
+            }
+            const tpl = "{{#if publication_title}}{{publication_title}}{{/if}}{{#if localisation.city}}{{#if publication_title}}, {{/if}}{{localisation.city}}{{/if}}{{#if denormalization.editor}}{{#unless localisation.city}} : {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a class='has-text-purple' target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {
@@ -630,7 +677,6 @@ module.exports = {
         },
         date() {
             return (type) => {
-                moment.locale(this.$store.state.interfaceLang.toLowerCase());
                 const item = this.content_item;
                 if (!item) {
                     return '';

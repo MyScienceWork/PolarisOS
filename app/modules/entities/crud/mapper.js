@@ -109,7 +109,7 @@ class Mapper {
                     } else if (elt.startsWith('"') && elt.endsWith('"')) {
                         return new queries.MatchPhrase().match({ [key]: elt.slice(1, -1) });
                     }
-                    return new queries.Match().match({ [key]: elt });
+                    return new queries.Match().match({ [key]: elt }).operator('and');
                 }).filter(elt => elt != null);
                 const bool = matches.reduce((q, elt) => q.should(elt), new queries.Bool());
 
@@ -159,7 +159,7 @@ class Mapper {
                 if (value.startsWith('"') && value.endsWith('"')) {
                     q = new queries.MatchPhrase().match({ [key]: value.slice(1, -1) });
                 } else {
-                    q = new queries.Match().match({ [key]: value });
+                    q = new queries.Match().match({ [key]: value }).operator('and');
                 }
                 if (outer_query != null) {
                     most_inner_query.query(q);
@@ -185,7 +185,7 @@ class Mapper {
         }
 
         if ('$match' in object && 'query' in object.$match) {
-            return new queries.Match(object.$match).match({ [key]: object.$match.query });
+            return new queries.Match(object.$match).match({ [key]: object.$match.query }).operator('and');
         }
 
         if ('$exists' in object && 'field' in object.$exists) {

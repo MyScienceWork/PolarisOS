@@ -62,6 +62,9 @@ module.exports = {
                                     prefix: {
                                         type: 'keyword',
                                     },
+                                    proxy: {
+                                        type: 'keyword',
+                                    },
                                 },
                             },
                         },

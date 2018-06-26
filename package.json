@@ -94,6 +94,7 @@
     "xml2js-parser": "^1.1.1"
   },
   "devDependencies": {
+    "aliasify": "^2.1.0",
     "babel-eslint": "^7.x.x",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",

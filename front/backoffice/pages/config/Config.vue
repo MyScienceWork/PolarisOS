@@ -211,6 +211,14 @@
                                                 type="text"
                                             />
                                             <finput
+                                                name="api.handle.proxy" 
+                                                :label="lang('l_handle_proxy')" 
+                                                :placeholder="lang('l_handle_proxy')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
                                                 name="api.handle.admin_handle" 
                                                 :label="lang('l_handle_admin_login')" 
                                                 :placeholder="lang('l_handle_admin_login')" 

@@ -88,6 +88,7 @@
                                         :use-default-query="true"
                                         :default-query="default_search_publications_query"
                                         :show-status="loggedIn"
+                                        :default-sorts="['-dates.publication']"
                                         />
                                     </div>
                                 </div>
@@ -185,6 +186,7 @@
                                 :use-default-query="true"
                                 :default-query="default_deposit_query"
                                 :show-status="true"
+                                :default-sorts="['-dates.publication']"
                                 />
                             </div>
                         </div>
