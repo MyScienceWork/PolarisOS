@@ -949,6 +949,9 @@ module.exports = {
                                     hal: {
                                         type: 'boolean',
                                     },
+                                    hal_id: {
+                                        type: 'keyword',
+                                    },
                                 },
                             },
                         },

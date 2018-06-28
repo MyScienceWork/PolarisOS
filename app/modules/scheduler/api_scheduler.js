@@ -50,6 +50,12 @@ class ApiScheduler extends Scheduler {
                     p.system.api = {};
                 }
                 p.system.api.handle = true;
+                const ids = p.ids || [];
+                ids.push({
+                    _id: `${handle_config.proxy}/${handle_config.prefix}/${p._id}`,
+                    type: 'handle',
+                });
+                p.ids = ids;
                 await EntitiesUtils.update(p, 'publication');
             }
             return ok;

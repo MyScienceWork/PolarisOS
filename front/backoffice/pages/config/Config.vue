@@ -152,6 +152,12 @@
                                         <span slot="title">HAL</span>
                                         <div slot="body">
                                             <finput
+                                                name="api.hal.enabled" 
+                                                :label="lang('l_hal_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
                                                 name="api.hal.url" 
                                                 :label="lang('l_hal_url')" 
                                                 :placeholder="lang('l_hal_url')" 
