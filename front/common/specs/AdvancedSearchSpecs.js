@@ -17,8 +17,8 @@ module.exports = {
             label: 'label',
             value: '_id',
             translatable: false,
-            ajax: true,
-            path: '/api/public/v2/demovocs/search',
+            // ajax: true,
+            // path: '/api/public/v2/demovocs/search',
         },
         element: 'multi-select',
         placeholder: 'l_type_to_find',
@@ -44,14 +44,14 @@ module.exports = {
         element: 'multi-select',
         label: 'l_lang',
     },
-    'contributors*_id': {
+    'authors*_id': {
         entity: {
             name: 'author',
             label: 'fullname',
             value: '_id',
             translatable: false,
-            ajax: true,
-            path: '/api/public/v2/authors/search',
+            // ajax: true,
+            // path: '/api/public/v2/authors/search',
         },
         element: 'multi-select',
         placeholder: 'l_type_to_find',

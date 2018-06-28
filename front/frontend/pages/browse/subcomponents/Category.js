@@ -198,6 +198,7 @@ module.exports = {
         },
 
         click_on_abc(letter) {
+            this.$emit('update:activeResults', false);
             this.state.active_abc = letter;
             const entity = this.query.agge;
             const label = this.query.label;
