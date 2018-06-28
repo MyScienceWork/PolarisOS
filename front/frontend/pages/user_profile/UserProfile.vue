@@ -100,7 +100,16 @@
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
                         <!--<hr class="hr-section" /> -->
-                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>
+                        <h5 class="subtitle is-5 has-no-bottom-margin">
+                            {{lang('f_user_identifier_&_external_profile')}}
+                            <b-tooltip class="is-dark" :label="lang('l_user_identifier_help')" multilined
+                                v-if="lang('l_user_identifier_help').trim() !== ''"
+                            >
+                                <span class="icon has-text-info">
+                                  <i class="fa fa-question-circle"></i>
+                                </span>
+                            </b-tooltip>
+                        </h5>
                         <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
                         <button
                             @click.prevent="save('user')"
@@ -122,6 +131,9 @@
                         <hr class="hr-section" />
 
                         <div v-if="author && author._id">
+                            <div class="message is-info">
+                                <div class="message-body">{{lang('l_user_affiliations_status')}}</div>
+                            </div>
                             <dynamic-form :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
                             <a
                                 @click.prevent="save('author')"

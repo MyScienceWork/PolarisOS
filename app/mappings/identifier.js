@@ -13,6 +13,9 @@ module.exports = {
                             },
                         },
                     },
+                    type: {
+                        type: 'keyword',
+                    },
                     system: {
                         properties: {
                             locked: {

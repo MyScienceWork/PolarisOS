@@ -10,7 +10,7 @@ module.exports = {
     props: {
         loggedIn: { default: false, type: Boolean },
         trigger: { default: false, type: Boolean },
-        item: { type: String, required: true },
+        item: { type: String, default: '' },
     },
     data() {
         return {
