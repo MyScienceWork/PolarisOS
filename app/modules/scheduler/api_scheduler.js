@@ -16,6 +16,10 @@ class ApiScheduler extends Scheduler {
         super(interval);
     }*/
 
+    async _execute_sitemap_creation() {
+
+    }
+
     async _execute_handle_creation() {
         const handle_config = await HandleAPI.get_handle_config();
         const myconfig = await ConfigUtils.get_config();
