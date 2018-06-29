@@ -55,7 +55,15 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
-    </ul>
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/deployment.html"><a href="manual/deployment.html" data-ice="link">How to deploy the solution?</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/deployment.html"><a href="manual/deployment.html#deploy-to-develop-with-polarisos" data-ice="link">Deploy to develop with PolarisOS</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/deployment.html"><a href="manual/deployment.html#prerequisites" data-ice="link">Prerequisites</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/deployment.html"><a href="manual/deployment.html#change-the-configuration-files" data-ice="link">Change the configuration files</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/deployment.html"><a href="manual/deployment.html#create-the-required-indices" data-ice="link">Create the required indices</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/deployment.html"><a href="manual/deployment.html#import-the-sample-data" data-ice="link">Import the sample data</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/deployment.html"><a href="manual/deployment.html#run-the-platform" data-ice="link">Run the platform</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/deployment.html"><a href="manual/deployment.html#deploy-polarisos-in-production" data-ice="link">Deploy PolarisOS in production</a></li>
+</ul>
   </div>
 <div data-ice="manual">
     <ul class="manual-toc">
@@ -148,6 +156,21 @@
 <li></li>
 </ul></div>
         <a data-ice="link" href="manual/architecture.html#backend-architecture"></a>
+      </div>
+    </div>
+<div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1>How to deploy the solution?</h1><h2>Deploy to develop with PolarisOS</h2><p>Every command is run in the root directory of the project (where the package.json is). Every path are relative to this root directory. </p><h3>Prerequisites</h3><ul>
+<li>Elasticsearch 5.2</li>
+<li>Node.js 8.9.x (LTS)</li>
+<li>Gulp (latest version, should be install after Node.js using <code>npm install -g gulp</code>)</li>
+<li>Minio 2018-04 and onwards (if you plan to host files along with metadata)</li>
+<li>Grobid 0.5.x (if you plan to automatically analyze PDFs to extract metadata)</li>
+</ul><p><em>NB</em>: We only support the latest LTS release of Node.js, but we know that the system works on 7.10 and onwards. We do not provide any support for those versions, though.</p><h3>Change the configuration files</h3><p>Configuration files are located in <code>app/config</code>. If you plan to have custom installations for both components, we advise you to change the related fields in <code>app/config/all.js</code>.</p><p><strong>You need to check that the <code>index\___prefix</code> in <code>app/config/all.js</code> is set to <code>msw</code> before doing anything.</strong> </p><h3>Create the required indices</h3><p>PolarisOS needs to create indices into ElasticSearch database. To do so run the following command</p><pre><code class="lang-bash"><code class="source-code prettyprint">node --harmony create_indices.js --create</code>
+</code></pre><h3>Import the sample data</h3><p>We provide sample data in an archive that you can import to bootstrap the platform.</p><h3>Run the platform</h3><p>In development mode, you should first build the static files then run the Node.js server.</p><p>Build the static files:</p><pre><code class="lang-bash"><code class="source-code prettyprint">gulp default</code>
+</code></pre><p>Run the server:</p><pre><code class="lang-bash"><code class="source-code prettyprint">npm run watch</code>
+</code></pre><p>In <code>watch</code> mode, any changes to files, automatically re-run the server.</p><h2>Deploy PolarisOS in production</h2><p>You should refer to the Git repository with the Docker configuration to do so.</p></div>
+        <a data-ice="link" href="manual/deployment.html"></a>
       </div>
     </div>
 <div class="manual-card-wrap" data-ice="cards">
