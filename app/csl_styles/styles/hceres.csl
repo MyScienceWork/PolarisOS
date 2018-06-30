@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only" default-locale="fr-FR">
+  <!-- This style was edited with the Visual CSL Editor (http://editor.citationstyles.org/visualEditor/) -->
   <info>
     <title>Institut national de la recherche scientifique - Sciences sociales (author-date, French)</title>
     <id>http://www.zotero.org/styles/institut-national-de-la-recherche-scientifique-sciences-sociales</id>
@@ -18,7 +19,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2015-01-01T23:37:43+00:00</updated>
+    <updated>2018-06-30T22:14:42+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr-FR">
@@ -323,7 +324,7 @@
   </macro>
   <macro name="container-title">
     <choose>
-      <if type="chapter paper-conference" match="any">
+      <if type="chapter" match="any">
         <text macro="container-prefix" suffix=" "/>
       </if>
     </choose>
@@ -377,7 +378,7 @@
   </macro>
   <macro name="event">
     <group>
-      <text term="presented at" suffix=" "/>
+      <text term="presented at" prefix=" " text-case="capitalize-first" suffix=" "/>
       <text variable="event"/>
     </group>
   </macro>
@@ -424,6 +425,13 @@
           <text variable="event-place"/>
         </group>
       </else-if>
+      <else-if type="paper-conference" match="any">
+        <group delimiter=", ">
+          <text macro="event"/>
+          <text variable="event-place" />
+          <text macro="day-month-event"/>
+        </group>
+      </else-if>
       <else-if type="article-newspaper article-magazine" match="any">
         <text macro="day-month" prefix=", "/>
       </else-if>
@@ -439,6 +447,12 @@
       </else>
     </choose>
   </macro>
+  <macro name="day-month-event">
+    <date form="text" variable="event-date">
+      <date-part name="day"/>
+      <date-part name="month"/>
+    </date>
+  </macro>
   <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" givenname-disambiguation-rule="primary-name">
     <layout prefix="(" suffix=")" delimiter="; ">
       <group delimiter=", ">
@@ -450,8 +464,7 @@
       </group>
     </layout>
   </citation>
-  <bibliography hanging-indent="true" et-al-min="30" et-al-use-first="7" subsequent-author-substitute="&#8212;&#8212;&#8212;" entry-spacing="0">
-
+  <bibliography hanging-indent="true" et-al-min="30" et-al-use-first="7" subsequent-author-substitute="———" entry-spacing="0">
     <layout suffix=".">
       <group delimiter=". ">
         <text macro="contributors"/>
