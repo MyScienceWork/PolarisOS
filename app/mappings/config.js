@@ -67,6 +67,25 @@ module.exports = {
                                     },
                                 },
                             },
+                            google: {
+                                properties: {
+                                    sitemap: {
+                                        properties: {
+                                            enabled: {
+                                                type: 'boolean',
+                                            },
+
+                                            interval: {
+                                                type: 'integer',
+                                            },
+                                            next_generation: {
+                                                type: 'date',
+                                            },
+
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                     mail: {

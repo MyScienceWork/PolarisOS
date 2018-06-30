@@ -3,23 +3,23 @@ const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
 const types = {
-    book: 'BOOK',
-    'other-blog': 'BLOG',
-    chapter: 'CHAP',
-    'other-software': 'COMP',
-    'book-proceedings': 'CONF',
-    conference: 'CPAPER',
-    'book-chapter-dictionary-article': 'DICT',
-    'other-figure': 'FIGURE',
-    other: 'GEN',
-    journal: 'JOUR',
-    'other-maps': 'MAP',
-    press: 'NEWS',
-    report: 'RPRT',
-    'other-audio': 'SOUND',
-    thesis: 'THES',
-    'working-paper': 'UNPD',
-    'other-video': 'VIDEO',
+    book: 'book',
+    'other-blog': 'post-weblog',
+    chapter: 'chapter',
+    'other-software': 'article',
+    'book-proceedings': 'chapter',
+    conference: 'paper-conference',
+    'book-chapter-dictionary-article': 'entry-dictionary',
+    'other-figure': 'graphic',
+    other: 'article',
+    journal: 'article-journal',
+    'other-maps': 'map',
+    press: 'article-newspaper',
+    report: 'report',
+    'other-audio': 'song',
+    thesis: 'thesis',
+    'working-paper': 'article',
+    'other-video': 'motion_picture',
 };
 
 async function city_country_picker(loc, pub, mylang) {
@@ -58,36 +58,45 @@ const mapping = {
                 }
                 const a = abs.find(_a => _a.lang === pub.lang);
                 if (!a) {
-                    return { AB: a[0].content };
+                    return { abstract: abs[0].content };
                 }
-                return { AB: a.content };
+                return { abstract: a.content };
             },
         },
     },
     collection: {
         __default: {
             transformers: [],
-            picker: c => ({ T3: c }),
+            picker: c => ({ 'collection-title': c }),
         },
     },
     'dates.publication': {
         __default: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY') })],
-            picker: c => ({ DA: c }),
+            transformers: [(o) => {
+                const m = moment(o.issued);
+                return { issued: { 'date-parts': [[m.format('YYYY')]] } };
+            }],
+            picker: c => ({ issued: c }),
         },
-        JOUR: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM') })],
-            picker: c => ({ DA: c }),
+        'article-journal': {
+            transformers: [(o) => {
+                const m = moment(o.issued);
+                return { issued: { 'date-parts': [[m.format('YYYY'), m.format('MM')]] } };
+            }],
+            picker: c => ({ issued: c }),
         },
-        NEWS: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM/DD') })],
-            picker: c => ({ DA: c }),
+        'article-newspaper': {
+            transformers: [(o) => {
+                const m = moment(o.issued);
+                return { issued: { 'date-parts': [[m.format('YYYY'), m.format('MM'), m.format('DD')]] } };
+            }],
+            picker: c => ({ issued: c }),
         },
     },
     description: {
         __default: {
             transformers: [],
-            picker: c => ({ N1: c }),
+            picker: c => ({ note: c }),
         },
     },
     ids: {
@@ -99,13 +108,13 @@ const mapping = {
                 const HANDLE = ids.find(id => id.type === 'handle');
                 const o = {};
                 if (DOI) {
-                    o.DO = DOI._id;
+                    o.DOI = DOI._id;
                 }
                 if (ISBN) {
-                    o.SN = ISBN._id;
+                    o.ISBN = ISBN._id;
                 }
                 if (HANDLE) {
-                    o.AN = HANDLE._id;
+                    o['archive-location'] = HANDLE._id;
                 }
                 return o;
             },
@@ -115,11 +124,11 @@ const mapping = {
         __default: {
             transformers: [],
             picker: c => ({
-                T2: c,
+                'container-title': c,
             }),
         },
     },
-    keywords: {
+    /* keywords: {
         __default: {
             transformers: [],
             picker: (kws) => {
@@ -127,11 +136,11 @@ const mapping = {
                 return { KW: all };
             },
         },
-    },
+    },*/
     lang: {
         __default: {
             transformers: [],
-            picker: l => ({ LA: l }),
+            picker: l => ({ language: l }),
         },
     },
     localisation: {
@@ -143,11 +152,11 @@ const mapping = {
                     return {};
                 }
                 return {
-                    CY: final,
+                    'publisher-place': final,
                 };
             },
         },
-        CPAPER: {
+        'paper-conference': {
             transformers: [],
             picker: async (loc, pub, mylang) => {
                 const final = await city_country_picker(loc, pub, mylang);
@@ -155,7 +164,7 @@ const mapping = {
                     return {};
                 }
                 return {
-                    C1: final,
+                    'event-place': final,
                 };
             },
         },
@@ -163,47 +172,43 @@ const mapping = {
     number: {
         __default: {
             transformers: [],
-            picker: async n => ({ IS: n }),
+            picker: async n => ({ number: n }),
         },
     },
     pagination: {
         __default: {
             transformers: [],
-            picker: async p => ({ SP: p }),
+            picker: async p => ({ page: p }),
         },
     },
     publication_title: {
         __default: {
             transformers: [],
-            picker: async pt => ({ T2: pt }),
-        },
-        CPAPER: {
-            transformers: [],
-            picker: async pt => ({ C3: pt }),
+            picker: async pt => ({ 'container-title': pt }),
         },
     },
     'title.content': {
         __default: {
             transformers: [],
-            picker: async t => ({ TI: t }),
+            picker: async t => ({ title: t }),
         },
     },
-    translated_titles: {
+    /* translated_titles: {
         __default: {
             transformers: [],
             picker: async tts => ({ TT: tts[0].content }),
         },
-    },
+    },*/
     volume: {
         __default: {
             transformers: [],
-            picker: async v => ({ VL: v }),
+            picker: async v => ({ volume: v }),
         },
     },
     url: {
         __default: {
             transformers: [],
-            picker: async v => ({ UR: v }),
+            picker: async v => ({ URL: v }),
         },
     },
     'denormalization.delivery_institution': {
@@ -211,28 +216,32 @@ const mapping = {
             transformers: [],
             picker: async () => ({}),
         },
-        RPRT: {
+        report: {
             transformers: [],
-            picker: async v => ({ PB: v }),
+            picker: async v => ({ publisher: v }),
         },
-        THES: {
+        thesis: {
             transformers: [],
-            picker: async v => ({ PB: v }),
+            picker: async v => ({ publisher: v }),
         },
     },
     'denormalization.editor': {
         __default: {
             transformers: [],
-            picker: async v => ({ PB: v }),
+            picker: async v => ({ edition: v }),
         },
     },
     'denormalization.journal': {
         __default: {
             transformers: [],
-            picker: async v => ({ T2: v, JO: v }),
+            picker: async () => ({}),
+        },
+        'article-journal': {
+            transformers: [],
+            picker: async v => ({ 'container-title': v }),
         },
     },
-    'denormalization.demovoc_keywords': {
+    /* 'denormalization.demovoc_keywords': {
         __default: {
             transformers: [],
             picker: async (kws) => {
@@ -240,56 +249,52 @@ const mapping = {
                 return { KW: all };
             },
         },
-    },
+    },*/
     'denormalization.conference': {
-        CPAPER: {
+        'conference-paper': {
             transformers: [],
-            picker: async c => ({ T2: c }),
+            picker: async c => ({ event: c }),
         },
     },
     'denormalization.contributors': {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
+                const grabber = all => all.filter(idx => contribs[idx]
+                    && contribs[idx].label && contribs[idx].label.firstname
+                    && contribs[idx].label.lastname)
+                    .map(idx => ({ family: contribs[idx].label.lastname,
+                        given: contribs[idx].label.firstname }));
+
                 const final = {};
 
                 // AU
                 const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
-                const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
-
-                let all = authors.concat(programmers).concat(film_directors);
-                all.sort();
-                const au_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
-
-                if (au_contribs.length > 0) {
-                    final.AU = au_contribs;
-                }
-
-                // A2
                 const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
                 const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                all = editors.concat(directors);
-                all.sort();
-                const a2_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
+                const illustrators = Utils.filterIndexes(pub.contributors, c => c.role === 'illustrator');
+                const translators = Utils.filterIndexes(pub.contributors, c => c.role === 'translator');
+                const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
 
-                if (a2_contribs.length > 0) {
-                    final.A2 = a2_contribs;
+                const all = { author: authors,
+                    director: directors,
+                    editor: editors,
+                    interviewer: interviewers,
+                    illustrator: illustrators,
+                    translator: translators };
+
+                if (directors.length === 0) {
+                    all.director = film_directors;
                 }
 
-                // A3
-                const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const a3_contribs = producers.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
+                Object.keys(all).forEach((a) => {
+                    const end = grabber(all[a]);
+                    if (end.length > 0) {
+                        final[a] = end;
+                    }
+                });
 
-                if (a3_contribs.length > 0) {
-                    final.A3 = a3_contribs;
-                }
                 return final;
             },
         },
@@ -297,11 +302,11 @@ const mapping = {
     'denormalization.book_authors': {
         __default: {
             transformers: [],
-            picker: async (contribs) => {
+            picker: async (contribs, pub) => {
                 const final = {};
-                // A2
-                const a2_contribs = contribs.map(c => c._id.fullname);
-                final.A2 = a2_contribs;
+                const book_contribs = contribs.filter(c => c._id).map(c => ({ family: c._id.lastname,
+                    given: c._id.firstname }));
+                final['container-author'] = book_contribs;
                 return final;
             },
         },
