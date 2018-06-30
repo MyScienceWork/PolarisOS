@@ -48,6 +48,10 @@ async function city_country_picker(loc, pub, mylang) {
     return null;
 }
 
+function intify_dateparts(dateparts) {
+    return dateparts.map(parts => parts.map(p => parseInt(p, 10)));
+}
+
 const mapping = {
     abstracts: {
         __default: {
@@ -74,23 +78,55 @@ const mapping = {
         __default: {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': [[m.format('YYYY')]] } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), 10]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-journal': {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': [[m.format('YYYY'), m.format('MM')]] } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-newspaper': {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': [[m.format('YYYY'), m.format('MM'), m.format('DD')]] } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
+        },
+    },
+    dates: {
+        'paper-conference': {
+            transformers: [(o) => {
+                if (!o) {
+                    return null;
+                }
+
+                const start = moment(o['event-date'][0]);
+                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
+
+                const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
+                if (end) {
+                    obj['event-date']['date-parts'].push([end.format('YYYY'), end.format('MM'), end.format('DD')]);
+                }
+                obj['event-date']['date-parts'] = intify_dateparts(obj['event-date']['date-parts']);
+                return obj;
+            }],
+            picker: (dates) => {
+                const start = dates.start;
+                const end = dates.end;
+                if (!start) {
+                    return null;
+                }
+
+                const obj = { 'event-date': [start] };
+                if (end) {
+                    obj['event-date'].push(end);
+                }
+                return obj;
+            },
         },
     },
     description: {
@@ -251,7 +287,7 @@ const mapping = {
         },
     },*/
     'denormalization.conference': {
-        'conference-paper': {
+        'paper-conference': {
             transformers: [],
             picker: async c => ({ event: c }),
         },
@@ -271,13 +307,16 @@ const mapping = {
                 // AU
                 const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
+                const coordinators = Utils.filterIndexes(pub.contributors, c => (c.role === 'coordinator'));
                 const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
                 const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
                 const illustrators = Utils.filterIndexes(pub.contributors, c => c.role === 'illustrator');
                 const translators = Utils.filterIndexes(pub.contributors, c => c.role === 'translator');
                 const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
 
-                const all = { author: authors,
+                const fallback_authors = authors.concat(coordinators);
+                fallback_authors.sort();
+                const all = { author: fallback_authors,
                     director: directors,
                     editor: editors,
                     interviewer: interviewers,

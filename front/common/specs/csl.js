@@ -1,10 +1,10 @@
 module.exports = [
-    { label: 'APA', value: 'ined-apa' },
-    { label: 'Vancouver', value: 'ined-vancouver' },
-    { label: 'Harvard', value: 'ined-harvard' },
+    { label: 'APA', value: 'ined_apa' },
+    { label: 'Vancouver', value: 'ined_vancouver' },
+    { label: 'Harvard', value: 'ined_harvard' },
     { label: 'Population', value: 'population' },
     { label: 'Chicago', value: 'chicago' },
-    { label: 'Springer Humanities', value: 'springer-humanities' },
-    { label: 'ISO-690', value: 'iso690' },
-    { label: 'HCERES', value: 'ined-hceres' },
+    { label: 'Springer Humanities', value: 'springer_humanities' },
+    { label: 'ISO-690', value: 'iso_690' },
+    { label: 'HCERES', value: 'ined_hceres' },
 ];
