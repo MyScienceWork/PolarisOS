@@ -340,17 +340,17 @@
         <if match="any" variable="publisher-place" type="article article-journal thesis webpage">
           <text variable="publisher-place"/>
         </if>
-        <else>
+        <!--<else>
           <text value="s.l."/>
-        </else>
+        </else>-->
       </choose>
       <choose>
         <if match="any" variable="publisher" type="article article-journal thesis webpage">
           <text variable="publisher"/>
         </if>
-        <else>
+        <!--<else>
           <text value="s.n."/>
-        </else>
+        </else>-->
       </choose>
     </group>
   </macro>
