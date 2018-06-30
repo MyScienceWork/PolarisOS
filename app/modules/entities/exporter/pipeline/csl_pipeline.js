@@ -93,6 +93,37 @@ const mapping = {
             picker: c => ({ issued: c }),
         },
     },
+    dates: {
+        'paper-conference': {
+            transformers: [(o) => {
+                if (!o) {
+                    return null;
+                }
+
+                const start = moment(o['event-date'][0]);
+                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
+
+                const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
+                if (end) {
+                    obj['event-date']['date-parts'].push([end.format('YYYY'), end.format('MM'), end.format('DD')]);
+                }
+                return obj;
+            }],
+            picker: (dates) => {
+                const start = dates.start;
+                const end = dates.end;
+                if (!start) {
+                    return null;
+                }
+
+                const obj = { 'event-date': [start] };
+                if (end) {
+                    obj['event-date'].push(end);
+                }
+                return obj;
+            },
+        },
+    },
     description: {
         __default: {
             transformers: [],
