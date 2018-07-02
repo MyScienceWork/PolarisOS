@@ -314,7 +314,7 @@ const mapping = {
                 const translators = Utils.filterIndexes(pub.contributors, c => c.role === 'translator');
                 const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
 
-                const fallback_authors = authors.concat(coordinators);
+                const fallback_authors = authors.concat(coordinators).concat(directors);
                 fallback_authors.sort();
                 const all = { author: fallback_authors,
                     director: directors,
