@@ -53,8 +53,8 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 
     const ok_ttitles = ttitles.filter(t => t.lang != null && t.lang.trim() !== '');
 
-    let titles_ = [`<title xml:lang=${lang}>${title}</title>`];
-    titles_ = titles_.concat(ok_ttitles.map(t => `<title xml:lang=${t.lang.toLowerCase()}>${t.content}</title>`));
+    let titles_ = [`<title xml:lang="${lang}">${title}</title>`];
+    titles_ = titles_.concat(ok_ttitles.map(t => `<title xml:lang="${t.lang.toLowerCase()}">${t.content}</title>`));
     //------------------
 
     // Subtitles
@@ -84,15 +84,28 @@ async function get_edition_stmt(publication: Object): Promise<string> {
         return '';
     }
     const master = files.find(f => f.is_master) || files[0];
-    if (master.restricted) {
+    if (master.restricted || master.confidential) {
         return '';
     }
 
+    let embargo = '';
+
+    if (master.delayed) {
+        const embargo_date = Utils.find_value_with_path(publication, 'diffusion.rights.embargo'.split('.'));
+        embargo = `<date notBefore="${moment(embargo_date).format('YYYY-MM-DD')}"/>`;
+    }
+
+    const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
+    const master_ref = `<ref type="file" subtype="author" target="${master.url}" n=1>${embargo}</ref>`;
+    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${a.url}" n=${i}><desc>Deposited annex</desc></ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
 
 
     let enclosure = '<editionStmt><edition>';
     enclosure += written;
+    enclosure += embargo;
+    enclosure += master_ref;
+    enclosure += annexes_refs.join('');
     enclosure += '</edition></editionStmt>';
     return enclosure;
 }
@@ -128,7 +141,7 @@ async function get_series_stmt(publication: Object): Promise<string> {
 
 async function get_notes_stmt(publication: Object): Promise<string> {
     const description = Utils.find_value_with_path(publication, 'description'.split('.')) || '';
-    const description_ = `<note type="description">${description}</description>`;
+    const description_ = `<note type="description">${description}</note>`;
 
     let enclosure = '<notesStmt>';
     enclosure += description_;
@@ -164,7 +177,7 @@ async function get_monogr(publication: Object): Promise<string> {
     let meeting_ = '';
     let settlement_ = '';
     let country_ = '';
-    let editor_ = '';
+    const editor_ = '';
     let school_ = '';
     let institution_ = '';
     let imprint_ = '';
@@ -174,13 +187,12 @@ async function get_monogr(publication: Object): Promise<string> {
         const jname = Utils.find_value_with_path(journal_info, 'name'.split('.')) || '';
         const issn = jids.find(id => id.type === 'issn');
         const eissn = jids.find(id => id.type === 'eissn');
-
         journal_ += `<title level="j">${jname}</title>`;
         if (issn) {
-            journal_ += `<idno type="issn">${issn}</idno>`;
+            journal_ += `<idno type="issn">${issn.value}</idno>`;
         }
         if (eissn) {
-            journal_ += `<idno type="eissn">${eissn}</idno>`;
+            journal_ += `<idno type="eissn">${eissn.value}</idno>`;
         }
     }
 
@@ -213,9 +225,9 @@ async function get_monogr(publication: Object): Promise<string> {
         meeting_ += country_;
     }
 
-    if (editor_info) {
+    /* if (editor_info) {
         editor_ = `<editor>${editor_info.label}</editor>`;
-    }
+    }*/
 
     const hal_type = await get_hal_type(publication);
 
@@ -255,9 +267,7 @@ async function get_monogr(publication: Object): Promise<string> {
         imprint_ = `<imprint>${imprint_}</imprint>`;
     }
 
-    return `<monogr>${journal_}${isbn_}${book_title_
-         }${meeting_}${settlement_}${country_}${editor_}${school_}${institution_
-         }${imprint_}</monogr>`;
+    return `<monogr>${isbn_}${journal_}${book_title_}${meeting_}${settlement_}${country_}${editor_}${imprint_}${school_}${institution_}</monogr>`;
 }
 
 async function get_source_desc(publication: Object): Promise<string> {
@@ -271,7 +281,7 @@ async function get_source_desc(publication: Object): Promise<string> {
 
     const doi_ = doi ? `<idno type="doi">${doi._id}</idno>` : '';
     const handle_ = handle ? `<idno type="uri">${handle._id}</idno>` : '';
-    const bibl_ = doi_ + handle_ + monogr_ + analytic_;
+    const bibl_ = analytic_ + monogr_ + doi_ + handle_;
     const recording_ = '';
 
     let enclosure = `<sourceDesc><biblStruct>${bibl_}</biblStruct>`;
@@ -290,16 +300,16 @@ async function get_profile_desc(publication: Object): Promise<string> {
 
     const abstracts_ = ok_abstracts.map(a => `<abstract xml:lang="${a.lang.toLowerCase()}">${a.content}</abstract>`).join('\n');
 
-    const lang_usage_ = `<langUsage ident="${lang.toLowerCase()}" />`;
+    const lang_usage_ = `<langUsage><language ident="${lang.toLowerCase()}" /></langUsage>`;
 
     let keywords_ = '<keywords scheme="author">';
     keywords_ += user_keywords.map(k => `<term xml:lang="en">${k.value}</term>`).join('\n');
-    keywords_ += '</keywords';
+    keywords_ += '</keywords>';
 
-    let text_class_ = '<classCode scheme="halDomain" n="shs.socio" />';
+    let text_class_ = '<textClass><classCode scheme="halDomain" n="shs.socio" />';
     text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
     text_class_ += keywords_;
-
+    text_class_ += '</textClass>';
 
     let enclosure = '<profileDesc>';
     enclosure += lang_usage_;
@@ -311,7 +321,7 @@ async function get_profile_desc(publication: Object): Promise<string> {
 
 async function transform_publication_to_hal(publication: Object): Promise<string> {
     const title = await get_title_stmt(publication);
-    const edition = '';// await get_edition_stmt(publication);
+    const edition = await get_edition_stmt(publication);
     const publi = await get_publication_stmt(publication);
     const series = await get_series_stmt(publication);
     const notes = await get_notes_stmt(publication);
@@ -319,11 +329,11 @@ async function transform_publication_to_hal(publication: Object): Promise<string
     const profile = await get_profile_desc(publication);
     const info = title + edition + publi + series + notes + source + profile;
 
-    let enclosure = '<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:hal="http://hal.archives-ouvertes.fr">';
+    let enclosure = '<?xml version="1.0" encoding="UTF-8"?>';
+    enclosure += '<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:hal="http://hal.archives-ouvertes.fr">';
     enclosure += '<text>';
     enclosure += '<body>';
-    enclosure += `<listBibl><biblFull>${info}<biblFull></listBibl>`;
-    enclosure += '<back></back>';
+    enclosure += `<listBibl><biblFull>${info}</biblFull></listBibl>`;
     enclosure += '</body>';
     enclosure += '</text>';
     enclosure += '</TEI>';

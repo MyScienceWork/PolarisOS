@@ -6,14 +6,14 @@ const Logger = require('../logger');
 const resolver = p => Path.resolve(Path.join(Config.root, '../app/csl_styles', p));
 
 const styles = {
-    'ined-hceres': resolver('styles/hceres.csl'),
-    'ined-apa': resolver('styles/apa.csl'),
-    'ined-vancouver': resolver('styles/vancouver.csl'),
-    'ined-harvard': resolver('styles/harvard.csl'),
+    ined_hceres: resolver('styles/hceres.csl'),
+    ined_apa: resolver('styles/apa.csl'),
+    ined_vancouver: resolver('styles/vancouver.csl'),
+    ined_harvard: resolver('styles/harvard.csl'),
     population: resolver('styles/population.csl'),
     chicago: resolver('styles/chicago.csl'),
-    'iso-690': resolver('styles/iso690.csl'),
-    'springer-humanities': resolver('styles/springer_humanities.csl'),
+    iso_690: resolver('styles/iso690.csl'),
+    springer_humanities: resolver('styles/springer_humanities.csl'),
 };
 
 

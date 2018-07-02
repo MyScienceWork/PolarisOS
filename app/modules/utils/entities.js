@@ -1,7 +1,7 @@
 // @flow
 
 module.exports = {};
-
+const _ = require('lodash');
 const elasticsearch = require('elasticsearch');
 const Errors = require('../exceptions/errors');
 const config = require('../../config');
@@ -535,6 +535,17 @@ async function search_and_get_sources(type: string, body: Object): Array<Object>
     return hits.map(h => h.source);
 }
 
+async function search_in_order_and_get_sources(type: string, body: Object, cb: Function) {
+    body.sort = [{ _uid: 'asc' }];
+    let sources = await search_and_get_sources(type, body);
+    cb(sources);
+    while (sources.length > 0) {
+        const b = _.merge({}, body, { search_after: [`${type}#${sources[sources.length - 1]._id}`] });
+        sources = await search_and_get_sources(type, b);
+        cb(sources);
+    }
+}
+
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
@@ -551,3 +562,4 @@ module.exports.get_hits = get_hits;
 module.exports.get_aggs = get_aggs;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
 module.exports.search_and_get_sources = search_and_get_sources;
+module.exports.search_in_order_and_get_sources = search_in_order_and_get_sources;

@@ -149,6 +149,7 @@ async function map_ldap_to_pos(ldap_user: Object, config: Object): Promise<?Obje
 
     pos_user.roles = [{ _id: default_role }];
     pos_user.ldap = true;
+    pos_user.preferred_language = 'EN';
     return pos_user;
 }
 

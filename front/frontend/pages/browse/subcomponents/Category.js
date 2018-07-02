@@ -31,7 +31,6 @@ module.exports = {
                     },
                     reads: {
                         search: 'search_read',
-                        // laboratory: 'laboratory_read',
                     },
                 },
                 active_abc: null,
@@ -47,11 +46,6 @@ module.exports = {
         if (this.$route.query && this.$route.query.agge === 'author') {
             this.click_on_abc('A');
         }
-        // this.$store.dispatch('search', {
-        //     form: this.state.sinks.reads.laboratory,
-        //     path: APIRoutes.entity('laboratory', 'POST', true),
-        //     body: {},
-        // });
     },
     methods: {
         browse() {
@@ -168,23 +162,10 @@ module.exports = {
         },
 
         send_information(sink) {
-            // this.state.URName = [];
             if (sink === this.state.sinks.creations.selected) {
                 const content = this.fcontent(this.state.sinks.creations.selected);
                 if ('browsing_terms' in content && content.browsing_terms) {
                     const ids = _.map(content.browsing_terms, b => b._id);
-
-                    // TODO It's a hack, the page was designed to not encode any
-                    // particular information about which entity should be displayed
-                    // if (this.query_entity === 'laboratory') {
-                    //     ids.forEach((elt) => {
-                    //         const info = this.laboratory.find(x => x.key === elt);
-                    //         if (info) {
-                    //             this.state.URName.push(info.value);
-                    //         }
-                    //     });
-                    // }
-                    // this.$emit('update:names', this.state.URName);
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
@@ -297,23 +278,6 @@ module.exports = {
         },
     },
     computed: {
-        // laboratory() {
-        //     const content = this.mcontent(this.state.sinks.reads.laboratory);
-        //     // console.log(content);
-        //     if (!content) {
-        //         return {};
-        //     }
-        //     return content.map((elmt) => {
-        //         const key = elmt._id;
-        //         let value;
-        //         if (this.use_hlang) {
-        //             value = `${this.hlang(elmt.name)}`;
-        //         } else {
-        //             value = `${this.lang(elmt.name)}`;
-        //         }
-        //         return { key, value };
-        //     });
-        // },
         query_entity() {
             return this.$route.query.entity;
         },

@@ -94,14 +94,18 @@ const mapping = {
         __default: {
             transformers: [],
             picker: (ids) => {
-                const DOI = ids.filter(id => id.type === 'doi');
-                const ISBN = ids.filter(id => id.type === 'isbn');
+                const DOI = ids.find(id => id.type === 'doi');
+                const ISBN = ids.find(id => id.type === 'isbn');
+                const HANDLE = ids.find(id => id.type === 'handle');
                 const o = {};
                 if (DOI) {
                     o.DO = DOI._id;
                 }
                 if (ISBN) {
                     o.SN = ISBN._id;
+                }
+                if (HANDLE) {
+                    o.AN = HANDLE._id;
                 }
                 return o;
             },

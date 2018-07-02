@@ -16,6 +16,10 @@ class ApiScheduler extends Scheduler {
         super(interval);
     }*/
 
+    async _execute_sitemap_creation() {
+
+    }
+
     async _execute_handle_creation() {
         const handle_config = await HandleAPI.get_handle_config();
         const myconfig = await ConfigUtils.get_config();
@@ -50,6 +54,12 @@ class ApiScheduler extends Scheduler {
                     p.system.api = {};
                 }
                 p.system.api.handle = true;
+                const ids = p.ids || [];
+                ids.push({
+                    _id: `${handle_config.proxy}/${handle_config.prefix}/${p._id}`,
+                    type: 'handle',
+                });
+                p.ids = ids;
                 await EntitiesUtils.update(p, 'publication');
             }
             return ok;

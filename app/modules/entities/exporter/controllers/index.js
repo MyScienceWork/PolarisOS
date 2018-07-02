@@ -7,6 +7,7 @@ const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
 const CSVPipeline = require('../pipeline/csv_pipeline');
 const EndNotePipeline = require('../pipeline/endnote_pipeline');
+const CSLJSONPipeline = require('../pipeline/csl_pipeline');
 const Transformer = require('../../../pipeline/transformer/transformer');
 const CSVStringify = require('csv-stringify');
 const LangUtils = require('../../../utils/lang');
@@ -399,6 +400,71 @@ async function transform_to_json(publications: Array<Object>, ld): Promise<strin
     return JSON.stringify(publications, null, 4);
 }
 
+async function transform_to_csl_json(publications: Array<Object>,
+    extra: Object): Promise<Array<Object>> {
+    const results = [];
+    const typologies = (await EntitiesUtils.search_and_get_sources('typology', {
+        size: 1000,
+    })).reduce((obj, t) => {
+        obj[t._id] = t;
+        return obj;
+    }, {});
+
+    for (const i in publications) {
+        const publication = publications[i].source;
+        let type = null;
+        if (publication.subtype && publication.subtype in CSLJSONPipeline.types) {
+            type = CSLJSONPipeline.types[publication.subtype];
+        } else {
+            const typology = typologies[publication.type];
+            const name = typology.name;
+            if (name in CSLJSONPipeline.types) {
+                type = CSLJSONPipeline.types[name];
+            } else {
+                type = 'article';
+            }
+        }
+
+        let obj = {};
+        for (const key in CSLJSONPipeline.mapping) {
+            const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+            if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                continue;
+            }
+
+            const info = CSLJSONPipeline.mapping[key];
+            let mapper = null;
+            if (type in info) {
+                mapper = info[type];
+            } else if ('__default' in info) {
+                mapper = info.__default;
+            }
+
+            if (!mapper) {
+                continue;
+            }
+
+            let subobj = await mapper.picker(pub_info, publication, extra.lang);
+            if (mapper.transformers.length > 0) {
+                subobj = await mapper.transformers.reduce((o, tr) => {
+                    o = tr(o);
+                    return o;
+                }, subobj);
+            }
+
+            obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                if (_.isArray(objValue)) {
+                    return objValue.concat(srcValue);
+                }
+            });
+        }
+        obj.type = type;
+        obj.id = publication._id;
+        results.push(obj);
+    }
+    return results;
+}
+
 function export_information(): Function {
     return async (ctx: Object): Promise<any> => {
         const body = ctx.request.body;
@@ -461,8 +527,8 @@ function export_information(): Function {
             ext = '.json';
             break;
         case 'csl': {
-            const bibtex_output = await transform_to_bibtex(publications, ctx.__md);
-            const data = new Cite(bibtex_output);
+            const csl_json_output = await transform_to_csl_json(publications, ctx.__md);
+            const data = new Cite(csl_json_output);
             results = data.get({
                 nosort: true,
                 format: 'string',
@@ -577,8 +643,8 @@ async function format_bibliography_results(publications: Array<Object>,
         lang: string,
         csl: string,
         info: Object, memoizer: Object): Promise<string> {
-    const bibtex_output = await transform_to_bibtex(publications, info, memoizer);
-    const data = new Cite(bibtex_output);
+    const csl_json_output = await transform_to_csl_json(publications, info);
+    const data = new Cite(csl_json_output);
     const results = data.get({
         nosort: true,
         format: 'string',
