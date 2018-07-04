@@ -1,20 +1,21 @@
 # PolarisOS
 
 ## General overview
-PolarisOS is the next-generation platform to help you process your data, search through it, visualize every piece of information and making everything available through standardized APIs.
+PolarisOS is a next-generation platform that helps you process, search through, and visualize all your data and information while ensuring all is available through standardized APIs.
 
-PolarisOS was developed to serve as a libraries management system, a research data repository or an archiving solution of any type.
+PolarisOS was developed to serve as any type of library management system, research data repository, or archiving solution.
 
-For more information about please visit this [page](https://www.mysciencework.com/polaris-os).
+For more information, please visit this [page](https://www.mysciencework.com/polaris-os).
 
 ## Documentation
 
-Please refer to this [page](https://mysciencework.github.io/PolarisOS) for a detailed technical documentation.
+Please refer to this [page](https://mysciencework.github.io/PolarisOS) for detailed, technical documentation.
 
-Everything that you need to getting started is grouped into the Manual section.
+Everything that you need to get started is grouped into the “Manual” section.
 
-You can browse the documentation of every bit of the source code using the Reference section.
+You can browse all documented source code using the “Reference” section.
 
-Feel free to go on Github to fork the project and help them making it better. We have a Contributing section in the manual as well as a Code of conduct for every person that would like to contribute.
+Feel free to fork the project on Github to help make it better. We have a “Contributing” section in the manual as well as a Code of Conduct for every person who would like to contribute. 
 
-Thanks a lot.
+
+Thanks so much.
