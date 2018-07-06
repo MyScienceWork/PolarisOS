@@ -1,9 +1,9 @@
-# PolarisOS
+# Polaris OS
 
 ## General overview
-PolarisOS is a next-generation platform that helps you process, search through, and visualize all your data and information while ensuring all is available through standardized APIs.
+Polaris OS is a next-generation platform that helps you process, search through, and visualize all your data and information while ensuring all is available through standardized APIs.
 
-PolarisOS was developed to serve as any type of library management system, research data repository, or archiving solution.
+Polaris OS was developed to serve as any type of library management system, research data repository, or archiving solution.
 
 For more information, please visit this [page](https://www.mysciencework.com/polaris-os).
 
