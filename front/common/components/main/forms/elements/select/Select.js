@@ -131,7 +131,7 @@ module.exports = {
         search: _.debounce((loading, search, self) => {
             const body = {
                 projection: [self.fieldLabel, self.fieldValue],
-                size: self.searchSize,
+                size: self.searchSize + (self.multi ? self.state.selected.length : 1),
             };
 
             if (self.searchFields.trim() === '') {

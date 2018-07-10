@@ -323,7 +323,7 @@ const Completion: Array<any> = [
             }
 
             const issn = issns[0]._id;
-            /* const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
+            const sherpa_info = await Importers.import_sherpa_romeo({ request: { body: { issn } } });
             const conditions = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.conditions.0.condition'.split('.'));
             const color = Utils.find_value_with_path(sherpa_info, 'romeoapi.publishers.0.publisher.0.romeocolour.0'.split('.'));
             const sherpa_final = {
@@ -349,9 +349,9 @@ const Completion: Array<any> = [
                     sherpa_final.color = '#FFFFFF';
                     break;
                 }
-            }*/
-            return { sherpa: {} };
-            // return { sherpa: sherpa_final };
+            }
+            // return { sherpa: {} };
+            return { sherpa: sherpa_final };
         },
     },
 ];
