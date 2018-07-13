@@ -21,11 +21,13 @@ module.exports = {
                 paths: {
                     reads: {
                         publication: APIRoutes.entity('publication', 'POST', true),
+                        typology: APIRoutes.entity('typology', 'POST', true),
                     },
                 },
                 sinks: {
                     reads: {
                         publication: 'publication_read',
+                        typology: 'typology_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -37,6 +39,11 @@ module.exports = {
                         visible: true,
                         force: true,
                         title: 'l_p_type',
+                    },
+                    subtype: {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_subtype',
                     },
                     'denormalization.authors._id.fullname': {
                         visible: true,
@@ -58,6 +65,16 @@ module.exports = {
                         visible: true,
                         force: false,
                         title: 'l_p_status',
+                    },
+                    'denormalization.journal': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_journal',
+                    },
+                    'denormalization.conference': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_conference',
                     },
                     'dates.update': {
                         visible: true,
@@ -118,8 +135,27 @@ module.exports = {
 
             return APIRoutes.multi_download('publication', item._id, names, filenames);
         },
+        find_subtype(info) {
+            if (Object.keys(this.typology).length === 0) {
+                return '';
+            }
+
+            const type = info.type;
+            const subtype = info.subtype;
+            const typo = this.typology[type];
+            const result = typo.children.find(t => t.name === subtype);
+
+            return result ? result.label : '';
+        },
     },
     mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.typology,
+            path: this.state.paths.reads.typology,
+            body: {
+                size: 10000,
+            },
+        });
     },
     watch: {
     },
@@ -132,6 +168,14 @@ module.exports = {
         },
         sort_list() {
             return SortLists.publication_validation_sorts;
+        },
+        typology() {
+            const content = this.mcontent(this.state.sinks.reads.typology);
+
+            return content.reduce((obj, c) => {
+                obj[c._id] = c;
+                return obj;
+            }, {});
         },
     },
 };

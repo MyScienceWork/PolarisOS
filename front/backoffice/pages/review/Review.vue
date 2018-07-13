@@ -25,6 +25,11 @@
                                         {{lang(props.row.denormalization.type.label) | truncate(30)}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="subtype" :label="lang('l_p_subtype')" centered :visible="state.columns['subtype'].visible" sortable centered>
+                                    <span class="tag is-light">
+                                        {{lang(find_subtype(props.row)) | truncate(30)}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column 
                                     field="denormalization.authors._id.fullname" 
                                     :label="lang('l_p_author', {}, 'other')" 
@@ -66,6 +71,12 @@
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="denormalization.journal.raw" :label="lang('l_p_journal')" sortable :visible="state.columns['denormalization.journal'].visible">
+                                    {{props.row.denormalization.journal | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column field="denormalization.conference.raw" :label="lang('l_p_conference')" sortable :visible="state.columns['denormalization.conference'].visible">
+                                    {{props.row.denormalization.conference | truncate(30)}}
+                                </b-table-column>
                                 <b-table-column field="dates.update" :label="lang('l_p_update')" sortable centered :visible="state.columns['dates.update'].visible">
                                     <span class="tag is-warning">
                                         {{props.row.dates.update | format_date('DD/MM/YYYY')}}
@@ -97,6 +108,7 @@
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
                                     <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p> 
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(find_subtype(props.row))}}</span></p> 
                                     <h4 class="title is-4">{{lang('l_general_information')}}</h4>
                                     <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
                                     <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>

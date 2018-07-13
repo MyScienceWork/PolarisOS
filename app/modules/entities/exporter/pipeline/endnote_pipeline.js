@@ -261,8 +261,14 @@ const mapping = {
                 let all = authors.concat(programmers).concat(film_directors);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
+                    && contribs[idx].label && contribs[idx].label.lastname)
+                    .map((idx) => {
+                        const info = contribs[idx].label;
+                        if (info.firstname) {
+                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
+                        }
+                        return `${contribs[idx].label.lastname}`;
+                    });
 
                 if (au_contribs.length > 0) {
                     final.AU = au_contribs;
@@ -274,8 +280,14 @@ const mapping = {
                 all = editors.concat(directors);
                 all.sort();
                 const a2_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
+                    && contribs[idx].label && contribs[idx].label.lastname)
+                    .map((idx) => {
+                        const info = contribs[idx].label;
+                        if (info.firstname) {
+                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
+                        }
+                        return `${contribs[idx].label.lastname}`;
+                    });
 
                 if (a2_contribs.length > 0) {
                     final.A2 = a2_contribs;
@@ -284,8 +296,14 @@ const mapping = {
                 // A3
                 const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
                 const a3_contribs = producers.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.fullname)
-                    .map(idx => contribs[idx].label.fullname);
+                    && contribs[idx].label && contribs[idx].label.lastname)
+                    .map((idx) => {
+                        const info = contribs[idx].label;
+                        if (info.firstname) {
+                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
+                        }
+                        return `${contribs[idx].label.lastname}`;
+                    });
 
                 if (a3_contribs.length > 0) {
                     final.A3 = a3_contribs;
@@ -300,7 +318,14 @@ const mapping = {
             picker: async (contribs) => {
                 const final = {};
                 // A2
-                const a2_contribs = contribs.map(c => c._id.fullname);
+                const a2_contribs = contribs
+                    .map((c) => {
+                        const info = c._id;
+                        if (info.firstname) {
+                            return `${info.lastname}, ${info.firstname}`;
+                        }
+                        return `${info.lastname}`;
+                    });
                 final.A2 = a2_contribs;
                 return final;
             },

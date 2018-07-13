@@ -9,6 +9,7 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const FileAnalyzerMixin = require('./mixins/FileAnalyzerMixin');
 const ImportMixin = require('./mixins/ImportMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 
 const FirstDepositStep = require('./first_step/FirstDepositStep.vue');
 const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
@@ -16,7 +17,7 @@ const ReviewStep = require('./review_step/ReviewStep.vue');
 const ReviewModal = require('./subcomponents/ReviewModal.vue');
 
 module.exports = {
-    mixins: [FormMixin, RequestsMixin, ImportMixin, FileAnalyzerMixin],
+    mixins: [FormMixin, RequestsMixin, ImportMixin, FileAnalyzerMixin, UserMixin],
     data() {
         return {
             state: {
@@ -74,7 +75,7 @@ module.exports = {
         },
         give_up() {
             if (this.state.show_give_up_modal) {
-                this.go_after_success();
+                this.go_after_success(true);
                 window.location.reload();
             } else {
                 this.state.show_give_up_modal = !this.state.show_give_up_modal;
@@ -181,9 +182,13 @@ module.exports = {
             this.acknowledge_analyze_error(sink);
             this.acknowledge_submission_error(sink);
         },
-        go_after_success() {
+        go_after_success(give_up = false) {
             BrowserUtils.localRemove('saved_deposit');
-            this.$router.push({ path: '/' });
+            if (give_up) {
+                this.$router.push({ path: '/' });
+            } else {
+                this.$router.push({ path: `u/${this.my_user_id}/profile?t=2` });
+            }
         },
         open_review_modal(props) {
             this.state.step_props = props;
