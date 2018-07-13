@@ -284,24 +284,25 @@ module.exports = {
                 return '';
             }
 
-            console.log(contributor_roles_content);
 
             const authors = item.contributors.filter(co => co.role === 'author');
             const others = item.contributors.filter(co => co.role !== 'author');
 
             const affiliations = {};
-
             const authors_content = authors.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
-                let my_affiliations = info.denormalization.affiliations.filter((aff) => {
+                const _affiliations = this._oa_find(info, 'denormalization.affiliations', []);
+                let my_affiliations = _affiliations.filter((aff) => {
+                    const from = parseInt(aff.from, 10);
                     if (aff.to) {
-                        return aff.from >= publication_date && aff.to <= publication_date;
+                        const to = parseInt(aff.to, 10);
+                        return from <= publication_date && publication_date <= to;
                     }
-                    return aff.from >= publication_date;
+                    return from <= publication_date;
                 });
 
-                if (my_affiliations.length === 0 && info.denormalization.affiliations.length > 0) {
-                    my_affiliations = [info.denormalization.affiliations[0]];
+                if (my_affiliations.length === 0 && _affiliations.length > 0) {
+                    my_affiliations = [_affiliations[0]];
                 }
 
                 const affiliation_numbers = [];
@@ -319,17 +320,22 @@ module.exports = {
                     });
                 }
 
-                if (affiliation_numbers.length > 0) {
-                    return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                let fullname = `${info.lastname.toUpperCase()}`;
+                if (info.firstname) {
+                    fullname = `${info.firstname} ${fullname}`;
                 }
-                return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong>`;
+
+                if (affiliation_numbers.length > 0) {
+                    return `<strong>${fullname}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                }
+                return `<strong>${fullname}</strong>`;
             });
 
             const others_content = others.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
-                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbreviation)})</strong>`;
+                return `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
             });
 
             return { contributors: [...authors_content, ...others_content].join(', '),

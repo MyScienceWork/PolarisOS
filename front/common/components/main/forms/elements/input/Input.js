@@ -117,9 +117,9 @@ module.exports = {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {
-                return +moment.utc();
+                return undefined;// +moment.utc();
             } else if (this.type === 'date-year') {
-                return +moment.utc(moment.utc().format('YYYY'), 'YYYY');
+                return null;// +moment.utc(moment.utc().format('YYYY'), 'YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             } else if (this.type === 'ide-editor') {
@@ -146,7 +146,9 @@ module.exports = {
             return v;
         },
         formatValue(info) {
-            if (this.type === 'date') {
+            if (info == null) {
+                return info;
+            } else if (this.type === 'date') {
                 return moment(info).toDate();
             } else if (this.type === 'date-year') {
                 return moment(info).format('YYYY');
@@ -159,7 +161,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden') {
+                if (this.type === 'hidden' || this.type === 'date') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,

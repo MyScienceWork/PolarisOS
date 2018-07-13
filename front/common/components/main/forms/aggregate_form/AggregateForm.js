@@ -130,7 +130,6 @@ module.exports = {
             if (!info || !('entity' in info)) {
                 return undefined;
             }
-
             switch (type) {
             default:
             case 'ajax':

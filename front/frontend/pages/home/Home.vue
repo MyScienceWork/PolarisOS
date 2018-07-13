@@ -38,7 +38,7 @@
                             <template slot="card-title">
                                 {{lang('l_search')}}
                             </template>
-                            <search slot="card-content" :search-sink="state.sinks.reads.search" />
+                            <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
                         </card>
                     </div>
                     <div class="column is-12">

@@ -44,7 +44,7 @@ module.exports = {
         element: 'multi-select',
         label: 'l_lang',
     },
-    'contributors*_id': {
+    'contributors*label': {
         entity: {
             name: 'author',
             label: 'fullname',
@@ -52,6 +52,7 @@ module.exports = {
             translatable: false,
             ajax: true,
             path: '/api/public/v2/authors/search',
+            searchFields: 'fullname.__pauc',
         },
         element: 'multi-select',
         placeholder: 'l_type_to_find',
