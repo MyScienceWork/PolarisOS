@@ -46,6 +46,17 @@ function api_middlewares(type: string,
     ];
 }
 
+function bulk_api_middlewares(type: string,
+        access_type: string, opts: Object): Array<Function> {
+    const pass = 'pass' in opts ? opts.pass : false;
+    return [ApiAccess.api_signature(pass),
+        RateLimiter.limit(),
+        //TODO need to be defined for bulk action in an efficient way
+        //Access.access(type, access_type, pass),
+        //Access.enforce_right,
+    ];
+}
+
 /**
  * Generate App middlewares
  * @param type - type of entity
@@ -56,18 +67,17 @@ function api_middlewares(type: string,
 function app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
     return [
-        Pipeline.memoize_model(type),
-        Pipeline.check(type),
-        Pipeline.transform(type),
-        Pipeline.merge(type),
-        Pipeline.reset(type),
-        Pipeline.defaults(type),
-        Pipeline.format(type),
-        Pipeline.complete(type),
-        Pipeline.filter(type),
-        // Pipeline.format(type),
+        Pipeline.run_as_middleware(type),
         ...emiddlewares,
-        Pipeline.validate(type),
+    ];
+}
+
+
+function bulk_app_middlewares(type: string, opts: Object): Array<Function> {
+    const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
+    return [
+        Pipeline.bulk_run_as_middleware(type),
+        ...emiddlewares,
     ];
 }
 
@@ -96,6 +106,22 @@ function post_middlewares(type: string, emid: Array<Function>, model: ?Object) {
         koa_middlewares({}),
         api_middlewares(type, 'c', { pass: true }),
         app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function bulk_put_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        bulk_api_middlewares(type, 'u', { pass: true }),
+        bulk_app_middlewares(type, { extra_middlewares: emid || [], model }),
+    ]);
+}
+
+function bulk_post_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
+        bulk_api_middlewares(type, 'c', { pass: true }),
+        bulk_app_middlewares(type, { extra_middlewares: emid || [], model }),
     ]);
 }
 
@@ -173,8 +199,15 @@ function generate_put_routes(router: KoaRouter, prefix: string,
     router.put(`${prefix}/${type}`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
     router.put(`${prefix}/${type}/validate`, compose([...put_mware, CrudController.validate]));
     router.put(`${prefix}/${type}/validate/:range`, compose([...put_mware, CrudController.validate]));
+}
 
-    // router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.put_with_action(type, action, action_options)]));
+function generate_bulk_put_routes(router: KoaRouter, prefix: string,
+    type: string, emiddlewares: Array<Function>,
+    action: Function = async () => {}, action_options: Object = {}) {
+    const put_mware = bulk_put_middlewares(type, emiddlewares);
+    router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
+    router.put(`${prefix}/${type}/bulk/validate`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
+    router.put(`${prefix}/${type}/bulk/validate/:range`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
 }
 
 function generate_post_routes(router: KoaRouter, prefix: string,
@@ -185,8 +218,15 @@ function generate_post_routes(router: KoaRouter, prefix: string,
     router.post(`${prefix}/${type}`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
     router.post(`${prefix}/${type}/validate`, compose([...post_mware, CrudController.validate]));
     router.post(`${prefix}/${type}/validate/:range`, compose([...post_mware, CrudController.validate]));
+}
 
-    // router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.post_with_action(type, action, action_options)]));
+function generate_bulk_post_routes(router: KoaRouter, prefix: string,
+    type: string, emiddlewares: Array<Function>,
+    action: Function = async () => {}, action_options: Object = {}) {
+    const post_mware = bulk_post_middlewares(type, emiddlewares);
+    router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
+    router.post(`${prefix}/${type}/bulk/validate`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
+    router.post(`${prefix}/${type}/bulk/validate/:range`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
 }
 
 function generate_entity_routes(router: KoaRouter,
@@ -197,6 +237,8 @@ function generate_entity_routes(router: KoaRouter,
     generate_del_routes(router, puprefix, type, emiddlewares);
     generate_post_routes(router, puprefix, type, emiddlewares);
     generate_put_routes(router, puprefix, type, emiddlewares);
+    generate_bulk_post_routes(router, puprefix, type, emiddlewares);
+    generate_bulk_put_routes(router, puprefix, type, emiddlewares);
 }
 
 exports.generate_entity_routes = generate_entity_routes;
@@ -205,11 +247,17 @@ exports.generate_get_routes = generate_get_routes;
 exports.generate_del_routes = generate_del_routes;
 exports.generate_post_routes = generate_post_routes;
 exports.generate_put_routes = generate_put_routes;
+exports.generate_bulk_post_routes = generate_bulk_post_routes;
+exports.generate_bulk_put_routes = generate_bulk_put_routes;
 exports.koa_middlewares = koa_middlewares;
 exports.api_middlewares = api_middlewares;
 exports.app_middlewares = app_middlewares;
+exports.bulk_api_middlewares = bulk_api_middlewares;
+exports.bulk_app_middlewares = bulk_app_middlewares;
 exports.get_middlewares = get_middlewares;
 exports.del_middlewares = del_middlewares;
 exports.post_middlewares = post_middlewares;
 exports.put_middlewares = put_middlewares;
+exports.bulk_post_middlewares = bulk_post_middlewares;
+exports.bulk_put_middlewares = bulk_put_middlewares;
 exports.upload_middlewares = upload_middlewares;
