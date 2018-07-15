@@ -76,7 +76,7 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
 function bulk_app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
     return [
-        Pipeline.bulk_run_as_middleware(type),
+        // Pipeline.bulk_run_as_middleware(type),
         ...emiddlewares,
     ];
 }
@@ -205,9 +205,9 @@ function generate_bulk_put_routes(router: KoaRouter, prefix: string,
     type: string, emiddlewares: Array<Function>,
     action: Function = async () => {}, action_options: Object = {}) {
     const put_mware = bulk_put_middlewares(type, emiddlewares);
-    router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
+    /* router.put(`${prefix}/${type}/bulk`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
     router.put(`${prefix}/${type}/bulk/validate`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
-    router.put(`${prefix}/${type}/bulk/validate/:range`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));
+    router.put(`${prefix}/${type}/bulk/validate/:range`, compose([...put_mware, CrudController.bulk_put_with_action(type, action, action_options)]));*/
 }
 
 function generate_post_routes(router: KoaRouter, prefix: string,
@@ -224,9 +224,9 @@ function generate_bulk_post_routes(router: KoaRouter, prefix: string,
     type: string, emiddlewares: Array<Function>,
     action: Function = async () => {}, action_options: Object = {}) {
     const post_mware = bulk_post_middlewares(type, emiddlewares);
-    router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
+    /* router.post(`${prefix}/${type}/bulk`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
     router.post(`${prefix}/${type}/bulk/validate`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
-    router.post(`${prefix}/${type}/bulk/validate/:range`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));
+    router.post(`${prefix}/${type}/bulk/validate/:range`, compose([...post_mware, CrudController.bulk_post_with_action(type, action, action_options)]));*/
 }
 
 function generate_entity_routes(router: KoaRouter,
