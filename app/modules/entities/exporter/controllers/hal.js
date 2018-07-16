@@ -4,7 +4,7 @@ const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
 const CountriesCodes = require('../../../utils/countries');
 
-// HAL DOMAIN: shs.socio
+// HAL DOMAIN: shs
 
 async function get_hal_type(publication: Object): Promise<string> {
     const type = Utils.find_value_with_path(publication, 'type'.split('.'));
@@ -323,7 +323,7 @@ async function get_profile_desc(publication: Object): Promise<string> {
 
     let text_class_ = '<textClass>';
     text_class_ += keywords_;
-    text_class_ += '<classCode scheme="halDomain" n="shs.socio" />';
+    text_class_ += '<classCode scheme="halDomain" n="shs" />';
     text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
     text_class_ += '</textClass>';
 

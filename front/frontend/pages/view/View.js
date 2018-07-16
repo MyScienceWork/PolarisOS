@@ -291,6 +291,10 @@ module.exports = {
             const affiliations = {};
             const authors_content = authors.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
+
+                if (!info) {
+                    return null;
+                }
                 const _affiliations = this._oa_find(info, 'denormalization.affiliations', []);
                 let my_affiliations = _affiliations.filter((aff) => {
                     const from = parseInt(aff.from, 10);
@@ -329,14 +333,22 @@ module.exports = {
                     return `<strong>${fullname}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
                 }
                 return `<strong>${fullname}</strong>`;
-            });
+            }).filter(a => a != null);
 
             const others_content = others.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
+                if (!info) {
+                    return null;
+                }
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
+
+                let fullname = `${info.lastname.toUpperCase()}`;
+                if (info.firstname) {
+                    fullname = `${info.firstname} ${fullname}`;
+                }
                 return `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
-            });
+            }).filter(a => a != null);
 
             return { contributors: [...authors_content, ...others_content].join(', '),
                 affiliations };
@@ -461,7 +473,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}{{#if book_authors.length}}, {{/if}}{{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{#if book_authors.length}}#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}, {{/if}}{{#if publication_title}}{{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}{{#if pagination}}p. {{pagination}}. {{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
@@ -502,7 +514,7 @@ module.exports = {
             if (!this.typology_type || this.typology_type.name !== 'working-paper') {
                 return null;
             }
-            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}},{{/if}} {{moment date=dates.publication format='YYYY'}}";
+            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         press() {
@@ -528,7 +540,7 @@ module.exports = {
             if (!this.typology_type || this.typology_type.name !== 'thesis') {
                 return null;
             }
-            const tpl = "{{localisation.city}}{{#if denormalization.delivery_institution}} : {{denormalization.delivery_institution}}{{/if}}{{moment date=dates.publication format=', YYYY'}}.";
+            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.delivery_institution}}{{denormalization.delivery_institution}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         report() {
@@ -541,7 +553,7 @@ module.exports = {
             if (!this.typology_type || this.typology_type.name !== 'report') {
                 return null;
             }
-            const tpl = "{{#if publication_title}}{{publication_title}}{{/if}}{{#if localisation.city}}{{#if publication_title}}, {{/if}}{{localisation.city}}{{/if}}{{#if denormalization.editor}}{{#unless localisation.city}} : {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a class='has-text-purple' target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{#if publication_title}} {{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY, '}}{{#if pagination}}p. {{pagination}}.{{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a class='has-text-purple' target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {
