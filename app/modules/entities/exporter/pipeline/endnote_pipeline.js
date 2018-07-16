@@ -58,7 +58,7 @@ const mapping = {
                 }
                 const a = abs.find(_a => _a.lang === pub.lang);
                 if (!a) {
-                    return { AB: a[0].content };
+                    return { AB: abs[0].content };
                 }
                 return { AB: a.content };
             },
