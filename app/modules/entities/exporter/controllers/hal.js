@@ -2,6 +2,7 @@
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
+const CountriesCodes = require('../../../utils/countries');
 
 // HAL DOMAIN: shs.socio
 
@@ -37,11 +38,17 @@ async function get_author_info(author: Object, publication: Object): Promise<str
         role_info = { hal: 'aut', value: 'author' };
     }
 
+    let affiliation = '';
+    // TODO do it better (less hackish)
+    if (author_info.is_ined) {
+        affiliation += '<affiliation ref="#struct-57627" />';
+    }
+
     const forename_ = author_info.firstname && author_info.firstname.trim() !== '' ?
         `<forename type="first">${author_info.firstname}</forename>` : '';
 
     return `<author role="${role_info.hal}">`
-        + `<persName>${forename_}<surname>${author_info.lastname}</surname></persName></author>`;
+        + `<persName>${forename_}<surname>${author_info.lastname}</surname></persName>${affiliation}</author>`;
 }
 
 async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): Promise<string> {
@@ -62,7 +69,7 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 
     const ok_subtitles = subtitles.filter(t => t.lang != null && t.lang.trim() !== '');
 
-    const subtitles_ = ok_subtitles.map(t => `<title xml:lang=${t.lang.toLowerCase()}>${t.content}</title>`);
+    const subtitles_ = ok_subtitles.map(t => `<title type="sub" xml:lang="${t.lang.toLowerCase()}">${t.content}</title>`);
     //------------------
 
     const authors = Utils.find_value_with_path(publication, 'contributors'.split('.')) || [];
@@ -187,13 +194,13 @@ async function get_monogr(publication: Object): Promise<string> {
         const jname = Utils.find_value_with_path(journal_info, 'name'.split('.')) || '';
         const issn = jids.find(id => id.type === 'issn');
         const eissn = jids.find(id => id.type === 'eissn');
-        journal_ += `<title level="j">${jname}</title>`;
         if (issn) {
             journal_ += `<idno type="issn">${issn.value}</idno>`;
         }
         if (eissn) {
             journal_ += `<idno type="eissn">${eissn.value}</idno>`;
         }
+        journal_ += `<title level="j">${jname}</title>`;
     }
 
     if (isbn) {
@@ -209,11 +216,13 @@ async function get_monogr(publication: Object): Promise<string> {
     }
 
     if (country_info) {
-        country_ += `<country key="${country_info.value}" />`;
+        if (country_info.value in CountriesCodes) {
+            country_ += `<country key="${CountriesCodes[country_info.value]}" />`;
+        }
     }
 
     if (conference_info) {
-        meeting_ += `<title>${conference_info.name}</title>`;
+        meeting_ += `<meeting><title>${conference_info.name}</title>`;
         if (dates.start) {
             meeting_ += `<date type="start">${moment(dates.start).format('YYYY-MM-DD')}</date>`;
         }
@@ -223,6 +232,7 @@ async function get_monogr(publication: Object): Promise<string> {
 
         meeting_ += settlement_;
         meeting_ += country_;
+        meeting_ += '</meeting>';
     }
 
     /* if (editor_info) {
@@ -237,10 +247,6 @@ async function get_monogr(publication: Object): Promise<string> {
         } else {
             institution_ = `<authority type="school">${institution_info.name}</authority>`;
         }
-    }
-
-    if (dates.publication) {
-        imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
     }
 
     if (volume) {
@@ -258,6 +264,11 @@ async function get_monogr(publication: Object): Promise<string> {
     if (pagination) {
         imprint_ += `<biblScope unit="pp">${pagination}</biblScope>`;
     }
+
+    if (dates.publication) {
+        imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+    }
+
 
     if (editor_info) {
         imprint_ += `<publisher>${editor_info.label}</publisher>`;
@@ -302,13 +313,18 @@ async function get_profile_desc(publication: Object): Promise<string> {
 
     const lang_usage_ = `<langUsage><language ident="${lang.toLowerCase()}" /></langUsage>`;
 
-    let keywords_ = '<keywords scheme="author">';
-    keywords_ += user_keywords.map(k => `<term xml:lang="en">${k.value}</term>`).join('\n');
-    keywords_ += '</keywords>';
+    let keywords_ = '';
 
-    let text_class_ = '<textClass><classCode scheme="halDomain" n="shs.socio" />';
-    text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
+    if (user_keywords.length > 0) {
+        keywords_ = '<keywords scheme="author">';
+        keywords_ += user_keywords.map(k => `<term xml:lang="en">${k.value}</term>`).join('\n');
+        keywords_ += '</keywords>';
+    }
+
+    let text_class_ = '<textClass>';
     text_class_ += keywords_;
+    text_class_ += '<classCode scheme="halDomain" n="shs.socio" />';
+    text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
     text_class_ += '</textClass>';
 
     let enclosure = '<profileDesc>';
@@ -317,6 +333,10 @@ async function get_profile_desc(publication: Object): Promise<string> {
     enclosure += abstracts_;
     enclosure += '</profileDesc>';
     return enclosure;
+}
+
+async function generate_back(publication: Object): Promise<string> {
+    return '<back></back>';
 }
 
 async function transform_publication_to_hal(publication: Object): Promise<string> {

@@ -30,6 +30,7 @@ module.exports = {
         ajax: { default: false, type: Boolean },
         ajaxUrl: { default: '', type: String },
         ajaxValueUrl: { default: '', type: String },
+        prefetchInAjax: { default: false, type: Boolean },
         ajaxFilters: { default: () => [], type: Array },
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
@@ -82,9 +83,9 @@ module.exports = {
                     return m;
                 }
                 return m.value;
-            });
+            }).filter(m => m != null);
 
-            if (this.ajax) {
+            if (this.ajax && values.length > 0) {
                 const promise = this.$store.dispatch('search', {
                     form: this.state.form,
                     path: this.ajaxValueUrl,
@@ -96,7 +97,7 @@ module.exports = {
                         size: values.length,
                     },
                 });
-
+                console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
                     const opts = this.translate_options(this.format_options(res.data));
                     if (this.multi) {
@@ -205,6 +206,7 @@ module.exports = {
             info.label = '';
             info.value = info[this.fieldValue];
             delete info[this.fieldValue];
+
             this.set_selected([info]);
         },
         /* start_collection() {
@@ -291,17 +293,47 @@ module.exports = {
     },
     watch: {
         options() {
-            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
-            this.select_default_value();
+            if (!this.prefetchInAjax) {
+                this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+                this.select_default_value();
+            }
         },
         current_state(s) {
             this.dispatch(s, this, this.form);
         },
     },
     beforeMount() {
-        this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+        if (!this.prefetchInAjax) {
+            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+        }
     },
     mounted() {
+        console.log('mounted', this.prefetchInAjax, this.ajax);
+        if (this.prefetchInAjax && this.ajax) {
+            let where = {};
+            if (this.ajaxFilters.length > 0) {
+                where = {
+                    $and: this.ajaxFilters,
+                };
+            }
+
+            const promise = this.$store.dispatch('search', {
+                form: this.state.form,
+                path: this.ajaxUrl,
+                body: {
+                    where,
+                    projection: [this.fieldLabel, this.fieldValue],
+                    size: this.searchSize,
+                },
+            });
+
+            console.log(promise);
+            promise.then((res) => {
+                console.log(res);
+                const opts = this.translate_options(this.format_options(res.data));
+                this.state.options = opts;
+            });
+        }
         this.initialize(this.form);
     },
     computed: {

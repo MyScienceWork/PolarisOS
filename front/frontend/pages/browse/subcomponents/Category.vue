@@ -9,6 +9,23 @@
                     <div class="field is-grouped">
                         <div class="control is-expanded">
                             <fselect
+                                :form="this.state.sinks.creations.selected"
+                                name="browsing_terms"
+                                label=""
+                                :placeholder="lang('l_select_content')"
+                                field-label="fullname"
+                                field-value="_id"
+                                :options="[]"
+                                v-if="query.entity === 'author'"
+                                :multi="true"
+                                :ajax="true"
+                                :prefetch-in-ajax="true"
+                                ajax-url="/api/public/v2/authors/search"
+                                ajax-value-url="/api/public/v2/authors/search"
+                                :ajax-filters="[{is_ined: true}]"
+                            />        
+                            <fselect
+                                v-else
                                 label=""
                                 :placeholder="lang('l_select_content')"
                                 name="browsing_terms"
