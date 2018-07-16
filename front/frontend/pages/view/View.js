@@ -335,6 +335,11 @@ module.exports = {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
+
+                let fullname = `${info.lastname.toUpperCase()}`;
+                if (info.firstname) {
+                    fullname = `${info.firstname} ${fullname}`;
+                }
                 return `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
             });
 
