@@ -41,10 +41,10 @@ class ApiScheduler extends Scheduler {
             where: {
                 $and: [
                     { status: ['published', 'unpublished'] },
-                    //{ 'system.api.handle': false },
+                    { 'system.api.handle': false },
                 ],
             },
-            size: 1,
+            size: 500,
         });
 
         const exec_handle = async (p) => {
