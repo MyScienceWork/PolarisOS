@@ -74,7 +74,7 @@
                                         <template v-if="id.type.toUpperCase() === 'DOI'">
                                             <strong>{{id.type.toUpperCase()}}</strong> : <a class="has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
                                         </template>
-                                        <template v-else>
+                                        <template v-else-if="id.type.toUpperCase() !== 'HANDLE'">
                                             <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
                                         </template>
                                     </p>

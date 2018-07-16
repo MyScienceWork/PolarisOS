@@ -36,6 +36,9 @@ module.exports = {
                     uid: {
                         type: 'keyword',
                     },
+                    iid: {
+                        type: 'keyword',
+                    },
                     enabled: {
                         type: 'boolean',
                     },
