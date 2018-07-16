@@ -220,7 +220,7 @@
                                 <p class="card-header-title">{{lang('f_publication_citation')}}</p>
                             </header>
                             <div class="card-content">
-                                <p v-html="content_item.html"></p>
+                                <p class="break-word" v-html="content_item.html"></p>
                             </div>
                         </div>
                     </div>
