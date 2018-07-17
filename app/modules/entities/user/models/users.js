@@ -37,6 +37,11 @@ const Formatting: Array<any> = [
             const sha_hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex');
             return sha_hpassword;
         },
+        iid: async (result, object) => {
+            const sha_iid = Crypto.createHash('sha1').update(result).digest('hex');
+            object.iid_hashed = sha_iid;
+            return result;
+        },
     },
 ];
 

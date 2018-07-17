@@ -390,10 +390,8 @@ class ODM {
                 })),
                 refresh: true,
             };
-
             const response = await client.bulk(content);
-            console.log(response);
-            return null;
+            return response;
         } catch (err) {
             console.log('bulk creation or update error', err);
             return null;

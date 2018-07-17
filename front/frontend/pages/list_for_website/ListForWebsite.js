@@ -44,7 +44,7 @@ module.exports = {
                 $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         default_sorts() {
-            return Sortings.sort_with_type_and_subtype(this.typology_order, this.subtypology_order, 'asc');
+            return Sortings.sort_with_type_and_subtype(this.typology_order, this.subtypology_order, 'asc').concat('-dates.publication');
         },
         search_query() {
             return JSON.stringify({ $and: [Queries.no_other_version, Queries.published, Queries.author_name_or_id,

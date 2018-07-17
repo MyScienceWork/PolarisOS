@@ -87,6 +87,7 @@
                                 :options="langs"
                             />
                             <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
+                            <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
                             <finput 
                                 name="sso" :label="lang('b_is_sso')" 
                                 type="checkbox" :form="state.sinks.creations.user"

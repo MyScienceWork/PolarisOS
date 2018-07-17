@@ -2,6 +2,9 @@ const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
+// WARN
+// NB: Offset for transforming links to clickable links are defined in URLUtils (default values)
+
 const types = {
     book: 'book',
     'other-blog': 'post-weblog',
@@ -150,7 +153,7 @@ const mapping = {
                     o.ISBN = ISBN._id;
                 }
                 if (HANDLE) {
-                    o['archive-location'] = HANDLE._id;
+                    o['archive-location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
                 }
                 return o;
             },
@@ -244,7 +247,7 @@ const mapping = {
     url: {
         __default: {
             transformers: [],
-            picker: async v => ({ URL: v }),
+            picker: async v => ({ URL: `#POS#URLS${v}#POS#URLE` }),
         },
     },
     'denormalization.delivery_institution': {

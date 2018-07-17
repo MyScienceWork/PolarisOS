@@ -1,5 +1,6 @@
 const chai = require('chai');
 const utils = require('../build/modules/utils/utils');
+const URLUtils = require('../build/modules/utils/url');
 
 const should = chai.should();
 const obj = {
@@ -494,5 +495,37 @@ describe('Utils#merge_with_remplacement', () => {
         const result = utils.merge_with_replacement({}, source, defaults);
         result.lang.should.equal('FR');
         result.version.should.equal(1);
+    });
+});
+
+describe('URLUtils#transform_static_links_to_clickable_links', () => {
+    it('should transform URL to clickable one in HTML (1)', () => {
+        const my_string = 'ok sweetheart here is the link: https://www.sciencedirect.com/science/article/abs/pii/S0014498317301687 cool eh?';
+        const expected = "ok sweetheart here is the link: <a href='https://www.sciencedirect.com/science/article/abs/pii/S0014498317301687'>https://www.sciencedirect.com/science/article/abs/pii/S0014498317301687</a> cool eh?";
+        const result = URLUtils.transform_static_links_to_clickable_links(my_string);
+        result.should.equal(expected);
+    });
+
+    it('should transform URL to clickable one in HTML (2)', () => {
+        const my_string = 'ok sweetheart here is the link: http://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E cool eh?';
+        const expected = "ok sweetheart here is the link: <a href='http://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E'>http://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E</a> cool eh?";
+        const result = URLUtils.transform_static_links_to_clickable_links(my_string);
+        result.should.equal(expected);
+    });
+});
+
+describe('URLUtils#transform_static_links_to_clickable_links_with_offset', () => {
+    it('should transform URL to clickable one in HTML (1)', () => {
+        const my_string = 'ok sweetheart here is the link: #POS#URLShttps://www.sciencedirect.com/science/article/abs/pii/S0014498317301687#POS#URLE cool eh?';
+        const expected = "ok sweetheart here is the link: <a href='https://www.sciencedirect.com/science/article/abs/pii/S0014498317301687'>https://www.sciencedirect.com/science/article/abs/pii/S0014498317301687</a> cool eh?";
+        const result = URLUtils.transform_static_links_to_clickable_links_with_offset(my_string, '#POS#URLS', '#POS#URLE');
+        result.should.equal(expected);
+    });
+
+    it('should transform URL to clickable one in HTML (2)', () => {
+        const my_string = 'ok sweetheart here is the link: #POS#URLShttp://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E#POS#URLE cool eh?';
+        const expected = "ok sweetheart here is the link: <a href='http://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E'>http://www.insee.fr/fr/themes/document.asp?reg_id=0&;ref_id=ECO462E</a> cool eh?";
+        const result = URLUtils.transform_static_links_to_clickable_links_with_offset(my_string, '#POS#URLS', '#POS#URLE');
+        result.should.equal(expected);
     });
 });

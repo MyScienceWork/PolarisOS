@@ -49,7 +49,7 @@ class Pipeline {
             return false;
         }
 
-        const entity = await EntitiesUtils.retrieve(id, type);
+        const entity = await EntitiesUtils.retrieve(id, type, false);
         if (entity == null) {
             return false;
         }
@@ -151,7 +151,7 @@ class Pipeline {
             if (method === 'put') {
                 const exists = await Pipeline._check_if_entity_exists(item, type);
                 if (!exists) {
-                    return Errors.InvalidEntity;
+                    throw Errors.InvalidEntity;
                 }
             }
             return item;
@@ -159,7 +159,7 @@ class Pipeline {
             if (method === 'put') {
                 const entity = await EntitiesUtils.retrieve(item._id, type);
                 if (!entity) {
-                    return Errors.InvalidEntity;
+                    throw Errors.InvalidEntity;
                 }
                 item = Pipeline._merge_put(item, entity.source);
             }
@@ -186,7 +186,7 @@ class Pipeline {
     }
 
     static async run(item: Object, type: string, pipelines: Array<any>,
-        method: string, range: Array<any>, extra: Object) {
+            method: string, range: Array<any>, extra: Object) {
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
                 'check', method, range, extra);
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
@@ -209,7 +209,7 @@ class Pipeline {
     }
 
     static run_as_middleware(type: string): Function {
-        return async function run_as_middleware(ctx: Object, next: Function): Promise<any> {
+        return async function f(ctx: Object, next: Function): Promise<any> {
             const item = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = await EntitiesUtils.get_model_from_type(type);
@@ -223,6 +223,71 @@ class Pipeline {
                 ctx.body = result;
             } else {
                 ctx.request.body = result;
+                await next();
+            }
+        };
+    }
+
+    static bulk_run_as_middleware(type: string): Function {
+        return async function f(ctx: Object, next: Function): Promise<any> {
+            const items = ctx.request.body;
+            const method = ctx.request.method.toLowerCase();
+            const model = await EntitiesUtils.get_model_from_type(type);
+            const pipelines = model.Pipelines || [];
+            const extra = ctx.__md || {};
+            const range = Pipeline._format_range(ctx.params.range, pipelines.length);
+
+            let errors = 0;
+            const results = [];
+
+            let last_item_was_an_error = false;
+            for (const i in items) {
+                const item = items[i];
+                try {
+                    const result = await Pipeline.run(item, type, pipelines, method, range, extra);
+                    if ('change' in result) {
+                        errors += 1;
+                    }
+                    if (i == 0) {
+                        results.push([result]);
+                        if ('change' in result) {
+                            last_item_was_an_error = true;
+                        }
+                    } else if ('change' in result) {
+                        if (last_item_was_an_error) {
+                            results[results.length - 1].push(result);
+                        } else {
+                            results.push([result]);
+                        }
+                        last_item_was_an_error = true;
+                    } else {
+                        if (!last_item_was_an_error) {
+                            results[results.length - 1].push(result);
+                        } else {
+                            results.push([result]);
+                        }
+                        last_item_was_an_error = false;
+                    }
+                } catch (err) {
+                    errors += 1;
+                    if (i === 0) {
+                        results.push([err]);
+                        last_item_was_an_error = true;
+                    } else {
+                        if (last_item_was_an_error) {
+                            results[results.length - 1].push(err);
+                        } else {
+                            results.push([err]);
+                        }
+                        last_item_was_an_error = true;
+                    }
+                }
+            }
+
+            if (errors === items.length) {
+                ctx.body = { total: errors, success: 0, errors_count: errors, results };
+            } else {
+                ctx.request.body = results;
                 await next();
             }
         };
