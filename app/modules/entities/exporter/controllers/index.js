@@ -18,6 +18,7 @@ const Errors = require('../../../exceptions/errors');
 const CSLUtils = require('../../../utils/csl');
 const Cache = require('../../../utils/cache');
 const Logger = require('../../../../logger');
+const URLUtils = require('../../../utils/url');
 
 const bibtexCache = new Cache(10000);
 
@@ -537,6 +538,7 @@ function export_information(): Function {
                 lang: CSLUtils.langs_mapping[ctx.__md.lang] || 'en-US',
             });
             results = JSON.parse(JSON.stringify(results));
+            results = URLUtils.transform_static_links_to_clickable_links_with_offset(results);
             results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${results}</body></html>`;
             results = HtmlDocx.asBlob(results);
             ext = '.docx';
@@ -645,13 +647,14 @@ async function format_bibliography_results(publications: Array<Object>,
         info: Object, memoizer: Object): Promise<string> {
     const csl_json_output = await transform_to_csl_json(publications, info);
     const data = new Cite(csl_json_output);
-    const results = data.get({
+    let results = data.get({
         nosort: true,
         format: 'string',
         type: 'html',
         style: `citation-${csl}`,
         lang: CSLUtils.langs_mapping[lang] || 'en-US',
     });
+    results = URLUtils.transform_static_links_to_clickable_links_with_offset(results);
     return results;
 }
 

@@ -106,4 +106,6 @@ module.exports = {
     UnableToProcessPipelines: new GenericError('UnableToProcessPipelines', new Error('Unable to process pipelines'), 500),
 
     UserIsNotAnAuthor: new GenericError('UserIsNotAnAuthor', new Error('The user is not attached to an author'), 422),
+
+    NoEndOffsetForString: new GenericError('NoEndOffsetForString', new Error('No end offset for string'), 500),
 };
