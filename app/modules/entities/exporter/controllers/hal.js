@@ -140,10 +140,10 @@ async function get_publication_stmt(publication: Object): Promise<string> {
 }
 
 async function get_series_stmt(publication: Object): Promise<string> {
-    return '';
-    /* let enclosure = '<seriesStmt>';
+    let enclosure = '<seriesStmt>';
+    enclosure += '<idno type="stamp" n="INED">INED</idno>';
     enclosure += '</seriesStmt>';
-    return enclosure;*/
+    return enclosure;
 }
 
 async function get_notes_stmt(publication: Object): Promise<string> {

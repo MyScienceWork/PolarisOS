@@ -39,6 +39,9 @@ module.exports = {
                     iid: {
                         type: 'keyword',
                     },
+                    iid_hashed: {
+                        type: 'keyword',
+                    },
                     enabled: {
                         type: 'boolean',
                     },

@@ -6,10 +6,11 @@ const Errors = require('../../../exceptions/errors');
 const Config = require('../../../../config');
 const Logger = require('../../../../logger');
 const MinioUtils = require('../../../utils/minio');
-const StreamUtils = require('../../../utils/streams');
 const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
-const parseString = require('xml2js-parser').parseString;
+const Readline = require('readline');
+
+const RISPipeline = require('../pipelines/ris_pipeline');
 
 function request_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
@@ -211,53 +212,87 @@ async function import_information(ctx: Object): Promise<any> {
     default:
         break;
     }
+}
 
-
-    /* let importer = null;
-    let importer_id = null;
-    let connector_id = null;
-    let connector = null;
-    let pipeline = null;
-    let model = null;
-
-    if (body.importer == null) {
-        ctx.body = {};
-        return;
+async function transform_ris_to_publications(ris_publications: Array<Object>): Promise<Array<Object>> {
+    const publications = [];
+    for (const ris_pub of ris_publications) {
+        try {
+            const pub = await RISPipeline.run(ris_pub);
+            publications.push(pub);
+        } catch (err) {
+            Logger.error('Error when transform from RIS to JSON (PoS)');
+            Logger.error(err);
+        }
     }
+    return publications;
+}
 
-    importer_id = body.importer;
-    importer = await EntitiesUtils.retrieve(importer_id, 'importer');
-
-
-    if (!importer) {
-        ctx.body = {};
-        return;
+function transform_to_publications(my_publications: Array<any>, type: string): Promise<Array<Object>> {
+    switch (type) {
+    case 'ris':
+        return transform_ris_to_publications(my_publications);
+    default:
+        return Promise.resolve([]);
     }
+}
 
+async function bulk_import_publications(publications: Array<Object>): Promise<any> {
+    console.log(JSON.stringify(publications));
+    return {};
+}
 
-    connector_id = importer.source.connector;
-    if (connector_id) {
-        connector = await EntitiesUtils.retrieve(connector_id, 'connector');
-    }
+async function import_ris(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filepath);
+    const ris_publications = [];
+    let last_read_key = '';
+    let ris_publication = {};
+    const rl = Readline.createInterface({
+        input: stream,
+        crlfDelay: Infinity,
+    });
 
-    if (connector) {
-        console.log(connector.source);
-    }
+    rl.on('line', (line) => {
+        console.log(`Line from file: ${line}`);
+        if (line.trim() !== '') {
+            const splitting = line.trim().split('  -');
 
-    pipeline = await EntitiesUtils.retrieve(importer.source.pipeline, 'pipeline');
+            let key = '';
+            let value = '';
+            if (splitting.length === 1 && splitting[0].trim() !== 'ER') {
+                key = last_read_key;
+                value = splitting[0].trim();
+            } else {
+                key = splitting[0].trim();
+                last_read_key = key;
+                value = splitting[1].trim();
+            }
+            console.log(key, value);
+            if (key === 'ER') {
+                ris_publications.push(ris_publication);
+                ris_publication = {};
+            } else if (key in ris_publication) {
+                if (splitting.length === 1) {
+                    ris_publication[key][ris_publication[key].length - 1] += `\n${value}`;
+                } else {
+                    ris_publication[key].push(value);
+                }
+            } else {
+                ris_publication[key] = [value];
+            }
+        }
+    });
 
-    if (pipeline) {
-        console.log(pipeline.source);
-
-        model = await pipeline.generate_model(EntitiesUtils.get_index(pipeline.source.entity),
-                pipeline.source.entity);
-        console.log(model);
-    }
-
-    ctx.body = {};*/
+    rl.on('close', () => {
+        transform_to_publications(ris_publications, 'ris').then(publications => bulk_import_publications(publications)).then((results) => {
+            ctx.body = results;
+        });
+    });
 }
 
 module.exports = {
     import_information,
     import_sherpa_romeo,
+    import_ris,
 };

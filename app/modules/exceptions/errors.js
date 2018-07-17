@@ -104,4 +104,6 @@ module.exports = {
             new Error('The file you\'ve requested does not exist'), 422),
 
     UnableToProcessPipelines: new GenericError('UnableToProcessPipelines', new Error('Unable to process pipelines'), 500),
+
+    UserIsNotAnAuthor: new GenericError('UserIsNotAnAuthor', new Error('The user is not attached to an author'), 422),
 };
