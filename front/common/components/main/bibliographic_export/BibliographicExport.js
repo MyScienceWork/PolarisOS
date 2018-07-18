@@ -222,7 +222,7 @@ module.exports = {
             return [
                 {
                     label: 'l_sort_by_years_bexport',
-                    value: 'dates.publication',
+                    value: '-dates.publication',
                 },
                 {
                     label: 'l_sort_by_authors_bexport',
