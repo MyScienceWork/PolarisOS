@@ -629,7 +629,7 @@ module.exports = {
                 return [];
             }
 
-            return item.ids;
+            return item.ids.filter(id => id.type != null);
         },
         teams() {
             const item = this.content_item;
