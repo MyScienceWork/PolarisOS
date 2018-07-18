@@ -211,7 +211,7 @@ const mapping = {
     number: {
         __default: {
             transformers: [],
-            picker: async n => ({ number: n }),
+            picker: async n => ({ issue: n }),
         },
     },
     pagination: {
