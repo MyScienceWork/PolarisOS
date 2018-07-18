@@ -34,7 +34,7 @@ module.exports = {
                 dates: {
                     end: null,
                     start: null,
-                    activated: true,
+                    activated: false,
                 },
                 sinks: {
                     creations: {
@@ -49,12 +49,14 @@ module.exports = {
             if (!val) {
                 this.state.choosen_info = null;
                 this.state.choosen_chart = null;
+                this.state.dates.activated = false;
                 return;
             }
             const id = val.value;
             const info = this.charts.find(c => c._id === id);
             this.state.choosen_info = info;
             this.state.choosen_chart = val;
+            this.state.dates.activated = info ? (info.use_date_range || false) : false;
         },
         load_chart() {
             if (!this.state.choosen_info) {
@@ -116,7 +118,7 @@ module.exports = {
 
             if (this.info.chart === 'bar') {
                 const categories = ct.buckets.map(b => (this.lang(b.key_as_string || b.key)));
-                const data = ct.buckets.map(b => b.doc_count);
+                const data = ct.buckets.map(b => ('extra_stat' in b ? b.extra_stat.value : b.doc_count));
                 const xaxis = { crosshair: true, categories };
                 return {
                     xaxis,
@@ -131,7 +133,7 @@ module.exports = {
             } else if (this.info.chart === 'pie') {
                 const data = ct.buckets.map(b => ({
                     name: this.lang(b.key_as_string || b.key),
-                    y: b.doc_count,
+                    y: 'extra_stat' in b ? b.extra_stat.value : b.doc_count,
                 }));
                 return {
                     series: data,

@@ -5,6 +5,7 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const ChartTypes = require('../../../common/lists/charttypes');
+const EntitiesList = require('../../../common/lists/entities');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin],
@@ -60,17 +61,12 @@ module.exports = {
         entities() {
             const content = this.fcontent(this.state.sinks.reads.entity);
             if (content instanceof Array) {
-                // TODO make this WAY cleaner;
-                content.push({ type: 'entity' });
-                content.push({ type: 'form' });
-                content.push({ type: 'pipeline' });
-                content.push({ type: 'user' });
-                content.push({ type: 'role' });
-                content.push({ type: 'identifier' });
-                content.push({ type: 'publication' });
-                return content;
+                const final_entities = [...content, ...EntitiesList];
+                final_entities.sort((a, b) => (a.type > b.type) - (a.type < b.type));
+                return final_entities;
             }
-            return [];
+            EntitiesList.sort((a, b) => (a.type > b.type) - (a.type < b.type));
+            return EntitiesList;
         },
     },
 };

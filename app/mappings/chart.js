@@ -29,6 +29,9 @@ module.exports = {
                             },
                         },
                     },
+                    use_date_range: {
+                        type: 'boolean',
+                    },
                     chart: {
                         type: 'keyword',
                     },

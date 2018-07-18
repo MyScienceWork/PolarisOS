@@ -16,6 +16,7 @@ const entities = ['user',
     'importer',
     'exporter',
     'connector',
-    'query'];
+    'query',
+    'tracking_stat'];
 
 module.exports = entities.map(e => ({ type: e }));

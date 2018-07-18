@@ -104,6 +104,16 @@
                                 <b-table-column field="denormalization.reviewer.lastname.raw" :label="lang('l_p_reviewer')" sortable centered :visible="state.columns['denormalization.reviewer.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
                                 </b-table-column>
+                                <b-table-column field="system.stats.views" :label="lang('l_p_view', {}, 'other')" sortable centered :visible="state.columns['system.stats.views'].visible">
+                                    <span class="tag is-info">
+                                        {{get_info(props.row, 'system.stats.views') || 0}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="system.stats.downloads" :label="lang('l_p_download', {}, 'other')" sortable centered :visible="state.columns['system.stats.downloads'].visible">
+                                    <span class="tag is-info">
+                                        {{get_info(props.row, 'system.stats.downloads') || 0}}
+                                    </span>
+                                </b-table-column>
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
