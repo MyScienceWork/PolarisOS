@@ -13,15 +13,21 @@ const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
+const TrackingMixin = require('../../../common/mixins/TrackingMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin],
     components: {
         CopyRequester,
     },
     data() {
         return {
             state: {
+                tracking: {
+                    eid: this.$route.params.id,
+                    entity_type: 'publication',
+                    stat_type: 'view',
+                },
                 sinks: {
                     reads: {
                         item: 'item_read',

@@ -1,3 +1,5 @@
+// @flow
+const moment = require('moment');
 const FS = require('fs');
 const Errors = require('../exceptions/errors');
 const MinioUtils = require('./minio');
@@ -6,6 +8,29 @@ const EntitiesUtils = require('./entities');
 const Utils = require('./utils');
 const Logger = require('../../logger');
 
+async function update_download_stats(info: Object, entity_type: string) {
+    try {
+        const stats_object = Utils.find_value_with_path(info, 'system.stats'.split('.'));
+        if (stats_object) {
+            if ('downloads' in stats_object) {
+                info.system.stats.downloads += 1;
+            } else {
+                info.system.stats.downloads = 1;
+            }
+            await EntitiesUtils.update(info, entity_type);
+        }
+
+        await EntitiesUtils.create({
+            date: +moment.utc(),
+            eid: info._id,
+            entity_type,
+            stat_type: 'download',
+        }, 'tracking_stat');
+    } catch (err) {
+        Logger.error('Error when updating the stats for download: ', entity_type, info._id);
+        Logger.error(err);
+    }
+}
 
 async function add_single(ctx) {
     const file = ctx.request.file;
@@ -48,6 +73,9 @@ async function download(ctx) {
 
     const shown_name = file.name || file.url;
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
+
+    await update_download_stats(information, entity);
+
     ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
     ctx.statusCode = 200;
     ctx.body = stream;
@@ -82,6 +110,8 @@ async function multi_download(ctx) {
         const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
         archive.append(stream, { name });
     }
+
+    await update_download_stats(information, entity);
 
     ctx.set('Content-disposition', 'attachment; filename=pos_download.zip');
     ctx.statusCode = 200;

@@ -3,7 +3,7 @@
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-12">
-                <card color="red">
+                <card color="next-color">
                     <div slot="card-content">
                         <div class="columns is-centered">
                             <div class="column">

@@ -103,6 +103,18 @@ module.exports = {
                         force: false,
                         title: 'l_p_reviewer',
                     },
+                    'system.stats.views': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_view',
+                        lang: 'other',
+                    },
+                    'system.stats.downloads': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_download',
+                        lang: 'other',
+                    },
                 },
             },
         };
