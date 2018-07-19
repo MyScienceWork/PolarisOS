@@ -124,15 +124,14 @@ const Formatting: Array<any> = [
                 }
 
                 file.access = {
-                    restricted: access_description ? access_description.restricted : false,
-                    confidential: access_description ? access_description.confidential : false,
-                    delayed: access_description ? access_description.delayed : false,
+                    restricted: access_description ? (access_description.restricted || false) : false,
+                    confidential: access_description ? (access_description.confidential || false) : false,
+                    delayed: access_description ? (access_description.delayed || false) : false,
                 };
 
                 arr.push(file);
                 return arr;
             }, []);
-
             if (myfiles.length === 1) {
                 myfiles[0].is_master = true;
             }
