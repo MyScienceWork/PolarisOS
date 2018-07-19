@@ -49,9 +49,12 @@ async function retrieve_file(bucket_name, filename) {
         const object_stream = await (new Promise((resolve, reject) => {
             minio_client.getObject(bucket_name, filename, (error, stream) => {
                 if (error) {
-                    return reject(error);
+                    reject(error);
+                    return;
                 }
-                return resolve(stream);
+                stream.on('data', (chunk) => {});
+                stream.on('end', () => resolve(stream));
+                stream.on('error', err => reject(err));
             });
         }));
 

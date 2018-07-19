@@ -127,7 +127,7 @@ async function get_edition_stmt(publication: Object): Promise<string> {
         return '';
     }
     const master = files.find(f => f.is_master) || files[0];
-    if (master.access.restricted || master.access.confidential) {
+    if ((master.access.restricted || master.access.confidential) && !master.access.delayed) {
         return '';
     }
 
@@ -139,8 +139,8 @@ async function get_edition_stmt(publication: Object): Promise<string> {
     }
 
     const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
-    const master_ref = `<ref type="file" subtype="author" target="${master.url}" n="1">${embargo}</ref>`;
-    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${a.url}" n="${i}"><desc>Deposited annex</desc></ref>`);
+    const master_ref = `<ref type="file" subtype="author" target="${master.name}" n="1">${embargo}</ref>`;
+    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${a.name}" n="${i}"><desc>Deposited annex</desc></ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
 
 
