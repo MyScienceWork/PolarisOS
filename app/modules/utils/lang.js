@@ -153,7 +153,7 @@ async function strings_to_translation(string, lang, n) {
     }, []);
 
     items.sort((a, b) => (b[0].length - a[0].length));
-    return items.reduce((mycopy, info) => mycopy.replace(`#POS#LANG${info[0]}`, info[1]), copy);
+    return items.reduce((mycopy, info) => mycopy.replace(new RegExp(`#POS#LANG${info[0]}`, 'gi'), info[1]), copy);
 }
 
 module.exports = {

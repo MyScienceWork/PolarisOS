@@ -11,6 +11,7 @@ const Streams = require('stream');
 const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
 const HalExporter = require('./hal');
+const StreamBuffers = require('stream-buffers');
 
 async function get_hal_config(): Promise<?Object> {
     const global_config = await ConfigUtils.get_config();
@@ -76,10 +77,16 @@ async function create(pid: string): Promise<any> {
             .send(xml_tei)
             .end();
     } else {
+        req
+            .set('Content-Type', 'application/zip')
+            .set('Content-Disposition', 'attachment; filename=meta.xml');
+
         const archive = Archiver('zip', {
             zlib: { level: 1 }, // Sets the compression level.
         }).on('progress', (info) => {
             // console.log('Archiver progress: ', JSON.stringify(info));
+        }).on('error', (err) => {
+            // console.log('archiver error', err);
         });
 
         const xml_stream = new Streams.Readable();
@@ -92,11 +99,13 @@ async function create(pid: string): Promise<any> {
             archive.append(stream, { name: file.name });
         }
 
-        req
-            .set('Content-Type', 'application/zip')
-            .set('Content-Disposition', 'attachment; filename=meta.xml');
-        archive.pipe(req);
+        const writableStreamBuffer = new StreamBuffers.WritableStreamBuffer();
+        archive.pipe(writableStreamBuffer);
         archive.finalize();
+
+        writableStreamBuffer.on('finish', () => {
+            req.send(writableStreamBuffer.getContents()).end();
+        });
     }
 
     try {
