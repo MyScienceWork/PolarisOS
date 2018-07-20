@@ -7,10 +7,80 @@
                 <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong>
             </h4>
         </div>
-        <div v-else class="level-left">
-        </div>
         <div class="level-right">
-            <div class="level-item">
+            <div class="level-item is-hidden-tablet">
+                <b-dropdown position="is-bottom-left">
+                    <button class="button is-purple has-small-right-margin" slot="trigger">
+                        <span class="icon is-small"><i class="fa fa-bars"></i></span>
+                    </button>
+
+                    <b-dropdown-item custom>
+                        <ul class="menu-list">
+                            <li>
+                                <b-collapse :open.sync="state.mobile_dropdown.first">
+                                    <a role="button" slot="trigger">
+                                        <span class="icon is-small">
+                                            <i v-if="state.mobile_dropdown.first" class="fa fa-chevron-down"></i>
+                                            <i v-else class="fa fa-chevron-up"></i>
+                                        </span> 
+                                        <span class="swap menu-text">{{lang('f_export_publication')}}</span> 
+                                    </a>
+                                    <ul>
+                                        <li v-for="data in export_data">
+                                            <a class="swap" @click.prevent="export_format(data.value)">
+                                                {{data.label}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </b-collapse>
+                            </li>
+                            <li>
+                                <b-collapse :open.sync="state.mobile_dropdown.second">
+                                    <a role="button" slot="trigger">
+                                        <span class="icon is-small">
+                                            <i v-if="state.mobile_dropdown.second" class="fa fa-chevron-down"></i>
+                                            <i v-else class="fa fa-chevron-up"></i>
+                                        </span> 
+                                        <span class="swap menu-text">{{lang('f_items_per_page')}}</span> 
+                                    </a>
+                                    <ul>
+                                        <li v-for="per_page in items_per_page_options">
+                                            <a :class="['swap', {'is-active': state.seso.size === per_page}]" @click.prevent="size(per_page)">
+                                                {{per_page}}
+                                            </a>
+                                        </li> 
+                                    </ul>
+                                </b-collapse>
+                            </li>
+                            <li>
+                                <b-collapse :open.sync="state.mobile_dropdown.third">
+                                    <a role="button" slot="trigger">
+                                        <span class="icon is-small">
+                                            <i v-if="state.mobile_dropdown.third" class="fa fa-chevron-down"></i>
+                                            <i v-else class="fa fa-chevron-up"></i>
+                                        </span> 
+                                        <span class="menu-text">{{lang('f_sort_by')}}</span> 
+                                    </a>
+                                    <ul>
+                                        <li v-for="sorting in sorting_options">
+                                            <a :class="['swap', {'is-active': state.seso.sort === sorting.value}]" @click.prevent="sort(sorting.value, get_order(sorting.value))">
+                                                {{sorting.label}}
+                                                <span class="icon">
+                                                    <template v-if="state.seso.sort === sorting.value">
+                                                        <i v-if="get_order(sorting.value) === 'desc'" class="fa fa-long-arrow-down"></i>
+                                                        <i v-else="get_order(sorting.value) === 'asc'" class="fa fa-long-arrow-up"></i>
+                                                    </template>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </b-collapse>
+                            </li>
+                        </ul>
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+            <div class="level-item is-hidden-mobile">
                 <div class="field has-addons">
                     <p class="control">
                         <b-dropdown hoverable>
@@ -20,32 +90,13 @@
                                 </span>
                                 <span>{{lang('f_export_publication')}}</span>
                             </a>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('bibtex')">
-                                    {{lang('f_export_bibtex')}}
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('csv')">
-                                    {{lang('f_export_csv')}}
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('ris')">
-                                    {{lang('f_export_ris')}}
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a class="navbar-item swap" @click.prevent="export_format('endnote')">
-                                    {{lang('f_export_endnote')}}
-                                </a>
-                            </b-dropdown-item>
-                            <hr class="dropdown-divider">
-                            <b-dropdown-item has-link v-for="obj in csl_export_styles">
-                                <a class="navbar-item swap" @click.prevent="export_format('csl', obj.value)">
-                                    {{lang('f_export_csl')}} ({{obj.label}})
-                                </a>
-                            </b-dropdown-item>
+                            <template v-for="data in export_data">
+                                <b-dropdown-item has-link>
+                                    <a class="navbar-item swap" @click.prevent="export_format(data.value)">
+                                        {{data.label}}
+                                    </a>
+                                </b-dropdown-item>
+                            </template> 
                         </b-dropdown>
                     </p>
                     <p class="control">
@@ -58,26 +109,13 @@
                                     {{lang('f_items_per_page')}}
                                 </span>
                             </a>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.size === 2}]" @click.prevent="size(2)">
-                                    2
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.size === 20}]" @click.prevent="size(20)">
-                                    20
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.size === 50}]" @click.prevent="size(50)">
-                                    50
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active':state.seso.size === 100}]" @click.prevent="size(100)">
-                                    100
-                                </a>
-                            </b-dropdown-item>
+                            <template v-for="per_page in items_per_page_options">
+                                <b-dropdown-item has-link>
+                                    <a :class="['navbar-item swap', {'is-active': state.seso.size === per_page}]" @click.prevent="size(per_page)">
+                                        {{per_page}}
+                                    </a>
+                                </b-dropdown-item>
+                            </template> 
                         </b-dropdown>
                     </p>
                     <p class="control">
@@ -90,39 +128,19 @@
                                     {{lang('f_sort_by')}}
                                 </span>
                             </a>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.publication'}]" @click.prevent="sort('dates.publication', get_order('dates.publication'))">
-                                    {{lang('f_sort_by_year')}}
-                                    <span class="icon">
-                                        <template v-if="state.seso.sort === 'dates.publication'">
-                                            <i v-if="get_order('dates.publication') === 'desc'" class="fa fa-long-arrow-down"></i>
-                                            <i v-else="get_order('dates.publication') === 'asc'" class="fa fa-long-arrow-up"></i>
-                                        </template>
-                                    </span>
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'type'}]" @click.prevent="sort('type', get_order(('type')))">
-                                    {{lang('f_sort_by_publication_type')}}
-                                    <span class="icon">
-                                        <template v-if="state.seso.sort === 'type'">
-                                            <i v-if="get_order('type') === 'desc'" class="fa fa-long-arrow-down"></i>
-                                            <i v-else="get_order('type') === 'asc'" class="fa fa-long-arrow-up"></i>
-                                        </template>
-                                    </span>
-                                </a>
-                            </b-dropdown-item>
-                            <b-dropdown-item has-link>
-                                <a :class="['navbar-item swap', {'is-active': state.seso.sort === 'dates.deposit'}]" @click.prevent="sort('dates.deposit', get_order('dates.deposit'))">
-                                    {{lang('f_sort_by_deposit_year')}}
-                                    <span class="icon">
-                                        <template v-if="state.seso.sort === 'dates.deposit'">
-                                            <i v-if="get_order('dates.deposit') === 'desc'" class="fa fa-long-arrow-down"></i>
-                                            <i v-else="get_order('dates.deposit') === 'asc'" class="fa fa-long-arrow-up"></i>
-                                        </template>
-                                    </span>
-                                </a>
-                            </b-dropdown-item>
+                            <template v-for="sorting in sorting_options">
+                                <b-dropdown-item has-link>
+                                    <a :class="['navbar-item swap', {'is-active': state.seso.sort === sorting.value}]" @click.prevent="sort(sorting.value, get_order(sorting.value))">
+                                        {{sorting.label}}
+                                        <span class="icon">
+                                            <template v-if="state.seso.sort === sorting.value">
+                                                <i v-if="get_order(sorting.value) === 'desc'" class="fa fa-long-arrow-down"></i>
+                                                <i v-else="get_order(sorting.value) === 'asc'" class="fa fa-long-arrow-up"></i>
+                                            </template>
+                                        </span>
+                                    </a>
+                                </b-dropdown-item>
+                            </template>
                         </b-dropdown>
                     </p>
                 </div>

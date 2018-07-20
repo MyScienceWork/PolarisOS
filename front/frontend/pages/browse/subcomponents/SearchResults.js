@@ -35,6 +35,11 @@ module.exports = {
                         export: 'exporter_read',
                     },
                 },
+                mobile_dropdown: {
+                    first: false,
+                    second: false,
+                    third: false,
+                },
             },
         };
     },
@@ -150,6 +155,16 @@ module.exports = {
                 { label: this.lang('f_export_ris'), value: 'ris' },
                 { label: this.lang('f_export_endnote'), value: 'endnote' },
                 { label: this.lang('f_export_csv'), value: 'csv' },
+            ];
+        },
+        items_per_page_options() {
+            return [10, 20, 50, 100];
+        },
+        sorting_options() {
+            return [
+                { label: this.lang('f_sort_by_year'), value: 'dates.publication' },
+                { label: this.lang('f_sort_by_publication_type'), value: 'type' },
+                { label: this.lang('f_sort_by_deposit_year'), value: 'dates.deposit' },
             ];
         },
     },

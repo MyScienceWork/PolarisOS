@@ -11,6 +11,7 @@ const Messages = require('../../../common/api/messages');
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const VueClickAway = require('vue-clickaway');
 
 module.exports = {
     mixins: [UserMixin, LangMixin, FormMixin, FormCleanerMixin],
@@ -18,6 +19,9 @@ module.exports = {
         LastDeposits,
         SearchResults,
         SearchBar,
+    },
+    directives: {
+        onClickAway: VueClickAway.directive,
     },
     data() {
         return {
