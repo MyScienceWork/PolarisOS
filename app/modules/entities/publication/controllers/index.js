@@ -15,7 +15,6 @@ module.exports = {};
 
 async function send_emails(publication: Object, options: Object) {
     let unsent_messages = Utils.find_value_with_path(publication.source, 'system.emails'.split('.'));
-
     if (unsent_messages) {
         unsent_messages = unsent_messages.filter(um => !um.sent);
     }
@@ -43,24 +42,25 @@ async function send_emails(publication: Object, options: Object) {
 
     let master = emails.find(elt => elt.is_master);
 
-    if (master && emails.length > 0) {
+    if (!master && emails.length > 0) {
         master = emails[0];
     }
 
     const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
-        $where:
+        where:
         {
-            $and: [
+            id: 'review-publication',
+        /* $and: [
                 { 'trigger.entity': 'publication' },
                 { 'trigger.matches.key': 'status' },
                 { 'trigger.matches.value': publication.status },
-            ],
+                ],*/
         },
     });
-
     if (templates.length === 0) {
         return publication;
     }
+
 
     const email_config = await MailerUtils.get_email_config();
 
@@ -71,23 +71,21 @@ async function send_emails(publication: Object, options: Object) {
     const default_sender = email_config.default_sender || Config.email.default_sender;
 
     const template = templates[0];
-    const sent_messages = unsent_messages.map((msg) => {
-        const subject = Handlebars.compile(template.subject)({ user: depositor,
+    const sent_messages = unsent_messages.map(async (msg) => {
+        const lang = depositor.preferred_language || 'EN';
+        const info_subject = Handlebars.compile(template.subject)({ user: depositor,
             publication: publication.source,
             message: msg.body });
-        const body = Handlebars.compile(template.body)({ user: depositor,
+        const info_body = Handlebars.compile(template.body)({ user: depositor,
             publication: publication.source,
             message: msg.body });
-        return MailerUtils.send_email_with(default_sender, master.email, subject, body);
+        const subject = await LangUtils.strings_to_translation(info_subject, lang);
+        const body = await LangUtils.strings_to_translation(info_body, lang);
+        return await MailerUtils.send_email_with(default_sender, master.email, subject, body);
     });
 
-    try {
-        await Promise.all(sent_messages);
-    } catch (err) {
-        Logger.error(err);
-    }
-
-    publication.source.system.emails = publication.source.system.emails.map((msg) => {
+    Promise.all(sent_messages).then(() => {}).catch(err => Logger.error(err));
+    publication._db.source.system.emails = publication._db.source.system.emails.map((msg) => {
         msg.sent = true;
         return msg;
     });
@@ -95,40 +93,10 @@ async function send_emails(publication: Object, options: Object) {
     return publication;
 }
 
-async function generate_cover_page(publication: Object, options: Object) {
-    const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
-    if (files.length === 0) {
-        return publication;
-    }
-
-    const master = files.find(f => f.is_master) || files[0];
-    const is_pdf = Mime.getType(master.url) === 'application/pdf';
-
-    if (!is_pdf) {
-        return publication;
-    }
-
-    const myconfig = await ConfigUtils.get_config();
-
-    if (!myconfig) {
-        return publication;
-    }
-
-    const cover_page = Utils.find_value_with_path(myconfig, 'gui.cover_page'.split('.'));
-    if (!cover_page) {
-        return publication;
-    }
-
-    const base_url = myconfig.base_url;
-    const compiled = Handlebars.compile(cover_page)(_.merge({ url: `${base_url}/view/${publication._id}`, link: `${base_url}/view/${publication._id}` }, publication));
-    console.log(compiled);
-    return publication;
-}
-
 async function post_action(publication: Object, options: Object) {
-    // publication = await send_emails(publication, options);
-    // publication = await generate_cover_page(publication, options);
-    // await publication.update();
+    publication = await send_emails(publication, options);
+    await EntitiesUtils.update(publication.source, 'publication');
+    return publication;
 }
 
 async function request_copy(ctx: Object): Promise<any> {
