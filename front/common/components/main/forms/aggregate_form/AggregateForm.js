@@ -183,7 +183,7 @@ module.exports = {
             return [
             { label: this.lang('l_bool_and'), value: '$and' },
             { label: this.lang('l_bool_or'), value: '$or' },
-            { label: this.lang('l_bool_not'), value: '$nand' },
+            { label: this.lang('l_bool_not'), value: '$nfand' },
             ];
         },
     },
