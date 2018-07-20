@@ -83,6 +83,10 @@ function put_with_action(type: string, action: Function, options: Object): Funct
             throw Errors.UnableToCreateEntity;
         }
 
+        if (!options) {
+            options = {};
+        }
+        options.__md = ctx.__md;
         await action(obj, options);
         ctx.body = WebUtils.forge_ok_response(obj, 'put');
     };
@@ -129,6 +133,10 @@ function post_with_action(type: string, action: Function, options: Object): Func
             throw Errors.UnableToCreateEntity;
         }
 
+        if (!options) {
+            options = {};
+        }
+        options.__md = ctx.__md;
         await action(obj, options);
         ctx.body = WebUtils.forge_ok_response(obj, 'post');
     };

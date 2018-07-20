@@ -3,23 +3,23 @@ const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
 const types = {
-    book: 'BOOK',
-    'other-blog': 'BLOG',
-    chapter: 'CHAP',
-    'other-software': 'COMP',
-    'book-proceedings': 'CONF',
-    conference: 'CPAPER',
-    'book-chapter-dictionary-article': 'DICT',
-    'other-figure': 'FIGURE',
-    other: 'GEN',
-    journal: 'JOUR',
-    'other-maps': 'MAP',
-    press: 'NEWS',
-    report: 'RPRT',
-    'other-audio': 'SOUND',
-    thesis: 'THES',
-    'working-paper': 'UNPD',
-    'other-video': 'VIDEO',
+    BOOK: 'book',
+    BLOG: 'other-blog',
+    CHAP: 'chapter',
+    COMP: 'other-software',
+    CONF: 'book-proceedings',
+    CPAPER: 'conference',
+    DICT: 'book-chapter-dictionary-article',
+    FIGURE: 'other-figure',
+    GEN: 'other',
+    JOUR: 'journal',
+    MAP: 'other-maps',
+    NEWS: 'press',
+    RPRT: 'report',
+    SOUND: 'other-audio',
+    THES: 'thesis',
+    UNPD: 'working-paper',
+    VIDEO: 'other-video',
 };
 
 async function city_country_picker(loc, pub, mylang) {
@@ -49,89 +49,71 @@ async function city_country_picker(loc, pub, mylang) {
 }
 
 const mapping = {
-    abstracts: {
+    AB: {
         __default: {
-            transformers: [],
             picker: (abs, pub) => {
-                if (abs.length === 0) {
-                    return null;
-                }
-                const a = abs.find(_a => _a.lang === pub.lang);
-                if (!a) {
-                    return { AB: abs[0].content };
-                }
-                return { AB: a.content };
+                const lang = pub.LA || 'EN';
+                return { abstracts: [{ content: abs[0], lang: pub.LA }] };
             },
         },
     },
-    collection: {
+    T3: {
         __default: {
-            transformers: [],
-            picker: c => ({ T3: c }),
+            picker: c => ({ collection: c[0] }),
         },
     },
-    'dates.publication': {
+    DA: {
         __default: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY') })],
-            picker: c => ({ DA: c }),
-        },
-        JOUR: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM') })],
-            picker: c => ({ DA: c }),
-        },
-        NEWS: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM/DD') })],
-            picker: c => ({ DA: c }),
-        },
-    },
-    description: {
-        __default: {
-            transformers: [],
-            picker: c => ({ N1: c }),
-        },
-    },
-    ids: {
-        __default: {
-            transformers: [],
-            picker: (ids) => {
-                const DOI = ids.find(id => id.type === 'doi');
-                const ISBN = ids.find(id => id.type === 'isbn');
-                const HANDLE = ids.find(id => id.type === 'handle');
-                const o = {};
-                if (DOI) {
-                    o.DO = DOI._id;
+            picker: (c) => {
+                const parts = c[0].split('/');
+                if (parts.length === 1) {
+                    return { dates: { publication: moment(c[0], 'YYYY') } };
+                } else if (parts.length === 2) {
+                    return { dates: { publication: moment(c[0], 'YYYY/MM') } };
                 }
-                if (ISBN) {
-                    o.SN = ISBN._id;
-                }
-                if (HANDLE) {
-                    o.AN = HANDLE._id;
-                }
-                return o;
+                return { dates: { publication: moment(c[0], 'YYYY/MM/DD') } };
             },
         },
     },
-    newspaper: {
+    N1: {
         __default: {
-            transformers: [],
-            picker: c => ({
-                T2: c,
-            }),
+            picker: c => ({ description: c[0] }),
         },
     },
-    keywords: {
+    DO: {
         __default: {
-            transformers: [],
-            picker: (kws) => {
-                const all = kws.map(k => k.value);
-                return { KW: all };
-            },
+            picker: c => ({ ids: [{ type: 'doi', _id: c[0] }] }),
         },
     },
-    lang: {
+    SN: {
+        __default: {
+            picker: c => ({ ids: [{ type: 'isbn', _id: c[0] }] }),
+        },
+    },
+    T2: {
         __default: {
             transformers: [],
-            picker: l => ({ LA: l }),
+            picker: async pt => ({ publication_title: pt[0] }),
+        },
+        press: {
+            picker: c => ({ newspaper: c[0] }),
+        },
+    },
+    C3: {
+        conference: {
+            transformers: [],
+            picker: async pt => ({ publication_title: pt[0] }),
+        },
+    },
+    KW: {
+        __default: {
+            picker: kws => ({ keywords: kws.map(k => ({ type: 'user', value: k })) }),
+        },
+    },
+    LA: {
+        __default: {
+            transformers: [],
+            picker: l => ({ lang: l[0] }),
         },
     },
     localisation: {
@@ -160,50 +142,34 @@ const mapping = {
             },
         },
     },
-    number: {
+    IS: {
         __default: {
             transformers: [],
-            picker: async n => ({ IS: n }),
+            picker: async n => ({ number: n[0] }),
         },
     },
-    pagination: {
+    SP: {
         __default: {
             transformers: [],
-            picker: async p => ({ SP: p }),
+            picker: async p => ({ pagination: p[0] }),
         },
     },
-    publication_title: {
+    TI: {
         __default: {
             transformers: [],
-            picker: async pt => ({ T2: pt }),
-        },
-        CPAPER: {
-            transformers: [],
-            picker: async pt => ({ C3: pt }),
+            picker: async t => ({ title: { content: t[0] } }),
         },
     },
-    'title.content': {
+    VL: {
         __default: {
             transformers: [],
-            picker: async t => ({ TI: t }),
+            picker: async v => ({ volume: v[0] }),
         },
     },
-    translated_titles: {
+    UR: {
         __default: {
             transformers: [],
-            picker: async tts => ({ TT: tts[0].content }),
-        },
-    },
-    volume: {
-        __default: {
-            transformers: [],
-            picker: async v => ({ VL: v }),
-        },
-    },
-    url: {
-        __default: {
-            transformers: [],
-            picker: async v => ({ UR: v }),
+            picker: async v => ({ url: v[0] }),
         },
     },
     'denormalization.delivery_institution': {
@@ -230,15 +196,6 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async v => ({ T2: v, JO: v }),
-        },
-    },
-    'denormalization.demovoc_keywords': {
-        __default: {
-            transformers: [],
-            picker: async (kws) => {
-                const all = kws.map(k => k._id.label);
-                return { KW: all };
-            },
         },
     },
     'denormalization.conference': {
@@ -337,6 +294,8 @@ const mapping = {
 async function run(publication) {
     const final_publication = {};
     console.log('ris publication', JSON.stringify(publication));
+    // const pos_type = publication.TY[0] in types ? types[publication.TY[0]] || 'other';
+
     return final_publication;
 }
 
