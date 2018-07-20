@@ -1,6 +1,6 @@
 <template>
     <div>
-        <article class="media is-flex-mobile" v-for="(info, idx) in items">
+        <article class="media is-flex-mobile pos-search-result" v-for="(info, idx) in items">
             <div class="media-left" v-if="isSelectable">
                 <finput
                 :name="info._id"

@@ -309,7 +309,7 @@ module.exports = {
                 sort: this.get_information(q, 'seso_sort'),
                 order: this.get_information(q, 'seso_order'),
                 size: this.get_information(q, 'seso_size', 20),
-                filters: this.get_information(q, 'seso_filter', this.filters),
+                filters: this.get_information(q, 'seso_filter', this.filters || []),
                 extra_filters: [], // this.get_information(q, 'seso_extra_filter', []),
                 typed_search: this.get_information(q, 's', '').trim(),
             };

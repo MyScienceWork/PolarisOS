@@ -1,3 +1,20 @@
+@media (max-width: 768px) {
+    .pos-search-result {
+        .handle-link {
+            display: none;
+        }
+
+        .tag {
+            height: auto;
+            white-space: normal;
+        }
+    }
+
+    .pagination {
+        margin: 1em;
+    }
+}
+
 //Mixins
 .generate-colored-texts(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
@@ -230,3 +247,4 @@
 .break-word {
     word-break: break-word;
 }
+
