@@ -13,7 +13,7 @@ const Errors = require('../../../exceptions/errors');
 
 module.exports = {};
 
-async function send_emails(publication: Object, options: Object) {
+async function send_emails_to_depositor(publication: Object, options: Object) {
     let unsent_messages = Utils.find_value_with_path(publication.source, 'system.emails'.split('.'));
     if (unsent_messages) {
         unsent_messages = unsent_messages.filter(um => !um.sent);
@@ -90,6 +90,84 @@ async function send_emails(publication: Object, options: Object) {
         return msg;
     });
 
+    return publication;
+}
+
+async function send_emails_to_reviewer(publication: Object, options: Object) {
+    const messages = Utils.find_value_with_path(publication.source, 'system.emails'.split('.')) || [];
+    if (messages.length === 0) {
+        return publication;
+    }
+
+    const d = messages[0].reviewer;
+    if (!d) {
+        return publication;
+    }
+
+    const reviewer = await EntitiesUtils.retrieve_and_get_source('user', d);
+
+    if (!reviewer) {
+        return publication;
+    }
+
+    const emails = Utils.find_value_with_path(reviewer, 'emails'.split('.'));
+    if (!emails) {
+        return publication;
+    }
+
+    let master = emails.find(elt => elt.is_master);
+
+    if (!master && emails.length > 0) {
+        master = emails[0];
+    }
+
+    const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+        where:
+        {
+            id: 'depositor-modify-publication',
+        },
+    });
+    if (templates.length === 0) {
+        return publication;
+    }
+
+
+    const email_config = await MailerUtils.get_email_config();
+
+    if (!email_config) {
+        return publication;
+    }
+
+    const default_sender = email_config.default_sender || Config.email.default_sender;
+
+    const template = templates[0];
+    const lang = reviewer.preferred_language || 'EN';
+    const info_subject = Handlebars.compile(template.subject)({ user: reviewer,
+        publication: publication.source,
+    });
+    const info_body = Handlebars.compile(template.body)({ user: reviewer,
+        publication: publication.source,
+    });
+    const subject = await LangUtils.strings_to_translation(info_subject, lang);
+    const body = await LangUtils.strings_to_translation(info_body, lang);
+
+    const promise = MailerUtils.send_email_with(default_sender, master.email, subject, body);
+    promise.then(() => {}).catch(err => Logger.error(err));
+    return publication;
+}
+
+function send_emails(publication: Object, options: Object) {
+    const md = options.__md;
+    const papi = md.papi;
+
+    if (publication.source.reviewer) {
+        return send_emails_to_depositor(publication, options);
+    } else if (publication.source.system.emails && publication.source.system.emails.length > 0) {
+        console.log('papi', papi);
+        if (papi._id === publication.source.depositor || publication.source.contributors.find(c => c.label === papi.author)) {
+            return send_emails_to_reviewer(publication, options);
+        }
+    }
     return publication;
 }
 
