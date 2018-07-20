@@ -35,6 +35,11 @@
                                     {{lang('f_export_ris')}}
                                 </a>
                             </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('endnote')">
+                                    {{lang('f_export_endnote')}}
+                                </a>
+                            </b-dropdown-item>
                             <hr class="dropdown-divider">
                             <b-dropdown-item has-link v-for="obj in csl_export_styles">
                                 <a class="navbar-item swap" @click.prevent="export_format('csl', obj.value)">

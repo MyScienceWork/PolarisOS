@@ -32,6 +32,9 @@ module.exports = {
         };
     },
     methods: {
+        onPageChangeHook(new_page, old_page) {
+                // Need to be reimplemented if needed
+        },
         show_success_read(sink) {
             if (sink === this.searchSink) {
                 this.state.loading = false;
@@ -120,10 +123,9 @@ module.exports = {
 
             const q = _.merge({}, _.cloneDeep(this.$route.query || {}), obj);
             this.state.seso = Object.assign({}, this.update_state(q));
-            console.log(q);
             this.$router.push({ query: q });
-            console.log(this.$route.query);
             this.send_information(this.searchSink);
+            this.onPageChangeHook(np, op);
         },
         formatPaginate(sorts, seso, backward) {
             if (backward === undefined) {

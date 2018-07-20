@@ -42,6 +42,13 @@ module.exports = {
         join_list(list) {
             return list.map(elt => `<strong>${elt.trim()}</strong>`).join('; ');
         },
+        onPageChangeHook() {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.export,
+                keep_content: false,
+            });
+            this.state.select_all_to_export = false;
+        },
         export_format(format, subtype) {
             this.state.export_type = format;
             this.state.export_subtype = subtype;
@@ -141,6 +148,7 @@ module.exports = {
             return [
                 { label: this.lang('f_export_bibtex'), value: 'bibtex' },
                 { label: this.lang('f_export_ris'), value: 'ris' },
+                { label: this.lang('f_export_endnote'), value: 'endnote' },
                 { label: this.lang('f_export_csv'), value: 'csv' },
             ];
         },

@@ -6,6 +6,7 @@
                 :name="info._id"
                 type="checkbox"
                 :form="exportSink"
+                :key="info._id"
                 label=""
                 />
             </div>
