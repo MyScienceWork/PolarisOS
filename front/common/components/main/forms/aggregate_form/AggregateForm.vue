@@ -22,6 +22,7 @@
                 :ajax-value-url="get_ajax('ajax-value-url', state.inputs[props.order])"
                 :prefetch-in-ajax="get_ajax('ajax', state.inputs[props.order])"
                 :search-fields="get_ajax('search-fields', state.inputs[props.order])"
+                :flatten-list="true"
                 class="has-small-bottom-margin"
             >
                 <template slot="left-input-addons" v-if="props.order > 0">

@@ -37,6 +37,7 @@ module.exports = {
         selectAllValues: { default: false, type: Boolean },
         searchFields: { default: '', type: String },
         searchSize: { default: 10, type: Number },
+        flattenList: { default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -233,7 +234,11 @@ module.exports = {
             }
 
             if (infos instanceof Array) {
+                if (this.flattenList) {
+                    return infos.map(o => o.value);
+                }
                 return infos.map(o => ({ [this.fieldValue]: o.value }));
+
                 // return infos.map(o => o.value);
                 // a l'envoie du formulaire, tous mes fselect était refusé
                 // car là ou il attendait un String, il recevait un objet {value: ''}
@@ -308,7 +313,6 @@ module.exports = {
         }
     },
     mounted() {
-        console.log('mounted', this.prefetchInAjax, this.ajax);
         if (this.prefetchInAjax && this.ajax) {
             let where = {};
             if (this.ajaxFilters.length > 0) {
@@ -327,9 +331,7 @@ module.exports = {
                 },
             });
 
-            console.log(promise);
             promise.then((res) => {
-                console.log(res);
                 const opts = this.translate_options(this.format_options(res.data));
                 this.state.options = opts;
             });
