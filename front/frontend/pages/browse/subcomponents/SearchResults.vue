@@ -1,6 +1,6 @@
 <template>
 <div class="card info-card-purple" v-if="state.display_results">
-<div class="card-content">
+<div class="card-content is-flex-mobile">
     <div class="level" v-if="content.length > 0">
         <div v-if="!display_l_for_list" class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
             <h4 class="is-subtitle is-2">
@@ -33,6 +33,11 @@
                             <b-dropdown-item has-link>
                                 <a class="navbar-item swap" @click.prevent="export_format('ris')">
                                     {{lang('f_export_ris')}}
+                                </a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link>
+                                <a class="navbar-item swap" @click.prevent="export_format('endnote')">
+                                    {{lang('f_export_endnote')}}
                                 </a>
                             </b-dropdown-item>
                             <hr class="dropdown-divider">

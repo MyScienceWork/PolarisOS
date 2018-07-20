@@ -232,9 +232,10 @@
                                 <p class="card-header-title">{{lang('f_publication_export')}}</p>
                             </header>
                             <div class="card-content">
-                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> |
-                                <a @click.prevent="run_export('bibtex')">BibTeX</a> |
-                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p>
+                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">{{lang('l_csv_export')}}</a> |
+                                <a @click.prevent="run_export('bibtex')">{{lang('l_bibtext_export')}}</a> |
+                                <a @click.prevent="run_export('ris')">{{lang('l_ris_export')}}</a> |
+                                <a @click.prevent="run_export('endnote')">{{lang('l_endnote_export')}}</a></p>
                             </div>
                         </div>
                     </div>

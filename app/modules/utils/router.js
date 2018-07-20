@@ -26,7 +26,7 @@ function koa_middlewares(opts: Object): Array<Function> {
     if ('koa_body' in opts) {
         return [KoaBody(opts.koa_body)];
     }
-    return [KoaBody()];
+    return [KoaBody({ jsonLimit: '5mb' })];
 }
 
 /**

@@ -6,6 +6,7 @@ const _ = require('lodash');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
 const CSVPipeline = require('../pipeline/csv_pipeline');
+const RISPipeline = require('../pipeline/ris_pipeline');
 const EndNotePipeline = require('../pipeline/endnote_pipeline');
 const CSLJSONPipeline = require('../pipeline/csl_pipeline');
 const Transformer = require('../../../pipeline/transformer/transformer');
@@ -19,6 +20,7 @@ const CSLUtils = require('../../../utils/csl');
 const Cache = require('../../../utils/cache');
 const Logger = require('../../../../logger');
 const URLUtils = require('../../../utils/url');
+const Json2Xml = require('json2xml');
 
 const bibtexCache = new Cache(10000);
 
@@ -288,14 +290,14 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object, m
     return results.join('\n\n');
 }
 
-async function transform_to_endnote(publications: Array<Object>, extra: Object): Promise<string> {
+async function transform_to_ris(publications: Array<Object>, extra: Object): Promise<string> {
     const results = [];
     for (const i in publications) {
         const publication = publications[i].source;
         let lines = [];
         let ris_type = null;
-        if (publication.subtype && publication.subtype in EndNotePipeline.types) {
-            ris_type = EndNotePipeline.types[publication.subtype];
+        if (publication.subtype && publication.subtype in RISPipeline.types) {
+            ris_type = RISPipeline.types[publication.subtype];
             lines.push(`TY  - ${ris_type}`);
         } else {
             const typologys = await EntitiesUtils.search_and_get_sources('typology', {
@@ -306,8 +308,8 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
             });
             const typology = typologys[0];
             const name = typology.name;
-            if (name in EndNotePipeline.types) {
-                ris_type = EndNotePipeline.types[name];
+            if (name in RISPipeline.types) {
+                ris_type = RISPipeline.types[name];
                 lines.push(`TY  - ${ris_type}`);
             } else {
                 ris_type = 'GEN';
@@ -318,13 +320,13 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
         lines.push(`ID  - ${publication._id}`);
 
         let obj = {};
-        for (const key in EndNotePipeline.mapping) {
+        for (const key in RISPipeline.mapping) {
             const pub_info = Utils.find_value_with_path(publication, key.split('.'));
             if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
                 continue;
             }
 
-            const info = EndNotePipeline.mapping[key];
+            const info = RISPipeline.mapping[key];
             let mapper = null;
             if (ris_type in info) {
                 mapper = info[ris_type];
@@ -362,6 +364,85 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
         results.push(lines.join('\n'));
     }
     return results.join('\n\n');
+}
+
+async function transform_to_endnote(publications: Array<Object>, extra: Object): Promise<string> {
+    const results = [];
+    for (const i in publications) {
+        const publication = publications[i].source;
+        const final_obj = {
+            record: [
+                    { attrs: { name: 'MyLibrary' }, database: 'MyLibrary' },
+                    { attrs: { name: 'PolarisOS' }, 'source-app': 'PolarisOS' },
+            ],
+        };
+
+        let endnote_type = null;
+        let pos_type = null;
+        if (publication.subtype && publication.subtype in EndNotePipeline.types) {
+            endnote_type = EndNotePipeline.types[publication.subtype];
+            pos_type = publication.subtype;
+            final_obj.record.push(endnote_type);
+        } else {
+            const typologys = await EntitiesUtils.search_and_get_sources('typology', {
+                size: 1,
+                where: {
+                    _id: [publication.type],
+                },
+            });
+            const typology = typologys[0];
+            const name = typology.name;
+            if (name in EndNotePipeline.types) {
+                endnote_type = EndNotePipeline.types[name];
+                pos_type = name;
+            } else {
+                endnote_type = EndNotePipeline.types.other;
+                pos_type = 'other';
+            }
+            final_obj.record.push(endnote_type);
+        }
+
+        let obj = {};
+        for (const key in EndNotePipeline.mapping) {
+            const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+            if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                continue;
+            }
+
+            const info = EndNotePipeline.mapping[key];
+            let mapper = null;
+            if (pos_type in info) {
+                mapper = info[pos_type];
+            } else if ('__default' in info) {
+                mapper = info.__default;
+            }
+
+            if (!mapper) {
+                continue;
+            }
+
+            let subobj = await mapper.picker(pub_info, publication, extra.lang);
+            if (mapper.transformers.length > 0) {
+                subobj = await mapper.transformers.reduce((o, tr) => {
+                    o = tr(o);
+                    return o;
+                }, subobj);
+            }
+
+            obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                if (_.isArray(objValue)) {
+                    return objValue.concat(srcValue);
+                }
+            });
+        }
+
+        _.forEach(obj, (val, key) => {
+            final_obj.record.push({ [key]: val });
+        });
+        results.push(final_obj);
+    }
+
+    return Json2Xml({ xml: { records: results } }, { header: true, attributes_key: 'attrs' });
 }
 
 async function transform_to_csv(publications: Array<Object>): Promise<string> {
@@ -508,7 +589,7 @@ function export_information(): Function {
             ext = '.bib';
             break;
         case 'ris':
-            results = await transform_to_endnote(publications, ctx.__md);
+            results = await transform_to_ris(publications, ctx.__md);
             ext = '.ris';
             break;
         case 'csv':
@@ -517,7 +598,7 @@ function export_information(): Function {
             break;
         case 'endnote':
             results = await transform_to_endnote(publications, ctx.__md);
-            ext = '.ris';
+            ext = '.xml';
             break;
         case 'jsonld':
             results = await transform_to_json(publications, true);

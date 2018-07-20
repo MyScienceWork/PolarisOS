@@ -18,7 +18,7 @@ function sort_with_type_and_subtype(types, subtypes, direction = 'asc') {
                 type: 'string',
                 script: {
                     lang: 'painless',
-                    inline: "if(!doc.containsKey('myfield') || doc['myfield'].empty) { return '0' } else {return params.mapping[doc['subtype'].value] }",
+                    inline: "if(!doc.containsKey('subtype') || doc['subtype'].empty) { return '0' } else {return params.mapping[doc['subtype'].value] }",
                     params: {
                         mapping: subtypes,
                     },

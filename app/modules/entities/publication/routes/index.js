@@ -18,6 +18,8 @@ function routes(router: KoaRouter) {
     RouterUtils.generate_del_routes(router, puprefix, type, Middlewares);
     RouterUtils.generate_put_routes(router, puprefix, type, Middlewares, MyController.post_action, {});
     RouterUtils.generate_post_routes(router, puprefix, type, Middlewares, MyController.post_action, {});
+    RouterUtils.generate_bulk_post_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_bulk_put_routes(router, puprefix, type, Middlewares);
 
     router.post(`${puprefix}/ipublication/request_copy`, compose([...copy_request_mware, MyController.request_copy]));
 }
