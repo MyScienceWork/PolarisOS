@@ -14,15 +14,6 @@ const Errors = require('../../../exceptions/errors');
 module.exports = {};
 
 async function send_emails_to_depositor(publication: Object, options: Object) {
-    let unsent_messages = Utils.find_value_with_path(publication.source, 'system.emails'.split('.'));
-    if (unsent_messages) {
-        unsent_messages = unsent_messages.filter(um => !um.sent);
-    }
-
-    if (unsent_messages.length === 0) {
-        return publication;
-    }
-
     const d = publication.source.depositor;
 
     if (!d) {
@@ -46,50 +37,74 @@ async function send_emails_to_depositor(publication: Object, options: Object) {
         master = emails[0];
     }
 
-    const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
-        where:
-        {
-            id: 'review-publication',
-        /* $and: [
-                { 'trigger.entity': 'publication' },
-                { 'trigger.matches.key': 'status' },
-                { 'trigger.matches.value': publication.status },
-                ],*/
-        },
-    });
+    let unsent_messages = [];
+    let templates = [];
+    if (publication.source.status === 'published') {
+        templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+            where:
+            {
+                id: 'review-published-publication',
+            },
+        });
+    } else {
+        unsent_messages =
+            (Utils.find_value_with_path(publication.source, 'system.emails'.split('.')) || []).filter(um => !um.sent);
+
+        if (unsent_messages.length === 0) {
+            return publication;
+        }
+
+        templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+            where:
+            {
+                id: 'review-publication',
+            },
+        });
+    }
+
     if (templates.length === 0) {
         return publication;
     }
 
 
     const email_config = await MailerUtils.get_email_config();
-
     if (!email_config) {
         return publication;
     }
-
     const default_sender = email_config.default_sender || Config.email.default_sender;
-
     const template = templates[0];
-    const sent_messages = unsent_messages.map(async (msg) => {
+    if (unsent_messages.length > 0) {
+        const sent_messages = unsent_messages.map(async (msg) => {
+            const lang = depositor.preferred_language || 'EN';
+            const info_subject = Handlebars.compile(template.subject)({ user: depositor,
+                publication: publication.source,
+                message: msg.body });
+            const info_body = Handlebars.compile(template.body)({ user: depositor,
+                publication: publication.source,
+                message: msg.body });
+            const subject = await LangUtils.strings_to_translation(info_subject, lang);
+            const body = await LangUtils.strings_to_translation(info_body, lang);
+            return await MailerUtils.send_email_with(default_sender, master.email, subject, body);
+        });
+
+        Promise.all(sent_messages).then(() => {}).catch(err => Logger.error(err));
+        publication._db.source.system.emails = publication._db.source.system.emails.map((msg) => {
+            msg.sent = true;
+            return msg;
+        });
+    } else {
         const lang = depositor.preferred_language || 'EN';
         const info_subject = Handlebars.compile(template.subject)({ user: depositor,
             publication: publication.source,
-            message: msg.body });
+        });
         const info_body = Handlebars.compile(template.body)({ user: depositor,
             publication: publication.source,
-            message: msg.body });
+        });
         const subject = await LangUtils.strings_to_translation(info_subject, lang);
         const body = await LangUtils.strings_to_translation(info_body, lang);
-        return await MailerUtils.send_email_with(default_sender, master.email, subject, body);
-    });
-
-    Promise.all(sent_messages).then(() => {}).catch(err => Logger.error(err));
-    publication._db.source.system.emails = publication._db.source.system.emails.map((msg) => {
-        msg.sent = true;
-        return msg;
-    });
-
+        const promise = MailerUtils.send_email_with(default_sender, master.email, subject, body);
+        promise.then(() => {}).catch(err => Logger.error(err));
+    }
     return publication;
 }
 
