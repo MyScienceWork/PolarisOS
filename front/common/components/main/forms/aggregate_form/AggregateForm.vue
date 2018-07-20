@@ -12,7 +12,7 @@
                 :has-addons="true"
                 :key="`${props.id}.input`"
                 :multi="state.inputs[props.order] ? state.inputs[props.order].element === 'multi-select' : false"
-                :options="get_options(props.order, state.inputs[props.order] ? state.inputs[props.order].sink : null)"
+                :options="get_options(props.order, state.inputs[props.order] ? state.inputs[props.order].sink : [])"
                 :translatable="get_translatable(props.order)"
                 :translate-through-hlang="get_use_hlang(props.order)"
                 :fieldValue="get_field('value', state.inputs[props.order] ? state.inputs[props.order].entity : null)"
@@ -20,10 +20,11 @@
                 :ajax="get_ajax('ajax', state.inputs[props.order])"
                 :ajax-url="get_ajax('ajax-url', state.inputs[props.order])"
                 :ajax-value-url="get_ajax('ajax-value-url', state.inputs[props.order])"
+                :prefetch-in-ajax="get_ajax('ajax', state.inputs[props.order])"
                 :search-fields="get_ajax('search-fields', state.inputs[props.order])"
                 class="has-small-bottom-margin"
             >
-                <template slot="left-input-addons">
+                <template slot="left-input-addons" v-if="props.order > 0">
                     <fselect
                         label=""
                         placeholder=""
