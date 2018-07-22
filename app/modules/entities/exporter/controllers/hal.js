@@ -16,7 +16,7 @@ async function get_hal_type(publication: Object): Promise<string> {
     }
 
     if (subtype) {
-        const child = typology.children.find(c => c.name === 'subtype');
+        const child = typology.children.find(c => c.name === subtype);
         if (child) {
             return child.hal || 'UNDEFINED';
         }
@@ -123,6 +123,7 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 async function get_edition_stmt(publication: Object): Promise<string> {
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
     const dates = Utils.find_value_with_path(publication, 'dates'.split('.')) || {};
+
     if (files.length === 0) {
         return '';
     }
@@ -138,8 +139,15 @@ async function get_edition_stmt(publication: Object): Promise<string> {
         embargo = `<date notBefore="${moment(embargo_date).format('YYYY-MM-DD')}"/>`;
     }
 
+    const file_version = Utils.find_value_with_path(publication, 'publication_version'.split('.')) || '';
+    let subtype = 'author';
+    // TODO change this by something more reliable
+    if (file_version === 'AWEsYcAafoecpXq21Ja4') {
+        subtype = 'publisherAgreement';
+    }
+
     const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
-    const master_ref = `<ref type="file" subtype="author" target="${master.name}" n="1">${embargo}</ref>`;
+    const master_ref = `<ref type="file" subtype="${subtype}" target="${master.name}" n="1">${embargo}</ref>`;
     const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${a.name}" n="${i}"><desc>Deposited annex</desc></ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
 
@@ -167,7 +175,7 @@ async function get_publication_stmt(publication: Object): Promise<string> {
         return '';
     }
 
-    const license_ = `<licence target=${license_info.hal} />`;
+    const license_ = `<licence target="${license_info.hal}" />`;
 
     let enclosure = '<publicationStmt><availability>';
     enclosure += license_;
@@ -325,7 +333,17 @@ async function get_monogr(publication: Object): Promise<string> {
     }
 
     if (dates.publication) {
-        imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+        switch (hal_type) {
+        case 'COUV':
+        case 'DOUV':
+        case 'THESE':
+        case 'OUV':
+            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY')}</date>`;
+            break;
+        default:
+            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+            break;
+        }
     }
 
 
@@ -338,6 +356,8 @@ async function get_monogr(publication: Object): Promise<string> {
 
 async function get_source_desc(publication: Object): Promise<string> {
     const ids = Utils.find_value_with_path(publication, 'ids'.split('.')) || [];
+    const url = Utils.find_value_with_path(publication, 'url'.split('.'));
+    const resources = Utils.find_value_with_path(publication, 'resources'.split('.')) || [];
     const doi = ids.find(id => id.type === 'doi');
     const handle = ids.find(id => id.type === 'handle');
 
@@ -347,7 +367,10 @@ async function get_source_desc(publication: Object): Promise<string> {
 
     const doi_ = doi ? `<idno type="doi">${doi._id}</idno>` : '';
     const handle_ = handle ? `<idno type="uri">${handle._id}</idno>` : '';
-    const bibl_ = analytic_ + monogr_ + doi_ + handle_;
+    const url_ = url ? `<ref type="publisher">${url}</ref>` : '';
+    const resources_ = resources.filter(r => r && r.url != null && r.url.trim() !== '')
+        .map(r => `<ref type="seeAlso">${r.url}</ref>`).join('\n');
+    const bibl_ = analytic_ + monogr_ + doi_ + handle_ + url_ + resources_;
     const recording_ = '';
 
     let enclosure = `<sourceDesc><biblStruct>${bibl_}</biblStruct>`;

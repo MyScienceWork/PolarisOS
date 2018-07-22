@@ -106,6 +106,18 @@ class _Entity extends ODM {
         // TODO change when we handle mapping with a more friendly user-interface
         this._db.source.settings = JSON.stringify(this._db.source.settings, null, 4);
     }
+
+    static get mapping(): Object {
+        return mapping;
+    }
+
+    static get index(): string {
+        return `${Config.elasticsearch.index_prefix}_entity`;
+    }
+
+    static get type(): string {
+        return 'entity';
+    }
 }
 
 module.exports = _Entity;

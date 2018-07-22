@@ -102,14 +102,11 @@ module.exports = {
             return '#';
         },
         generate_handle_link(item) {
-            const config = this.$store.state.global_config;
-            const proxy = this._oa_find(config, 'api.handle.proxy');
-            const prefix = this._oa_find(config, 'api.handle.prefix');
-
-            if (!proxy || !prefix) {
-                return '#';
+            const handle = (item.ids || []).find(f => f.type === 'handle');
+            if (handle) {
+                return handle._id;
             }
-            return `${proxy}/${prefix}/${item._id}`;
+            return '#';
         },
         activate_lang(type, lang) {
             switch (type) {

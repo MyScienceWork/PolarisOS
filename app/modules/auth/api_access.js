@@ -63,7 +63,6 @@ function api_signature(deactivated: boolean = false): Function {
             }
             throw Errors.InvalidAPIKey;
         }
-
         ctx.__md.papi = api_info;
 
         if (deactivated) {

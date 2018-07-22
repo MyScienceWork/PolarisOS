@@ -48,8 +48,7 @@ class Pipeline {
         if (id == null) {
             return false;
         }
-
-        const entity = await EntitiesUtils.retrieve(id, type, false);
+        const entity = await EntitiesUtils.retrieve(id, type);
         if (entity == null) {
             return false;
         }

@@ -330,9 +330,9 @@ class ODM {
                     return null;
                 }
             } else {
-                // TODO NEED TO BE REMOVE AFTER DATA IMPORT
                 if ('_id' in content.body) {
-                    content.id = content.body._id;
+                    // TODO NEED TO BE REMOVE AFTER DATA IMPORT
+                    // content.id = content.body._id;
                     delete content.body._id;
                 }
 
