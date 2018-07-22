@@ -68,11 +68,11 @@
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
                                     <p v-if="_oa_find(content_item, 'system.api.handle', false)">
-                                        <strong>{{lang('l_handle_id')}}</strong> : <a class="has-text-purple" target='_blank' :href='generate_handle_link(content_item)'>{{generate_handle_link(content_item)}}</a>
+                                        <strong>{{lang('l_handle_id')}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='generate_handle_link(content_item)'>{{generate_handle_link(content_item)}}</a>
                                     </p>
                                     <p v-for="id in ids">
                                         <template v-if="id.type.toUpperCase() === 'DOI'">
-                                            <strong>{{id.type.toUpperCase()}}</strong> : <a class="has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
+                                            <strong>{{id.type.toUpperCase()}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
                                         </template>
                                         <template v-else-if="id.type.toUpperCase() !== 'HANDLE'">
                                             <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
@@ -90,11 +90,11 @@
                                         <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                         <span v-else>{{lang(license.label)}}</span>
                                     </p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a class="has-text-purple" target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a class="break-word has-text-purple" target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources"><a class="has-text-purple" target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
+                                            <li v-for="r in resources"><a class="has-text-purple break-word" target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>

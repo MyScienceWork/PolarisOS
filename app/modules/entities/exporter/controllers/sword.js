@@ -71,7 +71,7 @@ async function create(pid: string): Promise<any> {
         req
         .on('response', result => resolve(result)).on('error', err => reject(err));
     });
-
+    console.log(xml_tei);
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
             .send(xml_tei)
