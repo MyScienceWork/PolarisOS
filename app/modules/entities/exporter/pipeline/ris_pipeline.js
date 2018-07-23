@@ -11,7 +11,7 @@ const types = {
     conference: 'CPAPER',
     'book-chapter-dictionary-article': 'DICT',
     'other-figure': 'FIGURE',
-    other: 'GEN',
+    other: 'RPRT',
     journal: 'JOUR',
     'other-maps': 'MAP',
     press: 'NEWS',
@@ -90,6 +90,10 @@ const mapping = {
             transformers: [],
             picker: c => ({ T3: c }),
         },
+        RPRT: {
+            transformers: [],
+            picker: c => ({ T3: c, M3: c }),
+        },
     },
     'dates.publication': {
         __default: {
@@ -97,7 +101,7 @@ const mapping = {
             picker: c => ({ DA: c }),
         },
         JOUR: {
-            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM') })],
+            transformers: [o => ({ DA: moment(o.DA).format('YYYY/MM/DD') })],
             picker: c => ({ DA: c }),
         },
         NEWS: {
@@ -186,6 +190,10 @@ const mapping = {
             transformers: [],
             picker: async n => ({ IS: n }),
         },
+        RPRT: {
+            transformers: [],
+            picker: async n => ({ IS: n, SN: n }),
+        },
     },
     pagination: {
         __default: {
@@ -201,6 +209,10 @@ const mapping = {
         CPAPER: {
             transformers: [],
             picker: async pt => ({ C3: pt }),
+        },
+        RPRT: {
+            transformers: [],
+            picker: async pt => ({ T2: pt, M3: pt }),
         },
     },
     'title.content': {
