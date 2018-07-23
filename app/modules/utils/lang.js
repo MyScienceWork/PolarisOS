@@ -129,6 +129,11 @@ async function strings_to_translation(string, lang, n) {
         keys.push(key);
     }
 
+
+    if (keys.length === 0) {
+        return string;
+    }
+
     const values = await EntitiesUtils.search_and_get_sources('lang', {
         size: keys.length,
         where: {
@@ -138,7 +143,6 @@ async function strings_to_translation(string, lang, n) {
             ],
         },
     });
-
     if (values.length === 0) {
         return string;
     }

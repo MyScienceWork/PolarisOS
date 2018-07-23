@@ -447,22 +447,68 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
     return Json2Xml({ xml: { records: results } }, { header: true, attributes_key: 'attrs' });
 }
 
-async function transform_to_csv(publications: Array<Object>): Promise<string> {
+async function transform_to_csv(publications: Array<Object>, extra: Object): Promise<string> {
     const results = [];
-    for (const i in publications) {
-        const publication = publications[i];
-        const result = await Transformer(publication.source, CSVPipeline.transformers);
-        const keys = Object.keys(result);
-        keys.sort((a, b) => a.localeCompare(b));
+    const keys = Object.keys(CSVPipeline.labels);
+    let headers = Object.values(CSVPipeline.labels);
 
-        if (parseInt(i, 10) === 0) {
-            results.push(keys);
+    headers = headers.sort((a, b) => (a.order - b.order)).map(lab => `#POS#LANG${lab.label}`).join('|');
+    headers = (await LangUtils.strings_to_translation(headers, extra.lang)).split('|');
+
+    let typology = await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    });
+    typology = typology.reduce((obj, typo) => {
+        obj[typo._id] = typo.name;
+        return obj;
+    }, {});
+
+    results.push(headers);
+
+    for (const i in publications) {
+        const publication = publications[i].source;
+        const pos_type = typology[publication.type];
+        let obj = {};
+        for (const key in CSVPipeline.mapping) {
+            const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+            if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                continue;
+            }
+            console.log('considered key', key, 'pub_info', pub_info);
+
+            const info = CSVPipeline.mapping[key];
+            let mapper = null;
+            if (pos_type in info) {
+                mapper = info[pos_type];
+            } else if ('__default' in info) {
+                mapper = info.__default;
+            }
+
+            if (!mapper) {
+                continue;
+            }
+
+            let subobj = await mapper.picker(pub_info, publication, extra.lang, key);
+            if (mapper.transformers.length > 0) {
+                subobj = await mapper.transformers.reduce((o, tr) => {
+                    o = tr(o);
+                    return o;
+                }, subobj);
+            }
+            console.log(subobj);
+            obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                if (_.isArray(objValue)) {
+                    return objValue.concat(srcValue);
+                }
+            });
         }
 
-        const row = keys.reduce((arr, k) => {
-            arr.push(result[k]);
-            return arr;
-        }, []);
+        const row = keys.map((k) => {
+            if (k in obj) {
+                return obj[k];
+            }
+            return '';
+        });
         results.push(row);
     }
 
@@ -595,7 +641,7 @@ function export_information(): Function {
             ext = '.ris';
             break;
         case 'csv':
-            results = await transform_to_csv(publications);
+            results = await transform_to_csv(publications, ctx.__md);
             ext = '.csv';
             break;
         case 'endnote':
