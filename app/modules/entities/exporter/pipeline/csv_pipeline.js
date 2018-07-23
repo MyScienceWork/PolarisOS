@@ -15,7 +15,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const type = await LangUtils.string_to_translation(`l_${c.replace(/-/gi, '_')}`, lang);
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
                 return { [key]: type };
             },
         },

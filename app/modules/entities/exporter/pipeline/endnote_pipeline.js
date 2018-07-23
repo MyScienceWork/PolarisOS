@@ -9,6 +9,7 @@ const types = {
     'other-software': { attrs: { name: 'Computer Program' }, 'ref-type': '9' },
     'book-proceedings': { attrs: { name: 'Book' }, 'ref-type': '28' },
     conference: { attrs: { name: 'Conference Paper' }, 'ref-type': '47' },
+    'conference-paper-generic': { attrs: { name: 'Conference Proceedings' }, 'ref-type': '10' },
     'book-chapter-dictionary-article': { attrs: { name: 'Dictionary' }, 'ref-type': '52' },
     'other-figure': { attrs: { name: 'Artwork' }, 'ref-type': '2' },
     other: { attrs: { name: 'Generic' }, 'ref-type': '13' },
@@ -53,7 +54,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang) => {
-                const type = await LangUtils.string_to_translation(`l_${c.replace(/-/gi, '_')}`, lang);
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
                 return { 'work-type': type };
             },
         },
@@ -103,6 +104,28 @@ const mapping = {
             picker: c => ({ dates: { 'pub-dates': { date: c } } }),
         },
         press: {
+            transformers: [
+                o => ({
+                    dates: {
+                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
+                    },
+                }),
+            ],
+            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
+        },
+        conference: {
+            transformers: [
+                o => ({
+                    dates: {
+                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
+                    },
+                }),
+            ],
+            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
+        },
+        'conference-paper-generic': {
             transformers: [
                 o => ({
                     dates: {
@@ -185,7 +208,7 @@ const mapping = {
                     return {};
                 }
                 return {
-                    custom1: final,
+                    'pub-location': final,
                 };
             },
         },
@@ -193,7 +216,7 @@ const mapping = {
     number: {
         __default: {
             transformers: [],
-            picker: async n => ({ issue: n }),
+            picker: async n => ({ number: n, issue: n }),
         },
     },
     pagination: {
@@ -208,6 +231,10 @@ const mapping = {
             picker: async pt => ({ titles: { 'secondary-title': pt } }),
         },
         conference: {
+            transformers: [],
+            picker: async pt => ({ custom3: pt }),
+        },
+        'conference-paper-generic': {
             transformers: [],
             picker: async pt => ({ custom3: pt }),
         },
@@ -287,8 +314,10 @@ const mapping = {
                 const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
                 const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
+                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
+                const organisers = Utils.filterIndexes(pub.contributors, c => c.role === 'organiser');
 
-                let all = authors.concat(programmers).concat(film_directors);
+                let all = authors.concat(programmers).concat(film_directors).concat(directors).concat(organisers);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -306,8 +335,7 @@ const mapping = {
 
                 // A2
                 const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                all = editors.concat(directors);
+                all = editors;
                 all.sort();
                 const a2_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
