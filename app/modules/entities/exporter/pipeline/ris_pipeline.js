@@ -7,7 +7,7 @@ const types = {
     'other-blog': 'BLOG',
     chapter: 'CHAP',
     'other-software': 'COMP',
-    'book-proceedings': 'CONF',
+    'book-proceedings': 'BOOK',
     conference: 'CPAPER',
     'book-chapter-dictionary-article': 'DICT',
     'other-figure': 'FIGURE',
@@ -18,7 +18,7 @@ const types = {
     report: 'RPRT',
     'other-audio': 'SOUND',
     thesis: 'THES',
-    'working-paper': 'UNPD',
+    'working-paper': 'RPRT',
     'other-video': 'VIDEO',
 };
 
@@ -61,6 +61,27 @@ const mapping = {
                     return { AB: abs[0].content };
                 }
                 return { AB: a.content };
+            },
+        },
+    },
+    subtitles: {
+        __default: {
+            transformers: [],
+            picker: () => {},
+        },
+        THES: {
+            transformers: [],
+            picker: (sub) => {
+                if (sub.length === 0) {
+                    return null;
+                }
+
+                const subtitle = sub[0].content;
+
+                if (subtitle && subtitle.trim() !== '') {
+                    return { M3: subtitle };
+                }
+                return null;
             },
         },
     },
@@ -258,7 +279,7 @@ const mapping = {
                 const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
 
-                let all = authors.concat(programmers).concat(film_directors);
+                const all = authors.concat(programmers).concat(film_directors);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -275,9 +296,7 @@ const mapping = {
                 }
 
                 // A2
-                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                all = editors.concat(directors);
+                /* all = editors.concat(directors);
                 all.sort();
                 const a2_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -291,11 +310,13 @@ const mapping = {
 
                 if (a2_contribs.length > 0) {
                     final.A2 = a2_contribs;
-                }
+                }*/
 
                 // A3
+                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
+                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
                 const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const a3_contribs = producers.filter(idx => contribs[idx]
+                const a3_contribs = directors.concat(producers).concat(editors).filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
                     .map((idx) => {
                         const info = contribs[idx].label;
