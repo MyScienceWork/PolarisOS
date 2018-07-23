@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Joi = require('joi');
 const Crypto = require('crypto');
 const PubMapping = require('../../../../mappings/publication');
@@ -138,7 +139,9 @@ const Formatting: Array<any> = [
             return myfiles;
         },
         keywords: async (result, object) => {
-            const keywords = result.map(k => ({ value: k.value, type: 'user' }));
+            const keywords = _.flatten(result.filter(k => k.value != null && k.value.trim() !== '')
+                                .map(k => k.value.split(',').map(_k => _k.trim()).filter(_k => _k !== '')))
+                                .map(k => ({ value: k, type: 'user' }));
             return keywords;
         },
         'dates.publication': async (result, object) => {
