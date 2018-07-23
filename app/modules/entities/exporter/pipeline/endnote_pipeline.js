@@ -7,7 +7,7 @@ const types = {
     'other-blog': { attrs: { name: 'Blog' }, 'ref-type': '56' },
     chapter: { attrs: { name: 'Book Section' }, 'ref-type': '5' },
     'other-software': { attrs: { name: 'Computer Program' }, 'ref-type': '9' },
-    'book-proceedings': { attrs: { name: 'Conference Proceedings' }, 'ref-type': '10' },
+    'book-proceedings': { attrs: { name: 'Book' }, 'ref-type': '28' },
     conference: { attrs: { name: 'Conference Paper' }, 'ref-type': '47' },
     'book-chapter-dictionary-article': { attrs: { name: 'Dictionary' }, 'ref-type': '52' },
     'other-figure': { attrs: { name: 'Artwork' }, 'ref-type': '2' },
@@ -49,6 +49,15 @@ async function city_country_picker(loc, pub, mylang) {
 }
 
 const mapping = {
+    subtype: {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang) => {
+                const type = await LangUtils.string_to_translation(`l_${c.replace(/-/gi, '_')}`, lang);
+                return { 'work-type': type };
+            },
+        },
+    },
     abstracts: {
         __default: {
             transformers: [],
@@ -87,6 +96,7 @@ const mapping = {
                 o => ({
                     dates: {
                         'pub-dates': { date: moment(o.dates['pub-dates'].date).format('MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
                     },
                 }),
             ],
@@ -97,6 +107,7 @@ const mapping = {
                 o => ({
                     dates: {
                         'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
                     },
                 }),
             ],
@@ -106,7 +117,7 @@ const mapping = {
     description: {
         __default: {
             transformers: [],
-            picker: c => ({ 'research-notes': c }),
+            picker: c => ({ notes: c }),
         },
     },
     ids: {
@@ -124,7 +135,7 @@ const mapping = {
                     o.isbn = ISBN._id;
                 }
                 if (HANDLE) {
-                    o.urls = { 'web-urls': { url: HANDLE._id } };
+                    o.urls = { 'related-urls': { url: HANDLE._id } };
                 }
                 return o;
             },
@@ -210,7 +221,7 @@ const mapping = {
     translated_titles: {
         __default: {
             transformers: [],
-            picker: async tts => ({ titles: { 'tertiary-title': tts[0].content } }),
+            picker: async tts => ({ titles: { 'translated-title': tts[0].content } }),
         },
     },
     volume: {
@@ -222,7 +233,7 @@ const mapping = {
     url: {
         __default: {
             transformers: [],
-            picker: async v => ({ urls: { 'web-urls': { url: v } } }),
+            picker: async v => ({ urls: { 'related-urls': { url: v } } }),
         },
     },
     'denormalization.delivery_institution': {
@@ -242,7 +253,7 @@ const mapping = {
     'denormalization.editor': {
         __default: {
             transformers: [],
-            picker: async v => ({ edition: v }),
+            picker: async v => ({ publisher: v }),
         },
     },
     'denormalization.journal': {
