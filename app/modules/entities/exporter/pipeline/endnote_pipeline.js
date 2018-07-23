@@ -58,6 +58,13 @@ const mapping = {
                 return { 'work-type': type };
             },
         },
+        thesis: {
+            transformers: [],
+            picker: async (c, pub, lang) => {
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
+                return { volume: type };
+            },
+        },
     },
     abstracts: {
         __default: {
@@ -71,6 +78,27 @@ const mapping = {
                     return { abstract: abs[0].content };
                 }
                 return { abstract: a.content };
+            },
+        },
+    },
+    subtitles: {
+        __default: {
+            transformers: [],
+            picker: () => {},
+        },
+        thesis: {
+            transformers: [],
+            picker: (sub) => {
+                if (sub.length === 0) {
+                    return null;
+                }
+
+                const subtitle = sub[0].content;
+
+                if (subtitle && subtitle.trim() !== '') {
+                    return { 'work-type': subtitle };
+                }
+                return null;
             },
         },
     },
@@ -353,7 +381,8 @@ const mapping = {
 
                 // A3
                 const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const a3_contribs = producers.filter(idx => contribs[idx]
+                const supervisors = Utils.filterIndexes(pub.contributors, c => c.role === 'supervisor-thesis');
+                const a3_contribs = producers.concat(supervisors).filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
                     .map((idx) => {
                         const info = contribs[idx].label;
