@@ -298,7 +298,6 @@ async function transform_to_ris(publications: Array<Object>, extra: Object): Pro
         let ris_type = null;
         if (publication.subtype && publication.subtype in RISPipeline.types) {
             ris_type = RISPipeline.types[publication.subtype];
-            console.log(publication.subtype, ris_type);
             lines.push(`TY  - ${ris_type}`);
         } else {
             const typologys = await EntitiesUtils.search_and_get_sources('typology', {
@@ -316,7 +315,6 @@ async function transform_to_ris(publications: Array<Object>, extra: Object): Pro
                 ris_type = 'GEN';
                 lines.push('TY  - GEN');
             }
-            console.log(name, typology, publication.type, ris_type);
         }
 
         lines.push(`ID  - ${publication._id}`);
@@ -474,7 +472,6 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
             if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
                 continue;
             }
-            console.log('considered key', key, 'pub_info', pub_info);
 
             const info = CSVPipeline.mapping[key];
             let mapper = null;
@@ -495,7 +492,6 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
                     return o;
                 }, subobj);
             }
-            console.log(subobj);
             obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
                 if (_.isArray(objValue)) {
                     return objValue.concat(srcValue);
