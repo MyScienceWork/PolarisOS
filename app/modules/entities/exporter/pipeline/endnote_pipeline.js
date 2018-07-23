@@ -336,7 +336,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
-                const final = {};
+                const final = { contributors: {} };
 
                 // AU
                 const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
@@ -358,7 +358,7 @@ const mapping = {
                     });
 
                 if (au_contribs.length > 0) {
-                    final.contributors = { authors: au_contribs.map(author => ({ author })) };
+                    final.contributors.authors = au_contribs.map(author => ({ author }));
                 }
 
                 // A2
@@ -376,7 +376,7 @@ const mapping = {
                     });
 
                 if (a2_contribs.length > 0) {
-                    final.contributors = { 'secondary-authors': a2_contribs.map(author => ({ author })) };
+                    final.contributors['secondary-authors'] = a2_contribs.map(author => ({ author }));
                 }
 
                 // A3
@@ -393,7 +393,7 @@ const mapping = {
                     });
 
                 if (a3_contribs.length > 0) {
-                    final.contributors = { 'tertiary-authors': a3_contribs.map(author => ({ author })) };
+                    final.contributors['tertiary-authors'] = a3_contribs.map(author => ({ author }));
                 }
                 return final;
             },
