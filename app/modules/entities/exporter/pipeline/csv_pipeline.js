@@ -15,7 +15,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const type = await LangUtils.string_to_translation(`l_${c.replace(/-/gi, '_')}`, lang);
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
                 return { [key]: type };
             },
         },
@@ -68,7 +68,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const info = c.map((co) => {
+                const info = c.filter(co => co && co.label).map((co) => {
                     let str = co.label.fullname;
                     if (co.role.abbreviation) {
                         str += ` (#POS#LANG${co.role.abbreviation})`;
@@ -84,8 +84,8 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const info = c.map((co) => {
-                    let str = co.label.fullname;
+                const info = c.filter(co => co && co._id).map((co) => {
+                    let str = co._id.fullname;
                     if (co.role.abbreviation) {
                         str += ` (#POS#LANG${co.role.abbreviation})`;
                     }

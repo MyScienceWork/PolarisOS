@@ -7,8 +7,9 @@ const types = {
     'other-blog': { attrs: { name: 'Blog' }, 'ref-type': '56' },
     chapter: { attrs: { name: 'Book Section' }, 'ref-type': '5' },
     'other-software': { attrs: { name: 'Computer Program' }, 'ref-type': '9' },
-    'book-proceedings': { attrs: { name: 'Conference Proceedings' }, 'ref-type': '10' },
+    'book-proceedings': { attrs: { name: 'Book' }, 'ref-type': '28' },
     conference: { attrs: { name: 'Conference Paper' }, 'ref-type': '47' },
+    'conference-paper-generic': { attrs: { name: 'Conference Proceedings' }, 'ref-type': '10' },
     'book-chapter-dictionary-article': { attrs: { name: 'Dictionary' }, 'ref-type': '52' },
     'other-figure': { attrs: { name: 'Artwork' }, 'ref-type': '2' },
     other: { attrs: { name: 'Generic' }, 'ref-type': '13' },
@@ -49,6 +50,22 @@ async function city_country_picker(loc, pub, mylang) {
 }
 
 const mapping = {
+    subtype: {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang) => {
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
+                return { 'work-type': type };
+            },
+        },
+        thesis: {
+            transformers: [],
+            picker: async (c, pub, lang) => {
+                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
+                return { volume: type };
+            },
+        },
+    },
     abstracts: {
         __default: {
             transformers: [],
@@ -64,10 +81,35 @@ const mapping = {
             },
         },
     },
+    subtitles: {
+        __default: {
+            transformers: [],
+            picker: () => {},
+        },
+        thesis: {
+            transformers: [],
+            picker: (sub) => {
+                if (sub.length === 0) {
+                    return null;
+                }
+
+                const subtitle = sub[0].content;
+
+                if (subtitle && subtitle.trim() !== '') {
+                    return { 'work-type': subtitle };
+                }
+                return null;
+            },
+        },
+    },
     collection: {
         __default: {
             transformers: [],
             picker: c => ({ 'tertiary-title': c }),
+        },
+        'working-paper': {
+            transformers: [],
+            picker: c => ({ 'secondary-title': c }),
         },
     },
     'dates.publication': {
@@ -87,6 +129,7 @@ const mapping = {
                 o => ({
                     dates: {
                         'pub-dates': { date: moment(o.dates['pub-dates'].date).format('MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
                     },
                 }),
             ],
@@ -97,6 +140,29 @@ const mapping = {
                 o => ({
                     dates: {
                         'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
+                    },
+                }),
+            ],
+            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
+        },
+        conference: {
+            transformers: [
+                o => ({
+                    dates: {
+                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
+                    },
+                }),
+            ],
+            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
+        },
+        'conference-paper-generic': {
+            transformers: [
+                o => ({
+                    dates: {
+                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
+                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
                     },
                 }),
             ],
@@ -106,7 +172,7 @@ const mapping = {
     description: {
         __default: {
             transformers: [],
-            picker: c => ({ 'research-notes': c }),
+            picker: c => ({ notes: c }),
         },
     },
     ids: {
@@ -124,7 +190,7 @@ const mapping = {
                     o.isbn = ISBN._id;
                 }
                 if (HANDLE) {
-                    o.urls = { 'web-urls': { url: HANDLE._id } };
+                    o.urls = { 'related-urls': { url: HANDLE._id } };
                 }
                 return o;
             },
@@ -174,7 +240,7 @@ const mapping = {
                     return {};
                 }
                 return {
-                    custom1: final,
+                    'pub-location': final,
                 };
             },
         },
@@ -182,7 +248,11 @@ const mapping = {
     number: {
         __default: {
             transformers: [],
-            picker: async n => ({ issue: n }),
+            picker: async n => ({ number: n, issue: n }),
+        },
+        press: {
+            transformers: [],
+            picker: async n => ({ custom2: n }),
         },
     },
     pagination: {
@@ -200,6 +270,10 @@ const mapping = {
             transformers: [],
             picker: async pt => ({ custom3: pt }),
         },
+        'conference-paper-generic': {
+            transformers: [],
+            picker: async pt => ({ custom3: pt }),
+        },
     },
     'title.content': {
         __default: {
@@ -210,7 +284,7 @@ const mapping = {
     translated_titles: {
         __default: {
             transformers: [],
-            picker: async tts => ({ titles: { 'tertiary-title': tts[0].content } }),
+            picker: async tts => ({ titles: { 'translated-title': tts[0].content } }),
         },
     },
     volume: {
@@ -222,7 +296,7 @@ const mapping = {
     url: {
         __default: {
             transformers: [],
-            picker: async v => ({ urls: { 'web-urls': { url: v } } }),
+            picker: async v => ({ urls: { 'related-urls': { url: v } } }),
         },
     },
     'denormalization.delivery_institution': {
@@ -242,7 +316,7 @@ const mapping = {
     'denormalization.editor': {
         __default: {
             transformers: [],
-            picker: async v => ({ edition: v }),
+            picker: async v => ({ publisher: v }),
         },
     },
     'denormalization.journal': {
@@ -270,14 +344,16 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
-                const final = {};
+                const final = { contributors: {} };
 
                 // AU
                 const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
                 const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
+                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
+                const organisers = Utils.filterIndexes(pub.contributors, c => c.role === 'organiser');
 
-                let all = authors.concat(programmers).concat(film_directors);
+                let all = authors.concat(programmers).concat(film_directors).concat(directors).concat(organisers);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -290,13 +366,12 @@ const mapping = {
                     });
 
                 if (au_contribs.length > 0) {
-                    final.contributors = { authors: au_contribs.map(author => ({ author })) };
+                    final.contributors.authors = au_contribs.map(author => ({ author }));
                 }
 
                 // A2
                 const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                all = editors.concat(directors);
+                all = editors;
                 all.sort();
                 const a2_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -309,12 +384,13 @@ const mapping = {
                     });
 
                 if (a2_contribs.length > 0) {
-                    final.contributors = { 'secondary-authors': a2_contribs.map(author => ({ author })) };
+                    final.contributors['secondary-authors'] = a2_contribs.map(author => ({ author }));
                 }
 
                 // A3
                 const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const a3_contribs = producers.filter(idx => contribs[idx]
+                const supervisors = Utils.filterIndexes(pub.contributors, c => c.role === 'supervisor-thesis');
+                const a3_contribs = producers.concat(supervisors).filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
                     .map((idx) => {
                         const info = contribs[idx].label;
@@ -325,7 +401,7 @@ const mapping = {
                     });
 
                 if (a3_contribs.length > 0) {
-                    final.contributors = { 'tertiary-authors': a3_contribs.map(author => ({ author })) };
+                    final.contributors['tertiary-authors'] = a3_contribs.map(author => ({ author }));
                 }
                 return final;
             },

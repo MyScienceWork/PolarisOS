@@ -490,7 +490,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}.";
+            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}){{#if dates.start}}, {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}{{/if}}.";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         other_document() {
@@ -651,7 +651,7 @@ module.exports = {
             const aprojects = item.denormalization.diffusion.anr_projects;
             const euprojects = item.denormalization.diffusion.european_projects;
             const all = [].concat(iprojects, aprojects, euprojects);
-            return all.map(s => s._id.name);
+            return all.filter(s => s && s._id).map(s => s._id.name);
         },
         surveys() {
             const item = this.content_item;
