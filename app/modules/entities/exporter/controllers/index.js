@@ -402,7 +402,7 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
             final_obj.record.push(endnote_type);
         }
 
-        let obj = {};
+        let obj = { 'remote-database-provider': 'ArchIned' };
         for (const key in EndNotePipeline.mapping) {
             const pub_info = Utils.find_value_with_path(publication, key.split('.'));
             if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {

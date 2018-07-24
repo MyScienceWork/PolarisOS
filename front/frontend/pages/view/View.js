@@ -651,7 +651,7 @@ module.exports = {
             const aprojects = item.denormalization.diffusion.anr_projects;
             const euprojects = item.denormalization.diffusion.european_projects;
             const all = [].concat(iprojects, aprojects, euprojects);
-            return all.map(s => s._id.name);
+            return all.filter(s => s && s._id).map(s => s._id.name);
         },
         surveys() {
             const item = this.content_item;

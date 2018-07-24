@@ -107,6 +107,10 @@ const mapping = {
             transformers: [],
             picker: c => ({ 'tertiary-title': c }),
         },
+        'working-paper': {
+            transformers: [],
+            picker: c => ({ 'secondary-title': c }),
+        },
     },
     'dates.publication': {
         __default: {
@@ -245,6 +249,10 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async n => ({ number: n, issue: n }),
+        },
+        press: {
+            transformers: [],
+            picker: async n => ({ custom2: n }),
         },
     },
     pagination: {
