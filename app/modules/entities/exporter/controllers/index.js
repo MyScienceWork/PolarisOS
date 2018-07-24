@@ -6,6 +6,7 @@ const _ = require('lodash');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
 const CSVPipeline = require('../pipeline/csv_pipeline');
+const MASASPipeline = require('../pipeline/masas_pipeline');
 const RISPipeline = require('../pipeline/ris_pipeline');
 const EndNotePipeline = require('../pipeline/endnote_pipeline');
 const CSLJSONPipeline = require('../pipeline/csl_pipeline');
@@ -447,9 +448,12 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
 
 async function transform_to_csv(publications: Array<Object>, extra: Object): Promise<string> {
     const results = [];
-    const keys = Object.keys(CSVPipeline.labels);
-    let headers = Object.values(CSVPipeline.labels);
 
+    let keys = _.map(CSVPipeline.labels, (value, key) => [key, value]);
+    keys.sort((a, b) => (a[1].order - b[1].order));
+    keys = keys.map(info => info[0]);
+
+    let headers = Object.values(CSVPipeline.labels);
     headers = headers.sort((a, b) => (a.order - b.order)).map(lab => `#POS#LANG${lab.label}`).join('|');
     headers = (await LangUtils.strings_to_translation(headers, extra.lang)).split('|');
 
@@ -508,6 +512,110 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
         results.push(row);
     }
 
+    const csv_string = await new Promise((resolve, reject) => {
+        CSVStringify(results, (err, out) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(out);
+        });
+    });
+    return csv_string;
+}
+
+async function transform_to_masas(publications: Array<Object>, extra: Object): Promise<string> {
+    let results = [];
+    let keys = _.map(MASASPipeline.labels, (value, key) => [key, value]);
+    keys.sort((a, b) => (a[1].order - b[1].order));
+    keys = keys.map(info => info[0]);
+
+    let headers = Object.values(MASASPipeline.labels);
+    headers = headers.sort((a, b) => (a.order - b.order)).map(lab => `#POS#LANG${lab.label}`);
+
+    let typology = await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    });
+    typology = typology.reduce((obj, typo) => {
+        obj[typo._id] = typo.name;
+        return obj;
+    }, {});
+
+    const memoizer = {};
+    let max_authors = 0;
+    for (const i in publications) {
+        const publication = publications[i].source;
+        const pos_type = typology[publication.type];
+        let obj = {};
+        for (const key in MASASPipeline.mapping) {
+            const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+            if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                continue;
+            }
+            const info = MASASPipeline.mapping[key];
+            let mapper = null;
+            if (pos_type in info) {
+                mapper = info[pos_type];
+            } else if ('__default' in info) {
+                mapper = info.__default;
+            }
+
+            if (!mapper) {
+                continue;
+            }
+
+            let subobj = await mapper.picker(pub_info, publication, extra.lang, key, memoizer);
+            if (mapper.transformers.length > 0) {
+                subobj = await mapper.transformers.reduce((o, tr) => {
+                    o = tr(o);
+                    return o;
+                }, subobj);
+            }
+            obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                if (_.isArray(objValue)) {
+                    return objValue.concat(srcValue);
+                }
+            });
+        }
+
+        max_authors = Math.max((obj['denormalization.contributors'] || []).length, max_authors);
+        results.push(obj);
+    }
+
+    results = results.map((obj) => {
+        let row = keys.map((k) => {
+            if (k === 'denormalization.contributors') {
+                const subarray = _.fill(Array(max_authors * 3), '');
+                obj[k].forEach((au, idx) => {
+                    subarray[idx] = au.fullname;
+                    subarray[idx + max_authors] = au.status;
+                    subarray[idx + (max_authors * 2)] = au.aff;
+                });
+                return subarray;
+            }
+            if (k in obj) {
+                return obj[k];
+            }
+            return '';
+        });
+        row = _.flatten(row);
+        return row;
+    });
+
+    const contrib_order = MASASPipeline.labels['denormalization.contributors'].order;
+    headers[contrib_order] = _.fill(Array(max_authors * 3), '').map((r, idx) => {
+        if (idx >= 0 && idx < max_authors) {
+            return `#POS#LANGl_author ${idx + 1}`;
+        } else if (max_authors <= idx && idx < max_authors * 2) {
+            return `#POS#LANGl_ined_status ${idx - max_authors + 1}`;
+        } else if (max_authors * 2 <= idx && idx < max_authors * 3) {
+            return `#POS#LANGl_affiliation ${idx - (max_authors * 2) + 1}`;
+        }
+        return '';
+    });
+
+    headers = _.flatten(headers);
+    headers = (await LangUtils.strings_to_translation(headers.join('|'), extra.lang)).split('|');
+    results = [headers].concat(results);
     const csv_string = await new Promise((resolve, reject) => {
         CSVStringify(results, (err, out) => {
             if (err) {
@@ -638,6 +746,10 @@ function export_information(): Function {
             break;
         case 'csv':
             results = await transform_to_csv(publications, ctx.__md);
+            ext = '.csv';
+            break;
+        case 'masas':
+            results = await transform_to_masas(publications, ctx.__md);
             ext = '.csv';
             break;
         case 'endnote':
