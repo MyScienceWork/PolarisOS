@@ -317,12 +317,12 @@ const mapping = {
             picker: async v => ({ volume: v }),
         },
     },
-    /* url: {
+    url: {
         __default: {
             transformers: [],
             picker: async v => ({ urls: { 'related-urls': { url: v } } }),
         },
-    },*/
+    },
     'denormalization.delivery_institution': {
         __default: {
             transformers: [],

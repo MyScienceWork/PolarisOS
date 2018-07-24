@@ -84,9 +84,9 @@ module.exports = {
                     if (n in content && content[n]) {
                         _.forEach(content[n], (p) => {
                             if (n in params) {
-                                params[n].push(encodeURIComponent(p._id));
+                                params[n].push(encodeURIComponent('_id' in p ? p._id : p.value));
                             } else {
-                                params[n] = [encodeURIComponent(p._id)];
+                                params[n] = [encodeURIComponent('_id' in p ? p._id : p.value)];
                             }
                         });
                     }

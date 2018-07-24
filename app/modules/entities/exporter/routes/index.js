@@ -5,6 +5,7 @@ const KoaRouter = require('koa-router');
 const config = require('../../../../config');
 const RouterUtils = require('../../../utils/router');
 const MyController = require('../controllers');
+const MyControllerMasas = require('../controllers/masas');
 const SwordController = require('../controllers/sword');
 const Middlewares = require('../middlewares').M;
 
@@ -21,6 +22,8 @@ function routes(router: KoaRouter) {
         MyController.export_information()]));
     router.get(`${puprefix}/export/bibliography`, compose([...get_mware,
         MyController.export_bibliography]));
+    router.get(`${puprefix}/export/masas`, compose([...get_mware,
+        MyControllerMasas.export_masas]));
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
 }

@@ -56,6 +56,7 @@ const mapping = {
                     memoizer.authors = {};
                 }
                 const arr = [];
+                let idx = 0;
                 for (const i in c) {
                     const co = c[i];
                     if (!co || !co.label) {
@@ -74,16 +75,18 @@ const mapping = {
                     }
                     const affiliations = get_affiliations(real_contrib, pub);
                     if (affiliations.length === 0) {
-                        arr[i].aff = 'NC';
-                        arr[i].status = 'NC';
+                        arr[idx].aff = 'NC';
+                        arr[idx].status = 'NC';
                     } else {
                         const full = affiliations.map(aff => aff.full).join('\n');
                         const status = Array.from(new Set(affiliations.map(aff => aff.status))).join('\n');
                         const translated_A = await LangUtils.strings_to_translation(full, lang);
                         const translated_S = await LangUtils.strings_to_translation(status, lang);
-                        arr[i].aff = translated_A;
-                        arr[i].status = translated_S;
+                        arr[idx].aff = translated_A;
+                        arr[idx].status = translated_S;
                     }
+
+                    idx += 1;
                 }
                 return { [key]: arr };
             },
