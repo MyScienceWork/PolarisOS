@@ -74,6 +74,10 @@ module.exports = {
         return `${prefix}/export/bibliography`;
     },
 
+    export_masas() {
+        return `${prefix}/export/masas`;
+    },
+
     multi_download(type, id, names, filenames) {
         return `/downloads/${type}/${id}/${names.join('|')}/${filenames.join('|')}`;
     },

@@ -22,6 +22,7 @@ const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
+const Masas = require('./pages/masas/Masas.vue');
 
 module.exports.menu = [
     [
@@ -68,6 +69,17 @@ module.exports.menu = [
             submenu: [],
             component: Review,
             intro: 'l_backoffice_review_menu_help',
+        },
+        {
+            section: 'l_general_section',
+            name: 'l_masas_page',
+            access: 'back-masas',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'review',
+            routes: [Routes.masas],
+            submenu: [],
+            component: Masas,
+            intro: 'l_backoffice_masas_menu_help',
         },
     ],
 
