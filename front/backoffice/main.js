@@ -26,6 +26,7 @@ const LoginChoice = require('../common/components/main/login_choice/LoginChoice.
 const MappingBuilder = require('../common/components/main/mapping_builder/MappingBuilder.vue');
 const MappingItem = require('../common/components/main/mapping_builder/subcomponents/MappingItem.vue');
 const ChartWidget = require('../common/components/main/chart_widget/ChartWidget.vue');
+const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -56,6 +57,7 @@ Vue.component('fselect', Select);
 Vue.component('fstatic', Static);
 Vue.component('fgrid', Grid);
 Vue.component('fvariadic-element', VariadicElement);
+Vue.component('fdropzone', Dropzone);
 Vue.component('action-button', ActionButton);
 Vue.component('widget', Widget);
 Vue.component('paginator', Paginator);

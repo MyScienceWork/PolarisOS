@@ -1,11 +1,36 @@
 <template>
 <div class="holy-grail-content">
+    <b-modal :active="state.show_import_modal">
+        <div class="modal-card is-height-three-quarters">
+            <header class="modal-card-head">
+                <p class="modal-card-title">{{lang('l_review_import_modal')}}</p>
+                <button class="delete" aria-label="close" @click.prevent="state.show_import_modal = false"></button>
+            </header>
+            <div class="modal-card-body">
+                <div class="columns">
+                    <div class="column">
+                        <publication-import />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </b-modal>
     <div class="container is-fluid">
         <div class="columns">
             <div class="column">
                 <widget>
                 <span slot="title">{{lang('l_review_publication')}}</span>
                 <div slot="body">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="level">
+                                    <div class="level-left"></div>
+                                    <div class="level-right">
+                                        <a href='#' @click="state.show_import_modal = true" class="has-text-info">{{lang('l_import_publications')}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <fdata-table-searching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.publication"
