@@ -27,6 +27,9 @@ module.exports = {
                     description: {
                         type: 'text',
                     },
+                    hasBeenMerged: {
+                        type: 'boolean',
+                    },
                     disciplines: {
                         type: 'nested',
                         properties: {
@@ -109,7 +112,6 @@ module.exports = {
                             },
                             countryCode: {
                                 type: 'keyword',
-                                index: false,
                             },
                             id: {
                                 type: 'keyword',
@@ -232,6 +234,17 @@ module.exports = {
                             },
                         },
                     },
+                    publishedDate: {
+                        properties: {
+                            date: {
+                                type: 'date',
+                            },
+                            precision: {
+                                type: 'keyword',
+                                index: false,
+                            },
+                        },
+                    },
                     dates: {
                         type: 'nested',
                         properties: {
@@ -312,7 +325,7 @@ module.exports = {
                                 type: 'keyword',
                             },
                             hashedPublication: {
-            	type: 'keyword',
+                                type: 'keyword',
                             },
                             parties: {
                                 properties: {

@@ -9,9 +9,9 @@ const MASASPipeline = require('../pipeline/masas_pipeline');
 const LangUtils = require('../../../utils/lang');
 const Logger = require('../../../../logger');
 const Errors = require('../../../exceptions/errors');
+const XLSXParser = require('node-xlsx');
 
-
-async function transform_to_masas(publications: Array<Object>, extra: Object): Promise<string> {
+async function transform_to_masas(publications: Array<Object>, filetype: string, extra: Object): Promise<string> {
     let results = [];
     let keys = _.map(MASASPipeline.labels, (value, key) => [key, value]);
     keys.sort((a, b) => (a[1].order - b[1].order));
@@ -104,6 +104,10 @@ async function transform_to_masas(publications: Array<Object>, extra: Object): P
     headers = _.flatten(headers);
     headers = (await LangUtils.strings_to_translation(headers.join('|'), extra.lang)).split('|');
     results = [headers].concat(results);
+
+    if (filetype === 'xlsx') {
+        return XLSXParser.build([{ name: 'POS', data: results }]);
+    }
     const csv_string = await new Promise((resolve, reject) => {
         CSVStringify(results, (err, out) => {
             if (err) {
@@ -128,6 +132,7 @@ async function export_masas(ctx: Object): Promise<any> {
     const sort = query.sort || [];
     const start_year = query.start_year || [];
     const end_year = query.end_year || [];
+    const export_types = query.export_type || ['csv'];
     let size = query.size || [1000];
     size = [Math.max(1000, parseInt(size[0], 10))];
 
@@ -201,14 +206,20 @@ async function export_masas(ctx: Object): Promise<any> {
         sort,
     });
 
-    const results = await transform_to_masas(pub_results, { lang: 'FR' });
-    const s = new Readable();
-    s.push(results);
-    s.push(null);
+    const results = await transform_to_masas(pub_results, export_types[0], { lang: 'FR' });
 
-    ctx.set('Content-disposition', 'attachment; filename=pos_exports.csv');
-    ctx.statusCode = 200;
-    ctx.body = s;
+    if (export_types[0] === 'xlsx') {
+        ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+        ctx.statusCode = 200;
+        ctx.body = results;
+    } else {
+        const s = new Readable();
+        s.push(results);
+        s.push(null);
+        ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+        ctx.statusCode = 200;
+        ctx.body = results;
+    }
 }
 
 module.exports = {
