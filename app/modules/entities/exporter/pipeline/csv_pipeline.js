@@ -105,7 +105,15 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: c }),
+            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY') }),
+        },
+        press: {
+            transformers: [],
+            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+        },
+        journal: {
+            transformers: [],
+            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
         },
     },
     'dates.production': {
@@ -328,7 +336,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
                 const translated = await LangUtils.strings_to_translation(all, lang);
                 return { [key]: translated };
             },
@@ -338,7 +346,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
                 const translated = await LangUtils.strings_to_translation(all, lang);
                 return { [key]: translated };
             },
@@ -348,7 +356,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
                 const translated = await LangUtils.strings_to_translation(all, lang);
                 return { [key]: translated };
             },

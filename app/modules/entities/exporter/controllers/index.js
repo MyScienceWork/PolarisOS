@@ -447,9 +447,12 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
 
 async function transform_to_csv(publications: Array<Object>, extra: Object): Promise<string> {
     const results = [];
-    const keys = Object.keys(CSVPipeline.labels);
-    let headers = Object.values(CSVPipeline.labels);
 
+    let keys = _.map(CSVPipeline.labels, (value, key) => [key, value]);
+    keys.sort((a, b) => (a[1].order - b[1].order));
+    keys = keys.map(info => info[0]);
+
+    let headers = Object.values(CSVPipeline.labels);
     headers = headers.sort((a, b) => (a.order - b.order)).map(lab => `#POS#LANG${lab.label}`).join('|');
     headers = (await LangUtils.strings_to_translation(headers, extra.lang)).split('|');
 
@@ -518,6 +521,7 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
     });
     return csv_string;
 }
+
 
 async function transform_to_json(publications: Array<Object>, ld): Promise<string> {
     if (ld) {
@@ -800,7 +804,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
     const start_year = query.start_year || [];
     const end_year = query.end_year || [];
     let size = query.size || [1000];
-    size = [Math.max(1000, parseInt(size[0]), 10)];
+    size = [Math.max(1000, parseInt(size[0], 10))];
 
     if (lang.length === 0) {
         const e = Errors.InvalidEntity;

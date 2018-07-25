@@ -3,7 +3,7 @@ const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
 const types = {
-    book: { attrs: { name: 'Book' }, 'ref-type': '28' },
+    book: { attrs: { name: 'Book' }, 'ref-type': '6' },
     'other-blog': { attrs: { name: 'Blog' }, 'ref-type': '56' },
     chapter: { attrs: { name: 'Book Section' }, 'ref-type': '5' },
     'other-software': { attrs: { name: 'Computer Program' }, 'ref-type': '9' },
@@ -55,14 +55,8 @@ const mapping = {
             transformers: [],
             picker: async (c, pub, lang) => {
                 const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
+                // TODO put type if subtype is undefined
                 return { 'work-type': type };
-            },
-        },
-        thesis: {
-            transformers: [],
-            picker: async (c, pub, lang) => {
-                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
-                return { volume: type };
             },
         },
     },
@@ -85,6 +79,36 @@ const mapping = {
         __default: {
             transformers: [],
             picker: () => {},
+        },
+        thesis: {
+            transformers: [],
+            picker: (sub) => {
+                if (sub.length === 0) {
+                    return null;
+                }
+
+                const subtitle = sub[0].content;
+
+                if (subtitle && subtitle.trim() !== '') {
+                    return { volume: subtitle };
+                }
+                return null;
+            },
+        },
+        journal: {
+            transformers: [],
+            picker: (sub) => {
+                if (sub.length === 0) {
+                    return null;
+                }
+
+                const subtitle = sub[0].content;
+
+                if (subtitle && subtitle.trim() !== '') {
+                    return { titles: { 'secondary-title': subtitle } };
+                }
+                return null;
+            },
         },
         thesis: {
             transformers: [],
@@ -352,8 +376,9 @@ const mapping = {
                 const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
                 const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
                 const organisers = Utils.filterIndexes(pub.contributors, c => c.role === 'organiser');
+                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
 
-                let all = authors.concat(programmers).concat(film_directors).concat(directors).concat(organisers);
+                const all = authors.concat(programmers).concat(film_directors).concat(directors).concat(organisers).concat(editors);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -370,8 +395,7 @@ const mapping = {
                 }
 
                 // A2
-                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-                all = editors;
+                /* all = editors;
                 all.sort();
                 const a2_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
@@ -385,7 +409,7 @@ const mapping = {
 
                 if (a2_contribs.length > 0) {
                     final.contributors['secondary-authors'] = a2_contribs.map(author => ({ author }));
-                }
+                }*/
 
                 // A3
                 const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
