@@ -67,7 +67,7 @@ module.exports = {
                 const content = this.fcontent(sink);
                 const myurl = APIRoutes.export_masas();
                 const params = {};
-                const single_values = ['sort', 'size', 'start_year', 'end_year'];
+                const single_values = ['sort', 'size', 'start_year', 'end_year', 'export_type'];
                 const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypogy', 'ined_status'];
 
                 single_values.forEach((n) => {
@@ -175,6 +175,15 @@ module.exports = {
                     value: 'title.content.raw',
                 },
             ];
+        },
+        filetype_content() {
+            return [{
+                label: 'l_filetype_csv_bexport',
+                value: 'csv',
+            }, {
+                label: 'l_filetype_xlsx_bexport',
+                value: 'xlsx',
+            }];
         },
     },
     mounted() {

@@ -136,6 +136,15 @@
                         :translatable="true"
                         :select-first-value="true"
                     />        
+                    <fselect
+                        :form="this.state.sinks.creations.export"
+                        name="export_type"
+                        :label="lang('l_filetype_bexport')"
+                        :placeholder="lang('l_filetype_bexport')"
+                        :options="filetype_content"
+                        :translatable="true"
+                        :select-first-value="true"
+                    />        
                     <finput 
                         :form="this.state.sinks.creations.export"
                         name="size"
