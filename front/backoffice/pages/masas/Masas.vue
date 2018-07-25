@@ -67,6 +67,8 @@
                         :placeholder="lang('l_status_bexport')"
                         :options="content(state.sinks.reads.ined_status)"
                         key="select-status"
+                        field-label="label"
+                        field-value="_id"
                         v-if="state.activeSelectTab === 3"
                         :multi="true"
                         :translatable="true"
