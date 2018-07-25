@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
@@ -21,32 +22,6 @@ const types = {
     UNPD: 'working-paper',
     VIDEO: 'other-video',
 };
-
-async function city_country_picker(loc, pub, mylang) {
-    if (!loc.country && !loc.city) {
-        return {};
-    }
-
-    let country = null;
-    let city = null;
-    if (loc.country) {
-        country = await LangUtils
-            .string_to_translation(pub.denormalization.localisation.country, mylang);
-    }
-
-    if (loc.city) {
-        city = loc.city;
-    }
-
-    if (country && city) {
-        return `${city}, ${country}`;
-    } else if (country) {
-        return country;
-    } else if (city) {
-        return city;
-    }
-    return null;
-}
 
 const mapping = {
     AB: {
@@ -95,8 +70,11 @@ const mapping = {
             transformers: [],
             picker: async pt => ({ publication_title: pt[0] }),
         },
-        press: {
+        NEWS: {
             picker: c => ({ newspaper: c[0] }),
+        },
+        CPAPER: {
+            picker: c => ({ conference: c[0] }),
         },
     },
     C3: {
@@ -116,30 +94,18 @@ const mapping = {
             picker: l => ({ lang: l[0] }),
         },
     },
-    localisation: {
+    CY: {
         __default: {
             transformers: [],
-            picker: async (loc, pub, mylang) => {
-                const final = await city_country_picker(loc, pub, mylang);
-                if (!final) {
-                    return {};
-                }
-                return {
-                    CY: final,
-                };
-            },
+            picker: async (loc, pub, mylang) => ({ localisation: { city: loc[0] } }),
         },
-        CPAPER: {
+    },
+    C1: {
+        __default: {
             transformers: [],
-            picker: async (loc, pub, mylang) => {
-                const final = await city_country_picker(loc, pub, mylang);
-                if (!final) {
-                    return {};
-                }
-                return {
-                    C1: final,
-                };
-            },
+            picker: async (loc, pub, mylang) => ({
+                localisation: { city: loc[0] },
+            }),
         },
     },
     IS: {
@@ -172,36 +138,24 @@ const mapping = {
             picker: async v => ({ url: v[0] }),
         },
     },
-    'denormalization.delivery_institution': {
+    PB: {
         __default: {
             transformers: [],
-            picker: async () => ({}),
+            picker: async v => ({ editor: v[0] }),
         },
         RPRT: {
             transformers: [],
-            picker: async v => ({ PB: v }),
+            picker: async v => ({ delivery_institution: v[0] }),
         },
         THES: {
             transformers: [],
-            picker: async v => ({ PB: v }),
+            picker: async v => ({ delivery_institution: v[0] }),
         },
     },
-    'denormalization.editor': {
+    JO: {
         __default: {
             transformers: [],
-            picker: async v => ({ PB: v }),
-        },
-    },
-    'denormalization.journal': {
-        __default: {
-            transformers: [],
-            picker: async v => ({ T2: v, JO: v }),
-        },
-    },
-    'denormalization.conference': {
-        CPAPER: {
-            transformers: [],
-            picker: async c => ({ T2: c }),
+            picker: async v => ({ journal: v[0] }),
         },
     },
     'denormalization.contributors': {
@@ -292,10 +246,73 @@ const mapping = {
 
 
 async function run(publication) {
-    const final_publication = {};
-    console.log('ris publication', JSON.stringify(publication));
-    // const pos_type = publication.TY[0] in types ? types[publication.TY[0]] || 'other';
+    let final_publication = {};
+    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    })).reduce((obj, typo) => {
+        obj[typo.name] = typo;
+        return obj;
+    }, {});
 
+
+    console.log('ris publication', JSON.stringify(publication));
+    const ris_type = publication.TY[0];
+    const pos_temporary_type = ris_type in types ? types[publication.TY[0]] : 'other';
+    let pos_type = 'other';
+    let pos_subtype = null;
+    if (pos_temporary_type in typology) {
+        pos_type = pos_temporary_type;
+    } else {
+        pos_subtype = pos_temporary_type;
+        const possibilities = _.map(typology, (type, key) => {
+            if (type.children.find(child => child.name === pos_temporary_type)) {
+                return type._id;
+            }
+            return null;
+        }).filter(rt => rt != null);
+        if (possibilities.length > 0) {
+            pos_type = possibilities[0];
+        }
+    }
+
+    final_publication.type = pos_type;
+    if (pos_subtype) {
+        final_publication.subtype = pos_subtype;
+    }
+
+    for (const key in mapping) {
+        const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+        if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+            continue;
+        }
+
+        const info = mapping[key];
+        let mapper = null;
+        if (ris_type in info) {
+            mapper = info[ris_type];
+        } else if ('__default' in info) {
+            mapper = info.__default;
+        }
+
+        if (!mapper) {
+            continue;
+        }
+
+        let subobj = await mapper.picker(pub_info, publication, 'EN', key);
+        if (mapper.transformers.length > 0) {
+            subobj = await mapper.transformers.reduce((o, tr) => {
+                o = tr(o);
+                return o;
+            }, subobj);
+        }
+
+        final_publication = _.mergeWith(final_publication, subobj, (objValue, srcValue) => {
+            if (_.isArray(objValue)) {
+                return objValue.concat(srcValue);
+            }
+        });
+    }
+    console.log('POS publication', JSON.stringify(final_publication));
     return final_publication;
 }
 
