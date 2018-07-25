@@ -62,7 +62,10 @@ module.exports = {
         return `${prefix}/authenticate`;
     },
 
-    import() {
+    import(type) {
+        if (type) {
+            return `${prefix}/import/${type}`;
+        }
         return `${prefix}/import`;
     },
 

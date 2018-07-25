@@ -11,13 +11,19 @@ const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
 const SortLists = require('../../../common/specs/sorts');
 
+const PublicationImport = require('./subcomponents/PublicationImport.vue');
+
 module.exports = {
     mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin, RemoveMixin],
+    components: {
+        PublicationImport,
+    },
     data() {
         return {
             state: {
                 itemsPerPage: 1000,
                 itemsPerRow: 1,
+                show_import_modal: false,
                 paths: {
                     reads: {
                         publication: APIRoutes.entity('publication', 'POST', true),
