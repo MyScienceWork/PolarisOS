@@ -282,7 +282,7 @@ const mapping = {
             },
         },
     },
-    'diffusion.rights.comment': {
+    /* 'diffusion.rights.comment': {
         __default: {
             transformers: [],
             picker: (c, pub, lang, key) => ({ [key]: c }),
@@ -361,7 +361,7 @@ const mapping = {
                 return { [key]: translated };
             },
         },
-    },
+    },*/
 };
 
 const labels = {
@@ -513,7 +513,7 @@ const labels = {
         label: 'b_license',
         order: 36,
     },
-    'diffusion.rights.comment': {
+    /* 'diffusion.rights.comment': {
         label: 'b_rights_comments',
         order: 37,
     },
@@ -552,7 +552,7 @@ const labels = {
     'denormalization.diffusion.european_projects': {
         label: 'l_european_project',
         order: 46,
-    },
+    },*/
 };
 
 module.exports = {

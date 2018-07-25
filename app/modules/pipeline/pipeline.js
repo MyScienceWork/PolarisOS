@@ -227,6 +227,63 @@ class Pipeline {
         };
     }
 
+    static async run_bulk(items: Array<Object>, type: string, method: string,
+        model: Object, extra: Object = {}): Promise<any> {
+        const pipelines = model.Pipelines || [];
+        let errors = 0;
+        const results = [];
+        const range = [];
+
+        let last_item_was_an_error = false;
+        for (const i in items) {
+            const item = items[i];
+            try {
+                const result = await Pipeline.run(item, type, pipelines, method, range, extra);
+                if ('change' in result) {
+                    errors += 1;
+                }
+                if (i == 0) {
+                    results.push([result]);
+                    if ('change' in result) {
+                        last_item_was_an_error = true;
+                    }
+                } else if ('change' in result) {
+                    if (last_item_was_an_error) {
+                        results[results.length - 1].push(result);
+                    } else {
+                        results.push([result]);
+                    }
+                    last_item_was_an_error = true;
+                } else {
+                    if (!last_item_was_an_error) {
+                        results[results.length - 1].push(result);
+                    } else {
+                        results.push([result]);
+                    }
+                    last_item_was_an_error = false;
+                }
+            } catch (err) {
+                errors += 1;
+                if (i === 0) {
+                    results.push([err]);
+                    last_item_was_an_error = true;
+                } else {
+                    if (last_item_was_an_error) {
+                        results[results.length - 1].push(err);
+                    } else {
+                        results.push([err]);
+                    }
+                    last_item_was_an_error = true;
+                }
+            }
+        }
+
+        if (errors === items.length) {
+            return { total: errors, success: 0, errors_count: errors, results };
+        }
+        return results;
+    }
+
     static bulk_run_as_middleware(type: string): Function {
         return async function f(ctx: Object, next: Function): Promise<any> {
             const items = ctx.request.body;

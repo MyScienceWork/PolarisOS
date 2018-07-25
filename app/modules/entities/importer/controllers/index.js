@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const moment = require('moment');
 const Request = require('superagent');
 const EntitiesUtils = require('../../../utils/entities');
@@ -9,6 +10,7 @@ const MinioUtils = require('../../../utils/minio');
 const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
 const Readline = require('readline');
+const Pipeline = require('../../../pipeline/pipeline');
 
 const RISPipeline = require('../pipelines/ris_pipeline');
 
@@ -216,9 +218,16 @@ async function import_information(ctx: Object): Promise<any> {
 
 async function transform_ris_to_publications(ris_publications: Array<Object>): Promise<Array<Object>> {
     const publications = [];
+    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    })).reduce((obj, typo) => {
+        obj[typo.name] = typo;
+        return obj;
+    }, {});
+
     for (const ris_pub of ris_publications) {
         try {
-            const pub = await RISPipeline.run(ris_pub);
+            const pub = await RISPipeline.run(ris_pub, typology);
             publications.push(pub);
         } catch (err) {
             Logger.error('Error when transform from RIS to JSON (PoS)');
@@ -237,9 +246,38 @@ function transform_to_publications(my_publications: Array<any>, type: string): P
     }
 }
 
-async function bulk_import_publications(publications: Array<Object>): Promise<any> {
-    console.log(JSON.stringify(publications));
-    return {};
+async function bulk_import_publications(publications: Array<Object>, extra: Object): Promise<any> {
+    const type = 'publication';
+    const model = await EntitiesUtils.get_model_from_type(type);
+    const method = 'POST';
+    const presults = await Pipeline.run_bulk(publications, type, method, model, extra);
+    if ('total' in presults && 'errors_count' in presults) {
+        return presults;
+    }
+
+    const res = { total: 0, success: 0, errors_count: 0, results: [] };
+    const results = [];
+    for (const chunk of presults) {
+        res.total += chunk.length;
+        if ('change' in chunk[0] || chunk[0].error) {
+            results.push(chunk);
+            res.errors_count += chunk.length;
+        } else {
+            const response = await EntitiesUtils.creates(chunk, type);
+            if (response.errors) {
+                response.items.forEach((item) => {
+                    if (!item.index.created) {
+                        res.errors_count += 1;
+                    }
+                });
+            }
+            results.push(response.items);
+        }
+    }
+
+    res.results = _.flatten(results);
+    res.success = res.total - res.errors_count;
+    return res;
 }
 
 async function import_ris(ctx: Object): Promise<any> {
@@ -254,7 +292,6 @@ async function import_ris(ctx: Object): Promise<any> {
     });
 
     rl.on('line', (line) => {
-        console.log(`Line from file: ${line}`);
         if (line.trim() !== '') {
             const splitting = line.trim().split('  -');
 
@@ -268,7 +305,6 @@ async function import_ris(ctx: Object): Promise<any> {
                 last_read_key = key;
                 value = splitting[1].trim();
             }
-            console.log(key, value);
             if (key === 'ER') {
                 ris_publications.push(ris_publication);
                 ris_publication = {};
@@ -284,11 +320,18 @@ async function import_ris(ctx: Object): Promise<any> {
         }
     });
 
-    rl.on('close', () => {
-        transform_to_publications(ris_publications, 'ris').then(publications => bulk_import_publications(publications)).then((results) => {
-            ctx.body = results;
+    const new_promise = new Promise((resolve, reject) => {
+        rl.on('close', () => {
+            transform_to_publications(ris_publications, 'ris').then(publications => bulk_import_publications(publications, ctx.__md)).then((results) => {
+                resolve(results);
+                // ctx.body = results;
+            }).catch((err) => {
+                reject(err);
+            });
         });
     });
+
+    ctx.body = await new_promise;
 }
 
 module.exports = {

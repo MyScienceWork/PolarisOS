@@ -25,6 +25,7 @@ module.exports = {
     },
     methods: {
         import_publications() {
+            this.state.error = undefined;
             const content = this.fcontent(this.state.sinks.creations.import);
             console.log(content);
             if (!('filetype' in content)) {
@@ -47,6 +48,16 @@ module.exports = {
 
             this.state.in_progress = true;
         },
+        show_success(sink) {
+            if (sink !== this.state.sinks.creations.import_results) {
+
+            }
+        },
+    },
+    watch: {
+        current_state(ns) {
+            this.dispatch(ns, this.state.sinks.creations.import_results);
+        },
     },
     computed: {
         filetype_content() {
@@ -65,5 +76,12 @@ module.exports = {
                 },
             ];
         },
+        current_state() {
+            return this.fstate(this.state.sinks.creations.import_results);
+        },
+        results() {
+            return this.fcontent(this.state.sinks.creations.import_results);
+        },
     },
+
 };

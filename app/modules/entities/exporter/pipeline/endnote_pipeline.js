@@ -377,7 +377,7 @@ const mapping = {
                 const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
                 const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
 
-                const all = authors.concat(programmers).concat(film_directors).concat(directors).concat(organisers).concat(editors);
+                const all = authors.concat(programmers).concat(film_directors).concat(directors).concat(editors);
                 all.sort();
                 const au_contribs = all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.lastname)
