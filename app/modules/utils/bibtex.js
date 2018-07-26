@@ -910,6 +910,7 @@ function escape_to_bibtex(str) {
     str = str.replace(new RegExp('\\{', 'g'), '\\{');
     str = str.replace(new RegExp('\\}', 'g'), '\\}');
     str = str.replace(new RegExp('\\$', 'g'), '\\$');
+    str = str.replace(new RegExp('&', 'g'), '\\&');
     str = str.replace(new RegExp('_', 'g'), '\\_');
     str = str.replace(new RegExp('"', 'g'), '{"}');
 
@@ -928,6 +929,7 @@ function escape_from_bibtex(str) {
     str = str.replace(new RegExp('\\\\{', 'g'), '{');
     str = str.replace(new RegExp('\\\\}', 'g'), '}');
     str = str.replace(new RegExp('\\\\$', 'g'), '$');
+    str = str.replace(new RegExp('\\&', 'g'), '&');
     str = str.replace(new RegExp('\\\\_', 'g'), '_');
     str = str.replace(new RegExp('\\{"\\}', 'g'), '"');
     return str;

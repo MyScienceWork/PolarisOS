@@ -8,6 +8,7 @@ const Config = require('../../../../config');
 const Logger = require('../../../../logger');
 const MinioUtils = require('../../../utils/minio');
 const XMLUtils = require('../../../utils/xml');
+const WebUtils = require('../../../utils/web');
 const Utils = require('../../../utils/utils');
 const Readline = require('readline');
 const Pipeline = require('../../../pipeline/pipeline');
@@ -246,7 +247,7 @@ function transform_to_publications(my_publications: Array<any>, type: string): P
     }
 }
 
-async function bulk_import_publications(publications: Array<Object>, extra: Object): Promise<any> {
+async function bulk_import_publications(publications: Array<Object>, extra: Object, report_id: string): Promise<any> {
     const type = 'publication';
     const model = await EntitiesUtils.get_model_from_type(type);
     const method = 'POST';
@@ -282,14 +283,44 @@ async function bulk_import_publications(publications: Array<Object>, extra: Obje
 
 async function import_ris(ctx: Object): Promise<any> {
     const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filepath);
     const ris_publications = [];
     let last_read_key = '';
     let ris_publication = {};
+
+    const report_body = {
+        name,
+        created_at: +moment.utc(),
+        type: 'import',
+        subtype: 'publication',
+        report: {
+            total: 0,
+            success: 0,
+            errors: 0,
+        },
+        differed: false,
+        schedule_at: 0,
+        status: 'on_wait',
+        requester: ctx.__md.papi._id,
+        denormalization: {
+            requester: {
+                fullname: ctx.__md.papi.fullname,
+            },
+        },
+    };
+
+    const my_report = await EntitiesUtils.create(report_body, 'system_report');
+    console.log(my_report);
+    if (!my_report) {
+        throw Errors.UnableToCreateReport;
+    }
+
     const rl = Readline.createInterface({
         input: stream,
         crlfDelay: Infinity,
     });
+
 
     rl.on('line', (line) => {
         if (line.trim() !== '') {
@@ -320,18 +351,32 @@ async function import_ris(ctx: Object): Promise<any> {
         }
     });
 
-    const new_promise = new Promise((resolve, reject) => {
-        rl.on('close', () => {
-            transform_to_publications(ris_publications, 'ris').then(publications => bulk_import_publications(publications, ctx.__md)).then((results) => {
-                resolve(results);
-                // ctx.body = results;
-            }).catch((err) => {
-                reject(err);
+    rl.on('close', () => {
+        transform_to_publications(ris_publications, 'ris')
+        .then((publications) => {
+            const report_source = my_report.source;
+            report_source.status = 'in_progress';
+            report_source.report.total = publications.length;
+            return Promise.all([EntitiesUtils.update(report_source, 'system_report'),
+                bulk_import_publications(publications, ctx.__md, my_report.id)]);
+        }).then((all_results) => {
+            const bulk_results = all_results[1];
+            const report_source = my_report.source;
+            report_source.status = 'done';
+            report_source.report.total = bulk_results.total;
+            report_source.report.success = bulk_results.success;
+            report_source.report.errors = bulk_results.errors_count;
+            report_source.result = JSON.stringify(bulk_results.results);
+            return EntitiesUtils.update(report_source, 'system_report');
+        })
+            .then(() => {})
+            .catch((err) => {
+                Logger.error('Error when generating report');
+                Logger.error(err);
             });
-        });
     });
 
-    ctx.body = await new_promise;
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
 module.exports = {

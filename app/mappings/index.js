@@ -26,6 +26,7 @@ const publication = require('./publication');
 const mswpublication = require('./mswpublication');
 
 const tracking_stat = require('./tracking_stat');
+const system_report = require('./system_report');
 
 module.exports = {
     user: user.msw,
@@ -56,4 +57,5 @@ module.exports = {
     mswpublication: mswpublication.msw,
 
     tracking_stat: tracking_stat.msw,
+    system_report: system_report.msw,
 };
