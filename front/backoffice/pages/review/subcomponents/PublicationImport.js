@@ -89,7 +89,6 @@ module.exports = {
         import_publications() {
             this.state.error = undefined;
             const content = this.fcontent(this.state.sinks.creations.import);
-            console.log(content);
             if (!('filetype' in content)) {
                 this.state.error = 'l_select_filetype_error';
                 return;

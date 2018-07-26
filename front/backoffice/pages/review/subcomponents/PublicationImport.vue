@@ -6,6 +6,9 @@
                     <span slot="title">{{lang('l_setup_import')}}</span>
                     <div slot="body">
                         <template  v-if="!state.in_progress && !state.succeeded">
+                            <article class="message is-info has-small-bottom-margin">
+                                <div class="content message-body" v-html="lang('l_how_to_import_help')"></div>
+                            </article>
                             <finput
                                 :form="this.state.sinks.creations.import"
                                 name="name"
@@ -64,13 +67,13 @@
                             </button>
                         </template>
                         <div v-else-if="state.in_progress">
-                            <article class="message is-info"><div class="message-body">{{lang('l_import_submitted')}}</div></article>
+                            <article class="message is-info"><div class="content message-body">{{lang('l_import_submitted')}}</div></article>
                         </div>
                         <div v-else-if="state.succeeded">
-                            <article class="message is-success"><div class="message-body">{{lang('l_import_created')}}</div></article>
+                            <article class="message is-success"><div class="content message-body">{{lang('l_import_created')}}</div></article>
                         </div>
                         <div v-if="state.error" class="has-small-top-margin">
-                            <article class="message is-danger"><div class="message-body">{{lang(state.error)}}</div></article>
+                            <article class="message is-danger"><div class="content message-body">{{lang(state.error)}}</div></article>
                         </div>
                     </div>
                 </widget>
@@ -81,6 +84,9 @@
                 <widget :collapsed="true">
                     <span slot="title">{{lang('l_import_report_view')}}</span>
                     <div slot="body">
+                        <article class="message is-info has-small-bottom-margin">
+                            <div class="content message-body" v-html="lang('l_how_to_review_import_help')"></div>
+                        </article>
                         <fdata-table-searching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.system_report"
@@ -94,6 +100,8 @@
                             :change-with-create-success="true"
                             :columns="state.columns"
                             :form-create-success="state.sinks.creations.system_report"
+                            search-query-string-name="sr"
+                            seso-query-string-name="rseso"
                             @column-checkbox-update="on_column_update"
                         >
                             <template slot="rows" slot-scope="props">
