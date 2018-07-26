@@ -31,7 +31,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
         size: 100,
     });
     typology = typology.reduce((obj, typo) => {
-        obj[typo._id] = typo.name;
+        obj[typo._id] = typo;
         return obj;
     }, {});
 
@@ -45,7 +45,7 @@ async function transform_to_bibtex(publications: Array<Object>, extra: Object): 
             pos_type = publication.subtype;
             obj.type = bibtex_type;
         } else {
-            const name = typology[publication.type];
+            const name = typology[publication.type].name;
             if (name in BibTeXPipeline.types) {
                 bibtex_type = BibTeXPipeline.types[name];
                 pos_type = name;
@@ -115,7 +115,7 @@ async function transform_to_ris(publications: Array<Object>, extra: Object): Pro
         size: 100,
     });
     typology = typology.reduce((obj, typo) => {
-        obj[typo._id] = typo.name;
+        obj[typo._id] = typo;
         return obj;
     }, {});
 
@@ -192,7 +192,7 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
         size: 100,
     });
     typology = typology.reduce((obj, typo) => {
-        obj[typo._id] = typo.name;
+        obj[typo._id] = typo;
         return obj;
     }, {});
 
@@ -213,7 +213,7 @@ async function transform_to_endnote(publications: Array<Object>, extra: Object):
             pos_type = publication.subtype;
             final_obj.record.push(endnote_type);
         } else {
-            const name = typology[publication.type];
+            const name = typology[publication.type].name;
             if (name in EndNotePipeline.types) {
                 endnote_type = EndNotePipeline.types[name];
                 pos_type = name;
@@ -282,7 +282,7 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
         size: 100,
     });
     typology = typology.reduce((obj, typo) => {
-        obj[typo._id] = typo.name;
+        obj[typo._id] = typo;
         return obj;
     }, {});
 
@@ -290,7 +290,7 @@ async function transform_to_csv(publications: Array<Object>, extra: Object): Pro
 
     for (const i in publications) {
         const publication = publications[i].source;
-        const pos_type = typology[publication.type];
+        const pos_type = typology[publication.type].name;
         let obj = {};
         for (const key in CSVPipeline.mapping) {
             const pub_info = Utils.find_value_with_path(publication, key.split('.'));

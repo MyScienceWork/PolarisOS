@@ -1,7 +1,48 @@
 const _ = require('lodash');
 const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
+const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
+
+async function find_in_mapping(type, field, content, keep = '_id') {
+    const results = await EntitiesUtils.search_and_get_sources(type,
+            { where: { [field]: { $match: { query: content, minimum_should_match: '100%' } } }, size: 1 });
+
+    if (results.length > 0) {
+        return results[0][keep];
+    }
+    return null;
+}
+
+async function find_contributor(type, content, keep = '_id') {
+    const parts = content.split(',').map(c => c.trim());
+
+    if (parts.length === 0) {
+        return null;
+    }
+    const search = {};
+    if (parts.length === 1) {
+        search.lastname = { $match: { query: parts[0], minimum_should_match: '100%' } };
+    } else {
+        search.$or = [{
+            $and: [{ fisrtname: { $match: { query: parts[0], minimum_should_match: '100%' } } },
+                { lastname: { $match: { query: parts[1], minimum_should_match: '100%' } } }],
+        }, {
+            $and: [{ fisrtname: { $match: { query: parts[1], minimum_should_match: '100%' } } },
+                { lastname: { $match: { query: parts[0], minimum_should_match: '100%' } } }],
+        }];
+    }
+
+    const results = await EntitiesUtils.search_and_get_sources(type, {
+        where: search,
+        size: 1,
+    });
+
+    if (results.length > 0) {
+        return results[0][keep];
+    }
+    return null;
+}
 
 const types = {
     BOOK: 'book',
@@ -26,42 +67,48 @@ const types = {
 const mapping = {
     AB: {
         __default: {
+            transformers: [],
             picker: (abs, pub) => {
-                const lang = pub.LA || 'EN';
-                return { abstracts: [{ content: abs[0], lang: pub.LA }] };
+                const lang = pub.LA ? pub.LA[0] : 'EN';
+                return { abstracts: [{ content: abs[0], lang }] };
             },
         },
     },
     T3: {
         __default: {
+            transformers: [],
             picker: c => ({ collection: c[0] }),
         },
     },
     DA: {
         __default: {
+            transformers: [],
             picker: (c) => {
                 const parts = c[0].split('/');
                 if (parts.length === 1) {
-                    return { dates: { publication: moment(c[0], 'YYYY') } };
+                    return { dates: { publication: +moment(c[0], 'YYYY') } };
                 } else if (parts.length === 2) {
-                    return { dates: { publication: moment(c[0], 'YYYY/MM') } };
+                    return { dates: { publication: +moment(c[0], 'YYYY/MM') } };
                 }
-                return { dates: { publication: moment(c[0], 'YYYY/MM/DD') } };
+                return { dates: { publication: +moment(c[0], 'YYYY/MM/DD') } };
             },
         },
     },
     N1: {
         __default: {
+            transformers: [],
             picker: c => ({ description: c[0] }),
         },
     },
     DO: {
         __default: {
+            transformers: [],
             picker: c => ({ ids: [{ type: 'doi', _id: c[0] }] }),
         },
     },
     SN: {
         __default: {
+            transformers: [],
             picker: c => ({ ids: [{ type: 'isbn', _id: c[0] }] }),
         },
     },
@@ -71,10 +118,12 @@ const mapping = {
             picker: async pt => ({ publication_title: pt[0] }),
         },
         NEWS: {
+            transformers: [],
             picker: c => ({ newspaper: c[0] }),
         },
         CPAPER: {
-            picker: c => ({ conference: c[0] }),
+            transformers: [],
+            picker: async c => ({ conference: await find_in_mapping('conference', 'name', c[0]) }),
         },
     },
     C3: {
@@ -85,6 +134,7 @@ const mapping = {
     },
     KW: {
         __default: {
+            transformers: [],
             picker: kws => ({ keywords: kws.map(k => ({ type: 'user', value: k })) }),
         },
     },
@@ -123,7 +173,7 @@ const mapping = {
     TI: {
         __default: {
             transformers: [],
-            picker: async t => ({ title: { content: t[0] } }),
+            picker: async (t, pub) => ({ title: { content: t[0], lang: pub.LA ? pub.LA[0] : 'EN' } }),
         },
     },
     VL: {
@@ -141,127 +191,75 @@ const mapping = {
     PB: {
         __default: {
             transformers: [],
-            picker: async v => ({ editor: v[0] }),
+            picker: async v => ({ editor: await find_in_mapping('editor', 'label', v[0]) }),
         },
         RPRT: {
             transformers: [],
-            picker: async v => ({ delivery_institution: v[0] }),
+            picker: async v => ({ delivery_institution: await find_in_mapping('institution', 'name', v[0]) }),
         },
         THES: {
             transformers: [],
-            picker: async v => ({ delivery_institution: v[0] }),
+            picker: async v => ({ delivery_institution: await find_in_mapping('institution', 'name', v[0]) }),
         },
     },
     JO: {
         __default: {
             transformers: [],
-            picker: async v => ({ journal: v[0] }),
+            picker: async v => ({ journal: await find_in_mapping('journal', 'name', v[0]) }),
         },
     },
-    'denormalization.contributors': {
+    AU: {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
-                const final = {};
-
-                // AU
-                const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
-                const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
-                const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
-
-                let all = authors.concat(programmers).concat(film_directors);
-                all.sort();
-                const au_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (au_contribs.length > 0) {
-                    final.AU = au_contribs;
-                }
-
-                // A2
-                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                all = editors.concat(directors);
-                all.sort();
-                const a2_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (a2_contribs.length > 0) {
-                    final.A2 = a2_contribs;
-                }
-
-                // A3
-                const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const a3_contribs = producers.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (a3_contribs.length > 0) {
-                    final.A3 = a3_contribs;
-                }
-                return final;
+                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
+                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'author' })) };
+            },
+        },
+        COMP: {
+            transformers: [],
+            picker: async (contribs, pub) => {
+                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
+                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'programmer' })) };
             },
         },
     },
-    'denormalization.book_authors': {
+    A2: {
         __default: {
             transformers: [],
             picker: async (contribs) => {
-                const final = {};
-                // A2
-                const a2_contribs = contribs
-                    .map((c) => {
-                        const info = c._id;
-                        if (info.firstname) {
-                            return `${info.lastname}, ${info.firstname}`;
-                        }
-                        return `${info.lastname}`;
-                    });
-                final.A2 = a2_contribs;
-                return final;
+                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
+                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'editor' })) };
+            },
+        },
+        CHAP: {
+            transformers: [],
+            picker: async (contribs) => {
+                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
+                return { book_authors: results.filter(c => c != null).map(c => ({ _id: c, role: 'editor' })) };
+            },
+        },
+    },
+    A3: {
+        __default: {
+            transformers: [],
+            picker: async (contribs) => {
+                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
+                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'producer' })) };
             },
         },
     },
 };
 
 
-async function run(publication) {
+async function run(publication, typology) {
     let final_publication = {};
-    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
-        size: 100,
-    })).reduce((obj, typo) => {
-        obj[typo.name] = typo;
-        return obj;
-    }, {});
-
-
-    console.log('ris publication', JSON.stringify(publication));
     const ris_type = publication.TY[0];
     const pos_temporary_type = ris_type in types ? types[publication.TY[0]] : 'other';
     let pos_type = 'other';
     let pos_subtype = null;
     if (pos_temporary_type in typology) {
-        pos_type = pos_temporary_type;
+        pos_type = typology[pos_temporary_type]._id;
     } else {
         pos_subtype = pos_temporary_type;
         const possibilities = _.map(typology, (type, key) => {
@@ -312,7 +310,6 @@ async function run(publication) {
             }
         });
     }
-    console.log('POS publication', JSON.stringify(final_publication));
     return final_publication;
 }
 

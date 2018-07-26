@@ -74,6 +74,9 @@ const ChartModel = require('../entities/chart/models/charts');
 const TrackingStats = require('../entities/tracking_stat/tracking_stat');
 const TrackingStatsModel = require('../entities/tracking_stat/models/tracking_stats');
 
+const SystemReport = require('../entities/system_report/system_report');
+const SystemReportModel = require('../entities/system_report/models/system_reports');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -282,6 +285,8 @@ async function get_model_from_type(type: string): ?Object {
         return ChartModel;
     case 'tracking_stat':
         return TrackingStatsModel;
+    case 'system_report':
+        return SystemReportModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -336,6 +341,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Chart(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'tracking_stat':
         return new TrackingStats(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'system_report':
+        return new SystemReport(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {

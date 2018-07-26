@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const moment = require('moment');
 const Request = require('superagent');
 const EntitiesUtils = require('../../../utils/entities');
@@ -7,8 +8,10 @@ const Config = require('../../../../config');
 const Logger = require('../../../../logger');
 const MinioUtils = require('../../../utils/minio');
 const XMLUtils = require('../../../utils/xml');
+const WebUtils = require('../../../utils/web');
 const Utils = require('../../../utils/utils');
 const Readline = require('readline');
+const Pipeline = require('../../../pipeline/pipeline');
 
 const RISPipeline = require('../pipelines/ris_pipeline');
 
@@ -216,9 +219,16 @@ async function import_information(ctx: Object): Promise<any> {
 
 async function transform_ris_to_publications(ris_publications: Array<Object>): Promise<Array<Object>> {
     const publications = [];
+    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    })).reduce((obj, typo) => {
+        obj[typo.name] = typo;
+        return obj;
+    }, {});
+
     for (const ris_pub of ris_publications) {
         try {
-            const pub = await RISPipeline.run(ris_pub);
+            const pub = await RISPipeline.run(ris_pub, typology);
             publications.push(pub);
         } catch (err) {
             Logger.error('Error when transform from RIS to JSON (PoS)');
@@ -237,24 +247,82 @@ function transform_to_publications(my_publications: Array<any>, type: string): P
     }
 }
 
-async function bulk_import_publications(publications: Array<Object>): Promise<any> {
-    console.log(JSON.stringify(publications));
-    return {};
+async function bulk_import_publications(publications: Array<Object>, extra: Object, report_id: string): Promise<any> {
+    const type = 'publication';
+    const model = await EntitiesUtils.get_model_from_type(type);
+    const method = 'POST';
+    const presults = await Pipeline.run_bulk(publications, type, method, model, extra);
+    if ('total' in presults && 'errors_count' in presults) {
+        return presults;
+    }
+
+    const res = { total: 0, success: 0, errors_count: 0, results: [] };
+    const results = [];
+    for (const chunk of presults) {
+        res.total += chunk.length;
+        if ('change' in chunk[0] || chunk[0].error) {
+            results.push(chunk);
+            res.errors_count += chunk.length;
+        } else {
+            const response = await EntitiesUtils.creates(chunk, type);
+            if (response.errors) {
+                response.items.forEach((item) => {
+                    if (!item.index.created) {
+                        res.errors_count += 1;
+                    }
+                });
+            }
+            results.push(response.items);
+        }
+    }
+
+    res.results = _.flatten(results);
+    res.success = res.total - res.errors_count;
+    return res;
 }
 
 async function import_ris(ctx: Object): Promise<any> {
     const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filepath);
     const ris_publications = [];
     let last_read_key = '';
     let ris_publication = {};
+
+    const report_body = {
+        name,
+        created_at: +moment.utc(),
+        type: 'import',
+        subtype: 'publication',
+        report: {
+            total: 0,
+            success: 0,
+            errors: 0,
+        },
+        differed: false,
+        schedule_at: 0,
+        status: 'on_wait',
+        requester: ctx.__md.papi._id,
+        denormalization: {
+            requester: {
+                fullname: ctx.__md.papi.fullname,
+            },
+        },
+    };
+
+    const my_report = await EntitiesUtils.create(report_body, 'system_report');
+    console.log(my_report);
+    if (!my_report) {
+        throw Errors.UnableToCreateReport;
+    }
+
     const rl = Readline.createInterface({
         input: stream,
         crlfDelay: Infinity,
     });
 
+
     rl.on('line', (line) => {
-        console.log(`Line from file: ${line}`);
         if (line.trim() !== '') {
             const splitting = line.trim().split('  -');
 
@@ -268,7 +336,6 @@ async function import_ris(ctx: Object): Promise<any> {
                 last_read_key = key;
                 value = splitting[1].trim();
             }
-            console.log(key, value);
             if (key === 'ER') {
                 ris_publications.push(ris_publication);
                 ris_publication = {};
@@ -285,10 +352,31 @@ async function import_ris(ctx: Object): Promise<any> {
     });
 
     rl.on('close', () => {
-        transform_to_publications(ris_publications, 'ris').then(publications => bulk_import_publications(publications)).then((results) => {
-            ctx.body = results;
-        });
+        transform_to_publications(ris_publications, 'ris')
+        .then((publications) => {
+            const report_source = my_report.source;
+            report_source.status = 'in_progress';
+            report_source.report.total = publications.length;
+            return Promise.all([EntitiesUtils.update(report_source, 'system_report'),
+                bulk_import_publications(publications, ctx.__md, my_report.id)]);
+        }).then((all_results) => {
+            const bulk_results = all_results[1];
+            const report_source = my_report.source;
+            report_source.status = 'done';
+            report_source.report.total = bulk_results.total;
+            report_source.report.success = bulk_results.success;
+            report_source.report.errors = bulk_results.errors_count;
+            report_source.result = JSON.stringify(bulk_results.results);
+            return EntitiesUtils.update(report_source, 'system_report');
+        })
+            .then(() => {})
+            .catch((err) => {
+                Logger.error('Error when generating report');
+                Logger.error(err);
+            });
     });
+
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
 module.exports = {
