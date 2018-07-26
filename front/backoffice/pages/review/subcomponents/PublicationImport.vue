@@ -61,7 +61,6 @@
                             <button 
                                 type="submit" @click.prevent="import_publications"
                                 class="button is-info has-small-bottom-margin"
-                                v-if="false" 
                             >
                                 {{lang('l_upload_bimport')}}
                             </button>
