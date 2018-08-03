@@ -90,6 +90,27 @@ async function add_single(ctx) {
     ctx.body = { file: file.filename };
 }
 
+async function generic_download(ctx) {
+    const entity = ctx.params.entity.trim();
+    const eid = ctx.params.eid.trim();
+    const filename = ctx.params.filename.trim();
+
+    if (entity === '' || eid === '' || filename === '') {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const information = await EntitiesUtils.retrieve_and_get_source(entity, eid);
+    if (!information) {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const shown_name = filename;
+    const final_stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
+    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
+    ctx.statusCode = 200;
+    ctx.body = final_stream;
+}
+
 async function download(ctx) {
     const entity = ctx.params.entity.trim();
     const eid = ctx.params.eid.trim();
@@ -170,4 +191,5 @@ module.exports = {
     add_single,
     download,
     multi_download,
+    generic_download,
 };
