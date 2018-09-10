@@ -1,0 +1,426 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is the API exposed by polarisOS backend.
+  version: 0.0.1
+  title: Polaris OS API
+  license:
+    name: Licence MIT
+    url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/LICENSE.md'
+host: localhost:4002
+basePath: /api/public/v2
+tags:
+  - name: Generated entity requests
+    description: Requests generated for each entity
+    externalDocs:
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/modules/utils/router.js'
+schemes:
+  - http
+paths:
+  /entitys/count:
+      get:
+        tags:
+        - "Generated entity requests"
+        summary: Get number of entities
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+      post:
+        tags:
+          - "Generated entity requests"
+        summary: Get number of entities
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []   
+  /entitys/search:
+      post:
+        tags:
+          - "Generated entity requests"
+        summary: Search some entities
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+  /entitys/search/{translatable}/{lang}:
+      post:
+        tags:
+          - "Generated entity requests"
+        summary: Search some translatable entities
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+        parameters:
+        - name: "translatable"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+  /entitys/{projection}/{population}:
+      get:
+        tags:
+            - "Generated entity requests"
+        summary: Search some entries with specified projection and population (scroll mode)
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"  
+      post:
+        tags:
+          - "Generated entity requests"
+        summary: Search some entries with specified projection and population
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"        
+  /entitys/{projection}:
+      get:
+        tags:
+          - "Generated entity requests"
+        summary: Search some entries with specified projection (scroll mode)
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"         
+      post:
+        tags:
+          - "Generated entity requests"
+        summary: Search some entries with specified projection
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"               
+  /entitys:
+    get:
+      tags:
+          - "Generated entity requests"
+      summary: Get multiple entities from the store (scroll mode)
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+    post:
+      tags:
+          - "Generated entity requests"
+      summary: Get multiple entities from the store
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+        
+  /entity/exists/{id}:
+    get:
+      tags:
+          - "Generated entity requests"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string"
+  /entity/{id}/{projection}/{population}:
+    get:
+      tags:
+          - "Generated entity requests"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string" 
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string" 
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"  
+  /entity/{id}/{projection}:
+    get:
+      tags:
+          - "Generated entity requests"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string" 
+          - name: "projection"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"  
+  /entity/{id}:
+    get:
+      tags:
+          - "Generated entity requests"
+      summary: Get one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string"
+    delete:
+      tags:
+        - "Generated entity requests"
+      summary: Delete one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string"
+  /entity:
+    put:
+      tags:
+          - "Generated entity requests"
+      summary: Create or modify one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+  /entity/validate:
+    put:
+      tags:
+          - "Generated entity requests"
+      summary: Validate entity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+  /entity/validate/{range}:
+    put:
+      tags:
+          - "Generated entity requests"
+      summary: Validate entity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []  
+      parameters:
+          - name: "range"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"  
+    
+securityDefinitions:
+  BasicAuth:
+    type: basic
+definitions:
+  ApiUser:
+    type: object
+    properties:
+      name:
+        type: string
+      key:
+        type: string
+        default: "<random key>"
+      secret:
+        type: string
+        default: "<random secret>"
+      timestamp:
+        type: number
+        default: 0
+      locked:
+        type: boolean
+        default: false
+      testing:
+        type: boolean
+        default: true
+      fairuse:
+        type: object
+        properties:
+          sms: 
+            type: number
+            default: 10
+          email:  
+            type: number
+            default: 30
+          max_hits:
+            type: number
+            default: 420
+      hits: 
+        type: number
+      urls:
+        type: object
+        properties:
+          next:
+            type: string
