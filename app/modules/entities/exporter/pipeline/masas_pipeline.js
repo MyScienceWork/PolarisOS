@@ -112,11 +112,56 @@ const mapping = {
     },
     keywords: CSVPipeline.mapping.keywords,
     'denormalization.demovoc_keywords': CSVPipeline.mapping['denormalization.demovoc_keywords'],
-    'denormalization.diffusion.research_teams': CSVPipeline.mapping['denormalization.diffusion.research_teams'],
-    'denormalization.diffusion.surveys': CSVPipeline.mapping['denormalization.diffusion.surveys'],
-    'denormalization.diffusion.projects': CSVPipeline.mapping['denormalization.diffusion.projects'],
-    'denormalization.diffusion.anr_projects': CSVPipeline.mapping['denormalization.diffusion.anr_projects'],
-    'denormalization.diffusion.european_projects': CSVPipeline.mapping['denormalization.diffusion.european_projects'],
+    'denormalization.diffusion.research_teams': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => {
+                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const translated = await LangUtils.strings_to_translation(all, lang);
+                return { [key]: translated };
+            },
+        },
+    },
+    'denormalization.diffusion.surveys': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => {
+                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const translated = await LangUtils.strings_to_translation(all, lang);
+                return { [key]: translated };
+            },
+        },
+    },
+    'denormalization.diffusion.projects': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => {
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const translated = await LangUtils.strings_to_translation(all, lang);
+                return { [key]: translated };
+            },
+        },
+    },
+    'denormalization.diffusion.anr_projects': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => {
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const translated = await LangUtils.strings_to_translation(all, lang);
+                return { [key]: translated };
+            },
+        },
+    },
+    'denormalization.diffusion.european_projects': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => {
+                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
+                const translated = await LangUtils.strings_to_translation(all, lang);
+                return { [key]: translated };
+            },
+        },
+    },
 };
 
 const labels = {

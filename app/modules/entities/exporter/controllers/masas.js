@@ -40,6 +40,7 @@ async function transform_to_masas(publications: Array<Object>, filetype: string,
                 continue;
             }
             const info = MASASPipeline.mapping[key];
+            console.log(key, info);
             let mapper = null;
             if (pos_type in info) {
                 mapper = info[pos_type];
