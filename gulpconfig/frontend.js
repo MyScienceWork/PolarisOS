@@ -54,7 +54,7 @@ class GulpFrontend {
             'superagent',
             'crypto',
             'file-saver',
-            'vue-grid-layout',
+            // 'vue-grid-layout',
             'vue-select',
             'vuedraggable',
             'vue-social-sharing',
@@ -96,6 +96,10 @@ class GulpFrontend {
             appBundler.external(dep);
         });
 
+        this.external_dependencies.forEach((dep) => {
+            appBundler.external(dep);
+        });
+
         return appBundler
         .transform(unflowify)
         .transform(envify({
@@ -122,11 +126,16 @@ class GulpFrontend {
             },
         });
 
-        return browserify({
+        const bundler = browserify({
             require: this.dependencies,
             debug: true,
-        })
-        .transform(envify({
+        });
+
+        this.external_dependencies.forEach((dep) => {
+            bundler.external(dep);
+        });
+
+        bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -147,7 +156,8 @@ class GulpFrontend {
         gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
-        // .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .on('error', gutil.log)
         .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
