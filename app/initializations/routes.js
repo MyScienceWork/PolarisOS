@@ -87,6 +87,7 @@ async function initialize_routes(singleton) {
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',
         `${Config.root}/public/uploads`), UploadUtils.add_single]));
     router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
+    router.get('/gdownload/:entity/:eid/:filename', Compose([UploadUtils.generic_download]));
     router.get('/downloads/:entity/:eid/:names/:filenames', Compose([UploadUtils.multi_download]));
     return router;
 }
