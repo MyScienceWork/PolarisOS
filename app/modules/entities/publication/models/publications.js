@@ -7,6 +7,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
+const ODM = require('../../crud/odm');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 const XMLUtils = require('../../../utils/xml');
@@ -52,20 +53,6 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
-        parents: async (result, object) => {
-            if ('parent' in object && !result.find(p => p === object.parent)) {
-                result.push({ _id: object.parent });
-                /* const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
-                if (pub) {
-                    pub.source.has_other_version = true;
-                    await pub.oupdate();
-                }*/
-            }
-            return result;
-        },
-    },
-    {
-        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
     },
     {
         abstracts: FormatFunctions.filter_empty_or_null_objects,
@@ -408,6 +395,28 @@ const Messages: Object = {
     modify: 'Publication is successfully modified',
 };
 
+const LastStepFormatting = [
+    {
+        parents: async (result, object) => {
+            if ('parent' in object && !result.find(p => p === object.parent)) {
+                result.push({ _id: object.parent });
+                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                if (pub) {
+                    const _id = pub.source._id;
+                    const source = pub.db.source;
+                    source.has_other_version = true;
+                    delete source._id;
+                    const ret = await ODM.update(pub.index, pub.type, pub.client, pub.model,
+                            source, _id);
+                }
+            }
+            return result;
+        },
+    },
+    {
+        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
+    },
+];
 
 module.exports = {
     RawMapping: Mapping,
@@ -448,7 +457,7 @@ module.exports = {
         Defaults: {},
     }, {
         Validation: [],
-        Formatting: [],
+        Formatting: LastStepFormatting,
         Completion: [],
         Filtering: ['sherpa', 'parent', 'review_mode', 'model_mode', 'virtual_email'],
         Resetting: {},
