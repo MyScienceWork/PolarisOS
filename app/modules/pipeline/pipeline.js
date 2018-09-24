@@ -68,7 +68,7 @@ class Pipeline {
     }
 
     static _merge_put(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement({}, defaults, input);
+        return Utils.merge_with_replacement_with_null({}, defaults, input);
     }
 
     static async _reset(input: Object, resetters: Object): Object {
