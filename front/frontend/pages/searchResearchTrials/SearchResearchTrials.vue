@@ -27,7 +27,6 @@
                         :search-path="state.paths.creations.search"
                         search-query="{}"
                         :filters="advanced_filters"
-                        :default-sorts="['-dates.publication']"
                         search-type="publication"
                     />
                     <search-results
@@ -38,7 +37,6 @@
                         :result-sink="state.sinks.reads.search"
                         :search-path="state.paths.creations.search"
                         :search-query="query"
-                        :default-sorts="['-dates.publication']"
                         search-type="publication"
                     />
             </div>

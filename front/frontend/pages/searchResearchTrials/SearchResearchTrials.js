@@ -7,7 +7,7 @@ const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const Queries = require('../../../common/specs/queries');
 
-const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const SearchResults = require('../browse/subcomponents/SearchResearchTrialsResults.vue');
 const SearchBar = require('../browse/subcomponents/SearchResearchTrialsBar.vue');
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
             state: {
                 paths: {
                     creations: {
-                        search: APIRoutes.entity('research_trials', 'POST', true),
+                        search: APIRoutes.entity('research_trial', 'POST', true),
                     },
                 },
                 sinks: {
@@ -45,6 +45,7 @@ module.exports = {
     },
     computed: {
         query() {
+            console.log('here Queries :', Queries);
             return JSON.stringify(Queries.published_publication_search(this.user._id, this.author));
         },
         advanced_filters() {

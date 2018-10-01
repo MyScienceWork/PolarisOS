@@ -1,6 +1,6 @@
 const publication_search = {
     $or: [
-        { 'title.content': '{{{search}}}' },
+        { title: '{{{search}}}' },
         { 'subtitles.content': '{{{search}}}' },
         { 'translated_titles.content': '{{{search}}}' },
         { 'abstracts.content': '{{{search}}}' },

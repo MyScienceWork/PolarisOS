@@ -13,6 +13,7 @@ const Events = require('../frontend/pages/events/Events.vue');
 const NewsPage = require('../frontend/pages/news/NewsPage.vue');
 const EventPage = require('../frontend/pages/events/EventPage.vue');
 const NewEvent = require('../frontend/pages/events/NewEvent.vue');
+const NewResearchTrial = require('../frontend/pages/searchResearchTrials/NewResearchTrial.vue');
 const ForumDiscussion = require('../frontend/pages/forum/ForumDiscussion.vue');
 const ForumThread = require('../frontend/pages/forum/Forum.vue');
 const ForumNewSubject = require('../frontend/pages/forum/ForumNewSubject.vue');
@@ -41,6 +42,7 @@ module.exports = {
     single_event: EventPage,
     create_event: NewEvent,
     create_news: CreateNews,
+    create_research_trial: NewResearchTrial,
     forum: ForumDiscussion,
     forum_thread: ForumThread,
     create_forum_subject: ForumNewSubject,
