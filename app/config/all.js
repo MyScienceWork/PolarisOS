@@ -3,7 +3,7 @@ const path = require('path');
 const all = {
     root: path.resolve(path.join(__dirname, '..')),
     elasticsearch: {
-        index_prefix: 'pos',
+        index_prefix: 'inserm',
     },
     logger: {
         logFile: 'polarisos.log',

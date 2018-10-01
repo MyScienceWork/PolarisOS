@@ -77,7 +77,7 @@ async function initialize_routes(singleton) {
     RssRoutes(router, singleton);
     TrackingRoutes(router, singleton);
 
-    if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
+    if (['msw', 'uspc', 'inserm'].indexOf(index_prefix) === -1) {
         PublicationRoutes(router, singleton);
     } else {
         RouterUtils.generate_entity_routes(router, 'publication', []);
