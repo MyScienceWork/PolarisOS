@@ -96,12 +96,20 @@
                                 <span slot="title">{{lang('l_ui_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <finput
-                                        name="gui.logo" 
-                                        :label="lang('l_ui_logo')" 
-                                        :placeholder="lang('l_ui_logo')" 
+                                        name="gui.logo_left"
+                                        :label="lang('l_ui_logo_left')"
+                                        :placeholder="lang('l_ui_logo_left')"
                                         :is-required="true" 
                                         :form="state.sinks.creations.config" 
                                         type="text"
+                                    />
+                                    <finput
+                                            name="gui.logo_center"
+                                            :label="lang('l_ui_logo_center')"
+                                            :placeholder="lang('l_ui_logo_center')"
+                                            :is-required="false"
+                                            :form="state.sinks.creations.config"
+                                            type="text"
                                     />
                                     <finput
                                         name="gui.css_template" 
