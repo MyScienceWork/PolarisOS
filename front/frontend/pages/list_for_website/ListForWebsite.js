@@ -40,7 +40,7 @@ module.exports = {
     computed: {
         default_query() {
             return JSON.stringify({ $and: [Queries.no_other_version, Queries.published,
-                Queries.viewable(this.user._id, this.author), Queries.unpublished_websiteok],
+                Queries.viewable(this.user._id, this.author)],
                 $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         default_sorts() {
@@ -48,7 +48,7 @@ module.exports = {
         },
         search_query() {
             return JSON.stringify({ $and: [Queries.no_other_version, Queries.published, Queries.author_name_or_id,
-                Queries.viewable(this.user._id, this.author), Queries.unpublished_websiteok],
+                Queries.viewable(this.user._id, this.author)],
                 $nfand: Queries.filter_out_types_and_subtypes(this.no_types, this.no_subtypes).$nfand });
         },
         no_types() {
