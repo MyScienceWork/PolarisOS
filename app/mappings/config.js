@@ -13,7 +13,10 @@ module.exports = {
                     },
                     gui: {
                         properties: {
-                            logo: {
+                            logo_left: {
+                                type: 'keyword',
+                            },
+                            logo_center: {
                                 type: 'keyword',
                             },
                             css_template: {
