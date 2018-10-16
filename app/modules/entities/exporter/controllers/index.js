@@ -604,6 +604,7 @@ async function format_bibliography_results(publications: Array<Object>,
         csl: string,
         info: Object, memoizer: Object): Promise<string> {
     const csl_json_output = await transform_to_csl_json(publications, info);
+    console.log(JSON.stringify(csl_json_output));
     const data = new Cite(csl_json_output);
     let results = data.get({
         nosort: true,

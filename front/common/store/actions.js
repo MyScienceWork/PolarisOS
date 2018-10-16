@@ -146,19 +146,7 @@ module.exports = {
         if (response.content == null) {
             response.content = {};
         }
-
-        const content = 'result' in response.content
-            && 'hits' in response.content.result ? response.content.result.hits : [];
-        ctx.state.lang_content = content.reduce((obj, src) => {
-            const l = src.source;
-            const lang = obj[l.lang] || {};
-            lang[l.key] = l.values.reduce((values, v) => {
-                values[v.quantity] = v.value;
-                return values;
-            }, {});
-            obj[l.lang] = lang;
-            return obj;
-        }, {});
+        ctx.state.lang_content = response.content;
     },
 
     authenticate: async (ctx, { email, password, ticket, fullPath }) => {

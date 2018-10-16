@@ -246,7 +246,8 @@ const mapping = {
     'denormalization.demovoc_keywords': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: c.map(k => k._id.label).join(' | ') }),
+            picker: (c, pub, lang, key) => ({ [key]: c.filter(k => k != null && k._id != null)
+                                  .map(k => k._id.label).join(' | ') }),
         },
     },
     'denormalization.publication_version': {
