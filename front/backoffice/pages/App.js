@@ -15,9 +15,10 @@ module.exports = {
             },
         };
 
-        const lang_path = APIRoutes.entity('lang', 'POST', true);
+        const lang_path = APIRoutes.custom('ilang/fetch');
         const lang_body = {
             size: 10000,
+            projection: ['key', 'lang', 'values'],
             where: {
                 $and: [{ 'parts.value': 'backoffice' }],
             },

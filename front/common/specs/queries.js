@@ -24,6 +24,13 @@ const author_name_or_id = {
     ],
 };
 
+const unpublished_websiteok = {
+    $or: [
+        { status: 'unpublished' },
+        { 'diffusion.rights.exports.website': true },
+    ],
+};
+
 const filter_out_types_and_subtypes = (types, subtypes) =>
 ({
     $nfand: [
@@ -33,28 +40,22 @@ const filter_out_types_and_subtypes = (types, subtypes) =>
 });
 
 function viewable(uid, aid) {
-    if (uid && aid) {
-        return {
-            $or: [{ 'diffusion.rights.exports.nowhere': false },
-                { 'contributors.label': aid }, { depositor: uid }],
-        };
-    } else if (aid) {
-        return {
-            $or: [{ 'diffusion.rights.exports.nowhere': false },
-                { 'contributors.label': aid }],
-        };
-    } else if (uid) {
-        return {
-            $or: [{ 'diffusion.rights.exports.nowhere': false }, { depositor: uid }],
-        };
+    const base = { $or: [{ 'diffusion.rights.exports.nowhere': false }] };
+    if (uid) {
+        base.$or.push({ depositor: uid });
     }
-    return { $or: [{ 'diffusion.rights.exports.nowhere': false }] };
+
+    if (aid) {
+        base.$or.push({ 'contributors.label': aid });
+    }
+    return base;
 }
 
 module.exports = {
     publication_search,
     author_name_or_id,
     filter_out_types_and_subtypes,
+    unpublished_websiteok,
     published_publication_search: (uid, aid) => ({
         $and: [
             { has_other_version: false },

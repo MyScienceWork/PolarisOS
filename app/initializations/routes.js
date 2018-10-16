@@ -15,6 +15,7 @@ const ExporterRoutes = require('../modules/entities/exporter/routes');
 const PublicationRoutes = require('../modules/entities/publication/routes');
 const RssRoutes = require('../modules/3rdparty/rss/routes');
 const TrackingRoutes = require('../modules/entities/tracking_stat/routes');
+const LangRoutes = require('../modules/entities/lang/routes');
 
 const index_prefix = Config.elasticsearch.index_prefix;
 
@@ -76,6 +77,7 @@ async function initialize_routes(singleton) {
     ExporterRoutes(router, singleton);
     RssRoutes(router, singleton);
     TrackingRoutes(router, singleton);
+    LangRoutes(router, singleton);
 
     if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
         PublicationRoutes(router, singleton);
