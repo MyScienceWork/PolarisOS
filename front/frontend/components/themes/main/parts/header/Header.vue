@@ -12,7 +12,7 @@
                     <img :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' />
                 </div>
             </div>
-            <div v-else class="column is-vertical has-header-top-margin">
+            <div v-else class="column is-vertical has-header-top-margin has-text-centered">
                 <p class="title is-3">{{lang('l_site_title')}}</p>
                 <p class="subtitle is-5">{{lang('l_site_punchline')}}</p>
                 <!--<widget-stats form="test_form" :infos="[]" />-->
