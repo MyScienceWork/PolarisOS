@@ -4,7 +4,7 @@
         <div class="columns is-ancestor is-centered">
             <div class="column is-vcentered is-2 is-hidden-touch">
                 <div class="container is-vcentered">
-                    <figure class="image is-vcentered is-128x128">
+                    <figure class="image is-vcentered">
                         <router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>
                     </figure>
                 </div>
