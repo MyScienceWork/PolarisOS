@@ -2,9 +2,11 @@
 <div class="hero-head">
     <div class="container is-fluid">
         <div class="columns is-ancestor is-centered">
-            <div class="column is-parent is-vertical is-hidden-touch has-text-centered">
-                <div class="image">
-                    <router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>
+            <div class="column is-vcentered is-2 is-hidden-touch">
+                <div class="container is-vcentered">
+                    <figure class="image is-vcentered is-128x128">
+                        <router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>
+                    </figure>
                 </div>
             </div>
             <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8 has-header-top-margin">
