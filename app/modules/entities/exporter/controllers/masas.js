@@ -10,6 +10,7 @@ const LangUtils = require('../../../utils/lang');
 const Logger = require('../../../../logger');
 const Errors = require('../../../exceptions/errors');
 const XLSXParser = require('node-xlsx');
+const fs = require('fs');
 
 async function transform_to_masas(publications: Array<Object>, filetype: string, extra: Object): Promise<string> {
     let results = [];
@@ -40,7 +41,6 @@ async function transform_to_masas(publications: Array<Object>, filetype: string,
                 continue;
             }
             const info = MASASPipeline.mapping[key];
-            console.log(key, info);
             let mapper = null;
             if (pos_type in info) {
                 mapper = info[pos_type];
@@ -137,12 +137,12 @@ async function export_masas(ctx: Object): Promise<any> {
     let size = query.size || [1000];
     size = [Math.max(1000, parseInt(size[0], 10))];
 
-    if (projects.length === 0 && authors.length === 0
+    /* if (projects.length === 0 && authors.length === 0
             && labs.length === 0 && statuses.length === 0) {
         const e = Errors.InvalidEntity;
         e.message = 'l_err_no_project_author_lab_status_bexport';
         throw e;
-    }
+    }*/
 
     if (types.length === 0 && subtypes.length === 0) {
         const e = Errors.InvalidEntity;
@@ -203,7 +203,7 @@ async function export_masas(ctx: Object): Promise<any> {
 
     const pub_results = await EntitiesUtils.search_and_get_sources('publication', {
         where,
-        size: size[0],
+        size: 10000, // size[0],
         sort,
     });
 
@@ -213,6 +213,10 @@ async function export_masas(ctx: Object): Promise<any> {
         ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
         ctx.statusCode = 200;
         ctx.body = results;
+        fs.writeFile('/tmp/test.xlsx', results, (err) => {
+            console.log('writing file');
+            console.error(err);
+        });
     } else {
         const s = new Readable();
         s.push(results);
