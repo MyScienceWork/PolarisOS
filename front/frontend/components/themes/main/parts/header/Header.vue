@@ -9,17 +9,17 @@
                     </figure>
                 </div>
             </div>
-            <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8 has-header-top-margin">
+            <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8">
                 <div class="container">
                     <img :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' />
                 </div>
             </div>
-            <div v-else class="column is-vertical has-header-top-margin has-text-centered">
+            <div v-else class="column is-vertical has-text-centered">
                 <p class="title is-3">{{lang('l_site_title')}}</p>
                 <p class="subtitle is-5">{{lang('l_site_punchline')}}</p>
                 <!--<widget-stats form="test_form" :infos="[]" />-->
             </div>
-            <div class="column is-vcentered container has-text-centered is-2 is-vertical has-header-top-margin">
+            <div class="column is-vcentered container has-text-centered is-2 is-vertical">
                 <div class="container">
                     <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
                 </div>
