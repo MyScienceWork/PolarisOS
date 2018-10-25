@@ -87,7 +87,7 @@ class DuplicatesRemover {
         return res;
     }
 
-    async find_duplicates(fields: Array<string>, minimum_should_matches: Object) {
+    async find_duplicates(fields: Array<string>, minimum_should_matches: Object, projection: Array<string>) {
         let search_after;
         let duplicates = [];
         let progress = 0;
@@ -96,6 +96,7 @@ class DuplicatesRemover {
                 size: 100,
                 sort: [{ _uid: 'desc' }],
                 search_after,
+                projection,
             };
             const results = await EntitiesUtils.search_and_get_sources(this._type, query);
             progress += results.length;
