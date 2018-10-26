@@ -1,11 +1,18 @@
 // @flow
+const Readable = require('stream').Readable;
 const _ = require('lodash');
+const HtmlDocx = require('html-docx-js');
+const Cite = require('citation-js');
 const EntitiesUtils = require('../../utils/entities');
 const LangUtils = require('../../utils/lang');
 const Utils = require('../../utils/utils');
 const URLUtils = require('../../utils/url');
 const CSLUtils = require('../../utils/csl');
+const CSLJSONPipeline = require('./pipeline/csl_pipeline');
 const Errors = require('../../exceptions/errors');
+const ExtraCSLStyles = require('../../../csl_styles/register');
+
+ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
 class BibliographicExporter {
     _csl_style: string;
@@ -20,6 +27,10 @@ class BibliographicExporter {
         this._csl_style = csl_style;
         this._lang = lang;
         this._max_size = 1000;
+    }
+
+    get filetype(): string {
+        return this._options.export_type[0];
     }
 
     async _generate_default_options() {
@@ -117,7 +128,7 @@ class BibliographicExporter {
     _generate_agg_all(size: any, sort: any): Object {
         const agg_year = this._generate_agg_year(size, sort);
         agg_year['dates.publication'].$name = 'year_type';
-        agg_year.$aggregations = this._generate_agg_type_subtype(size, sort);
+        agg_year['dates.publication'].$aggregations = this._generate_agg_type_subtype(size, sort);
         return agg_year;
     }
 
@@ -172,7 +183,8 @@ class BibliographicExporter {
         return publications;
     }
 
-    async _process_type_aggregations(root_key: string, buckets: Array<Object>): Promise<Array<Object>> {
+    async _process_type_aggregations(root_key: string,
+        buckets: Array<Object>): Promise<Array<Object>> {
         const { parents, children } = await this._fetch_typology();
         const publications = buckets.map((bucket) => {
             const pid = bucket.key_as_string || bucket.key;
@@ -199,7 +211,54 @@ class BibliographicExporter {
     }
 
     async _process_year_type_aggregations(root_key: string, buckets: Array<Object>): Promise<Array<Object>> {
-        return [];
+        const infos = buckets.map(async (ybuckets) => {
+            const obj = {
+                key: ybuckets.key_as_string || ybuckets.key,
+                types: await this._process_type_aggregations(root_key, ybuckets.type.buckets),
+            };
+            return obj;
+        });
+        return await Promise.all(infos);
+    }
+
+    async _generate_html_year(publications: Array<Object>): Promise<string> {
+        let str = '';
+        for (const infos of publications) {
+            str += `<h2>${infos.key}</h2>`;
+            str += await this.format_bibliography_results(infos.publications);
+        }
+        return str;
+    }
+
+    async _generate_html_subtype(publications: Array<Object>): Promise<string> {
+        let str = '';
+        for (const infos of publications) {
+            str += `<h1 style='font-variant: small-caps;'>${infos.key}</h1>`;
+            for (const subinfos of infos.subtypes) {
+                if (subinfos.key !== 'UNDEFINED') {
+                    str += `<h2>${subinfos.key}</h2>`;
+                }
+                str += await this.format_bibliography_results(subinfos.publications);
+            }
+        }
+        return str;
+    }
+
+    async _generate_html_all(publications: Array<Object>): Promise<string> {
+        let str = '';
+        for (const infos of publications) {
+            str += `<h1>${infos.key}</h1>`;
+            for (const typeinfos of infos.types) {
+                str += `<h2 style='font-variant: small-caps;'>${typeinfos.key}</h2>`;
+                for (const subinfos of typeinfos.subtypes) {
+                    if (subinfos.key !== 'UNDEFINED') {
+                        str += `<h3>${subinfos.key}</h3>`;
+                    }
+                    str += await this.format_bibliography_results(subinfos.publications);
+                }
+            }
+        }
+        return str;
     }
 
     async generate_aggregations(): Promise<Object> {
@@ -290,8 +349,72 @@ class BibliographicExporter {
         return await this._process_type_aggregations(root_key, buckets);
     }
 
+    async transform_to_csl_json(publications: Array<Object>): Promise<Array<Object>> {
+        const results = [];
+        const typologies = (await EntitiesUtils.search_and_get_sources('typology', {
+            size: 1000,
+        })).reduce((obj, t) => {
+            obj[t._id] = t;
+            return obj;
+        }, {});
+
+        for (const i in publications) {
+            const publication = publications[i].source;
+            let type = null;
+            if (publication.subtype && publication.subtype in CSLJSONPipeline.types) {
+                type = CSLJSONPipeline.types[publication.subtype];
+            } else {
+                const typology = typologies[publication.type];
+                const name = typology.name;
+                if (name in CSLJSONPipeline.types) {
+                    type = CSLJSONPipeline.types[name];
+                } else {
+                    type = 'article';
+                }
+            }
+
+            let obj = {};
+            for (const key in CSLJSONPipeline.mapping) {
+                const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+                if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+                    continue;
+                }
+
+                const info = CSLJSONPipeline.mapping[key];
+                let mapper = null;
+                if (type in info) {
+                    mapper = info[type];
+                } else if ('__default' in info) {
+                    mapper = info.__default;
+                }
+
+                if (!mapper) {
+                    continue;
+                }
+
+                let subobj = await mapper.picker(pub_info, publication, this._lang);
+                if (mapper.transformers.length > 0) {
+                    subobj = await mapper.transformers.reduce((o, tr) => {
+                        o = tr(o);
+                        return o;
+                    }, subobj);
+                }
+
+                obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+                    if (_.isArray(objValue)) {
+                        return objValue.concat(srcValue);
+                    }
+                });
+            }
+            obj.type = type;
+            obj.id = publication._id;
+            results.push(obj);
+        }
+        return results;
+    }
+
     async format_bibliography_results(publications: Array<Object>): Promise<string> {
-        const csl_json_output = await transform_to_csl_json(publications, this._extra);
+        const csl_json_output = await this.transform_to_csl_json(publications);
         const data = new Cite(csl_json_output);
         let results = data.get({
             nosort: true,
@@ -304,19 +427,40 @@ class BibliographicExporter {
         return results;
     }
 
-    async generate_html(publications: Array<Object>): Promise<string> {
-        // switch
-        return '';
+    generate_html(publications: Array<Object>): Promise<string> {
+        switch (this._options.group[0]) {
+        default:
+        case 'dates.publication':
+            return this._generate_html_year(publications);
+        case 'subtype':
+            return this._generate_html_subtype(publications);
+        case 'dates.publication+subtype':
+            return this._generate_html_all(publications);
+        }
+    }
+
+    generate_file(html: string): any {
+        if (this._options.export_type[0] === '.docx') {
+            let results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${html}</body></html>`;
+            results = HtmlDocx.asBlob(results);
+
+            const s = new Readable();
+            s.push(results);
+            s.push(null);
+            return s;
+        }
+
+        return `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${html}</body></html>`;
     }
 
     async run(): Promise<any> {
         await this._generate_default_options();
         await this._validate_options();
         const aggs = await this.get_publications();
-        console.log(aggs);
         const publications = await this.process_aggregations(aggs);
-        console.log(JSON.stringify(publications));
         const html = await this.generate_html(publications);
+        const final = this.generate_file(html);
+        return final;
     }
 }
 
