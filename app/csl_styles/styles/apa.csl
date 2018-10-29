@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="never" page-range-format="expanded">
+  <!-- This style was edited with the Visual CSL Editor (http://editor.citationstyles.org/visualEditor/) -->
   <info>
     <title>American Psychological Association 6th edition</title>
     <title-short>APA</title-short>
-    <id>http://www.zotero.org/styles/apa</id>
-    <link href="http://www.zotero.org/styles/apa" rel="self"/>
+    <id>http://www.zotero.org/styles/american-psychological-association-6th-edition</id>
+    <link href="http://www.zotero.org/styles/american-psychological-association-6th-edition" rel="self"/>
     <link href="http://owl.english.purdue.edu/owl/resource/560/01/" rel="documentation"/>
     <author>
       <name>Simon Kornblith</name>
@@ -31,7 +32,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-07-08T02:01:21+00:00</updated>
+    <updated>2018-10-08T08:27:27+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -144,7 +145,6 @@
     </choose>
   </macro>
   <macro name="patent-number">
-    <!-- genre: U.S. Patent number: 123,445-->
     <group delimiter=" ">
       <group delimiter=" ">
         <text variable="genre"/>
@@ -212,7 +212,6 @@
       <if type="book dataset graphic manuscript motion_picture report song speech thesis" match="any">
         <choose>
           <if variable="version" type="book" match="all">
-            <!---This is a hack until we have a computer program type -->
             <text variable="title"/>
           </if>
           <else>
@@ -235,7 +234,6 @@
             </group>
           </if>
           <else>
-            <!-- assume `title` is title of reviewed work -->
             <group delimiter=", " prefix="[" suffix="]">
               <text variable="title" font-style="italic" prefix="Review of "/>
               <names variable="reviewed-author" delimiter=", ">
@@ -300,7 +298,6 @@
             <text variable="genre" text-case="capitalize-first"/>
           </if>
           <else>
-            <!-- This should be localized -->
             <text value="Data set"/>
           </else>
         </choose>
@@ -338,13 +335,21 @@
         <group delimiter=", ">
           <choose>
             <if variable="event version" type="speech dataset motion_picture" match="none">
-              <!-- Including version is to avoid printing the programming language for computerProgram /-->
               <text variable="genre"/>
             </if>
           </choose>
           <choose>
             <if type="article-journal article-magazine article-newspaper" match="none">
-              <group delimiter=": ">
+              <group>
+                <choose>
+                  <if match="any" variable="issue">
+                    <text variable="publisher" suffix=", "/>
+                    <text variable="issue" prefix="n°" suffix=". "/>
+                  </if>
+                  <else>
+                    <text variable="publisher" form="short" suffix=". "/>
+                  </else>
+                </choose>
                 <choose>
                   <if variable="publisher-place">
                     <text variable="publisher-place"/>
@@ -353,7 +358,6 @@
                     <text variable="event-place"/>
                   </else>
                 </choose>
-                <text variable="publisher"/>
               </group>
             </if>
           </choose>
@@ -386,6 +390,7 @@
         </choose>
       </if>
     </choose>
+    <date form="text" variable="event-date" prefix=" (" suffix=")"/>
   </macro>
   <macro name="issued">
     <choose>
@@ -408,7 +413,6 @@
                 <date-part prefix=" " name="day"/>
               </date>
             </else-if>
-            <!-- Only year: article-journal chapter entry entry-dictionary entry-encyclopedia dataset figure graphic motion_picture manuscript map musical_score paper-conference patent report review review-book song thesis -->
           </choose>
         </group>
       </else-if>
@@ -514,7 +518,6 @@
     </choose>
   </macro>
   <macro name="original-published">
-    <!--This should be localized -->
     <choose>
       <if type="bill legal_case legislation" match="any"/>
       <else-if type="broadcast interview motion_picture song">
@@ -552,7 +555,6 @@
           <text variable="page"/>
         </group>
         <choose>
-          <!--for advanced online publication-->
           <if variable="issued">
             <choose>
               <if variable="page issue" match="none">
@@ -572,7 +574,6 @@
         <group prefix=" (" suffix=")" delimiter=", ">
           <choose>
             <if type="report" match="none">
-              <!-- edition for report is included in title-plus-extra /-->
               <text macro="edition"/>
             </if>
           </choose>
@@ -586,7 +587,7 @@
             <else>
               <group>
                 <text term="volume" form="short" plural="true" text-case="capitalize-first" suffix=" "/>
-                <number variable="number-of-volumes" form="numeric" prefix="1&#8211;"/>
+                <number variable="number-of-volumes" form="numeric" prefix="1–"/>
               </group>
             </else>
           </choose>
@@ -601,7 +602,6 @@
           <text variable="authority"/>
           <choose>
             <if variable="container-title" match="any">
-              <!--Only print year for cases published in reporters-->
               <date variable="issued" form="numeric" date-parts="year"/>
             </if>
             <else>
@@ -667,7 +667,6 @@
               <text variable="volume"/>
               <text variable="container-title"/>
               <group delimiter=" ">
-                <!--change to label variable="section" as that becomes available -->
                 <text term="section" form="symbol"/>
                 <text variable="section"/>
               </group>
@@ -683,10 +682,8 @@
         <group delimiter=", " prefix=", ">
           <choose>
             <if variable="number">
-              <!--There's a public law number-->
               <text variable="number" prefix="Pub. L. No. "/>
               <group delimiter=" ">
-                <!--change to label variable="section" as that becomes available -->
                 <text term="section" form="symbol"/>
                 <text variable="section"/>
               </group>
@@ -700,7 +697,6 @@
               <group delimiter=" ">
                 <text variable="volume"/>
                 <text variable="container-title"/>
-                <!--change to label variable="section" as that becomes available -->
                 <text term="section" form="symbol"/>
                 <text variable="section"/>
               </group>
