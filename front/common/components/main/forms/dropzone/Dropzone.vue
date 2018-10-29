@@ -31,6 +31,12 @@
                 <div class="is-clearfix" v-if="!readonly">
                     <div v-for="(filename, i) in state.files.order">
                         <finput 
+                            :name="`${files}.${i}.${name}`" 
+                            label="" type="hidden" 
+                            :form="form" 
+                            :hidden-value="state.files.content[filename].name || ''" 
+                        />
+                        <finput 
                             :readonly="readonly" 
                             :name="`${files}.${i}.${name}`" 
                             :label="lang('b_file_deposit_name')" 
