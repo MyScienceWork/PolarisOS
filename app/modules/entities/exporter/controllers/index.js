@@ -539,7 +539,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
     const result = await be.run();
 
     if (be.filetype === '.docx') {
-        ctx.set('Content-disposition', `attachment; filename=pos_exports${export_type[0]}`);
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${be.filetype}`);
         ctx.statusCode = 200;
         ctx.body = result;
     } else {
