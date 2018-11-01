@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const EntitiesUtils = require('../utils/entities');
 const Pipeline = require('../pipeline/pipeline');
+const FS = require('fs');
 
 class DuplicatesRemover {
     _type: string;
@@ -87,6 +88,27 @@ class DuplicatesRemover {
         return res;
     }
 
+    async read_from_tabular_file(file: string): Promise<Array<Object>> {
+        const content = FS.readFileSync(file, 'utf8');
+        return content.split('\n').reduce((arr, line, i) => {
+            if (i === 0) {
+                return arr;
+            }
+
+            const items = line.split('\t');
+            if (items.length < 2) {
+                return arr;
+            }
+
+            if (items[0] === 'S') {
+                arr.push({ source: { _id: items[1] }, duplicates: [] });
+            } else if (items[0] === 'D') {
+                arr[arr.length - 1].duplicates.push({ _id: items[1] });
+            }
+            return arr;
+        }, []);
+    }
+
     async find_duplicates(fields: Array<string>, minimum_should_matches: Object, projection: Array<string>) {
         let search_after;
         let duplicates = [];
@@ -145,7 +167,7 @@ class DuplicatesRemover {
 
         const certains = results.filter(d => d.confidence === 100);
         console.error(`100% confidence: ${certains.length}`);
-        console.log(JSON.stringify(certains));
+        // console.log(JSON.stringify(certains));
         return certains;
     }
 
