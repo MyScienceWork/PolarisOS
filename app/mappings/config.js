@@ -89,6 +89,23 @@ module.exports = {
                                     },
                                 },
                             },
+                            repec: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    archive_template: {
+                                        type: 'text',
+                                    },
+                                    series_template: {
+                                        properties: {
+                                            wpaper: {
+                                                type: 'text',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                     mail: {
