@@ -18,6 +18,7 @@ async function retrieve_repec_config(): Promise<?Object> {
 }
 
 async function generate_repec_paper_from_publication(publication: Object): Promise<string> {
+    const template = 'Template-Type: ReDIF-Paper 1.0';
     return '';
 }
 
