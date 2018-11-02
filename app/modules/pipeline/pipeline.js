@@ -236,6 +236,10 @@ class Pipeline {
 
         let last_item_was_an_error = false;
         for (const i in items) {
+            if (parseInt(i, 10) % 50 === 0) {
+                Logger.info(`Bulk pipeline ${parseInt(i, 10) + 1}/${items.length}`);
+            }
+
             const item = items[i];
             try {
                 const result = await Pipeline.run(item, type, pipelines, method, range, extra);

@@ -250,6 +250,35 @@
                                             />
                                         </div>
                                     </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">RePeC</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.repec.enabled" 
+                                                :label="lang('l_repec_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="api.repec.archive_template" 
+                                                :label="lang('l_repec_archive_template')" 
+                                                :placeholder="lang('l_repec_archive_template')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="textarea"
+                                                :rows="15"
+                                            />
+                                            <finput
+                                                name="api.repec.series_template.wpaper" 
+                                                :label="lang('l_repec_paper_template')" 
+                                                :placeholder="lang('l_repec_paper_template')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="textarea"
+                                                :rows="15"
+                                            />
+                                        </div>
+                                    </widget>
                                 </div>
                             </widget>
                             <widget :collapsed="true">
