@@ -23,11 +23,11 @@ const mapping = {
             transformers: [o => ({ 'Creation-Dte': moment(o['Creation-Date']).format('YYYY') })],
             picker: c => ({ 'Creation-Date': c }),
         },
-        JOUR: {
+        journal: {
             transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY/MM/DD') })],
             picker: c => ({ 'Creation-Date': c }),
         },
-        NEWS: {
+        press: {
             transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY/MM/DD') })],
             picker: c => ({ 'Creation-Date': c }),
         },
@@ -82,7 +82,7 @@ const mapping = {
         },
     },
     'denormalization.conference': {
-        CPAPER: {
+        conference: {
             transformers: [],
             picker: async v => ({ 'Publication-Status': `Published in ${c}` }),
         },
@@ -113,7 +113,7 @@ const mapping = {
                         };
 
                         if (info.firstname) {
-                            obj['Author-Name'] = `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
+                            obj['Author-Name'] = `${contribs[idx].label.firstname} ${contribs[idx].label.lastname}`;
                             obj['Author-Name-First'] = contribs[idx].label.firstname;
                         } else {
                             obj['Author-Name'] = obj['Author-Name-Last'];
@@ -127,4 +127,6 @@ const mapping = {
     },
 };
 
-module.exports = { types, mapping };
+const fields = ['Authors', 'Title', 'Abstract', 'Length', 'Creation-Date', 'Note', 'Publication-Status', 'DOI'];
+
+module.exports = { fields, mapping };

@@ -1,7 +1,9 @@
 // @flow
+const _ = require('lodash');
 const ConfigUtils = require('../../../utils/config');
 const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
+const RepecPipeline = require('../pipeline/repec_pipeline');
 
 async function retrieve_repec_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
@@ -17,9 +19,65 @@ async function retrieve_repec_config(): Promise<?Object> {
     return repec_config;
 }
 
-async function generate_repec_paper_from_publication(publication: Object): Promise<string> {
-    const template = 'Template-Type: ReDIF-Paper 1.0';
-    return '';
+async function generate_repec_paper_from_publication(handle: string,
+    publication: Object, typology: ?Object): Promise<string> {
+    let template = ['Template-Type: ReDIF-Paper 1.0'];
+    const typology_name = typology ? typology.name : '_____dummy_____';
+    let obj = {};
+
+    for (const key in RepecPipeline.mapping) {
+        const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+        if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+            continue;
+        }
+        const info = RepecPipeline.mapping[key];
+        let mapper = null;
+        if (typology_name in info) {
+            mapper = info[typology_name];
+        } else if ('__default' in info) {
+            mapper = info.__default;
+        }
+
+        if (!mapper) {
+            continue;
+        }
+
+        let subobj = await mapper.picker(pub_info, publication, 'EN', key);
+        if (mapper.transformers.length > 0) {
+            subobj = await mapper.transformers.reduce((o, tr) => {
+                o = tr(o);
+                return o;
+            }, subobj);
+        }
+        obj = _.mergeWith(obj, subobj, (objValue, srcValue) => {
+            if (_.isArray(objValue)) {
+                return objValue.concat(srcValue);
+            }
+        });
+    }
+
+    template = RepecPipeline.fields.reduce((arr, field) => {
+        if (!(field in obj)) {
+            return arr;
+        }
+
+        if (field === 'Authors') {
+            obj.Authors.forEach((a) => {
+                arr.push(`Author-Name: ${a['Author-Name']}`);
+                if ('Author-Name-First' in a) {
+                    arr.push(`Author-Name-First: ${a['Author-Name-First']}`);
+                }
+                arr.push(`Author-Name-Last: ${a['Author-Name-Last']}`);
+            });
+        } else {
+            arr.push(`${field}: ${obj[field]}`);
+        }
+        return arr;
+    }, template);
+
+    template.push(`Number: ${publication._id}`);
+    template.push(`Handle: ${handle}:wpaper:${publication._id}`);
+    return template.join('\n');
 }
 
 async function export_repec_paper(ctx: Object): Promise<any> {
@@ -53,9 +111,9 @@ async function export_repec_paper(ctx: Object): Promise<any> {
             }
             search_after = [`publication#${publications[publications.length - 1]._id}`];
 
-            publications.reduce((str, pub) => {
-                list += `<a href='wpaper/${pub._id}.rdf'>${pub._id}.rdf</a><br />`;
-                return list;
+            list = publications.reduce((str, pub) => {
+                str += `<a href='wpaper/${pub._id}.rdf'>${pub._id}.rdf</a><br />`;
+                return str;
             }, list);
         }
 
@@ -71,7 +129,10 @@ async function export_repec_paper(ctx: Object): Promise<any> {
         ctx.status = 404;
         return;
     }
-    ctx.body = await generate_repec_paper_from_publication(publication);
+
+    const typology = await EntitiesUtils.retrieve_and_get_source('typology', publication.type);
+    ctx.body = await generate_repec_paper_from_publication(`RePEc:edi:${handle}`,
+    publication, typology);
 }
 
 async function export_repec(ctx: Object): Promise<any> {
