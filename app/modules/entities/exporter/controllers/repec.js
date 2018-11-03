@@ -131,7 +131,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
     }
 
     const typology = await EntitiesUtils.retrieve_and_get_source('typology', publication.type);
-    ctx.body = await generate_repec_paper_from_publication(`RePEc:edi:${handle}`,
+    ctx.body = await generate_repec_paper_from_publication(`RePEc:${handle}`,
     publication, typology);
 }
 
