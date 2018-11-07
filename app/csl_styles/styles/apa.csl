@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="never" page-range-format="expanded">
-  <!-- This style was edited with the Visual CSL Editor (http://editor.citationstyles.org/visualEditor/) -->
   <info>
     <title>American Psychological Association 6th edition</title>
     <title-short>APA</title-short>
@@ -32,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-10-08T08:27:27+00:00</updated>
+    <updated>2018-11-07T15:12:53+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -180,7 +179,7 @@
       <else>
         <choose>
           <if variable="DOI">
-            <text variable="DOI" prefix="https://doi.org/"/>
+            <text variable="DOI" prefix="#POS#URLShttps://doi.org/" suffix="#POS#URLE"/>
           </if>
           <else>
             <choose>
@@ -573,11 +572,6 @@
       <else-if type="book graphic motion_picture report song chapter paper-conference entry-encyclopedia entry-dictionary" match="any">
         <group prefix=" (" suffix=")" delimiter=", ">
           <choose>
-            <if type="report" match="none">
-              <text macro="edition"/>
-            </if>
-          </choose>
-          <choose>
             <if variable="volume" match="any">
               <group>
                 <text term="volume" form="short" text-case="capitalize-first" suffix=" "/>
@@ -592,9 +586,14 @@
             </else>
           </choose>
           <group>
+            <text variable="page" suffix=" "/>
             <label variable="page" form="short" suffix=" "/>
-            <text variable="page"/>
           </group>
+          <choose>
+            <if type="report" match="none">
+              <text macro="edition"/>
+            </if>
+          </choose>
         </group>
       </else-if>
       <else-if type="legal_case">

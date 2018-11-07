@@ -11,6 +11,7 @@ const CSLUtils = require('../../utils/csl');
 const CSLJSONPipeline = require('./pipeline/csl_pipeline');
 const Errors = require('../../exceptions/errors');
 const ExtraCSLStyles = require('../../../csl_styles/register');
+const Logger = require ('../../../logger.js');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -415,6 +416,7 @@ class BibliographicExporter {
 
     async format_bibliography_results(publications: Array<Object>): Promise<string> {
         const csl_json_output = await this.transform_to_csl_json(publications);
+        Logger.info(JSON.stringify(csl_json_output));
         const data = new Cite(csl_json_output);
         let results = data.get({
             nosort: true,
@@ -450,7 +452,9 @@ class BibliographicExporter {
             return s;
         }
 
-        return `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${html}</body></html>`;
+        return `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" type="text/css" href="/public/front/css/biblio.css">
+        </head><body>${html}</body></html>`;
     }
 
     async run(): Promise<any> {
