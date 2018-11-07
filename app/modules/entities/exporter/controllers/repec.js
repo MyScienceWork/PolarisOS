@@ -4,6 +4,7 @@ const ConfigUtils = require('../../../utils/config');
 const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
 const RepecPipeline = require('../pipeline/repec_pipeline');
+const URL = require('url');
 
 async function retrieve_repec_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
@@ -131,7 +132,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
     }
 
     const typology = await EntitiesUtils.retrieve_and_get_source('typology', publication.type);
-    ctx.body = await generate_repec_paper_from_publication(`RePEc:edi:${handle}`,
+    ctx.body = await generate_repec_paper_from_publication(`RePEc:${handle}`,
     publication, typology);
 }
 
@@ -148,8 +149,12 @@ async function export_repec(ctx: Object): Promise<any> {
     }
 
     if (!rdf) {
+        const originalUrl = ctx.request.originalUrl.replace(/\/$/, '');
+        const archUrl = URL.resolve('', `${originalUrl}/${handle}arch.rdf`);
+        const serieUrl = URL.resolve('', `${originalUrl}/${handle}seri.rdf`);
+        const wpaperUrl = URL.resolve('', `${originalUrl}/wpaper`);
         ctx.type = 'html';
-        ctx.body = `<html><body><a href='${handle}/${handle}arch.rdf'>${handle}arch.rdf<br /><a href='${handle}/${handle}seri.rdf'>${handle}seri.rdf</a><br /><a href='${handle}/wpaper'>wpaper</a></body></html>`;
+        ctx.body = `<html><body><a href='${archUrl}'>${handle}arch.rdf<br /><a href='${serieUrl}'>${handle}seri.rdf</a><br /><a href='${wpaperUrl}'>wpaper</a></body></html>`;
         return;
     }
 
