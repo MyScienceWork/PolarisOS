@@ -416,7 +416,7 @@ class BibliographicExporter {
 
     async format_bibliography_results(publications: Array<Object>): Promise<string> {
         const csl_json_output = await this.transform_to_csl_json(publications);
-        Logger.info(JSON.stringify(csl_json_output));
+        Logger.info(JSON.stringify(csl_json_output, null, 4));
         const data = new Cite(csl_json_output);
         let results = data.get({
             nosort: true,
