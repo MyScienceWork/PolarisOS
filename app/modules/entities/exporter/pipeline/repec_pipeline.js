@@ -12,9 +12,9 @@ const mapping = {
                 }
                 const a = abs.find(_a => _a.lang === pub.lang);
                 if (!a) {
-                    return { Abstract: abs[0].content };
+                    return { Abstract: abs[0].content.replace(/\n+/gim, ' ') };
                 }
-                return { Abstract: a.content };
+                return { Abstract: a.content.replace(/\n+/gmi, ' ') };
             },
         },
     },
@@ -24,11 +24,11 @@ const mapping = {
             picker: c => ({ 'Creation-Date': c }),
         },
         journal: {
-            transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY/MM/DD') })],
+            transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY-MM-DD') })],
             picker: c => ({ 'Creation-Date': c }),
         },
         press: {
-            transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY/MM/DD') })],
+            transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY-MM-DD') })],
             picker: c => ({ 'Creation-Date': c }),
         },
     },
@@ -84,7 +84,7 @@ const mapping = {
     'denormalization.conference': {
         conference: {
             transformers: [],
-            picker: async v => ({ 'Publication-Status': `Published in ${c}` }),
+            picker: async v => ({ 'Publication-Status': `Published in ${v}` }),
         },
     },
     'denormalization.contributors': {
