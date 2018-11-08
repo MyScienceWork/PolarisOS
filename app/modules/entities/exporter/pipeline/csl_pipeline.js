@@ -335,6 +335,15 @@ const mapping = {
                     all.director = film_directors;
                 }
 
+                if (all.author.length > 0 && all.director.length > 0) {
+                    all.director.forEach((a) => {
+                        if (all.author.indexOf(a) !== -1)
+                            delete all.author[all.author.indexOf(a)]
+                            delete all.director[all.author.indexOf(a)]
+                            all.editor.push(a)
+                    })
+                }
+
                 Object.keys(all).forEach((a) => {
                     const end = grabber(all[a]);
                     if (end.length > 0) {
