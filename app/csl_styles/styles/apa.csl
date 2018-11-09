@@ -31,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-09T11:38:31+00:00</updated>
+    <updated>2018-11-09T11:59:44+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -724,6 +724,11 @@
       <group suffix=".">
         <group delimiter=". ">
           <text macro="author"/>
+          <choose>
+            <if type="chapter" match="any">
+              <names variable="translator" font-weight="normal"/>
+            </if>
+          </choose>
           <choose>
             <if is-uncertain-date="issued">
               <group prefix=" [" suffix="]" delimiter=" ">
