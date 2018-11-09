@@ -31,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-09T15:38:57+00:00</updated>
+    <updated>2018-11-09T15:48:48+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -347,13 +347,17 @@
                   <if match="any" variable="issue">
                     <group prefix="(" suffix=") ">
                       <text variable="collection-title" suffix=" "/>
-                      <text variable="publisher" suffix=" "/>
                       <text variable="issue" prefix="n°"/>
                     </group>
                   </if>
                   <else>
                     <text variable="publisher" form="short" suffix=". "/>
                   </else>
+                </choose>
+                <choose>
+                  <if type="article" match="any">
+                    <text variable="page" prefix=" (" suffix=" p.) "/>
+                  </if>
                 </choose>
                 <choose>
                   <if variable="publisher-place">
@@ -371,11 +375,6 @@
                 <choose>
                   <if type="chapter" match="any">
                     <text variable="edition" prefix=": "/>
-                  </if>
-                </choose>
-                <choose>
-                  <if type="article" match="any">
-                    <text variable="page" prefix=" (" suffix=" p.)"/>
                   </if>
                 </choose>
               </group>
