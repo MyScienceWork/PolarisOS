@@ -104,7 +104,12 @@ async function export_repec_paper(ctx: Object): Promise<any> {
                 sort: [{ _uid: 'desc' }],
                 search_after,
                 projection: [],
-                where: { status: ['published', 'unpublished'] },
+                where: {
+                    $and: [
+                        { status: ['published', 'unpublished'] },
+                        { 'diffusion.rights.exports.repec': true },
+                    ],
+                },
             };
             const publications = await EntitiesUtils.search_and_get_sources('publication', query);
             if (publications.length === 0) {
