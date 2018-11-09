@@ -30,7 +30,7 @@
     "bulma": "^0.5.3",
     "bulma-steps": "github:Cocophotos/bulma-steps#master",
     "cas": "0.0.3",
-    "citation-js": "^0.4.0-1",
+    "citation-js": "^0.4.0-10",
     "csv-parse": "^2.0.4",
     "csv-stringify": "^2.0.4",
     "elasticsearch": "^13.0.1",
