@@ -31,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-08T10:57:51+00:00</updated>
+    <updated>2018-11-09T11:38:31+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -357,6 +357,11 @@
                     <text variable="event-place"/>
                   </else>
                 </choose>
+                <choose>
+                  <if type="chapter" match="any">
+                    <text variable="edition" prefix=": "/>
+                  </if>
+                </choose>
               </group>
             </if>
           </choose>
@@ -538,9 +543,9 @@
           <text term="edition" form="short"/>
         </group>
       </if>
-      <else>
+      <else-if type="chapter" match="none">
         <text variable="edition"/>
-      </else>
+      </else-if>
     </choose>
   </macro>
   <macro name="locators">
