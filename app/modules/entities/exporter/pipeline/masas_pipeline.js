@@ -110,6 +110,14 @@ const mapping = {
             }),
         },
     },
+    _id: {
+        __default: {
+            transformers: [],
+            picker: (c, pub, lang, key) => ({
+                [key]: c,
+            }),
+        },
+    },
     keywords: CSVPipeline.mapping.keywords,
     'denormalization.demovoc_keywords': CSVPipeline.mapping['denormalization.demovoc_keywords'],
     'denormalization.diffusion.research_teams': {
@@ -162,96 +170,140 @@ const mapping = {
             },
         },
     },
+    'dates.deposit': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => ({ [key]: moment(c).format('DD/MM/YYYY') }),
+        },
+    },
+    'dates.update': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => ({ [key]: moment(c).format('DD/MM/YYYY') }),
+        },
+    },
+    'denormalization.depositor': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => ({ [key]: `${c.firstname} ${c.lastname}` }),
+        },
+    },
+    'denormalization.reviewer': {
+        __default: {
+            transformers: [],
+            picker: async (c, pub, lang, key) => ({ [key]: `${c.firstname} ${c.lastname}` }),
+        },
+    },
 };
 
 const labels = {
     'denormalization.type.label': {
         label: 'l_typology_type',
-        order: 1,
+        order: 2,
     },
     subtype: {
         label: 'l_typology_subtype',
-        order: 2,
+        order: 3,
     },
     'title.content': {
         label: 'b_title',
-        order: 6,
+        order: 7,
     },
     subtitles: {
         label: 'b_subtitle',
-        order: 7,
+        order: 8,
     },
     lang: {
         label: 'b_lang_publication',
-        order: 3,
+        order: 4,
     },
     'denormalization.journal': {
         label: 'b_journal',
-        order: 8,
+        order: 9,
     },
     'denormalization.conference': {
         label: 'b_conference',
-        order: 10,
+        order: 11,
     },
     'denormalization.contributors': {
         label: 'b_contributor',
-        order: 5,
+        order: 6,
     },
     publication_title: {
         label: 'b_chapter_journal_title',
-        order: 9,
+        order: 10,
     },
     'dates.publication': {
         label: 'b_date_published',
-        order: 4,
+        order: 5,
     },
     'localisation.city': {
         label: 'b_city',
-        order: 11,
+        order: 12,
     },
     'denormalization.localisation.country': {
         label: 'b_country',
-        order: 12,
+        order: 13,
     },
     abstracts: {
         label: 'b_abstract',
-        order: 16,
+        order: 17,
     },
     'denormalization.editor': {
         label: 'b_editor',
-        order: 13,
+        order: 14,
     },
     ids: {
-        label: 'b_publications_id',
+        label: 'b_handle_id',
         order: 0,
+    },
+    _id: {
+        label: 'b_publications_id',
+        order: 1,
     },
     keywords: {
         label: 'b_keywords',
-        order: 14,
+        order: 15,
     },
     'denormalization.demovoc_keywords': {
         label: 'b_keywords_thesaurus',
-        order: 15,
+        order: 16,
     },
     'denormalization.diffusion.research_teams': {
         label: 'b_research_team',
-        order: 17,
+        order: 18,
     },
     'denormalization.diffusion.surveys': {
         label: 'b_survey',
-        order: 21,
+        order: 22,
     },
     'denormalization.diffusion.projects': {
         label: 'b_project',
-        order: 18,
+        order: 19,
     },
     'denormalization.diffusion.anr_projects': {
         label: 'l_anr_project',
-        order: 20,
+        order: 21,
     },
     'denormalization.diffusion.european_projects': {
         label: 'l_european_project',
-        order: 19,
+        order: 20,
+    },
+    'dates.deposit': {
+        label: 'l_publication_deposit_date',
+        order: 23,
+    },
+    'dates.update': {
+        label: 'l_publication_update',
+        order: 24,
+    },
+    'denormalization.depositor': {
+        label: 'l_p_depositor',
+        order: 25,
+    },
+    'denormalization.reviewer': {
+        label: 'l_p_reviewer',
+        order: 26,
     },
 };
 
