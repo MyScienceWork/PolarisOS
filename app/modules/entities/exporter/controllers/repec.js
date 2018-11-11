@@ -6,6 +6,8 @@ const EntitiesUtils = require('../../../utils/entities');
 const RepecPipeline = require('../pipeline/repec_pipeline');
 const URL = require('url');
 
+// NB: The extension .redif tells RePEC that files are encoded in UTF-8
+
 async function retrieve_repec_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
     if (!myconfig) {
@@ -104,7 +106,12 @@ async function export_repec_paper(ctx: Object): Promise<any> {
                 sort: [{ _uid: 'desc' }],
                 search_after,
                 projection: [],
-                where: { status: ['published', 'unpublished'] },
+                where: {
+                    $and: [
+                        { status: ['published', 'unpublished'] },
+                        { 'diffusion.rights.exports.repec': true },
+                    ],
+                },
             };
             const publications = await EntitiesUtils.search_and_get_sources('publication', query);
             if (publications.length === 0) {
@@ -113,7 +120,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
             search_after = [`publication#${publications[publications.length - 1]._id}`];
 
             list = publications.reduce((str, pub) => {
-                str += `<a href='wpaper/${pub._id}.rdf'>${pub._id}.rdf</a><br />`;
+                str += `<a href='wpaper/${pub._id}.redif'>${pub._id}.redif</a><br />`;
                 return str;
             }, list);
         }
@@ -123,7 +130,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
     }
 
     ctx.type = 'application/rdf';
-    const id = paper.slice(0, paper.length - '.rdf'.length);
+    const id = paper.slice(0, paper.length - '.redif'.length);
     const publication = await EntitiesUtils.retrieve_and_get_source('publication', id);
 
     if (!publication) {
@@ -150,11 +157,11 @@ async function export_repec(ctx: Object): Promise<any> {
 
     if (!rdf) {
         const originalUrl = ctx.request.originalUrl.replace(/\/$/, '');
-        const archUrl = URL.resolve('', `${originalUrl}/${handle}arch.rdf`);
-        const serieUrl = URL.resolve('', `${originalUrl}/${handle}seri.rdf`);
+        const archUrl = URL.resolve('', `${originalUrl}/${handle}arch.redif`);
+        const serieUrl = URL.resolve('', `${originalUrl}/${handle}seri.redif`);
         const wpaperUrl = URL.resolve('', `${originalUrl}/wpaper`);
         ctx.type = 'html';
-        ctx.body = `<html><body><a href='${archUrl}'>${handle}arch.rdf<br /><a href='${serieUrl}'>${handle}seri.rdf</a><br /><a href='${wpaperUrl}'>wpaper</a></body></html>`;
+        ctx.body = `<html><body><a href='${archUrl}'>${handle}arch.redif<br /><a href='${serieUrl}'>${handle}seri.redif</a><br /><a href='${wpaperUrl}'>wpaper</a></body></html>`;
         return;
     }
 
