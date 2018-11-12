@@ -19,7 +19,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2014-09-06T16:03:01+00:00</updated>
+    <updated>2018-11-12T16:34:39+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -69,7 +69,6 @@
   </macro>
   <macro name="publisher">
     <choose>
-      <!--discard publisher info for articles-->
       <if type="article-journal article-magazine article-newspaper" match="none">
         <group delimiter=": " suffix=";">
           <choose>
@@ -126,7 +125,6 @@
         </group>
         <text macro="edition" prefix=" "/>
       </if>
-      <!--add event-name and event-place once they become available-->
       <else-if type="bill legislation" match="any">
         <group delimiter=", ">
           <group delimiter=". ">
@@ -190,7 +188,11 @@
         </group>
       </if>
       <else>
-        <text variable="edition" suffix="."/>
+        <choose>
+          <if type="article-journal" match="none">
+            <text variable="edition" suffix="."/>
+          </if>
+        </choose>
       </else>
     </choose>
   </macro>
