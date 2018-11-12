@@ -120,13 +120,20 @@ const mapping = {
     },
     keywords: CSVPipeline.mapping.keywords,
     'denormalization.demovoc_keywords': CSVPipeline.mapping['denormalization.demovoc_keywords'],
-    'denormalization.diffusion.research_teams': {
+    'diffusion.research_teams': {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const all = c.map(rt => `#POS#LANG${rt._id.name}`).join('\n');
-                const translated = await LangUtils.strings_to_translation(all, lang);
-                return { [key]: translated };
+                const all = c.map(rt => rt._id);
+                const results = await EntitiesUtils.search_and_get_sources('laboratory', {
+                    size: all.length,
+                    where: {
+                        _id: all,
+                    },
+                    projection: ['name', 'acronym'],
+                });
+
+                return { [key]: results.map(r => (r.acronym || r.name)).join('\n') };
             },
         },
     },
@@ -140,13 +147,20 @@ const mapping = {
             },
         },
     },
-    'denormalization.diffusion.projects': {
+    'diffusion.projects': {
         __default: {
             transformers: [],
             picker: async (c, pub, lang, key) => {
-                const all = c.filter(rt => rt && rt._id).map(rt => `#POS#LANG${rt._id.name}`).join('\n');
-                const translated = await LangUtils.strings_to_translation(all, lang);
-                return { [key]: translated };
+                const all = c.map(rt => rt._id);
+                const results = await EntitiesUtils.search_and_get_sources('project', {
+                    size: all.length,
+                    where: {
+                        _id: all,
+                    },
+                    projection: ['name', 'id'],
+                });
+
+                return { [key]: results.map(r => (r.id || r.name)).join('\n') };
             },
         },
     },
@@ -269,7 +283,7 @@ const labels = {
         label: 'b_keywords_thesaurus',
         order: 16,
     },
-    'denormalization.diffusion.research_teams': {
+    'diffusion.research_teams': {
         label: 'b_research_team',
         order: 18,
     },
@@ -277,7 +291,7 @@ const labels = {
         label: 'b_survey',
         order: 22,
     },
-    'denormalization.diffusion.projects': {
+    'diffusion.projects': {
         label: 'b_project',
         order: 19,
     },
