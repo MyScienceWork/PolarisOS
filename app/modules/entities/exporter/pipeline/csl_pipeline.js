@@ -88,7 +88,7 @@ const mapping = {
         'article-journal': {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM')]]) } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
