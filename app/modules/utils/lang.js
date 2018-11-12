@@ -144,7 +144,7 @@ async function strings_to_translation(string, lang, n) {
         },
     });
     if (values.length === 0) {
-        return string;
+        return string.replace(/^#POS#LANG/, '');
     }
 
     const items = values.reduce((obj, src) => {
