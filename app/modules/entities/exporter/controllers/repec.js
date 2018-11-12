@@ -129,7 +129,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
         return;
     }
 
-    ctx.type = 'application/rdf';
+    ctx.type = 'application/rdf; charset=utf-8';
     const id = paper.slice(0, paper.length - '.redif'.length);
     const publication = await EntitiesUtils.retrieve_and_get_source('publication', id);
 
@@ -157,15 +157,15 @@ async function export_repec(ctx: Object): Promise<any> {
 
     if (!rdf) {
         const originalUrl = ctx.request.originalUrl.replace(/\/$/, '');
-        const archUrl = URL.resolve('', `${originalUrl}/${handle}arch.redif`);
-        const serieUrl = URL.resolve('', `${originalUrl}/${handle}seri.redif`);
+        const archUrl = URL.resolve('', `${originalUrl}/${handle}arch.rdf`);
+        const serieUrl = URL.resolve('', `${originalUrl}/${handle}seri.rdf`);
         const wpaperUrl = URL.resolve('', `${originalUrl}/wpaper`);
         ctx.type = 'html';
-        ctx.body = `<html><body><a href='${archUrl}'>${handle}arch.redif<br /><a href='${serieUrl}'>${handle}seri.redif</a><br /><a href='${wpaperUrl}'>wpaper</a></body></html>`;
+        ctx.body = `<html><body><a href='${archUrl}'>${handle}arch.rdf<br /><a href='${serieUrl}'>${handle}seri.rdf</a><br /><a href='${wpaperUrl}'>wpaper</a></body></html>`;
         return;
     }
 
-    ctx.type = 'application/rdf';
+    ctx.type = 'application/rdf; charset=utf-8';
     if (rdf.startsWith(`${handle}arch`)) {
         ctx.body = Utils.find_value_with_path(repec_config, 'archive_template'.split('.'));
     } else {
