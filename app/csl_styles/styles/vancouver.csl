@@ -19,7 +19,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-13T10:23:49+00:00</updated>
+    <updated>2018-11-13T16:34:43+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -273,7 +273,7 @@
           </if>
         </choose>
       </else-if>
-      <else-if type="chapter" match="any">
+      <else-if type="chapter thesis" match="any">
         <group>
           <text variable="page" prefix=" " suffix=" "/>
           <label plural="never" variable="page" form="short"/>
