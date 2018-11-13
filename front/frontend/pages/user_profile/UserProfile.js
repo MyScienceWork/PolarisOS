@@ -239,7 +239,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         default_search_publications_query() {
-            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            const a = { 'contributors.label': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {
@@ -262,7 +262,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         search_publications_query() {
-            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            const a = { 'contributors.label': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {
