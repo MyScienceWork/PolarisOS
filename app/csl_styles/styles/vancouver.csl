@@ -19,7 +19,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-13T16:34:43+00:00</updated>
+    <updated>2018-11-13T17:05:17+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -62,9 +62,12 @@
   </macro>
   <macro name="chapter-marker">
     <choose>
-      <if type="chapter paper-conference entry-dictionary entry-encyclopedia" match="any">
+      <if type="chapter entry-dictionary entry-encyclopedia" match="any">
         <text term="in" text-case="capitalize-first"/>
       </if>
+      <else-if type="paper-conference" match="any">
+        <text term="presented at" text-case="capitalize-first"/>
+      </else-if>
     </choose>
   </macro>
   <macro name="publisher">
@@ -250,14 +253,14 @@
           <text variable="event-place"/>
         </group>
       </else-if>
-      <else>
+      <else-if type="paper-conference" match="none">
         <group suffix=".">
           <date variable="issued">
             <date-part name="year"/>
           </date>
           <text macro="accessed-date" prefix=" "/>
         </group>
-      </else>
+      </else-if>
     </choose>
   </macro>
   <macro name="pages">
@@ -357,6 +360,13 @@
             <text macro="editor"/>
             <text macro="container-title"/>
           </group>
+          <choose>
+            <if type="paper-conference" match="any">
+              <text variable="event-place"/>
+              <text variable="event"/>
+              <date form="text" variable="event-date"/>
+            </if>
+          </choose>
         </group>
         <text macro="publisher"/>
         <group>
