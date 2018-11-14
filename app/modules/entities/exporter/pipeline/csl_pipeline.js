@@ -10,7 +10,7 @@ const types = {
     'other-blog': 'post-weblog',
     chapter: 'chapter',
     'other-software': 'article',
-    'book-proceedings': 'chapter',
+    'book-proceedings': 'book',
     conference: 'paper-conference',
     'book-chapter-dictionary-article': 'entry-dictionary',
     'other-figure': 'graphic',
