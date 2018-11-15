@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-15T16:59:17+00:00</updated>
+    <updated>2018-11-15T17:09:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -303,7 +303,7 @@
     <text variable="ISBN" prefix="ISBN "/>
   </macro>
   <macro name="doi">
-    <text variable="DOI" prefix="DOI "/>
+    <text variable="DOI" prefix="DOI #POS#URLS" suffix="#POS#URLE"/>
   </macro>
   <macro name="url">
     <choose>
