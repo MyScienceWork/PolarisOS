@@ -19,7 +19,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-15T14:24:14+00:00</updated>
+    <updated>2018-11-15T15:01:45+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -199,9 +199,6 @@
           <if type="article-journal book chapter paper-conference" match="none">
             <text variable="edition" suffix="."/>
           </if>
-          <else-if type="paper-conference" match="any">
-            <text variable="edition"/>
-          </else-if>
         </choose>
       </else>
     </choose>
@@ -375,9 +372,12 @@
           </group>
           <choose>
             <if type="paper-conference" match="any">
-              <text variable="event"/>
-              <text variable="event-place"/>
-              <date form="text" variable="event-date"/>
+              <group delimiter=",">
+                <text variable="edition"/>
+                <text variable="event"/>
+                <text variable="event-place" prefix=" "/>
+                <date form="text" variable="event-date"/>
+              </group>
             </if>
           </choose>
         </group>
