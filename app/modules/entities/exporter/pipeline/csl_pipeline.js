@@ -118,7 +118,7 @@ const mapping = {
                 const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
-                if (end) {
+                if (end && !end.isSame(start)) {
                     obj['event-date']['date-parts'].push([end.format('YYYY'), end.format('MM'), end.format('DD')]);
                 }
                 obj['event-date']['date-parts'] = intify_dateparts(obj['event-date']['date-parts']);
