@@ -31,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-14T16:36:09+00:00</updated>
+    <updated>2018-11-15T13:46:18+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -776,10 +776,20 @@
         </group>
         <text macro="legal-cites"/>
         <text macro="locators"/>
-        <group delimiter=", " prefix=". ">
-          <text macro="event"/>
-          <text macro="publisher"/>
-        </group>
+        <choose>
+          <if type="paper-conference" match="none">
+            <group delimiter=", " prefix=". ">
+              <text macro="event"/>
+              <text macro="publisher"/>
+            </group>
+          </if>
+          <else>
+            <group delimiter=", " prefix=" ">
+              <text macro="event"/>
+              <text macro="publisher"/>
+            </group>
+          </else>
+        </choose>
       </group>
       <text macro="access" prefix=" "/>
       <choose>
