@@ -30,7 +30,7 @@
     "bulma": "^0.5.3",
     "bulma-steps": "git+https://git@github.com/Cocophotos/bulma-steps.git#4929a5e3be7c55ce02302c24351d28d0d7499be8",
     "cas": "0.0.3",
-    "citation-js": "git+https://git@github.com/louismarie/citation.js.git#0f989f982f5a50e0e202792e34a70efe7626f703",
+    "citation-js": "git+https://git@github.com/louismarie/citation.js.git#faf1d4ac613f4435d99ef55ffe9e917c0411d39c",
     "csv-parse": "^2.0.4",
     "csv-stringify": "^2.0.4",
     "elasticsearch": "^13.0.1",
