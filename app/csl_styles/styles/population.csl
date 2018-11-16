@@ -17,7 +17,7 @@
     <issn>0032-4663</issn>
     <eissn>1957-7966</eissn>
     <summary>Le style de la revue de l'Ined Population.</summary>
-    <updated>2018-11-16T15:10:50+00:00</updated>
+    <updated>2018-11-16T15:30:12+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -136,10 +136,20 @@
     </group>
   </macro>
   <macro name="page">
-    <group>
-      <label variable="page" suffix=". " form="short"/>
-      <text variable="page"/>
-    </group>
+    <choose>
+      <if type="article" match="any">
+        <group>
+          <text variable="page"/>
+          <label prefix=" " variable="page" form="short"/>
+        </group>
+      </if>
+      <else>
+        <group>
+          <label suffix=". " variable="page" form="short"/>
+          <text variable="page"/>
+        </group>
+      </else>
+    </choose>
   </macro>
   <macro name="number-of-pages">
     <group>
