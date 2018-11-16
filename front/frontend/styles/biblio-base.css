@@ -31,13 +31,14 @@ h2 {
     font-size: 13px;
     margin-left: 50px;
 }
-.csl-bib-body span {
-    margin-left: 50px;
+.csl-bib-body {
     border: 1px solid rgba(255,255,255,0);
     -webkit-transition: background 150ms ease-out, border 150ms ease-out, box-shadow 150ms ease-out;
     border-radius: 3px;
 }
+
 .csl-entry {
+    width:100%;
     padding-left: 50px;
     text-indent: -50px;
     display: inline-block;
