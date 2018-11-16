@@ -4,7 +4,6 @@ module.exports = [
     { label: 'Harvard', value: 'ined_harvard' },
     { label: 'Population', value: 'population' },
     { label: 'Chicago', value: 'chicago' },
-    { label: 'Springer Humanities', value: 'springer_humanities' },
     { label: 'ISO-690', value: 'iso_690' },
     { label: 'HCERES', value: 'ined_hceres' },
 ];
