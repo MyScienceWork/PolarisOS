@@ -160,7 +160,7 @@ const mapping = {
                     o.ISBN = ISBN._id;
                 }
                 if (HANDLE) {
-                    o['archive-location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
+                    o['archive_location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
                 }
                 return o;
             },
