@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-16T14:14:52+00:00</updated>
+    <updated>2018-11-16T14:25:19+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -151,7 +151,6 @@
       </if>
       <else-if type="paper-conference speech chapter article-journal article-magazine article-newspaper post-weblog post webpage broadcast" match="any">
         <text variable="title" suffix=". "/>
-        <text term="presented at" text-case="capitalize-first" suffix=" : "/>
         <choose>
           <if variable="container-author editor translator" match="any">
             <text macro="container-responsability"/>
@@ -471,7 +470,6 @@
             <text macro="responsability" suffix=", "/>
             <text macro="year-date" suffix=". "/>
             <text macro="title" font-style="italic" suffix=". "/>
-            <text macro="date" suffix=". "/>
             <text macro="accessed" suffix=". "/>
             <text macro="url" suffix=". "/>
           </group>

@@ -8,6 +8,7 @@ const Utils = require('../../../utils/utils');
 const types = {
     book: 'book',
     'other-blog': 'post-weblog',
+    'other-other': 'post-weblog',
     chapter: 'chapter',
     'other-software': 'article',
     'book-proceedings': 'book',
