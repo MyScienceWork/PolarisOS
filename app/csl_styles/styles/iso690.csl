@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-15T17:09:38+00:00</updated>
+    <updated>2018-11-16T08:42:20+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -47,6 +47,15 @@
       <label prefix=" (" form="short" suffix=".)"/>
     </names>
   </macro>
+  <macro name="director">
+    <names variable="director">
+      <name and="text" delimiter-precedes-last="never" name-as-sort-order="all">
+        <name-part name="family" text-case="uppercase"/>
+        <name-part name="given"/>
+      </name>
+      <label form="short" prefix=" (" suffix=".)"/>
+    </names>
+  </macro>
   <macro name="translator">
     <names variable="translator">
       <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
@@ -58,16 +67,19 @@
   </macro>
   <macro name="responsability">
     <choose>
-      <if variable="author editor translator" match="any">
+      <if variable="author editor translator director" match="any">
         <choose>
-          <if variable="author">
-            <text macro="author"/>
-          </if>
-          <else-if variable="editor">
+          <if variable="editor">
             <text macro="editor"/>
+          </if>
+          <else-if variable="director">
+            <text macro="director"/>
+          </else-if>
+          <else-if match="any" variable="translator">
+            <text macro="translator"/>
           </else-if>
           <else>
-            <text macro="translator"/>
+            <text macro="author"/>
           </else>
         </choose>
       </if>
@@ -324,7 +336,7 @@
       </if>
     </choose>
   </macro>
-  <macro name="archive_location">
+  <macro name="archive_location_or_call_number">
     <choose>
       <if variable="archive_location">
         <text variable="archive_location"/>
@@ -531,7 +543,7 @@
       <group>
         <group display="block">
           <text macro="archive"/>
-          <text macro="archive_location"/>
+          <text macro="archive_location_or_call_number"/>
         </group>
       </group>
     </layout>
