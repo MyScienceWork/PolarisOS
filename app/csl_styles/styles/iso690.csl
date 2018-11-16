@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-16T08:42:20+00:00</updated>
+    <updated>2018-11-16T08:51:14+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -184,7 +184,11 @@
     </choose>
     <choose>
       <if variable="URL">
-        <text term="online" prefix=" [" suffix="]"/>
+        <choose>
+          <if type="book" match="none">
+            <text term="online" prefix=" [" suffix="]"/>
+          </if>
+        </choose>
       </if>
     </choose>
   </macro>
@@ -293,9 +297,10 @@
     </choose>
   </macro>
   <macro name="collection">
-    <group delimiter=", ">
+    <group delimiter=" ">
       <text variable="collection-title"/>
       <text variable="collection-number"/>
+      <text variable="issue" prefix="(" suffix=")"/>
     </group>
   </macro>
   <macro name="page">
