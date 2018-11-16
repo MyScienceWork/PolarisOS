@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-16T08:51:14+00:00</updated>
+    <updated>2018-11-16T10:09:40+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -454,6 +454,7 @@
             <text macro="responsability" suffix=", "/>
             <text macro="year-date" suffix=". "/>
             <text macro="title" suffix=". "/>
+            <text value="type : Thèse de doctorat" suffix=" "/>
             <text macro="genre" suffix=". "/>
             <text macro="publisher-place" suffix=" : "/>
             <text macro="publisher" suffix=". "/>
