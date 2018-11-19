@@ -18,7 +18,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-11-19T15:38:20+00:00</updated>
+    <updated>2018-11-19T15:42:59+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr-FR">
@@ -185,6 +185,11 @@
       <else>
         <text variable="title" text-case="title" quotes="true" suffix="."/>
       </else>
+    </choose>
+    <choose>
+      <if type="thesis" match="any">
+        <text value=" type : Thèse de doctorat"/>
+      </if>
     </choose>
   </macro>
   <macro name="edition">
