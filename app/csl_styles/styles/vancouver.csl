@@ -343,7 +343,7 @@
       </if>
     </choose>
   </macro>
-  <citation collapse="citation-number">
+  <citation disambiguate-add-year-suffix="false" collapse="citation-number">
     <sort>
       <key variable="citation-number"/>
     </sort>
