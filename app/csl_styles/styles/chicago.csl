@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-19T09:26:25+00:00</updated>
+    <updated>2018-11-19T10:12:39+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -42,7 +42,7 @@
   </locale>
   <macro name="secondary-contributors">
     <choose>
-      <if type="chapter paper-conference" match="none">
+      <if type="chapter paper-conference book" match="none">
         <group delimiter=". ">
           <names variable="editor translator" delimiter=". ">
             <label form="verb" text-case="capitalize-first" suffix=" "/>
@@ -111,13 +111,23 @@
   </macro>
   <macro name="contributors">
     <group delimiter=". ">
-      <names variable="author">
+      <names variable="editor">
         <name and="text" name-as-sort-order="first" sort-separator=", " delimiter=", " delimiter-precedes-last="always"/>
         <label form="short" prefix=", "/>
         <substitute>
-          <names variable="editor"/>
-          <names variable="translator"/>
-          <names variable="director"/>
+          <names variable="director">
+            <name/>
+            <label form="short" plural="never" prefix=", "/>
+          </names>
+        </substitute>
+        <substitute>
+          <names variable="translator">
+            <name/>
+            <label form="short" prefix=", "/>
+          </names>
+        </substitute>
+        <substitute>
+          <names variable="author"/>
           <text macro="substitute-title"/>
           <text macro="title"/>
         </substitute>
@@ -238,7 +248,7 @@
   </macro>
   <macro name="edition">
     <choose>
-      <if type="bill book graphic legal_case legislation motion_picture report song" match="any">
+      <if type="bill graphic legal_case legislation motion_picture report song" match="any">
         <choose>
           <if is-numeric="edition">
             <group delimiter=" " prefix=". ">
@@ -433,6 +443,11 @@
     <group delimiter=": ">
       <text variable="publisher-place"/>
       <text variable="publisher"/>
+      <choose>
+        <if type="book chapter" match="any">
+          <text variable="edition"/>
+        </if>
+      </choose>
     </group>
   </macro>
   <macro name="date">
@@ -490,6 +505,7 @@
               <text variable="collection-title" text-case="title"/>
               <text variable="collection-number"/>
             </group>
+            <text variable="issue" prefix=" "/>
           </if>
           <else>
             <group delimiter=" ">
@@ -594,6 +610,11 @@
           </choose>
           <text macro="publisher"/>
         </group>
+        <choose>
+          <if type="book" match="any">
+            <date form="text" variable="issued" prefix=", "/>
+          </if>
+        </choose>
       </else>
     </choose>
   </macro>
