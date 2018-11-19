@@ -2,6 +2,8 @@ html, body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: #222;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 a {
     color: #08C;
@@ -30,6 +32,10 @@ h2 {
     text-shadow: 0 1px 0 rgba(255,255,255,0.5);
     font-size: 13px;
     margin-left: 50px;
+    max-width: 100%;
+    width: 95%;
+    display: block;
+    overflow-x: hidden;
 }
 .csl-bib-body {
     border: 1px solid rgba(255,255,255,0);
@@ -38,7 +44,6 @@ h2 {
 }
 
 .csl-entry {
-    width:100%;
     padding-left: 50px;
     text-indent: -50px;
     display: inline-block;

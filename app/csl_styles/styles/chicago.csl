@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-01-24T12:00:00+00:00</updated>
+    <updated>2018-11-19T09:26:25+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -177,7 +177,7 @@
         <if type="legal_case" match="none">
           <choose>
             <if variable="DOI">
-              <text variable="DOI" prefix="https://doi.org/"/>
+              <text variable="DOI" prefix="#POS#URLShttps://doi.org/" suffix="#POS#URLE"/>
             </if>
             <else>
               <text variable="URL"/>
@@ -272,10 +272,11 @@
         <choose>
           <if variable="volume">
             <text variable="volume" prefix=" "/>
-            <group prefix=" (" suffix=")">
+            <group>
               <choose>
                 <if variable="issue">
-                  <text variable="issue"/>
+                  <text variable="issue" prefix=", no " suffix=" "/>
+                  <date form="text" variable="issued" prefix="(" suffix=") "/>
                 </if>
                 <else>
                   <date variable="issued">
@@ -361,7 +362,7 @@
       <else-if type="article-journal">
         <choose>
           <if variable="volume issue" match="any">
-            <text variable="page" prefix=": "/>
+            <text variable="page"/>
           </if>
           <else>
             <text variable="page" prefix=", "/>
@@ -437,12 +438,16 @@
   <macro name="date">
     <choose>
       <if variable="issued">
-        <group delimiter=" ">
-          <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
-          <date variable="issued">
-            <date-part name="year"/>
-          </date>
-        </group>
+        <choose>
+          <if type="article-journal" match="none">
+            <group delimiter=" ">
+              <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
+              <date variable="issued">
+                <date-part name="year"/>
+              </date>
+            </group>
+          </if>
+        </choose>
       </if>
       <else-if variable="status">
         <text variable="status" text-case="capitalize-first"/>
@@ -566,7 +571,6 @@
       <else-if type="patent">
         <group delimiter=", " prefix=", ">
           <group delimiter=" ">
-            <!--Needs Localization-->
             <text value="filed"/>
             <date variable="submitted" form="text"/>
           </group>
@@ -576,7 +580,6 @@
                 <text term="and"/>
               </if>
             </choose>
-            <!--Needs Localization-->
             <text value="issued"/>
             <date variable="issued" form="text"/>
           </group>
@@ -604,7 +607,6 @@
               <text macro="date-in-text"/>
             </group>
           </if>
-          <!---comma before forthcoming and n.d.-->
           <else>
             <group delimiter=", ">
               <text macro="contributors-short"/>
@@ -616,8 +618,7 @@
       </group>
     </layout>
   </citation>
-  <bibliography hanging-indent="true" et-al-min="11" et-al-use-first="7" subsequent-author-substitute="&#8212;&#8212;&#8212;" entry-spacing="0">
-   
+  <bibliography hanging-indent="true" et-al-min="11" et-al-use-first="7" subsequent-author-substitute="———" entry-spacing="0">
     <layout suffix=".">
       <group delimiter=". ">
         <text macro="contributors"/>
