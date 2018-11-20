@@ -34,11 +34,11 @@
                                     <span 
                                         :class="`tag ${value.tag_class}`" 
                                         v-if="value.is_tag"
-                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format"
+                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format"
                                     >
                                     </span>
                                     <div v-else
-                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format" 
+                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format"  
                                     >
                                     </div>
                                 </b-table-column>
