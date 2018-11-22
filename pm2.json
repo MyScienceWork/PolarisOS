@@ -12,8 +12,9 @@
         "NODE_PORT": "5556",
         "ES_HOSTS": "elasticsearch:9200",
         "GROBID_PORT": 8080,
-        "MINIO_HOST": "172.16.40.51",
-        "MINIO_ACCESS_KEY": "D6WATDX0QDZ1I61CACYZ", 
+        "MINIO_HOST": "minio",
+        "MINIO_PORT": 9000,
+        "MINIO_ACCESS_KEY": "D6WATDX0QDZ1I61CACYZ",
         "MINIO_SECRET_KEY": "NdD50gVGH40OeK2s+W3kPnF+qU9DntxO2HwDT2luoC"
     }
   }]
