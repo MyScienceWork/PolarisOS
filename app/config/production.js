@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const env = process.env;
 
-let hosts = ['http://elasticsearch:9200'];
+let hosts = ['http://localhost:9200'];
 const port = env.NODE_PORT || 5556;
 
 if (env.ES_HOSTS != null) {
