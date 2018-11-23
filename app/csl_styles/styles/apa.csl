@@ -31,9 +31,14 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-23T11:09:47+00:00</updated>
+    <updated>2018-11-23T12:36:06+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
+  <locale xml:lang="fr">
+    <terms>
+      <term name="container-author" form="short">eds</term>
+    </terms>
+  </locale>
   <locale xml:lang="en">
     <terms>
       <term name="editortranslator" form="short">
@@ -41,24 +46,16 @@
         <multiple>eds. &amp; trans.</multiple>
       </term>
       <term name="translator" form="short">trans.</term>
-    </terms>
-  </locale>
-  <locale xml:lang="es">
-    <terms>
-      <term name="from">de</term>
+      <term name="container-author" form="short">eds</term>
     </terms>
   </locale>
   <macro name="container-contributors">
     <choose>
       <if type="chapter paper-conference entry-dictionary entry-encyclopedia" match="any">
         <group delimiter=", ">
-          <names variable="container-author" delimiter=", ">
+          <names variable="container-author" font-weight="normal" delimiter=", ">
             <name and="symbol" initialize-with=". " delimiter=", "/>
-            <label form="short" prefix=" (" text-case="title" suffix=")"/>
-          </names>
-          <names variable="editor translator" delimiter=", ">
-            <name and="symbol" initialize-with=". " delimiter=", "/>
-            <label form="short" prefix=" (" text-case="title" suffix=")"/>
+            <label form="short" text-case="title" prefix=" (" suffix=")"/>
           </names>
         </group>
       </if>
@@ -82,7 +79,7 @@
   </macro>
   <macro name="author">
     <names variable="editor">
-      <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+      <name and="symbol" delimiter-precedes-last="always" initialize-with=". " name-as-sort-order="all"/>
       <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
       <substitute>
         <names variable="director">
@@ -763,7 +760,10 @@
           <text macro="author"/>
           <choose>
             <if type="chapter" match="any">
-              <names variable="translator" font-weight="normal"/>
+              <names variable="translator" font-weight="normal">
+                <name and="symbol" delimiter-precedes-last="always" initialize-with="." name-as-sort-order="all"/>
+                <label form="short" text-case="capitalize-first" prefix=" (" suffix=")"/>
+              </names>
             </if>
           </choose>
           <choose>
