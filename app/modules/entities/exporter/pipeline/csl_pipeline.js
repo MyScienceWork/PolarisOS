@@ -361,7 +361,7 @@ const mapping = {
                 const final = {};
                 const book_contribs = contribs.filter(c => c._id).map(c => ({ family: c._id.lastname,
                     given: c._id.firstname }));
-                final['editor'] = final['editor'] ? final['editor'].concat(book_contribs) : book_contribs;
+                final['container-author'] = book_contribs;
                 return final;
             },
         },
