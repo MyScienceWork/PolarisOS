@@ -6,10 +6,11 @@ const Utils = require('../../../../utils/utils');
 const FormMixin = require('../../../../mixins/FormMixin');
 const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
 const LangMixin = require('../../../../mixins/LangMixin');
-const RequestsMixin = require('../../../../mixins/RequestsMixin.js');
+const RequestsMixin = require('../../../../mixins/RequestsMixin');
+const FiltersMixin = require('../../../../mixins/FiltersMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin, FiltersMixin],
     props: {
         selectPlaceholder: { default: 'l_select_content', type: String },
         label: { default: '', type: String },
@@ -80,6 +81,8 @@ module.exports = {
                     path,
                     body: {
                         projection: [entity.label, entity.value],
+                        where: entity.searchFields || {},
+                        sort: entity.sort || undefined,
                     },
                 });
             }
@@ -146,6 +149,12 @@ module.exports = {
                 return this.placeholder;
             }
             return info.placeholder;
+        },
+        get_select_size(info) {
+            if (!info || !('entity' in info)) {
+                return 10;
+            }
+            return info.entity.size || 10;
         },
         reset() {
             const sinks = [this.sink, this.state.sinks.creations.dummy,

@@ -180,7 +180,7 @@ module.exports = {
                         }, []);
                     }
 
-                    acc[key.replace(dot_replacer, '.')] = val;
+                    acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
                     return acc;
                 }, {});
                 return result;
