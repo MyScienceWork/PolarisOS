@@ -31,7 +31,7 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-26T10:37:48+00:00</updated>
+    <updated>2018-11-26T10:51:31+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -81,29 +81,58 @@
     </choose>
   </macro>
   <macro name="author">
-    <names variable="editor">
-      <name and="symbol" delimiter-precedes-last="always" initialize-with=". " name-as-sort-order="all"/>
-      <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
-      <substitute>
-        <names variable="director">
-          <name and="symbol" delimiter-precedes-last="always" initialize-with="." name-as-sort-order="all"/>
-          <label form="short" text-case="capitalize-first" prefix=" (" suffix=")"/>
+    <choose>
+      <if type="report" match="any">
+        <names variable="author">
+          <name and="symbol" delimiter-precedes-last="always" initialize-with=". " name-as-sort-order="all"/>
+          <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
+          <substitute>
+            <names variable="director">
+              <name and="symbol" delimiter-precedes-last="always" initialize-with="." name-as-sort-order="all"/>
+              <label form="short" text-case="capitalize-first" prefix=" (" suffix=")"/>
+            </names>
+          </substitute>
+          <substitute>
+            <names variable="editor"/>
+            <names variable="translator"/>
+            <choose>
+              <if type="report">
+                <text variable="publisher"/>
+                <text macro="title"/>
+              </if>
+              <else>
+                <text macro="title"/>
+              </else>
+            </choose>
+          </substitute>
         </names>
-      </substitute>
-      <substitute>
-        <names variable="author"/>
-        <names variable="translator"/>
-        <choose>
-          <if type="report">
-            <text variable="publisher"/>
-            <text macro="title"/>
-          </if>
-          <else>
-            <text macro="title"/>
-          </else>
-        </choose>
-      </substitute>
-    </names>
+      </if>
+      <else>
+        <names variable="editor">
+          <name and="symbol" delimiter-precedes-last="always" initialize-with=". " name-as-sort-order="all"/>
+          <label form="short" prefix=" (" suffix=")" text-case="capitalize-first"/>
+          <substitute>
+            <names variable="director">
+              <name and="symbol" delimiter-precedes-last="always" initialize-with="." name-as-sort-order="all"/>
+              <label form="short" text-case="capitalize-first" prefix=" (" suffix=")"/>
+            </names>
+          </substitute>
+          <substitute>
+            <names variable="author"/>
+            <names variable="translator"/>
+            <choose>
+              <if type="report">
+                <text variable="publisher"/>
+                <text macro="title"/>
+              </if>
+              <else>
+                <text macro="title"/>
+              </else>
+            </choose>
+          </substitute>
+        </names>
+      </else>
+    </choose>
   </macro>
   <macro name="author-short">
     <choose>
