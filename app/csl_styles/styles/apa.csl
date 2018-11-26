@@ -31,12 +31,15 @@
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2018-11-23T12:56:22+00:00</updated>
+    <updated>2018-11-26T10:37:48+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
     <terms>
-      <term name="container-author" form="short">eds</term>
+      <term name="container-author" form="short">
+        <single>éd</single>
+        <multiple>éds</multiple>
+      </term>
     </terms>
   </locale>
   <locale xml:lang="en">
@@ -360,6 +363,11 @@
                   </if>
                   <else>
                     <text variable="publisher" form="short" suffix=". "/>
+                    <choose>
+                      <if type="book" match="any">
+                        <text variable="collection-title" prefix="(" suffix=") "/>
+                      </if>
+                    </choose>
                   </else>
                 </choose>
                 <choose>
