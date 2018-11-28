@@ -15,7 +15,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-28T18:27:32+00:00</updated>
+    <updated>2018-11-28T18:38:14+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -395,7 +395,7 @@
                 <text variable="edition"/>
                 <text variable="event"/>
                 <text variable="event-place" prefix=" "/>
-                <date form="text" variable="event-date"/>
+                <date form="text" variable="event-date" prefix=" "/>
               </group>
             </if>
           </choose>
