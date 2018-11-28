@@ -5,10 +5,6 @@
     <id>http://www.zotero.org/styles/vancouver</id>
     <link href="http://www.zotero.org/styles/vancouver" rel="self"/>
     <link href="http://www.nlm.nih.gov/bsd/uniform_requirements.html" rel="documentation"/>
-    <author>
-      <name>Michael Berkowitz</name>
-      <email>mberkowi@gmu.edu</email>
-    </author>
     <contributor>
       <name>Sean Takats</name>
       <email>stakats@gmu.edu</email>
@@ -19,7 +15,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-15T15:01:45+00:00</updated>
+    <updated>2018-11-28T17:07:08+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -281,6 +277,12 @@
           <if is-numeric="number-of-pages">
             <label variable="number-of-pages" form="short" prefix=" " plural="never"/>
           </if>
+          <else>
+            <group>
+              <text variable="page" prefix=" "/>
+              <label plural="never" prefix=" " variable="page" form="short"/>
+            </group>
+          </else>
         </choose>
       </else-if>
       <else-if type="chapter thesis report" match="any">
@@ -367,7 +369,11 @@
         <group delimiter=": ">
           <text macro="chapter-marker"/>
           <group delimiter=" ">
-            <text macro="editor"/>
+            <choose>
+              <if type="book" match="none">
+                <text macro="editor"/>
+              </if>
+            </choose>
             <text macro="container-title"/>
           </group>
           <choose>
