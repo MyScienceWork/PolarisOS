@@ -15,7 +15,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-29T09:17:30+00:00</updated>
+    <updated>2018-11-29T17:46:58+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -301,7 +301,7 @@
       <if type="article-journal article-magazine article-newspaper review review-book" match="any">
         <text variable="page" prefix=":"/>
       </if>
-      <else-if type="book" match="any">
+      <else-if type="book thesis" match="any">
         <text variable="number-of-pages" prefix=" "/>
         <choose>
           <if is-numeric="number-of-pages">
@@ -315,7 +315,7 @@
           </else>
         </choose>
       </else-if>
-      <else-if type="chapter thesis report" match="any">
+      <else-if type="chapter report" match="any">
         <group>
           <label plural="never" prefix=" " variable="page" form="short"/>
           <text variable="page" prefix=" "/>
@@ -390,7 +390,10 @@
         <text macro="author"/>
         <choose>
           <if type="chapter" match="any">
-            <names variable="translator"/>
+            <names variable="translator">
+              <name delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" "/>
+              <label prefix=", "/>
+            </names>
           </if>
         </choose>
         <text macro="title"/>
