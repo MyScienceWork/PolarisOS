@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-29T19:45:07+00:00</updated>
+    <updated>2018-11-29T20:29:03+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -71,24 +71,51 @@
   </macro>
   <macro name="responsability">
     <choose>
-      <if variable="author editor translator director" match="any">
+      <if type="report" match="none">
         <choose>
-          <if variable="editor">
-            <text macro="editor"/>
+          <if variable="author editor translator director" match="any">
+            <choose>
+              <if variable="editor">
+                <text macro="editor"/>
+              </if>
+              <else-if variable="director">
+                <text macro="director"/>
+              </else-if>
+              <else-if match="any" variable="translator">
+                <text macro="translator"/>
+              </else-if>
+              <else>
+                <text macro="author"/>
+              </else>
+            </choose>
           </if>
-          <else-if variable="director">
-            <text macro="director"/>
-          </else-if>
-          <else-if match="any" variable="translator">
-            <text macro="translator"/>
-          </else-if>
           <else>
-            <text macro="author"/>
+            <text term="anonymous" text-case="uppercase"/>
           </else>
         </choose>
       </if>
       <else>
-        <text term="anonymous" text-case="uppercase"/>
+        <choose>
+          <if variable="author editor translator director" match="any">
+            <choose>
+              <if variable="author">
+                <text macro="author"/>
+              </if>
+              <else-if variable="director">
+                <text macro="director"/>
+              </else-if>
+              <else-if match="any" variable="translator">
+                <text macro="translator"/>
+              </else-if>
+              <else>
+                <text macro="editor"/>
+              </else>
+            </choose>
+          </if>
+          <else>
+            <text term="anonymous" text-case="uppercase"/>
+          </else>
+        </choose>
       </else>
     </choose>
   </macro>
@@ -180,10 +207,10 @@
             </choose>
             <text variable="container-title" font-style="italic"/>
           </if>
-          <else>
+          <else-if type="post-weblog" match="none">
             <text value="Présenté à : "/>
             <text variable="event" font-style="italic"/>
-          </else>
+          </else-if>
         </choose>
       </else-if>
       <else-if type="report">
@@ -243,7 +270,7 @@
   </macro>
   <macro name="edition">
     <choose>
-      <if type="article-journal book chapter" match="none">
+      <if type="article-journal book chapter report" match="none">
         <text variable="edition" form="long"/>
       </if>
     </choose>
@@ -261,6 +288,11 @@
         <choose>
           <if variable="publisher-place">
             <text variable="publisher-place"/>
+            <choose>
+              <if type="post-weblog" match="any">
+                <text macro="publisher"/>
+              </if>
+            </choose>
           </if>
           <else-if match="any" variable="event-place">
             <text variable="event-place"/>
@@ -282,7 +314,7 @@
   </macro>
   <macro name="publisher">
     <choose>
-      <if type="broadcast motion_picture song report" match="any">
+      <if type="broadcast motion_picture song" match="any">
         <choose>
           <if variable="publisher">
             <text variable="publisher"/>
@@ -295,7 +327,7 @@
             <text variable="publisher"/>
           </if>
           <else-if match="any" variable="edition">
-            <text variable="edition"/>
+            <text variable="edition" prefix=" : " suffix=". "/>
           </else-if>
           <else>
             <text value="s.n."/>
@@ -487,6 +519,7 @@
             <text macro="responsability" suffix=", "/>
             <text macro="year-date" suffix=". "/>
             <text macro="title" font-style="italic" suffix=". "/>
+            <text macro="publisher-place"/>
             <text macro="accessed" suffix=". "/>
             <text macro="url" suffix=". "/>
           </group>
