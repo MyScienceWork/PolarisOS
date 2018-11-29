@@ -15,7 +15,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-29T09:05:20+00:00</updated>
+    <updated>2018-11-29T09:17:30+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -51,13 +51,26 @@
     <terms/>
   </locale>
   <macro name="author">
-    <names variable="director editor">
-      <name delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" "/>
-      <label form="long" prefix=", "/>
-      <substitute>
-        <names variable="author"/>
-      </substitute>
-    </names>
+    <choose>
+      <if type="report" match="none">
+        <names variable="director editor">
+          <name delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" "/>
+          <label form="long" prefix=", "/>
+          <substitute>
+            <names variable="author"/>
+          </substitute>
+        </names>
+      </if>
+      <else>
+        <names variable="author">
+          <name delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" "/>
+          <label prefix=", "/>
+          <substitute>
+            <names variable="editor director"/>
+          </substitute>
+        </names>
+      </else>
+    </choose>
   </macro>
   <macro name="editor">
     <names variable="editor director" suffix=".">
@@ -93,6 +106,10 @@
               <text variable="edition"/>
             </else-if>
             <else-if type="post-weblog" match="any">
+              <text variable="publisher-place"/>
+              <text variable="edition"/>
+            </else-if>
+            <else-if type="report" match="any">
               <text variable="publisher-place"/>
               <text variable="edition"/>
             </else-if>
@@ -209,7 +226,7 @@
       </if>
       <else>
         <choose>
-          <if type="article-journal book chapter paper-conference post-weblog" match="none">
+          <if type="article-journal book chapter paper-conference post-weblog report" match="none">
             <text variable="edition" suffix="."/>
           </if>
         </choose>
@@ -383,7 +400,7 @@
           <text macro="chapter-marker"/>
           <group delimiter=" ">
             <choose>
-              <if type="book" match="none">
+              <if type="book report" match="none">
                 <text macro="editor"/>
               </if>
             </choose>
