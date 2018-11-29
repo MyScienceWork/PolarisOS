@@ -15,7 +15,7 @@
     <category citation-format="numeric"/>
     <category field="medicine"/>
     <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
-    <updated>2018-11-28T19:21:51+00:00</updated>
+    <updated>2018-11-29T09:05:20+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -33,9 +33,9 @@
       <term name="available at">available from</term>
       <term name="section" form="short">sect.</term>
       <term name="container-author" form="long">
-            <single>editor</single>
-            <multiple>editors</multiple>
-          </term>
+        <single>editor</single>
+        <multiple>editors</multiple>
+      </term>
     </terms>
   </locale>
   <locale xml:lang="fr">
@@ -89,6 +89,10 @@
             </if>
             <else-if type="speech"/>
             <else-if type="book chapter" match="any">
+              <text variable="publisher-place"/>
+              <text variable="edition"/>
+            </else-if>
+            <else-if type="post-weblog" match="any">
               <text variable="publisher-place"/>
               <text variable="edition"/>
             </else-if>
@@ -205,7 +209,7 @@
       </if>
       <else>
         <choose>
-          <if type="article-journal book chapter paper-conference" match="none">
+          <if type="article-journal book chapter paper-conference post-weblog" match="none">
             <text variable="edition" suffix="."/>
           </if>
         </choose>
@@ -269,7 +273,7 @@
       </else-if>
       <else-if type="paper-conference" match="none">
         <group suffix=".">
-          <date form="text" date-parts="year-month-day" variable="issued"/>
+          <date form="text" variable="issued"/>
           <text macro="accessed-date" prefix=" "/>
         </group>
       </else-if>
