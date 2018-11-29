@@ -3,6 +3,24 @@ const moment = require('moment');
 const _ = require('lodash');
 const Handlebars = require('../../../app/modules/utils/templating');
 
+function translate(value, fn, key) {
+    if (value instanceof Array) {
+        return value.map((v) => {
+            if (key) {
+                v[key] = fn(v[key]);
+            } else {
+                v = fn(v);
+            }
+            return v;
+        });
+    }
+
+    if (key) {
+        return fn(value[key]);
+    }
+    return fn(value);
+}
+
 module.exports = {
     filters: {
         truncate(value, length, separator = ' ') {
@@ -43,25 +61,21 @@ module.exports = {
             }
             return '';
         },
-        translate(value, fn, key) {
-            if (value instanceof Array) {
-                return value.map((v) => {
-                    if (key) {
-                        v[key] = fn(v[key]);
-                    } else {
-                        v = fn(v);
-                    }
-                    return v;
-                });
-            }
-
-            if (key) {
-                return fn(value[key]);
-            }
-            return fn(value);
-        },
+        translate,
         render(value, obj = {}) {
             return Handlebars.compile(value)(obj);
+        },
+        need_translation(value, should_translate, hlang, lang) {
+            if (should_translate) {
+                return translate(translate(value, hlang), lang);
+            }
+            return value;
+        },
+        show_lang_key(value, show, key) {
+            if (show) {
+                return `<abbr title="${key}">${value}</abbr>`;
+            }
+            return value;
         },
     },
 

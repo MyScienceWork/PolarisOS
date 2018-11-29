@@ -314,7 +314,7 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return 'validate';
-            } else if (this.in_mode('review') || this.in_mode('modify')) {
+            } else if (this.in_mode('review') || this.in_mode('modify') || this.in_mode('modify-nf')) {
                 return 'update';
             }
             return 'create';
@@ -324,7 +324,7 @@ module.exports = {
                 return '';
             } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
                 return this.state.paths.validations.publication;
-            } else if (this.in_mode('review') || this.in_mode('modify')) {
+            } else if (this.in_mode('review') || this.in_mode('modify') || this.in_mode('modify-nf')) {
                 return this.state.paths.creations.publication;
             }
             return this.state.paths.creations.publication;

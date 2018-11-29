@@ -6,6 +6,8 @@ const EntitiesUtils = require('../../../utils/entities');
 const RepecPipeline = require('../pipeline/repec_pipeline');
 const URL = require('url');
 
+// NB: The extension .redif tells RePEC that files are encoded in UTF-8
+
 async function retrieve_repec_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
     if (!myconfig) {
@@ -104,7 +106,12 @@ async function export_repec_paper(ctx: Object): Promise<any> {
                 sort: [{ _uid: 'desc' }],
                 search_after,
                 projection: [],
-                where: { status: ['published', 'unpublished'] },
+                where: {
+                    $and: [
+                        { status: ['published', 'unpublished'] },
+                        { 'diffusion.rights.exports.repec': true },
+                    ],
+                },
             };
             const publications = await EntitiesUtils.search_and_get_sources('publication', query);
             if (publications.length === 0) {
@@ -113,7 +120,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
             search_after = [`publication#${publications[publications.length - 1]._id}`];
 
             list = publications.reduce((str, pub) => {
-                str += `<a href='wpaper/${pub._id}.rdf'>${pub._id}.rdf</a><br />`;
+                str += `<a href='wpaper/${pub._id}.redif'>${pub._id}.redif</a><br />`;
                 return str;
             }, list);
         }
@@ -122,8 +129,8 @@ async function export_repec_paper(ctx: Object): Promise<any> {
         return;
     }
 
-    ctx.type = 'application/rdf';
-    const id = paper.slice(0, paper.length - '.rdf'.length);
+    ctx.type = 'application/rdf; charset=utf-8';
+    const id = paper.slice(0, paper.length - '.redif'.length);
     const publication = await EntitiesUtils.retrieve_and_get_source('publication', id);
 
     if (!publication) {
@@ -158,7 +165,7 @@ async function export_repec(ctx: Object): Promise<any> {
         return;
     }
 
-    ctx.type = 'application/rdf';
+    ctx.type = 'application/rdf; charset=utf-8';
     if (rdf.startsWith(`${handle}arch`)) {
         ctx.body = Utils.find_value_with_path(repec_config, 'archive_template'.split('.'));
     } else {
