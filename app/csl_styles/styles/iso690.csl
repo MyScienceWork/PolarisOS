@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-29T18:48:59+00:00</updated>
+    <updated>2018-11-29T19:45:07+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -173,9 +173,15 @@
         </choose>
         <choose>
           <if variable="container-title">
+            <choose>
+              <if type="article article-journal article-newspaper" match="any">
+                <text value="In : "/>
+              </if>
+            </choose>
             <text variable="container-title" font-style="italic"/>
           </if>
           <else>
+            <text value="Présenté à : "/>
             <text variable="event" font-style="italic"/>
           </else>
         </choose>
@@ -283,7 +289,7 @@
           </if>
         </choose>
       </if>
-      <else>
+      <else-if type="paper-conference" match="none">
         <choose>
           <if variable="publisher">
             <text variable="publisher"/>
@@ -295,7 +301,7 @@
             <text value="s.n."/>
           </else>
         </choose>
-      </else>
+      </else-if>
     </choose>
   </macro>
   <macro name="accessed">
@@ -459,7 +465,6 @@
             <text macro="genre" suffix=". "/>
             <text macro="publisher-place" suffix=" : "/>
             <text macro="publisher" suffix=". "/>
-            <text macro="date" suffix=". "/>
             <text macro="page" suffix=". "/>
             <text macro="accessed" suffix=". "/>
             <text macro="url" suffix=". "/>
@@ -470,7 +475,6 @@
             <text macro="responsability" suffix=", "/>
             <text macro="year-date" suffix=". "/>
             <text macro="title" suffix=". "/>
-            <text value="type : Thèse de doctorat" suffix=" "/>
             <text macro="genre" suffix=". "/>
             <text macro="publisher-place" suffix=" : "/>
             <text macro="publisher" suffix=". "/>
