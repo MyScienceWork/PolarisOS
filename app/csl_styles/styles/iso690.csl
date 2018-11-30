@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-29T20:29:03+00:00</updated>
+    <updated>2018-11-30T08:13:51+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -290,7 +290,7 @@
             <text variable="publisher-place"/>
             <choose>
               <if type="post-weblog" match="any">
-                <text macro="publisher"/>
+                <text variable="edition" prefix=" : " suffix=". "/>
               </if>
             </choose>
           </if>
@@ -299,7 +299,7 @@
             <date form="text" variable="event-date" prefix=", "/>
           </else-if>
           <else>
-            <text value="s.l." text-case="capitalize-first"/>
+            <text value="s.l." text-case="capitalize-first" suffix=" "/>
           </else>
         </choose>
       </else>
@@ -327,7 +327,7 @@
             <text variable="publisher"/>
           </if>
           <else-if match="any" variable="edition">
-            <text variable="edition" prefix=" : " suffix=". "/>
+            <text variable="edition"/>
           </else-if>
           <else>
             <text value="s.n."/>
@@ -366,7 +366,7 @@
         <text variable="page" prefix="p. "/>
       </else-if>
       <else-if type="report patent" match="any">
-        <text variable="page" suffix=" p"/>
+        <text variable="page" prefix="p. " suffix=". "/>
       </else-if>
     </choose>
   </macro>
@@ -495,7 +495,7 @@
             <text macro="year-date" suffix=". "/>
             <text macro="title" suffix=". "/>
             <text macro="genre" suffix=". "/>
-            <text macro="publisher-place" suffix=" : "/>
+            <text macro="publisher-place" suffix=". "/>
             <text macro="publisher" suffix=". "/>
             <text macro="page" suffix=". "/>
             <text macro="accessed" suffix=". "/>
@@ -546,8 +546,9 @@
             <text macro="title" suffix=". "/>
             <text macro="genre" suffix=". "/>
             <text macro="edition" suffix=". "/>
-            <text macro="publisher-place" suffix=". "/>
+            <text macro="publisher-place" suffix=" : "/>
             <text macro="publisher" suffix=". "/>
+            <text macro="page"/>
             <text macro="accessed" suffix=". "/>
             <text macro="collection" suffix=". "/>
             <text macro="url" suffix=". "/>
