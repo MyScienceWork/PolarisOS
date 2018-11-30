@@ -17,7 +17,7 @@
     <issn>0032-4663</issn>
     <eissn>1957-7966</eissn>
     <summary>Le style de la revue de l'Ined Population.</summary>
-    <updated>2018-11-16T17:53:36+00:00</updated>
+    <updated>2018-11-30T12:21:35+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -25,9 +25,9 @@
   </locale>
   <locale xml:lang="fr">
     <terms>
-      <term name="editor" form="short">
-        <single>dir.</single>
-        <multiple>dir.</multiple>
+      <term name="container-author" form="short">
+        <single>éd.</single>
+        <multiple>éds.</multiple>
       </term>
     </terms>
   </locale>
@@ -66,6 +66,9 @@
       </substitute>
     </names>
   </macro>
+  <macro name="doi">
+    <text variable="DOI" prefix="DOI #POS#URLS" suffix="#POS#URLE"/>
+  </macro>
   <macro name="author-short">
     <names variable="author">
       <name form="short" and="text" delimiter=", " delimiter-precedes-last="never"/>
@@ -85,6 +88,11 @@
   <macro name="publisher-collection">
     <group delimiter=", ">
       <text variable="publisher-place"/>
+      <choose>
+        <if type="book chapter" match="any">
+          <text macro="edition"/>
+        </if>
+      </choose>
       <text variable="publisher"/>
       <text variable="collection-title"/>
       <text variable="issue"/>
@@ -154,6 +162,11 @@
   <macro name="number-of-pages">
     <group>
       <text variable="number-of-pages" suffix=" p"/>
+      <choose>
+        <if type="book" match="any">
+          <text variable="page" suffix=" p."/>
+        </if>
+      </choose>
     </group>
   </macro>
   <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="false" disambiguate-add-names="true" collapse="year">
@@ -188,11 +201,10 @@
         </if>
         <else-if type="book">
           <group delimiter=", ">
-            <text variable="title" font-style="italic"/>
+            <text variable="title" quotes="false" font-style="italic"/>
             <text macro="translator"/>
             <text variable="genre"/>
             <text macro="editor"/>
-            <text macro="edition"/>
             <text macro="publisher-collection"/>
             <text variable="medium"/>
             <group delimiter=" ">
@@ -223,11 +235,15 @@
           <text variable="title" quotes="true"/>
           <group prefix=", ">
             <text value="in" suffix=" " font-style="italic"/>
-            <text macro="edition" suffix=", "/>
+            <names variable="container-author">
+              <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
+                <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+              </name>
+              <label form="short" prefix=" (" suffix=".), "/>
+            </names>
             <group delimiter=", ">
               <text variable="container-title" font-style="italic"/>
               <text macro="translator"/>
-              <text macro="edition"/>
               <text macro="publisher-collection"/>
               <text macro="page"/>
             </group>
@@ -249,6 +265,17 @@
             <text macro="full-date"/>
             <text macro="translator"/>
             <text macro="page"/>
+          </group>
+        </else-if>
+        <else-if type="article" match="any">
+          <group delimiter=", ">
+            <text variable="title" quotes="true"/>
+            <text variable="collection-title"/>
+            <text variable="issue"/>
+            <text macro="page"/>
+            <text variable="publisher-place"/>
+            <text variable="URL"/>
+            <text variable="archive_location"/>
           </group>
         </else-if>
         <else>
@@ -278,6 +305,11 @@
               </if>
             </choose>
           </group>
+          <choose>
+            <if type="article-journal" match="any">
+              <text macro="doi" prefix=" "/>
+            </if>
+          </choose>
         </else>
       </choose>
     </layout>
