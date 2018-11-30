@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T14:32:11+00:00</updated>
+    <updated>2018-11-30T14:35:54+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -199,7 +199,7 @@
         <if type="legal_case" match="none">
           <choose>
             <if variable="DOI">
-              <text variable="DOI" prefix="#POS#URLShttps://doi.org/" suffix="#POS#URLE"/>
+              <text variable="DOI" prefix="Doi: #POS#URLS" suffix="#POS#URLE"/>
             </if>
             <else>
               <text variable="URL" prefix="(" suffix=")"/>
@@ -293,7 +293,7 @@
       <if type="article-journal">
         <choose>
           <if variable="volume">
-            <text variable="volume" prefix=" "/>
+            <text variable="volume" prefix=" " suffix=", "/>
             <group>
               <choose>
                 <if variable="issue">
@@ -301,9 +301,7 @@
                   <date form="text" variable="issued" prefix="(" suffix=") "/>
                 </if>
                 <else>
-                  <date variable="issued">
-                    <date-part name="month"/>
-                  </date>
+                  <date form="text" variable="issued" prefix="(" suffix=") "/>
                 </else>
               </choose>
             </group>
