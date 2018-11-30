@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T14:46:34+00:00</updated>
+    <updated>2018-11-30T14:52:41+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -423,12 +423,20 @@
     </choose>
   </macro>
   <macro name="container-prefix">
-    <text term="in" text-case="capitalize-first"/>
+    <text term="presented at" text-case="capitalize-first"/>
+    <choose>
+      <if type="paper-conference" match="any">
+        <group delimiter=", ">
+          <text variable="event" prefix=" "/>
+          <text variable="event-place"/>
+        </group>
+      </if>
+    </choose>
   </macro>
   <macro name="container-title">
     <choose>
       <if type="chapter paper-conference" match="any">
-        <text macro="container-prefix" suffix=" "/>
+        <text macro="container-prefix"/>
       </if>
     </choose>
     <choose>
