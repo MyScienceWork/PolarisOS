@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T14:35:54+00:00</updated>
+    <updated>2018-11-30T14:40:51+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -310,9 +310,7 @@
             <group delimiter=" " prefix=", ">
               <text term="issue" form="short"/>
               <text variable="issue"/>
-              <date variable="issued" prefix="(" suffix=")">
-                <date-part name="month"/>
-              </date>
+              <date form="text" variable="issued" prefix="(" suffix=")"/>
             </group>
           </else-if>
           <else>
