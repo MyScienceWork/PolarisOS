@@ -17,7 +17,7 @@
     <issn>0032-4663</issn>
     <eissn>1957-7966</eissn>
     <summary>Le style de la revue de l'Ined Population.</summary>
-    <updated>2018-11-30T12:46:25+00:00</updated>
+    <updated>2018-11-30T12:52:09+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -224,9 +224,6 @@
               <if variable="genre">
                 <text variable="genre"/>
               </if>
-              <else>
-                <text value="Thèse de doctorat"/>
-              </else>
             </choose>
             <text macro="edition"/>
             <text macro="publisher-collection"/>
@@ -276,6 +273,7 @@
             <text variable="issue"/>
             <text macro="page"/>
             <text variable="publisher-place"/>
+            <text variable="publisher"/>
             <text variable="URL"/>
             <text variable="archive_location"/>
           </group>
@@ -322,12 +320,12 @@
                 <text variable="publisher"/>
               </if>
             </choose>
+            <choose>
+              <if type="article-journal" match="any">
+                <text macro="doi" prefix=" "/>
+              </if>
+            </choose>
           </group>
-          <choose>
-            <if type="article-journal" match="any">
-              <text macro="doi" prefix=" "/>
-            </if>
-          </choose>
         </else>
       </choose>
     </layout>
