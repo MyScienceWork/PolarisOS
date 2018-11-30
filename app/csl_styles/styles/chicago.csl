@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-19T11:22:23+00:00</updated>
+    <updated>2018-11-30T13:10:58+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -72,7 +72,7 @@
           </names>
           <names variable="container-author" delimiter=", ">
             <label form="verb" suffix=" "/>
-            <name and="text" delimiter=", "/>
+            <name and="text" et-al-min="3" et-al-use-first="3"/>
           </names>
           <names variable="editor translator" delimiter=", ">
             <label form="verb" font-weight="normal" suffix=" "/>
@@ -120,28 +120,30 @@
     </choose>
   </macro>
   <macro name="contributors">
-    <group delimiter=". ">
+    <group delimiter=" ">
       <names variable="editor">
         <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
         <label form="short" prefix=", "/>
         <substitute>
           <names variable="director">
-            <name/>
+            <name and="text"/>
             <label form="short" plural="never" prefix=", "/>
           </names>
         </substitute>
         <substitute>
-          <names variable="translator">
+          <names variable="author">
             <name/>
-            <label form="short" prefix=", "/>
           </names>
         </substitute>
-        <substitute>
-          <text macro="substitute-title"/>
-          <text macro="title"/>
-        </substitute>
       </names>
-      <text macro="recipient"/>
+      <choose>
+        <if match="any" variable="translator">
+          <names variable="translator">
+            <label form="verb" suffix=" "/>
+            <name/>
+          </names>
+        </if>
+      </choose>
     </group>
   </macro>
   <macro name="contributors-short">
@@ -468,7 +470,7 @@
     <choose>
       <if variable="issued">
         <choose>
-          <if type="article-journal chapter" match="none">
+          <if type="article-journal chapter book" match="none">
             <group delimiter=" ">
               <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
               <date variable="issued">
