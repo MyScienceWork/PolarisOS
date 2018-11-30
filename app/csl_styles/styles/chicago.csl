@@ -25,13 +25,14 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T13:10:58+00:00</updated>
+    <updated>2018-11-30T14:32:11+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
     <terms>
       <term name="editor" form="verb">Sous la direction de</term>
       <term name="in">Dans</term>
+      <term name="container-author" form="verb">Sous la direction de</term>
     </terms>
   </locale>
   <locale xml:lang="en">
@@ -126,13 +127,13 @@
         <label form="short" prefix=", "/>
         <substitute>
           <names variable="director">
-            <name and="text"/>
+            <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
             <label form="short" plural="never" prefix=", "/>
           </names>
         </substitute>
         <substitute>
           <names variable="author">
-            <name/>
+            <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
           </names>
         </substitute>
       </names>
@@ -201,7 +202,7 @@
               <text variable="DOI" prefix="#POS#URLShttps://doi.org/" suffix="#POS#URLE"/>
             </if>
             <else>
-              <text variable="URL"/>
+              <text variable="URL" prefix="(" suffix=")"/>
             </else>
           </choose>
         </if>
@@ -461,7 +462,7 @@
       </choose>
     </group>
     <choose>
-      <if type="chapter" match="any">
+      <if type="chapter thesis" match="any">
         <date form="text" variable="issued" prefix=", "/>
       </if>
     </choose>
@@ -470,7 +471,7 @@
     <choose>
       <if variable="issued">
         <choose>
-          <if type="article-journal chapter book" match="none">
+          <if type="article-journal chapter book thesis" match="none">
             <group delimiter=" ">
               <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
               <date variable="issued">
