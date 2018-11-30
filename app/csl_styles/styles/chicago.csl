@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T14:40:51+00:00</updated>
+    <updated>2018-11-30T14:46:34+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -458,7 +458,7 @@
       </choose>
     </group>
     <choose>
-      <if type="chapter thesis" match="any">
+      <if type="chapter thesis article" match="any">
         <date form="text" variable="issued" prefix=", "/>
       </if>
     </choose>
@@ -467,7 +467,7 @@
     <choose>
       <if variable="issued">
         <choose>
-          <if type="article-journal chapter book thesis" match="none">
+          <if type="article-journal chapter book thesis article" match="none">
             <group delimiter=" ">
               <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
               <date variable="issued">
