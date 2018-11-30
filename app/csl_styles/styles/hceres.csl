@@ -18,15 +18,16 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-11-19T15:59:07+00:00</updated>
+    <updated>2018-11-30T15:14:33+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
-  <locale xml:lang="fr-FR">
+  <locale xml:lang="fr">
     <style-options punctuation-in-quote="true"/>
     <terms>
       <term name="editor">sous la dir. de</term>
       <term name="translator">trad. par</term>
       <term name="editor" form="short">dir.</term>
+      <term name="container-author" form="verb-short">sous la dir. de</term>
     </terms>
   </locale>
   <macro name="secondary-contributors">
@@ -60,7 +61,7 @@
           <choose>
             <if variable="author">
               <names variable="container-author editor" delimiter=", ">
-                <label plural="never" suffix=" "/>
+                <label form="verb-short" plural="never" suffix=" "/>
                 <name and="text" delimiter=", "/>
               </names>
             </if>
@@ -105,6 +106,14 @@
         <text macro="title"/>
       </substitute>
     </names>
+    <choose>
+      <if match="any" variable="translator">
+        <names variable="translator">
+          <label form="verb-short" prefix=", " suffix=" "/>
+          <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
+        </names>
+      </if>
+    </choose>
     <text macro="recipient"/>
   </macro>
   <macro name="contributors-short">
@@ -363,7 +372,7 @@
   </macro>
   <macro name="date">
     <choose>
-      <if variable="issued" type="article">
+      <if variable="issued">
         <date variable="issued">
           <date-part name="year"/>
         </date>
@@ -381,6 +390,7 @@
   </macro>
   <macro name="collection-title">
     <text variable="collection-title" text-case="title"/>
+    <text variable="issue" prefix=" "/>
     <text variable="collection-number" prefix=" "/>
     <choose>
       <if type="article" match="any">
