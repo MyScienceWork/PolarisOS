@@ -49,6 +49,7 @@ module.exports = {
     },
     methods: {
         browse() {
+            this.$emit('update:activeResults', true);
             this.send_information(this.state.sinks.creations.selected);
         },
         browse_list(term, name, type = 'publication') {
@@ -73,9 +74,7 @@ module.exports = {
             }
             this.state.active_abc = null;
             this.$emit('update:activeResults', true);
-            Vue.nextTick(() => {
-                this.send_information(this.state.sinks.creations.selected);
-            });
+            this.send_information(this.state.sinks.creations.selected);
         },
         post_hook_query_changed(query, old_query) {
             console.log(query, old_query);

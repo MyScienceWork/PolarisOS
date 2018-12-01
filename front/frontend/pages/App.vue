@@ -4,7 +4,7 @@
 </div>
 <div v-else id="app" :class="['hero', 'is-fullheight', $store.state.global_config.gui.css_template]">
     <router-view name="header" :menu="menu"></router-view>
-    <router-view></router-view>
+    <router-view :key="$route.path"></router-view>
     <router-view name="footer"></router-view>
 </div>
 </template>
