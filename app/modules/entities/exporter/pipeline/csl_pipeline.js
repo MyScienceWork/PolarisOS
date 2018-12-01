@@ -8,9 +8,10 @@ const Utils = require('../../../utils/utils');
 const types = {
     book: 'book',
     'other-blog': 'post-weblog',
+    'other-other': 'post-weblog',
     chapter: 'chapter',
     'other-software': 'article',
-    'book-proceedings': 'chapter',
+    'book-proceedings': 'book',
     conference: 'paper-conference',
     'book-chapter-dictionary-article': 'entry-dictionary',
     'other-figure': 'graphic',
@@ -85,10 +86,17 @@ const mapping = {
             }],
             picker: c => ({ issued: c }),
         },
+        'article': {
+            transformers: [(o) => {
+                const m = moment(o.issued);
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
+            }],
+            picker: c => ({ issued: c }),
+        },
         'article-journal': {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM')]]) } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
@@ -111,7 +119,7 @@ const mapping = {
                 const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
-                if (end) {
+                if (end && !end.isSame(start)) {
                     obj['event-date']['date-parts'].push([end.format('YYYY'), end.format('MM'), end.format('DD')]);
                 }
                 obj['event-date']['date-parts'] = intify_dateparts(obj['event-date']['date-parts']);
@@ -153,7 +161,7 @@ const mapping = {
                     o.ISBN = ISBN._id;
                 }
                 if (HANDLE) {
-                    o['archive-location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
+                    o['archive_location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
                 }
                 return o;
             },
