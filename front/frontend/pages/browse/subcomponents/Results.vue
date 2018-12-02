@@ -224,6 +224,25 @@
                         <p>{{_oa_find(email, 'body')}}</p>
                     </div>
                 </div>
+                <widget
+                    v-if="_oa_find(info, 'parents', []).length > 0 && showStatus"
+                    :collapsed="true"
+                >
+                    <span slot="title">{{lang('f_other_versions_exist')}}</span>
+                    <div slot="body">
+                        <ul>
+                            <li v-for="(parent, i) in _oa_find(info, 'parents', [])">
+                                <router-link 
+                                    :alt="lang('f_view_publication')" 
+                                    :title="lang('f_view_publication')" 
+                                    :to="`/view/${parent._id}`"
+                                >
+                                    {{lang('f_version')}} {{i+1}}
+                                </router-link>
+                            </li>
+                        </ul>
+                    </div>
+                </widget>
             </div>
         </article>
         <copy-requester

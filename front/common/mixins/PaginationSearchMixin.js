@@ -180,7 +180,7 @@ module.exports = {
                         }, []);
                     }
 
-                    acc[key.replace(dot_replacer, '.')] = val;
+                    acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
                     return acc;
                 }, {});
                 return result;
@@ -297,6 +297,8 @@ module.exports = {
 
             body.sort.push({ _uid: 'desc' });
 
+            console.log(body);
+
             this.$store.dispatch('search', {
                 path: this.searchPath,
                 form: this.resultSink,
@@ -345,7 +347,7 @@ module.exports = {
         },
         filters(nf) {
             this.state.seso.filters = nf;
-
+            console.log('filters', nf);
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);
             }

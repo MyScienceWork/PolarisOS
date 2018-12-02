@@ -75,6 +75,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
+                console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },

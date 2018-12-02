@@ -43,8 +43,7 @@
                             </div>
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
-                                <p>
-                                {{state.current_abstract.content}}
+                                <p v-html="$options.filters.nl2br(state.current_abstract.content)">
                                 </p>
                             </div>
                         </div>
@@ -134,6 +133,15 @@
                                     <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit', 'DD/MM/YYYY')}}</p>
                                     <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update', 'DD/MM/YYYY')}}</p>
                                     <p><strong v-html="lang('f_publication_deposit_version')"></strong> {{content_item.version}} </p>
+                                    <template v-if="last_version_link">
+                                    <p>
+                                    <span>{{lang('f_more_recent_version_exists')}}</span> <router-link
+                                        class="has-text-purple" 
+                                        v-html="lang('f_click_here_see_most_recent_version')"
+                                        :to="last_version_link"
+                                        ></router-link>
+                                    </p>
+                                    </template>
                                 </div>
                             </widget>
                         </div>

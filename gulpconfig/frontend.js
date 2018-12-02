@@ -75,6 +75,10 @@ class GulpFrontend {
         this.css_files = [
         ];
 
+        this.css_biblio_files = [
+            './front/frontend/styles/biblio-base.css'
+        ];
+
         this.scriptsCount = 0;
     }
 
@@ -163,7 +167,7 @@ class GulpFrontend {
 
     watch() {
         gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], ['front-scripts']);
-        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], ['front-styles']);
+        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], ['front-styles', 'front-biblio-styles']);
         gulp.watch(['./front/frontend/views/*.*'], ['front-views']);
     }
 
@@ -178,6 +182,16 @@ class GulpFrontend {
         .pipe(autoprefixer())
         .pipe(gulpif(this.isProduction, cssmin()))
         .pipe(gulp.dest(this.PUB_LOCATIONS.css));
+    }
+
+    createBiblioStyles() {
+        gulp
+            .src([...this.css_biblio_files])
+            .pipe(plumber())
+            .pipe(concat('biblio.css'))
+            .pipe(autoprefixer())
+            .pipe(gulpif(this.isProduction, cssmin()))
+            .pipe(gulp.dest(this.PUB_LOCATIONS.css));
     }
 
     createStyles() {

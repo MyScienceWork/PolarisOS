@@ -1,0 +1,50 @@
+html, body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #222;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+a {
+    color: #08C;
+    text-decoration: none;
+}
+a:hover {
+    color: #005580;
+    text-decoration: underline;
+}
+h2 {
+    font-weight: 400;
+    margin: 0;
+    padding: 1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #6d8fa2;
+}
+.csl-bib-body {
+    padding: 1em;
+    border-right: 0 none;
+    overflow: auto;
+    cursor: default;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.4em;
+    background-color: #fff;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    font-size: 13px;
+    margin-left: 50px;
+    max-width: 100%;
+    width: 95%;
+    display: block;
+    overflow-x: hidden;
+}
+.csl-bib-body {
+    border: 1px solid rgba(255,255,255,0);
+    -webkit-transition: background 150ms ease-out, border 150ms ease-out, box-shadow 150ms ease-out;
+    border-radius: 3px;
+}
+
+.csl-entry {
+    padding-left: 50px;
+    text-indent: -50px;
+    margin-right: 50px;
+}

@@ -77,6 +77,9 @@ module.exports = {
             }
             return value;
         },
+        nl2br(value) {
+            return value.replace(/\n/g, '<br />');
+        },
     },
 
 };
