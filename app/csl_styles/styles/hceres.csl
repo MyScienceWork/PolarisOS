@@ -18,7 +18,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-11-30T15:14:33+00:00</updated>
+    <updated>2018-12-03T10:54:59+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -62,14 +62,6 @@
             <if variable="author">
               <names variable="container-author editor" delimiter=", ">
                 <label form="verb-short" plural="never" suffix=" "/>
-                <name and="text" delimiter=", "/>
-              </names>
-            </if>
-          </choose>
-          <choose>
-            <if variable="author editor" match="any">
-              <names variable="translator">
-                <label form="short" plural="never" suffix=" "/>
                 <name and="text" delimiter=", "/>
               </names>
             </if>
@@ -149,7 +141,7 @@
           <text macro="archive"/>
         </else-if>
       </choose>
-      <text variable="DOI" prefix="doi:"/>
+      <text variable="DOI" prefix="doi:#POS#URLS" suffix="#POS#URLE"/>
       <choose>
         <if variable="DOI issued" match="none">
           <choose>
@@ -194,11 +186,6 @@
       <else>
         <text variable="title" text-case="title" quotes="true" suffix="."/>
       </else>
-    </choose>
-    <choose>
-      <if type="thesis" match="any">
-        <text value=" type : Thèse de doctorat"/>
-      </if>
     </choose>
   </macro>
   <macro name="edition">
@@ -352,7 +339,7 @@
     </choose>
   </macro>
   <macro name="publisher">
-    <group delimiter=": ">
+    <group delimiter=", ">
       <choose>
         <if match="any" variable="publisher-place" type="article article-journal thesis webpage">
           <text variable="publisher-place"/>
@@ -364,7 +351,7 @@
         </if>
       </choose>
       <choose>
-        <if type="book chapter" match="any">
+        <if type="book chapter post-weblog" match="any">
           <text variable="edition"/>
         </if>
       </choose>
@@ -456,6 +443,7 @@
       </else-if>
       <else-if type="article-newspaper article-magazine" match="any">
         <text macro="day-month" prefix=", "/>
+        <text variable="page" prefix=", p."/>
       </else-if>
       <else>
         <group prefix=". " delimiter=", ">
