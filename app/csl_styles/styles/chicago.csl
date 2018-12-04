@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-04T16:38:19+00:00</updated>
+    <updated>2018-12-04T17:09:21+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -301,8 +301,8 @@
             <group>
               <choose>
                 <if variable="issue">
-                  <text variable="issue" prefix=", no " suffix=" "/>
-                  <date form="text" variable="issued" prefix="(" suffix=") "/>
+                  <text variable="issue" prefix="no " suffix=" "/>
+                  <date form="text" variable="issued" prefix="(" suffix="), "/>
                 </if>
                 <else>
                   <date form="text" variable="issued" prefix="(" suffix=") "/>
@@ -688,7 +688,7 @@
         </if>
       </choose>
       <text macro="locators-article"/>
-      <text macro="access" prefix=". "/>
+      <text macro="access"/>
     </layout>
   </bibliography>
 </style>
