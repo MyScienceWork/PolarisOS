@@ -17,7 +17,7 @@
     <issn>0032-4663</issn>
     <eissn>1957-7966</eissn>
     <summary>Le style de la revue de l'Ined Population.</summary>
-    <updated>2018-12-03T11:14:59+00:00</updated>
+    <updated>2018-12-04T15:22:25+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -28,6 +28,10 @@
       <term name="container-author" form="short">
         <single>éd.</single>
         <multiple>éds.</multiple>
+      </term>
+      <term name="container-translator" form="short">
+        <single>trad.</single>
+        <multiple>trad.</multiple>
       </term>
     </terms>
   </locale>
@@ -43,34 +47,35 @@
     </names>
   </macro>
   <macro name="author-last">
-    <names variable="editor">
-      <name name-as-sort-order="all" sort-separator=" " delimiter=", " delimiter-precedes-last="always">
-        <name-part name="family" font-variant="small-caps" font-weight="bold"/>
-      </name>
-      <label form="short" prefix=" (" suffix=")" text-case="lowercase"/>
-      <substitute>
-        <names variable="director">
-          <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
-            <name-part name="family" font-variant="small-caps" font-weight="bold"/>
-          </name>
-          <label form="short" text-case="lowercase" prefix=" (" suffix=")"/>
-          <substitute>
-            <names variable="author">
-              <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
-                <name-part name="family" font-variant="small-caps" font-weight="bold"/>
-              </name>
-              <label form="short"/>
-            </names>
-          </substitute>
-        </names>
-      </substitute>
-    </names>
-    <names variable="translator" prefix=", ">
-      <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
-        <name-part name="family" font-variant="small-caps" font-weight="bold"/>
-      </name>
-      <label form="short" prefix=" (" suffix=")"/>
-    </names>
+    <group delimiter=", ">
+      <names variable="author">
+        <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
+          <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+        </name>
+        <label form="short"/>
+      </names>
+      <names variable="editor">
+        <name name-as-sort-order="all" sort-separator=" " delimiter=", " delimiter-precedes-last="always">
+          <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+        </name>
+        <label form="short" prefix=" (" suffix=")" text-case="lowercase"/>
+        <substitute>
+          <names variable="director">
+            <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
+              <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+            </name>
+            <label form="short" text-case="lowercase" prefix=" (" suffix=")"/>
+            <substitute/>
+          </names>
+        </substitute>
+      </names>
+      <names variable="translator" prefix=", ">
+        <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
+          <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+        </name>
+        <label form="short" prefix=" (" suffix=")"/>
+      </names>
+    </group>
   </macro>
   <macro name="doi">
     <text variable="DOI" prefix="DOI #POS#URLS" suffix="#POS#URLE"/>
@@ -205,6 +210,7 @@
             <text variable="edition"/>
             <text macro="page"/>
             <text variable="URL"/>
+            <text variable="container-title"/>
           </group>
         </if>
         <else-if type="book">
@@ -240,6 +246,12 @@
           <group prefix=", ">
             <text value="in" suffix=" " font-style="italic"/>
             <names variable="container-author">
+              <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
+                <name-part name="family" font-variant="small-caps" font-weight="bold"/>
+              </name>
+              <label form="short" prefix=" (" suffix=".), "/>
+            </names>
+            <names variable="container-translator">
               <name delimiter-precedes-last="always" name-as-sort-order="all" sort-separator=" ">
                 <name-part name="family" font-variant="small-caps" font-weight="bold"/>
               </name>
