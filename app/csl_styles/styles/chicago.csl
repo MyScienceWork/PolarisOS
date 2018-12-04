@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-04T17:28:40+00:00</updated>
+    <updated>2018-12-04T18:05:10+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -33,6 +33,10 @@
       <term name="editor" form="verb">Sous la direction de</term>
       <term name="in">Dans</term>
       <term name="container-author" form="verb">Sous la direction de</term>
+      <term name="container-translator" form="verb">
+        <single>traduit par</single>
+        <multiple>traduit par</multiple>
+      </term>
     </terms>
   </locale>
   <locale xml:lang="en">
@@ -66,18 +70,17 @@
   <macro name="container-contributors">
     <choose>
       <if type="chapter paper-conference" match="any">
-        <group prefix=", " delimiter=", ">
+        <group delimiter=", " prefix=". ">
           <names variable="director">
             <label form="verb"/>
             <name and="text"/>
           </names>
           <names variable="container-author" delimiter=", ">
-            <label form="verb" suffix=" "/>
             <name and="text" et-al-min="3" et-al-use-first="3"/>
           </names>
-          <names variable="editor translator" delimiter=", ">
+          <names variable="container-translator" delimiter=", ">
             <label form="verb" font-weight="normal" suffix=" "/>
-            <name and="text" delimiter=", "/>
+            <name and="text" et-al-min="3" et-al-use-first="3"/>
           </names>
         </group>
       </if>
@@ -124,7 +127,7 @@
     <group delimiter=" ">
       <choose>
         <if type="report" match="none">
-          <names variable="editor">
+          <names variable="author">
             <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
             <label form="short" prefix=", "/>
             <substitute>
@@ -134,7 +137,7 @@
               </names>
             </substitute>
             <substitute>
-              <names variable="author">
+              <names variable="editor">
                 <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
               </names>
             </substitute>
@@ -425,7 +428,6 @@
     </choose>
   </macro>
   <macro name="container-prefix">
-    <text term="presented at" text-case="capitalize-first"/>
     <choose>
       <if type="paper-conference" match="any">
         <group delimiter=", ">
@@ -448,7 +450,7 @@
       </if>
       <else-if type="legal_case" match="none">
         <group delimiter=" ">
-          <text variable="container-title" text-case="title" font-style="italic"/>
+          <text variable="container-title" text-case="title" font-style="italic" prefix="Dans "/>
           <choose>
             <if type="post-weblog">
               <text value="(blog)"/>
@@ -470,7 +472,7 @@
     </group>
     <choose>
       <if type="chapter thesis article" match="any">
-        <date form="text" variable="issued" prefix=", "/>
+        <date form="text" variable="issued" prefix=", " suffix=" "/>
       </if>
     </choose>
   </macro>
