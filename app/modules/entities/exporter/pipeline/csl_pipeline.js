@@ -364,7 +364,7 @@ const mapping = {
                 const book_contribs_translator = contribs.filter(c => c._id && c.role.label === 'l_contrib_translator').map(c => ({ family: c._id.lastname,
                     given: c._id.firstname }));
                 final['container-author'] = book_contribs;
-                final['container-author-translator'] = book_contribs_translator;
+                final['container-translator'] = book_contribs_translator;
                 return final;
             },
         },

@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-12-04T10:14:20+00:00</updated>
+    <updated>2018-12-04T14:14:27+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -32,9 +32,9 @@
         <single>éd</single>
         <multiple>éds</multiple>
       </term>
-      <term name="container-author-translator" form="short">
-        <single>trans</single>
-        <multiple>trans</multiple>
+      <term name="container-translator" form="short">
+        <single>trad</single>
+        <multiple>trad</multiple>
       </term>
     </terms>
   </locale>
@@ -64,34 +64,32 @@
       <label form="short" prefix=" (" suffix=".)"/>
     </names>
   </macro>
-  <macro name="translator">
-    <names variable="translator">
-      <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
-        <name-part name="family" text-case="uppercase"/>
-        <name-part name="given"/>
-      </name>
-      <label prefix=" (" form="short" suffix=".)"/>
-    </names>
-  </macro>
+  <macro name="translator"/>
   <macro name="responsability">
     <choose>
       <if type="report" match="none">
         <choose>
           <if variable="author editor translator director" match="any">
-            <choose>
-              <if variable="editor">
-                <text macro="editor"/>
-              </if>
-              <else-if variable="director">
-                <text macro="director"/>
-              </else-if>
-              <else-if match="any" variable="translator">
-                <text macro="translator"/>
-              </else-if>
-              <else>
-                <text macro="author"/>
-              </else>
-            </choose>
+            <group delimiter=", ">
+              <choose>
+                <if variable="editor">
+                  <text macro="editor"/>
+                </if>
+                <else-if variable="director">
+                  <text macro="director"/>
+                </else-if>
+                <else>
+                  <text macro="author"/>
+                </else>
+              </choose>
+              <names variable="translator">
+                <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
+                  <name-part name="family" text-case="uppercase"/>
+                  <name-part name="given"/>
+                </name>
+                <label prefix=" (" form="short" suffix=".)"/>
+              </names>
+            </group>
           </if>
           <else>
             <text term="anonymous" text-case="uppercase"/>
@@ -139,7 +137,7 @@
       </else>
     </choose>
   </macro>
-  <macro name="container-author">
+  <macro name="container-author-macro">
     <names variable="container-author">
       <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
         <name-part name="family" text-case="uppercase"/>
@@ -148,8 +146,8 @@
       <label form="short" prefix=" (" suffix=".)"/>
     </names>
   </macro>
-  <macro name="container-author-translator">
-    <names variable="container-author-translator">
+  <macro name="container-translator-macro">
+    <names variable="container-translator">
       <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
         <name-part name="family" text-case="uppercase"/>
         <name-part name="given"/>
@@ -159,16 +157,18 @@
   </macro>
   <macro name="container-responsability">
     <choose>
-      <if variable="container-author container-author-translator editor translator" match="any">
+      <if variable="container-author container-translator editor translator" match="any">
         <choose>
-          <if variable="container-author">
+          <if variable="container-author container-translator" match="any">
             <choose>
               <if type="chapter" match="any">
                 <text value="In : "/>
               </if>
             </choose>
-            <text macro="container-author"/>
-            <text macro="container-author-translator" prefix=" "/>
+            <group delimiter=" ">
+              <text macro="container-author-macro"/>
+              <text macro="container-translator-macro"/>
+            </group>
           </if>
           <else-if variable="editor">
             <text macro="editor"/>
@@ -203,7 +203,7 @@
       <else-if type="paper-conference speech chapter article-journal article-magazine article-newspaper post-weblog post webpage broadcast" match="any">
         <text variable="title" suffix=". "/>
         <choose>
-          <if variable="container-author editor translator" match="any">
+          <if variable="container-author container-translator editor translator" match="any">
             <text macro="container-responsability"/>
             <choose>
               <if variable="container-title event" match="any">
