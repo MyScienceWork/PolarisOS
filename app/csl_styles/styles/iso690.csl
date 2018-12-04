@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-11-30T08:13:51+00:00</updated>
+    <updated>2018-12-04T10:06:33+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -31,6 +31,10 @@
       <term name="container-author" form="short">
         <single>éd</single>
         <multiple>éds</multiple>
+      </term>
+      <term name="container-author-translator" form="short">
+        <single>trans</single>
+        <multiple>trans</multiple>
       </term>
     </terms>
   </locale>
@@ -144,6 +148,15 @@
       <label form="short" prefix=" (" suffix=".)"/>
     </names>
   </macro>
+  <macro name="container-author-translator">
+    <names variable="container-author-translator">
+      <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
+        <name-part name="family" text-case="uppercase"/>
+        <name-part name="given"/>
+      </name>
+      <label form="short" prefix=" (" suffix=".)"/>
+    </names>
+  </macro>
   <macro name="container-responsability">
     <choose>
       <if variable="container-author editor translator" match="any">
@@ -155,6 +168,7 @@
               </if>
             </choose>
             <text macro="container-author"/>
+            <text macro="container-author-translator" prefix=" "/>
           </if>
           <else-if variable="editor">
             <text macro="editor"/>
