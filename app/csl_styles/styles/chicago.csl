@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-04T16:21:35+00:00</updated>
+    <updated>2018-12-04T16:33:11+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -433,6 +433,7 @@
         <group delimiter=", ">
           <text variable="event" prefix=" "/>
           <text variable="event-place"/>
+          <date form="text" date-parts="year-month-day" variable="issued"/>
         </group>
       </if>
     </choose>
@@ -479,7 +480,7 @@
     <choose>
       <if variable="issued">
         <choose>
-          <if type="article-journal chapter book thesis article report post-weblog article-newspaper" match="none">
+          <if type="article-journal chapter book thesis article report post-weblog article-newspaper paper-conference" match="none">
             <group delimiter=" ">
               <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
               <date variable="issued">
