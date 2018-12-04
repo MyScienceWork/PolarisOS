@@ -18,7 +18,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-12-03T11:04:02+00:00</updated>
+    <updated>2018-12-04T18:43:25+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -28,6 +28,15 @@
       <term name="translator">trad. par</term>
       <term name="editor" form="short">dir.</term>
       <term name="container-author" form="verb-short">sous la dir. de</term>
+      <term name="container-translator" form="verb-short">trad. par</term>
+      <term name="editor" form="short">
+        <single>éd</single>
+        <multiple>éds</multiple>
+      </term>
+      <term name="director" form="short">
+        <single>dir</single>
+        <multiple>dir</multiple>
+      </term>
     </terms>
   </locale>
   <macro name="secondary-contributors">
@@ -59,8 +68,16 @@
       <if type="chapter paper-conference" match="any">
         <group prefix=", " delimiter=", ">
           <choose>
-            <if variable="author">
-              <names variable="container-author editor" delimiter=", ">
+            <if variable="container-author">
+              <names variable="container-author" delimiter=", ">
+                <label form="verb-short" plural="never" suffix=" "/>
+                <name and="text" delimiter=", "/>
+              </names>
+            </if>
+          </choose>
+          <choose>
+            <if match="any" variable="container-translator">
+              <names variable="container-translator" delimiter=", ">
                 <label form="verb-short" plural="never" suffix=" "/>
                 <name and="text" delimiter=", "/>
               </names>
@@ -89,11 +106,17 @@
     </names>
   </macro>
   <macro name="contributors">
-    <names variable="author">
+    <names variable="editor">
       <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
-      <label form="short" plural="never" prefix=", "/>
+      <label form="short" prefix=", "/>
       <substitute>
-        <names variable="editor"/>
+        <names variable="director">
+          <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
+          <label form="short" prefix=", "/>
+        </names>
+      </substitute>
+      <substitute>
+        <names variable="author"/>
         <names variable="translator"/>
         <text macro="title"/>
       </substitute>
@@ -126,7 +149,6 @@
   </macro>
   <macro name="archive">
     <group delimiter=". ">
-      <text variable="archive_location" text-case="capitalize-first"/>
       <text variable="archive"/>
       <text variable="archive-place"/>
     </group>
@@ -167,6 +189,7 @@
       <choose>
         <if type="legal_case" match="none">
           <text variable="URL"/>
+          <text variable="archive_location" text-case="capitalize-first"/>
         </if>
       </choose>
     </group>
@@ -346,7 +369,7 @@
   <macro name="publisher">
     <group delimiter=", ">
       <choose>
-        <if match="any" variable="publisher-place" type="article article-journal thesis webpage">
+        <if match="any" type="article article-journal thesis webpage">
           <text variable="publisher-place"/>
         </if>
       </choose>
@@ -356,9 +379,13 @@
         </if>
       </choose>
       <choose>
-        <if type="book chapter post-weblog" match="any">
+        <if type="chapter post-weblog" match="any">
           <text variable="edition"/>
         </if>
+        <else-if type="book" match="any">
+          <text variable="publisher-place"/>
+          <text variable="edition"/>
+        </else-if>
       </choose>
     </group>
   </macro>
@@ -384,11 +411,6 @@
     <text variable="collection-title" text-case="title"/>
     <text variable="issue" prefix=" "/>
     <text variable="collection-number" prefix=" "/>
-    <choose>
-      <if type="article" match="any">
-        <text variable="issue" prefix=" "/>
-      </if>
-    </choose>
   </macro>
   <macro name="event">
     <group>
