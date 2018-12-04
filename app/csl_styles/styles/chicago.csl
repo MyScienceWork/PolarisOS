@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-04T16:33:11+00:00</updated>
+    <updated>2018-12-04T16:38:19+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -311,8 +311,8 @@
             </group>
           </if>
           <else-if variable="issue">
-            <group delimiter=" " prefix=", ">
-              <text term="issue" form="short"/>
+            <group delimiter=" " prefix=", " suffix=", ">
+              <text value="n"/>
               <text variable="issue"/>
               <date form="text" variable="issued" prefix="(" suffix=")"/>
             </group>
