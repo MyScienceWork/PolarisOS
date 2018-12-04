@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-11-30T15:00:23+00:00</updated>
+    <updated>2018-12-04T16:17:25+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -122,21 +122,25 @@
   </macro>
   <macro name="contributors">
     <group delimiter=" ">
-      <names variable="editor">
-        <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
-        <label form="short" prefix=", "/>
-        <substitute>
-          <names variable="director">
+      <choose>
+        <if type="report" match="none">
+          <names variable="editor">
             <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
-            <label form="short" plural="never" prefix=", "/>
+            <label form="short" prefix=", "/>
+            <substitute>
+              <names variable="director">
+                <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
+                <label form="short" plural="never" prefix=", "/>
+              </names>
+            </substitute>
+            <substitute>
+              <names variable="author">
+                <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
+              </names>
+            </substitute>
           </names>
-        </substitute>
-        <substitute>
-          <names variable="author">
-            <name and="text" delimiter-precedes-last="always" name-as-sort-order="first"/>
-          </names>
-        </substitute>
-      </names>
+        </if>
+      </choose>
       <choose>
         <if match="any" variable="translator">
           <names variable="translator">
@@ -475,7 +479,7 @@
     <choose>
       <if variable="issued">
         <choose>
-          <if type="article-journal chapter book thesis article" match="none">
+          <if type="article-journal chapter book thesis article report post-weblog" match="none">
             <group delimiter=" ">
               <date variable="original-date" form="text" date-parts="year" prefix="(" suffix=")"/>
               <date variable="issued">
@@ -632,7 +636,7 @@
           <text macro="publisher"/>
         </group>
         <choose>
-          <if type="book" match="any">
+          <if type="book report post-weblog" match="any">
             <date form="text" variable="issued" prefix=", "/>
           </if>
         </choose>
