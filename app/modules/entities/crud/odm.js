@@ -71,6 +71,10 @@ class ODM {
         return this.db.source || {};
     }
 
+    get client(): Object {
+        return this._client;
+    }
+
     /**
      * Process an entity and create an {ODM} object.
      *

@@ -61,6 +61,12 @@ module.exports = {
                                     truncate: {
                                         type: 'integer',
                                     },
+                                    translate: {
+                                        type: 'boolean',
+                                    },
+                                    show_lang_key: {
+                                        type: 'boolean',
+                                    },
                                 },
                             },
                         },

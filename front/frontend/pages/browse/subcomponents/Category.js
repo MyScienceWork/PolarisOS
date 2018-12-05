@@ -136,11 +136,16 @@ module.exports = {
                     const keys = agg_info.map(ai => ai.key);
 
                     if (entity != null && entity.trim() !== '') {
+                        let _where = { _id: keys };
+                        if (entity === 'laboratory') {
+                            _where = {
+                                $and: [{ _id: keys }, { 'system.show_in_browse': true }],
+                            };
+                        }
+
                         const body = {
                             projection: [label],
-                            where: {
-                                _id: keys,
-                            },
+                            where: _where,
                             size: 1000,
                         };
                         if (query.order) {

@@ -135,6 +135,16 @@
                                                 type="text" 
                                                 :form="state.sinks.creations.entity"
                                             />
+                                            <finput :name="`${props.fname}.${props.order}.translate`" 
+                                                :label="lang('l_view_translated_item')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.order}.show_lang_key`" 
+                                                :label="lang('l_show_lang_key')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
                                             <finput :name="`${props.fname}.${props.order}.centered`" 
                                                 :label="lang('l_column_content_centered')" 
                                                 type="checkbox" 

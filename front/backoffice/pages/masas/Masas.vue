@@ -33,6 +33,7 @@
                         ajax-url="/api/public/v2/authors/search"
                         ajax-value-url="/api/public/v2/authors/search"
                         :ajax-filters="[{is_ined: true}]"
+                        search-fields="fullname.__pauc"
                     />        
                     <fselect
                         :form="this.state.sinks.creations.export"
@@ -41,11 +42,10 @@
                         :placeholder="lang('l_lab_bexport')"
                         field-label="name"
                         field-value="_id"
-                        :options="content(state.sinks.reads.laboratory)"
+                        :options="content(state.sinks.reads.laboratory) | translate(lang, 'name')"
                         v-if="state.activeSelectTab === 1"
                         key="select-laboratory"
                         :multi="true"
-                        :translatable="true"
                     />        
                     <fselect
                         :form="this.state.sinks.creations.export"
@@ -54,11 +54,10 @@
                         :placeholder="lang('l_project_bexport')"
                         field-label="label"
                         field-value="_id"
-                        :options="content(state.sinks.reads.project)"
+                        :options="content(state.sinks.reads.project) | translate(hlang, 'label')"
                         key="select-project"
                         v-if="state.activeSelectTab === 2"
                         :multi="true"
-                        :translatable="true"
                     />        
                     <fselect
                         :form="this.state.sinks.creations.export"

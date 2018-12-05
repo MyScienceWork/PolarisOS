@@ -13,7 +13,10 @@ module.exports = {
                     },
                     gui: {
                         properties: {
-                            logo: {
+                            logo_left: {
+                                type: 'keyword',
+                            },
+                            logo_center: {
                                 type: 'keyword',
                             },
                             css_template: {
@@ -82,6 +85,23 @@ module.exports = {
                                                 type: 'date',
                                             },
 
+                                        },
+                                    },
+                                },
+                            },
+                            repec: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    archive_template: {
+                                        type: 'text',
+                                    },
+                                    series_template: {
+                                        properties: {
+                                            wpaper: {
+                                                type: 'text',
+                                            },
                                         },
                                     },
                                 },

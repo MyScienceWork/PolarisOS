@@ -6,6 +6,7 @@ const config = require('../../../../config');
 const RouterUtils = require('../../../utils/router');
 const MyController = require('../controllers');
 const MyControllerMasas = require('../controllers/masas');
+const MyControllerRepec = require('../controllers/repec');
 const SwordController = require('../controllers/sword');
 const Middlewares = require('../middlewares').M;
 
@@ -26,6 +27,14 @@ function routes(router: KoaRouter) {
         MyControllerMasas.export_masas]));
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
+    router.get('/api/private/repec/:handle',
+		compose([...get_mware, MyControllerRepec.export_repec]));
+    router.get('/api/private/repec/:handle/wpaper',
+        compose([...get_mware, MyControllerRepec.export_repec_paper]));
+    router.get('/api/private/repec/:handle/:rdf',
+		compose([...get_mware, MyControllerRepec.export_repec]));
+    router.get('/api/private/repec/:handle/wpaper/:rdf',
+		compose([...get_mware, MyControllerRepec.export_repec_paper]));
 }
 
 module.exports = routes;

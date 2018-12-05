@@ -81,7 +81,7 @@ const mapping = {
         __default: {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), 10]]) } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
@@ -269,6 +269,10 @@ const mapping = {
             transformers: [],
             picker: async v => ({ edition: v }),
         },
+        article: {
+            transformers: [],
+            picker: async v => ({ publisher: v }),
+        },
     },
     'denormalization.journal': {
         __default: {
@@ -316,8 +320,9 @@ const mapping = {
                 const illustrators = Utils.filterIndexes(pub.contributors, c => c.role === 'illustrator');
                 const translators = Utils.filterIndexes(pub.contributors, c => c.role === 'translator');
                 const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
+                const collaborators = Utils.filterIndexes(pub.contributors, c => c.role === 'collaborator');
 
-                const fallback_authors = authors.concat(coordinators).concat(directors);
+                const fallback_authors = authors.concat(coordinators).concat(directors).concat(collaborators);
                 fallback_authors.sort();
                 const all = { author: fallback_authors,
                     director: directors,

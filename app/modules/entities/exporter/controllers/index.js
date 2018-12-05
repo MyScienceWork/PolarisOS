@@ -22,6 +22,7 @@ const Logger = require('../../../../logger');
 const URLUtils = require('../../../utils/url');
 const Json2Xml = require('json2xml');
 const XLSXParser = require('node-xlsx');
+const BibliographicExporter = require('../bibliographic_exporter');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -515,338 +516,36 @@ function export_information(): Function {
     };
 }
 
-async function process_aggregations(aggs: Object, lang: string): Promise<Array> {
-    const root_key = Object.keys(aggs).length > 0 ? Object.keys(aggs)[0] : null;
-
-    if (!root_key) {
-        return [];
-    }
-
-    const buckets = aggs[root_key].buckets || [];
-
-    if (buckets.length === 0) {
-        return [];
-    }
-
-    let typology_children = [];
-    if (root_key.indexOf('subtype') === -1) {
-        const publications = buckets.map((bucket) => {
-            const key = bucket.key_as_string || bucket.key;
-            const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
-            return { key,
-                publications: pubs.map((p) => {
-                    p._source._id = p._id;
-                    return { source: p._source };
-                }) };
-        });
-        return publications;
-    }
-
-    const typologies = await EntitiesUtils.search_and_get_sources('typology', {
-        size: 100,
-        where: {},
-    });
-    const children = _.flatten(typologies.map(type => type.children));
-    children.sort((a, b) => a.order_view.localeCompare(b.order_view));
-    const children_lang_keys = children.map(child => child.label);
-    const lang_items = await LangUtils.get_language_values_from_langs_and_keys(children_lang_keys, [lang]);
-
-    typology_children = children.reduce((obj, child) => {
-        const it = lang_items[lang][child.label] || child.label;
-        child.label = it;
-        obj[child.name] = child;
-        return obj;
-    }, {});
-
-
-    let publications = [];
-    if (root_key.indexOf('subtype') !== -1 && root_key.indexOf('year') !== -1) {
-        publications = buckets.map((bucket) => {
-            const key = bucket.key_as_string || bucket.key;
-            const infos = bucket.subtype.buckets.map((subbucket) => {
-                const subkey = subbucket.key_as_string || subbucket.key;
-                const pubs = Utils.find_value_with_path(subbucket, 'publications.hits.hits'.split('.')) || [];
-                return {
-                    key: typology_children[subkey] ? typology_children[subkey].label : key,
-                    order_view: typology_children[subkey] ? typology_children[subkey].order_view : '0',
-                    publications: pubs.map((p) => {
-                        p._source._id = p._id;
-                        return { source: p._source };
-                    }) };
-            });
-            infos.sort((a, b) => a.order_view.localeCompare(b.order_view));
-
-            if (infos.length === 0) {
-                return null;
-            }
-            return { key, information: infos };
-        }).filter(i => i != null);
-    } else {
-        publications = buckets.map((bucket) => {
-            const key = bucket.key_as_string || bucket.key;
-            const pubs = Utils.find_value_with_path(bucket, 'publications.hits.hits'.split('.')) || [];
-            return {
-                key: typology_children[key] ? typology_children[key].label : key,
-                order_view: typology_children[key] ? typology_children[key].order_view : '0',
-                publications: pubs.map((p) => {
-                    p._source._id = p._id;
-                    return { source: p._source };
-                }) };
-        });
-
-        publications.sort((a, b) => a.order_view.localeCompare(b.order_view));
-    }
-    return publications;
-}
-
-async function format_bibliography_results(publications: Array<Object>,
-        lang: string,
-        csl: string,
-        info: Object, memoizer: Object): Promise<string> {
-    const csl_json_output = await transform_to_csl_json(publications, info);
-    const data = new Cite(csl_json_output);
-    let results = data.get({
-        nosort: true,
-        format: 'string',
-        type: 'html',
-        style: `citation-${csl}`,
-        lang: CSLUtils.langs_mapping[lang] || 'en-US',
-    });
-    results = URLUtils.transform_static_links_to_clickable_links_with_offset(results);
-    return results;
-}
-
 async function export_bibliography(ctx: Object): Promise<any> {
     const query = ctx.query;
-
-    const types = query.typology || [];
-    const subtypes = query.subtypology || [];
-    const projects = query.project || [];
-    const authors = query.author || [];
-    const labs = query.laboratory || [];
-    const collections = query.internal_collection || [];
-    const sort = query.sort || [];
-    const group = query.group || [];
-    const export_type = query.export_type || ['.html'];
-    const csl = query.csl || [];
-    const lang = query.language || [];
-    const start_year = query.start_year || [];
-    const end_year = query.end_year || [];
-    let size = query.size || [1000];
-    size = [Math.max(1000, parseInt(size[0], 10))];
-
-    if (lang.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_language_bexport';
-        throw e;
-    }
-
-    if (projects.length === 0 && authors.length === 0 && labs.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_project_author_lab_bexport';
-        throw e;
-    }
-
-    if (types.length === 0 && subtypes.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_typology_bexport';
-        throw e;
-    }
-
-    if (sort.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_sort_bexport';
-        throw e;
-    }
-
-    /* if (group.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_group_bexport';
-        throw e;
-        }*/
-
-    if (csl.length === 0) {
-        const e = Errors.InvalidEntity;
-        e.message = 'l_err_no_style_bexport';
-        throw e;
-    }
-
-    const where = { $and: [] };
-
-    if (authors.length > 0) {
-        where.$and.push({ 'contributors.label': authors });
-    }
-
-    if (projects.length > 0) {
-        where.$and.push({ 'diffusion.projects._id': projects });
-    }
-
-    if (labs.length > 0) {
-        where.$and.push({ 'diffusion.research_teams._id': labs });
-    }
-
-    if (types.length > 0) {
-        where.$and.push({ type: types });
-    }
-
-    if (subtypes.length > 0) {
-        where.$and.push({ subtype: subtypes });
-    }
-
-    if (collections.length > 0) {
-        where.$and.push({ 'diffusion.internal_collection': collections });
-    }
-
-    if (start_year.length > 0) {
-        const range = { '>=': parseInt(start_year[0], 10) };
-
-        if (end_year.length > 0) {
-            range['<='] = parseInt(end_year[0], 10);
-        }
-        where.$and.push({ 'dates.publication': range });
-    }
-
-    const source_includes = ['title.content', 'lang',
-        'journal', 'contributors.*', 'ids.*', 'volume', 'pagination', 'abstract',
-        'denormalization.*', 'url', 'dates.*', 'description',
-        'localisation.*', 'authors.*', 'number', 'editor'];
-
-        // ['title.content'];
-    let aggregations = {};
-    if (group[0] === 'dates.publication') {
-        aggregations = {
-            [group[0]]: {
-                $name: group[0],
-                $type: 'date_histogram',
-                interval: 'year',
-                format: 'YYYY',
-                keyed: true,
-                min_doc_count: 1,
-                order: { _time: 'desc' }, // Deprecated in ES 6.x TODO
-                $aggregations: {
-                    dummy_field: {
-                        $name: 'publications',
-                        $type: 'top_hits',
-                        size: Math.round(size[0] / 10), // Estimate no more than 10y
-                        /* _source: {
-                            includes: source_includes,
-                            },*/
-                        sort,
-                    },
-                },
-            },
-        };
-    } else if (group[0] === 'subtype') {
-        aggregations = {
-            [group[0]]: {
-                $name: group[0],
-                $type: 'terms',
-                keyed: true,
-                min_doc_count: 1,
-                // order: { _term: 'asc' },
-                $aggregations: {
-                    dummy_field: {
-                        $name: 'publications',
-                        $type: 'top_hits',
-                        size: Math.round(size[0]),
-                        sort,
-                        /* _source: {
-                            includes: source_includes,
-                            },*/
-                    },
-                },
-            },
-        };
-    } else if (group[0] === 'dates.publication+subtype') {
-        aggregations = {
-            'dates.publication': {
-                $name: 'year_subtype',
-                $type: 'date_histogram',
-                interval: 'year',
-                format: 'YYYY',
-                keyed: true,
-                min_doc_count: 1,
-                order: { _time: 'desc' },
-                $aggregations: {
-                    subtype: {
-                        $name: 'subtype',
-                        $type: 'terms',
-                        keyed: true,
-                        min_doc_count: 1,
-                        order: { _term: 'asc' },
-                        $aggregations: {
-                            dummy_field: {
-                                $name: 'publications',
-                                $type: 'top_hits',
-                                size: Math.round(size[0]),
-                                sort,
-                                /* _source: {
-                                    includes: source_includes,
-                                    },*/
-                            },
-                        },
-                    },
-                },
-            },
-        };
-    }
-
-    const pub_results = await EntitiesUtils.search('publication', {
-        where,
-        size: 0,
-        aggregations,
-    });
-
-    const aggs = EntitiesUtils.get_aggs(pub_results);
-
-    const list_of_publications = await process_aggregations(aggs, lang[0]);
-
-    ctx.__md.lang = lang[0];
-
-    const memoizer = {
-        typology: {}, contributor_role: {}, author: {}, lang: {},
+    const lang = query.language || ['EN'];
+    const csl = query.csl || ['ined_apa'];
+    const options = {
+        types: query.typology,
+        subtypes: query.subtypology,
+        projects: query.project,
+        authors: query.author,
+        labs: query.laboratory,
+        collections: query.internal_collection,
+        sort: query.sort,
+        export_type: query.export_type,
+        start_year: query.start_year,
+        end_year: query.end_year,
+        size: query.size,
+        group: query.group,
     };
 
+    const be = new BibliographicExporter(csl[0], lang[0], ctx.__md, options);
+    const result = await be.run();
 
-    let final_results = '';
-
-    if (group[0] === 'dates.publication+subtype') {
-        for (const infos of list_of_publications) {
-            final_results += `<h2>${infos.key}</h2>`;
-            for (const publications of infos.information) {
-                const results = await format_bibliography_results(publications.publications,
-                    lang[0], csl[0], ctx.__md, memoizer);
-                final_results += `<h3>${publications.key}</h3>`;
-                final_results += results;
-            }
-        }
-    } else {
-        for (const publications of list_of_publications) {
-            const results = await format_bibliography_results(publications.publications,
-                lang[0], csl[0], ctx.__md, memoizer);
-            final_results += `<h2>${publications.key}</h2>`;
-            final_results += results;
-        }
-    }
-
-
-    if (export_type[0] === '.docx') {
-        let results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${final_results}</body></html>`;
-        results = HtmlDocx.asBlob(results);
-
-        const s = new Readable();
-        s.push(results);
-        s.push(null);
-
-        ctx.set('Content-disposition', `attachment; filename=pos_exports${export_type[0]}`);
+    if (be.filetype === '.docx') {
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${be.filetype}`);
         ctx.statusCode = 200;
-        ctx.body = s;
-        return;
+        ctx.body = result;
+    } else {
+        ctx.type = 'text/html';
+        ctx.body = result;
     }
-
-    ctx.type = 'text/html';
-    const results = `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head><body>${final_results}</body></html>`;
-    ctx.body = results;
 }
 
 module.exports = {

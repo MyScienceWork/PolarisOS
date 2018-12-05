@@ -68,7 +68,7 @@ class Pipeline {
     }
 
     static _merge_put(input: Object, defaults: Object): Object {
-        return Utils.merge_with_replacement({}, defaults, input);
+        return Utils.merge_with_replacement_with_null({}, defaults, input);
     }
 
     static async _reset(input: Object, resetters: Object): Object {
@@ -236,6 +236,10 @@ class Pipeline {
 
         let last_item_was_an_error = false;
         for (const i in items) {
+            if (parseInt(i, 10) % 50 === 0) {
+                Logger.info(`Bulk pipeline ${parseInt(i, 10) + 1}/${items.length}`);
+            }
+
             const item = items[i];
             try {
                 const result = await Pipeline.run(item, type, pipelines, method, range, extra);

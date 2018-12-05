@@ -4,7 +4,7 @@
         <div class="tile is-ancestor">
             <div class="tile is-parent is-2 is-vertical is-hidden-touch has-small-left-margin">
                 <div class="image tile is-child">
-                    <img :src='$store.state.global_config.gui.logo' alt='Logo' title='App Logo' />
+                    <img :src='$store.state.global_config.gui.logo_left' alt='Logo' title='App Logo' />
                 </div>
             </div>
             <div class="tile is-vertical">

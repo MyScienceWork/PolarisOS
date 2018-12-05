@@ -138,7 +138,7 @@ module.exports = {
 
             if (self.searchFields.trim() === '') {
                 body.where = {
-                    [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
+                    [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%' } },
                 };
             } else {
                 const $or = self.searchFields.split(',').map(f => ({ [f.trim()]: search }));
