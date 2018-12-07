@@ -18,7 +18,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-12-04T18:43:25+00:00</updated>
+    <updated>2018-12-07T13:54:29+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -106,21 +106,42 @@
     </names>
   </macro>
   <macro name="contributors">
-    <names variable="editor">
-      <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
-      <label form="short" prefix=", "/>
-      <substitute>
-        <names variable="director">
+    <choose>
+      <if type="report" match="none">
+        <names variable="editor">
           <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
           <label form="short" prefix=", "/>
+          <substitute>
+            <names variable="director">
+              <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
+              <label form="short" prefix=", "/>
+            </names>
+          </substitute>
+          <substitute>
+            <names variable="author"/>
+            <names variable="translator"/>
+            <text macro="title"/>
+          </substitute>
         </names>
-      </substitute>
-      <substitute>
-        <names variable="author"/>
-        <names variable="translator"/>
-        <text macro="title"/>
-      </substitute>
-    </names>
+      </if>
+      <else>
+        <names variable="author">
+          <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
+          <label form="short" prefix=", "/>
+          <substitute>
+            <names variable="director">
+              <name and="text" delimiter-precedes-et-al="never" delimiter-precedes-last="never" name-as-sort-order="first"/>
+              <label form="short" prefix=", "/>
+            </names>
+          </substitute>
+          <substitute>
+            <names variable="editor"/>
+            <names variable="translator"/>
+            <text macro="title"/>
+          </substitute>
+        </names>
+      </else>
+    </choose>
     <choose>
       <if match="any" variable="translator">
         <names variable="translator">
