@@ -18,7 +18,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>A French variant of the author-date Chicago style</summary>
-    <updated>2018-12-07T13:54:29+00:00</updated>
+    <updated>2018-12-07T14:17:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -251,6 +251,11 @@
             <choose>
               <if type="book" match="none">
                 <text variable="edition" prefix=", "/>
+                <choose>
+                  <if type="report" match="any">
+                    <text variable="page" prefix=", p. "/>
+                  </if>
+                </choose>
               </if>
             </choose>
           </else>
@@ -275,7 +280,7 @@
     <choose>
       <if type="article-journal">
         <text variable="volume" prefix=" "/>
-        <text variable="issue" prefix=" (" suffix=")"/>
+        <text variable="issue" prefix=" (" suffix=") "/>
       </if>
       <else-if type="legal_case">
         <text variable="volume" prefix=", "/>
@@ -315,6 +320,11 @@
               <text variable="volume" suffix=":"/>
               <text variable="page"/>
             </group>
+          </if>
+        </choose>
+        <choose>
+          <if type="chapter" match="any">
+            <text variable="publisher-place" prefix=". "/>
           </if>
         </choose>
       </if>
@@ -430,7 +440,11 @@
   </macro>
   <macro name="collection-title">
     <text variable="collection-title" text-case="title"/>
-    <text variable="issue" prefix=" "/>
+    <choose>
+      <if type="article-journal" match="none">
+        <text variable="issue" prefix=" "/>
+      </if>
+    </choose>
     <text variable="collection-number" prefix=" "/>
   </macro>
   <macro name="event">
