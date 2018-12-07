@@ -32,6 +32,7 @@ class GulpFrontend {
         this.PUB_LOCATIONS = {
             js: 'public/front/js',
             css: 'public/front/css',
+            biblio_css: 'public/front/biblio_css',
             fonts: 'public/front/fonts',
             imgs: 'public/front/imgs',
             views: 'public/front/views',
@@ -191,7 +192,7 @@ class GulpFrontend {
             .pipe(concat('biblio.css'))
             .pipe(autoprefixer())
             .pipe(gulpif(this.isProduction, cssmin()))
-            .pipe(gulp.dest(this.PUB_LOCATIONS.css));
+            .pipe(gulp.dest(this.PUB_LOCATIONS.biblio_css));
     }
 
     createStyles() {

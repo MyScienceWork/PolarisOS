@@ -453,7 +453,7 @@ class BibliographicExporter {
         }
 
         return `<!DOCTYPE html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" type="text/css" href="/public/front/css/biblio.css">
+        <link rel="stylesheet" type="text/css" href="/public/front/biblio_css/biblio.css">
         </head><body>${html}</body></html>`;
     }
 
