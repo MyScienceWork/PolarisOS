@@ -414,10 +414,36 @@ class BibliographicExporter {
         return results;
     }
 
+    concat_all_authors(obj){
+        let final = [];
+        if (obj.author) {
+            final = final.concat(obj.author[0].family.toLowerCase()+obj.author[0].given.toLowerCase());
+        }
+        if (obj.director) {
+            final = final.concat(obj.director[0].family.toLowerCase()+obj.director[0].given.toLowerCase());
+        }
+        if (obj.editor) {
+            final = final.concat(obj.editor[0].family.toLowerCase()+obj.editor[0].given.toLowerCase());
+        }
+        return final.sort();
+    }
+
     async format_bibliography_results(publications: Array<Object>): Promise<string> {
         const csl_json_output = await this.transform_to_csl_json(publications);
         Logger.info(JSON.stringify(csl_json_output, null, 4));
         const data = new Cite(csl_json_output);
+        data.sort((objA, objB) => {
+            const authorsA = this.concat_all_authors(objA);
+            const authorsB = this.concat_all_authors(objB);
+
+            if (authorsA.length > 0 && authorsB.length > 0) {
+                if( authorsA[0] > authorsB[0] ) {
+                    return 1;
+                }
+                return -1;
+            }
+            return 0;
+        });
         let results = data.get({
             nosort: true,
             format: 'string',
