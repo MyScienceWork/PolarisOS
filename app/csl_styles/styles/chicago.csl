@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-08T12:20:32+00:00</updated>
+    <updated>2018-12-10T14:54:05+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -91,8 +91,8 @@
             <name and="text"/>
           </names>
           <names variable="container-author" delimiter=", ">
-            <name and="text" et-al-min="3" et-al-use-first="3"/>
             <label form="verb" suffix=" "/>
+            <name and="text" et-al-min="3" et-al-use-first="3"/>
           </names>
           <names variable="container-translator" delimiter=", ">
             <label form="verb" font-weight="normal" suffix=" "/>
@@ -298,8 +298,11 @@
       <else-if type="legal_case interview patent" match="any">
         <text variable="title"/>
       </else-if>
+      <else-if type="thesis" match="any">
+        <text variable="title" suffix=". "/>
+      </else-if>
       <else>
-        <text variable="title" text-case="title" quotes="true"/>
+        <text variable="title" text-case="title" strip-periods="false" quotes="true"/>
       </else>
     </choose>
   </macro>
@@ -338,7 +341,7 @@
       <if type="article-journal">
         <choose>
           <if variable="volume">
-            <text variable="volume" prefix=" " suffix=" "/>
+            <text variable="volume" prefix=" " suffix=", "/>
             <group>
               <choose>
                 <if variable="issue">
@@ -353,7 +356,7 @@
           </if>
           <else-if variable="issue">
             <group delimiter=" " prefix=", " suffix=", ">
-              <text value="n"/>
+              <text value="no"/>
               <text variable="issue"/>
               <date form="text" variable="issued" prefix="(" suffix=")"/>
             </group>
