@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-10T15:03:02+00:00</updated>
+    <updated>2018-12-10T17:25:06+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -299,7 +299,7 @@
         <text variable="title"/>
       </else-if>
       <else-if type="thesis" match="any">
-        <text variable="title" suffix=". "/>
+        <text variable="title" quotes="false" prefix="« " suffix=" ». "/>
       </else-if>
       <else>
         <text variable="title" text-case="title" strip-periods="false" quotes="false" prefix="« " suffix=" ». "/>
@@ -520,7 +520,7 @@
     </group>
     <choose>
       <if type="chapter thesis article" match="any">
-        <date form="text" variable="issued" prefix=", " suffix="."/>
+        <date form="text" variable="issued" prefix=", " suffix=". "/>
       </if>
     </choose>
   </macro>
@@ -687,7 +687,7 @@
           </group>
           <choose>
             <if type="book post-weblog" match="any">
-              <date form="text" variable="issued" prefix=", "/>
+              <date form="text" variable="issued" prefix=", " suffix=". "/>
             </if>
             <else-if type="report" match="any">
               <date form="text" variable="issued" prefix=", " suffix="."/>
@@ -731,15 +731,15 @@
         <text macro="title"/>
       </group>
       <text macro="description"/>
-      <text macro="secondary-contributors" prefix=". "/>
-      <text macro="container-title" prefix=". "/>
+      <text macro="secondary-contributors"/>
+      <text macro="container-title"/>
       <text macro="container-contributors"/>
       <text macro="edition"/>
       <text macro="locators-chapter"/>
       <text macro="collection-title-journal" prefix=", " suffix=", "/>
       <text macro="locators"/>
       <text macro="collection-title"/>
-      <group delimiter=". ">
+      <group>
         <text macro="issue"/>
         <text macro="locators-article"/>
         <text macro="access"/>
