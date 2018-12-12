@@ -147,7 +147,13 @@ module.exports = {
             return Auth.user();
         },
         csl_export_styles() {
-            return CSLSpecs;
+            return [
+                { label: 'APA', value: 'apa'},
+                { label: 'Vancouver', value: 'vancouver'},
+                { label: 'Population', value: 'population'},
+                { label: 'Chicago', value: 'chicago'},
+                { label: 'ISO-690', value: 'iso690'}
+            ];
         },
         export_data() {
             return [
