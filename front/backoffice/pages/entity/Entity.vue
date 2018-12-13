@@ -145,6 +145,18 @@
                                                 type="checkbox" 
                                                 :form="state.sinks.creations.entity"
                                             />
+                                            <finput :name="`${props.fname}.${props.order}.date_field.enabled`" 
+                                                :label="lang('l_field_is_date')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <fselect
+                                                :name="`${props.fname}.${props.order}.date_field.format`"
+                                                :label="lang('l_field_date_format')" 
+                                                :is-required="true"
+                                                :options="date_formats"
+                                                :form="state.sinks.creations.entity"
+                                            />
                                             <finput :name="`${props.fname}.${props.order}.centered`" 
                                                 :label="lang('l_column_content_centered')" 
                                                 type="checkbox" 

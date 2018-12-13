@@ -230,8 +230,12 @@ module.exports = {
         },
         extract_values(infos) {
             if (infos == null) {
+                if (this.multi) {
+                    return [];
+                }
                 return null;
             }
+
 
             if (infos instanceof Array) {
                 if (this.flattenList) {

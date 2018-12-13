@@ -12,10 +12,10 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2014-08-30T16:59:28+00:00</updated>
+    <updated>2018-12-04T14:14:27+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
-  <locale>
+  <locale xml:lang="fr">
     <terms>
       <term name="anonymous">Anon.</term>
       <term name="no date">[sans date]</term>
@@ -27,6 +27,14 @@
       <term name="page" form="short">
         <single>p.</single>
         <multiple>p.</multiple>
+      </term>
+      <term name="container-author" form="short">
+        <single>éd</single>
+        <multiple>éds</multiple>
+      </term>
+      <term name="container-translator" form="short">
+        <single>trad</single>
+        <multiple>trad</multiple>
       </term>
     </terms>
   </locale>
@@ -47,32 +55,69 @@
       <label prefix=" (" form="short" suffix=".)"/>
     </names>
   </macro>
-  <macro name="translator">
-    <names variable="translator">
-      <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
+  <macro name="director">
+    <names variable="director">
+      <name and="text" delimiter-precedes-last="never" name-as-sort-order="all">
         <name-part name="family" text-case="uppercase"/>
         <name-part name="given"/>
       </name>
-      <label prefix=" (" form="short" suffix=".)"/>
+      <label form="short" prefix=" (" suffix=".)"/>
     </names>
   </macro>
+  <macro name="translator"/>
   <macro name="responsability">
     <choose>
-      <if variable="author editor translator" match="any">
+      <if type="report" match="none">
         <choose>
-          <if variable="author">
-            <text macro="author"/>
+          <if variable="author editor translator director" match="any">
+            <group delimiter=", ">
+              <choose>
+                <if variable="editor">
+                  <text macro="editor"/>
+                </if>
+                <else-if variable="director">
+                  <text macro="director"/>
+                </else-if>
+                <else>
+                  <text macro="author"/>
+                </else>
+              </choose>
+              <names variable="translator">
+                <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
+                  <name-part name="family" text-case="uppercase"/>
+                  <name-part name="given"/>
+                </name>
+                <label prefix=" (" form="short" suffix=".)"/>
+              </names>
+            </group>
           </if>
-          <else-if variable="editor">
-            <text macro="editor"/>
-          </else-if>
           <else>
-            <text macro="translator"/>
+            <text term="anonymous" text-case="uppercase"/>
           </else>
         </choose>
       </if>
       <else>
-        <text term="anonymous" text-case="uppercase"/>
+        <choose>
+          <if variable="author editor translator director" match="any">
+            <choose>
+              <if variable="author">
+                <text macro="author"/>
+              </if>
+              <else-if variable="director">
+                <text macro="director"/>
+              </else-if>
+              <else-if match="any" variable="translator">
+                <text macro="translator"/>
+              </else-if>
+              <else>
+                <text macro="editor"/>
+              </else>
+            </choose>
+          </if>
+          <else>
+            <text term="anonymous" text-case="uppercase"/>
+          </else>
+        </choose>
       </else>
     </choose>
   </macro>
@@ -92,20 +137,38 @@
       </else>
     </choose>
   </macro>
-  <macro name="container-author">
+  <macro name="container-author-macro">
     <names variable="container-author">
       <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
         <name-part name="family" text-case="uppercase"/>
         <name-part name="given"/>
       </name>
+      <label form="short" prefix=" (" suffix=".)"/>
+    </names>
+  </macro>
+  <macro name="container-translator-macro">
+    <names variable="container-translator">
+      <name and="text" name-as-sort-order="all" sort-separator=", " delimiter=", " delimiter-precedes-last="never">
+        <name-part name="family" text-case="uppercase"/>
+        <name-part name="given"/>
+      </name>
+      <label form="short" prefix=" (" suffix=".)"/>
     </names>
   </macro>
   <macro name="container-responsability">
     <choose>
-      <if variable="container-author editor translator" match="any">
+      <if variable="container-author container-translator editor translator" match="any">
         <choose>
-          <if variable="container-author">
-            <text macro="container-author"/>
+          <if variable="container-author container-translator" match="any">
+            <choose>
+              <if type="chapter" match="any">
+                <text value="In : "/>
+              </if>
+            </choose>
+            <group delimiter=" ">
+              <text macro="container-author-macro"/>
+              <text macro="container-translator-macro"/>
+            </group>
           </if>
           <else-if variable="editor">
             <text macro="editor"/>
@@ -141,7 +204,7 @@
         <text variable="title" suffix=". "/>
         <text term="in" text-case="capitalize-first" suffix="&#160;: "/>
         <choose>
-          <if variable="container-author editor translator" match="any">
+          <if variable="container-author container-translator editor translator" match="any">
             <text macro="container-responsability"/>
             <choose>
               <if variable="container-title event" match="any">
@@ -152,11 +215,17 @@
         </choose>
         <choose>
           <if variable="container-title">
+            <choose>
+              <if type="article article-journal article-newspaper" match="any">
+                <text value="In : "/>
+              </if>
+            </choose>
             <text variable="container-title" font-style="italic"/>
           </if>
-          <else>
+          <else-if type="post-weblog" match="none">
+            <text value="Présenté à : "/>
             <text variable="event" font-style="italic"/>
-          </else>
+          </else-if>
         </choose>
       </else-if>
       <else-if type="report">
@@ -211,7 +280,11 @@
     </choose>
   </macro>
   <macro name="edition">
-    <text variable="edition" form="long"/>
+    <choose>
+      <if type="article-journal book chapter report" match="none">
+        <text variable="edition" form="long"/>
+      </if>
+    </choose>
   </macro>
   <macro name="publisher-place">
     <choose>
@@ -226,9 +299,14 @@
         <choose>
           <if variable="publisher-place">
             <text variable="publisher-place"/>
+            <choose>
+              <if type="post-weblog" match="any">
+                <text variable="edition" prefix=" : " suffix=". "/>
+              </if>
+            </choose>
           </if>
           <else>
-            <text value="s.l." text-case="capitalize-first"/>
+            <text value="s.l." text-case="capitalize-first" suffix=" "/>
           </else>
         </choose>
       </else>
@@ -243,23 +321,26 @@
   </macro>
   <macro name="publisher">
     <choose>
-      <if type="broadcast motion_picture song report" match="any">
+      <if type="broadcast motion_picture song" match="any">
         <choose>
           <if variable="publisher">
             <text variable="publisher"/>
           </if>
         </choose>
       </if>
-      <else>
+      <else-if type="paper-conference" match="none">
         <choose>
           <if variable="publisher">
             <text variable="publisher"/>
           </if>
+          <else-if match="any" variable="edition">
+            <text variable="edition"/>
+          </else-if>
           <else>
             <text value="s.n."/>
           </else>
         </choose>
-      </else>
+      </else-if>
     </choose>
   </macro>
   <macro name="accessed">
@@ -291,7 +372,7 @@
         <text variable="page" prefix="p.&#160;"/>
       </else-if>
       <else-if type="report patent" match="any">
-        <text variable="page" suffix="&#160;p"/>
+        <text variable="page" prefix="p. " suffix=". "/>
       </else-if>
     </choose>
   </macro>
@@ -421,9 +502,8 @@
             <text macro="year-date" suffix=". "/>
             <text macro="title" suffix=". "/>
             <text macro="genre" suffix=". "/>
-            <text macro="publisher-place" suffix="&#160;: "/>
+            <text macro="publisher-place" suffix=". "/>
             <text macro="publisher" suffix=". "/>
-            <text macro="date" suffix=". "/>
             <text macro="page" suffix=". "/>
             <text macro="accessed" suffix=". "/>
             <text macro="url" suffix=". "/>
@@ -445,8 +525,8 @@
           <group>
             <text macro="responsability" suffix=", "/>
             <text macro="year-date" suffix=". "/>
-            <text macro="title" suffix=". "/>
-            <text macro="date" suffix=". "/>
+            <text macro="title" font-style="italic" suffix=". "/>
+            <text macro="publisher-place"/>
             <text macro="accessed" suffix=". "/>
             <text macro="url" suffix=". "/>
           </group>
@@ -473,8 +553,9 @@
             <text macro="title" suffix=". "/>
             <text macro="genre" suffix=". "/>
             <text macro="edition" suffix=". "/>
-            <text macro="publisher-place" suffix=". "/>
+            <text macro="publisher-place" suffix=" : "/>
             <text macro="publisher" suffix=". "/>
+            <text macro="page"/>
             <text macro="accessed" suffix=". "/>
             <text macro="collection" suffix=". "/>
             <text macro="url" suffix=". "/>
