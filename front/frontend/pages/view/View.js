@@ -37,6 +37,7 @@ module.exports = {
                         depositor: 'depositor_read',
                         lang: 'lang_read',
                         typology: 'typology_read',
+                        last_version: 'last_version_publication_read',
                     },
                 },
                 paths: {
@@ -192,10 +193,32 @@ module.exports = {
                         },
                     });
                 }
+
+                if (ci.has_other_version) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.last_version,
+                        path: this.state.paths.reads.item,
+                        body: {
+                            projection: [],
+                            where: {
+                                'parents._id': ci._id,
+                            },
+                            sort: ['-version'],
+                            size: 1,
+                        },
+                    });
+                }
             }
         },
     },
     computed: {
+        last_version_link() {
+            const content = this.fcontent(this.state.sinks.reads.last_version) || [];
+            if (!(content instanceof Array) || content.length === 0) {
+                return null;
+            }
+            return `/view/${content[0]._id}`;
+        },
         multi_download_link() {
             const names = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
                 if (f.s) {
@@ -476,7 +499,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{#if book_authors.length}}#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}, {{/if}}{{#if publication_title}}{{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}{{#if pagination}}p. {{pagination}}. {{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{#if book_authors.length}}#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}, {{/if}}{{#if publication_title}}{{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}{{#if pagination}}, p. {{pagination}}. {{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {

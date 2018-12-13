@@ -19,6 +19,7 @@ module.exports = {
             translatable: false,
             ajax: true,
             path: '/api/public/v2/demovocs/search',
+            size: 50,
         },
         element: 'multi-select',
         placeholder: 'l_type_to_find',
@@ -118,9 +119,14 @@ module.exports = {
     'diffusion*research_team': {
         entity: {
             name: 'laboratory',
-            label: 'name',
+            label: 'fullname',
             value: '_id',
             translatable: true,
+            searchFields: {
+                'system.show_in_browse': true,
+            },
+            sort: ['order', 'fullname.raw'],
+            hlang: true,
         },
         element: 'multi-select',
         label: 'l_laboratory',
