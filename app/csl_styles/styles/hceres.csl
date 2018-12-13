@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only" default-locale="fr-FR">
-  <!-- This style was edited with the Visual CSL Editor (http://editor.citationstyles.org/visualEditor/) -->
   <info>
     <title>Institut national de la recherche scientifique - Sciences sociales (author-date, French)</title>
     <id>http://www.zotero.org/styles/institut-national-de-la-recherche-scientifique-sciences-sociales</id>
@@ -262,7 +261,7 @@
           </else>
         </choose>
       </if>
-      <else-if type="chapter  paper-conference" match="any">
+      <else-if type=" paper-conference" match="any">
         <choose>
           <if is-numeric="edition">
             <group delimiter=" " prefix=", ">
@@ -406,17 +405,11 @@
         <if match="any" type="article article-journal thesis webpage">
           <text variable="publisher-place"/>
         </if>
-        <!--<else>
-          <text value="s.l."/>
-        </else>-->
       </choose>
       <choose>
         <if match="any" variable="publisher" type="article article-journal thesis webpage">
           <text variable="publisher"/>
         </if>
-        <!--<else>
-          <text value="s.n."/>
-        </else>-->
       </choose>
       <choose>
         <if type="chapter post-weblog" match="any">
@@ -512,7 +505,7 @@
       <else-if type="paper-conference" match="any">
         <group delimiter=", ">
           <text macro="event"/>
-          <text variable="event-place" />
+          <text variable="event-place"/>
           <text macro="day-month-event"/>
         </group>
       </else-if>
@@ -538,7 +531,7 @@
       <date-part name="month"/>
     </date>
   </macro>
-  <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" givenname-disambiguation-rule="primary-name">
+  <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="false" disambiguate-add-names="true" disambiguate-add-givenname="true" givenname-disambiguation-rule="primary-name">
     <layout prefix="(" suffix=")" delimiter="; ">
       <group delimiter=", ">
         <group delimiter=" ">
@@ -549,7 +542,7 @@
       </group>
     </layout>
   </citation>
-  <bibliography hanging-indent="true" et-al-min="30" et-al-use-first="7" subsequent-author-substitute="———" entry-spacing="0">
+  <bibliography hanging-indent="true" et-al-min="30" et-al-use-first="7" entry-spacing="0">
     <layout suffix=".">
       <group delimiter=". ">
         <text macro="contributors"/>
