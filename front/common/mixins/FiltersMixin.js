@@ -46,12 +46,17 @@ module.exports = {
         eol_to_br(value) {
             return value.replace('\\n', '<br />');
         },
-        format(value, default_val = '') {
+        format(value, opts, default_val = '') {
             if (typeof value === 'boolean') {
                 if (value) {
                     return '<span class="icon"><i class="fa fa-check"></i></span>';
                 }
                 return '<span class="icon"><i class="fa fa-times"></i></span>';
+            } else if (opts.date_field && opts.date_field.enabled) {
+                if (!value) {
+                    return value;
+                }
+                return moment(parseInt(value, 10) || value).format(opts.date_field.format || 'YYYY');
             }
             return value;
         },
@@ -76,6 +81,9 @@ module.exports = {
                 return `<abbr title="${key}">${value}</abbr>`;
             }
             return value;
+        },
+        nl2br(value) {
+            return value.replace(/\n/g, '<br />');
         },
     },
 

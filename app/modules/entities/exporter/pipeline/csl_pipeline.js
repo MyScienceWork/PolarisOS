@@ -8,9 +8,10 @@ const Utils = require('../../../utils/utils');
 const types = {
     book: 'book',
     'other-blog': 'post-weblog',
+    'other-other': 'post-weblog',
     chapter: 'chapter',
     'other-software': 'article',
-    'book-proceedings': 'chapter',
+    'book-proceedings': 'book',
     conference: 'paper-conference',
     'book-chapter-dictionary-article': 'entry-dictionary',
     'other-figure': 'graphic',
@@ -85,10 +86,17 @@ const mapping = {
             }],
             picker: c => ({ issued: c }),
         },
+        'article': {
+            transformers: [(o) => {
+                const m = moment(o.issued);
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
+            }],
+            picker: c => ({ issued: c }),
+        },
         'article-journal': {
             transformers: [(o) => {
                 const m = moment(o.issued);
-                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM')]]) } };
+                return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
@@ -111,7 +119,7 @@ const mapping = {
                 const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
-                if (end) {
+                if (end && !end.isSame(start)) {
                     obj['event-date']['date-parts'].push([end.format('YYYY'), end.format('MM'), end.format('DD')]);
                 }
                 obj['event-date']['date-parts'] = intify_dateparts(obj['event-date']['date-parts']);
@@ -153,7 +161,7 @@ const mapping = {
                     o.ISBN = ISBN._id;
                 }
                 if (HANDLE) {
-                    o['archive-location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
+                    o['archive_location'] = `#POS#URLS${HANDLE._id}#POS#URLE`;
                 }
                 return o;
             },
@@ -351,9 +359,12 @@ const mapping = {
             transformers: [],
             picker: async (contribs, pub) => {
                 const final = {};
-                const book_contribs = contribs.filter(c => c._id).map(c => ({ family: c._id.lastname,
+                const book_contribs = contribs.filter(c => c._id && c.role.label !== 'l_contrib_translator').map(c => ({ family: c._id.lastname,
+                    given: c._id.firstname }));
+                const book_contribs_translator = contribs.filter(c => c._id && c.role.label === 'l_contrib_translator').map(c => ({ family: c._id.lastname,
                     given: c._id.firstname }));
                 final['container-author'] = book_contribs;
+                final['container-translator'] = book_contribs_translator;
                 return final;
             },
         },

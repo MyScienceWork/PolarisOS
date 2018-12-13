@@ -6,6 +6,8 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const AccessMixin = require('../../../common/mixins/AccessMixin');
 
+const DateFormatsList = require('../../../common/lists/date_formats.js');
+
 module.exports = {
     mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin, AccessMixin],
     data() {
@@ -85,6 +87,9 @@ module.exports = {
                 return content.type;
             }
             return '__dummy__';
+        },
+        date_formats() {
+            return DateFormatsList;
         },
     },
 };

@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="columns is-centered"
-                    v-if="state.active_results"
+                    v-show="state.active_results"
                 >
                     <div class="column">
                             <search-results

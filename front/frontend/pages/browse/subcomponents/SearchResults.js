@@ -75,6 +75,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
+                console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },
@@ -147,7 +148,13 @@ module.exports = {
             return Auth.user();
         },
         csl_export_styles() {
-            return CSLSpecs;
+            return [
+                { label: 'APA', value: 'apa'},
+                { label: 'Vancouver', value: 'vancouver'},
+                { label: 'Population', value: 'population'},
+                { label: 'Chicago', value: 'chicago'},
+                { label: 'ISO-690', value: 'iso690'}
+            ];
         },
         export_data() {
             return [

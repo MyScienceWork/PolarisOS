@@ -13,7 +13,6 @@ const styles = {
     population: resolver('styles/population.csl'),
     chicago: resolver('styles/chicago.csl'),
     iso_690: resolver('styles/iso690.csl'),
-    springer_humanities: resolver('styles/springer_humanities.csl'),
 };
 
 
