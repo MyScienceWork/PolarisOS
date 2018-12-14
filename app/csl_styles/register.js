@@ -9,9 +9,9 @@ const styles = {
     ined_hceres: resolver('styles/hceres.csl'),
     ined_apa: resolver('styles/apa.csl'),
     ined_vancouver: resolver('styles/vancouver.csl'),
-    population: resolver('styles/population.csl'),
-    chicago: resolver('styles/chicago.csl'),
-    iso_690: resolver('styles/iso690.csl'),
+    ined_population: resolver('styles/population.csl'),
+    ined_chicago: resolver('styles/chicago.csl'),
+    ined_iso690: resolver('styles/iso690.csl'),
 };
 
 

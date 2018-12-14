@@ -149,11 +149,11 @@ module.exports = {
         },
         csl_export_styles() {
             return [
-                { label: 'APA', value: 'apa'},
-                { label: 'Vancouver', value: 'vancouver'},
-                { label: 'Population', value: 'population'},
-                { label: 'Chicago', value: 'chicago'},
-                { label: 'ISO-690', value: 'iso690'}
+                { label: 'APA', value: 'ined_apa'},
+                { label: 'Vancouver', value: 'ined_vancouver'},
+                { label: 'Population', value: 'ined_population'},
+                { label: 'Chicago', value: 'ined_chicago'},
+                { label: 'ISO-690', value: 'ined_iso690'}
             ];
         },
         export_data() {
