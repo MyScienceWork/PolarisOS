@@ -12,7 +12,7 @@ if (env.ES_HOSTS != null) {
 // MINIO
 const minio = _.reduce({
     host: env.MINIO_HOST,
-    port: env.MINIO_PORT,
+    port: parseInt(env.MINIO_PORT, 10),
     accessKey: env.MINIO_ACCESS_KEY,
     secretKey: env.MINIO_SECRET_KEY,
     secure: env.MINIO_SECURE ? env.MINIO_SECURE.toLowerCase() === 'true' : null,
