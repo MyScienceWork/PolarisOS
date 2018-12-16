@@ -1,17 +1,15 @@
 // @flow
-const _ = require('lodash');
 const moment = require('moment');
 const Request = require('superagent');
 const EntitiesUtils = require('../../../utils/entities');
-const Errors = require('../../../exceptions/errors');
 const Config = require('../../../../config');
 const Logger = require('../../../../logger');
 const MinioUtils = require('../../../utils/minio');
 const XMLUtils = require('../../../utils/xml');
 const WebUtils = require('../../../utils/web');
 const Utils = require('../../../utils/utils');
-const Readline = require('readline');
-const Pipeline = require('../../../pipeline/pipeline');
+const Importer = require('../importing');
+const Readers = require('../readers');
 
 const RISPipeline = require('../pipelines/ris_pipeline');
 
@@ -217,165 +215,17 @@ async function import_information(ctx: Object): Promise<any> {
     }
 }
 
-async function transform_ris_to_publications(ris_publications: Array<Object>): Promise<Array<Object>> {
-    const publications = [];
-    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
-        size: 100,
-    })).reduce((obj, typo) => {
-        obj[typo.name] = typo;
-        return obj;
-    }, {});
-
-    for (const ris_pub of ris_publications) {
-        try {
-            const pub = await RISPipeline.run(ris_pub, typology);
-            publications.push(pub);
-        } catch (err) {
-            Logger.error('Error when transform from RIS to JSON (PoS)');
-            Logger.error(err);
-        }
-    }
-    return publications;
-}
-
-function transform_to_publications(my_publications: Array<any>, type: string): Promise<Array<Object>> {
-    switch (type) {
-    case 'ris':
-        return transform_ris_to_publications(my_publications);
-    default:
-        return Promise.resolve([]);
-    }
-}
-
-async function bulk_import_publications(publications: Array<Object>, extra: Object, report_id: string): Promise<any> {
-    const type = 'publication';
-    const model = await EntitiesUtils.get_model_from_type(type);
-    const method = 'POST';
-    const presults = await Pipeline.run_bulk(publications, type, method, model, extra);
-    if ('total' in presults && 'errors_count' in presults) {
-        return presults;
-    }
-
-    const res = { total: 0, success: 0, errors_count: 0, results: [] };
-    const results = [];
-    for (const chunk of presults) {
-        res.total += chunk.length;
-        if ('change' in chunk[0] || chunk[0].error) {
-            results.push(chunk);
-            res.errors_count += chunk.length;
-        } else {
-            const response = await EntitiesUtils.creates(chunk, type);
-            if (response.errors) {
-                response.items.forEach((item) => {
-                    if (!item.index.created) {
-                        res.errors_count += 1;
-                    }
-                });
-            }
-            results.push(response.items);
-        }
-    }
-
-    res.results = _.flatten(results);
-    res.success = res.total - res.errors_count;
-    return res;
-}
-
 async function import_ris(ctx: Object): Promise<any> {
     const filepath = ctx.request.body.filepath;
     const name = ctx.request.body.name;
-    const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filepath);
-    const ris_publications = [];
-    let last_read_key = '';
-    let ris_publication = {};
+    const my_report = await Importer.create_report(name, filepath,
+        'ris', 'publication', ctx.__md || {});
 
-    const report_body = {
-        name,
-        created_at: +moment.utc(),
-        type: 'import',
-        subtype: 'publication',
-        report: {
-            total: 0,
-            success: 0,
-            errors: 0,
-        },
-        differed: false,
-        schedule_at: 0,
-        status: 'on_wait',
-        requester: ctx.__md.papi._id,
-        denormalization: {
-            requester: {
-                fullname: ctx.__md.papi.fullname,
-            },
-        },
-    };
-
-    const my_report = await EntitiesUtils.create(report_body, 'system_report');
     console.log(my_report);
-    if (!my_report) {
-        throw Errors.UnableToCreateReport;
-    }
-
-    const rl = Readline.createInterface({
-        input: stream,
-        crlfDelay: Infinity,
-    });
-
-
-    rl.on('line', (line) => {
-        if (line.trim() !== '') {
-            const splitting = line.trim().split('  -');
-
-            let key = '';
-            let value = '';
-            if (splitting.length === 1 && splitting[0].trim() !== 'ER') {
-                key = last_read_key;
-                value = splitting[0].trim();
-            } else {
-                key = splitting[0].trim();
-                last_read_key = key;
-                value = splitting[1].trim();
-            }
-            if (key === 'ER') {
-                ris_publications.push(ris_publication);
-                ris_publication = {};
-            } else if (key in ris_publication) {
-                if (splitting.length === 1) {
-                    ris_publication[key][ris_publication[key].length - 1] += `\n${value}`;
-                } else {
-                    ris_publication[key].push(value);
-                }
-            } else {
-                ris_publication[key] = [value];
-            }
-        }
-    });
-
-    rl.on('close', () => {
-        transform_to_publications(ris_publications, 'ris')
-        .then((publications) => {
-            const report_source = my_report.source;
-            report_source.status = 'in_progress';
-            report_source.report.total = publications.length;
-            return Promise.all([EntitiesUtils.update(report_source, 'system_report'),
-                bulk_import_publications(publications, ctx.__md, my_report.id)]);
-        }).then((all_results) => {
-            const bulk_results = all_results[1];
-            const report_source = my_report.source;
-            report_source.status = 'done';
-            report_source.report.total = bulk_results.total;
-            report_source.report.success = bulk_results.success;
-            report_source.report.errors = bulk_results.errors_count;
-            report_source.result = JSON.stringify(bulk_results.results);
-            return EntitiesUtils.update(report_source, 'system_report');
-        })
-            .then(() => {})
-            .catch((err) => {
-                Logger.error('Error when generating report');
-                Logger.error(err);
-            });
-    });
-
+    const importer = new Importer('publication',
+        RISPipeline, ctx.__md || {}, RISPipeline.queries, Readers.RISReader);
+    await importer.read_report(my_report._id);
+    await importer.import_items();
     ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 

@@ -52,6 +52,12 @@ module.exports = {
                     subtype: {
                         type: 'keyword',
                     },
+                    format: {
+                        type: 'keyword',
+                    },
+                    filepath: {
+                        type: 'keyword',
+                    },
                     status: {
                         type: 'keyword',
                     },

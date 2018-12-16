@@ -295,6 +295,11 @@ class SortMapper {
             return final_sort_obj;
         }
 
+        if (key === '_score') {
+            final_sort_obj[key] = sort[key];
+            return final_sort_obj;
+        }
+
         const types = mapping.get_all_type(key);
 
         const nested_fields = types.filter(elt => elt[elt.length - 1] === 'nested');

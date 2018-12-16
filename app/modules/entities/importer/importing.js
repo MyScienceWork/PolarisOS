@@ -17,7 +17,6 @@ class Importer {
     _report: ?Object;
 
     constructor(items_type: string,
-        report_name: string,
         import_pipeline: Object,
         extra: Object,
         reference_queries: Object,
@@ -85,6 +84,7 @@ class Importer {
                     projection: [],
                     where: await query(value),
                     size: this._max_size_per_query,
+                    sort: ['-_score'],
                 });
                 filled_maps[name][value].ids = sources.map(src => src._id);
             }
@@ -95,9 +95,6 @@ class Importer {
     static async _merge_references_and_items(items: Array<Object>,
         maps: Object): Promise<Array<Object>> {
         _.forEach(maps, (map) => {
-            const path = map.path.split('.');
-            const last_segment = parseInt(path[path.length - 1], 10) || path[path.length - 1];
-
             _.forEach(map, (obj) => {
                 const { ids, refs } = obj;
                 if (ids.length === 0) {
@@ -106,6 +103,8 @@ class Importer {
 
                 refs.forEach((ref) => {
                     const item = items[ref];
+                    const path = ref.path.split('.');
+                    const last_segment = parseInt(path[path.length - 1], 10) || path[path.length - 1];
                     const value = Utils.find_object_with_path(item, path);
                     if (value) {
                         value[last_segment] = ids[0];
@@ -126,14 +125,16 @@ class Importer {
         }, {});
 
         const maps = {};
+        let idx = 0;
         for (const item of items) {
             try {
-                const new_item = await this._import_pipeline.run(item, typology, maps);
+                const new_item = await this._import_pipeline.run(item, typology, idx, maps);
                 results.push(new_item);
             } catch (err) {
                 Logger.error('Error when executing pipeline during import');
                 Logger.error(err);
             }
+            idx += 1;
         }
         return [results, maps];
     }
@@ -143,7 +144,7 @@ class Importer {
             return;
         }
         this._report.status = 'in_progress';
-        await EntitiesUtils.update(this._report, 'system_report');
+        await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
     }
 
     async _set_final_information_on_report(results: Array<Object>) {
@@ -161,15 +162,21 @@ class Importer {
         this._report.report.success = bulk_results.success;
         this._report.report.errors = bulk_results.errors_count;
         this._report.result = JSON.stringify(bulk_results.results);
-        await EntitiesUtils.update(this._report, 'system_report');
+        await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
     }
 
-    async create_report(name: string): Promise<Object> {
+    static async create_report(name: string,
+        filepath: string,
+        format: string,
+        items_type: string,
+        extra: Object): Promise<Object> {
         const report_body = {
             name,
             created_at: +moment.utc(),
             type: 'import',
-            subtype: this._items_type,
+            subtype: items_type,
+            filepath,
+            format,
             report: {
                 total: 0,
                 success: 0,
@@ -178,10 +185,10 @@ class Importer {
             differed: false,
             schedule_at: 0,
             status: 'on_wait',
-            requester: this._extra.papi._id,
+            requester: extra.papi._id,
             denormalization: {
                 requester: {
-                    fullname: this._extra.papi.fullname,
+                    fullname: extra.papi.fullname,
                 },
             },
         };
@@ -191,31 +198,45 @@ class Importer {
             throw Errors.UnableToCreateReport;
         }
 
-        this._report = report.source;
+        return report;
+    }
+
+    async read_report(id: string): Promise<Object> {
+        const report = await EntitiesUtils.retrieve_and_get_source('system_report', id);
+        if (!report) {
+            throw Errors.UnableToCreateReport;
+        }
+
+        this._report = report;
         return this._report;
     }
 
-
-    async import_items(report_name: string, filename: string) {
+    async import_items() {
         if (!this._report) {
             return;
         }
 
         await this._set_import_in_progress();
 
-        const items_in_json = await this._read_func(filename);
+        const items_in_json = await this._read_func(this._report.filepath);
 
         this._report.report.total = items_in_json.length;
-        await EntitiesUtils.update(this._report, 'system_report');
+        await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
 
         const [items_without_references, references_maps] =
             await this._execute_pipeline(items_in_json);
 
+        console.log(JSON.stringify(items_without_references));
+        console.log(JSON.stringify(references_maps));
+
         const filled_references_maps = await this._fill_references_maps(references_maps);
+
+        console.log(JSON.stringify(filled_references_maps));
         const final_items = await Importer._merge_references_and_items(items_without_references,
             filled_references_maps);
-        const results = await this._import_data(final_items);
-        await this._set_final_information_on_report(results);
+        console.log(JSON.stringify(final_items));
+        // const results = await this._import_data(final_items);
+        // await this._set_final_information_on_report(results);
     }
 }
 
