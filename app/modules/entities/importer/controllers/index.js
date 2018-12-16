@@ -220,9 +220,14 @@ async function import_ris(ctx: Object): Promise<any> {
     const name = ctx.request.body.name;
     const my_report = await Importer.create_report(name, filepath,
         'ris', 'publication', ctx.__md || {});
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
+}
 
-    const importer = new Importer('publication',
-        RISPipeline, ctx.__md || {}, RISPipeline.queries, Readers.RISReader);
+async function import_endnote(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
+    const my_report = await Importer.create_report(name, filepath,
+        'endnote', 'publication', ctx.__md || {});
     ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
@@ -230,4 +235,5 @@ module.exports = {
     import_information,
     import_sherpa_romeo,
     import_ris,
+    import_endnote,
 };

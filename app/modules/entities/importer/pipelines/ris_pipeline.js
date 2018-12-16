@@ -3,67 +3,7 @@ const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
-
-function match_search(field) {
-    return async function (content) {
-        return { [field]: { $match: { query: content, minimum_should_match: '100%' } } };
-    };
-}
-
-async function contributor_search(content) {
-    const parts = content.split(',').map(c => c.trim());
-
-    if (parts.length === 0) {
-        return null;
-    }
-
-    const search = {};
-    if (parts.length === 1) {
-        search['lastname.raw'] = parts[0];
-    } else {
-        search.$or = [{
-            $and: [{ 'firstname.raw': parts[0] }, { 'lastname.raw': parts[1] }],
-        }, {
-            $and: [{ 'firstname.raw': parts[1] },
-                { 'lastname.raw': parts[0] }],
-        }];
-    }
-    return search;
-}
-
-
-async function single_ref(type, path, v, idx, maps) {
-    const value = Utils.find_value_with_path(v, path.split('.'));
-
-    if (!value) {
-        return maps;
-    }
-
-    return Utils.merge_with_concat(maps, {
-        [type]: {
-            [value]: {
-                refs: [{ idx, path }],
-            },
-        },
-    });
-}
-async function list_ref(type, list_path, path, v, idx, maps) {
-    const values = Utils.find_value_with_path(v, list_path.split('.'));
-    if (!values || values.length === 0) {
-        return maps;
-    }
-
-    return Utils.merge_with_concat(maps, {
-        [type]: values.reduce((obj, con, i) => {
-            const val = Utils.find_value_with_path(con, path.split('.'));
-            return Utils.merge_with_concat(obj, {
-                [val]: {
-                    refs: [{ idx, path: `${list_path}.${i}.${path}` }],
-                },
-            });
-        }, maps[type] || {}),
-    });
-}
+const CommonFunctions = require('./common');
 
 const types = {
     BOOK: 'book',
@@ -321,12 +261,12 @@ async function run(publication, typology, idx, maps) {
 
     for (const info of srefs) {
         const [type, path] = info;
-        maps = await single_ref(type, path, final_publication, idx, maps);
+        maps = await CommonFunctions.single_ref(type, path, final_publication, idx, maps);
     }
 
     for (const info of lrefs) {
         const [type, list_path, path] = info;
-        maps = await list_ref(type, list_path, path, final_publication, idx, maps);
+        maps = await CommonFunctions.list_ref(type, list_path, path, final_publication, idx, maps);
     }
     return final_publication;
 }
@@ -334,11 +274,11 @@ async function run(publication, typology, idx, maps) {
 module.exports = {
     run,
     queries: {
-        author: contributor_search,
-        journal: match_search('name'),
-        conference: match_search('name'),
-        editor: match_search('label'),
-        institution: match_search('name'),
+        author: CommonFunctions.contributor_search,
+        journal: CommonFunctions.match_search('name'),
+        conference: CommonFunctions.match_search('name'),
+        editor: CommonFunctions.match_search('label'),
+        institution: CommonFunctions.match_search('name'),
     },
 
 };

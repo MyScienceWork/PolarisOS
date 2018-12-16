@@ -31,8 +31,26 @@ function to_buffer(stream) {
     });
 }
 
+function to_string(stream) {
+    return new Promise((resolve, reject) => {
+        let str = '';
+        stream.on('data', (data) => {
+            str += data.toString('utf-8');
+        });
+
+        stream.on('end', () => {
+            resolve(str);
+        });
+
+        stream.on('error', (err) => {
+            reject(err);
+        });
+    });
+}
+
 module.exports = {
     is_valid_stream,
     to_array,
     to_buffer,
+    to_string,
 };

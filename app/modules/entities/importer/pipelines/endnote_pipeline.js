@@ -1,458 +1,336 @@
 const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
+const CommonFunctions = require('./common');
 
 const types = {
-    book: { attrs: { name: 'Book' }, 'ref-type': '6' },
-    'other-blog': { attrs: { name: 'Blog' }, 'ref-type': '56' },
-    chapter: { attrs: { name: 'Book Section' }, 'ref-type': '5' },
-    'other-software': { attrs: { name: 'Computer Program' }, 'ref-type': '9' },
-    'book-proceedings': { attrs: { name: 'Book' }, 'ref-type': '28' },
-    conference: { attrs: { name: 'Conference Paper' }, 'ref-type': '47' },
-    'conference-paper-generic': { attrs: { name: 'Conference Proceedings' }, 'ref-type': '10' },
-    'book-chapter-dictionary-article': { attrs: { name: 'Dictionary' }, 'ref-type': '52' },
-    'other-figure': { attrs: { name: 'Artwork' }, 'ref-type': '2' },
-    other: { attrs: { name: 'Generic' }, 'ref-type': '13' },
-    journal: { attrs: { name: 'Journal Article' }, 'ref-type': '17' },
-    'other-maps': { attrs: { name: 'Map' }, 'ref-type': '20' },
-    press: { attrs: { name: 'Newspaper Article' }, 'ref-type': '23' },
-    report: { attrs: { name: 'Report' }, 'ref-type': '27' },
-    'other-audio': { attrs: { name: 'Music' }, 'ref-type': '61' },
-    thesis: { attrs: { name: 'Thesis' }, 'ref-type': '32' },
-    'working-paper': { attrs: { name: 'Unpublished Work' }, 'ref-type': '34' },
-    'other-video': { attrs: { name: 'Audiovisual Material' }, 'ref-type': '3' },
+    6: 'book',
+    56: 'other-blog',
+    5: 'chapter',
+    9: 'other-software',
+    28: 'book-proceedings',
+    47: 'conference',
+    10: 'conference-paper-generic',
+    52: 'book-chapter-dictionary-article',
+    2: 'other-figure',
+    13: 'other',
+    17: 'journal',
+    20: 'other-maps',
+    23: 'press',
+    27: 'report',
+    61: 'other-audio',
+    32: 'thesis',
+    34: 'working-paper',
+    3: 'other-video',
 };
 
-async function city_country_picker(loc, pub, mylang) {
-    if (!loc.country && !loc.city) {
-        return {};
-    }
-
-    let country = null;
-    let city = null;
-    if (loc.country) {
-        country = await LangUtils
-            .string_to_translation(pub.denormalization.localisation.country, mylang);
-    }
-
-    if (loc.city) {
-        city = loc.city;
-    }
-
-    if (country && city) {
-        return `${city}, ${country}`;
-    } else if (country) {
-        return country;
-    } else if (city) {
-        return city;
-    }
-    return null;
-}
-
 const mapping = {
-    subtype: {
-        __default: {
-            transformers: [],
-            picker: async (c, pub, lang) => {
-                const type = await LangUtils.string_to_translation(`t_${c.replace(/-/gi, '_')}`, lang);
-                // TODO put type if subtype is undefined
-                return { 'work-type': type };
-            },
-        },
-    },
-    abstracts: {
+    'abstract.0': {
         __default: {
             transformers: [],
             picker: (abs, pub) => {
-                if (abs.length === 0) {
-                    return null;
+                if (!abs) {
+                    return [];
                 }
-                const a = abs.find(_a => _a.lang === pub.lang);
-                if (!a) {
-                    return { abstract: abs[0].content };
-                }
-                return { abstract: a.content };
+                const lang = Utils.find_value_with_path(pub, 'language.0'.split('.')) || 'EN';
+                return { abstracts: [{ content: abs, lang }] };
             },
         },
     },
-    subtitles: {
-        __default: {
-            transformers: [],
-            picker: () => {},
-        },
-        thesis: {
-            transformers: [],
-            picker: (sub) => {
-                if (sub.length === 0) {
-                    return null;
-                }
-
-                const subtitle = sub[0].content;
-
-                if (subtitle && subtitle.trim() !== '') {
-                    return { volume: subtitle };
-                }
-                return null;
-            },
-        },
-        journal: {
-            transformers: [],
-            picker: (sub) => {
-                if (sub.length === 0) {
-                    return null;
-                }
-
-                const subtitle = sub[0].content;
-
-                if (subtitle && subtitle.trim() !== '') {
-                    return { titles: { 'secondary-title': subtitle } };
-                }
-                return null;
-            },
-        },
-        thesis: {
-            transformers: [],
-            picker: (sub) => {
-                if (sub.length === 0) {
-                    return null;
-                }
-
-                const subtitle = sub[0].content;
-
-                if (subtitle && subtitle.trim() !== '') {
-                    return { 'work-type': subtitle };
-                }
-                return null;
-            },
-        },
-    },
-    collection: {
-        __default: {
-            transformers: [],
-            picker: c => ({ 'tertiary-title': c }),
-        },
-        'working-paper': {
-            transformers: [],
-            picker: c => ({ 'secondary-title': c }),
-        },
-    },
-    'dates.publication': {
-        __default: {
-            transformers: [
-                o => ({
-                    dates: {
-                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('YYYY') },
-                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
-                    },
-                }),
-            ],
-            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
-        },
-        journal: {
-            transformers: [
-                o => ({
-                    dates: {
-                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('MM/YYYY') },
-                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
-                    },
-                }),
-            ],
-            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
-        },
-        press: {
-            transformers: [
-                o => ({
-                    dates: {
-                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
-                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
-                    },
-                }),
-            ],
-            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
-        },
-        conference: {
-            transformers: [
-                o => ({
-                    dates: {
-                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
-                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
-                    },
-                }),
-            ],
-            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
-        },
-        'conference-paper-generic': {
-            transformers: [
-                o => ({
-                    dates: {
-                        'pub-dates': { date: moment(o.dates['pub-dates'].date).format('DD/MM/YYYY') },
-                        year: moment(o.dates['pub-dates'].date).format('YYYY'),
-                    },
-                }),
-            ],
-            picker: c => ({ dates: { 'pub-dates': { date: c } } }),
-        },
-    },
-    description: {
-        __default: {
-            transformers: [],
-            picker: c => ({ notes: c }),
-        },
-    },
-    ids: {
-        __default: {
-            transformers: [],
-            picker: (ids) => {
-                const DOI = ids.find(id => id.type === 'doi');
-                const ISBN = ids.find(id => id.type === 'isbn');
-                const HANDLE = ids.find(id => id.type === 'handle');
-                const o = {};
-                if (DOI) {
-                    o['electronic-resource-num'] = DOI._id;
-                }
-                if (ISBN) {
-                    o.isbn = ISBN._id;
-                }
-                if (HANDLE) {
-                    o.urls = { 'related-urls': { url: HANDLE._id } };
-                }
-                return o;
-            },
-        },
-    },
-    newspaper: {
-        __default: {
-            transformers: [],
-            picker: c => ({
-                titles: { 'secondary-title': c },
-            }),
-        },
-    },
-    keywords: {
-        __default: {
-            transformers: [],
-            picker: (kws) => {
-                const all = kws.map(k => ({ keyword: k.value }));
-                return { keywords: all };
-            },
-        },
-    },
-    lang: {
-        __default: {
-            transformers: [],
-            picker: l => ({ language: l }),
-        },
-    },
-    localisation: {
-        __default: {
-            transformers: [],
-            picker: async (loc, pub, mylang) => {
-                const final = await city_country_picker(loc, pub, mylang);
-                if (!final) {
-                    return {};
-                }
-                return {
-                    'pub-location': final,
-                };
-            },
-        },
-        conference: {
-            transformers: [],
-            picker: async (loc, pub, mylang) => {
-                const final = await city_country_picker(loc, pub, mylang);
-                if (!final) {
-                    return {};
-                }
-                return {
-                    'pub-location': final,
-                };
-            },
-        },
-    },
-    number: {
-        __default: {
-            transformers: [],
-            picker: async n => ({ number: n, issue: n }),
-        },
-        press: {
-            transformers: [],
-            picker: async n => ({ custom2: n }),
-        },
-    },
-    pagination: {
-        __default: {
-            transformers: [],
-            picker: async p => ({ pages: p }),
-        },
-    },
-    publication_title: {
-        __default: {
-            transformers: [],
-            picker: async pt => ({ titles: { 'secondary-title': pt } }),
-        },
-        conference: {
-            transformers: [],
-            picker: async pt => ({ custom3: pt }),
-        },
-        'conference-paper-generic': {
-            transformers: [],
-            picker: async pt => ({ custom3: pt }),
-        },
-    },
-    'title.content': {
-        __default: {
-            transformers: [],
-            picker: async t => ({ titles: { title: t } }),
-        },
-    },
-    translated_titles: {
-        __default: {
-            transformers: [],
-            picker: async tts => ({ titles: { 'translated-title': tts[0].content } }),
-        },
-    },
-    volume: {
+    'volume.0': {
         __default: {
             transformers: [],
             picker: async v => ({ volume: v }),
         },
-    },
-    url: {
-        __default: {
-            transformers: [],
-            picker: async v => ({ urls: { 'related-urls': { url: v } } }),
-        },
-    },
-    'denormalization.delivery_institution': {
-        __default: {
-            transformers: [],
-            picker: async () => ({}),
-        },
-        report: {
-            transformers: [],
-            picker: async v => ({ publisher: v }),
-        },
         thesis: {
             transformers: [],
-            picker: async v => ({ publisher: v }),
+            picker: (sub, pub) => {
+                if (!sub) {
+                    return [];
+                }
+                const lang = Utils.find_value_with_path(pub, 'language.0'.split('.')) || 'EN';
+                if (sub && sub.trim() !== '') {
+                    return { subtitles: [{ content: sub, lang }] };
+                }
+                return [];
+            },
         },
     },
-    'denormalization.editor': {
+    'titles.0.secondary-title.0': {
         __default: {
             transformers: [],
-            picker: async v => ({ publisher: v }),
+            picker: c => ({ publication_title: c }),
+        },
+        journal: {
+            transformers: [],
+            picker: (sub, pub) => {
+                if (!sub) {
+                    return [];
+                }
+                const lang = Utils.find_value_with_path(pub, 'language.0'.split('.')) || 'EN';
+                if (sub && sub.trim() !== '') {
+                    return { subtitles: [{ content: sub, lang }] };
+                }
+                return [];
+            },
+        },
+        'working-paper': {
+            transformers: [],
+            picker: c => ({ collection: c }),
+        },
+        press: {
+            transformers: [],
+            picker: c => ({ newspaper: c }),
+        },
+        conference: {
+            transformers: [],
+            picker: c => ({ conference: c }),
+        },
+        'conference-paper-generic': {
+            transformers: [],
+            picker: c => ({ conference: c }),
         },
     },
-    'denormalization.journal': {
+    'tertiary-title.0': {
         __default: {
             transformers: [],
-            picker: async pt => ({ periodical: { 'full-title': pt } }),
+            picker: c => ({ collection: c }),
         },
     },
-    'denormalization.demovoc_keywords': {
+    'dates.0.pub-dates.0.date.0': {
+        __default: {
+            picker: c => ({ dates: { publication: +moment(c, 'YYYY') } }),
+        },
+        journal: {
+            picker: c => ({ dates: { publication: +moment(c, 'MM/YYYY') } }),
+        },
+        press: {
+            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
+        },
+        conference: {
+            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
+        },
+        'conference-paper-generic': {
+            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
+        },
+    },
+    'notes.0': {
         __default: {
             transformers: [],
-            picker: async (kws) => {
-                const all = kws.map(k => ({ keyword: k._id.label }));
+            picker: c => ({ description: c }),
+        },
+    },
+    'electronic-resource-num.0': {
+        __default: {
+            transformers: [],
+            picker: doi => ({ ids: [{ _id: doi, type: 'doi' }] }),
+        },
+    },
+    'isbn.0': {
+        __default: {
+            transformers: [],
+            picker: doi => ({ ids: [{ _id: doi, type: 'isbn' }] }),
+        },
+    },
+    'related-urls.0.url': {
+        __default: {
+            transformers: [],
+            picker: doi => ({ url: doi }),
+        },
+    },
+    'keywords.0.keyword': {
+        __default: {
+            transformers: [],
+            picker: (kws) => {
+                const all = kws.map(k => ({ type: 'user', value: k }));
                 return { keywords: all };
             },
         },
     },
-    'denormalization.conference': {
+    'language.0': {
+        __default: {
+            transformers: [],
+            picker: l => ({ lang: l }),
+        },
+    },
+    'pub-location.0': {
+        __default: {
+            transformers: [],
+            picker: async loc => ({ localisation: { city: loc } }),
+        },
+    },
+    'number.0': {
+        __default: {
+            transformers: [],
+            picker: async n => ({ number: n }),
+        },
+    },
+    'custom2.0': {
+        press: {
+            transformers: [],
+            picker: async n => ({ number: n }),
+        },
+    },
+    'pages.0': {
+        __default: {
+            transformers: [],
+            picker: async p => ({ pagination: p }),
+        },
+    },
+    'custom3.0': {
         conference: {
             transformers: [],
-            picker: async c => ({ titles: { 'secondary-title': c } }),
+            picker: async pt => ({ publication_title: pt }),
+        },
+        'conference-paper-generic': {
+            transformers: [],
+            picker: async pt => ({ publication_title: pt }),
         },
     },
-    'denormalization.contributors': {
+    'titles.title.0': {
         __default: {
             transformers: [],
-            picker: async (contribs, pub) => {
-                const final = { contributors: {} };
-
-                // AU
-                const authors = Utils.filterIndexes(pub.contributors, c => (c.role === 'author' || !c.role));
-                const programmers = Utils.filterIndexes(pub.contributors, c => (c.role === 'programmer'));
-                const film_directors = Utils.filterIndexes(pub.contributors, c => (c.role === 'film-director'));
-                const directors = Utils.filterIndexes(pub.contributors, c => c.role === 'director');
-                const editors = Utils.filterIndexes(pub.contributors, c => c.role === 'editor');
-
-                const all = authors.concat(programmers).concat(film_directors).concat(directors).concat(editors);
-                all.sort();
-                const au_contribs = all.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (au_contribs.length > 0) {
-                    final.contributors.authors = au_contribs.map(author => ({ author }));
-                }
-
-                // A2
-                const organisers = Utils.filterIndexes(pub.contributors, c => c.role === 'organiser');
-                const a2_contribs = organisers.filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (a2_contribs.length > 0) {
-                    final.contributors['secondary-authors'] = a2_contribs.map(author => ({ author }));
-                }
-
-                // A3
-                const producers = Utils.filterIndexes(pub.contributors, c => c.role === 'producer');
-                const supervisors = Utils.filterIndexes(pub.contributors, c => c.role === 'supervisor-thesis');
-                const a3_contribs = producers.concat(supervisors).filter(idx => contribs[idx]
-                    && contribs[idx].label && contribs[idx].label.lastname)
-                    .map((idx) => {
-                        const info = contribs[idx].label;
-                        if (info.firstname) {
-                            return `${contribs[idx].label.lastname}, ${contribs[idx].label.firstname}`;
-                        }
-                        return `${contribs[idx].label.lastname}`;
-                    });
-
-                if (a3_contribs.length > 0) {
-                    final.contributors['tertiary-authors'] = a3_contribs.map(author => ({ author }));
-                }
-                return final;
+            picker: async (t, pub) => {
+                const lang = Utils.find_value_with_path(pub, 'language.0'.split('.')) || 'EN';
+                return { title: { content: t, lang } };
             },
         },
     },
-    'denormalization.book_authors': {
+    'titles.translated-title.0': {
         __default: {
             transformers: [],
-            picker: async (contribs) => {
-                const final = {};
-                // A2
-                const a2_contribs = contribs
-                    .filter(c => c != null)
-                    .map((c) => {
-                        const info = c._id;
-                        if (!info) {
-                            return null;
-                        }
-
-                        if (info.firstname) {
-                            return `${info.lastname}, ${info.firstname}`;
-                        }
-                        return `${info.lastname}`;
-                    }).filter(c => c != null);
-                final.contributors = { 'secondary-authors': a2_contribs.map(author => ({ author })) };
-                return final;
-            },
+            picker: async tts => ({ translated_titles: [{ content: tts }] }),
+        },
+    },
+    'publisher.0': {
+        __default: {
+            transformers: [],
+            picker: async v => ({ editor: v }),
+        },
+        report: {
+            transformers: [],
+            picker: async v => ({ delivery_institution: v }),
+        },
+        thesis: {
+            transformers: [],
+            picker: async v => ({ delivery_institution: v }),
+        },
+    },
+    'periodical.full-title.0': {
+        __default: {
+            transformers: [],
+            picker: async pt => ({ journal: pt }),
+        },
+    },
+    'contributors.0.authors.author': {
+        __default: {
+            transformers: [],
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'author' })) }),
+        },
+    },
+    'contributors.0.secondary-authors.author': {
+        __default: {
+            transformers: [],
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'organiser' })) }),
+        },
+        chapter: {
+            transformers: [],
+            picker: async contribs => ({ book_authors: contribs.map(c => ({ _id: c })) }),
+        },
+    },
+    'contributors.0.tertiary-authors.author': {
+        __default: {
+            transformers: [],
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
+        },
+        thesis: {
+            transformers: [],
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'supervisor-thesis' })) }),
         },
     },
 };
 
-module.exports = { types, mapping };
+async function run(publication, typology, idx, maps) {
+    let final_publication = {};
+    const endnote_type = Utils.find_value_with_path(publication, 'ref-type._'.split('.')) || null;
+
+    const pos_temporary_type = endnote_type in types ? types[endnote_type] : 'other';
+    let pos_type = 'other';
+    let pos_subtype = null;
+    if (pos_temporary_type in typology) {
+        pos_type = typology[pos_temporary_type]._id;
+    } else {
+        pos_subtype = pos_temporary_type;
+        const possibilities = _.map(typology, (type, key) => {
+            if (type.children.find(child => child.name === pos_temporary_type)) {
+                return type._id;
+            }
+            return null;
+        }).filter(rt => rt != null);
+        if (possibilities.length > 0) {
+            pos_type = possibilities[0];
+        }
+    }
+
+    final_publication.type = pos_type;
+    if (pos_subtype) {
+        final_publication.subtype = pos_subtype;
+    }
+
+    for (const key in mapping) {
+        const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+        if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+            continue;
+        }
+
+        const info = mapping[key];
+        let mapper = null;
+        if (pos_temporary_type in info) {
+            mapper = info[pos_temporary_type];
+        } else if ('__default' in info) {
+            mapper = info.__default;
+        }
+
+        if (!mapper) {
+            continue;
+        }
+
+        let subobj = await mapper.picker(pub_info, publication,
+            publication.LA ? publication.LA[0] : 'EN', key);
+        if (mapper.transformers.length > 0) {
+            subobj = await mapper.transformers.reduce((o, tr) => {
+                o = tr(o);
+                return o;
+            }, subobj);
+        }
+
+        final_publication = Utils.merge_with_concat(final_publication, subobj);
+    }
+
+    const srefs = [['editor', 'editor'], ['journal', 'journal'],
+        ['institution', 'delivery_institution'],
+        ['conference', 'conference']];
+    const lrefs = [['author', 'contributors', 'label'], ['author', 'book_authors', '_id']];
+
+    for (const info of srefs) {
+        const [type, path] = info;
+        maps = await CommonFunctions.single_ref(type, path, final_publication, idx, maps);
+    }
+
+    for (const info of lrefs) {
+        const [type, list_path, path] = info;
+        maps = await CommonFunctions.list_ref(type, list_path, path, final_publication, idx, maps);
+    }
+    return final_publication;
+}
+
+module.exports = {
+    run,
+    queries: {
+        author: CommonFunctions.contributor_search,
+        journal: CommonFunctions.match_search('name'),
+        conference: CommonFunctions.match_search('name'),
+        editor: CommonFunctions.match_search('label'),
+        institution: CommonFunctions.match_search('name'),
+    },
+};

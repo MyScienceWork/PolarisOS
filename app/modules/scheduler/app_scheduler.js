@@ -6,6 +6,7 @@ const Logger = require('../../logger');
 const Errors = require('../exceptions/errors');
 const EntitiesUtils = require('../utils/entities');
 const RISPipeline = require('../entities/importer/pipelines/ris_pipeline');
+const EndNotePipeline = require('../entities/importer/pipelines/endnote_pipeline');
 const ImporterReaders = require('../entities/importer/readers');
 const Importer = require('../entities/importer/importing');
 
@@ -38,8 +39,8 @@ class AppScheduler extends Scheduler {
 
         const to_import = on_wait_imports[0];
 
-        const pipeline = to_import.format === 'ris' ? RISPipeline : null;
-        const reader = to_import.format === 'ris' ? ImporterReaders.RISReader : null;
+        const pipeline = to_import.format === 'ris' ? RISPipeline : EndNotePipeline;
+        const reader = to_import.format === 'ris' ? ImporterReaders.RISReader : ImporterReaders.EndNoteReader;
         const importer = new Importer(to_import.subtype, pipeline,
             pipeline.queries, reader);
 

@@ -220,7 +220,8 @@ class Importer {
 
         const items_in_json = await this._read_func(this._report.filepath);
 
-        this._report.report.total = items_in_json.length;
+        console.log('items_in_json', JSON.stringify(items_in_json));
+        /* this._report.report.total = items_in_json.length;
         await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
 
         const [items_without_references, references_maps] =
@@ -231,7 +232,7 @@ class Importer {
         const final_items = await Importer._merge_references_and_items(items_without_references,
             filled_references_maps);
         const results = await this._import_data(final_items);
-        await this._set_final_information_on_report(results);
+        await this._set_final_information_on_report(results);*/
     }
 }
 
