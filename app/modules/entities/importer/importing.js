@@ -11,23 +11,22 @@ class Importer {
     _items_type: string;
     _import_pipeline: Object;
     _read_func: Function;
-    _extra: Object;
+    _extra: ?Object;
     _reference_queries: Object;
     _max_size_per_query: number;
     _report: ?Object;
 
     constructor(items_type: string,
         import_pipeline: Object,
-        extra: Object,
         reference_queries: Object,
         read_func: Function) {
         this._items_type = items_type;
         this._import_pipeline = import_pipeline;
-        this._extra = extra;
         this._read_func = read_func;
         this._reference_queries = reference_queries;
         this._max_size_per_query = 2;
         this._report = null;
+        this._extra = null;
     }
 
     get report(): ?Object {
@@ -38,7 +37,7 @@ class Importer {
         const method = 'POST';
         const model = await EntitiesUtils.get_model_from_type(this._items_type);
         const presults = await Pipeline.run_bulk(items,
-            this._items_type, method, model, this._extra);
+            this._items_type, method, model, this._extra || {});
 
         if ('total' in presults && 'errors_count' in presults) {
             return presults;
@@ -102,7 +101,7 @@ class Importer {
                 }
 
                 refs.forEach((ref) => {
-                    const item = items[ref];
+                    const item = items[ref.idx];
                     const path = ref.path.split('.');
                     const last_segment = parseInt(path[path.length - 1], 10) || path[path.length - 1];
                     const value = Utils.find_object_with_path(item, path);
@@ -148,7 +147,7 @@ class Importer {
     }
 
     async _set_final_information_on_report(results: Array<Object>) {
-        if (results.length === 0) {
+        if (!results) {
             return;
         }
 
@@ -156,12 +155,11 @@ class Importer {
             return;
         }
 
-        const bulk_results = results[1];
         this._report.status = 'done';
-        this._report.report.total = bulk_results.total;
-        this._report.report.success = bulk_results.success;
-        this._report.report.errors = bulk_results.errors_count;
-        this._report.result = JSON.stringify(bulk_results.results);
+        this._report.report.total = results.total;
+        this._report.report.success = results.success;
+        this._report.report.errors = results.errors_count;
+        this._report.result = JSON.stringify(results.results);
         await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
     }
 
@@ -186,6 +184,7 @@ class Importer {
             schedule_at: 0,
             status: 'on_wait',
             requester: extra.papi._id,
+            external_information: JSON.stringify(extra),
             denormalization: {
                 requester: {
                     fullname: extra.papi.fullname,
@@ -208,6 +207,7 @@ class Importer {
         }
 
         this._report = report;
+        this._extra = JSON.parse(report.external_information || '{}');
         return this._report;
     }
 
@@ -226,17 +226,12 @@ class Importer {
         const [items_without_references, references_maps] =
             await this._execute_pipeline(items_in_json);
 
-        console.log(JSON.stringify(items_without_references));
-        console.log(JSON.stringify(references_maps));
-
         const filled_references_maps = await this._fill_references_maps(references_maps);
 
-        console.log(JSON.stringify(filled_references_maps));
         const final_items = await Importer._merge_references_and_items(items_without_references,
             filled_references_maps);
-        console.log(JSON.stringify(final_items));
-        // const results = await this._import_data(final_items);
-        // await this._set_final_information_on_report(results);
+        const results = await this._import_data(final_items);
+        await this._set_final_information_on_report(results);
     }
 }
 

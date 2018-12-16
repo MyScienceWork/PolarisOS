@@ -221,11 +221,8 @@ async function import_ris(ctx: Object): Promise<any> {
     const my_report = await Importer.create_report(name, filepath,
         'ris', 'publication', ctx.__md || {});
 
-    console.log(my_report);
     const importer = new Importer('publication',
         RISPipeline, ctx.__md || {}, RISPipeline.queries, Readers.RISReader);
-    await importer.read_report(my_report._id);
-    await importer.import_items();
     ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 

@@ -55,6 +55,9 @@ module.exports = {
                     format: {
                         type: 'keyword',
                     },
+                    external_information: {
+                        type: 'keyword',
+                    },
                     filepath: {
                         type: 'keyword',
                     },
