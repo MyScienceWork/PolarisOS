@@ -22,8 +22,8 @@
                                         <span class="icon is-small">
                                             <i v-if="state.mobile_dropdown.first" class="fa fa-chevron-down"></i>
                                             <i v-else class="fa fa-chevron-up"></i>
-                                        </span> 
-                                        <span class="swap menu-text">{{lang('f_export_publication')}}</span> 
+                                        </span>
+                                        <span class="swap menu-text">{{lang('f_export_publication')}}</span>
                                     </a>
                                     <ul>
                                         <li v-for="data in export_data">
@@ -40,15 +40,15 @@
                                         <span class="icon is-small">
                                             <i v-if="state.mobile_dropdown.second" class="fa fa-chevron-down"></i>
                                             <i v-else class="fa fa-chevron-up"></i>
-                                        </span> 
-                                        <span class="swap menu-text">{{lang('f_items_per_page')}}</span> 
+                                        </span>
+                                        <span class="swap menu-text">{{lang('f_items_per_page')}}</span>
                                     </a>
                                     <ul>
                                         <li v-for="per_page in items_per_page_options">
                                             <a :class="['swap', {'is-active': state.seso.size === per_page}]" @click.prevent="size(per_page)">
                                                 {{per_page}}
                                             </a>
-                                        </li> 
+                                        </li>
                                     </ul>
                                 </b-collapse>
                             </li>
@@ -58,8 +58,8 @@
                                         <span class="icon is-small">
                                             <i v-if="state.mobile_dropdown.third" class="fa fa-chevron-down"></i>
                                             <i v-else class="fa fa-chevron-up"></i>
-                                        </span> 
-                                        <span class="menu-text">{{lang('f_sort_by')}}</span> 
+                                        </span>
+                                        <span class="menu-text">{{lang('f_sort_by')}}</span>
                                     </a>
                                     <ul>
                                         <li v-for="sorting in sorting_options">
@@ -90,13 +90,19 @@
                                 </span>
                                 <span>{{lang('f_export_publication')}}</span>
                             </a>
-                            <template v-for="data in export_data">
-                                <b-dropdown-item has-link>
+                            <template>
+                                <b-dropdown-item has-link v-for="data in export_data">
                                     <a class="navbar-item swap" @click.prevent="export_format(data.value)">
                                         {{data.label}}
                                     </a>
                                 </b-dropdown-item>
-                            </template> 
+                                <hr class="dropdown-divider">
+                                <b-dropdown-item has-link v-for="obj in csl_export_styles" >
+                                    <a class="navbar-item swap" @click.prevent="export_format('csl', obj.value)">
+                                        {{lang('f_export_csl')}} ({{obj.label}})
+                                    </a>
+                                </b-dropdown-item>
+                            </template>
                         </b-dropdown>
                     </p>
                     <p class="control">
@@ -115,7 +121,7 @@
                                         {{per_page}}
                                     </a>
                                 </b-dropdown-item>
-                            </template> 
+                            </template>
                         </b-dropdown>
                     </p>
                     <p class="control">

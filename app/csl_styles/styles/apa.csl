@@ -37,8 +37,8 @@
   <locale xml:lang="fr">
     <terms>
       <term name="container-author" form="short">
-        <single>éd</single>
-        <multiple>éds</multiple>
+        <single>éd.</single>
+        <multiple>éds.</multiple>
       </term>
     </terms>
   </locale>
