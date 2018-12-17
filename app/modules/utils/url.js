@@ -15,7 +15,13 @@ function transform_static_links_to_clickable_links_with_offset(string, ostart = 
         }
 
         const keep = string.slice(start + ostart.length, end);
-        string = `${string.substring(0, start)}<a href='${keep}'>${keep}</a>${string.substring(end + oend.length)}`;
+
+        if (keep.startsWith('http')) {
+            string = `${string.substring(0, start)}<a href='${keep}'>${keep}</a>${string.substring(end + oend.length)}`;
+        } else {
+            string = `${string.substring(0, start)}<a href='https://doi.org/${keep}'>${keep}</a>${string.substring(end + oend.length)}`;
+        }
+
         start = string.indexOf(ostart);
     }
     return string;

@@ -1,6 +1,6 @@
 {
   "name": "PolarisOS",
-  "version": "0.9.20",
+  "version": "0.9.25",
   "description": "",
   "keywords": [
     "Open repository"
@@ -30,7 +30,8 @@
     "bulma": "^0.5.3",
     "bulma-steps": "git+https://git@github.com/Cocophotos/bulma-steps.git#4929a5e3be7c55ce02302c24351d28d0d7499be8",
     "cas": "0.0.3",
-    "citation-js": "git+https://git@github.com/louismarie/citation.js.git#5e46ac21beb4d1dd77d0c79c40cc0f65696ebfaa",
+    "chrono-node": "^1.3.5",
+    "citation-js": "git+https://git@github.com/louismarie/citation.js.git#b686f1d52750ded99cee1cdca1963184c4660738",
     "csv-parse": "^2.0.4",
     "csv-stringify": "^2.0.4",
     "elasticsearch": "^13.0.1",
