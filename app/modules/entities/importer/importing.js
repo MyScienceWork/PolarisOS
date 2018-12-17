@@ -146,6 +146,14 @@ class Importer {
         await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
     }
 
+    async _set_import_to_fail() {
+        if (!this._report) {
+            return;
+        }
+        this._report.status = 'failed';
+        await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
+    }
+
     async _set_final_information_on_report(results: Array<Object>) {
         if (!results) {
             return;
@@ -218,21 +226,24 @@ class Importer {
 
         await this._set_import_in_progress();
 
-        const items_in_json = await this._read_func(this._report.filepath);
+        try {
+            const items_in_json = await this._read_func(this._report.filepath);
+            this._report.report.total = items_in_json.length;
+            await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
 
-        console.log('items_in_json', JSON.stringify(items_in_json));
-        /* this._report.report.total = items_in_json.length;
-        await EntitiesUtils.update(_.cloneDeep(this._report), 'system_report');
+            const [items_without_references, references_maps] =
+                await this._execute_pipeline(items_in_json);
 
-        const [items_without_references, references_maps] =
-            await this._execute_pipeline(items_in_json);
+            const filled_references_maps = await this._fill_references_maps(references_maps);
 
-        const filled_references_maps = await this._fill_references_maps(references_maps);
+            const final_items = await Importer._merge_references_and_items(items_without_references,
+                filled_references_maps);
 
-        const final_items = await Importer._merge_references_and_items(items_without_references,
-            filled_references_maps);
-        const results = await this._import_data(final_items);
-        await this._set_final_information_on_report(results);*/
+            const results = await this._import_data(final_items);
+            await this._set_final_information_on_report(results);
+        } catch (err) {
+            await this._set_import_to_fail();
+        }
     }
 }
 

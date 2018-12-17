@@ -1,6 +1,8 @@
+const _ = require('lodash');
 const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
+const DatesUtils = require('../../../utils/dates');
 const CommonFunctions = require('./common');
 
 const types = {
@@ -99,19 +101,7 @@ const mapping = {
     },
     'dates.0.pub-dates.0.date.0': {
         __default: {
-            picker: c => ({ dates: { publication: +moment(c, 'YYYY') } }),
-        },
-        journal: {
-            picker: c => ({ dates: { publication: +moment(c, 'MM/YYYY') } }),
-        },
-        press: {
-            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
-        },
-        conference: {
-            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
-        },
-        'conference-paper-generic': {
-            picker: c => ({ dates: { publication: +moment(c, 'DD/MM/YYYY') } }),
+            picker: c => ({ dates: { publication: DatesUtils.predict_date(c) } }),
         },
     },
     'notes.0': {
@@ -187,7 +177,7 @@ const mapping = {
             picker: async pt => ({ publication_title: pt }),
         },
     },
-    'titles.title.0': {
+    'titles.0.title.0': {
         __default: {
             transformers: [],
             picker: async (t, pub) => {
@@ -196,7 +186,7 @@ const mapping = {
             },
         },
     },
-    'titles.translated-title.0': {
+    'titles.0.translated-title.0': {
         __default: {
             transformers: [],
             picker: async tts => ({ translated_titles: [{ content: tts }] }),
@@ -222,13 +212,13 @@ const mapping = {
             picker: async pt => ({ journal: pt }),
         },
     },
-    'contributors.0.authors.author': {
+    'contributors.0.authors.0.author': {
         __default: {
             transformers: [],
             picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'author' })) }),
         },
     },
-    'contributors.0.secondary-authors.author': {
+    'contributors.0.secondary-authors.0.author': {
         __default: {
             transformers: [],
             picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'organiser' })) }),
@@ -238,7 +228,7 @@ const mapping = {
             picker: async contribs => ({ book_authors: contribs.map(c => ({ _id: c })) }),
         },
     },
-    'contributors.0.tertiary-authors.author': {
+    'contributors.0.tertiary-authors.0.author': {
         __default: {
             transformers: [],
             picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
@@ -252,7 +242,7 @@ const mapping = {
 
 async function run(publication, typology, idx, maps) {
     let final_publication = {};
-    const endnote_type = Utils.find_value_with_path(publication, 'ref-type._'.split('.')) || null;
+    const endnote_type = Utils.find_value_with_path(publication, 'ref-type.0._'.split('.')) || null;
 
     const pos_temporary_type = endnote_type in types ? types[endnote_type] : 'other';
     let pos_type = 'other';
@@ -297,7 +287,7 @@ async function run(publication, typology, idx, maps) {
 
         let subobj = await mapper.picker(pub_info, publication,
             publication.LA ? publication.LA[0] : 'EN', key);
-        if (mapper.transformers.length > 0) {
+        if ('transformers' in mapper && mapper.transformers.length > 0) {
             subobj = await mapper.transformers.reduce((o, tr) => {
                 o = tr(o);
                 return o;
