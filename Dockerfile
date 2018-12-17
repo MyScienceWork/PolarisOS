@@ -11,12 +11,12 @@ RUN apt-get install -y fonts-takao-mincho fonts-takao fonts-arphic-ukai fonts-ar
 RUN mkdir /app
 WORKDIR /app
 
-COPY ./code/app app/
-COPY ./code/front front/
-COPY ./code/gulpconfig gulpconfig/
-COPY ./code/gulpfile.js .
-COPY ./code/package.json .
-COPY ./code/pm2.json .
+COPY ./app app/
+COPY ./front front/
+COPY ./gulpconfig gulpconfig/
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./pm2.json .
 
 
 ENV NPM_CONFIG_LOGLEVEL warn
