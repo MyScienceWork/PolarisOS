@@ -4,11 +4,13 @@
         <div class="columns">
             <div class="column is-6">
                 <card color="orange" class="card-equal-height">
+                    <!--
                     <template slot="card-title">
                         {{lang('l_last_deposits')}}
                     </template>
-                    <div 
-                        slot="card-extra-header" 
+
+                    <div
+                        slot="card-extra-header"
                         class="is-pulled-right"
                     >
                         <rss-feed-icon
@@ -29,6 +31,7 @@
                             </div>
                         </div>
                     </div>
+                    -->
                 </card>
             </div>
             <div class="column is-6">
