@@ -33,16 +33,15 @@ module.exports = {
                 },
                 paths: {
                     creations: {
-                        publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
+                        //publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
                         specs: 'publication_specs',
                     },
                     reads: {
-                        publication: APIRoutes.entity('publication', 'GET'),
+                        //publication: APIRoutes.entity('publication', 'GET'),
                         typology: APIRoutes.entity('typology', 'POST', true),
                     },
                     validations: {
-
-                        publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
+                        //publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
                     },
                 },
                 forms: {
@@ -131,8 +130,8 @@ module.exports = {
         },
         previous(func, step, total) {
             this.run_next_or_previous(func);
-            this.state.paths.validations.publication = APIRoutes.entity('publication',
-                'VALIDATE', false, `0-${this.state.current_step + 1}`);
+            //this.state.paths.validations.publication = APIRoutes.entity('publication',
+            //    'VALIDATE', false, `0-${this.state.current_step + 1}`);
         },
         send_information(sink) {
             if (sink !== this.state.sinks.creations.publication) {
@@ -142,8 +141,8 @@ module.exports = {
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
                     this.run_next_or_previous(this.state.stepper.next);
-                    this.state.paths.validations.publication = APIRoutes.entity('publication',
-                        'VALIDATE', false, `0-${this.state.current_step + 1}`);
+                 //   this.state.paths.validations.publication = APIRoutes.entity('publication',
+                 //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
                 }
             } else {
                 const content = this.fcontent(this.state.sinks.creations.publication);
@@ -161,8 +160,8 @@ module.exports = {
 
             this.run_next_or_previous(this.state.stepper.next);
 
-            this.state.paths.validations.publication = APIRoutes.entity('publication',
-                'VALIDATE', false, `0-${this.state.current_step + 1}`);
+         //   this.state.paths.validations.publication = APIRoutes.entity('publication',
+         //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
         },
         show_success_read(sink) {
             this.handle_import(sink, this.state.sinks.creations.publication);
@@ -258,7 +257,7 @@ module.exports = {
                 type: 'dispatch',
                 content: {
                     form: this.state.sinks.creations.publication,
-                    path: APIRoutes.entity('publication', 'GET', false, id),
+                    //path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });
             this.$store.state.requests.push({

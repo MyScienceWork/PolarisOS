@@ -26,7 +26,7 @@ module.exports = {
                 show_import_modal: false,
                 paths: {
                     reads: {
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                        //publication: APIRoutes.entity('publication', 'POST', true),
                         typology: APIRoutes.entity('typology', 'POST', true),
                     },
                 },

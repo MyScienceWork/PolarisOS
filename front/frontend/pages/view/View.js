@@ -42,7 +42,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
-                        item: APIRoutes.entity('publication', 'POST', true),
+                    //    item: APIRoutes.entity('publication', 'POST', true),
                         license: APIRoutes.entity('license', 'POST', true),
                         contributor: APIRoutes.entity('author', 'POST', true),
                         contributor_role: APIRoutes.entity('contributor_role', 'POST', true),

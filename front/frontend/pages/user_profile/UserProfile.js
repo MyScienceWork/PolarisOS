@@ -49,7 +49,7 @@ module.exports = {
                         user: APIRoutes.entity('user', 'POST', true),
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                    //    publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 statuses: {

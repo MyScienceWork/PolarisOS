@@ -29,7 +29,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                    //    publication: APIRoutes.entity('publication', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
