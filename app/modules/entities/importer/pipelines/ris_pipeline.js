@@ -3,46 +3,7 @@ const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
-
-async function find_in_mapping(type, field, content, keep = '_id') {
-    const results = await EntitiesUtils.search_and_get_sources(type,
-            { where: { [field]: { $match: { query: content, minimum_should_match: '100%' } } }, size: 1 });
-
-    if (results.length > 0) {
-        return results[0][keep];
-    }
-    return null;
-}
-
-async function find_contributor(type, content, keep = '_id') {
-    const parts = content.split(',').map(c => c.trim());
-
-    if (parts.length === 0) {
-        return null;
-    }
-    const search = {};
-    if (parts.length === 1) {
-        search.lastname = { $match: { query: parts[0], minimum_should_match: '100%' } };
-    } else {
-        search.$or = [{
-            $and: [{ fisrtname: { $match: { query: parts[0], minimum_should_match: '100%' } } },
-                { lastname: { $match: { query: parts[1], minimum_should_match: '100%' } } }],
-        }, {
-            $and: [{ fisrtname: { $match: { query: parts[1], minimum_should_match: '100%' } } },
-                { lastname: { $match: { query: parts[0], minimum_should_match: '100%' } } }],
-        }];
-    }
-
-    const results = await EntitiesUtils.search_and_get_sources(type, {
-        where: search,
-        size: 1,
-    });
-
-    if (results.length > 0) {
-        return results[0][keep];
-    }
-    return null;
-}
+const CommonFunctions = require('./common');
 
 const types = {
     BOOK: 'book',
@@ -123,7 +84,7 @@ const mapping = {
         },
         CPAPER: {
             transformers: [],
-            picker: async c => ({ conference: await find_in_mapping('conference', 'name', c[0]) }),
+            picker: async c => ({ conference: c[0] }),
         },
     },
     C3: {
@@ -191,68 +152,53 @@ const mapping = {
     PB: {
         __default: {
             transformers: [],
-            picker: async v => ({ editor: await find_in_mapping('editor', 'label', v[0]) }),
+            picker: async v => ({ editor: v[0] }),
         },
         RPRT: {
             transformers: [],
-            picker: async v => ({ delivery_institution: await find_in_mapping('institution', 'name', v[0]) }),
+            picker: async v => ({ delivery_institution: v[0] }),
         },
         THES: {
             transformers: [],
-            picker: async v => ({ delivery_institution: await find_in_mapping('institution', 'name', v[0]) }),
+            picker: async v => ({ delivery_institution: v[0] }),
         },
     },
     JO: {
         __default: {
             transformers: [],
-            picker: async v => ({ journal: await find_in_mapping('journal', 'name', v[0]) }),
+            picker: async v => ({ journal: v[0] }),
         },
     },
     AU: {
         __default: {
             transformers: [],
-            picker: async (contribs, pub) => {
-                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
-                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'author' })) };
-            },
+            picker: async (contribs, pub) => ({ contributors: contribs.map(c => ({ label: c, role: 'author' })) }),
         },
         COMP: {
             transformers: [],
-            picker: async (contribs, pub) => {
-                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
-                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'programmer' })) };
-            },
+            picker: async (contribs, pub) => ({ contributors: contribs.map(c => ({ label: c, role: 'programmer' })) }),
         },
     },
     A2: {
         __default: {
             transformers: [],
-            picker: async (contribs) => {
-                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
-                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'editor' })) };
-            },
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'editor' })) }),
         },
         CHAP: {
             transformers: [],
-            picker: async (contribs) => {
-                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
-                return { book_authors: results.filter(c => c != null).map(c => ({ _id: c, role: 'editor' })) };
-            },
+            picker: async contribs => ({ book_authors: contribs.map(c => ({ _id: c, role: 'editor' })) }),
         },
     },
     A3: {
         __default: {
             transformers: [],
-            picker: async (contribs) => {
-                const results = await Promise.all(contribs.map(c => find_contributor('author', c)));
-                return { contributors: results.filter(c => c != null).map(c => ({ label: c, role: 'producer' })) };
-            },
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
         },
     },
 };
 
 
-async function run(publication, typology) {
+async function run(publication, typology, idx, maps) {
     let final_publication = {};
     const ris_type = publication.TY[0];
     const pos_temporary_type = ris_type in types ? types[publication.TY[0]] : 'other';
@@ -296,7 +242,8 @@ async function run(publication, typology) {
             continue;
         }
 
-        let subobj = await mapper.picker(pub_info, publication, 'EN', key);
+        let subobj = await mapper.picker(pub_info, publication,
+            publication.LA ? publication.LA[0] : 'EN', key);
         if (mapper.transformers.length > 0) {
             subobj = await mapper.transformers.reduce((o, tr) => {
                 o = tr(o);
@@ -304,15 +251,34 @@ async function run(publication, typology) {
             }, subobj);
         }
 
-        final_publication = _.mergeWith(final_publication, subobj, (objValue, srcValue) => {
-            if (_.isArray(objValue)) {
-                return objValue.concat(srcValue);
-            }
-        });
+        final_publication = Utils.merge_with_concat(final_publication, subobj);
+    }
+
+    const srefs = [['editor', 'editor'], ['journal', 'journal'],
+        ['institution', 'delivery_institution'],
+        ['conference', 'conference']];
+    const lrefs = [['author', 'contributors', 'label'], ['author', 'book_authors', '_id']];
+
+    for (const info of srefs) {
+        const [type, path] = info;
+        maps = await CommonFunctions.single_ref(type, path, final_publication, idx, maps);
+    }
+
+    for (const info of lrefs) {
+        const [type, list_path, path] = info;
+        maps = await CommonFunctions.list_ref(type, list_path, path, final_publication, idx, maps);
     }
     return final_publication;
 }
 
 module.exports = {
     run,
+    queries: {
+        author: CommonFunctions.contributor_search,
+        journal: CommonFunctions.match_search('name'),
+        conference: CommonFunctions.match_search('name'),
+        editor: CommonFunctions.match_search('label'),
+        institution: CommonFunctions.match_search('name'),
+    },
+
 };

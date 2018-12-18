@@ -1,10 +1,12 @@
 FROM node:7
 
-RUN apt-get update && apt-get install -y \
-  git \
-  pdftk
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y pdftk
+RUN npm install pm2 -g
 
-RUN npm install pm2@3.1.3 -g
+# support asian character
+RUN apt-get install -y fonts-takao-mincho fonts-takao fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
 
 RUN mkdir /app
 WORKDIR /app
