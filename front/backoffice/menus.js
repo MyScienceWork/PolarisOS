@@ -10,15 +10,16 @@ const EntityView = require('./pages/entity_view/EntityView.vue');
 const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
-const Review = require('./pages/review/Review.vue');
+//const Review = require('./pages/review/Review.vue');
+const ReviewProject = require('./pages/review_project/ReviewProject.vue');
 const Login = require('./pages/login/Login.vue');
 const LoginChoice = require('./pages/login_choice/LoginChoice.vue');
 const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
 const Template = require('./pages/template/Template.vue');
-const Connector = require('./pages/connector/Connector.vue');
-const Importer = require('./pages/importer/Importer.vue');
+//const Connector = require('./pages/connector/Connector.vue');
+//const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
@@ -61,6 +62,18 @@ module.exports.menu = [
         },
         {
             section: 'l_general_section',
+            name: 'l_review_project_page',
+            access: 'back-review-project',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'role',
+            routes: [Routes.review_project],
+            submenu: [],
+            component: ReviewProject,
+            intro: 'l_backoffice_review_project_menu_help',
+        },
+        /*
+        {
+            section: 'l_general_section',
             name: 'l_reviews_page',
             access: 'back-review',
             subaccess: ['c', 'r', 'u', 'd'],
@@ -70,6 +83,8 @@ module.exports.menu = [
             component: Review,
             intro: 'l_backoffice_review_menu_help',
         },
+        */
+        /*
         {
             section: 'l_general_section',
             name: 'l_masas_page',
@@ -80,7 +95,7 @@ module.exports.menu = [
             submenu: [],
             component: Masas,
             intro: 'l_backoffice_masas_menu_help',
-        },
+        },*/
     ],
 
     [
@@ -208,7 +223,7 @@ module.exports.menu = [
             intro: 'l_backoffice_page_menu_help',
         },
     ],
-
+    /*
      [
         {
             section: 'l_import_export_section',
@@ -241,7 +256,7 @@ module.exports.menu = [
             component: Widget,
         },
     ],
-
+    */
     [
         {
             section: 'l_advanced_section',
