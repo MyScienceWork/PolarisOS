@@ -161,7 +161,7 @@
                                 {{lang('f_user_save_failed')}}
                             </div>
                         </article>
-
+                        <!--
                         <h4 class="title is-4 has-medium-top-margin has-no-bottom-margin">{{lang('f_user_affiliations', {}, 'other')}}</h4>
                         <hr class="hr-section" />
 
@@ -208,6 +208,8 @@
                                 </div>
                             </article>
                         </div>
+                        -->
+
                     </div> <!-- account -->
                     <div v-else-if="state.current_tab === 2 && state.loggedIn && user && user._id"> <!-- my deposits -->
                         <div class="columns is-centered">
