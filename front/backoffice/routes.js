@@ -31,4 +31,5 @@ module.exports = {
     mail_template: '/admin/mail_template',
     chart: '/admin/chart_configuration',
     masas: '/admin/masas',
+    workflow: '/admin/workflow',
 };

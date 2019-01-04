@@ -24,6 +24,7 @@ const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 const Masas = require('./pages/masas/Masas.vue');
+const Workflow = require('./pages/workflow/Workflow.vue');
 
 module.exports.menu = [
     [
@@ -65,7 +66,7 @@ module.exports.menu = [
             name: 'l_review_project_page',
             access: 'back-review-project',
             subaccess: ['c', 'r', 'u', 'd'],
-            key: 'role',
+            key: 'review_project',
             routes: [Routes.review_project],
             submenu: [],
             component: ReviewProject,
@@ -99,6 +100,17 @@ module.exports.menu = [
     ],
 
     [
+        {
+            section: 'l_admin_section',
+            name: 'l_workflow_page',
+            access: 'back-workflow',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'workflow',
+            routes: [Routes.workflow],
+            submenu: [],
+            component: Workflow,
+            intro: 'l_backoffice_workflow_menu_help',
+        },
         {
             section: 'l_admin_section',
             name: 'l_entities_page',
