@@ -35,7 +35,7 @@
                         </a>
 
                         <b-dropdown-item v-for="s in sizeList" :class="['navbar-item', {'is-active': state.seso.size === s}]" @click="() => size(s)">
-                                {{s}} 
+                                {{s}}
                             </b-dropdown-item>
                     </b-dropdown>
                 </div>
@@ -43,8 +43,11 @@
         </nav>
         <section v-if="Object.keys(columns).length > 0" v-intro="lang('l_backoffice_show_columns_help')">
             <p class="has-small-top-margin has-small-bottom-margin">{{lang('l_show_columns')}}</p>
+            <b-checkbox type="is-info" :value="state.all_columns_visible" @input="(c) => on_main_checkbox_update(columns, c)">
+                {{lang('f_all_filters')}}
+            </b-checkbox>
             <b-field grouped group-multiline>
-                <div v-for="(val, key) in columns" v-if="!columns[key].force" 
+                <div v-for="(val, key) in columns" v-if="!columns[key].force"
                     :key="key"
                     class="control"
                 >

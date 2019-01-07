@@ -24,6 +24,7 @@ module.exports = {
     data() {
         return {
             state: {
+                all_columns_visible: true,
             },
         };
     },
@@ -40,7 +41,14 @@ module.exports = {
             this.currentPage = page;
         },
         on_checkbox_update(key, checked) {
+            console.log("this is key : ", key);
             this.$emit('column-checkbox-update', { key, checked });
+        },
+        on_main_checkbox_update(columns, checked) {
+            Object.keys(columns).forEach((c) => {
+                console.log("this is all key : ", c);
+                this.$emit('column-checkbox-update', { key: c, checked });
+            });
         },
         on_checked_rows_update(checkedList, row) {
             this.$emit('table-checked-rows-update', { checkedRows: checkedList, checkedRow: row });

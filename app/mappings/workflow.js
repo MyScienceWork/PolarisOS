@@ -1,3 +1,20 @@
+const Access = {
+    properties: {
+        c: {
+            type: 'boolean',
+        },
+        r: {
+            type: 'boolean',
+        },
+        u: {
+            type: 'boolean',
+        },
+        d: {
+            type: 'boolean',
+        },
+    },
+};
+
 module.exports = {
     msw: {
         mappings: {
@@ -5,7 +22,31 @@ module.exports = {
                 dynamic: 'strict',
                 dynamic_date_formats: [],
                 properties: {
+                    global_access: {
+                        properties: {
+                            access: {
+                                type: 'keyword',
+                            },
+                            subaccess: Access,
+                        },
+                    },
                     name: {
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    label: {
+                        type: 'text',
+                        fields: {
+                            raw: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    description: {
                         type: 'text',
                         fields: {
                             raw: {
@@ -23,6 +64,25 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                 },
+                            },
+                            label: {
+                                type: 'text',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            description: {
+                                type: 'text',
+                                fields: {
+                                    raw: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            order: {
+                                type: 'integer',
                             },
                             role: {
                                 type: 'keyword',

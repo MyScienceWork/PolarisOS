@@ -1,4 +1,95 @@
 <template>
+    <div class="holy-grail-content">
+        <div class="container is-fluid">
+            <div class="columns">
+                <div class="column">
+                    <widget>
+                        <span slot="title">{{lang('l_list_of_workflow')}}</span>
+                        <div slot="body">
+                            <fsearching
+                                    :search-sink="state.sinks.creations.search"
+                                    :result-sink="state.sinks.reads.workflow"
+                                    :search-path="state.paths.reads.workflow"
+                                    :search-query="es_query_content"
+                                    :use-default-query="true"
+                                    search-type="workflow"
+                                    :change-with-create-success="true"
+                                    :form-create-success="state.sinks.creations.workflow"
+                            >
+                                <widget slot="search-result" slot-scope="props">
+                                    <span slot="title">
+                                        <action-button
+                                                class="has-text-blue share-icon"
+                                                tag="a"
+                                                @action-click="update(props.info, 'workflow')"
+                                                v-scroll-to="'#mwidget'"
+                                        >
+                                            <i class="fa fa-pencil"></i>
+                                        </action-button>
+                                        <action-button
+                                                class="has-text-orange share-icon"
+                                                tag="a"
+                                                @action-click="use_as_model(props.info, 'workflow')"
+                                                v-scroll-to="'#mwidget'"
+                                        >
+                                            <i class="fa fa-clone"></i>
+                                        </action-button>
+                                        <action-button
+                                                class="has-text-red share-icon"
+                                                tag="a"
+                                                confirmation="l_are_you_sure"
+                                                :two-steps="true"
+                                                @action-click="remove(props.info, 'workflow')"
+                                        >
+                                        <i class="fa fa-times"></i>
+                                        </action-button>
+                                        {{props.info.label}} ({{props.info.name}})
+                                    </span>
+                                    <div slot="body">
+                                    </div>
+                                </widget>
+                            </fsearching>
+                        </div>
+                    </widget>
+                </div>
+            </div>
+            <div class="columns" v-if="has_cu_access('entity')">
+                <div class="column">
+                    <widget id="mwidget">
+                    <span slot="title">
+                    {{lang('l_add_or_modify_workflow')}}
+                    </span>
+                    <div slot="body">
+                        <fform
+                                :name="state.sinks.creations.workflow"
+                                :post_path="state.paths.creations.workflow"
+                                :put_path="state.paths.creations.workflow"
+                                :get_path="state.paths.reads.workflow"
+                                :get_form="state.sinks.reads.workflow"
+                        >
+                            <finput name="name" :label="lang('b_workflow_name')" :is-required="true" :placeholder="lang('b_workflow_name')" type="text" :form="state.sinks.creations.workflow" />
+                            <finput name="label" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.workflow" />
+                            <finput rows="5" name="description" :label="lang('b_workflow_description')" :placeholder="lang('b_workflow_description')" type="textarea" :form="state.sinks.creations.workflow" />
+                            <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
+                                <template slot="variadic" slot-scope="props">
+                                    <finput :name="`${props.fname}.${props.order}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput rows="5" :name="`${props.fname}.${props.order}.description`" :label="lang('b_description')" :placeholder="lang('b_description')" type="textarea" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.role`" :label="lang('b_role')" :is-required="true" :placeholder="lang('b_role')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.entity`" :label="lang('b_entity')" :is-required="true" :placeholder="lang('b_entity')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.filter`" :label="lang('b_filter')" :is-required="true" :placeholder="lang('b_filter')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.state_before`" :label="lang('b_state_before')" :is-required="true" :placeholder="lang('b_state_before')" type="text" :form="state.sinks.creations.workflow" />
+                                    <finput :name="`${props.fname}.${props.order}.state_after`" :label="lang('b_state_after')" :is-required="true" :placeholder="lang('b_state_after')" type="text" :form="state.sinks.creations.workflow" />
+                                </template>
+                            </fvariadic-element>
+                        </fform>
+                    </div>
+                    </widget>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
