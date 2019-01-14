@@ -84,8 +84,13 @@ module.exports = {
                             order: {
                                 type: 'integer',
                             },
-                            role: {
-                                type: 'keyword',
+                            roles: {
+                                type: 'nested',
+                                properties: {
+                                    role: {
+                                        type: 'keyword',
+                                    },
+                                },
                             },
                             entity: {
                                 type: 'keyword',
@@ -97,6 +102,9 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                 },
+                            },
+                            entity_state: {
+                                type: 'keyword',
                             },
                             state_before: {
                                 type: 'nested',

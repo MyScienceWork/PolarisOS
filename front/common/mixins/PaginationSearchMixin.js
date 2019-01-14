@@ -211,7 +211,7 @@ module.exports = {
                 return o;
             }, {});
 
-            console.log(JSON.stringify(filters));
+            console.log('filters : ', JSON.stringify(filters));
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -297,7 +297,7 @@ module.exports = {
 
             body.sort.push({ _uid: 'desc' });
 
-            console.log(body);
+            //console.log('body : ', body);
 
             this.$store.dispatch('search', {
                 path: this.searchPath,

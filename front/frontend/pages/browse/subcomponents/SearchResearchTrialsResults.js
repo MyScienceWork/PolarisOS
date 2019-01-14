@@ -23,7 +23,6 @@ module.exports = {
         Results,
     },
     data() {
-        console.log('BRYAN1');
         return {
             state: {
                 display_results: false,
@@ -46,11 +45,9 @@ module.exports = {
     },
     methods: {
         join_list(list) {
-            console.log('BRYAN2');
             return list.map(elt => `<strong>${elt.trim()}</strong>`).join('; ');
         },
         onPageChangeHook() {
-            console.log('BRYAN3');
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.export,
                 keep_content: false,
@@ -58,20 +55,17 @@ module.exports = {
             this.state.select_all_to_export = false;
         },
         export_format(format, subtype) {
-            console.log('BRYAN4');
             this.state.export_type = format;
             this.state.export_subtype = subtype;
 
             this.send_information(this.state.sinks.reads.export);
         },
         select_export_csl(value) {
-            console.log('BRYAN6');
             if (value) {
                 this.export_format('csl', value.value);
             }
         },
         send_information(sink) {
-            console.log('BRYAN5');
             this.state.display_results = true;
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
@@ -85,7 +79,6 @@ module.exports = {
             }
         },
         run_export(sink) {
-            console.log('BRYAN7');
             const content = this.fcontent(sink);
             const ids = this.$lodash.reduce(content, (arr, val, key) => {
                 if (val) {
@@ -110,11 +103,9 @@ module.exports = {
     },
     watch: {
         current_state_export(s) {
-            console.log('BRYAN9');
             this.dispatch(s, this, this.state.sinks.reads.export);
         },
         select_all_to_export(s) {
-            console.log('BRYAN10');
             this.state.select_all_to_export = s;
             const obj = this.content.reduce((o, info) => {
                 o[info._id] = !!s;
@@ -132,7 +123,6 @@ module.exports = {
     },
     computed: {
         content() {
-            console.log('BRYAN11');
             const content = this.fcontent(this.resultSink);
             if (!(content instanceof Array)) {
                 return [];
@@ -144,16 +134,13 @@ module.exports = {
             });
         },
         select_all_to_export() {
-            console.log('BRYAN12');
             return this.state.select_all_to_export;
         },
         total() {
-            console.log('BRYAN13');
             const form = this.fform(this.resultSink);
             return form.total || 0;
         },
         current_state_export() {
-            console.log('BRYAN14');
             return this.fstate(this.state.sinks.reads.export);
         },
         user() {

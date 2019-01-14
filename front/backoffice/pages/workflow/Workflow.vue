@@ -76,11 +76,62 @@
                                     <finput :name="`${props.fname}.${props.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.workflow" />
                                     <finput rows="5" :name="`${props.fname}.${props.order}.description`" :label="lang('b_description')" :placeholder="lang('b_description')" type="textarea" :form="state.sinks.creations.workflow" />
                                     <finput :name="`${props.fname}.${props.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.workflow" />
-                                    <finput :name="`${props.fname}.${props.order}.role`" :label="lang('b_role')" :is-required="true" :placeholder="lang('b_role')" type="text" :form="state.sinks.creations.workflow" />
-                                    <finput :name="`${props.fname}.${props.order}.entity`" :label="lang('b_entity')" :is-required="true" :placeholder="lang('b_entity')" type="text" :form="state.sinks.creations.workflow" />
+                                    <fselect
+                                            :name="`${props.fname}.${props.order}.roles`"
+                                            :label="lang('b_role', {}, 'other')"
+                                            :is-required="true"
+                                            :options="roles || []"
+                                            :form="state.sinks.creations.workflow"
+                                            fieldValue="role"
+                                            fieldLabel="name"
+                                            :multi="true"
+                                            :translatable="true"
+                                            :help="lang('l_backoffice_role_help')"
+                                    />
+                                    <fselect
+                                            :name="`${props.fname}.${props.order}.entity`"
+                                            :label="lang('b_entity_name')"
+                                            :is-required="true"
+                                            :options="entitys || []"
+                                            fieldValue="_id"
+                                            fieldLabel="type"
+                                            :form="state.sinks.creations.workflow"
+                                    />
                                     <finput :name="`${props.fname}.${props.order}.filter`" :label="lang('b_filter')" :is-required="true" :placeholder="lang('b_filter')" type="text" :form="state.sinks.creations.workflow" />
-                                    <finput :name="`${props.fname}.${props.order}.state_before`" :label="lang('b_state_before')" :is-required="true" :placeholder="lang('b_state_before')" type="text" :form="state.sinks.creations.workflow" />
-                                    <finput :name="`${props.fname}.${props.order}.state_after`" :label="lang('b_state_after')" :is-required="true" :placeholder="lang('b_state_after')" type="text" :form="state.sinks.creations.workflow" />
+                                    <fselect
+                                            :name="`${props.fname}.${props.order}.entity_state`"
+                                            :label="lang('b_entity_state_name')"
+                                            :is-required="true"
+                                            :options="entitys || []"
+                                            fieldValue="state"
+                                            fieldLabel="type"
+                                            :form="state.sinks.creations.workflow"
+                                            v-on:select-change="(val) => {update_entity_states_labels(val)}"
+                                    />
+                                    <fselect
+                                            :name="`${props.fname}.${props.order}.state_before`"
+                                            :label="lang('b_state_before', {}, 'other')"
+                                            :is-required="true"
+                                            :options="entity_states || []"
+                                            :form="state.sinks.creations.workflow"
+                                            fieldValue="state"
+                                            fieldLabel="label"
+                                            :multi="true"
+                                            :translatable="true"
+                                            :help="lang('l_backoffice_entity_state_before_help')"
+                                    />
+                                    <fselect
+                                            :name="`${props.fname}.${props.order}.state_after`"
+                                            :label="lang('b_state_after', {}, 'other')"
+                                            :is-required="true"
+                                            :options="entity_states || []"
+                                            :form="state.sinks.creations.workflow"
+                                            fieldValue="state"
+                                            fieldLabel="label"
+                                            :multi="true"
+                                            :translatable="true"
+                                            :help="lang('l_backoffice_entity_state_after_help')"
+                                    />
                                 </template>
                             </fvariadic-element>
                         </fform>
