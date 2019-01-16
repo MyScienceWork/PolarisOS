@@ -16,6 +16,7 @@ module.exports = {
                         role: APIRoutes.entity('role', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                         entity: APIRoutes.entity('entity', 'POST', true),
+                        project_state: APIRoutes.entity('project_state', 'POST', true),
                     },
                     creations: {
                         workflow: APIRoutes.entity('workflow', 'POST'),
@@ -26,7 +27,7 @@ module.exports = {
                         role: 'role_read',
                         workflow: 'workflow_read',
                         entity: 'entity_read',
-                        entity_state_labels: 'entity_state_labels_read',
+                        project_state: 'project_state_read',
                     },
                     creations: {
                         workflow: 'workflow_creation',
@@ -38,34 +39,36 @@ module.exports = {
         };
     },
     methods: {
+        /*
         update_entity_states_labels(entity) {
-            if (entity && entity.label) {
-                console.log('update_entity_states_labels : ', entity.label);
-                [entity.label].forEach((e) => {
-                    this.$store.dispatch('search', {
-                        form: this.state.sinks.reads.entity_state_labels,
+            if (entity) {
+                this.$store.state.requests = [entity].map(e => ({
+                    name: 'search',
+                    type: 'dispatch',
+                    content: {
+                        form: this.state.sinks.reads.project_state,
                         path: APIRoutes.entity(e, 'POST', true),
                         body: {
                             size: 10000,
                         },
-                    });
+                    },
+                }));
+            }
+        },
+        */
+        /*
+        update_all_entity_states(steps) {
+            if (steps && steps.length > 0) {
+                steps.forEach((e) => {
+                    console.log('e.entity_state : ', e.entity_state);
+                    this.update_entity_states_labels(e.entity_state);
                 });
             }
         },
+        */
     },
     mounted() {
-        this.$store.state.requests = ['role'].map(e => ({
-            name: 'search',
-            type: 'dispatch',
-            content: {
-                form: this.state.sinks.reads[e],
-                path: this.state.paths.reads[e],
-                body: {
-                    size: 10000,
-                },
-            },
-        }));
-        ['entity'].forEach((e) => {
+        ['entity', 'role', 'project_state'].forEach((e) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
@@ -83,7 +86,7 @@ module.exports = {
             return this.mcontent(this.state.sinks.reads.role);
         },
         entity_states() {
-            return this.mcontent(this.state.sinks.reads.entity_state_labels);
+            return this.mcontent(this.state.sinks.reads.project_state);
         },
     },
 };

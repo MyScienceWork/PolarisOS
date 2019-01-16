@@ -40,6 +40,7 @@ module.exports = {
             return s => this.dispatch(s, this, sink);
         },
         update(obj, entity, beforeHook) {
+            console.log("obj : ", obj);
             let nobj = _.cloneDeep(obj);
             if (beforeHook) {
                 nobj = beforeHook(nobj, entity);

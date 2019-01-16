@@ -87,7 +87,7 @@ module.exports = {
                             roles: {
                                 type: 'nested',
                                 properties: {
-                                    role: {
+                                    _id: {
                                         type: 'keyword',
                                     },
                                 },
@@ -109,7 +109,7 @@ module.exports = {
                             state_before: {
                                 type: 'nested',
                                 properties: {
-                                    state: {
+                                    _id: {
                                         type: 'keyword',
                                     },
                                 },
@@ -117,7 +117,7 @@ module.exports = {
                             state_after: {
                                 type: 'nested',
                                 properties: {
-                                    state: {
+                                    _id: {
                                         type: 'keyword',
                                     },
                                 },
