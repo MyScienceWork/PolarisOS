@@ -153,10 +153,6 @@ module.exports = {
                     label: 'l_filetype_endnote_bimport',
                     value: 'endnote',
                 },
-                {
-                    label: 'l_filetype_bibtex_bimport',
-                    value: 'bibtex',
-                },
             ];
         },
         current_state() {
