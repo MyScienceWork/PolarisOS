@@ -134,8 +134,6 @@ async function export_masas(ctx: Object): Promise<any> {
     const start_year = query.start_year || [];
     const end_year = query.end_year || [];
     const export_types = query.export_type || ['csv'];
-    let size = query.size || [1000];
-    size = [Math.max(1000, parseInt(size[0], 10))];
 
     /* if (projects.length === 0 && authors.length === 0
             && labs.length === 0 && statuses.length === 0) {
@@ -194,16 +192,16 @@ async function export_masas(ctx: Object): Promise<any> {
 
     if (start_year.length > 0) {
         const range = { '>=': parseInt(start_year[0], 10) };
-
         if (end_year.length > 0) {
-            range['<='] = parseInt(end_year[0], 10);
+            // get the end of the year
+            range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf() - 1;
         }
         where.$and.push({ 'dates.publication': range });
     }
 
     const pub_results = await EntitiesUtils.search_and_get_sources('publication', {
         where,
-        size: 10000, // size[0],
+        size: 1000, // size[0],
         sort,
     });
 
@@ -214,8 +212,9 @@ async function export_masas(ctx: Object): Promise<any> {
         ctx.statusCode = 200;
         ctx.body = results;
         fs.writeFile('/tmp/test.xlsx', results, (err) => {
-            console.log('writing file');
-            console.error(err);
+            if (err) {
+                Logger.error('error : ', err);
+            }
         });
     } else {
         const s = new Readable();
