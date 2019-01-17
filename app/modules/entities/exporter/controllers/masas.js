@@ -192,9 +192,9 @@ async function export_masas(ctx: Object): Promise<any> {
 
     if (start_year.length > 0) {
         const range = { '>=': parseInt(start_year[0], 10) };
-
         if (end_year.length > 0) {
-            range['<='] = parseInt(end_year[0], 10);
+            // get the end of the year
+            range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf() - 1;
         }
         where.$and.push({ 'dates.publication': range });
     }
