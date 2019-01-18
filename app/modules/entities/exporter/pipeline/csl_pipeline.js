@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
