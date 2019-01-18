@@ -115,8 +115,8 @@ const mapping = {
                     return null;
                 }
 
-                const start = moment(o['event-date'][0]);
-                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
+                const start = moment(o['event-date'][0]).tz('Europe/Paris');
+                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]).tz('Europe/Paris') : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
                 if (end && !end.isSame(start)) {
