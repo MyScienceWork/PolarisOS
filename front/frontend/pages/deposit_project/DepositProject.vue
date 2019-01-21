@@ -5,7 +5,22 @@
             <div class="column">
                 <div class="card">
                     <div class="card-content">
-                        test
+                        <dynamic-form :form="user_forms('project_form')" :cform="state.sinks.creations.project"/>
+                        <button
+                                @click.prevent="save('project')"
+                                class="button button-background-green has-small-top-margin has-small-bottom-margin">
+                            {{lang('f_save_project')}}
+                        </button>
+                        <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
+                            <div class="message-body">
+                                {{lang('f_project_save_success')}}
+                            </div>
+                        </article>
+                        <article class="message is-danger" v-if="state.statuses.creations.project === 'nok'">
+                            <div class="message-body">
+                                {{lang('f_project_save_failed')}}
+                            </div>
+                        </article>
                     </div>
                 </div>
             </div>
