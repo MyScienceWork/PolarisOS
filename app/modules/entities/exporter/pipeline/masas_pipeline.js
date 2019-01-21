@@ -31,7 +31,7 @@ function get_affiliations(contrib, pub) {
         const teams = Utils.find_value_with_path(aff, 'teams'.split('.')) || [];
         if (!iname) {
             aff.full = 'NC';
-        } else {
+        } else if (teams instanceof Array) {
             const teams_str = teams.map(t => `#POS#LANG${t._id}`).join('\n');
             aff.full = `${iname}\n${teams_str}`;
         }
