@@ -97,7 +97,12 @@ class Form extends ODM {
 
         const promises_fetch_data_sources = [];
         for (const ds in datasources) {
-            promises_fetch_data_sources.push(new Promise(async (resolve) => { await this.fetch_data_sources(ds, datasources); resolve(); }));
+            if (Object.prototype.hasOwnProperty.call(datasources, ds)) {
+                promises_fetch_data_sources.push(new Promise(async (resolve) => {
+                    await this.fetch_data_sources(ds, datasources);
+                    resolve();
+                }));
+            }
         }
         await Promise.all(promises_fetch_data_sources);
     }
