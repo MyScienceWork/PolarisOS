@@ -80,6 +80,9 @@ const SystemReportModel = require('../entities/system_report/models/system_repor
 const Workflow = require('../entities/workflow/workflow');
 const WorkflowModel = require('../entities/workflow/models/workflows');
 
+const Cache = require('../entities/cache/cache');
+const CacheModel = require('../entities/cache/models/caches');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -292,6 +295,8 @@ async function get_model_from_type(type: string): ?Object {
         return SystemReportModel;
     case 'workflow':
         return WorkflowModel;
+    case 'cache':
+        return CacheModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -350,6 +355,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new SystemReport(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'workflow':
         return new Workflow(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'cache':
+        return new Cache(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
