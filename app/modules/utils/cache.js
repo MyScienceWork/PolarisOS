@@ -11,7 +11,7 @@ const Cache = {
      * @throws {TypeError} If meet cyclic object value
      */
     async set(key, data, ttl = 0) {
-        const payload = { key, value: JSON.stringify(data), ttl };
+        const payload = { key, value: JSON.stringify(data), ttl, createdAt: new Date() };
         await EntitiesUtils.update(payload, 'cache');
     },
 
@@ -26,6 +26,16 @@ const Cache = {
             $and: [{ key }],
         }});
         if (response.length > 0) {
+            const ttl = response[0].ttl;
+            const createdAt = new Date(response[0].createdAt);
+            const now = new Date();
+            const difference_ms = now.getTime() - createdAt.getTime();
+
+            if (difference_ms > ttl) {
+                this.remove(response[0]._id);
+                return;
+            }
+
             let lang = {};
             try {
                 lang = JSON.parse(response[0].value);
@@ -34,14 +44,15 @@ const Cache = {
             }
             return lang;
         }
-        return null;
+        return;
     },
 
     /**
      * Remove key from cache
      * @param {String} key Cache key
      */
-    async remove() {
+    async remove(id) {
+        await EntitiesUtils.remove(id, 'cache');
     },
 
     /**

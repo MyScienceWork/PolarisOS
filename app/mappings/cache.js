@@ -14,6 +14,9 @@ module.exports = {
                     ttl: {
                         type: 'keyword',
                     },
+                    createdAt: {
+                        type: 'date',
+                    },
                 },
             },
         },
