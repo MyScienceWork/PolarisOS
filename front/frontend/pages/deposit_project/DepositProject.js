@@ -34,6 +34,31 @@ module.exports = {
             },
         };
     },
+    methods: {
+        save(entity) {
+            this.$store.dispatch('create', {
+                form: this.state.sinks.creations[entity],
+                path: this.state.paths.creations[entity],
+                body: this.fcontent(this.state.sinks.creations[entity]),
+            });
+        },
+        show_error(sink) {
+            if (sink === this.state.sinks.creations.project) {
+                this.state.statuses.creations.project = 'nok';
+            }
+            setTimeout(() => {
+                this.state.statuses.creations.project = 'nc';
+            }, 10000);
+        },
+        show_success(sink) {
+            if (sink === this.state.sinks.creations.project) {
+                this.state.statuses.creations.project = 'ok';
+            }
+            setTimeout(() => {
+                this.state.statuses.creations.project = 'nc';
+            }, 3000);
+        },
+    },
     computed: {
         user_forms() {
             const content = this.fcontent(this.state.sinks.reads.user_forms);

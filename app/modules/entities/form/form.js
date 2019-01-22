@@ -33,6 +33,31 @@ class Form extends ODM {
         return {};
     }
 
+    async fetch_data_sources(ds, datasources) {
+        try {
+            const sort_str = datasources[ds].sort;
+            const sorts = Form.generate_sort(sort_str ? sort_str.split('|') : []);
+            const query = await Form.generate_query(datasources[ds].query);
+            const datasource = await EntitiesUtils.search(ds, {
+                projection: Array.from(datasources[ds].projection),
+                size: datasources[ds].ajax ? 20 : 1000,
+                sort: [...sorts, { _uid: 'desc' }],
+                where: query,
+            });
+
+            if ('hits' in datasource.result) {
+                const indices = datasources[datasource.entity].indices;
+                indices.forEach((i) => {
+                    this._db.source.fields[i].datasource.content =
+                        datasource.result.hits.map(h => h.source);
+                });
+            }
+        } catch (err) {
+            Logger.error(`Unable to find datasource ${ds}`);
+            Logger.error(err);
+        }
+    }
+
     async post_read_hook(population: Array<String>) {
         await this._handle_population(population, true);
 
@@ -70,30 +95,11 @@ class Form extends ODM {
             return obj;
         }, { });
 
+        const promises_fetch_data_sources = [];
         for (const ds in datasources) {
-            try {
-                const sort_str = datasources[ds].sort;
-                const sorts = Form.generate_sort(sort_str ? sort_str.split('|') : []);
-                const query = await Form.generate_query(datasources[ds].query);
-                const datasource = await EntitiesUtils.search(ds, {
-                    projection: Array.from(datasources[ds].projection),
-                    size: datasources[ds].ajax ? 20 : 1000,
-                    sort: [...sorts, { _uid: 'desc' }],
-                    where: query,
-                });
-
-                if ('hits' in datasource.result) {
-                    const indices = datasources[datasource.entity].indices;
-                    indices.forEach((i) => {
-                        this._db.source.fields[i].datasource.content =
-                            datasource.result.hits.map(h => h.source);
-                    });
-                }
-            } catch (err) {
-                Logger.error(`Unable to find datasource ${ds}`);
-                Logger.error(err);
-            }
+            promises_fetch_data_sources.push(new Promise(async (resolve) => { await this.fetch_data_sources(ds, datasources); resolve(); }));
         }
+        await Promise.all(promises_fetch_data_sources);
     }
 }
 
