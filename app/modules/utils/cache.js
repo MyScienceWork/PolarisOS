@@ -22,7 +22,9 @@ const Cache = {
      * @throws {SyntaxError} If can't parse cached data
      */
     async get(key) {
-        const response = await EntitiesUtils.search_and_get_sources('cache', { key });
+        const response = await EntitiesUtils.search_and_get_sources('cache', { where: {
+            $and: [{ key }],
+        }});
         if (response.length > 0) {
             let lang = {};
             try {

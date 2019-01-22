@@ -1,6 +1,9 @@
 // @flow
 const moment = require('moment');
 const EntitiesUtils = require('../../../utils/entities');
+const KoaCache = require('@bubenguru/koa-response-cache');
+const Utils = require('../../../utils/utils');
+const Cache = require('../../../utils/cache');
 
 async function retrieve_lang_items(ctx: Object): Promise<any> {
     const body = ctx.request.body;
@@ -16,6 +19,15 @@ async function retrieve_lang_items(ctx: Object): Promise<any> {
     }, {});
 }
 
+function cache_all_lang() {
+    return KoaCache.use({
+        ttl: '3600s',
+        key: ctx => Utils.hash_object(ctx.request.body),
+        storage: Cache,
+    });
+}
+
 module.exports = {
+    cache_all_lang,
     retrieve_lang_items,
 };
