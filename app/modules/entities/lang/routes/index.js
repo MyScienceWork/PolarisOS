@@ -4,7 +4,8 @@ const KoaRouter = require('koa-router');
 const config = require('../../../../config');
 const RouterUtils = require('../../../utils/router');
 const MyController = require('../controllers');
-
+const Middlewares = require('../middlewares').M;
+const CrudController = require('../../crud/controllers');
 
 function routes(router: KoaRouter) {
     const type = 'lang';
@@ -13,6 +14,14 @@ function routes(router: KoaRouter) {
         compose([...RouterUtils.get_middlewares(type),
             MyController.cache_all_lang(),
             MyController.retrieve_lang_items]));
+
+    RouterUtils.generate_gets_routes(router, puprefix, type);
+    RouterUtils.generate_get_routes(router, puprefix, type);
+    RouterUtils.generate_del_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_put_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_post_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_bulk_post_routes(router, puprefix, type, Middlewares);
+    RouterUtils.generate_bulk_put_routes(router, puprefix, type, Middlewares);
 }
 
 module.exports = routes;

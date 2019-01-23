@@ -8,6 +8,9 @@ module.exports = {
                     key: {
                         type: 'keyword',
                     },
+                    entity: {
+                        type: 'keyword',
+                    },
                     value: {
                         type: 'text',
                     },

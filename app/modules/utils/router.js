@@ -72,6 +72,13 @@ function app_middlewares(type: string, opts: Object): Array<Function> {
     ];
 }
 
+function app_del_middlewares(type: string, opts: Object): Array<Function> {
+    const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
+    return [
+        ...emiddlewares,
+    ];
+}
+
 
 function bulk_app_middlewares(type: string, opts: Object): Array<Function> {
     const emiddlewares = 'extra_middlewares' in opts ? opts.extra_middlewares : [];
@@ -87,9 +94,11 @@ function get_middlewares(type: string) {
     ]);
 }
 
-function del_middlewares(type: string) {
-    return _.flatten([koa_middlewares({}),
+function del_middlewares(type: string, emid: Array<Function>, model: ?Object) {
+    return _.flatten([
+        koa_middlewares({}),
         api_middlewares(type, 'd', { pass: true }),
+        app_del_middlewares(type, { extra_middlewares: emid || [], model }),
     ]);
 }
 
@@ -188,7 +197,7 @@ function generate_get_routes(router: KoaRouter, prefix: string, type: string, em
 }
 
 function generate_del_routes(router: KoaRouter, prefix: string, type: string, emiddlewares: Array<Function>) {
-    const del_mware = del_middlewares(type);
+    const del_mware = del_middlewares(type, emiddlewares);
     router.del(`${prefix}/${type}/:id`, compose([...del_mware, CrudController.del(type)]));
 }
 

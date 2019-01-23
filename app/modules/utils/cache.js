@@ -10,8 +10,8 @@ const Cache = {
      * @param {Number} [ttl=0] Cache lifetime in milliseconds
      * @throws {TypeError} If meet cyclic object value
      */
-    async set(key, data, ttl = 0) {
-        const payload = { key, value: JSON.stringify(data), ttl, createdAt: new Date() };
+    async set(key, data, ttl = 0, entity = '') {
+        const payload = { key, value: JSON.stringify(data), ttl, createdAt: new Date(), entity };
         await EntitiesUtils.update(payload, 'cache');
     },
 
@@ -24,14 +24,14 @@ const Cache = {
     async get(key) {
         const response = await EntitiesUtils.search_and_get_sources('cache', { where: {
             $and: [{ key }],
-        }});
+        } });
         if (response.length > 0) {
             const ttl = response[0].ttl;
             const createdAt = new Date(response[0].createdAt);
             const now = new Date();
             const difference_ms = now.getTime() - createdAt.getTime();
 
-            if (difference_ms > ttl) {
+            if (ttl !== 0 && difference_ms > ttl) {
                 this.remove(response[0]._id);
                 return;
             }
@@ -44,7 +44,6 @@ const Cache = {
             }
             return lang;
         }
-        return;
     },
 
     /**
@@ -59,7 +58,18 @@ const Cache = {
      * Remove keys and nested keys
      * @param {String} key First part of key
      */
-    async clear() {
+    async clear(entity) {
+        console.log('1BRYAN CLEAR CACHE !');
+        const response = await EntitiesUtils.search_and_get_sources('cache', { where: {
+            $and: [{ entity }],
+        } });
+        console.log('2BRYAN CLEAR CACHE RESPONSE !', response);
+        if (response.length > 0) {
+            response.forEach((async (c) => {
+                console.log('3BRYAN CLEAR CACHE RESPONSE !', c._id);
+                this.remove(c._id);
+            }));
+        }
     },
 };
 
