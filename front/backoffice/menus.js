@@ -11,7 +11,6 @@ const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
 //const Review = require('./pages/review/Review.vue');
-const ReviewProject = require('./pages/review_project/ReviewProject.vue');
 const Login = require('./pages/login/Login.vue');
 const LoginChoice = require('./pages/login_choice/LoginChoice.vue');
 const Page = require('./pages/page/Page.vue');
@@ -60,17 +59,6 @@ module.exports.menu = [
             submenu: [],
             component: Role,
             intro: 'l_backoffice_role_menu_help',
-        },
-        {
-            section: 'l_general_section',
-            name: 'l_review_project_page',
-            access: 'back-review-project',
-            subaccess: ['c', 'r', 'u', 'd'],
-            key: 'review_project',
-            routes: [Routes.review_project],
-            submenu: [],
-            component: ReviewProject,
-            intro: 'l_backoffice_review_project_menu_help',
         },
         /*
         {
