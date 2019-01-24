@@ -10,7 +10,7 @@ const EntityView = require('./pages/entity_view/EntityView.vue');
 const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
-//const Review = require('./pages/review/Review.vue');
+const Review = require('./pages/review/Review.vue');
 const Login = require('./pages/login/Login.vue');
 const LoginChoice = require('./pages/login_choice/LoginChoice.vue');
 const Page = require('./pages/page/Page.vue');
@@ -60,7 +60,6 @@ module.exports.menu = [
             component: Role,
             intro: 'l_backoffice_role_menu_help',
         },
-        /*
         {
             section: 'l_general_section',
             name: 'l_reviews_page',
@@ -72,7 +71,6 @@ module.exports.menu = [
             component: Review,
             intro: 'l_backoffice_review_menu_help',
         },
-        */
         /*
         {
             section: 'l_general_section',
