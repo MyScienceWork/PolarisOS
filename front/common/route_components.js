@@ -23,6 +23,7 @@ const UserList = require('../frontend/pages/user_list/UserList.vue');
 const LoginView = require('../frontend/pages/login/Login.vue');
 const LoginChoiceView = require('../frontend/pages/login_choice/LoginChoice.vue');
 const CreateNews = require('../frontend/pages/news/CreateNews.vue');
+const WorkflowReview = require('../frontend/pages/workflow_review/WorkflowReview.vue');
 
 
 module.exports = {
@@ -51,4 +52,5 @@ module.exports = {
     login_choice: LoginChoiceView,
     user_list: UserList,
     list: ListForWebsite,
+    workflow_review: WorkflowReview,
 };
