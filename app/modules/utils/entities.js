@@ -278,7 +278,7 @@ async function get_model_from_type(type: string): ?Object {
     case 'menu':
         return MenuModel;
     case 'publication': {
-        if (['uspc', 'msw', 'inserm'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
             return MSWPublicationModel;
         }
         return PublicationModel;
@@ -340,7 +340,7 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
     case 'identifier':
         return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'publication': {
-        if (['uspc', 'msw', 'inserm'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
             return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
         }
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);

@@ -79,7 +79,7 @@ async function initialize_routes(singleton) {
     TrackingRoutes(router, singleton);
     LangRoutes(router, singleton);
 
-    if (['msw', 'uspc', 'inserm'].indexOf(index_prefix) === -1) {
+    if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
         PublicationRoutes(router, singleton);
     } else {
         RouterUtils.generate_entity_routes(router, 'publication', []);

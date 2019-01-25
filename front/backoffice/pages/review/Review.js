@@ -10,12 +10,11 @@ const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const BrowserUtils = require('../../../common/utils/browser');
 const Queries = require('../../../common/specs/queries');
 const SortLists = require('../../../common/specs/sorts');
-const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 const PublicationImport = require('./subcomponents/PublicationImport.vue');
 
 module.exports = {
-    mixins: [ESQueryMixin, ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin, RemoveMixin],
+    mixins: [ReaderMixin, LangMixin, FiltersMixin, FormCleanerMixin, OAMixin, RemoveMixin],
     components: {
         PublicationImport,
     },
@@ -123,7 +122,6 @@ module.exports = {
                         lang: 'other',
                     },
                 },
-                es_query_id: 'backoffice-publication-query',
             },
         };
     },
