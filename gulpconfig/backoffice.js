@@ -22,6 +22,8 @@ const uglify = require('gulp-uglify-es').default;
 const vueify = require('vueify');
 const unflowify = require('unflowify');
 const aliasify = require('aliasify');
+const assign = require('lodash.assign');
+const watchify = require('watchify');
 
 class GulpFrontend {
     constructor(production) {
@@ -82,12 +84,17 @@ class GulpFrontend {
 
     bundleApp() {
         this.scriptsCount += 1;
-        const appBundler = browserify({
+
+        const browserifyOpts = {
             entries: './front/backoffice/main.js',
             extensions: ['.js', '.vue'],
             debug: true,
-        });
+        };
 
+        const opts = assign({}, watchify.args, browserifyOpts);
+
+        const appBundler = watchify(browserify(opts));
+        
         this.dependencies.forEach((dep) => {
             appBundler.external(dep);
         });
