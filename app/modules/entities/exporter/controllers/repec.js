@@ -78,7 +78,6 @@ async function generate_repec_paper_from_publication(handle: string,
         return arr;
     }, template);
 
-    template.push(`Number: ${publication._id}`);
     template.push(`Handle: ${handle}:wpaper:${publication._id}`);
     return template.join('\n');
 }
