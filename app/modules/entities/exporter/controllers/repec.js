@@ -110,6 +110,8 @@ async function export_repec_paper(ctx: Object): Promise<any> {
                     $and: [
                         { status: ['published', 'unpublished'] },
                         { 'diffusion.rights.exports.repec': true },
+                        { $or: [{ type: 'AWGzejGVQT18xzvhWIDf' },
+                            { publication_version: ['AWEsYX_ofoecpXq21Ja3', 'AWEsYRpafoecpXq21Ja2'] }] },
                     ],
                 },
             };
