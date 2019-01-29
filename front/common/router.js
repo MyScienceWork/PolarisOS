@@ -91,7 +91,7 @@ async function render_router(part) {
         menu = cmenus.content.result.hits[0].source;
     }
 
-    const routes = pages.map((page) => {
+    const common_routes = pages.map((page) => {
         const obj = {
             path: page.route,
             name: page.route,
@@ -116,6 +116,18 @@ async function render_router(part) {
         return obj;
     });
 
+    const workflow_routes = [{
+        path: '/workflow/:id',
+        name: 'f_nav_workflow',
+        navbar: false,
+        components: {
+            default: get_default_component({ predefined_page: 'workflow_review' }),
+        },
+        meta: { requiresAuth: false, access: '', subaccess: [], page_id: 'workflow_page' },
+    }];
+
+    const routes = [...workflow_routes, ...common_routes];
+
 
     routes.push({
         path: '/login',
@@ -136,6 +148,8 @@ async function render_router(part) {
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
+
+    console.log("routes :", routes);
 
     menu.elements.forEach((elt) => {
         if (elt.submenus && elt.submenus.length > 0) {
