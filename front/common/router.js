@@ -119,9 +119,11 @@ async function render_router(part) {
     const workflow_routes = [{
         path: '/workflow/:id',
         name: 'f_nav_workflow',
-        navbar: false,
+        navbar: true,
         components: {
             default: get_default_component({ predefined_page: 'workflow_review' }),
+            header: Header,
+            footer: Footer,
         },
         meta: { requiresAuth: false, access: '', subaccess: [], page_id: 'workflow_page' },
     }];
@@ -148,8 +150,6 @@ async function render_router(part) {
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
-
-    console.log("routes :", routes);
 
     menu.elements.forEach((elt) => {
         if (elt.submenus && elt.submenus.length > 0) {

@@ -34,6 +34,7 @@ const BibliographicExport = require('../common/components/main/bibliographic_exp
 const Indexer = require('../common/components/main/indexer/Indexer.vue');
 const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
 const AggregateForm = require('../common/components/main/forms/aggregate_form/AggregateForm.vue');
+const DataTableSearching = require('../common/components/main/forms/searching/DataTableSearching.vue');
 
 // Widgets
 const SearchWidget = require('./components/themes/main/widgets/search_widget/SearchWidget.vue');
@@ -86,6 +87,7 @@ Vue.component('login-lang', LoginLang);
 Vue.component('login-choice', LoginChoice);
 Vue.component('rss-feed-icon', RSSC);
 Vue.component('bibliographic-export', BibliographicExport);
+Vue.component('fdata-table-searching', DataTableSearching);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);
