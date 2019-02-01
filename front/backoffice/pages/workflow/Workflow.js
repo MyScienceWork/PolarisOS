@@ -39,14 +39,12 @@ module.exports = {
         };
     },
     methods: {
-        update_entity_states_labels() {
-            const content_form = this.fcontent(this.state.sinks.creations.workflow);
-            const entity_state = content_form.entity_state;
-            if (entity_state) {
-                this.state.entity_state = entity_state;
+        update_entity_states_labels(entity) {
+            this.state.entity_state = entity;
+            if (entity) {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(entity_state, 'POST', true),
+                    path: APIRoutes.entity(entity, 'POST', true),
                     body: {
                         size: 10000,
                     },
@@ -64,6 +62,8 @@ module.exports = {
                 },
             });
         });
+    },
+    watch: {
     },
     computed: {
         entitys() {

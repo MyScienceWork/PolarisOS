@@ -87,8 +87,7 @@
                                     fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
-                                    v-on:select-change="(val) => {update_entity_states_labels()}"
-                                    v-model="state.entity_state"
+                                    v-on:select-change="(val) => {update_entity_states_labels(val.value)}"
                             />
                             <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
