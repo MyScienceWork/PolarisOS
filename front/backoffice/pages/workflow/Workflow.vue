@@ -75,7 +75,7 @@
                                     :label="lang('b_entity_name')"
                                     :is-required="true"
                                     :options="entitys"
-                                    fieldValue="_id"
+                                    fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
                             />
@@ -87,7 +87,7 @@
                                     fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
-                                    v-on:select-change="(val) => {update_entity_states_labels(val.value)}"
+                                    v-on:select-change="(val) => {update_entity_states(val)}"
                             />
                             <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
@@ -112,7 +112,7 @@
                                             :name="`${props.fname}.${props.order}.state_before`"
                                             :label="lang('b_state_before', {}, 'other')"
                                             :is-required="true"
-                                            :options="entity_states || []"
+                                            :options="entity_states"
                                             :form="state.sinks.creations.workflow"
                                             field-value="_id"
                                             field-label="label"
@@ -124,7 +124,7 @@
                                             :name="`${props.fname}.${props.order}.state_after`"
                                             :label="lang('b_state_after', {}, 'other')"
                                             :is-required="true"
-                                            :options="entity_states || []"
+                                            :options="entity_states"
                                             :form="state.sinks.creations.workflow"
                                             field-value="_id"
                                             field-label="label"

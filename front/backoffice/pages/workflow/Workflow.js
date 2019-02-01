@@ -39,16 +39,21 @@ module.exports = {
         };
     },
     methods: {
-        update_entity_states_labels(entity) {
-            this.state.entity_state = entity;
-            if (entity) {
+        update_entity_states_labels(label) {
+            if (label) {
+                this.state.entity_state = label;
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(entity, 'POST', true),
+                    path: APIRoutes.entity(label, 'POST', true),
                     body: {
                         size: 10000,
                     },
                 });
+            }
+        },
+        update_entity_states(entity) {
+            if (entity && entity.label && this.state.entity_state !== entity.label) {
+                this.update_entity_states_labels(entity.label);
             }
         },
     },
@@ -82,6 +87,10 @@ module.exports = {
         },
         entity_states() {
             const content = this.mcontent(this.state.sinks.reads.entity_state);
+            if (content.length === 0 && this.fcontent(this.state.sinks.reads.workflow).length > 0) {
+                const entity_state = this.fcontent(this.state.sinks.reads.workflow)[0].entity_state;
+                this.update_entity_states_labels(entity_state);
+            }
             if (content instanceof Array) {
                 return content;
             }
