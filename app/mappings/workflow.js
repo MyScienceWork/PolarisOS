@@ -54,6 +54,12 @@ module.exports = {
                             },
                         },
                     },
+                    entity: {
+                        type: 'keyword',
+                    },
+                    entity_state: {
+                        type: 'keyword',
+                    },
                     steps: {
                         type: 'nested',
                         properties: {
@@ -92,9 +98,6 @@ module.exports = {
                                     },
                                 },
                             },
-                            entity: {
-                                type: 'keyword',
-                            },
                             filter: {
                                 type: 'text',
                                 fields: {
@@ -102,9 +105,6 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                 },
-                            },
-                            entity_state: {
-                                type: 'keyword',
                             },
                             state_before: {
                                 type: 'nested',

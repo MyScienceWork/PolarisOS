@@ -16,7 +16,6 @@ module.exports = {
                         role: APIRoutes.entity('role', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                         entity: APIRoutes.entity('entity', 'POST', true),
-                        project_state: APIRoutes.entity('project_state', 'POST', true),
                     },
                     creations: {
                         workflow: APIRoutes.entity('workflow', 'POST'),
@@ -27,7 +26,7 @@ module.exports = {
                         role: 'role_read',
                         workflow: 'workflow_read',
                         entity: 'entity_read',
-                        project_state: 'project_state_read',
+                        entity_state: 'entity_state_read',
                     },
                     creations: {
                         workflow: 'workflow_creation',
@@ -35,40 +34,28 @@ module.exports = {
                     },
                 },
                 es_query_id: 'backoffice-workflow-query',
+                entity_state: '',
             },
         };
     },
     methods: {
-        /*
-        update_entity_states_labels(entity) {
-            if (entity) {
-                this.$store.state.requests = [entity].map(e => ({
-                    name: 'search',
-                    type: 'dispatch',
-                    content: {
-                        form: this.state.sinks.reads.project_state,
-                        path: APIRoutes.entity(e, 'POST', true),
-                        body: {
-                            size: 10000,
-                        },
+        update_entity_states_labels() {
+            const content_form = this.fcontent(this.state.sinks.creations.workflow);
+            const entity_state = content_form.entity_state;
+            if (entity_state) {
+                this.state.entity_state = entity_state;
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.entity_state,
+                    path: APIRoutes.entity(entity_state, 'POST', true),
+                    body: {
+                        size: 10000,
                     },
-                }));
-            }
-        },
-        */
-        /*
-        update_all_entity_states(steps) {
-            if (steps && steps.length > 0) {
-                steps.forEach((e) => {
-                    console.log('e.entity_state : ', e.entity_state);
-                    this.update_entity_states_labels(e.entity_state);
                 });
             }
         },
-        */
     },
     mounted() {
-        ['entity', 'role', 'project_state'].forEach((e) => {
+        ['entity', 'role'].forEach((e) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
@@ -80,13 +67,25 @@ module.exports = {
     },
     computed: {
         entitys() {
-            return this.mcontent(this.state.sinks.reads.entity);
+            const content = this.mcontent(this.state.sinks.reads.entity);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
         },
         roles() {
-            return this.mcontent(this.state.sinks.reads.role);
+            const content = this.mcontent(this.state.sinks.reads.role);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
         },
         entity_states() {
-            return this.mcontent(this.state.sinks.reads.project_state);
+            const content = this.mcontent(this.state.sinks.reads.entity_state);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
         },
     },
 };
