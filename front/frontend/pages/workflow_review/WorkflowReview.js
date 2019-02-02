@@ -17,20 +17,21 @@ module.exports = {
     data() {
         return {
             state: {
+                filters: [],
                 paths: {
                     reads: {
-                        [this.entity()]: APIRoutes.entity(this.entity(), 'POST', true),
+                        entity: APIRoutes.entity('entity', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
                 sinks: {
                     reads: {
-                        [this.entity()]: 'workflowinstance_read',
+                        entity: 'entity_read',
                         workflow: 'workflow_read',
+                        workflow_entity: 'workflow_entity_read',
                     },
                     creations: {
-                        [this.entity()]: 'workflowinstance_creation',
-                        search: 'workflowinstance_creation_search',
+                        search: 'search_creation_workflow',
                     },
                 },
                 columns: this.columns || {},
@@ -45,26 +46,12 @@ module.exports = {
     },
     methods: {
         entity() {
-            //return this.state.my_entity;
-            return;
-        },
-        search_body() {
-            return {
-                size: 10000,
-            };
-        },
-        show_success_read(form) {
-            if (form !== this.state.sinks.reads.entity) {
-                return;
+            if (this.state.my_entity) {
+                return this.state.my_entity;
             }
-
-            const content = this.content_entity;
-            if (content) {
-                this.fetch_form(content.form, this.state.sinks.reads.form);
-            }
+            return '__no__entity__defined__';
         },
         on_column_update(obj) {
-            // console.log('on column update', obj);
             this.state.columns[obj.key].visible = obj.checked;
             this.state.visible_columns = _.filter(this.state.columns, c => c.visible).length;
             this.$set(this.state, 'columns', this.state.columns);
@@ -75,36 +62,31 @@ module.exports = {
         },
     },
     mounted() {
-        console.log('params : ', this.$route.params);
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.workflow,
-            keep_content: false,
-        });
-
-        const instance = this.$route.params.workflowinstance;
-        console.log('workflow instance : ', instance);
-
-        const content_workflow = this.fcontent(this.state.sinks.reads.workflow);
-        console.log('content_workflow : ', content_workflow);
-
-
-        Object.keys(this.state.sinks.reads).forEach((sink) => {
-            this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.reads[sink],
-                keep_content: false,
+        ['workflow'].forEach((e) => {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    size: 10000,
+                },
             });
         });
     },
     watch: {
         current_read_state_entity(s) {
-            return this.mwcurrent_read_state(this.state.sinks.reads.entity)(s);
+            console.log('WATCH current_read_state_entity : ', s);
+        },
+        content_entity(s) {
+            console.log('WATCH current_entity');
         },
         search_query(q) {
+            console.log('search_query : ', q);
             if (q) {
                 this.state.es_query_id = q;
             }
         },
         columns(cols) {
+            console.log('columns : ', cols);
             if (cols) {
                 this.state.columns = cols;
                 this.state.visible_columns = _.filter(cols, c => c.visible).length;
@@ -113,22 +95,64 @@ module.exports = {
     },
     computed: {
         current_read_state_entity() {
-            return this.mcurrent_read_state(this.state.sinks.reads.entity);
+            const workflows = this.fcontent(this.state.sinks.reads.workflow);
+            if (workflows.length === 0) {
+                return;
+            }
+            const workflow_name = this.$route.query.workflow;
+            const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
+            if (idx === -1) {
+                return;
+            }
+            const workflow_entity = workflows[idx].entity;
+            console.log('workflows : ', workflows);
+            console.log('workflow_entity : ', workflow_entity);
+            if (this.state.my_entity === workflow_entity) {
+                return;
+            }
+            this.state.my_entity = workflow_entity;
+            this.state.sinks.reads[workflow_entity] = `${workflow_entity}_read`;
+            this.state.paths.reads[workflow_entity] = APIRoutes.entity(workflow_entity, 'POST', true);
+            [workflow_entity].forEach((e) => {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads[e],
+                    path: this.state.paths.reads[e],
+                    body: {
+                        size: 10000,
+                    },
+                });
+            });
+            ['entity'].forEach((e) => {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads[e],
+                    path: this.state.paths.reads[e],
+                    body: {
+                        where: {
+                            type: workflow_entity,
+                        },
+                    },
+                });
+            });
         },
         content_entity() {
+            console.log('content_entity');
             const content = this.mcontent(this.state.sinks.reads.entity);
             if (content.length > 0) {
+                console.log('this is the content : ', content[0]);
                 return content[0];
             }
             return null;
         },
         search_query() {
+            console.log('search_query');
             if (this.content_entity) {
                 return this.content_entity.search_query;
             }
             return '__no__search__query__';
         },
         columns() {
+            console.log('columns');
+            console.log('content_entity : ', this.content_entity);
             if (this.content_entity && this.content_entity.backoffice) {
                 return this.content_entity.backoffice.columns.reduce((obj, c) => {
                     const l = c.lang && c.lang.trim() !== '' ? c.lang : undefined;
