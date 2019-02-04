@@ -22,6 +22,7 @@ const uglify = require('gulp-uglify-es').default;
 // const gbabelify = require('gulp-babel');
 const vueify = require('vueify');
 const unflowify = require('unflowify');
+const aliasify = require('aliasify');
 
 class GulpFrontend {
     constructor(production) {
@@ -31,6 +32,7 @@ class GulpFrontend {
         this.PUB_LOCATIONS = {
             js: 'public/front/js',
             css: 'public/front/css',
+            biblio_css: 'public/front/biblio_css',
             fonts: 'public/front/fonts',
             imgs: 'public/front/imgs',
             views: 'public/front/views',
@@ -53,7 +55,7 @@ class GulpFrontend {
             'superagent',
             'crypto',
             'file-saver',
-            'vue-grid-layout',
+            // 'vue-grid-layout',
             'vue-select',
             'vuedraggable',
             'vue-social-sharing',
@@ -74,6 +76,10 @@ class GulpFrontend {
         this.css_files = [
         ];
 
+        this.css_biblio_files = [
+            './front/frontend/styles/biblio-base.css'
+        ];
+
         this.scriptsCount = 0;
     }
 
@@ -85,7 +91,17 @@ class GulpFrontend {
             debug: true,
         });
 
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
         this.dependencies.forEach((dep) => {
+            appBundler.external(dep);
+        });
+
+        this.external_dependencies.forEach((dep) => {
             appBundler.external(dep);
         });
 
@@ -99,6 +115,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(buffer())
@@ -108,11 +125,22 @@ class GulpFrontend {
     }
 
     bundleVendors() {
-        return browserify({
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
+        const bundler = browserify({
             require: this.dependencies,
             debug: true,
-        })
-        .transform(envify({
+        });
+
+        this.external_dependencies.forEach((dep) => {
+            bundler.external(dep);
+        });
+
+        bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -120,6 +148,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('vendors.js'))
         .pipe(buffer())
@@ -132,13 +161,14 @@ class GulpFrontend {
         gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
-        // .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .on('error', gutil.log)
         .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
     watch() {
         gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], ['front-scripts']);
-        gulp.watch(['./front/{frontend,common}/styles/**/*.*'], ['front-styles']);
+        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], ['front-styles', 'front-biblio-styles']);
         gulp.watch(['./front/frontend/views/*.*'], ['front-views']);
     }
 
@@ -153,6 +183,16 @@ class GulpFrontend {
         .pipe(autoprefixer())
         .pipe(gulpif(this.isProduction, cssmin()))
         .pipe(gulp.dest(this.PUB_LOCATIONS.css));
+    }
+
+    createBiblioStyles() {
+        gulp
+            .src([...this.css_biblio_files])
+            .pipe(plumber())
+            .pipe(concat('biblio.css'))
+            .pipe(autoprefixer())
+            .pipe(gulpif(this.isProduction, cssmin()))
+            .pipe(gulp.dest(this.PUB_LOCATIONS.biblio_css));
     }
 
     createStyles() {

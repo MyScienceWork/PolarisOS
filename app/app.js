@@ -6,10 +6,13 @@ const router = require('./initializations/routes');
 const config = require('./config');
 const views = require('koa-views');
 const koaqs = require('koa-qs');
+const Singleton = require('./singleton');
+const KoaCompress = require('koa-compress');
 
 let koa = new Koa();
 koa = koaqs(koa, 'strict');
 
+koa.use(KoaCompress({}));
 koa.use(cors());
 koa.use(winstonKoaLogger(logger));
 koa.use(async (context, next) => {
@@ -38,7 +41,7 @@ process.on('message', (message) => {
 });
 
 (async () => {
-    const koa_router = await router();
+    const koa_router = await router(new Singleton());
     koa.use(koa_router.routes());
     koa.use(koa_router.allowedMethods());
     logger.info('Starting koalication...');

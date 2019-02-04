@@ -1,1 +1,10 @@
-@import './main/main';
+@import './global/all';
+
+.main-template {
+    @import './main/main';
+    @import './main/ie/ie';
+}
+
+.msw-template {
+    @import './msw/main';
+}

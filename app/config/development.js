@@ -20,6 +20,14 @@ const development = {
             },
         },
     },
+    scheduler: {
+        app: {
+            interval: 30 * 1000,
+        },
+        api: {
+            interval: 45 * 1000,
+        },
+    },
 };
 
 module.exports = development;

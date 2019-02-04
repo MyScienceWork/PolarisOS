@@ -140,7 +140,31 @@ async function access(ctx: Object) {
     ctx.body = { ok: true };
 }
 
+async function list_publications_for_iid(ctx: Object): Promise<any> {
+    const iid = ctx.params.iid;
+    const users = await EntitiesUtils.search_and_get_sources('user', {
+        size: 1,
+        where: {
+            iid_hashed: iid,
+        },
+    });
+
+    if (users.length === 0) {
+        throw Errors.InvalidEntity;
+    }
+
+    const user = users[0];
+
+    if (!user.author) {
+        throw Errors.UserIsNotAnAuthor;
+    }
+
+    ctx.status = 301;
+    ctx.redirect(`/list?s=${user.author}`);
+}
+
 module.exports = {
     authenticate,
+    list_publications_for_iid,
     access,
 };

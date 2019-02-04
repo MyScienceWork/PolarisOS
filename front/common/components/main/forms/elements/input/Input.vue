@@ -34,7 +34,7 @@
             </a>
         </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
-            <wysiwyg @input="update" :value="state.value" :placeholder="placeholder"  />
+            <wysiwyg @change="update" :html="state.value" :placeholder="placeholder"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon}]" v-else-if="type === 'ide-editor'">
@@ -49,7 +49,7 @@
             </a>
         </b-tooltip>
         <div :class="['control', {'is-expanded': hasAddons}]">
-            <ace-editor @init="IDEInit" :value="state.value" @input="update" lang="json" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
+            <ace-editor @init="IDEInit" :value="state.value" @input="update" :lang="ideLang" theme="solarized_light" :height="`${rows ? rows : 10}rem`"  />
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"

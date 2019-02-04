@@ -25,7 +25,7 @@
                             <div class="level-left">
                             </div>
                             <div class="level-right">
-                                <router-link class="level-item" to="/browse">{{lang('l_see_more')}}</router-link>
+                                <router-link class="level-item" to="/browse?b=dates.publication&entity=&view=list&aggt=date&label=&agge=publication&aggf=dates.publication">{{lang('l_see_more')}}</router-link>
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <template slot="card-title">
                                 {{lang('l_search')}}
                             </template>
-                            <search slot="card-content" :search-sink="state.sinks.reads.search" />
+                            <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
                         </card>
                     </div>
                     <div class="column is-12">

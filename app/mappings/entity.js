@@ -61,6 +61,18 @@ module.exports = {
                                     truncate: {
                                         type: 'integer',
                                     },
+                                    translate: {
+                                        type: 'boolean',
+                                    },
+                                    show_lang_key: {
+                                        type: 'boolean',
+                                    },
+                                    date_field: {
+                                        properties: {
+                                            enabled: { type: 'boolean' },
+                                            format: { type: 'keyword' },
+                                        },
+                                    },
                                 },
                             },
                         },

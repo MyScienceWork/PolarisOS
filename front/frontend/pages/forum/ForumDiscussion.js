@@ -1,11 +1,13 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
-const FormMixin = require('../../../common/mixins/FormMixin');
+// const FormMixin = require('../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
-const moment = require('moment');
+const DiscussionsSearching = require('./DiscussionSearching.vue');
+const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 
 module.exports = {
-    mixins: [LangMixin, ReaderMixin],
+    mixins: [LangMixin, ReaderMixin, FiltersMixin, ESQueryMixin],
     data() {
         return {
             state: {
@@ -15,6 +17,7 @@ module.exports = {
                     },
                     creations: {
                         forum_discussion: APIRoutes.entity('forum_discussion', 'POST'),
+                        search: APIRoutes.entity('forum_discussion', 'POST', true),
                     },
                 },
                 sinks: {
@@ -23,17 +26,17 @@ module.exports = {
                     },
                     creations: {
                         forum_discussion: 'forum_discussion_creation',
+                        search: 'forum_discussion_search',
                     },
                 },
+                es_query_ids: ['frontoffice-discussion-query', 'frontoffice-discussion-default-query'],
             },
         };
     },
     components: {
+        DiscussionsSearching,
     },
     methods: {
-        date_format(date) {
-            return moment(date).fromNow();
-        },
     },
     mounted() {
         this.$store.state.requests = ['forum_discussion'].map(e => ({
@@ -44,6 +47,8 @@ module.exports = {
                 path: this.state.paths.reads[e],
                 body: {
                     size: 10,
+                    population: ['author'],
+                    where: {},
                 },
             },
         }));
@@ -52,7 +57,7 @@ module.exports = {
         discussions() {
             const content = this.mcontent(this.state.sinks.reads.forum_discussion);
             if (content instanceof Array) {
-                return content;
+                return content.filter(elmt => (!elmt.authorAuthorized || elmt.authorAuthorized.indexOf(this.user_id) !== -1));
             }
             return [];
         },

@@ -26,6 +26,7 @@ const all = {
         secretKey: 'NdD4gVGH3OeK3s+W4kPnF+qU8DntxO1HwDT0luoC',
         secure: false,
         default_bucket: 'posbucket',
+        sitemap_bucket: 'possitemap',
     },
     grobid: {
         host: 'localhost',
@@ -33,6 +34,17 @@ const all = {
     },
     auth: {
         default_password: 'default_pos_password',
+    },
+    email: {
+        default_sender: 'noreply@polarisos.com',
+    },
+    scheduler: {
+        app: {
+            interval: 120 * 1000,
+        },
+        api: {
+            interval: 60 * 60 * 1000,
+        },
     },
 };
 

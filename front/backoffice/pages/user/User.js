@@ -5,6 +5,7 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+const Langs = require('../../lists/langs');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin, ESQueryMixin, FormCleanerMixin],
@@ -62,6 +63,14 @@ module.exports = {
         roles() {
             const content = this.mcontent(this.state.sinks.reads.role);
             return content;
+        },
+        langs() {
+            const langs_in_config = this.$store.state.global_config.langs.map(l => l.value);
+            const results = langs_in_config.reduce((arr, code) => {
+                arr.push({ label: Langs.Langs[code], value: code });
+                return arr;
+            }, []);
+            return results;
         },
     },
 };

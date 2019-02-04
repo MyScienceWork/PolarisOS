@@ -72,10 +72,10 @@ function get_menu_item(menu, page) {
 }
 
 function get_default_component(page) {
-    if (page.route in Routes) {
-        return Routes[page.route];
+    if (page.predefined_page in Routes) {
+        return Routes[page.predefined_page];
     }
-    return Routes['/'];
+    return Routes.home;
 }
 
 async function render_router(part) {
@@ -122,7 +122,7 @@ async function render_router(part) {
         name: 'f_nav_login',
         navbar: false,
         components: {
-            default: get_default_component({ route: '/login' }),
+            default: get_default_component({ predefined_page: 'login' }),
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });
@@ -132,7 +132,7 @@ async function render_router(part) {
         name: 'f_nav_login_choice',
         navbar: false,
         components: {
-            default: get_default_component({ route: '/login/choice' }),
+            default: get_default_component({ predefined_page: 'login_choice' }),
         },
         meta: { requiresAuth: false, access: '', subaccess: [] },
     });

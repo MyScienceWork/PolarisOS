@@ -11,6 +11,7 @@ const Messages = require('../../../common/api/messages');
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const VueClickAway = require('vue-clickaway');
 
 module.exports = {
     mixins: [UserMixin, LangMixin, FormMixin, FormCleanerMixin],
@@ -18,6 +19,9 @@ module.exports = {
         LastDeposits,
         SearchResults,
         SearchBar,
+    },
+    directives: {
+        onClickAway: VueClickAway.directive,
     },
     data() {
         return {
@@ -64,6 +68,8 @@ module.exports = {
     methods: {
         update_tab(idx) {
             this.state.current_tab = idx;
+            const q = _.merge({}, _.cloneDeep(this.query || {}), { t: this.state.current_tab });
+            this.$router.push({ query: q });
         },
         switch_tab(t) {
             try {
@@ -233,7 +239,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         default_search_publications_query() {
-            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            const a = { 'contributors.label': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {
@@ -256,7 +262,7 @@ module.exports = {
             return JSON.stringify(s);
         },
         search_publications_query() {
-            const a = { 'authors._id': (this.author && this.author._id ? this.author._id : null) };
+            const a = { 'contributors.label': (this.author && this.author._id ? this.author._id : null) };
             let s = {};
             if (this.loggedIn) {
                 s = {

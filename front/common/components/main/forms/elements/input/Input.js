@@ -28,6 +28,7 @@ module.exports = {
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
         dateFormat: { required: false, default: 'YYYY-MM-DD' },
+        ideLang: { default: 'json', type: String },
         yearRangeStart: { required: false,
             default: parseInt(moment().subtract(150, 'y').format('YYYY'), 10),
             type: Number },
@@ -54,6 +55,7 @@ module.exports = {
         IDEInit() {
             require('brace/ext/language_tools');
             require('brace/mode/json');
+            require('brace/mode/html');
             require('brace/theme/solarized_light');
         },
         toggleHelpModal(e) {
@@ -115,9 +117,9 @@ module.exports = {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 return false;
             } else if (this.type === 'date') {
-                return +moment.utc();
+                return undefined;// +moment.utc();
             } else if (this.type === 'date-year') {
-                return +moment.utc(moment.utc().format('YYYY'), 'YYYY');
+                return null;// +moment.utc(moment.utc().format('YYYY'), 'YYYY');
             } else if (this.type === 'hidden') {
                 return this.hiddenValue;
             } else if (this.type === 'ide-editor') {
@@ -144,7 +146,9 @@ module.exports = {
             return v;
         },
         formatValue(info) {
-            if (this.type === 'date') {
+            if (info == null) {
+                return info;
+            } else if (this.type === 'date') {
                 return moment(info).toDate();
             } else if (this.type === 'date-year') {
                 return moment(info).format('YYYY');
@@ -157,7 +161,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden') {
+                if (this.type === 'hidden' || this.type === 'date') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,

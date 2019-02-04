@@ -5,6 +5,7 @@ const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
@@ -12,17 +13,21 @@ const Handlebars = require('../../../../app/modules/utils/templating');
 const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
-
-require('moment/min/locales.min');
+const TrackingMixin = require('../../../common/mixins/TrackingMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin],
     components: {
         CopyRequester,
     },
     data() {
         return {
             state: {
+                tracking: {
+                    eid: this.$route.params.id,
+                    entity_type: 'publication',
+                    stat_type: 'view',
+                },
                 sinks: {
                     reads: {
                         item: 'item_read',
@@ -32,6 +37,7 @@ module.exports = {
                         depositor: 'depositor_read',
                         lang: 'lang_read',
                         typology: 'typology_read',
+                        last_version: 'last_version_publication_read',
                     },
                 },
                 paths: {
@@ -93,6 +99,13 @@ module.exports = {
                 return `/download/publication/${this.content_item._id}/${file.url}`;
             } else if (status === 'all') {
                 return '#';
+            }
+            return '#';
+        },
+        generate_handle_link(item) {
+            const handle = (item.ids || []).find(f => f.type === 'handle');
+            if (handle) {
+                return handle._id;
             }
             return '#';
         },
@@ -180,10 +193,32 @@ module.exports = {
                         },
                     });
                 }
+
+                if (ci.has_other_version) {
+                    this.$store.dispatch('search', {
+                        form: this.state.sinks.reads.last_version,
+                        path: this.state.paths.reads.item,
+                        body: {
+                            projection: [],
+                            where: {
+                                'parents._id': ci._id,
+                            },
+                            sort: ['-version'],
+                            size: 1,
+                        },
+                    });
+                }
             }
         },
     },
     computed: {
+        last_version_link() {
+            const content = this.fcontent(this.state.sinks.reads.last_version) || [];
+            if (!(content instanceof Array) || content.length === 0) {
+                return null;
+            }
+            return `/view/${content[0]._id}`;
+        },
         multi_download_link() {
             const names = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
                 if (f.s) {
@@ -275,24 +310,29 @@ module.exports = {
                 return '';
             }
 
-            console.log(contributor_roles_content);
 
             const authors = item.contributors.filter(co => co.role === 'author');
             const others = item.contributors.filter(co => co.role !== 'author');
 
             const affiliations = {};
-
             const authors_content = authors.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
-                let my_affiliations = info.denormalization.affiliations.filter((aff) => {
+
+                if (!info) {
+                    return null;
+                }
+                const _affiliations = this._oa_find(info, 'denormalization.affiliations', []);
+                let my_affiliations = _affiliations.filter((aff) => {
+                    const from = parseInt(aff.from, 10);
                     if (aff.to) {
-                        return aff.from >= publication_date && aff.to <= publication_date;
+                        const to = parseInt(aff.to, 10);
+                        return from <= publication_date && publication_date <= to;
                     }
-                    return aff.from >= publication_date;
+                    return from <= publication_date;
                 });
 
-                if (my_affiliations.length === 0 && info.denormalization.affiliations.length > 0) {
-                    my_affiliations = [info.denormalization.affiliations[0]];
+                if (my_affiliations.length === 0 && _affiliations.length > 0) {
+                    my_affiliations = [_affiliations[0]];
                 }
 
                 const affiliation_numbers = [];
@@ -310,18 +350,31 @@ module.exports = {
                     });
                 }
 
-                if (affiliation_numbers.length > 0) {
-                    return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                let fullname = `${info.lastname.toUpperCase()}`;
+                if (info.firstname) {
+                    fullname = `${info.firstname} ${fullname}`;
                 }
-                return `<strong>${info.firstname} ${info.lastname.toUpperCase()}</strong>`;
-            });
+
+                if (affiliation_numbers.length > 0) {
+                    return `<strong>${fullname}</strong> <sup>${affiliation_numbers.join(',')}</sup>`;
+                }
+                return `<strong>${fullname}</strong>`;
+            }).filter(a => a != null);
 
             const others_content = others.map((a) => {
                 const info = _.find(contributors_content, coc => (coc._id === a.label));
+                if (!info) {
+                    return null;
+                }
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
-                return `<strong>${info.firstname} ${info.lastname.toUpperCase()} (${this.lang(role.abbreviation)})</strong>`;
-            });
+
+                let fullname = `${info.lastname.toUpperCase()}`;
+                if (info.firstname) {
+                    fullname = `${info.firstname} ${fullname}`;
+                }
+                return `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
+            }).filter(a => a != null);
 
             return { contributors: [...authors_content, ...others_content].join(', '),
                 affiliations };
@@ -446,7 +499,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "#POS#LANGl_in {{publication_title}}{{#if localisation.city}}, {{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{#unless localisation.city}}, {{/unless}}{{denormalization.editor}}{{/if}}{{moment date=dates.publication format=', YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
+            const tpl = "{{#if book_authors.length}}#POS#LANGl_in {{#people_join denormalization.book_authors}}{{_id.fullname}}{{#if role.abbreviation}} (#POS#LANG{{role.abbreviation}}){{/if}}{{/people_join}}, {{/if}}{{#if publication_title}}{{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}{{#if pagination}}, p. {{pagination}}. {{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         conference() {
@@ -460,7 +513,7 @@ module.exports = {
                 return null;
             }
 
-            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}), {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}.";
+            const tpl = "{{denormalization.conference}}, {{localisation.city}} (#POS#LANG{{denormalization.localisation.country}}){{#if dates.start}}, {{moment date=dates.start format='DD/MM'}}-{{moment date=dates.end format='DD/MM'}} / {{moment date=dates.end format='YYYY'}}{{/if}}.";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         other_document() {
@@ -487,7 +540,46 @@ module.exports = {
             if (!this.typology_type || this.typology_type.name !== 'working-paper') {
                 return null;
             }
-            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}}{{/if}}{{#if denormalization.editor}} : {{denormalization.editor}},{{/if}} {{moment date=dates.publication format='YYYY'}}";
+            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        press() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'press') {
+                return null;
+            }
+            const tpl = "{{newspaper}}{{#if number}}, n°{{number}}{{/if}}{{moment date=dates.publication format=', MMMM YYYY'}}{{#if pagination}}, p. {{pagination}}{{/if}}.";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        thesis() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'thesis') {
+                return null;
+            }
+            const tpl = "{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.delivery_institution}}{{denormalization.delivery_institution}}, {{/if}}{{moment date=dates.publication format='YYYY'}}.";
+            return this.hlang(Handlebars.compile(tpl)(item));
+        },
+        report() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+
+
+            if (!this.typology_type || this.typology_type.name !== 'report') {
+                return null;
+            }
+            const tpl = "{{#if publication_title}} {{publication_title}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY, '}}{{#if pagination}}p. {{pagination}}.{{/if}}{{#filter_nested ids type='type' value='doi'}}<br /><br /><strong>DOI</strong>: <a class='has-text-purple' target='_blank' href='https://doi.org/{{_id}}'>{{_id}}</a>{{/filter_nested}}";
             return this.hlang(Handlebars.compile(tpl)(item));
         },
         themes() {
@@ -557,7 +649,7 @@ module.exports = {
                 return [];
             }
 
-            return item.ids;
+            return item.ids.filter(id => id.type != null);
         },
         teams() {
             const item = this.content_item;
@@ -582,7 +674,7 @@ module.exports = {
             const aprojects = item.denormalization.diffusion.anr_projects;
             const euprojects = item.denormalization.diffusion.european_projects;
             const all = [].concat(iprojects, aprojects, euprojects);
-            return all.map(s => s._id.name);
+            return all.filter(s => s && s._id).map(s => s._id.name);
         },
         surveys() {
             const item = this.content_item;
@@ -629,7 +721,6 @@ module.exports = {
         },
         date() {
             return (type) => {
-                moment.locale(this.$store.state.interfaceLang.toLowerCase());
                 const item = this.content_item;
                 if (!item) {
                     return '';

@@ -47,6 +47,9 @@ module.exports = {
         query() {
             return JSON.stringify(Queries.published_publication_search(this.user._id, this.author));
         },
+        advanced_filters() {
+            return Queries.published_publication_search(this.user._id, this.author).$and.slice(0, 3).map(a => JSON.stringify(a));
+        },
         query_search() {
             return this.$route.query && this.$route.query.s ? this.$route.query.s.trim() : '';
         },

@@ -36,6 +36,12 @@ module.exports = {
                     uid: {
                         type: 'keyword',
                     },
+                    iid: {
+                        type: 'keyword',
+                    },
+                    iid_hashed: {
+                        type: 'keyword',
+                    },
                     enabled: {
                         type: 'boolean',
                     },
@@ -140,6 +146,9 @@ module.exports = {
                                 type: 'keyword',
                             },
                         },
+                    },
+                    preferred_language: {
+                        type: 'keyword',
                     },
                     access: {
                         type: 'nested',

@@ -6,6 +6,26 @@
                 <widget>
                 <span slot="title">{{lang('l_review_publication')}}</span>
                 <div slot="body">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="level">
+                                    <div class="level-left"></div>
+                                    <div class="level-right">
+                                        <a href='#' @click="state.show_import_modal = !state.show_import_modal" class="has-text-info">
+                                            <template v-if="!state.show_import_modal">{{lang('l_import_publications')}}</template>
+                                            <template v-else>{{lang('l_close_import_publications')}}</template>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <b-collapse :open.sync="state.show_import_modal">
+                                    <publication-import />
+                                </b-collapse>
+                            </div>
+                        </div>
                         <fdata-table-searching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.publication"
@@ -23,6 +43,11 @@
                                 <b-table-column field="denormalization.type.label.raw" :label="lang('l_p_type')" centered :visible="state.columns['denormalization.type.label'].visible" sortable centered>
                                     <span class="tag is-light">
                                         {{lang(props.row.denormalization.type.label) | truncate(30)}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="subtype" :label="lang('l_p_subtype')" centered :visible="state.columns['subtype'].visible" sortable centered>
+                                    <span class="tag is-light">
+                                        {{lang(find_subtype(props.row)) | truncate(30)}}
                                     </span>
                                 </b-table-column>
                                 <b-table-column 
@@ -66,6 +91,12 @@
                                         {{lang(`l_${props.row.status}_status`)}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="denormalization.journal.raw" :label="lang('l_p_journal')" sortable :visible="state.columns['denormalization.journal'].visible">
+                                    {{props.row.denormalization.journal | truncate(30)}}
+                                </b-table-column>
+                                <b-table-column field="denormalization.conference.raw" :label="lang('l_p_conference')" sortable :visible="state.columns['denormalization.conference'].visible">
+                                    {{props.row.denormalization.conference | truncate(30)}}
+                                </b-table-column>
                                 <b-table-column field="dates.update" :label="lang('l_p_update')" sortable centered :visible="state.columns['dates.update'].visible">
                                     <span class="tag is-warning">
                                         {{props.row.dates.update | format_date('DD/MM/YYYY')}}
@@ -93,10 +124,21 @@
                                 <b-table-column field="denormalization.reviewer.lastname.raw" :label="lang('l_p_reviewer')" sortable centered :visible="state.columns['denormalization.reviewer.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
                                 </b-table-column>
+                                <b-table-column field="system.stats.views" :label="lang('l_p_view', {}, 'other')" sortable centered :visible="state.columns['system.stats.views'].visible">
+                                    <span class="tag is-info">
+                                        {{get_info(props.row, 'system.stats.views') || 0}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="system.stats.downloads" :label="lang('l_p_download', {}, 'other')" sortable centered :visible="state.columns['system.stats.downloads'].visible">
+                                    <span class="tag is-info">
+                                        {{get_info(props.row, 'system.stats.downloads') || 0}}
+                                    </span>
+                                </b-table-column>
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
                                     <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p> 
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(find_subtype(props.row))}}</span></p> 
                                     <h4 class="title is-4">{{lang('l_general_information')}}</h4>
                                     <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
                                     <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>

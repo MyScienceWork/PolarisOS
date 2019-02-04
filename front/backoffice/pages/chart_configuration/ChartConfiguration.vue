@@ -83,6 +83,12 @@
                                 field-value="type"
                                 :form="state.sinks.creations.chart" 
                             />
+                            <finput 
+                                name="use_date_range" 
+                                :label="lang('l_chart_use_date_range')" 
+                                type="checkbox" 
+                                :form="state.sinks.creations.chart"
+                            />
                             <widget>
                                 <span slot="title">
                                     {{lang('l_query_and_aggregation')}}

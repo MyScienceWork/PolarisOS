@@ -46,16 +46,7 @@ async function put_into_bucket(bucket_name, fileinfo) {
 
 async function retrieve_file(bucket_name, filename) {
     try {
-        const object_stream = await (new Promise((resolve, reject) => {
-            minio_client.getObject(bucket_name, filename, (error, stream) => {
-                if (error) {
-                    return reject(error);
-                }
-                return resolve(stream);
-            });
-        }));
-
-        return object_stream;
+        return await minio_client.getObject(bucket_name, filename);
     } catch (err) {
         Logger.error('Error when retrieving file');
         Logger.error(err);

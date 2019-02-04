@@ -32,6 +32,7 @@
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :filter-by="filterFunction"
                 >
+                    <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
                 <v-select
                     v-else
@@ -46,6 +47,7 @@
                     @search="onSearch"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
+                    <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
             </div> 
             <slot v-if="hasAddons" name="input-addons" />

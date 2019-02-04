@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Joi = require('joi');
 const RoleMapping = require('../../../../mappings/role');
 const MMapping = require('../../crud/mapping');
@@ -12,7 +13,24 @@ const Validation: Array<any> = [
 
 const Formatting: Array<any> = [
     {
-        rights: a => FormatFunctions.oarray_to_array(a),
+        orights: async (info, object) => {
+            const rights = object.rights || [];
+            const new_rights = _.reduce(info, (arr, val, key) => {
+                let rights_for_entity = rights.find(o => o.entity === key);
+                if (!rights_for_entity) {
+                    rights_for_entity = { entity: key };
+                }
+                rights_for_entity.c = val.c || false;
+                rights_for_entity.r = val.r || false;
+                rights_for_entity.u = val.u || false;
+                rights_for_entity.d = val.d || false;
+                arr.push(rights_for_entity);
+                return arr;
+            }, []);
+
+            object.rights = new_rights;
+            return info;
+        },
     },
 ];
 
@@ -35,6 +53,7 @@ module.exports = {
         Formatting,
         Completion,
         Defaults,
+        Filtering: ['orights'],
     }],
     Messages,
     Name: 'Role',

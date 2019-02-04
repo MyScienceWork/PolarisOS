@@ -35,7 +35,39 @@
             </div>
             <div class="column is-9">
                 <div class="card card-equal-height">
-                    <div class="tabs is-centered is-toggle" v-if="state.loggedIn">
+                    <div class="is-hidden-tablet" v-if="state.loggedIn">
+                        <b-dropdown position="is-bottom-left">
+                            <button class="has-small-top-margin has-small-bottom-margin button is-red" slot="trigger">
+                                <span class="icon is-small">
+                                    <i class="fa fa-bars"></i>
+                                </span>
+                            </button>
+
+                            <b-dropdown-item has-link
+                                :class="{'is-active': state.current_tab === 0}"
+                            >
+                                <a @click.prevent="update_tab(0)">{{lang('l_overview')}}</a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link
+                                :class="{'is-active': state.current_tab === 1}"
+                            >
+                                <a @click.prevent="update_tab(1)">{{lang('l_my_account')}}</a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link
+                                :class="{'is-active': state.current_tab === 2}"
+                            >
+                                <a @click.prevent="update_tab(2)">{{lang('f_my_deposit', {}, 'other')}}</a>
+                            </b-dropdown-item>
+                            <b-dropdown-item has-link
+                                :class="{'is-active': state.current_tab === 3}"
+                            >
+                                <a @click.prevent="update_tab(3)">
+                                    {{lang('f_bibliographic_report', {}, 'other')}}
+                                </a>
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </div>
+                    <div class="tabs is-centered is-toggle is-hidden-mobile" v-if="state.loggedIn">
                         <ul>
                             <li :class="{'is-active': state.current_tab === 0, 'is-red': true}">
                                 <a @click.prevent="update_tab(0)">{{lang('l_overview')}}</a>
@@ -88,6 +120,7 @@
                                         :use-default-query="true"
                                         :default-query="default_search_publications_query"
                                         :show-status="loggedIn"
+                                        :default-sorts="['-dates.publication']"
                                         />
                                     </div>
                                 </div>
@@ -98,8 +131,17 @@
                         <h4 class="title is-4 has-no-bottom-margin">{{lang('f_user_general_settings')}}</h4>
                         <hr class="hr-section "/>
                         <dynamic-form :form="user_forms('user_front_general_settings')" :cform="state.sinks.creations.user"/>
-                        <!--<hr class="hr-section" />
-                        <h5 class="subtitle is-5 has-no-bottom-margin">{{lang('f_user_identifier_&_external_profile')}}</h5>-->
+                        <!--<hr class="hr-section" /> -->
+                        <h5 class="subtitle is-5 has-no-bottom-margin">
+                            {{lang('f_user_identifier_&_external_profile')}}
+                            <b-tooltip class="is-dark" :label="lang('l_user_identifier_help')" multilined
+                                v-if="lang('l_user_identifier_help').trim() !== ''"
+                            >
+                                <span class="icon has-text-info">
+                                  <i class="fa fa-question-circle"></i>
+                                </span>
+                            </b-tooltip>
+                        </h5>
                         <dynamic-form :form="user_forms('user_front_external_ids')" :cform="state.sinks.creations.user"/>
                         <button
                             @click.prevent="save('user')"
@@ -121,6 +163,9 @@
                         <hr class="hr-section" />
 
                         <div v-if="author && author._id">
+                            <div class="message is-info">
+                                <div class="message-body">{{lang('l_user_affiliations_status')}}</div>
+                            </div>
                             <dynamic-form :form="user_forms('user_front_affiliations')" :cform="state.sinks.creations.author"/>
                             <a
                                 @click.prevent="save('author')"
@@ -185,6 +230,7 @@
                                 :use-default-query="true"
                                 :default-query="default_deposit_query"
                                 :show-status="true"
+                                :default-sorts="['-dates.publication']"
                                 />
                             </div>
                         </div>

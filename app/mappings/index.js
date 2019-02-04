@@ -25,6 +25,9 @@ const query = require('./query');
 const publication = require('./publication');
 const mswpublication = require('./mswpublication');
 
+const tracking_stat = require('./tracking_stat');
+const system_report = require('./system_report');
+
 module.exports = {
     user: user.msw,
     role: role.msw,
@@ -51,5 +54,8 @@ module.exports = {
     query: query.msw,
 
     publication: publication.msw,
-    // mswpublication: mswpublication.msw,
+    mswpublication: mswpublication.msw,
+
+    tracking_stat: tracking_stat.msw,
+    system_report: system_report.msw,
 };

@@ -16,6 +16,11 @@ function routes(router: KoaRouter) {
 
     router.post(`${puprefix}/import`, compose([...post_mware,
         MyController.import_information]));
+
+    router.post(`${puprefix}/import/ris`, compose([...post_mware,
+        MyController.import_ris]));
+    router.post(`${puprefix}/import/endnote`, compose([...post_mware,
+        MyController.import_endnote]));
 }
 
 module.exports = routes;

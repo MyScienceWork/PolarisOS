@@ -1,3 +1,20 @@
+@media (max-width: 768px) {
+    .pos-search-result {
+        .handle-link {
+            display: none;
+        }
+
+        .tag {
+            height: auto;
+            white-space: normal;
+        }
+    }
+
+    .pagination {
+        margin: 1em;
+    }
+}
+
 //Mixins
 .generate-colored-texts(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
@@ -120,6 +137,10 @@
     padding: 0.5rem;
 }
 
+.has-no-padding {
+    padding: 0 !important;
+}
+
 .has-xmedium-padding{
     padding: 0.75rem;
 }
@@ -226,3 +247,8 @@
 .has-cursor-pointer {
     cursor: pointer;
 }
+
+.break-word {
+    word-break: break-word;
+}
+

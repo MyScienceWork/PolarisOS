@@ -3,6 +3,7 @@ const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
 const VueScrollTo = require('vue-scrollto');
+const VueIntro = require('vue-introjs').default;
 const router = require('./router');
 const store = require('../common/store');
 
@@ -25,6 +26,7 @@ const LoginChoice = require('../common/components/main/login_choice/LoginChoice.
 const MappingBuilder = require('../common/components/main/mapping_builder/MappingBuilder.vue');
 const MappingItem = require('../common/components/main/mapping_builder/subcomponents/MappingItem.vue');
 const ChartWidget = require('../common/components/main/chart_widget/ChartWidget.vue');
+const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
 
 const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -32,6 +34,12 @@ const Widget = require('../common/components/main/widget/Widget.vue');
 const App = require('./pages/App.vue');
 
 Vue.use(VueScrollTo);
+
+
+const introJs = require('intro.js');
+
+window.introJs = introJs;
+Vue.use(VueIntro);
 
 Vue.use(Buefy.default, {
     defaultIconPack: 'fa',
@@ -49,6 +57,7 @@ Vue.component('fselect', Select);
 Vue.component('fstatic', Static);
 Vue.component('fgrid', Grid);
 Vue.component('fvariadic-element', VariadicElement);
+Vue.component('fdropzone', Dropzone);
 Vue.component('action-button', ActionButton);
 Vue.component('widget', Widget);
 Vue.component('paginator', Paginator);

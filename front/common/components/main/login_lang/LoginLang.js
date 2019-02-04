@@ -9,4 +9,9 @@ module.exports = {
         backoffice: { type: Boolean, default: false },
         website: { type: String, default: '' },
     },
+    methods: {
+        need_help() {
+            this.$intro().start();
+        },
+    },
 };

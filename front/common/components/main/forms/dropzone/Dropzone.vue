@@ -1,22 +1,28 @@
 <template>
-    <div>
-        <vue-dropzone 
-        v-on:vdropzone-file-added="dropzone_added"
-        v-on:vdropzone-complete="dropzone_complete"
-        v-on:vdropzone-error="dropzone_error"
-        v-on:vdropzone-success="dropzone_success"
-        v-on:vdropzone-upload-progress="dropzone_progress"
-        v-on:vdropzone-removed-file="dropzone_remove"
-        class="pos-dropzone" 
-        id="dropzone" 
-        ref="dropzone" 
-        :options="dropzoneData" 
-        :include-styling="false">
-            <div slot="inside">
-                <div class="columns is-pulled-right" v-if="!readonly">
+    <vue-dropzone 
+    v-on:vdropzone-file-added="dropzone_added"
+    v-on:vdropzone-complete="dropzone_complete"
+    v-on:vdropzone-error="dropzone_error"
+    v-on:vdropzone-success="dropzone_success"
+    v-on:vdropzone-upload-progress="dropzone_progress"
+    v-on:vdropzone-removed-file="dropzone_remove"
+    class="pos-dropzone" 
+    id="dropzone" 
+    ref="dropzone" 
+    :options="dropzoneData" 
+    :include-styling="false">
+        <div slot="inside">
+            <slot :files="state.files">
+                <div class="columns" v-if="!readonly">
                     <div class="column">
-                        <div class="dz-message">
-                            <a href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
+                        <div class="level">
+                            <div class="level-left">
+                            </div>
+                            <div class="level-right">
+                                <div class="dz-message">
+                                    <a href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -24,6 +30,12 @@
                 </div>
                 <div class="is-clearfix" v-if="!readonly">
                     <div v-for="(filename, i) in state.files.order">
+                        <finput 
+                            :name="`${files}.${i}.${name}`" 
+                            label="" type="hidden" 
+                            :form="form" 
+                            :hidden-value="state.files.content[filename].name || ''" 
+                        />
                         <finput 
                             :readonly="readonly" 
                             :name="`${files}.${i}.${name}`" 
@@ -146,9 +158,9 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </vue-dropzone>
-    </div>
+            </slot>
+        </div>
+    </vue-dropzone>
 </template>
 
 <script>

@@ -1,4 +1,5 @@
 // @flow
+const _ = require('lodash');
 const Joi = require('joi');
 const Crypto = require('crypto');
 const PubMapping = require('../../../../mappings/publication');
@@ -6,6 +7,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 const EntitiesUtils = require('../../../utils/entities');
+const ODM = require('../../crud/odm');
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 const XMLUtils = require('../../../utils/xml');
@@ -37,6 +39,7 @@ const Formatting: Array<any> = [
         abstracts: a => FormatFunctions.oarray_to_array(a),
         classifications: a => FormatFunctions.oarray_to_array(a),
         contributors: a => FormatFunctions.oarray_to_array(a),
+        book_authors: a => FormatFunctions.oarray_to_array(a),
         'diffusion.projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.anr_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.european_projects': a => FormatFunctions.oarray_to_array(a),
@@ -50,20 +53,6 @@ const Formatting: Array<any> = [
         sources: a => FormatFunctions.oarray_to_array(a),
         subtitles: a => FormatFunctions.oarray_to_array(a),
         translated_titles: a => FormatFunctions.oarray_to_array(a),
-        parents: async (result, object) => {
-            if ('parent' in object && !result.find(p => p === object.parent)) {
-                result.push({ _id: object.parent });
-                /* const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
-                if (pub) {
-                    pub.source.has_other_version = true;
-                    await pub.oupdate();
-                }*/
-            }
-            return result;
-        },
-    },
-    {
-        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
     },
     {
         abstracts: FormatFunctions.filter_empty_or_null_objects,
@@ -72,6 +61,7 @@ const Formatting: Array<any> = [
         files: FormatFunctions.filter_empty_or_null_objects,
         classifications: FormatFunctions.filter_empty_or_null_objects,
         contributors: FormatFunctions.filter_empty_or_null_objects,
+        book_authors: FormatFunctions.filter_empty_or_null_objects,
         'diffusion.projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
@@ -82,7 +72,7 @@ const Formatting: Array<any> = [
         demovoc_keywords: FormatFunctions.filter_empty_or_null_objects,
         resources: FormatFunctions.filter_empty_or_null_objects,
         sources: FormatFunctions.filter_empty_or_null_objects,
-        'dates.update': async () => +moment(),
+        'dates.update': async () => +moment.utc(),
     },
     {
         subtitles: FormatFunctions.set_default_lang_for_array('lang', 'lang'),
@@ -91,6 +81,13 @@ const Formatting: Array<any> = [
         contributors: async result => result.reduce((arr, co) => {
             if (co.role == null) {
                 co.role = 'author';
+            }
+            arr.push(co);
+            return arr;
+        }, []),
+        book_authors: async result => result.reduce((arr, co) => {
+            if (co.role == null) {
+                co.role = 'editor';
             }
             arr.push(co);
             return arr;
@@ -115,27 +112,28 @@ const Formatting: Array<any> = [
                 }
 
                 file.access = {
-                    restricted: access_description ? access_description.restricted : false,
-                    confidential: access_description ? access_description.confidential : false,
-                    delayed: access_description ? access_description.delayed : false,
+                    restricted: access_description ? (access_description.restricted || false) : false,
+                    confidential: access_description ? (access_description.confidential || false) : false,
+                    delayed: access_description ? (access_description.delayed || false) : false,
                 };
 
                 arr.push(file);
                 return arr;
             }, []);
-
             if (myfiles.length === 1) {
                 myfiles[0].is_master = true;
             }
             return myfiles;
         },
         keywords: async (result, object) => {
-            const keywords = result.map(k => ({ value: k.value, type: 'user' }));
+            const keywords = _.flatten(result.filter(k => k.value != null && k.value.trim() !== '')
+                                .map(k => k.value.split(',').map(_k => _k.trim()).filter(_k => _k !== '')))
+                                .map(k => ({ value: k, type: 'user' }));
             return keywords;
         },
         'dates.publication': async (result, object) => {
             if (object.model_mode) {
-                return +moment();
+                return +moment.utc();
             }
             return result;
         },
@@ -176,11 +174,22 @@ const Completion: Array<any> = [
         },
     },
     {
-        'dates.update': async () => ({ dates: { update: +moment() } }),
+        'dates.update': async () => ({ dates: { update: +moment.utc() } }),
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'fullname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'fullname', false),
+        'denormalization.delivery_institution': ComplFunctions.denormalization('institution', 'delivery_institution', 'name', true),
     },
     {
         'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', '_id', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', '_id', false),
+    },
+    {
+        'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'firstname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'firstname', false),
+    },
+    {
+        'denormalization.authors': ComplFunctions.denormalization('author', 'authors._id', 'lastname', false),
+        'denormalization.book_authors': ComplFunctions.denormalization('author', 'book_authors._id', 'lastname', false),
     },
     {
         'denormalization.classifications': ComplFunctions.denormalization('subject', 'classifications._id', 'label', false),
@@ -189,7 +198,18 @@ const Completion: Array<any> = [
         'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'fullname', false),
     },
     {
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'firstname', false),
+    },
+    {
+        'denormalization.contributors': ComplFunctions.denormalization('author', 'contributors.label', 'lastname', false),
+    },
+    {
         'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'abbreviation', false, false, 'value'),
+        'denormalization.book_authors': ComplFunctions.denormalization('contributor_role', 'book_authors.role', 'abbreviation', false, false, 'value'),
+    },
+    {
+        'denormalization.contributors': ComplFunctions.denormalization('contributor_role', 'contributors.role', 'label', false, false, 'value'),
+        'denormalization.book_authors': ComplFunctions.denormalization('contributor_role', 'book_authors.role', 'label', false, false, 'value'),
     },
     {
         'denormalization.diffusion.projects': ComplFunctions.denormalization('project', 'diffusion.projects._id', 'name', false),
@@ -261,8 +281,8 @@ const Completion: Array<any> = [
     },
     {
         status: (o, p, i) => ComplFunctions.generic_complete('pending')(o, p, i),
-        'dates.deposit': () => ({ dates: { deposit: +moment() } }),
-        'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment() } } }),
+        'dates.deposit': () => ({ dates: { deposit: +moment.utc() } }),
+        'diffusion.rights.embargo': object => ({ diffusion: { rights: { embargo: Utils.find_value_with_path(object, 'dates.publication'.split('.')) || +moment.utc() } } }),
         'diffusion.rights.exports.nowhere': object => ({ diffusion: { rights: { exports: { nowhere: false } } } }),
     },
     {
@@ -319,6 +339,7 @@ const Completion: Array<any> = [
                     break;
                 }
             }
+            // return { sherpa: {} };
             return { sherpa: sherpa_final };
         },
     },
@@ -355,6 +376,14 @@ const Defaults: Object = {
     sources: [],
     system: {
         emails: [],
+        api: {
+            handle: false,
+            hal: false,
+        },
+        stats: {
+            views: 0,
+            downloads: 0,
+        },
     },
 };
 
@@ -366,6 +395,28 @@ const Messages: Object = {
     modify: 'Publication is successfully modified',
 };
 
+const LastStepFormatting = [
+    {
+        parents: async (result, object) => {
+            if ('parent' in object && !result.find(p => p === object.parent)) {
+                result.push({ _id: object.parent });
+                const pub = await EntitiesUtils.retrieve(object.parent, 'publication');
+                if (pub) {
+                    const _id = pub.source._id;
+                    const source = pub.db.source;
+                    source.has_other_version = true;
+                    delete source._id;
+                    const ret = await ODM.update(pub.index, pub.type, pub.client, pub.model,
+                            source, _id);
+                }
+            }
+            return result;
+        },
+    },
+    {
+        version: async (result, object) => (object.parents ? object.parents.length + 1 : 1),
+    },
+];
 
 module.exports = {
     RawMapping: Mapping,
@@ -394,7 +445,7 @@ module.exports = {
                 const obj = {
                     sent: false,
                     body: object.virtual_email,
-                    created_at: +moment(),
+                    created_at: +moment.utc(),
                     reviewer: info.papi ? info.papi._id : null,
                 };
                 result.push(obj);
@@ -406,7 +457,7 @@ module.exports = {
         Defaults: {},
     }, {
         Validation: [],
-        Formatting: [],
+        Formatting: LastStepFormatting,
         Completion: [],
         Filtering: ['sherpa', 'parent', 'review_mode', 'model_mode', 'virtual_email'],
         Resetting: {},

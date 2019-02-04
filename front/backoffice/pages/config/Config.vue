@@ -13,6 +13,8 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="config"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.config"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
@@ -94,12 +96,60 @@
                                 <span slot="title">{{lang('l_ui_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <finput
-                                        name="gui.logo" 
-                                        :label="lang('l_ui_logo')" 
-                                        :placeholder="lang('l_ui_logo')" 
+                                        name="gui.logo_left"
+                                        :label="lang('l_ui_logo_left')"
+                                        :placeholder="lang('l_ui_logo_left')"
                                         :is-required="true" 
                                         :form="state.sinks.creations.config" 
                                         type="text"
+                                    />
+                                    <finput
+                                            name="gui.logo_center"
+                                            :label="lang('l_ui_logo_center')"
+                                            :placeholder="lang('l_ui_logo_center')"
+                                            :is-required="false"
+                                            :form="state.sinks.creations.config"
+                                            type="text"
+                                    />
+                                    <finput
+                                        name="gui.css_template" 
+                                        :label="lang('l_ui_css_template')" 
+                                        :placeholder="lang('l_ui_css_template')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
+                                    <div class="field">
+                                        <div class="checkbox">
+                                            <label for="dont-care">
+                                                <input
+                                                type="checkbox"
+                                                name="dont-care"
+                                                v-model="state.need_ide"
+                                                />
+                                                {{lang('l_need_ide')}} 
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <finput 
+                                    name="gui.cover_page" 
+                                    :label="lang('l_cover_page')" 
+                                    :is-required="true" 
+                                    :placeholder="lang('l_cover_page')" 
+                                    type="ide-editor" 
+                                    ide-lang="html"
+                                    :form="state.sinks.creations.config"
+                                    :rows="30"
+                                    v-if="state.need_ide"
+                                    />
+                                    <finput 
+                                    name="gui.cover_page" 
+                                    :label="lang('l_cover_page')" 
+                                    :is-required="true" 
+                                    :placeholder="lang('l_cover_page')" 
+                                    type="html-editor" 
+                                    :form="state.sinks.creations.config"
+                                    v-else
                                     />
                                 </div>
                             </widget>
@@ -107,8 +157,14 @@
                                 <span slot="title">{{lang('l_api_setting', {}, 'other')}}</span>
                                 <div slot="body">
                                     <widget :collapsed="true">
-                                        <span slot="title">{{HAL}}</span>
+                                        <span slot="title">HAL</span>
                                         <div slot="body">
+                                            <finput
+                                                name="api.hal.enabled" 
+                                                :label="lang('l_hal_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
                                             <finput
                                                 name="api.hal.url" 
                                                 :label="lang('l_hal_url')" 
@@ -132,6 +188,94 @@
                                                 :is-required="true" 
                                                 :form="state.sinks.creations.config" 
                                                 type="password"
+                                            />
+                                        </div>
+                                    </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">Handle.net</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.handle.enabled" 
+                                                :label="lang('l_handle_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="api.handle.ip" 
+                                                :label="lang('l_handle_ip')" 
+                                                :placeholder="lang('l_handle_ip')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.port" 
+                                                :label="lang('l_handle_port')" 
+                                                :placeholder="lang('l_handle_port')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="number"
+                                            />
+                                            <finput
+                                                name="api.handle.prefix" 
+                                                :label="lang('l_handle_prefix')" 
+                                                :placeholder="lang('l_handle_prefix')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.proxy" 
+                                                :label="lang('l_handle_proxy')" 
+                                                :placeholder="lang('l_handle_proxy')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.admin_handle" 
+                                                :label="lang('l_handle_admin_login')" 
+                                                :placeholder="lang('l_handle_admin_login')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.handle.admin_password" 
+                                                :label="lang('l_handle_admin_password')" 
+                                                :placeholder="lang('l_handle_admin_password')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="password"
+                                            />
+                                        </div>
+                                    </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">RePeC</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.repec.enabled" 
+                                                :label="lang('l_repec_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="api.repec.archive_template" 
+                                                :label="lang('l_repec_archive_template')" 
+                                                :placeholder="lang('l_repec_archive_template')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="textarea"
+                                                :rows="15"
+                                            />
+                                            <finput
+                                                name="api.repec.series_template.wpaper" 
+                                                :label="lang('l_repec_paper_template')" 
+                                                :placeholder="lang('l_repec_paper_template')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="textarea"
+                                                :rows="15"
                                             />
                                         </div>
                                     </widget>
@@ -159,6 +303,14 @@
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('l_email_setting', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <finput
+                                        name="mail.default_sender" 
+                                        :label="lang('l_config_mail_default_sender')" 
+                                        :placeholder="lang('l_config_mail_default_sender')" 
+                                        :is-required="true" 
+                                        :form="state.sinks.creations.config" 
+                                        type="text"
+                                    />
                                     <finput
                                         name="mail.smtp.host" 
                                         :label="lang('l_config_smtp_host')" 

@@ -8,9 +8,12 @@ const FormMixin = require('../../../common/mixins/FormMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
+const RemoveMixin = require('../../../common/mixins/RemoveMixin');
+const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin, FormCleanerMixin, ESQueryMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin,
+        FormCleanerMixin, ESQueryMixin, RemoveMixin, OAMixin],
     data() {
         return {
             state: {

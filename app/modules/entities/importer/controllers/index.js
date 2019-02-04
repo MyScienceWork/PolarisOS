@@ -2,14 +2,16 @@
 const moment = require('moment');
 const Request = require('superagent');
 const EntitiesUtils = require('../../../utils/entities');
-const Errors = require('../../../exceptions/errors');
 const Config = require('../../../../config');
 const Logger = require('../../../../logger');
 const MinioUtils = require('../../../utils/minio');
-const StreamUtils = require('../../../utils/streams');
 const XMLUtils = require('../../../utils/xml');
+const WebUtils = require('../../../utils/web');
 const Utils = require('../../../utils/utils');
-const parseString = require('xml2js-parser').parseString;
+const Importer = require('../importing');
+const Readers = require('../readers');
+
+const RISPipeline = require('../pipelines/ris_pipeline');
 
 function request_crossref(doi: string): Promise<any> {
     const url = `https://api.crossref.org/works/${doi}`;
@@ -211,53 +213,27 @@ async function import_information(ctx: Object): Promise<any> {
     default:
         break;
     }
+}
 
+async function import_ris(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
+    const my_report = await Importer.create_report(name, filepath,
+        'ris', 'publication', ctx.__md || {});
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
+}
 
-    /* let importer = null;
-    let importer_id = null;
-    let connector_id = null;
-    let connector = null;
-    let pipeline = null;
-    let model = null;
-
-    if (body.importer == null) {
-        ctx.body = {};
-        return;
-    }
-
-    importer_id = body.importer;
-    importer = await EntitiesUtils.retrieve(importer_id, 'importer');
-
-
-    if (!importer) {
-        ctx.body = {};
-        return;
-    }
-
-
-    connector_id = importer.source.connector;
-    if (connector_id) {
-        connector = await EntitiesUtils.retrieve(connector_id, 'connector');
-    }
-
-    if (connector) {
-        console.log(connector.source);
-    }
-
-    pipeline = await EntitiesUtils.retrieve(importer.source.pipeline, 'pipeline');
-
-    if (pipeline) {
-        console.log(pipeline.source);
-
-        model = await pipeline.generate_model(EntitiesUtils.get_index(pipeline.source.entity),
-                pipeline.source.entity);
-        console.log(model);
-    }
-
-    ctx.body = {};*/
+async function import_endnote(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
+    const my_report = await Importer.create_report(name, filepath,
+        'endnote', 'publication', ctx.__md || {});
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
 module.exports = {
     import_information,
     import_sherpa_romeo,
+    import_ris,
+    import_endnote,
 };

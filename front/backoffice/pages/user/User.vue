@@ -5,7 +5,7 @@
             <div class="column">
                 <widget>
                     <span slot="title">{{lang('l_list_user_items')}}</span>
-                    <div slot="body">
+                    <div slot="body" v-intro="lang('l_backoffice_read_zone')">
                         <fsearching
                             :search-sink="state.sinks.creations.search"
                             :result-sink="state.sinks.reads.user"
@@ -14,6 +14,8 @@
                             :use-default-query="true"
                             search-type="user"
                             :matrix-row-size="2"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.user"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
@@ -22,6 +24,8 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="update(props.info, 'user')"
+                                    v-intro="lang('l_backoffice_edit_button_help')"
+                                    v-intro-if="props.row_id === 0 && props.id === 0"
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
@@ -30,11 +34,15 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="use_as_model(props.info, 'user')"
+                                    v-intro="lang('l_backoffice_model_button_help')"
+                                    v-intro-if="props.row_id === 0 && props.id === 0"
                                     >
                                     <i class="fa fa-clone"></i>
                                     </action-button>
                                     <action-button
                                     class="has-text-red"
+                                    v-intro="lang('l_backoffice_remove_button_help')"
+                                    v-intro-if="props.row_id === 0 && props.id === 0"
                                     tag="a"
                                     confirmation="Are you sure?"
                                     :two-steps="true"
@@ -55,7 +63,10 @@
         </div>
         <div class="columns">
             <div class="column">
-                <widget id="mwidget">
+                <widget 
+                    id="mwidget"
+                    v-intro="lang('l_backoffice_modify_zone')"
+                >
                 <span slot="title">{{lang('l_add_modify_user')}}</span>
                     <div slot="body">
                         <fform
@@ -67,14 +78,25 @@
                         >
                             <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.sinks.creations.user" />
                             <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.sinks.creations.user" />
-                            <finput name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
+                            <fselect
+                                name="preferred_language" 
+                                :label="lang('l_preferred_language')" 
+                                :is-required="true" 
+                                :placeholder="lang('l_preferred_language')" 
+                                :form="state.sinks.creations.user"
+                                :options="langs"
+                            />
+                            <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
+                            <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
                             <finput 
                                 name="sso" :label="lang('b_is_sso')" 
-                                type="checkbox" :form="state.sinks.creations.user" 
+                                type="checkbox" :form="state.sinks.creations.user"
+                                :help="lang('l_backoffice_sso_help')"
                             />
                             <finput 
                                 name="ldap" :label="lang('b_is_ldap')" 
                                 type="checkbox" :form="state.sinks.creations.user" 
+                                :help="lang('l_backoffice_ldap_help')"
                             />
                             <fvariadic-element name="emails" :form="state.sinks.creations.user" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
@@ -98,6 +120,7 @@
                                 fieldLabel="name"
                                 :multi="true"
                                 :translatable="true"
+                                :help="lang('l_backoffice_role_help')"
                             />
                             <fselect 
                                 name="author" 
@@ -110,6 +133,7 @@
                                 :ajax="true"
                                 ajax-url="/api/public/v2/authors/search"
                                 ajax-value-url="/api/public/v2/authors/search"
+                                :help="lang('l_backoffice_author_help')"
                             />
                         </fform>
                     </div>

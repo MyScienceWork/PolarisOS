@@ -14,10 +14,18 @@ module.exports = {
             },
         };
     },
+    watch: {
+        collapsed() {
+            if (this.state.collapsed !== this.collapsed) {
+                this.state.collapsed = this.collapsed;
+            }
+        },
+    },
     methods: {
         onCollapse(e) {
             e.preventDefault();
             this.state.collapsed = !this.state.collapsed;
+            this.$emit('update:collapsed', !this.state.collapsed);
         },
 
         onRefresh(e) {

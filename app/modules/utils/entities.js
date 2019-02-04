@@ -1,7 +1,7 @@
 // @flow
 
 module.exports = {};
-
+const _ = require('lodash');
 const elasticsearch = require('elasticsearch');
 const Errors = require('../exceptions/errors');
 const config = require('../../config');
@@ -62,14 +62,20 @@ const PublicationModel = require('../entities/publication/models/publications');
 const Identifier = require('../entities/identifier/identifier');
 const IdentifierModel = require('../entities/identifier/models/identifiers');
 
-// const MSWPublication = require('../entities/mswpublication/mswpublication');
-// const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
+const MSWPublication = require('../entities/mswpublication/mswpublication');
+const MSWPublicationModel = require('../entities/mswpublication/models/mswpublications');
 
 const MailTemplate = require('../entities/mail_template/mail_template');
 const MailTemplateModel = require('../entities/mail_template/models/mail_templates');
 
 const Chart = require('../entities/chart/chart');
 const ChartModel = require('../entities/chart/models/charts');
+
+const TrackingStats = require('../entities/tracking_stat/tracking_stat');
+const TrackingStatsModel = require('../entities/tracking_stat/models/tracking_stats');
+
+const SystemReport = require('../entities/system_report/system_report');
+const SystemReportModel = require('../entities/system_report/models/system_reports');
 
 type ObjectList = {
     whitelist?: Set<string>,
@@ -265,16 +271,22 @@ async function get_model_from_type(type: string): ?Object {
         return PageModel;
     case 'menu':
         return MenuModel;
-    case 'publication':
+    case 'publication': {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+            return MSWPublicationModel;
+        }
         return PublicationModel;
+    }
     case 'identifier':
         return IdentifierModel;
-    /* case 'mswpublication':
-      return MSWPublicationModel;*/
     case 'mail_template':
         return MailTemplateModel;
     case 'chart':
         return ChartModel;
+    case 'tracking_stat':
+        return TrackingStatsModel;
+    case 'system_report':
+        return SystemReportModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -317,14 +329,20 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'identifier':
         return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'publication':
+    case 'publication': {
+        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
+            return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
+        }
         return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
-    /* case 'mswpublication':
-      return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);*/
+    }
     case 'mail_template':
         return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'chart':
         return new Chart(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'tracking_stat':
+        return new TrackingStats(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'system_report':
+        return new SystemReport(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
@@ -531,6 +549,17 @@ async function search_and_get_sources(type: string, body: Object): Array<Object>
     return hits.map(h => h.source);
 }
 
+async function search_in_order_and_get_sources(type: string, body: Object, cb: Function) {
+    body.sort = [{ _uid: 'asc' }];
+    let sources = await search_and_get_sources(type, body);
+    cb(sources);
+    while (sources.length > 0) {
+        const b = _.merge({}, body, { search_after: [`${type}#${sources[sources.length - 1]._id}`] });
+        sources = await search_and_get_sources(type, b);
+        cb(sources);
+    }
+}
+
 module.exports.retrieve = retrieve;
 module.exports.get_info_from_type = get_info_from_type;
 module.exports.get_model_from_type = get_model_from_type;
@@ -547,3 +576,4 @@ module.exports.get_hits = get_hits;
 module.exports.get_aggs = get_aggs;
 module.exports.retrieve_and_get_source = retrieve_and_get_source;
 module.exports.search_and_get_sources = search_and_get_sources;
+module.exports.search_in_order_and_get_sources = search_in_order_and_get_sources;

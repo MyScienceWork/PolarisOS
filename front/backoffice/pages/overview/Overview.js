@@ -1,13 +1,15 @@
 const Utils = require('../../../common/utils/utils');
+const BrowserUtils = require('../../../common/utils/browser');
 const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const NotificationMixin = require('../../../common/mixins/NotificationMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin, FormCleanerMixin, NotificationMixin],
     data() {
         return {
             state: {
@@ -28,7 +30,7 @@ module.exports = {
     methods: {
         add_chart() {
             const len = Object.keys(this.state.charts).length + 1;
-            this.state.charts[`${len}`] = true;
+            this.state.charts[`${len}`] = {};
             this.$forceUpdate();
         },
         remove_chart(id) {
@@ -36,6 +38,13 @@ module.exports = {
                 delete this.state.charts[id];
                 this.$forceUpdate();
             }
+        },
+        save_dashboard() {
+            BrowserUtils.localSet('overview_dashboard', this.state.charts);
+            this.notify('l_save_dashboard_configuration_success', 'success');
+        },
+        update_chart_info(i, info) {
+            this.state.charts[i] = Object.assign({}, info);
         },
     },
     computed: {
@@ -51,5 +60,10 @@ module.exports = {
                 size: 10000,
             },
         });
+
+        const saved_configuration = BrowserUtils.localGet('overview_dashboard');
+        if (saved_configuration) {
+            this.state.charts = Object.assign({}, saved_configuration);
+        }
     },
 };

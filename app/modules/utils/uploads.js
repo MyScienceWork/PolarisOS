@@ -1,3 +1,5 @@
+// @flow
+const moment = require('moment');
 const FS = require('fs');
 const Errors = require('../exceptions/errors');
 const MinioUtils = require('./minio');
@@ -5,7 +7,76 @@ const Archiver = require('archiver');
 const EntitiesUtils = require('./entities');
 const Utils = require('./utils');
 const Logger = require('../../logger');
+const PDFUtils = require('./pdf');
+const ConfigUtils = require('./config');
+const Handlebars = require('./templating');
+const LangUtils = require('./lang');
 
+async function generate_cover_page(publication: Object,
+    file: Object, file_stream: any): Promise<any> {
+    let coverStream = null;
+    if (file.is_master && file.url.endsWith('.pdf')) {
+        const my_config = await ConfigUtils.get_config();
+        if (my_config) {
+            const cover_page = Utils.find_value_with_path(my_config, 'gui.cover_page'.split('.'));
+            if (cover_page) {
+                const cover_page_html = Handlebars.compile(Handlebars.compile(cover_page)(publication))(publication);
+                const translated_cover_page_html = await LangUtils.strings_to_translation(cover_page_html, 'EN');
+                coverStream = await PDFUtils.transform_html_to_pdf(translated_cover_page_html);
+            }
+        }
+    }
+
+    if (coverStream) {
+        const first_file_path = `/tmp/${+moment.utc()}_cover`;
+        const second_file_path = `/tmp/${+moment.utc()}`;
+        const writableStream1 = FS.createWriteStream(first_file_path);
+        const writableStream2 = FS.createWriteStream(second_file_path);
+        coverStream.pipe(writableStream1);
+        file_stream.pipe(writableStream2);
+
+        try {
+            const mergedStream = await PDFUtils.merge_pdfs([first_file_path, second_file_path]);
+            try {
+                FS.unlinkSync(first_file_path);
+                FS.unlinkSync(second_file_path);
+            } catch (errfs) {}
+            return mergedStream;
+        } catch (err) {
+            FS.unlinkSync(first_file_path);
+            FS.unlinkSync(second_file_path);
+            Logger.error('Error when merging pdfs');
+            Logger.error(err);
+            return file_stream;
+        }
+    } else {
+        return file_stream;
+    }
+}
+
+async function update_download_stats(info: Object, entity_type: string) {
+    try {
+        const stats_object = Utils.find_value_with_path(info, 'system.stats'.split('.'));
+        if (stats_object) {
+            if ('downloads' in stats_object) {
+                info.system.stats.downloads += 1;
+            } else {
+                info.system.stats.downloads = 1;
+            }
+            await EntitiesUtils.update(info, entity_type);
+        }
+
+        await EntitiesUtils.create({
+            date: +moment.utc(),
+            eid: info._id,
+            entity_type,
+            stat_type: 'download',
+        }, 'tracking_stat');
+    } catch (err) {
+        Logger.error('Error when updating the stats for download: ', entity_type, info._id);
+        Logger.error(err);
+    }
+}
 
 async function add_single(ctx) {
     const file = ctx.request.file;
@@ -17,6 +88,27 @@ async function add_single(ctx) {
         FS.unlinkSync(file.path);
     } catch (errfs) {}
     ctx.body = { file: file.filename };
+}
+
+async function generic_download(ctx) {
+    const entity = ctx.params.entity.trim();
+    const eid = ctx.params.eid.trim();
+    const filename = ctx.params.filename.trim();
+
+    if (entity === '' || eid === '' || filename === '') {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const information = await EntitiesUtils.retrieve_and_get_source(entity, eid);
+    if (!information) {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const shown_name = filename;
+    const final_stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
+    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
+    ctx.statusCode = 200;
+    ctx.body = final_stream;
 }
 
 async function download(ctx) {
@@ -46,11 +138,14 @@ async function download(ctx) {
         throw Errors.DownloadDoesNotExist;
     }
 
-
+    const shown_name = file.name || file.url;
     const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
-    ctx.set('Content-disposition', `attachment; filename=${file.name}`);
+    const final_stream = await generate_cover_page(information, file, stream);
+    await update_download_stats(information, entity);
+
+    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
     ctx.statusCode = 200;
-    ctx.body = stream;
+    ctx.body = final_stream;
 }
 
 async function multi_download(ctx) {
@@ -79,10 +174,13 @@ async function multi_download(ctx) {
     for (const i in filenames) {
         const filename = filenames[i];
         const name = names[i];
+        const my_file = (information.files.find(f => f.url === filename) || { is_master: false });
         const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
-        archive.append(stream, { name });
+        const final_stream = await generate_cover_page(information, my_file, stream);
+        archive.append(final_stream, { name });
     }
 
+    await update_download_stats(information, entity);
     ctx.set('Content-disposition', 'attachment; filename=pos_download.zip');
     ctx.statusCode = 200;
     ctx.body = archive;
@@ -93,4 +191,5 @@ module.exports = {
     add_single,
     download,
     multi_download,
+    generic_download,
 };

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-if="charts && charts.length > 0">
     <div class="columns is-centered">
         <div class="column">
             <div class="field">
@@ -7,17 +7,9 @@
                 <div class="control"> 
                     <v-select 
                         :options="state.charts"
-                        v-model="state.choosen_chart"
+                        :value="state.choosen_chart"
                         :on-change="update_chart"
                     />
-                </div>
-            </div>
-            <div class="field">
-                <div class="control"> 
-                    <label class="checkbox has-small-right-margin">
-                        <input type="checkbox" v-model="state.dates.activated">
-                        {{lang('l_use_dates')}} 
-                    </label>
                 </div>
             </div>
             <div class="field is-grouped" v-if="state.dates.activated">

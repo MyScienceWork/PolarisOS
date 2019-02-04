@@ -4,7 +4,7 @@
             <div class="navbar-menu is-vcentered">
                 <div class="navbar-start">
                     <form @submit.prevent="search">
-                        <div class="field has-addons">
+                        <div class="field has-addons" v-intro="lang('l_backoffice_search_help')">
                             <p class="control has-icons-left is-expanded">
                                 <finput type="text" :placeholder="lang('l_search')" name="search" :form="searchSink" label="" :is-addon="true" />
                                 <span class="icon is-left">
@@ -30,7 +30,7 @@
                 </div>
                 <div class="navbar-end">
                     <b-dropdown>
-                        <a class="navbar-link swap" slot="trigger">
+                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')">
                             {{lang('f_items_per_page')}}
                         </a>
 
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </nav>
-        <section v-if="Object.keys(columns).length > 0">
+        <section v-if="Object.keys(columns).length > 0" v-intro="lang('l_backoffice_show_columns_help')">
             <p class="has-small-top-margin has-small-bottom-margin">{{lang('l_show_columns')}}</p>
             <b-field grouped group-multiline>
                 <div v-for="(val, key) in columns" v-if="!columns[key].force" 
@@ -67,7 +67,9 @@
             @check-all="on_checked_rows_update"
             :detail-key="detailKey"
             :checkable="checkable"
-            @sort="sort">
+            @sort="sort"
+            v-intro="lang('l_backoffice_datatable_help')"
+            >
 
             <template slot-scope="props">
                 <slot name="rows" v-bind="props">
@@ -89,6 +91,7 @@
                         :current.sync="currentPage"
                         :simple="true"
                         :rounded="false"
+                        v-intro="lang('l_backoffice_pagination_help')"
                         :per-page="state.seso.size"
                     >
                     </b-pagination>

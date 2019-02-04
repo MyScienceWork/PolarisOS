@@ -101,6 +101,9 @@ module.exports = {
                     template: {
                         type: 'keyword',
                     },
+                    predefined_page: {
+                        type: 'keyword',
+                    },
                     route: {
                         type: 'keyword',
                     },

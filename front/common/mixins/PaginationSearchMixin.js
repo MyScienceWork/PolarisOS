@@ -19,6 +19,10 @@ module.exports = {
         filters: { default: () => [], type: Array },
         searchWhenFiltersChange: { default: false, type: Boolean },
         searchOnMount: { default: true, type: Boolean },
+        changeWithCreateSuccess: { default: false, type: Boolean },
+        formCreateSuccess: { default: 'dummy', type: String },
+        searchQueryStringName: { default: 's', type: String },
+        sesoQueryStringName: { default: 'seso', type: String },
     },
     data() {
         return {
@@ -30,6 +34,9 @@ module.exports = {
         };
     },
     methods: {
+        onPageChangeHook(new_page, old_page) {
+                // Need to be reimplemented if needed
+        },
         show_success_read(sink) {
             if (sink === this.searchSink) {
                 this.state.loading = false;
@@ -37,6 +44,11 @@ module.exports = {
         },
         show_success_delete(sink) {
             if (sink === this.resultSink) {
+                this.run_search(this.searchSink);
+            }
+        },
+        show_success(sink) {
+            if (sink === this.formCreateSuccess) {
                 this.run_search(this.searchSink);
             }
         },
@@ -66,14 +78,14 @@ module.exports = {
             return 'asc';
         },
         sort(type, order) {
-            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { seso_sort: type, seso_order: order });
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { [`${this.sesoQueryStringName}_sort`]: type, [`${this.sesoQueryStringName}_order`]: order });
 
             // Reset pagination;
             this.currentPage = 1;
             if ('seso_paginate' in q) {
                 delete q.seso_paginate;
             }
-            q.seso_current = 1;
+            q[`${this.sesoQueryStringName}_current`] = 1;
             this.state.seso.paginate = undefined;
             //
 
@@ -82,14 +94,15 @@ module.exports = {
             this.send_information(this.searchSink);
         },
         size(number) {
-            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { seso_size: number });
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { [`${this.sesoQueryStringName}_size`]: number });
 
             // Reset pagination;
             this.currentPage = 1;
-            if ('seso_paginate' in q) {
-                delete q.seso_paginate;
+            if (`${this.sesoQueryStringName}_paginate` in q) {
+                delete q[`${this.sesoQueryStringName}_paginate`];
             }
-            q.seso_current = 1;
+
+            q[`${this.sesoQueryStringName}_current`] = 1;
             this.state.seso.paginate = undefined;
             //
 
@@ -99,7 +112,7 @@ module.exports = {
         },
         changePage(np, op) {
             this.state.seso.current = np;
-            const obj = { seso_current: np };
+            const obj = { [`${this.sesoQueryStringName}_current`]: np };
 
             const form_info = this.fform(this.resultSink);
             const hits = Utils.find_value_with_path(form_info, 'raw_content.result.hits'.split('.'));
@@ -109,14 +122,13 @@ module.exports = {
             }
 
             const result = this.formatPaginate(sorts, this.state.seso, np < op);
-            obj.seso_paginate = result;
+            obj[`${this.sesoQueryStringName}_paginate`] = result;
 
             const q = _.merge({}, _.cloneDeep(this.$route.query || {}), obj);
             this.state.seso = Object.assign({}, this.update_state(q));
-            console.log(q);
             this.$router.push({ query: q });
-            console.log(this.$route.query);
             this.send_information(this.searchSink);
+            this.onPageChangeHook(np, op);
         },
         formatPaginate(sorts, seso, backward) {
             if (backward === undefined) {
@@ -150,9 +162,9 @@ module.exports = {
             }
 
             const obj = content[obj_name];
-            let filters = _.map(obj, (value) => {
+            let filters = _.map(obj, (value, idx) => {
                 // Only the __bool is in the object, so it's empty
-                if (Object.keys(value).length === 1) {
+                if (Object.keys(value).length === 1 && idx > 0) {
                     return null;
                 }
 
@@ -161,7 +173,14 @@ module.exports = {
                         return acc;
                     }
 
-                    acc[key.replace(dot_replacer, '.')] = val;
+                    if (_.isPlainObject(val)) {
+                        val = _.reduce(val, (arr, v) => {
+                            arr.push(v);
+                            return arr;
+                        }, []);
+                    }
+
+                    acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
                     return acc;
                 }, {});
                 return result;
@@ -191,6 +210,8 @@ module.exports = {
 
                 return o;
             }, {});
+
+            console.log(JSON.stringify(filters));
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -252,8 +273,8 @@ module.exports = {
                 body.where = where;
             }
 
-            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { s: content.search || '',
-                seso_filter: this.state.seso.filters,
+            const q = _.merge({}, _.cloneDeep(this.$route.query || {}), { [this.searchQueryStringName]: content.search || '',
+                [`${this.sesoQueryStringName}_filter`]: this.state.seso.filters,
             /* seso_extra_filter: this.state.seso.extra_filters*/ });
             this.$router.replace({ query: q });
 
@@ -276,6 +297,8 @@ module.exports = {
 
             body.sort.push({ _uid: 'desc' });
 
+            console.log(body);
+
             this.$store.dispatch('search', {
                 path: this.searchPath,
                 form: this.resultSink,
@@ -288,14 +311,14 @@ module.exports = {
         },
         update_state(q) {
             const obj = {
-                current: this.get_information(q, 'seso_current', 1),
-                paginate: this.get_information(q, 'seso_paginate'),
-                sort: this.get_information(q, 'seso_sort'),
-                order: this.get_information(q, 'seso_order'),
-                size: this.get_information(q, 'seso_size', 20),
-                filters: this.get_information(q, 'seso_filter', this.filters),
+                current: this.get_information(q, `${this.sesoQueryStringName}_current`, 1),
+                paginate: this.get_information(q, `${this.sesoQueryStringName}_paginate`),
+                sort: this.get_information(q, `${this.sesoQueryStringName}_sort`),
+                order: this.get_information(q, `${this.sesoQueryStringName}_order`),
+                size: this.get_information(q, `${this.sesoQueryStringName}_size`, 20),
+                filters: this.get_information(q, `${this.sesoQueryStringName}_filter`, this.filters || []),
                 extra_filters: [], // this.get_information(q, 'seso_extra_filter', []),
-                typed_search: this.get_information(q, 's', '').trim(),
+                typed_search: this.get_information(q, this.searchQueryStringName, '').trim(),
             };
 
             // Validate field
@@ -324,7 +347,7 @@ module.exports = {
         },
         filters(nf) {
             this.state.seso.filters = nf;
-
+            console.log('filters', nf);
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);
             }
@@ -335,6 +358,9 @@ module.exports = {
         current_state_result(s) {
             this.dispatch(s, this, this.resultSink);
         },
+        create_state_result(s) {
+            this.dispatch(s, this, this.formCreateSuccess);
+        },
     },
     computed: {
         current_state_search() {
@@ -343,6 +369,12 @@ module.exports = {
         current_state_result() {
             return this.fstate(this.resultSink);
         },
+        create_state_result() {
+            if (this.changeWithCreateSuccess) {
+                return this.fstate(this.formCreateSuccess);
+            }
+            return null;
+        },
     },
     mounted() {
         if (!this.searchOnMount) {
@@ -350,7 +382,7 @@ module.exports = {
         }
 
         const sink = this.get_information(this.$route.query, 'sink', '').trim();
-        const search = this.get_information(this.$route.query, 's', '').trim();
+        const search = this.get_information(this.$route.query, this.searchQueryStringName, '').trim();
         // Avoid getting in a weird place in ElasticSearch search_after;
         this.state.seso.paginate = undefined;
         this.state.seso.current = 1;

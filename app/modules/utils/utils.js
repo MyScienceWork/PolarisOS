@@ -174,6 +174,20 @@ function merge_with_replacement(object: Object, ...sources): Object {
     return _.mergeWith(object, ...sources, customizer);
 }
 
+function merge_with_replacement_with_null(object: Object, ...sources): Object {
+    function customizer(objValue, srcValue) {
+        if (srcValue == null) {
+            return srcValue;
+        }
+
+        if (_.isArray(objValue) && srcValue != null) {
+            objValue = srcValue;
+            return objValue;
+        }
+    }
+    return _.mergeWith(object, ...sources, customizer);
+}
+
 function merge_with_concat(object: Object, ...sources) {
     function customizer(objValue, srcValue) {
         if (_.isArray(objValue)) {
@@ -316,6 +330,15 @@ function filter_empty_or_null_objects(array: Array<any>): Array<any> {
     });
 }
 
+function filterIndexes(collection: Array<any>, pred: Function): Array<number> {
+    return collection.reduce((arr: Array<number>, val: any, i: number) => {
+        if (pred(val)) {
+            arr.push(i);
+        }
+        return arr;
+    }, []);
+}
+
 
 module.exports = {
     hasProperty,
@@ -323,6 +346,7 @@ module.exports = {
     find_object_with_path,
     forge_whitelist_blacklist_query,
     merge_with_replacement,
+    merge_with_replacement_with_null,
     merge_with_concat,
     merge_with_superposition,
     find_popvalue_with_path,
@@ -331,4 +355,5 @@ module.exports = {
     make_nested_object_from_path,
     isNil,
     filter_empty_or_null_objects,
+    filterIndexes,
 };

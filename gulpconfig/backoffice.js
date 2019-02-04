@@ -21,6 +21,7 @@ const clean = require('gulp-clean');
 const uglify = require('gulp-uglify-es').default;
 const vueify = require('vueify');
 const unflowify = require('unflowify');
+const aliasify = require('aliasify');
 
 class GulpFrontend {
     constructor(production) {
@@ -52,13 +53,14 @@ class GulpFrontend {
             'superagent',
             'crypto',
             'file-saver',
-            'vue-grid-layout',
+            // 'vue-grid-layout',
             'vue-select',
             'vuedraggable',
             'vue-social-sharing',
             'vue-wysiwyg',
             'vue2-ace-editor',
             'vue2-dropzone',
+            'intro.js',
         ];
 
         this.external_dependencies = [
@@ -68,6 +70,8 @@ class GulpFrontend {
             './node_modules/font-awesome/css/font-awesome.css',
             './node_modules/vue2-dropzone/dist/vue2Dropzone.css',
             './node_modules/vue-wysiwyg/dist/vueWysiwyg.css',
+            './node_modules/vue-wysiwyg/dist/vueWysiwyg.css',
+            './node_modules/intro.js/introjs.css',
         ];
 
         this.css_files = [
@@ -88,6 +92,17 @@ class GulpFrontend {
             appBundler.external(dep);
         });
 
+        this.external_dependencies.forEach((dep) => {
+            appBundler.external(dep);
+        });
+
+
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
         return appBundler
         .transform(unflowify)
         .transform(envify({
@@ -98,6 +113,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(buffer())
@@ -107,11 +123,22 @@ class GulpFrontend {
     }
 
     bundleVendors() {
-        return browserify({
+        const aliases = aliasify.configure({
+            replacements: {
+                '^moment$': './node_modules/moment/min/moment-with-locales.js',
+            },
+        });
+
+        const bundler = browserify({
             require: this.dependencies,
             debug: true,
-        })
-        .transform(envify({
+        });
+
+        this.external_dependencies.forEach((dep) => {
+            bundler.external(dep);
+        });
+
+        bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -119,6 +146,7 @@ class GulpFrontend {
             presets: ['es2015'],
             plugins: ['transform-runtime', 'transform-async-to-generator'],
         })
+        .transform(aliases)
         .bundle()
         .pipe(source('vendors.js'))
         .pipe(buffer())
@@ -131,13 +159,14 @@ class GulpFrontend {
         gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
-        // .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+        .on('error', gutil.log)
         .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
     watch() {
         gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
-        gulp.watch(['./front/{backoffice,common}/styles/**/*.*'], ['back-styles']);
+        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], ['back-styles']);
         gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
     }
 

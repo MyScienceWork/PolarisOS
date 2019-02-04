@@ -6,10 +6,11 @@ const Utils = require('../../../../utils/utils');
 const FormMixin = require('../../../../mixins/FormMixin');
 const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
 const LangMixin = require('../../../../mixins/LangMixin');
-const RequestsMixin = require('../../../../mixins/RequestsMixin.js');
+const RequestsMixin = require('../../../../mixins/RequestsMixin');
+const FiltersMixin = require('../../../../mixins/FiltersMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, RequestsMixin, FiltersMixin],
     props: {
         selectPlaceholder: { default: 'l_select_content', type: String },
         label: { default: '', type: String },
@@ -51,7 +52,15 @@ module.exports = {
             const sink = `${val.value}_read`;
             const element = info.element;
             const entity = info.entity || {};
-            const path = element !== 'text' ? APIRoutes.entity(entity.name, 'POST', true) : '';
+            let path = '';
+
+            if (element !== 'text') {
+                if (entity.path) {
+                    path = entity.path;
+                } else {
+                    path = APIRoutes.entity(entity.name, 'POST', true);
+                }
+            }
 
             this.state.inputs = Object.assign({}, this.state.inputs, { [id]: {
                 element,
@@ -66,12 +75,14 @@ module.exports = {
                 form: sink,
             });
 
-            if (this.state.inputs[id].element !== 'text') {
+            if (this.state.inputs[id].element !== 'text' && !entity.ajax) {
                 this.$store.dispatch('search', {
                     form: sink,
                     path,
                     body: {
                         projection: [entity.label, entity.value],
+                        where: entity.searchFields || {},
+                        sort: entity.sort || undefined,
                     },
                 });
             }
@@ -118,6 +129,33 @@ module.exports = {
             }
             return entity[type];
         },
+        get_ajax(type, info) {
+            if (!info || !('entity' in info)) {
+                return undefined;
+            }
+            switch (type) {
+            default:
+            case 'ajax':
+                return info.entity.ajax || false;
+            case 'ajax-value-url':
+            case 'ajax-url':
+                return info.entity.path || '';
+            case 'search-fields':
+                return info.entity.searchFields || info.entity.label;
+            }
+        },
+        get_placeholder(info) {
+            if (!info || !('placeholder' in info)) {
+                return this.placeholder;
+            }
+            return info.placeholder;
+        },
+        get_select_size(info) {
+            if (!info || !('entity' in info)) {
+                return 10;
+            }
+            return info.entity.size || 10;
+        },
         reset() {
             const sinks = [this.sink, this.state.sinks.creations.dummy,
                 this.state.sinks.creations.aggregate];
@@ -154,7 +192,7 @@ module.exports = {
             return [
             { label: this.lang('l_bool_and'), value: '$and' },
             { label: this.lang('l_bool_or'), value: '$or' },
-            { label: this.lang('l_bool_not'), value: '$nand' },
+            { label: this.lang('l_bool_not'), value: '$nfand' },
             ];
         },
     },

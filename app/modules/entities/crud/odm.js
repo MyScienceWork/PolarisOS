@@ -71,6 +71,10 @@ class ODM {
         return this.db.source || {};
     }
 
+    get client(): Object {
+        return this._client;
+    }
+
     /**
      * Process an entity and create an {ODM} object.
      *
@@ -217,7 +221,7 @@ class ODM {
     static async search(index: string, type: string, client: Object, model: Object,
             search: Search, opts: Object = {}): Promise<Object> {
         const query = search.generate();
-        console.log(JSON.stringify(query));
+        //console.log(JSON.stringify(query));
         const sort = search.sort();
         const aggs = search.aggs();
         const population = 'population' in opts ? opts.population : [];
@@ -330,9 +334,9 @@ class ODM {
                     return null;
                 }
             } else {
-                // TODO NEED TO BE REMOVE AFTER DATA IMPORT
                 if ('_id' in content.body) {
-                    content.id = content.body._id;
+                    // TODO NEED TO BE REMOVE AFTER DATA IMPORT
+                    // content.id = content.body._id;
                     delete content.body._id;
                 }
 
@@ -390,10 +394,8 @@ class ODM {
                 })),
                 refresh: true,
             };
-
             const response = await client.bulk(content);
-            console.log(response);
-            return null;
+            return response;
         } catch (err) {
             console.log('bulk creation or update error', err);
             return null;

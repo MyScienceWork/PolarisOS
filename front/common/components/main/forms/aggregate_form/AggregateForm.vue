@@ -1,26 +1,33 @@
 <template>
 <div>
-    <fvariadic-element class="field" name="state.variadic_name" :form="state.sinks.creations.aggregate" :single="true" :default-size="3">
+    <fvariadic-element class="field" :name="state.variadic_name" :form="sink" :single="true" :default-size="3">
     <template slot="variadic" slot-scope="props">
             <component
                 :is="select_component(props.order)"
                 :label="lang(label)"
-                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : ''}`"
-                :placeholder="lang(placeholder)"
+                :name="`${state.inputs[props.order] ? state.inputs[props.order].name : `${props.fname}.${props.order}.dummy`}`"
+                :placeholder="lang(get_placeholder(state.inputs[props.order]))"
                 type="text"
                 :form="sink"
                 :has-addons="true"
-                :key="`${props.id}.input`"
-                :multi="state.inputs[props.id] ? state.inputs[props.order].element === 'multi-select' : false"
-                :options="get_options(props.id, state.inputs[props.order] ? state.inputs[props.id].sink : null)"
-                :translatable="get_translatable(props.id)"
-                :translate-through-hlang="get_use_hlang(props.id)"
-                :fieldValue="get_field('value', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
-                :fieldLabel="get_field('label', state.inputs[props.order] ? state.inputs[props.id].entity : null)"
+                :key="`${state.inputs[props.order] ? state.inputs[props.order].name : `${props.fname}.${props.order}.dummy`}`"
+                :multi="state.inputs[props.order] ? state.inputs[props.order].element === 'multi-select' : false"
+                :options="get_options(props.order, state.inputs[props.order] ? state.inputs[props.order].sink : [])"
+                :translatable="get_translatable(props.order)"
+                :translate-through-hlang="get_use_hlang(props.order)"
+                :fieldValue="get_field('value', state.inputs[props.order] ? state.inputs[props.order].entity : null)"
+                :fieldLabel="get_field('label', state.inputs[props.order] ? state.inputs[props.order].entity : null)"
+                :ajax="get_ajax('ajax', state.inputs[props.order])"
+                :ajax-url="get_ajax('ajax-url', state.inputs[props.order])"
+                :ajax-value-url="get_ajax('ajax-value-url', state.inputs[props.order])"
+                :prefetch-in-ajax="get_ajax('ajax', state.inputs[props.order])"
+                :search-fields="get_ajax('search-fields', state.inputs[props.order])"
+                :flatten-list="true"
                 class="has-small-bottom-margin"
+                :search-size="get_select_size(state.inputs[props.order])"
             >
-                <template slot="left-input-addons">
-                    <fselect 
+                <template slot="left-input-addons" v-if="props.order > 0">
+                    <fselect
                         label=""
                         placeholder=""
                         :name="`${state.variadic_name}.${props.order}.__bool`"
@@ -33,7 +40,7 @@
                     />
                 </template>
                 <template slot="input-addons">
-                    <fselect 
+                    <fselect
                     label=""
                     :placeholder="lang(selectPlaceholder)"
                     :name="`${props.order}.select`"
@@ -49,7 +56,7 @@
                         <a class="button is-info" @click.prevent="props.add">+</a>
                     </div>
                     <div class="control">
-                        <a class="button is-info" @click.prevent="props.remove(props.id)">-</a>
+                        <a class="button is-info" @click.prevent="props.remove(props.id, props.order)">-</a>
                     </div>
                     <div class="control" v-if="props.order === props.total - 1">
                         <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
@@ -61,7 +68,7 @@
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
-                </template> 
+                </template>
             </component>
         </template>
     </fvariadic-element>

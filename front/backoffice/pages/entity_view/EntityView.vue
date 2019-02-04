@@ -21,6 +21,8 @@
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
                             @table-checked-rows-update="on_checked_rows_update"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations[entity()]"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column v-for="(value, key) in state.columns"
@@ -32,11 +34,11 @@
                                     <span 
                                         :class="`tag ${value.tag_class}`" 
                                         v-if="value.is_tag"
-                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format"
+                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
                                     >
                                     </span>
                                     <div v-else
-                                        :inner-html.prop="props.row | find(value.field) | truncate(value.truncate) | format" 
+                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"  
                                     >
                                     </div>
                                 </b-table-column>

@@ -12,6 +12,8 @@ function routes(router: KoaRouter) {
 
     router.post(`${puprefix}/authenticate`, compose([...RouterUtils.koa_middlewares({}), MyController.authenticate]));
 
+    router.get(`${puprefix}/list/publications/:iid`, compose([MyController.list_publications_for_iid]));
+
     router.post(`${puprefix}/iuser/access`, compose([...RouterUtils.koa_middlewares({}),
         ...RouterUtils.api_middlewares('authentication', 'r', { pass: true }), MyController.access]));
 

@@ -13,12 +13,15 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="entity"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.entity"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
                                     <router-link
                                     class="has-text-green"
                                     :to="`/admin/entity/${props.info.type}`"
+                                    v-if="has_some_access(props.info.type)"
                                     >
                                         <i class="fa fa-eye"></i>
                                     </router-link>
@@ -27,6 +30,7 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="update(props.info, 'entity')"
+                                    v-if="has_u_access('entity')"
                                     >
                                     <i class="fa fa-pencil"></i>
                                     </action-button>
@@ -35,6 +39,7 @@
                                     tag="a"
                                     v-scroll-to="'#mwidget'"
                                     @action-click="use_as_model(props.info, 'entity')"
+                                    v-if="has_c_access('entity')"
                                     >
                                     <i class="fa fa-clone"></i>
                                     </action-button>
@@ -44,6 +49,7 @@
                                     confirmation="Are you sure?"
                                     :two-steps="true"
                                     @action-click="remove(props.info, 'entity')"
+                                    v-if="has_d_access('entity')"
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
@@ -57,7 +63,7 @@
                 </widget>
             </div>
         </div>
-        <div class="columns">
+        <div class="columns" v-if="has_cu_access('entity')">
             <div class="column">
                 <widget id="mwidget">
                     <span slot="title">
@@ -127,6 +133,28 @@
                                                 :placeholder="lang('l_sort_field')" 
                                                 :is-required="false" 
                                                 type="text" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.order}.translate`" 
+                                                :label="lang('l_view_translated_item')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.order}.show_lang_key`" 
+                                                :label="lang('l_show_lang_key')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <finput :name="`${props.fname}.${props.order}.date_field.enabled`" 
+                                                :label="lang('l_field_is_date')" 
+                                                type="checkbox" 
+                                                :form="state.sinks.creations.entity"
+                                            />
+                                            <fselect
+                                                :name="`${props.fname}.${props.order}.date_field.format`"
+                                                :label="lang('l_field_date_format')" 
+                                                :is-required="true"
+                                                :options="date_formats"
                                                 :form="state.sinks.creations.entity"
                                             />
                                             <finput :name="`${props.fname}.${props.order}.centered`" 

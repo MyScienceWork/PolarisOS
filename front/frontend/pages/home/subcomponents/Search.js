@@ -4,9 +4,7 @@ const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const Messages = require('../../../../common/api/messages');
 const AdvancedSearchSpecs = require('../../../../common/specs/AdvancedSearchSpecs');
 const _ = require('lodash');
-// const Vue = require('vue');
-
-// Vue.use(_);
+const VueClickAway = require('vue-clickaway');
 
 module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin],
@@ -14,7 +12,11 @@ module.exports = {
         showAdvancedSearch: { type: Boolean, default: true },
         showFavorites: { type: Boolean, default: true },
         collapsible: { type: Boolean, default: false },
+        noColumn: { type: Boolean, default: false },
         searchSink: { type: String, default: 'search_sink' },
+    },
+    directives: {
+        onClickAway: VueClickAway.directive,
     },
     data() {
         return {
@@ -33,6 +35,9 @@ module.exports = {
         };
     },
     methods: {
+        away() {
+            this.state.collapse_opened = false;
+        },
         trigger_click() {
             if (this.collapsible) {
                 if (!this.state.collapse_opened) {

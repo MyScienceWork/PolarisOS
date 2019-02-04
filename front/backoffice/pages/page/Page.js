@@ -5,6 +5,7 @@ const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
+const PredefinedPages = require('../../../common/route_components');
 
 
 module.exports = {
@@ -96,6 +97,13 @@ module.exports = {
         },
         current_read_state_template() {
             return this.mcurrent_read_state(this.state.sinks.reads.template);
+        },
+        predefined_pages() {
+            const keys = Object.keys(PredefinedPages);
+            return keys.map(k => ({
+                label: this.lang(`l_${k}_page`),
+                value: k,
+            }));
         },
     },
 };

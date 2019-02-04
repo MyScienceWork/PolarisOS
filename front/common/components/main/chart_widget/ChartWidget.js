@@ -17,6 +17,7 @@ module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin, FiltersMixin],
     props: {
         charts: { type: Array, required: true },
+        defaultState: { type: Object, default: () => ({}) },
     },
     components: {
         Pie,
@@ -33,7 +34,7 @@ module.exports = {
                 dates: {
                     end: null,
                     start: null,
-                    activated: true,
+                    activated: false,
                 },
                 sinks: {
                     creations: {
@@ -45,9 +46,17 @@ module.exports = {
     },
     methods: {
         update_chart(val) {
+            if (!val) {
+                this.state.choosen_info = null;
+                this.state.choosen_chart = null;
+                this.state.dates.activated = false;
+                return;
+            }
             const id = val.value;
             const info = this.charts.find(c => c._id === id);
             this.state.choosen_info = info;
+            this.state.choosen_chart = val;
+            this.state.dates.activated = info ? (info.use_date_range || false) : false;
         },
         load_chart() {
             if (!this.state.choosen_info) {
@@ -71,11 +80,18 @@ module.exports = {
                     aggregations: aggregation,
                 },
             });
+
+            this.$emit('update:defaultState', {
+                choosen_chart: this.state.choosen_chart,
+                dates: this.state.dates,
+            });
         },
     },
     watch: {
         charts(new_charts) {
             this.state.charts = new_charts.map(c => ({ label: this.lang(c.name), value: c._id }));
+            this.update_chart(this.state.choosen_chart);
+            this.load_chart();
         },
     },
     computed: {
@@ -102,7 +118,7 @@ module.exports = {
 
             if (this.info.chart === 'bar') {
                 const categories = ct.buckets.map(b => (this.lang(b.key_as_string || b.key)));
-                const data = ct.buckets.map(b => b.doc_count);
+                const data = ct.buckets.map(b => ('extra_stat' in b ? b.extra_stat.value : b.doc_count));
                 const xaxis = { crosshair: true, categories };
                 return {
                     xaxis,
@@ -117,15 +133,31 @@ module.exports = {
             } else if (this.info.chart === 'pie') {
                 const data = ct.buckets.map(b => ({
                     name: this.lang(b.key_as_string || b.key),
-                    y: b.doc_count,
+                    y: 'extra_stat' in b ? b.extra_stat.value : b.doc_count,
                 }));
                 return {
                     series: data,
                 };
             }
+            return { series: [] };
         },
     },
     mounted() {
         this.state.charts = this.charts.map(c => ({ label: this.lang(c.name), value: c._id }));
+
+        if (Object.keys(this.defaultState).length === 0) {
+            return;
+        }
+
+        if (this.defaultState.dates.start) {
+            this.defaultState.dates.start = new Date(this.defaultState.dates.start);
+        }
+        if (this.defaultState.dates.end) {
+            this.defaultState.dates.end = new Date(this.defaultState.dates.end);
+        }
+
+        this.state = _.merge({}, this.state, this.defaultState);
+        this.update_chart(this.state.choosen_chart);
+        this.load_chart();
     },
 };

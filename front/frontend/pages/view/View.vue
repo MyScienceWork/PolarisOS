@@ -21,10 +21,15 @@
                         <ol>
                             <li v-for="affiliation in affiliations" v-html="affiliation"></li>
                         </ol>
+                        <!--<p><span v-if="date('publication')"> {{date('publication') | format_date('YYYY')}} </span><span v-if="country">{{lang(country)}}, </span><span v-if="city">{{city}}. </span></p>
+                        <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>-->
                         <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
                         <p v-if="journal" v-html="journal"></p>
                         <p v-if="book" v-html="book"></p>
+                        <p v-if="press" v-html="press"></p>
                         <p v-if="chapter" v-html="chapter"></p>
+                        <p v-if="report" v-html="report"></p>
+                        <p v-if="thesis" v-html="thesis"></p>
                         <p v-if="conference" v-html="conference"></p>
                         <p v-if="other_document" v-html="other_document"></p>
                         <p v-if="working_paper" v-html="working_paper"></p>
@@ -38,8 +43,7 @@
                             </div>
                             <div class="card-content">
                                 <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
-                                <p>
-                                {{state.current_abstract.content}}
+                                <p v-html="$options.filters.nl2br(state.current_abstract.content)">
                                 </p>
                             </div>
                         </div>
@@ -59,14 +63,17 @@
                                     </p>
                                 </div>
                             </widget>
-                            <widget v-if="ids.length > 0" :collapsed="true">
+                            <widget v-if="ids.length > 0 || _oa_find(content_item, 'system.api.handle', false)" :collapsed="true">
                                 <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
                                 <div slot="body">
+                                    <p v-if="_oa_find(content_item, 'system.api.handle', false)">
+                                        <strong>{{lang('l_handle_id')}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='generate_handle_link(content_item)'>{{generate_handle_link(content_item)}}</a>
+                                    </p>
                                     <p v-for="id in ids">
                                         <template v-if="id.type.toUpperCase() === 'DOI'">
-                                            <strong>{{id.type.toUpperCase()}}</strong> : <a target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
+                                            <strong>{{id.type.toUpperCase()}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
                                         </template>
-                                        <template v-else>
+                                        <template v-else-if="id.type.toUpperCase() !== 'HANDLE'">
                                             <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
                                         </template>
                                     </p>
@@ -78,15 +85,15 @@
                                     <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
                                     <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
                                     <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
-                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong> 
-                                        <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong>
+                                        <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                         <span v-else>{{lang(license.label)}}</span>
                                     </p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
+                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a class="break-word has-text-purple" target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
                                     <p v-if="resources.length > 0">
                                         <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
                                         <ul>
-                                            <li v-for="r in resources"><a target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
+                                            <li v-for="r in resources"><a class="has-text-purple break-word" target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
                                         </ul>
                                     </p>
                                 </div>
@@ -102,7 +109,7 @@
                                         </ul>
                                     </p>
                                     <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
-                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong> 
+                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="p in projects">
                                                 {{lang(p)}}
@@ -126,6 +133,15 @@
                                     <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit', 'DD/MM/YYYY')}}</p>
                                     <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update', 'DD/MM/YYYY')}}</p>
                                     <p><strong v-html="lang('f_publication_deposit_version')"></strong> {{content_item.version}} </p>
+                                    <template v-if="last_version_link">
+                                    <p>
+                                    <span>{{lang('f_more_recent_version_exists')}}</span> <router-link
+                                        class="has-text-purple" 
+                                        v-html="lang('f_click_here_see_most_recent_version')"
+                                        :to="last_version_link"
+                                        ></router-link>
+                                    </p>
+                                    </template>
                                 </div>
                             </widget>
                         </div>
@@ -140,9 +156,9 @@
                             <header class="card-header">
                                 <p class="card-header-title">{{lang('f_publication_file')}}</p>
                             </header>
-                            <div 
+                            <div
                                 class="card-content has-text-centered"
-                                v-if="is_files_accessible"    
+                                v-if="is_files_accessible"
                             >
                                 <div>
                                     <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
@@ -198,7 +214,7 @@
                             </header>
                             <div class="card-content">
                                 <p>
-                                    <a v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
+                                    <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
                                     <span v-else>{{lang(license.label)}}</span>
                                 </p>
                             </div>
@@ -212,7 +228,7 @@
                                 <p class="card-header-title">{{lang('f_publication_citation')}}</p>
                             </header>
                             <div class="card-content">
-                                <p v-html="content_item.html"></p>
+                                <p class="break-word" v-html="content_item.html"></p>
                             </div>
                         </div>
                     </div>
@@ -224,9 +240,10 @@
                                 <p class="card-header-title">{{lang('f_publication_export')}}</p>
                             </header>
                             <div class="card-content">
-                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">CSV</a> | 
-                                <a @click.prevent="run_export('bibtex')">BibTeX</a> | 
-                                <a @click.prevent="run_export('ris')">RIS (Zotero / EndNote)</a></p> 
+                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">{{lang('l_csv_export')}}</a> |
+                                <a @click.prevent="run_export('bibtex')">{{lang('l_bibtext_export')}}</a> |
+                                <a @click.prevent="run_export('ris')">{{lang('l_ris_export')}}</a> |
+                                <a @click.prevent="run_export('endnote')">{{lang('l_endnote_export')}}</a></p>
                             </div>
                         </div>
                     </div>
@@ -238,7 +255,7 @@
                                 <p class="card-header-title">{{lang('f_publication_share')}}</p>
                             </header>
                             <div class="card-content has-text-centered">
-                                <social-sharing 
+                                <social-sharing
                                   :title="state.current_title.content"
                                   :description="state.current_abstract.content"
                                   quote=""
@@ -261,7 +278,7 @@
                                             <i class="fa fa-envelope fa-2x"></i>
                                         </network>
                                     </div>
-                                </social-sharing> 
+                                </social-sharing>
                             </div>
                         </div>
                     </div>
@@ -277,6 +294,7 @@
         <copy-requester
             :logged-in="state.loggedIn"
             :trigger.sync="state.copyRequest"
+            :item="content_item._id"
         />
     </div>
 </div>

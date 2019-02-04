@@ -30,9 +30,14 @@ module.exports = {
         ajax: { default: false, type: Boolean },
         ajaxUrl: { default: '', type: String },
         ajaxValueUrl: { default: '', type: String },
+        prefetchInAjax: { default: false, type: Boolean },
+        ajaxFilters: { default: () => [], type: Array },
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
+        searchFields: { default: '', type: String },
+        searchSize: { default: 10, type: Number },
+        flattenList: { default: false, type: Boolean },
     },
     components: {
         'v-select': VSelect,
@@ -79,9 +84,9 @@ module.exports = {
                     return m;
                 }
                 return m.value;
-            });
+            }).filter(m => m != null);
 
-            if (this.ajax) {
+            if (this.ajax && values.length > 0) {
                 const promise = this.$store.dispatch('search', {
                     form: this.state.form,
                     path: this.ajaxValueUrl,
@@ -93,7 +98,7 @@ module.exports = {
                         size: values.length,
                     },
                 });
-
+                console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
                     const opts = this.translate_options(this.format_options(res.data));
                     if (this.multi) {
@@ -126,16 +131,30 @@ module.exports = {
             }
         },
         search: _.debounce((loading, search, self) => {
+            const body = {
+                projection: [self.fieldLabel, self.fieldValue],
+                size: self.searchSize + (self.multi ? (self.state.selected ? self.state.selected.length : 1) : 1),
+            };
+
+            if (self.searchFields.trim() === '') {
+                body.where = {
+                    [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%' } },
+                };
+            } else {
+                const $or = self.searchFields.split(',').map(f => ({ [f.trim()]: search }));
+                body.where = { $or };
+            }
+
+            if (self.ajaxFilters.length > 0) {
+                body.where = {
+                    $and: [body.where].concat(self.ajaxFilters),
+                };
+            }
+
             const promise = self.$store.dispatch('search', {
                 form: self.state.form,
                 path: self.ajaxUrl,
-                body: {
-                    where: {
-                        [self.fieldLabel]: { $match: { query: search, minimum_should_match: '100%', fuzziness: '2' } },
-                    },
-                    projection: [self.fieldLabel, self.fieldValue],
-                    size: 10,
-                },
+                body,
             });
             promise.then((res) => {
                 loading(false);
@@ -188,6 +207,7 @@ module.exports = {
             info.label = '';
             info.value = info[this.fieldValue];
             delete info[this.fieldValue];
+
             this.set_selected([info]);
         },
         /* start_collection() {
@@ -210,11 +230,23 @@ module.exports = {
         },
         extract_values(infos) {
             if (infos == null) {
+                if (this.multi) {
+                    return [];
+                }
                 return null;
             }
 
+
             if (infos instanceof Array) {
+                if (this.flattenList) {
+                    return infos.map(o => o.value);
+                }
                 return infos.map(o => ({ [this.fieldValue]: o.value }));
+
+                // return infos.map(o => o.value);
+                // a l'envoie du formulaire, tous mes fselect était refusé
+                // car là ou il attendait un String, il recevait un objet {value: ''}
+                // avec cette ligne, les fselect sont acceptés.
             }
             return infos.value;
         },
@@ -270,17 +302,44 @@ module.exports = {
     },
     watch: {
         options() {
-            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
-            this.select_default_value();
+            if (!this.prefetchInAjax) {
+                this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+                this.select_default_value();
+            }
         },
         current_state(s) {
             this.dispatch(s, this, this.form);
         },
     },
     beforeMount() {
-        this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+        if (!this.prefetchInAjax) {
+            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+        }
     },
     mounted() {
+        if (this.prefetchInAjax && this.ajax) {
+            let where = {};
+            if (this.ajaxFilters.length > 0) {
+                where = {
+                    $and: this.ajaxFilters,
+                };
+            }
+
+            const promise = this.$store.dispatch('search', {
+                form: this.state.form,
+                path: this.ajaxUrl,
+                body: {
+                    where,
+                    projection: [this.fieldLabel, this.fieldValue],
+                    size: this.searchSize,
+                },
+            });
+
+            promise.then((res) => {
+                const opts = this.translate_options(this.format_options(res.data));
+                this.state.options = opts;
+            });
+        }
         this.initialize(this.form);
     },
     computed: {

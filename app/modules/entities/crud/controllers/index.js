@@ -2,6 +2,7 @@
 const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
 const WebUtils = require('../../../utils/web');
+const Logger = require('../../../../logger');
 
 function count(type: string): Function {
     return async function func(ctx: Object) {
@@ -82,6 +83,10 @@ function put_with_action(type: string, action: Function, options: Object): Funct
             throw Errors.UnableToCreateEntity;
         }
 
+        if (!options) {
+            options = {};
+        }
+        options.__md = ctx.__md;
         await action(obj, options);
         ctx.body = WebUtils.forge_ok_response(obj, 'put');
     };
@@ -128,6 +133,10 @@ function post_with_action(type: string, action: Function, options: Object): Func
             throw Errors.UnableToCreateEntity;
         }
 
+        if (!options) {
+            options = {};
+        }
+        options.__md = ctx.__md;
         await action(obj, options);
         ctx.body = WebUtils.forge_ok_response(obj, 'post');
     };
@@ -135,6 +144,64 @@ function post_with_action(type: string, action: Function, options: Object): Func
 
 function post(type: string): Function {
     return post_with_action(type, async () => {}, {});
+}
+
+function bulk_post_with_action(type: string, action: Function, options: Object): Function {
+    return async function func(ctx: Object): Promise<*> {
+        const items = ctx.request.body;
+        const res = { total: 0, success: 0, errors_count: 0, results: [] };
+        const results = [];
+        for (const chunk of items) {
+            res.total += chunk.length;
+            if ('change' in chunk[0] || chunk[0].error) {
+                results.push(chunk);
+                res.errors_count += chunk.length;
+            } else {
+                const response = await EntitiesUtils.creates(chunk, type);
+                if (response.errors) {
+                    response.items.forEach((item) => {
+                        if (!item.index.created) {
+                            res.errors_count += 1;
+                        }
+                    });
+                }
+                results.push(response.items);
+            }
+        }
+
+        res.results = results;
+        res.success = res.total - res.errors_count;
+        ctx.body = res;
+    };
+}
+
+function bulk_put_with_action(type: string, action: Function, options: Object): Function {
+    return async function func(ctx: Object): Promise<*> {
+        const items = ctx.request.body;
+        const res = { total: 0, success: 0, errors_count: 0, results: [] };
+        const results = [];
+        for (const chunk of items) {
+            res.total += chunk.length;
+            if ('change' in chunk[0] || chunk[0].error) {
+                results.push(chunk);
+                res.errors_count += chunk.length;
+            } else {
+                const response = await EntitiesUtils.updates(chunk, type);
+                if (response.errors) {
+                    response.items.forEach((item) => {
+                        if ('error' in item.update) {
+                            res.errors_count += 1;
+                        }
+                    });
+                }
+                results.push(response.items);
+            }
+        }
+
+        res.results = results;
+        res.success = res.total - res.errors_count;
+        ctx.body = res;
+    };
 }
 
 module.exports = {
@@ -148,4 +215,6 @@ module.exports = {
     count,
     search,
     validate,
+    bulk_post_with_action,
+    bulk_put_with_action,
 };

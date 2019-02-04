@@ -13,7 +13,16 @@ module.exports = {
                     },
                     gui: {
                         properties: {
-                            logo: {
+                            logo_left: {
+                                type: 'keyword',
+                            },
+                            logo_center: {
+                                type: 'keyword',
+                            },
+                            css_template: {
+                                type: 'keyword',
+                            },
+                            cover_page: {
                                 type: 'keyword',
                             },
                         },
@@ -22,6 +31,9 @@ module.exports = {
                         properties: {
                             hal: {
                                 properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
                                     url: {
                                         type: 'keyword',
                                     },
@@ -33,10 +45,77 @@ module.exports = {
                                     },
                                 },
                             },
+                            handle: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    ip: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'integer',
+                                    },
+                                    admin_handle: {
+                                        type: 'keyword',
+                                    },
+                                    admin_password: {
+                                        type: 'keyword',
+                                    },
+                                    prefix: {
+                                        type: 'keyword',
+                                    },
+                                    proxy: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
+                            google: {
+                                properties: {
+                                    sitemap: {
+                                        properties: {
+                                            enabled: {
+                                                type: 'boolean',
+                                            },
+
+                                            interval: {
+                                                type: 'integer',
+                                            },
+                                            next_generation: {
+                                                type: 'date',
+                                            },
+
+                                        },
+                                    },
+                                },
+                            },
+                            repec: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    archive_template: {
+                                        type: 'text',
+                                    },
+                                    series_template: {
+                                        properties: {
+                                            wpaper: {
+                                                type: 'text',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                     mail: {
                         properties: {
+                            enabled: {
+                                type: 'boolean',
+                            },
+                            default_sender: {
+                                type: 'keyword',
+                            },
                             smtp: {
                                 properties: {
                                     host: {

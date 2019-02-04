@@ -152,23 +152,24 @@ class Auth {
         return ok;
     }
 
+
     static has_access(access, type) {
         const user = Auth.get('user');
         if (user == null) {
             return false;
         }
 
-        const a = user.access || null;
-        if (a == null) {
-            return false;
-        }
+        const roles = user.roles || [];
 
-        const rights = a.rights || null;
-        if (rights == null) {
-            return false;
-        }
-
-        return rights[access][type];
+        const all_relevant_accesses = roles.map((role) => {
+            const rights = role._id.rights || [];
+            const t = rights.find(right => right.entity === access);
+            if (!t) {
+                return false;
+            }
+            return t[type] || false;
+        });
+        return all_relevant_accesses.some(a => a === true);
     }
 
     static get_api_headers(method, path) {

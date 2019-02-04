@@ -16,6 +16,7 @@ const Validation: Array<any> = [
         firstname: Joi.string().required().label('Firstname'),
         lastname: Joi.string().required().label('Lastname'),
         fullname: Joi.string().required().label('Fullname'),
+        preferred_language: Joi.string().required().label('Preferred language'),
         hpassword: Joi.string().label('Password'),
         retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
     }),
@@ -35,6 +36,11 @@ const Formatting: Array<any> = [
 
             const sha_hpassword = Crypto.createHash('sha1').update(hpassword).digest('hex');
             return sha_hpassword;
+        },
+        iid: async (result, object) => {
+            const sha_iid = Crypto.createHash('sha1').update(result).digest('hex');
+            object.iid_hashed = sha_iid;
+            return result;
         },
     },
 ];

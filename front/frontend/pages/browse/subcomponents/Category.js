@@ -6,16 +6,18 @@ const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 const QueryMixin = require('../../../../common/mixins/QueryMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const ReaderMixin = require('../../../../common/mixins/ReaderMixin');
 const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const AggregationSpecs = require('../../../../common/specs/aggs');
 const Queries = require('../../../../common/specs/queries');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, QueryMixin, FormCleanerMixin, ReaderMixin],
     props: {
         filters: { type: Array, default: () => [] },
         activeResults: { type: Boolean, default: false },
+        names: { type: Array, default: [] },
     },
     data() {
         return {
@@ -35,17 +37,24 @@ module.exports = {
                 active_result: false,
                 current_page: 1,
                 per_page: 30,
+                URName: [],
             },
         };
     },
     mounted() {
         this.post_hook_query_changed(this.state.query, {});
+        if (this.$route.query && this.$route.query.agge === 'author') {
+            this.click_on_abc('A');
+        }
     },
     methods: {
         browse() {
+            this.$emit('update:activeResults', true);
             this.send_information(this.state.sinks.creations.selected);
         },
-        browse_list(term, type = 'publication') {
+        browse_list(term, name, type = 'publication') {
+            this.state.URName = [name.split('(')[0]];
+            this.$emit('update:names', this.state.URName);
             if (type === 'publication') {
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.selected,
@@ -63,16 +72,15 @@ module.exports = {
                     },
                 });
             }
-
             this.state.active_abc = null;
             this.$emit('update:activeResults', true);
-            Vue.nextTick(() => {
-                this.send_information(this.state.sinks.creations.selected);
-            });
+            this.send_information(this.state.sinks.creations.selected);
         },
         post_hook_query_changed(query, old_query) {
             console.log(query, old_query);
             const { agge, aggf, aggt, entity, label } = query;
+            let restrictions = query.restrictions || undefined;
+
             if (old_query.agge === agge && old_query.aggf === aggf
                     && old_query.aggt === aggt && old_query.entity === entity) {
                 console.log('should return');
@@ -102,6 +110,17 @@ module.exports = {
                     where = { $and: [Queries.published, Queries.no_other_version] };
                 }
 
+                if (restrictions) {
+                    if (!('$and' in where)) {
+                        where.$and = [];
+                    }
+
+                    if (!(restrictions instanceof Array)) {
+                        restrictions = [restrictions];
+                    }
+                    restrictions.forEach(r => where.$and.push(JSON.parse(window.atob(r))));
+                }
+
                 this.$store.dispatch('search', {
                     form: this.state.sinks.creations.aggregation,
                     path: APIRoutes.entity(agge, 'POST', true),
@@ -116,11 +135,16 @@ module.exports = {
                     const keys = agg_info.map(ai => ai.key);
 
                     if (entity != null && entity.trim() !== '') {
+                        let _where = { _id: keys };
+                        if (entity === 'laboratory') {
+                            _where = {
+                                $and: [{ _id: keys }, { 'system.show_in_browse': true }],
+                            };
+                        }
+
                         const body = {
                             projection: [label],
-                            where: {
-                                _id: keys,
-                            },
+                            where: _where,
                             size: 1000,
                         };
                         if (query.order) {
@@ -159,18 +183,30 @@ module.exports = {
         },
 
         click_on_abc(letter) {
+            this.$emit('update:activeResults', false);
             this.state.active_abc = letter;
             const entity = this.query.agge;
             const label = this.query.label;
             const order = this.query.order;
             const field = this.query.aggf;
+            let restrictions = this.query.restrictions;
             if (entity != null && entity.trim() !== '' && label != null) {
+                const where = {
+                    $and: [{ [field]: letter }],
+                };
+
+                if (restrictions) {
+                    if (!(restrictions instanceof Array)) {
+                        restrictions = [restrictions];
+                    }
+
+                    restrictions.forEach(r => where.$and.push(JSON.parse(window.atob(r))));
+                }
+
                 const body = {
                     projection: [label],
                     size: 10000,
-                    where: {
-                        $and: [{ [field]: letter }],
-                    },
+                    where,
                 };
                 if (order) {
                     body.sort = order.split('|');
@@ -210,8 +246,48 @@ module.exports = {
         current_state(s) {
             this.dispatch(s, this, this.state.sinks.creations.selected);
         },
+        query_entity() {
+            if (this.$route.query.entity === 'author') {
+                this.click_on_abc('A');
+            }
+        },
+        activeResults() {
+            if (!this.activeResults) {
+                this.state.URName = undefined;
+            }
+        },
+        query_seso_filter() {
+            if (['laboratory', 'project', 'survey', 'author'].indexOf(this.$route.query.entity) === -1) {
+                return;
+            }
+            this.state.URName = [];
+            const s_filter = this.state.query.seso_filter[0];
+            const ids = s_filter.split('[')[1].split('"').filter(elt => elt !== '' && elt !== ',' && elt !== ']}');
+            if (['laboratory', 'project', 'survey'].indexOf(this.$route.query.entity) !== -1) {
+                ids.forEach((elt) => {
+                    const info = this.options.find(x => x._id === elt);
+                    if (info) {
+                        this.state.URName.push(info.html.split('(')[0]);
+                    }
+                });
+            } else if (this.$route.query.entity === 'author') {
+                ids.forEach((elt) => {
+                    const info = this.options_abc.find(x => x._id === elt);
+                    if (info) {
+                        this.state.URName.push(info.fullname);
+                    }
+                });
+            }
+            this.$emit('update:names', this.state.URName);
+        },
     },
     computed: {
+        query_entity() {
+            return this.$route.query.entity;
+        },
+        query_seso_filter() {
+            return this.$route.query.seso_filter;
+        },
         paginated() {
             return (content) => {
                 const end = this.state.current_page * this.state.per_page;
@@ -228,29 +304,32 @@ module.exports = {
                 }
 
 
-                return content.map((c) => {
-                    if (this.aggregations.length > 0 && this.query.agge === 'publication') {
-                        const info = this.aggregations.find(a => a.key === c._id);
-                        const count = info ? info.count : 0;
-                        if (count === 0) {
-                            return null;
-                        }
-                        if (this.use_hlang) {
-                            c.label_count = `${this.hlang(c[this.label])} (${count})`;
-                            c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
+                return content.filter(c => ['#POS#LANGl_ined_no_project', '#POS#LANGl_POS_NOP_2018_survey'].indexOf(c[this.label]) === -1)
+                    .map((c) => {
+                    // console.log(`label::${this.label}`);
+                    // console.log(c[this.label]);
+                        if (this.aggregations.length > 0 && this.query.agge === 'publication') {
+                            const info = this.aggregations.find(a => a.key === c._id);
+                            const count = info ? info.count : 0;
+                            if (count === 0) {
+                                return null;
+                            }
+                            if (this.use_hlang) {
+                                c.label_count = `${this.hlang(c[this.label])} (${count})`;
+                                c.html = `${this.hlang(c[this.label])} (<strong>${count}</strong>)`;
+                            } else {
+                                c.label_count = `${this.lang(c[this.label])} (${count})`;
+                                c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
+                            }
+                        } else if (this.use_hlang) {
+                            c.label_count = this.hlang(c[this.label]);
+                            c.html = this.hlang(c[this.label]);
                         } else {
-                            c.label_count = `${this.lang(c[this.label])} (${count})`;
-                            c.html = `${this.lang(c[this.label])} (<strong>${count}</strong>)`;
+                            c.label_count = this.lang(c[this.label]);
+                            c.html = this.lang(c[this.label]);
                         }
-                    } else if (this.use_hlang) {
-                        c.label_count = this.hlang(c[this.label]);
-                        c.html = this.hlang(c[this.label]);
-                    } else {
-                        c.label_count = this.lang(c[this.label]);
-                        c.html = this.lang(c[this.label]);
-                    }
-                    return c;
-                }).filter(f => f != null);
+                        return c;
+                    }).filter(f => f != null);
             }
             return [];
         },

@@ -89,6 +89,85 @@ module.exports = {
                                             _id: {
                                                 type: 'keyword',
                                             },
+                                            lastname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            firstname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            book_authors: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        properties: {
+                                            fullname: {
+                                                analyzer: 'folding',
+                                                type: 'text',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            _id: {
+                                                type: 'keyword',
+                                            },
+                                            lastname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            firstname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    role: {
+                                        properties: {
+                                            abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            label: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                 },
@@ -124,11 +203,38 @@ module.exports = {
                                                     },
                                                 },
                                             },
+                                            lastname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            firstname: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                     role: {
                                         properties: {
                                             abbreviation: {
+                                                type: 'text',
+                                                analyzer: 'folding',
+                                                fields: {
+                                                    raw: {
+                                                        type: 'keyword',
+                                                    },
+                                                },
+                                            },
+                                            label: {
                                                 type: 'text',
                                                 analyzer: 'folding',
                                                 fields: {
@@ -439,6 +545,17 @@ module.exports = {
                         type: 'nested',
                         properties: {
                             _id: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
+                    book_authors: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                            role: {
                                 type: 'keyword',
                             },
                         },
@@ -811,6 +928,29 @@ module.exports = {
                                     },
                                     sent: {
                                         type: 'boolean',
+                                    },
+                                },
+                            },
+                            stats: {
+                                properties: {
+                                    views: {
+                                        type: 'long',
+                                    },
+                                    downloads: {
+                                        type: 'long',
+                                    },
+                                },
+                            },
+                            api: {
+                                properties: {
+                                    handle: {
+                                        type: 'boolean',
+                                    },
+                                    hal: {
+                                        type: 'boolean',
+                                    },
+                                    hal_id: {
+                                        type: 'keyword',
                                     },
                                 },
                             },

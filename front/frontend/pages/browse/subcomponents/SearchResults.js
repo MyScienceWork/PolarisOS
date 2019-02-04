@@ -2,6 +2,7 @@ const Messages = require('../../../../common/api/messages');
 const APIRoutes = require('../../../../common/api/routes');
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
@@ -12,9 +13,11 @@ const Toastr = require('toastr');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
     props: {
         showStatus: { default: false, type: Boolean },
+        catName: { default: () => [], type: Array },
+        display_l_for_list: { default: false, type: Boolean },
     },
     components: {
         Results,
@@ -22,6 +25,7 @@ module.exports = {
     data() {
         return {
             state: {
+                display_results: false,
                 loggedIn: false,
                 export_type: '',
                 export_subtype: null,
@@ -31,10 +35,25 @@ module.exports = {
                         export: 'exporter_read',
                     },
                 },
+                mobile_dropdown: {
+                    first: false,
+                    second: false,
+                    third: false,
+                },
             },
         };
     },
     methods: {
+        join_list(list) {
+            return list.map(elt => `<strong>${elt.trim()}</strong>`).join('; ');
+        },
+        onPageChangeHook() {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.export,
+                keep_content: false,
+            });
+            this.state.select_all_to_export = false;
+        },
         export_format(format, subtype) {
             this.state.export_type = format;
             this.state.export_subtype = subtype;
@@ -47,6 +66,7 @@ module.exports = {
             }
         },
         send_information(sink) {
+            this.state.display_results = true;
             if (sink === this.state.sinks.reads.export) {
                 this.run_export(sink);
             } else if (sink === this.searchSink) {
@@ -55,6 +75,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
+                console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },
@@ -127,13 +148,30 @@ module.exports = {
             return Auth.user();
         },
         csl_export_styles() {
-            return CSLSpecs;
+            return [
+                { label: 'APA', value: 'ined_apa'},
+                { label: 'Vancouver', value: 'ined_vancouver'},
+                { label: 'Population', value: 'ined_population'},
+                { label: 'Chicago', value: 'ined_chicago'},
+                { label: 'ISO-690', value: 'ined_iso690'}
+            ];
         },
         export_data() {
             return [
                 { label: this.lang('f_export_bibtex'), value: 'bibtex' },
                 { label: this.lang('f_export_ris'), value: 'ris' },
+                { label: this.lang('f_export_endnote'), value: 'endnote' },
                 { label: this.lang('f_export_csv'), value: 'csv' },
+            ];
+        },
+        items_per_page_options() {
+            return [10, 20, 50, 100];
+        },
+        sorting_options() {
+            return [
+                { label: this.lang('f_sort_by_year'), value: 'dates.publication' },
+                { label: this.lang('f_sort_by_publication_type'), value: 'type' },
+                { label: this.lang('f_sort_by_deposit_year'), value: 'dates.deposit' },
             ];
         },
     },

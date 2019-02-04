@@ -23,7 +23,7 @@ function access(entity_name: string, a: string, pass: boolean): Function {
             return await next();
         case 'user':
         case 'papi':
-        default:
+        default: {
             if (info.get(`access.rights.${entity_name}.${a}`)) {
                 const id = ctx.request.body._id || ctx.params.id;
                 ctx.__md.right_enforce = true;
@@ -43,6 +43,7 @@ function access(entity_name: string, a: string, pass: boolean): Function {
                 return await next();
             }
             throw Errors.InvalidRoute;
+        }
         }
     };
 }

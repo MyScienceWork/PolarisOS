@@ -1,20 +1,20 @@
 const _ = require('lodash');
-const VueGridLayout = require('vue-grid-layout');
+// const VueGridLayout = require('vue-grid-layout');
 const Draggable = require('vuedraggable');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const FormMixin = require('../../../../../mixins/FormMixin');
 const Subpage = require('./Subpage.vue');
 const Messages = require('../../../../../api/messages');
 
-const GridLayout = VueGridLayout.GridLayout;
-const GridItem = VueGridLayout.GridItem;
+/* const GridLayout = VueGridLayout.GridLayout;
+const GridItem = VueGridLayout.GridItem;*/
 
 
 module.exports = {
     mixins: [LangMixin, FormMixin],
     components: {
-        GridLayout,
-        GridItem,
+        // GridLayout,
+        // GridItem,
         Draggable,
         Subpage,
     },

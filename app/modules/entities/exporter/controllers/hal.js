@@ -2,8 +2,9 @@
 const moment = require('moment');
 const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
+const CountriesCodes = require('../../../utils/countries');
 
-// HAL DOMAIN: shs.socio
+// HAL DOMAIN: shs
 
 async function get_hal_type(publication: Object): Promise<string> {
     const type = Utils.find_value_with_path(publication, 'type'.split('.'));
@@ -15,7 +16,7 @@ async function get_hal_type(publication: Object): Promise<string> {
     }
 
     if (subtype) {
-        const child = typology.children.find(c => c.name === 'subtype');
+        const child = typology.children.find(c => c.name === subtype);
         if (child) {
             return child.hal || 'UNDEFINED';
         }
@@ -31,17 +32,28 @@ async function get_author_info(author: Object, publication: Object): Promise<str
         return '';
     }
 
-    let role_info = await EntitiesUtils.retrieve_and_get_source('contributor_role', author.role);
+    let role_info = null;
+    const roles_info = await EntitiesUtils.search_and_get_sources('contributor_role', {
+        where: { value: author.role }, size: 1,
+    });
 
-    if (!role_info) {
+    if (roles_info.length === 0) {
         role_info = { hal: 'aut', value: 'author' };
+    } else {
+        role_info = roles_info[0];
+    }
+
+    let affiliation = '';
+    // TODO do it better (less hackish)
+    if (author_info.is_ined) {
+        affiliation += '<affiliation ref="#struct-57627" />';
     }
 
     const forename_ = author_info.firstname && author_info.firstname.trim() !== '' ?
         `<forename type="first">${author_info.firstname}</forename>` : '';
 
     return `<author role="${role_info.hal}">`
-        + `<persName>${forename_}<surname>${author_info.lastname}</surname></persName></author>`;
+        + `<persName>${forename_}<surname>${author_info.lastname}</surname></persName>${affiliation}</author>`;
 }
 
 async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): Promise<string> {
@@ -53,8 +65,8 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 
     const ok_ttitles = ttitles.filter(t => t.lang != null && t.lang.trim() !== '');
 
-    let titles_ = [`<title xml:lang=${lang}>${title}</title>`];
-    titles_ = titles_.concat(ok_ttitles.map(t => `<title xml:lang=${t.lang.toLowerCase()}>${t.content}</title>`));
+    let titles_ = [`<title xml:lang="${lang}">${title}</title>`];
+    titles_ = titles_.concat(ok_ttitles.map(t => `<title xml:lang="${t.lang.toLowerCase()}">${t.content}</title>`));
     //------------------
 
     // Subtitles
@@ -62,17 +74,48 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 
     const ok_subtitles = subtitles.filter(t => t.lang != null && t.lang.trim() !== '');
 
-    const subtitles_ = ok_subtitles.map(t => `<title xml:lang=${t.lang.toLowerCase()}>${t.content}</title>`);
+    const subtitles_ = ok_subtitles.map(t => `<title type="sub" xml:lang="${t.lang.toLowerCase()}">${t.content}</title>`);
     //------------------
 
     const authors = Utils.find_value_with_path(publication, 'contributors'.split('.')) || [];
 
     const authors_ = await Promise.all(authors.map(a => get_author_info(a, publication)));
 
+    //------------------
+    // ANR Projects
+    const anr_projects = (Utils.find_value_with_path(publication, 'diffusion.anr_projects'.split('.')) || [])
+        .map(ap => EntitiesUtils.retrieve_and_get_source('anr_project', ap._id));
+    const anr_projects_info = (await Promise.all(anr_projects)).filter(ap => ap != null);
+
+    // European Projects
+    const european_projects = (Utils.find_value_with_path(publication, 'diffusion.european_projects'.split('.')) || [])
+        .map(ap => EntitiesUtils.retrieve_and_get_source('european_project', ap._id));
+    const european_projects_info = (await Promise.all(european_projects)).filter(ep => ep != null);
+
+    const anr_funders = anr_projects_info.map((p) => {
+        if (p.hal) {
+            return `<funder ref="#projanr-${p.hal}" />`;
+        }
+        return null;
+    }).filter(p => p != null);
+
+    const european_funders = european_projects_info.map((p) => {
+        if (p.hal) {
+            return `<funder ref="#projeurop-${p.hal}" />`;
+        }
+        return null;
+    }).filter(p => p != null);
+
     let enclosure = `<${tag}>`;
     enclosure += titles_.join('\n');
     enclosure += subtitles_.join('\n');
     enclosure += authors_.join('\n');
+
+    if (tag === 'titleStmt') {
+        enclosure += anr_funders.join('\n');
+        enclosure += european_funders.join('\n');
+    }
+
     enclosure += `</${tag}>`;
     return enclosure;
 }
@@ -80,19 +123,40 @@ async function get_title_stmt(publication: Object, tag: string = 'titleStmt'): P
 async function get_edition_stmt(publication: Object): Promise<string> {
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
     const dates = Utils.find_value_with_path(publication, 'dates'.split('.')) || {};
+
     if (files.length === 0) {
         return '';
     }
     const master = files.find(f => f.is_master) || files[0];
-    if (master.restricted) {
+    if ((master.access.restricted || master.access.confidential) && !master.access.delayed) {
         return '';
     }
 
+    let embargo = '';
+
+    if (master.access.delayed) {
+        const embargo_date = Utils.find_value_with_path(publication, 'diffusion.rights.embargo'.split('.'));
+        embargo = `<date notBefore="${moment(embargo_date).format('YYYY-MM-DD')}"/>`;
+    }
+
+    const file_version = Utils.find_value_with_path(publication, 'publication_version'.split('.')) || '';
+    let subtype = 'author';
+    // TODO change this by something more reliable
+    if (file_version === 'AWEsYcAafoecpXq21Ja4') {
+        subtype = 'publisherAgreement';
+    }
+
+    const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
+    const master_ref = `<ref type="file" subtype="${subtype}" target="${master.name}" n="1">${embargo}</ref>`;
+    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${a.name}" n="${i}"><desc>Deposited annex</desc></ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
 
 
     let enclosure = '<editionStmt><edition>';
     enclosure += written;
+    enclosure += embargo;
+    enclosure += master_ref;
+    enclosure += annexes_refs.join('');
     enclosure += '</edition></editionStmt>';
     return enclosure;
 }
@@ -111,7 +175,7 @@ async function get_publication_stmt(publication: Object): Promise<string> {
         return '';
     }
 
-    const license_ = `<licence target=${license_info.hal} />`;
+    const license_ = `<licence target="${license_info.hal}" />`;
 
     let enclosure = '<publicationStmt><availability>';
     enclosure += license_;
@@ -120,15 +184,15 @@ async function get_publication_stmt(publication: Object): Promise<string> {
 }
 
 async function get_series_stmt(publication: Object): Promise<string> {
-    return '';
-    /* let enclosure = '<seriesStmt>';
+    let enclosure = '<seriesStmt>';
+    enclosure += '<idno type="stamp" n="INED">INED</idno>';
     enclosure += '</seriesStmt>';
-    return enclosure;*/
+    return enclosure;
 }
 
 async function get_notes_stmt(publication: Object): Promise<string> {
-    const description = Utils.find_value_with_path(publication, 'description'.split('.')) || '';
-    const description_ = `<note type="description">${description}</description>`;
+    const description = Utils.find_value_with_path(publication, 'description'.split('.')) || '.';
+    const description_ = `<note type="description">${description}</note>`;
 
     let enclosure = '<notesStmt>';
     enclosure += description_;
@@ -138,7 +202,7 @@ async function get_notes_stmt(publication: Object): Promise<string> {
 
 async function get_monogr(publication: Object): Promise<string> {
     const ids = Utils.find_value_with_path(publication, 'ids'.split('.')) || [];
-    const isbn = ids.find(id => id.type === 'isbn');
+    const isbns = ids.filter(id => id.type === 'isbn');
     const journal = Utils.find_value_with_path(publication, 'journal'.split('.')) || '__dummy__';
     const book_title = Utils.find_value_with_path(publication, 'publication_title'.split('.'));
     const dates = Utils.find_value_with_path(publication, 'dates'.split('.')) || {};
@@ -164,28 +228,28 @@ async function get_monogr(publication: Object): Promise<string> {
     let meeting_ = '';
     let settlement_ = '';
     let country_ = '';
-    let editor_ = '';
-    let school_ = '';
+    const editor_ = '';
+    // const school_ = '';
     let institution_ = '';
     let imprint_ = '';
+    let authorities_ = '';
 
     if (journal_info) {
         const jids = Utils.find_value_with_path(journal_info, 'ids'.split('.')) || [];
         const jname = Utils.find_value_with_path(journal_info, 'name'.split('.')) || '';
         const issn = jids.find(id => id.type === 'issn');
         const eissn = jids.find(id => id.type === 'eissn');
-
-        journal_ += `<title level="j">${jname}</title>`;
         if (issn) {
-            journal_ += `<idno type="issn">${issn}</idno>`;
+            journal_ += `<idno type="issn">${issn.value}</idno>`;
         }
         if (eissn) {
-            journal_ += `<idno type="eissn">${eissn}</idno>`;
+            journal_ += `<idno type="eissn">${eissn.value}</idno>`;
         }
+        journal_ += `<title level="j">${jname}</title>`;
     }
 
-    if (isbn) {
-        isbn_ = `<idno type="isbn">${isbn}</idno>`;
+    if (isbns.length > 0) {
+        isbn_ = isbns.map(isbn => `<idno type="isbn">${isbn._id}</idno>`).join('\n');
     }
 
     if (book_title) {
@@ -197,11 +261,13 @@ async function get_monogr(publication: Object): Promise<string> {
     }
 
     if (country_info) {
-        country_ += `<country key="${country_info.value}" />`;
+        if (country_info.value in CountriesCodes) {
+            country_ += `<country key="${CountriesCodes[country_info.value]}" />`;
+        }
     }
 
     if (conference_info) {
-        meeting_ += `<title>${conference_info.name}</title>`;
+        meeting_ += `<meeting><title>${conference_info.name}</title>`;
         if (dates.start) {
             meeting_ += `<date type="start">${moment(dates.start).format('YYYY-MM-DD')}</date>`;
         }
@@ -211,24 +277,43 @@ async function get_monogr(publication: Object): Promise<string> {
 
         meeting_ += settlement_;
         meeting_ += country_;
+        meeting_ += '</meeting>';
     }
 
-    if (editor_info) {
+    /* if (editor_info) {
         editor_ = `<editor>${editor_info.label}</editor>`;
-    }
+    }*/
 
     const hal_type = await get_hal_type(publication);
 
     if (institution_info && institution_info.name) {
-        if (hal_type === 'HDR' || hal_type === 'THESE') {
-            school_ = `<authority type="school">${institution_info.name}</authority>`;
-        } else {
-            institution_ = `<authority type="school">${institution_info.name}</authority>`;
+        // if (hal_type === 'HDR' || hal_type === 'THESE') {
+        // school_ = `<authority type="institution">${institution_info.name}</authority>`;
+        // } else {
+        institution_ = `<authority type="institution">${institution_info.name}</authority>`;
+        // }
+    }
+
+    if (hal_type === 'HDR' || hal_type === 'THESE') {
+        const thesis_director = (Utils.find_value_with_path(publication, 'contributors'.split('.')) || []).find(c => c.role === 'director');
+        const thesis_supervisor = (Utils.find_value_with_path(publication, 'contributors'.split('.')) || []).find(c => c.role === 'supervisor-thesis');
+        if (thesis_director) {
+            const th_director = await EntitiesUtils.retrieve_and_get_source('author', thesis_director.label);
+            if (th_director) {
+                authorities_ += `<authority type="supervisor">${th_director.fullname}</authority>`;
+            }
+        }
+        if (thesis_supervisor) {
+            const th_supervisor = await EntitiesUtils.retrieve_and_get_source('author', thesis_supervisor.label);
+            if (th_supervisor) {
+                authorities_ += `<authority type="supervisor">${th_supervisor.fullname}</authority>`;
+            }
         }
     }
 
-    if (dates.publication) {
-        imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+
+    if (editor_info) {
+        imprint_ += `<publisher>${editor_info.label}</publisher>`;
     }
 
     if (volume) {
@@ -247,21 +332,32 @@ async function get_monogr(publication: Object): Promise<string> {
         imprint_ += `<biblScope unit="pp">${pagination}</biblScope>`;
     }
 
-    if (editor_info) {
-        imprint_ += `<publisher>${editor_info.label}</publisher>`;
+    if (dates.publication) {
+        switch (hal_type) {
+        case 'COUV':
+        case 'DOUV':
+        case 'THESE':
+        case 'OUV':
+            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY')}</date>`;
+            break;
+        default:
+            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+            break;
+        }
     }
+
 
     if (imprint_.trim() !== '') {
         imprint_ = `<imprint>${imprint_}</imprint>`;
     }
 
-    return `<monogr>${journal_}${isbn_}${book_title_
-         }${meeting_}${settlement_}${country_}${editor_}${school_}${institution_
-         }${imprint_}</monogr>`;
+    return `<monogr>${isbn_}${journal_}${book_title_}${meeting_}${settlement_}${country_}${editor_}${imprint_}${institution_}${authorities_}</monogr>`;
 }
 
 async function get_source_desc(publication: Object): Promise<string> {
     const ids = Utils.find_value_with_path(publication, 'ids'.split('.')) || [];
+    const url = Utils.find_value_with_path(publication, 'url'.split('.'));
+    const resources = Utils.find_value_with_path(publication, 'resources'.split('.')) || [];
     const doi = ids.find(id => id.type === 'doi');
     const handle = ids.find(id => id.type === 'handle');
 
@@ -271,7 +367,10 @@ async function get_source_desc(publication: Object): Promise<string> {
 
     const doi_ = doi ? `<idno type="doi">${doi._id}</idno>` : '';
     const handle_ = handle ? `<idno type="uri">${handle._id}</idno>` : '';
-    const bibl_ = doi_ + handle_ + monogr_ + analytic_;
+    const url_ = url ? `<ref type="publisher">${url}</ref>` : '';
+    const resources_ = resources.filter(r => r && r.url != null && r.url.trim() !== '')
+        .map(r => `<ref type="seeAlso">${r.url}</ref>`).join('\n');
+    const bibl_ = analytic_ + monogr_ + doi_ + handle_ + url_ + resources_;
     const recording_ = '';
 
     let enclosure = `<sourceDesc><biblStruct>${bibl_}</biblStruct>`;
@@ -280,26 +379,35 @@ async function get_source_desc(publication: Object): Promise<string> {
 }
 
 async function get_profile_desc(publication: Object): Promise<string> {
-    const hal_type = await get_hal_type(publication);
     const abstracts = Utils.find_value_with_path(publication, 'abstracts'.split('.')) || [];
     const keywords = Utils.find_value_with_path(publication, 'keywords'.split('.')) || [];
     const lang = Utils.find_value_with_path(publication, 'lang'.split('.'));
     const ok_abstracts = abstracts.filter(t => t.lang != null && t.lang.trim() !== '');
-
+    const hal_type = await get_hal_type(publication);
     const user_keywords = keywords.filter(k => k.type === 'user');
 
     const abstracts_ = ok_abstracts.map(a => `<abstract xml:lang="${a.lang.toLowerCase()}">${a.content}</abstract>`).join('\n');
 
-    const lang_usage_ = `<langUsage ident="${lang.toLowerCase()}" />`;
+    const lang_usage_ = `<langUsage><language ident="${lang.toLowerCase()}" /></langUsage>`;
 
-    let keywords_ = '<keywords scheme="author">';
-    keywords_ += user_keywords.map(k => `<term xml:lang="en">${k.value}</term>`).join('\n');
-    keywords_ += '</keywords';
+    let keywords_ = '';
 
-    let text_class_ = '<classCode scheme="halDomain" n="shs.socio" />';
-    text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
+    if (user_keywords.length > 0) {
+        keywords_ = '<keywords scheme="author">';
+        keywords_ += user_keywords.map(k => `<term xml:lang="en">${k.value}</term>`).join('\n');
+
+        if (hal_type === 'THESE' || hal_type === 'HDR') {
+            keywords_ += user_keywords.map(k => `<term xml:lang="fr">${k.value}</term>`).join('\n');
+        }
+
+        keywords_ += '</keywords>';
+    }
+
+    let text_class_ = '<textClass>';
     text_class_ += keywords_;
-
+    text_class_ += '<classCode scheme="halDomain" n="shs" />';
+    text_class_ += `<classCode scheme="halTypology" n="${hal_type}" />`;
+    text_class_ += '</textClass>';
 
     let enclosure = '<profileDesc>';
     enclosure += lang_usage_;
@@ -309,9 +417,13 @@ async function get_profile_desc(publication: Object): Promise<string> {
     return enclosure;
 }
 
+async function generate_back(publication: Object): Promise<string> {
+    return '<back></back>';
+}
+
 async function transform_publication_to_hal(publication: Object): Promise<string> {
     const title = await get_title_stmt(publication);
-    const edition = '';// await get_edition_stmt(publication);
+    const edition = await get_edition_stmt(publication);
     const publi = await get_publication_stmt(publication);
     const series = await get_series_stmt(publication);
     const notes = await get_notes_stmt(publication);
@@ -319,11 +431,11 @@ async function transform_publication_to_hal(publication: Object): Promise<string
     const profile = await get_profile_desc(publication);
     const info = title + edition + publi + series + notes + source + profile;
 
-    let enclosure = '<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:hal="http://hal.archives-ouvertes.fr">';
+    let enclosure = '<?xml version="1.0" encoding="UTF-8"?>';
+    enclosure += '<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:hal="http://hal.archives-ouvertes.fr">';
     enclosure += '<text>';
     enclosure += '<body>';
-    enclosure += `<listBibl><biblFull>${info}<biblFull></listBibl>`;
-    enclosure += '<back></back>';
+    enclosure += `<listBibl><biblFull>${info}</biblFull></listBibl>`;
     enclosure += '</body>';
     enclosure += '</text>';
     enclosure += '</TEI>';

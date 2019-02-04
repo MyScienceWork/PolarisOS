@@ -4,7 +4,7 @@ const EntitiesUtils = require('./entities');
 
 const env = process.env.NODE_ENV || 'development';
 
-async function get_smtp_transport() {
+async function get_email_config() {
     const configs = await EntitiesUtils.search_and_get_sources('config', {
         where: {
             environment: env,
@@ -17,26 +17,44 @@ async function get_smtp_transport() {
     }
 
     const config = configs[0];
-
-    if (!('mail' in config) || !('smtp' in config.mail)) {
+    if (!('mail' in config)) {
         return null;
     }
 
-    const smtp = config.mail.smtp;
+    return config.mail;
+}
 
-    if (!smtp.host || !smtp.port || !smtp.auth || !smtp.auth.user) {
+async function get_smtp_transport() {
+    const email_config = await get_email_config();
+
+    if (!email_config) {
         return null;
     }
 
-    const transporter = Nodemailer.createTransport({
+    if (!('smtp' in email_config)) {
+        return null;
+    }
+
+    const smtp = email_config.smtp;
+
+    if (!smtp.host || !smtp.port) {
+        return null;
+    }
+
+    const info = {
         host: smtp.host,
         port: parseInt(smtp.port, 10),
         secure: smtp.secure || false,
-        auth: {
+    };
+
+    if (smtp.auth && smtp.auth.user && smtp.auth.user.trim() !== '') {
+        info.auth = {
             user: smtp.auth.user,
             pass: smtp.auth.pass,
-        },
-    });
+        };
+    }
+
+    const transporter = Nodemailer.createTransport(info);
     return transporter;
 }
 
@@ -69,4 +87,5 @@ module.exports = {
     send_email,
     send_email_with,
     get_smtp_transport,
+    get_email_config,
 };

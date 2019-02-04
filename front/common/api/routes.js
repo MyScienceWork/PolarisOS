@@ -47,6 +47,13 @@ module.exports = {
         }
     },
 
+    ajax(entity, translatable, lang) {
+        if (translatable) {
+            return `${prefix}/${entity}s/search/true/${lang}`;
+        }
+        return `${prefix}/${entity}s/search`;
+    },
+
     access() {
         return `${prefix}/iuser/access`;
     },
@@ -55,7 +62,10 @@ module.exports = {
         return `${prefix}/authenticate`;
     },
 
-    import() {
+    import(type) {
+        if (type) {
+            return `${prefix}/import/${type}`;
+        }
         return `${prefix}/import`;
     },
 
@@ -67,11 +77,19 @@ module.exports = {
         return `${prefix}/export/bibliography`;
     },
 
+    export_masas() {
+        return `${prefix}/export/masas`;
+    },
+
     multi_download(type, id, names, filenames) {
         return `/downloads/${type}/${id}/${names.join('|')}/${filenames.join('|')}`;
     },
 
     rss(entity, mapping, lang, query, sort, size) {
         return `${prefix}/rss/${entity}/${mapping}/${lang}/${query}/${sort}/${size}`;
+    },
+
+    custom(suffix) {
+        return `${prefix}/${suffix}`;
     },
 };

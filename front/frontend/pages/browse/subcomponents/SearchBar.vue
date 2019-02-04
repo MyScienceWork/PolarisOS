@@ -11,7 +11,7 @@
                         </span>
                         </p>
                     <p class="control">
-                    <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
+                    <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search" @keyup.enter="search">
                             <i class="fa fa-search"></i>
                     </a>
                     </p>
@@ -24,10 +24,16 @@
             </form>
         </div>
     </div>
-    <div class="columns is-pulled-right has-no-bottom-margin">
+    <div class="columns has-no-bottom-margin">
         <div class="column">
-            <a v-if="!showAdvancedSearch" :class="`has-text-${color} swap`" href='' @click.prevent="show_advanced_search" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
-            <a v-else :class="`has-text-${color} swap`" href='' @click.prevent="show_advanced_search" :alt="lang('f_normal_search')">{{lang('f_normal_search')}}</a>
+            <div class="level">
+                <div class="level-left">
+                </div>
+                <div class="level-right">
+                    <a v-if="!showAdvancedSearch" :class="`has-text-${color} swap`" href='' @click.prevent="show_advanced_search" :alt="lang('f_advanced_search')">{{lang('f_advanced_search')}}</a>
+                    <a v-else :class="`has-text-${color} swap`" href='' @click.prevent="show_advanced_search" :alt="lang('f_normal_search')">{{lang('f_normal_search')}}</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="columns is-clearfix" v-if="showAdvancedSearch">
