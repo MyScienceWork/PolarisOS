@@ -9,12 +9,12 @@ const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const Queries = require('../../../common/specs/queries');
+const BrowserUtils = require('../../../common/utils/browser');
 
 const _ = require('lodash');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin,
-        FormCleanerMixin, ESQueryMixin, RemoveMixin, OAMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin, OAMixin],
     data() {
         return {
             state: {
@@ -91,6 +91,9 @@ module.exports = {
         },
     },
     computed: {
+        host() {
+            return BrowserUtils.getURLHost(window.location);
+        },
         current_read_state_entity() {
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
             if (workflows.length === 0) {

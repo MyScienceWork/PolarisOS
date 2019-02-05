@@ -43,13 +43,13 @@
                                     </div>
                                 </b-table-column>
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
-                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
+                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit_project?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
                                     <action-button
                                             class="has-text-red"
                                             tag="a"
                                             :confirmation="lang('l_remove_confirmation')"
                                             :two-steps="true"
-                                            @action-click="remove(props.row, 'publication')"
+                                            @action-click="remove(props.row, entity())"
                                     >{{lang('l_review_remove_button')}}</action-button>
                                 </b-table-column>
                             </template>
