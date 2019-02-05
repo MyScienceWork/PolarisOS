@@ -1,12 +1,13 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
+const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin],
+    mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin],
     data() {
         return {
             state: {
@@ -16,6 +17,7 @@ module.exports = {
                     },
                     reads: {
                         user_forms: 'user_forms_read',
+                        project: 'project_read',
                     },
                 },
                 paths: {
@@ -24,6 +26,7 @@ module.exports = {
                     },
                     reads: {
                         user_forms: APIRoutes.entity('form', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                     },
                 },
                 statuses: {
@@ -73,6 +76,26 @@ module.exports = {
                 return [];
             };
         },
+    },
+    beforeMount() {
+        const query = this.$route.query;
+        const id = query._id;
+
+        console.log('this is id : ', id);
+        if (id) {
+            this.$store.state.requests.push({
+                name: 'single_read',
+                type: 'dispatch',
+                content: {
+                    form: this.state.sinks.creations.project,
+                    path: APIRoutes.entity('project', 'GET', false, id),
+                },
+            });
+            this.execute_requests().then(() => {
+                // update(props.row, entity()
+                console.log("something to do now...");
+            }).catch(err => console.error(err));
+        }
     },
     mounted() {
         this.$store.commit(Messages.INITIALIZE, {

@@ -10,12 +10,15 @@
                             <loader />
                         </div>
                         <div v-else>
+                            <fform
+                                    :name="state.sinks.creations.project"
+                                    :post_path="state.paths.creations.project"
+                                    :put_path="state.paths.creations.project"
+                                    :get_path="state.paths.reads.project"
+                                    :get_form="state.sinks.reads.project"
+                            >
                             <dynamic-form :form="user_forms('project_form')" :cform="state.sinks.creations.project"/>
-                            <button
-                                    @click.prevent="save('project')"
-                                    class="button button-background-green has-small-top-margin has-small-bottom-margin">
-                                {{lang('f_save_project')}}
-                            </button>
+                            </fform>
                         </div>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
                             <div class="message-body">
