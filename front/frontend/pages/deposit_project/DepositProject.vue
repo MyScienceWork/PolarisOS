@@ -18,6 +18,13 @@
                                     :get_form="state.sinks.reads.project"
                             >
                             <dynamic-form :form="user_forms('project_form')" :cform="state.sinks.creations.project"/>
+                                <finput
+                                    type='hidden'
+                                    label=''
+                                    :hiddenValue="initial_state"
+                                    name="state"
+                                    :form="state.sinks.creations.project"
+                                />
                             </fform>
                         </div>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
