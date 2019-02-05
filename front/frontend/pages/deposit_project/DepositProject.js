@@ -38,13 +38,6 @@ module.exports = {
         };
     },
     methods: {
-        save(entity) {
-            this.$store.dispatch('create', {
-                form: this.state.sinks.creations[entity],
-                path: this.state.paths.creations[entity],
-                body: this.fcontent(this.state.sinks.creations[entity]),
-            });
-        },
         show_error(sink) {
             if (sink === this.state.sinks.creations.project) {
                 this.state.statuses.creations.project = 'nok';

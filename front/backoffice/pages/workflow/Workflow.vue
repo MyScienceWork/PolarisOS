@@ -81,13 +81,24 @@
                             />
                             <fselect
                                     name="entity_state"
-                                    :label="lang('b_entity_state_name')"
+                                    :label="lang('b_entity_state')"
                                     :is-required="true"
                                     :options="entitys"
                                     fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
                                     v-on:select-change="(val) => {update_entity_states(val)}"
+                            />
+                            <fselect
+                                    name="initial_state"
+                                    :label="lang('b_initial_state')"
+                                    :is-required="true"
+                                    :options="entity_states"
+                                    fieldValue="_id"
+                                    fieldLabel="label"
+                                    :translatable="true"
+                                    :help="lang('l_backoffice_initial_state_before_help')"
+                                    :form="state.sinks.creations.workflow"
                             />
                             <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
                                 <template slot="variadic" slot-scope="props">

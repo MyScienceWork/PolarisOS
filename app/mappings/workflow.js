@@ -60,6 +60,9 @@ module.exports = {
                     entity_state: {
                         type: 'keyword',
                     },
+                    initial_state: {
+                        type: 'keyword',
+                    },
                     steps: {
                         type: 'nested',
                         properties: {
