@@ -2,6 +2,7 @@ require('babel-polyfill'); // For very very old browser
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
+const VueIntro = require('vue-introjs').default;
 const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
@@ -23,6 +24,7 @@ const Form = require('../common/components/main/forms/form/Form.vue');
 const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
 const Paginator = require('../common/components/main/paginator/Paginator.vue');
 const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
+const ActionButton = require('../common/components/main/action_button/ActionButton.vue');
 const HierarchicalSelect = require('../common/components/main/forms/elements/hierarchical_select/HierarchicalSelect.vue');
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -49,6 +51,11 @@ const MediaWidget = require('./components/themes/main/widgets/media_widget/Media
 
 const App = require('./pages/App.vue');
 
+const introJs = require('intro.js');
+
+window.introJs = introJs;
+Vue.use(VueIntro);
+
 
 const LOCALE = BrowserUtils.getDefaultLanguage();
 moment.locale(LOCALE.toLowerCase());
@@ -74,6 +81,7 @@ Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
 Vue.component('fstatic', Static);
 Vue.component('fdropzone', Dropzone);
+Vue.component('action-button', ActionButton);
 Vue.component('fhselect', HierarchicalSelect);
 Vue.component('fvariadic-element', VariadicElement);
 Vue.component('faggregate-form', AggregateForm);

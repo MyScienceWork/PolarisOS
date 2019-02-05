@@ -20,6 +20,7 @@ module.exports = {
         detailKey: { default: '', type: String },
         tableClasses: { default: '', type: String },
         columns: { default: () => ({}), type: Object },
+        all_columns_visible: { default: true, type: Boolean },
     },
     data() {
         return {
@@ -45,9 +46,10 @@ module.exports = {
             this.$emit('column-checkbox-update', { key, checked });
         },
         on_main_checkbox_update(columns, checked) {
-            Object.keys(columns).forEach((c) => {
-                console.log("this is all key : ", c);
-                this.$emit('column-checkbox-update', { key: c, checked });
+            this.state.all_columns_visible = checked;
+            Object.keys(columns).forEach((key) => {
+                console.log("this is all key : ", key);
+                this.$emit('column-checkbox-update', { key, checked });
             });
         },
         on_checked_rows_update(checkedList, row) {

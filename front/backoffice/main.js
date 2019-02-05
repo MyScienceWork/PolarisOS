@@ -28,7 +28,7 @@ const MappingItem = require('../common/components/main/mapping_builder/subcompon
 const ChartWidget = require('../common/components/main/chart_widget/ChartWidget.vue');
 const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
 
-const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
+const ActionButton = require('../common/components/main/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
