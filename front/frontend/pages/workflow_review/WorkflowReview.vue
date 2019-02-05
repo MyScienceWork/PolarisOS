@@ -5,7 +5,7 @@
             <div class="column">
                 <div class="card">
                     <div class="card-content">
-                        <h4 class="title is-4">{{lang('l_workflow_info')}}</h4>
+                        <h4 class="title is-4">{{lang('l_workflow_info')}} {{lang(workflow_name())}}</h4>
                         <fdata-table-searching
                                 v-if="state.sinks.reads[entity()]"
                                 :search-sink="state.sinks.creations.search"
@@ -14,7 +14,6 @@
                                 :search-query="es_query_content"
                                 :use-default-query="true"
                                 :search-type="entity()"
-                                :table-classes="{'has-small-font': state.visible_columns > 5}"
                                 :detailed="true"
                                 detail-key="_id"
                                 :checkable="true"
@@ -44,31 +43,14 @@
                                     </div>
                                 </b-table-column>
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
+                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
                                     <action-button
-                                            class="icon has-text-blue share-icon"
+                                            class="has-text-red"
                                             tag="a"
-                                            @action-click="update(props.row, entity())"
-                                            v-scroll-to="'#mwidget'"
-                                    >
-                                        <i class="fa fa-pencil"></i>
-                                    </action-button>
-                                    <action-button
-                                            class="icon has-text-orange share-icon"
-                                            tag="a"
-                                            @action-click="use_as_model(props.row, entity())"
-                                            v-scroll-to="'#mwidget'"
-                                    >
-                                        <i class="fa fa-clone"></i>
-                                    </action-button>
-                                    <action-button
-                                            class="icon has-text-red share-icon"
-                                            tag="a"
-                                            confirmation="Are you sure?"
+                                            :confirmation="lang('l_remove_confirmation')"
                                             :two-steps="true"
-                                            @action-click="remove(props.row, entity())"
-                                    >
-                                        <i class="fa fa-times"></i>
-                                    </action-button>
+                                            @action-click="remove(props.row, 'publication')"
+                                    >{{lang('l_review_remove_button')}}</action-button>
                                 </b-table-column>
                             </template>
                         </fdata-table-searching>

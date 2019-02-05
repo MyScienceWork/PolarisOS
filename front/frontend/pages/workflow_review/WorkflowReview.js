@@ -8,6 +8,7 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
+const Queries = require('../../../common/specs/queries');
 
 const _ = require('lodash');
 
@@ -17,6 +18,8 @@ module.exports = {
     data() {
         return {
             state: {
+                itemsPerPage: 1000,
+                itemsPerRow: 1,
                 filters: [],
                 paths: {
                     reads: {
@@ -37,14 +40,14 @@ module.exports = {
                 columns: this.columns || {},
                 checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
-                visible_columns: 0,
                 my_entity: '',
             },
         };
     },
-    components: {
-    },
     methods: {
+        workflow_name() {
+            return this.$route.query.workflow;
+        },
         entity() {
             if (this.state.my_entity) {
                 return this.state.my_entity;
@@ -53,7 +56,6 @@ module.exports = {
         },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
-            this.state.visible_columns = _.filter(this.state.columns, c => c.visible).length;
             this.$set(this.state, 'columns', this.state.columns);
             this.$forceUpdate();
         },
@@ -75,21 +77,16 @@ module.exports = {
     watch: {
         current_read_state_entity(s) {
             console.log('WATCH current_read_state_entity : ', s);
-        },
-        content_entity(s) {
-            console.log('WATCH current_entity');
+            // return this.mwcurrent_read_state(this.state.sinks.reads.entity)(s);
         },
         search_query(q) {
-            console.log('search_query : ', q);
             if (q) {
                 this.state.es_query_id = q;
             }
         },
         columns(cols) {
-            console.log('columns : ', cols);
             if (cols) {
                 this.state.columns = cols;
-                this.state.visible_columns = _.filter(cols, c => c.visible).length;
             }
         },
     },
@@ -105,8 +102,6 @@ module.exports = {
                 return;
             }
             const workflow_entity = workflows[idx].entity;
-            console.log('workflows : ', workflows);
-            console.log('workflow_entity : ', workflow_entity);
             if (this.state.my_entity === workflow_entity) {
                 return;
             }
@@ -118,7 +113,7 @@ module.exports = {
                     form: this.state.sinks.reads[e],
                     path: this.state.paths.reads[e],
                     body: {
-                        size: 10000,
+                        size: 100,
                     },
                 });
             });
@@ -135,24 +130,19 @@ module.exports = {
             });
         },
         content_entity() {
-            console.log('content_entity');
             const content = this.mcontent(this.state.sinks.reads.entity);
             if (content.length > 0) {
-                console.log('this is the content : ', content[0]);
                 return content[0];
             }
             return null;
         },
         search_query() {
-            console.log('search_query');
             if (this.content_entity) {
                 return this.content_entity.search_query;
             }
             return '__no__search__query__';
         },
         columns() {
-            console.log('columns');
-            console.log('content_entity : ', this.content_entity);
             if (this.content_entity && this.content_entity.backoffice) {
                 return this.content_entity.backoffice.columns.reduce((obj, c) => {
                     const l = c.lang && c.lang.trim() !== '' ? c.lang : undefined;
