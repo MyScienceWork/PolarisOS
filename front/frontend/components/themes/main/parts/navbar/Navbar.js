@@ -13,7 +13,7 @@ module.exports = {
     data() {
         return {
             state: {
-                colors: ['red', 'purple', 'orange', 'blue', 'brown', 'green'],
+                colors: ['red', 'red', 'red', 'red', 'red', 'red'],
             },
         };
     },
