@@ -60,15 +60,10 @@ module.exports = {
     },
     computed: {
         initial_state() {
-            console.log('content workflow : ', this.fcontent(this.state.sinks.reads.workflow));
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
-
             if (workflows instanceof Array && workflows.length > 0) {
-                console.log('OK workflows');
                 const idx = _.findIndex(workflows, workflow => workflow.entity === 'project');
-                console.log('this is idx : ', idx);
                 if (idx !== -1 && workflows[idx].initial_state) {
-                    console.log('this is initial state : ', workflows[idx].initial_state);
                     return workflows[idx].initial_state;
                 }
             }

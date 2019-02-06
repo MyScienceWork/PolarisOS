@@ -118,24 +118,27 @@ async function access(ctx: Object) {
         return obj;
     }, {});
 
-    role = role.reduce((obj, _role) => {
-        obj[_role.entity] = _role;
-        return obj;
-    }, {});
+    if (role && role.length > 0) {
+        role = role.reduce((obj, _role) => {
+            obj[_role.entity] = _role;
+            return obj;
+        }, {});
 
-    if (!(part in role)) {
-        ctx.body = { ok: false };
-        return;
+        if (!(part in role)) {
+            ctx.body = { ok: false };
+            return;
+        }
     }
-
-    const existing_types = types.filter(t => role[part][t]);
-    if (existing_types.length === 0) {
-        ctx.body = { ok: false };
-        return;
-    }
-    if (check === 'all' && existing_types.length !== types.length) {
-        ctx.body = { ok: false };
-        return;
+    if (role && role.length > 0 && types && types.length > 0) {
+        const existing_types = types.filter(t => role[part][t]);
+        if (existing_types.length === 0) {
+            ctx.body = { ok: false };
+            return;
+        }
+        if (check === 'all' && existing_types.length !== types.length) {
+            ctx.body = { ok: false };
+            return;
+        }
     }
     ctx.body = { ok: true };
 }
