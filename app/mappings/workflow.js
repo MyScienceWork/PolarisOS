@@ -112,7 +112,7 @@ module.exports = {
                             state_before: {
                                 type: 'nested',
                                 properties: {
-                                    _id: {
+                                    label: {
                                         type: 'keyword',
                                     },
                                 },
@@ -120,7 +120,7 @@ module.exports = {
                             state_after: {
                                 type: 'nested',
                                 properties: {
-                                    _id: {
+                                    label: {
                                         type: 'keyword',
                                     },
                                 },
