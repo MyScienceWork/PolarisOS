@@ -84,13 +84,13 @@ module.exports = {
                     }
                 });
             }
-            return { $and: [{ state: filtered_states }] };
+            return { $fand: [{ state: filtered_states }] };
         },
         build_search_query() {
             const query_content = JSON.parse(this.es_query_content);
             const filtered_states = this.filtered_states();
             if (query_content && filtered_states) {
-                return _.merge(query_content, filtered_states);
+                return _.extend(query_content, filtered_states);
             } else if (filtered_states) {
                 return filtered_states;
             }
