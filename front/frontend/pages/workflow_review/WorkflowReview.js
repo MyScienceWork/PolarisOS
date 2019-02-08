@@ -8,13 +8,15 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
 const Queries = require('../../../common/specs/queries');
 const BrowserUtils = require('../../../common/utils/browser');
 
 const _ = require('lodash');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin, OAMixin],
+    mixins: [ReaderMixin, LangMixin, FormMixin, FiltersMixin, FormCleanerMixin,
+        ESQueryMixin, RemoveMixin, OAMixin, UserMixin],
     data() {
         return {
             state: {
@@ -62,6 +64,45 @@ module.exports = {
         on_checked_rows_update(obj) {
             this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
+        filtered_states() {
+            const workflows = this.fcontent(this.state.sinks.reads.workflow);
+            let filtered_states = [];
+
+            const workflow_name = this.$route.query.workflow;
+            const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
+            if (idx !== -1) {
+                workflows[idx].steps.forEach((step) => {
+                    if (step.roles.length > 0) {
+                        step.roles.some((role_workflow) => {
+                            const indexRole = _.findKey(this.roles, role_user => role_user._id === role_workflow._id);
+                            if (indexRole !== undefined) {
+                                filtered_states = filtered_states.concat(step.state_before.map(state => state.label));
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
+                });
+            }
+            return { $and: [{ state: filtered_states }] };
+        },
+        build_search_query() {
+            const query_content = JSON.parse(this.es_query_content);
+            const filtered_states = this.filtered_states();
+            if (query_content && filtered_states) {
+                return _.merge(query_content, filtered_states);
+            } else if (filtered_states) {
+                return filtered_states;
+            }
+            return this.es_query_content;
+        },
+        build_empty_search_query() {
+            const filtered_states = this.filtered_states();
+            if (filtered_states) {
+                return filtered_states;
+            }
+            return JSON.stringify({});
+        },
     },
     mounted() {
         ['workflow'].forEach((e) => {
@@ -76,8 +117,7 @@ module.exports = {
     },
     watch: {
         current_read_state_entity(s) {
-            console.log('WATCH current_read_state_entity : ', s);
-            // return this.mwcurrent_read_state(this.state.sinks.reads.entity)(s);
+            // console.log('WATCH current_read_state_entity : ', s);
         },
         search_query(q) {
             if (q) {
@@ -111,15 +151,6 @@ module.exports = {
             this.state.my_entity = workflow_entity;
             this.state.sinks.reads[workflow_entity] = `${workflow_entity}_read`;
             this.state.paths.reads[workflow_entity] = APIRoutes.entity(workflow_entity, 'POST', true);
-            [workflow_entity].forEach((e) => {
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads[e],
-                    path: this.state.paths.reads[e],
-                    body: {
-                        size: 100,
-                    },
-                });
-            });
             ['entity'].forEach((e) => {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads[e],
@@ -131,6 +162,16 @@ module.exports = {
                     },
                 });
             });
+            const filtered_states = this.filtered_states();
+            [workflow_entity].forEach((e) => {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads[e],
+                    path: this.state.paths.reads[e],
+                    body: {
+                        where: filtered_states,
+                    },
+                });
+            });
         },
         content_entity() {
             const content = this.mcontent(this.state.sinks.reads.entity);
@@ -138,6 +179,14 @@ module.exports = {
                 return content[0];
             }
             return null;
+        },
+        search_query_with_state_filters() {
+            const search_query = JSON.stringify(this.build_search_query(), null, 4);
+            return search_query;
+        },
+        empty_search_query_with_state_filters() {
+            const search_query = JSON.stringify(this.build_empty_search_query(), null, 4);
+            return search_query;
         },
         search_query() {
             if (this.content_entity) {

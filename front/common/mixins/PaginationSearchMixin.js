@@ -12,6 +12,7 @@ module.exports = {
         searchSink: { default: 'search_read', type: String },
         resultSink: { required: true, type: String },
         searchQuery: { required: true, type: String },
+        emptySearchQuery: { required: true, type: String },
         searchType: { required: true, type: String },
         useDefaultQuery: { default: false, type: Boolean }, // Run default query when typed_search === '' ?
         defaultQuery: { default: '{}', type: String },
@@ -211,7 +212,6 @@ module.exports = {
                 return o;
             }, {});
 
-            console.log('filters : ', JSON.stringify(filters));
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -252,14 +252,18 @@ module.exports = {
                             where = squery;
                         }
                     }
-                }
+                } else if (this.emptySearchQuery) {
+                    const squery = JSON.parse(Handlebars.compile(this.emptySearchQuery)({}));
 
-                if (this.state.seso.filters.length === 0
-                    && Object.keys(extra_filters).length === 0
-                    && !this.useDefaultQuery) {
-                    return;
+                    if (Object.keys(squery).length > 0) {
+                        if (this.state.seso.filters.length > 0
+                            || Object.keys(extra_filters).length > 0) {
+                            where.$and.push(squery);
+                        } else {
+                            where = squery;
+                        }
+                    }
                 }
-
                 body.where = where;
             } else {
                 new_content = _.cloneDeep(content);
@@ -296,8 +300,6 @@ module.exports = {
             }
 
             body.sort.push({ _uid: 'desc' });
-
-            //console.log('body : ', body);
 
             this.$store.dispatch('search', {
                 path: this.searchPath,
@@ -347,7 +349,6 @@ module.exports = {
         },
         filters(nf) {
             this.state.seso.filters = nf;
-            console.log('filters', nf);
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);
             }
