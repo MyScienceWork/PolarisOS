@@ -6,6 +6,7 @@ const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
+const ReviewModal = require('./subcomponents/ReviewModal.vue');
 
 module.exports = {
     mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin],
@@ -37,6 +38,7 @@ module.exports = {
                         project: 'nc',
                     },
                 },
+                show_review_modal: false,
             },
         };
     },
@@ -57,6 +59,12 @@ module.exports = {
                 this.state.statuses.creations.project = 'nc';
             }, 3000);
         },
+        open_review_modal(props) {
+            this.state.show_review_modal = true;
+        },
+    },
+    components: {
+        ReviewModal,
     },
     watch: {
         project_id(id) {

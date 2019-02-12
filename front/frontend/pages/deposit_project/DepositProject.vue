@@ -34,6 +34,9 @@
                                 />
                             </fform>
                         </div>
+                        <button @click.prevent="open_review_modal(props)"
+                                :disabled="success"
+                                class="button">{{lang('f_finish_review')}}</button>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
                             <div class="message-body">
                                 {{lang('f_project_save_success')}}
@@ -49,6 +52,11 @@
             </div>
         </div>
     </div>
+    <review-modal
+            @review-publication="review_publication"
+            :sink="state.sinks.creations.project"
+            :show.sync="state.show_review_modal"
+    />
 </div>
 </template>
 
