@@ -347,7 +347,7 @@ class ODM {
             }
 
             const response = await client.index(content);
-            if (('created' in response && response.created)
+            if (('result' in response && response.result === 'created')
                 || ('result' in response && response.result === 'updated')) {
                 try {
                     const get_response = await client.get({
