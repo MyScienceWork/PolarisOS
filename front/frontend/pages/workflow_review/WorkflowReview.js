@@ -131,9 +131,6 @@ module.exports = {
         },
     },
     computed: {
-        host() {
-            return BrowserUtils.getURLHost(window.location);
-        },
         current_read_state_entity() {
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
             if (workflows.length === 0) {

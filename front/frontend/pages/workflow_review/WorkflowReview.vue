@@ -45,7 +45,9 @@
                                 </b-table-column>
 
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
-                                    <a target="_blank" class="has-text-green" :href="`${host}/deposit_project?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
+                                    <router-link :to="`/deposit_project?type=review&_id=${props.row._id}`">
+                                    <a class="has-text-green">{{lang('l_review_review_action')}}</a><br />
+                                    </router-link>
                                     <!--
                                     <action-button
                                             class="has-text-red"

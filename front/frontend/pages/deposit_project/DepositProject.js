@@ -58,7 +58,18 @@ module.exports = {
             }, 3000);
         },
     },
+    watch: {
+        project_id(id) {
+            console.log('this is project id : ', id);
+        },
+    },
     computed: {
+        project_id() {
+            if (this.$route.query && this.$route.query._id) {
+                return this.$route.query._id;
+            }
+            return '';
+        },
         initial_state() {
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
             if (workflows instanceof Array && workflows.length > 0) {

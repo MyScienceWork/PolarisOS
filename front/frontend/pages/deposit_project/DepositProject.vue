@@ -21,6 +21,13 @@
                                 <finput
                                     type='hidden'
                                     label=''
+                                    :hiddenValue="project_id"
+                                    name="parent"
+                                    :form="state.sinks.creations.publication"
+                                />
+                                <finput
+                                    type='hidden'
+                                    label=''
                                     :hiddenValue="initial_state"
                                     name="state"
                                     :form="state.sinks.creations.project"
