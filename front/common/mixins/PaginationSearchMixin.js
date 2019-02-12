@@ -12,7 +12,7 @@ module.exports = {
         searchSink: { default: 'search_read', type: String },
         resultSink: { required: true, type: String },
         searchQuery: { required: true, type: String },
-        emptySearchQuery: { required: true, type: String },
+        emptySearchQuery: { required: false, type: String },
         searchType: { required: true, type: String },
         useDefaultQuery: { default: false, type: Boolean }, // Run default query when typed_search === '' ?
         defaultQuery: { default: '{}', type: String },
