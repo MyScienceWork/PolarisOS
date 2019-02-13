@@ -43,6 +43,9 @@ module.exports = {
         };
     },
     methods: {
+        is_editing() {
+            return this.$route.query && this.$route.query._id;
+        },
         show_error(sink) {
             if (sink === this.state.sinks.creations.project) {
                 this.state.statuses.creations.project = 'nok';

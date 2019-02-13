@@ -12,6 +12,7 @@
                         <div v-else>
                             <fform
                                     :name="state.sinks.creations.project"
+                                    :hasButtons="!is_editing()"
                                     :post_path="state.paths.creations.project"
                                     :put_path="state.paths.creations.project"
                                     :get_path="state.paths.reads.project"
@@ -33,10 +34,11 @@
                                     :form="state.sinks.creations.project"
                                 />
                             </fform>
+                            <button v-if="is_editing()"
+                                    @click.prevent="open_review_modal(props)"
+                                    :disabled="success"
+                                    class="button">{{lang('f_finish_review')}}</button>
                         </div>
-                        <button @click.prevent="open_review_modal(props)"
-                                :disabled="success"
-                                class="button">{{lang('f_finish_review')}}</button>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
                             <div class="message-body">
                                 {{lang('f_project_save_success')}}
