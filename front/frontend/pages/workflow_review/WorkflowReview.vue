@@ -45,7 +45,7 @@
                                 </b-table-column>
 
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
-                                    <router-link :to="`/deposit_project?type=review&_id=${props.row._id}`">
+                                    <router-link :to="`/deposit_project?type=review&_id=${props.row._id}&workflow=${workflow_name()}`">
                                     <a class="has-text-green">{{lang('l_review_review_action')}}</a><br />
                                     </router-link>
                                     <!--

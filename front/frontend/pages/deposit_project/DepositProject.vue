@@ -23,21 +23,28 @@
                                     type='hidden'
                                     label=''
                                     :hiddenValue="project_id"
-                                    name="parent"
-                                    :form="state.sinks.creations.publication"
+                                    name="_id"
+                                    :form="state.sinks.creations.project"
                                 />
                                 <finput
+                                    v-if="!is_editing()"
                                     type='hidden'
                                     label=''
                                     :hiddenValue="initial_state"
                                     name="state"
                                     :form="state.sinks.creations.project"
                                 />
+                                <button v-if="is_editing()"
+                                        @click.prevent="open_review_modal(props)"
+                                        :disabled="success"
+                                        class="button">{{lang('f_finish_review')}}</button>
+                                <review-modal
+                                        @review-project="review_project"
+                                        :sink="state.sinks.creations.project"
+                                        :show.sync="state.show_review_modal"
+                                        :status="after_status()"
+                                ></review-modal>
                             </fform>
-                            <button v-if="is_editing()"
-                                    @click.prevent="open_review_modal(props)"
-                                    :disabled="success"
-                                    class="button">{{lang('f_finish_review')}}</button>
                         </div>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
                             <div class="message-body">
@@ -54,11 +61,6 @@
             </div>
         </div>
     </div>
-    <review-modal
-            @review-publication="review_publication"
-            :sink="state.sinks.creations.project"
-            :show.sync="state.show_review_modal"
-    />
 </div>
 </template>
 

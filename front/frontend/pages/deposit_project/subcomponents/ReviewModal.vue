@@ -19,20 +19,21 @@
                 <div class="columns">
                     <div class="column">
                         <fselect
-                            :label="lang('l_choose_publication_status')"
-                            :placeholder="lang('l_choose_publication_status')"
+                            :label="lang('l_choose_project_status')"
+                            :placeholder="lang('l_choose_project_status')"
                             :is-required="true"
-                            :options="status_options | translate(lang, 'label')"
+                            :options="status_options"
                             :form="sink"
-                            name="status"
-                            @select-change="status_review_change"
+                            name="state"
+                            :translatable="true"
+                            fieldValue="label"
+                            fieldLabel="label"
                             :view-validation-texts="false"
                         />
                         <finput
                             :label="lang('l_email_remark')"
                             :is-required="true"
-                            :form="sink"
-                            name="virtual_email"
+                            name="comment"
                             :rows="10"
                             type="textarea"
                         />
@@ -40,7 +41,7 @@
                 </div>
             </div>
             <footer class="modal-card-foot">
-            <button class="button is-info" @click.prevent="review_publication">{{lang('b_validate')}}</button>
+            <button class="button is-info" @click.prevent="review_project">{{lang('b_validate')}}</button>
                 <button class="button" @click.prevent="toggle(false)">{{lang('b_cancel')}}</button>
             </footer>
         </div>
