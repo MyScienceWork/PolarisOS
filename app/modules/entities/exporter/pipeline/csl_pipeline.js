@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
@@ -81,28 +81,28 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-journal': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-newspaper': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
@@ -115,8 +115,8 @@ const mapping = {
                     return null;
                 }
 
-                const start = moment(o['event-date'][0]);
-                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
+                const start = moment(o['event-date'][0]).tz('Europe/Paris');
+                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]).tz('Europe/Paris') : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
                 if (end && !end.isSame(start)) {

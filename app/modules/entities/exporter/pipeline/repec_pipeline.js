@@ -1,6 +1,8 @@
 const moment = require('moment');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
+const Mime = require('mime');
+const ConfigUtils = require('../../../utils/config');
 
 const mapping = {
     abstracts: {
@@ -20,7 +22,7 @@ const mapping = {
     },
     'dates.publication': {
         __default: {
-            transformers: [o => ({ 'Creation-Dte': moment(o['Creation-Date']).format('YYYY') })],
+            transformers: [o => ({ 'Creation-Date': moment(o['Creation-Date']).format('YYYY') })],
             picker: c => ({ 'Creation-Date': c }),
         },
         journal: {
@@ -67,6 +69,40 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async p => ({ Length: p }),
+        },
+    },
+    number: {
+        __default: {
+            transformers: [],
+            picker: async number => ({ Number: number }),
+        },
+    },
+    files: {
+        __default: {
+            transformers: [],
+            picker: async (files, pub) => {
+                const master = files.find(file => file.is_master);
+                if (!master) {
+                    return {};
+                }
+
+                const mime_type = Mime.getType(master.url);
+                if (`${mime_type}` !== 'application/pdf') {
+                    return {};
+                }
+
+                const my_config = await ConfigUtils.get_config();
+                if (!my_config || !my_config.base_url) {
+                    return {};
+                }
+
+
+                return {
+                    'File-Url': `${my_config.base_url}/download/publication/${pub._id}/${master.url}`,
+                    'File-Format': 'Application/pdf',
+                    'File-Function': 'Deposited file',
+                };
+            },
         },
     },
     'title.content': {
@@ -127,6 +163,6 @@ const mapping = {
     },
 };
 
-const fields = ['Authors', 'Title', 'Abstract', 'Length', 'Creation-Date', 'Note', 'Publication-Status', 'DOI'];
+const fields = ['Authors', 'Title', 'Abstract', 'Length', 'Creation-Date', 'Note', 'Publication-Status', 'DOI', 'Keywords', 'File-Url', 'File-Format', 'File-Function', 'Number'];
 
 module.exports = { fields, mapping };

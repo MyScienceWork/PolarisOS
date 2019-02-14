@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const _ = require('lodash');
 const LangUtils = require('../../../utils/lang');
 const CSVPipeline = require('./csv_pipeline');
@@ -12,7 +12,7 @@ function get_affiliations(contrib, pub) {
         return [];
     }
 
-    publication_date = parseInt(moment.utc(publication_date).format('YYYY'), 10);
+    publication_date = parseInt(moment(publication_date).tz('Europe/Paris').format('YYYY'), 10);
     const eligible_affiliations = affiliations.filter((aff) => {
         const from = parseInt(aff.from, 10);
         if (aff.to) {
@@ -31,7 +31,7 @@ function get_affiliations(contrib, pub) {
         const teams = Utils.find_value_with_path(aff, 'teams'.split('.')) || [];
         if (!iname) {
             aff.full = 'NC';
-        } else {
+        } else if (teams instanceof Array) {
             const teams_str = teams.map(t => `#POS#LANG${t._id}`).join('\n');
             aff.full = `${iname}\n${teams_str}`;
         }
@@ -96,7 +96,7 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY') }),
         },
     },
     'localisation.city': CSVPipeline.mapping['localisation.city'],
@@ -187,13 +187,13 @@ const mapping = {
     'dates.deposit': {
         __default: {
             transformers: [],
-            picker: async (c, pub, lang, key) => ({ [key]: moment(c).format('DD/MM/YYYY') }),
+            picker: async (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('DD/MM/YYYY') }),
         },
     },
     'dates.update': {
         __default: {
             transformers: [],
-            picker: async (c, pub, lang, key) => ({ [key]: moment(c).format('DD/MM/YYYY') }),
+            picker: async (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('DD/MM/YYYY') }),
         },
     },
     'denormalization.depositor': {

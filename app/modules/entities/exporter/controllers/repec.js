@@ -78,7 +78,6 @@ async function generate_repec_paper_from_publication(handle: string,
         return arr;
     }, template);
 
-    template.push(`Number: ${publication._id}`);
     template.push(`Handle: ${handle}:wpaper:${publication._id}`);
     return template.join('\n');
 }
@@ -110,6 +109,8 @@ async function export_repec_paper(ctx: Object): Promise<any> {
                     $and: [
                         { status: ['published', 'unpublished'] },
                         { 'diffusion.rights.exports.repec': true },
+                        { $or: [{ type: 'AWGzejGVQT18xzvhWIDf' },
+                            { publication_version: ['AWEsYX_ofoecpXq21Ja3', 'AWEsYRpafoecpXq21Ja2'] }] },
                     ],
                 },
             };
