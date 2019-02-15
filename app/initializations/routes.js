@@ -62,7 +62,7 @@ async function initialize_routes(singleton) {
 
     const response = await EntitiesUtils.search('entity', { size: 10000 });
     const extra_entities = response.result.hits.map(e => e.db.source.type);
-    const entities = ['user', 'role', 'config', 'lang', 'form', 'function',
+    const entities = ['user', 'role', 'config', 'form', 'function',
         'pipeline', 'widget', 'page', 'template', 'menu', 'query',
         'importer', 'exporter', 'connector', 'identifier',
         'chart', 'mail_template', 'tracking_stat', 'system_report', ...extra_entities];

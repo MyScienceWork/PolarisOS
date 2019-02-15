@@ -24,6 +24,7 @@
     "deploy-doc": "npm run doc && ./node_modules/.bin/gh-pages -d doc"
   },
   "dependencies": {
+    "@bubenguru/koa-response-cache": "^0.1.1",
     "archiver": "^2.1.1",
     "babel-polyfill": "^6.26.0",
     "buefy": "^0.6.5",
