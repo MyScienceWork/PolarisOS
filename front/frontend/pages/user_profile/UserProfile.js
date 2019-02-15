@@ -163,6 +163,7 @@ module.exports = {
             if (this.state.author_mode) {
                 const content = this.fcontent(this.state.sinks.reads.user);
                 if (content instanceof Array && content.length > 0) {
+                    console.log("this is user : ", content[0]);
                     return { author: content[0],
                         firstname: content[0].firstname,
                         lastname: content[0].lastname,

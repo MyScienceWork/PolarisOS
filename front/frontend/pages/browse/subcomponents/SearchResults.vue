@@ -173,6 +173,11 @@
     :export-sink="state.sinks.reads.export"
     v-if="content.length > 0"
     />
+    <div v-else-if="!content_received">
+        <div class="columns is-centered">
+            <loader />
+        </div>
+    </div>
     <div v-else>
         <p class="has-text-centered" v-html="lang('l_no_search_results')"></p>
     </div>
