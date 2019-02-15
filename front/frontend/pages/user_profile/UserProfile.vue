@@ -1,15 +1,18 @@
 <template>
 <div class="hero-body">
-    <div class="container is-fluid">
+    <div v-if="author && author.is_ined" class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-3 card-equal-height">
                 <div class="card">
-                    <div class="card-image">
-                        <figure class="image">
-                            <img :src="avatar" :alt="fullname">
+                   <div class="card-image">
+                       <!--
+                       <figure class="image">
+                          <img :src="avatar" :alt="fullname">
                         </figure>
+                         -->
                     </div>
-                </div> <!-- card image user profile -->
+                </div>
+                <!-- card image user profile -->
                 <h4 class="has-small-top-margin title is-4">{{fullname}}</h4>
                 <div v-if="!user.public_profile">
                     <p>{{lang('l_profile_not_public')}}</p>
