@@ -31,6 +31,10 @@ module.exports = {
                 if (contrib === '') {
                     return list_contrib_without_link[index];
                 }
+                if (contrib[0] === '<' && contrib[1] === 'a' && contrib[3] === 't') {
+                    // handle link
+                    return list_contrib_with_link[index];
+                }
                 if (contrib[0] !== '<' || contrib[1] !== 'a' || contrib[3] !== 'h' || !(authors instanceof Array)) {
                     return list_contrib_without_link[index];
                 }
