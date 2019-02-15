@@ -6,15 +6,15 @@ const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const HtmlMixin = require('../../../../common/mixins/HtmlMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlebars = require('../../../../../app/modules/utils/templating');
 
 const Toastr = require('toastr');
-const _ = require('lodash');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin, HtmlMixin],
     props: {
         showStatus: { default: false, type: Boolean },
         catName: { default: () => [], type: Array },
@@ -31,15 +31,10 @@ module.exports = {
                 export_type: '',
                 export_subtype: null,
                 select_all_to_export: false,
-                paths: {
-                    reads: {
-                        author: APIRoutes.entity('author', 'POST', true),
-                    },
-                },
+
                 sinks: {
                     reads: {
                         export: 'exporter_read',
-                        author: 'author_read',
                     },
                 },
                 mobile_dropdown: {
@@ -132,37 +127,12 @@ module.exports = {
     computed: {
         content() {
             const content = this.fcontent(this.resultSink);
-            const authors = this.fcontent(this.state.sinks.reads.author);
             if (!(content instanceof Array)) {
                 return [];
             }
-            if (!(authors instanceof Array)) {
-                return [];
-            }
+
             return content.map((c) => {
-                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
-
-                const list_contrib_without_link = c.html.split(/<\/?a(?:(?= )[^>]*)?>/);
-                const list_contrib_with_link = c.html.split(/(<\/?a(?:(?= )[^>]*)?>.+?<\/?a(?:(?= )[^>]*)?>)/);
-                const regex_match_href_link = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/;
-
-                const reprocessed_html = list_contrib_with_link.map((contrib, index) => {
-                   if (contrib === '') {
-                       return list_contrib_without_link[index];
-                   }
-                   if (contrib[0] !== '<' || contrib[1] !== 'a' || contrib[3] !== 'h') {
-                       return list_contrib_without_link[index];
-                   }
-                   const link = contrib.match ( regex_match_href_link )[2];
-                   const id_author = link.split ( '/' )[2];
-
-                   const idx = _.findIndex(authors, author => author._id === id_author);
-                   if (idx !== -1 && authors[idx].is_ined === true) {
-                       return list_contrib_with_link[index];
-                   }
-                   return list_contrib_without_link[index];
-                });
-                c.html = reprocessed_html.join('');
+                c.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template)(c)));
                 return c;
             });
         },
@@ -211,15 +181,5 @@ module.exports = {
         Auth.loggedIn('publication', ['c', 'u']).then((ok) => {
             this.state.loggedIn = ok;
         }).catch(err => console.error(err));
-    },
-    mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.author,
-            path: this.state.paths.reads.author,
-            body: {
-                where: {'is_ined': true},
-                size: 10000,
-            },
-        });
     },
 };
