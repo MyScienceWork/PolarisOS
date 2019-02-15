@@ -339,6 +339,19 @@ function filterIndexes(collection: Array<any>, pred: Function): Array<number> {
     }, []);
 }
 
+function hash_object(obj: Object) {
+    const stringified = JSON.stringify(obj);
+    let hash = 0;
+    let chr;
+    if (stringified.length === 0) return hash;
+    for (let i = 0; i < stringified.length; i += 1) {
+        chr = stringified.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
 
 module.exports = {
     hasProperty,
@@ -356,4 +369,5 @@ module.exports = {
     isNil,
     filter_empty_or_null_objects,
     filterIndexes,
+    hash_object
 };
