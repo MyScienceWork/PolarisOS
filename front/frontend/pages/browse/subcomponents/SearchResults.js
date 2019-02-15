@@ -125,6 +125,10 @@ module.exports = {
         },
     },
     computed: {
+        content_received() {
+            const content = this.fcontent(this.resultSink);
+            return content instanceof Array;
+        },
         content() {
             const content = this.fcontent(this.resultSink);
             if (!(content instanceof Array)) {
