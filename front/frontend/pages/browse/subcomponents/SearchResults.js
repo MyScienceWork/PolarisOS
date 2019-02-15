@@ -10,6 +10,7 @@ const Auth = require('../../../../common/utils/auth');
 const Handlebars = require('../../../../../app/modules/utils/templating');
 
 const Toastr = require('toastr');
+const _ = require('lodash');
 const Results = require('./Results.vue');
 
 module.exports = {
@@ -30,9 +31,15 @@ module.exports = {
                 export_type: '',
                 export_subtype: null,
                 select_all_to_export: false,
+                paths: {
+                    reads: {
+                        author: APIRoutes.entity('author', 'POST', true),
+                    },
+                },
                 sinks: {
                     reads: {
                         export: 'exporter_read',
+                        author: 'author_read',
                     },
                 },
                 mobile_dropdown: {
@@ -75,7 +82,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
-                console.log('running_search in SearchResults, send_information, for sink', sink);
+                //console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },
@@ -125,12 +132,37 @@ module.exports = {
     computed: {
         content() {
             const content = this.fcontent(this.resultSink);
+            const authors = this.fcontent(this.state.sinks.reads.author);
             if (!(content instanceof Array)) {
                 return [];
             }
-
+            if (!(authors instanceof Array)) {
+                return [];
+            }
             return content.map((c) => {
                 c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
+
+                const list_contrib_without_link = c.html.split(/<\/?a(?:(?= )[^>]*)?>/);
+                const list_contrib_with_link = c.html.split(/(<\/?a(?:(?= )[^>]*)?>.+?<\/?a(?:(?= )[^>]*)?>)/);
+                const regex_match_href_link = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/;
+
+                const reprocessed_html = list_contrib_with_link.map((contrib, index) => {
+                   if (contrib === '') {
+                       return list_contrib_without_link[index];
+                   }
+                   if (contrib[0] !== '<' || contrib[1] !== 'a' || contrib[3] !== 'h') {
+                       return list_contrib_without_link[index];
+                   }
+                   const link = contrib.match ( regex_match_href_link )[2];
+                   const id_author = link.split ( '/' )[2];
+
+                   const idx = _.findIndex(authors, author => author._id === id_author);
+                   if (idx !== -1 && authors[idx].is_ined === true) {
+                       return list_contrib_with_link[index];
+                   }
+                   return list_contrib_without_link[index];
+                });
+                c.html = reprocessed_html.join('');
                 return c;
             });
         },
@@ -179,5 +211,15 @@ module.exports = {
         Auth.loggedIn('publication', ['c', 'u']).then((ok) => {
             this.state.loggedIn = ok;
         }).catch(err => console.error(err));
+    },
+    mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.author,
+            path: this.state.paths.reads.author,
+            body: {
+                where: {'is_ined': true},
+                size: 10000,
+            },
+        });
     },
 };
