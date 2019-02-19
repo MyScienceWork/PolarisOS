@@ -105,7 +105,7 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
         },
         press: {
             transformers: [],
