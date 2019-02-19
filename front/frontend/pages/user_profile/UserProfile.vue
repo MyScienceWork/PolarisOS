@@ -1,6 +1,6 @@
 <template>
 <div class="hero-body">
-    <div class="container is-fluid">
+    <div v-if="author && (author.is_ined || (author.system && author.system.valid))" class="container is-fluid">
         <div class="columns is-centered">
             <div class="column is-3 card-equal-height">
                 <div class="card">
