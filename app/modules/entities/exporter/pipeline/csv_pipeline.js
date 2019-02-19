@@ -105,33 +105,33 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
         press: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
         journal: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
     },
     'dates.production': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
     },
     'dates.start': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
     },
     'dates.end': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
     },
     'denormalization.delivery_institution': {
@@ -271,7 +271,7 @@ const mapping = {
     'diffusion.rights.embargo': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment.utc(c).format('YYYY-MM-DD') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY-MM-DD') }),
         },
     },
     'denormalization.diffusion.rights.license': {
