@@ -34,6 +34,7 @@ module.exports = {
                 previewTemplate: '<div></div>',
                 autoQueue: true,
                 dictFileTooBig: '', // this.lang('l_dropzone_file_too_big'),
+                timeout: 3600000,
             },
             state: {
                 files: { order: [], content: {} },
