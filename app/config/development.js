@@ -28,6 +28,10 @@ const development = {
             interval: 45 * 1000,
         },
     },
+    find_diseases: {
+        host: 'localhost',
+        port: 5001,
+    },
 };
 
 module.exports = development;

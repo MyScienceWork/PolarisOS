@@ -23,7 +23,7 @@ const minio = _.reduce({
     return obj;
 }, {});
 
-// MINIO
+// GROBID
 const grobid = _.reduce({
     host: env.GROBID_HOST,
     port: env.GROBID_PORT,
@@ -52,6 +52,10 @@ const production = {
                 level: 'verbose',
             },
         },
+    },
+    find_diseases: {
+        host: 'finddiseases',
+        port: 5001,
     },
 };
 

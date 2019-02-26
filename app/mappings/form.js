@@ -217,6 +217,55 @@ module.exports = {
                                     },
                                 },
                             },
+                            dynamic_list: {
+                                properties: {
+                                    dns: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'keyword',
+                                    },
+                                    uri: {
+                                        type: 'keyword',
+                                    },
+                                    method: {
+                                        type: 'keyword',
+                                    },
+                                    selected_mapping: {
+                                        type: 'keyword',
+                                    },
+                                    send_payload: {
+                                        type: 'nested',
+                                        properties: {
+                                            value: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    result_table: {
+                                        type: 'nested',
+                                        properties: {
+                                            value: {
+                                                type: 'keyword',
+                                            },
+                                            label: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    result_mapping: {
+                                        type: 'nested',
+                                        properties: {
+                                            value_payload: {
+                                                type: 'keyword',
+                                            },
+                                            value_form: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
                             required: {
                                 type: 'boolean',
                             },
