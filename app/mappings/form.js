@@ -251,6 +251,9 @@ module.exports = {
                                             label: {
                                                 type: 'keyword',
                                             },
+                                            order: {
+                                                type: 'integer',
+                                            },
                                         },
                                     },
                                     result_mapping: {

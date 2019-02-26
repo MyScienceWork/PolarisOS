@@ -31,6 +31,15 @@ const Formatting: Array<any> = [
         fields: a => FormatFunctions.oarray_to_array(a),
     },
     {
+        'fields.dynamic_list.send_payload': a => FormatFunctions.oarray_to_array(a),
+    },
+    {
+        'fields.dynamic_list.result_table': a => FormatFunctions.oarray_to_array(a),
+    },
+    {
+        'fields.dynamic_list.result_mapping': a => FormatFunctions.oarray_to_array(a),
+    },
+    {
         fields: FormatFunctions.filter_empty_or_null_objects,
     },
     {

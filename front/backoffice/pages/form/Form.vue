@@ -495,7 +495,10 @@
                                                     :key="`${props.fname}.${props.order}.dynamic_list.method`"
                                                     :name="`${props.fname}.${props.order}.dynamic_list.method`"
                                                     :label="lang('b_dynamic_list_method')" :is-required="true" :placeholder="lang('b_dynamic_list_method')" type="text" :form="state.sinks.creations.form"
-                                                    :options="api_method" />
+                                                    :options="api_method"
+                                                    field-label="label"
+                                                    field-value="label"
+                                            />
                                             <finput
                                                     :key="`${props.fname}.${props.order}.dynamic_list.selected_mapping`"
                                                     :name="`${props.fname}.${props.order}.dynamic_list.selected_mapping`"
@@ -503,29 +506,98 @@
                                             <span slot="title">
                                             {{lang('b_send_payload')}}
                                             </span>
-                                            <fvariadic-element :name="`${props.fname}.${props.order}.send_payload`" :form="state.sinks.creations.form" :tabs="true">
-                                                <template slot="variadic" slot-scope="props">
-                                                    <finput :name="`${props.fname}.${props.order}.value`" :label="lang('b_value')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
+                                            <fvariadic-element
+                                                    :name="`${props.fname}.${props.order}.dynamic_list.send_payload`"
+                                                    :form="state.sinks.creations.form"
+                                                    :useIcons="false">
+                                                <template slot="variadic" slot-scope="fprops">
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.value`"
+                                                            :label="lang('b_value')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_value')"
+                                                            type="text"
+                                                            :form="state.sinks.creations.form" />
                                                 </template>
                                             </fvariadic-element>
                                             <span slot="title">
                                             {{lang('b_result_table')}}
                                             </span>
-                                            <fvariadic-element :name="`${props.fname}.${props.order}.result_table`" :form="state.sinks.creations.form" :tabs="true">
-                                                <template slot="variadic" slot-scope="props">
-                                                    <finput :name="`${props.fname}.${props.order}.value`" :label="lang('b_value')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
-                                                    <finput :name="`${props.fname}.${props.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
+                                            <fvariadic-element
+                                                    :name="`${props.fname}.${props.order}.dynamic_list.result_table`"
+                                                    :form="state.sinks.creations.form"
+                                                    :useIcons="false">
+                                                <template slot="variadic" slot-scope="fprops">
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.value`"
+                                                            :label="lang('b_value')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_value')"
+                                                            type="text"
+                                                            :form="state.sinks.creations.form" />
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.label`"
+                                                            :label="lang('b_label')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_label')"
+                                                            type="text"
+                                                            :form="state.sinks.creations.form" />
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.order`"
+                                                            :label="lang('b_order')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_order')"
+                                                            type="number"
+                                                            :form="state.sinks.creations.form" />
                                                 </template>
                                             </fvariadic-element>
                                             <span slot="title">
                                             {{lang('b_result_mapping')}}
                                             </span>
-                                            <fvariadic-element :name="`${props.fname}.${props.order}.result_mapping`" :form="state.sinks.creations.form" :tabs="true">
-                                                <template slot="variadic" slot-scope="props">
-                                                    <finput :name="`${props.fname}.${props.order}.value_payload`" :label="lang('b_value_payload')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
-                                                    <finput :name="`${props.fname}.${props.order}.value_form`" :label="lang('b_value_form')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
+                                            <fvariadic-element
+                                                    :name="`${props.fname}.${props.order}.dynamic_list.result_mapping`"
+                                                    :form="state.sinks.creations.form"
+                                                    :useIcons="false">
+                                                <template slot="variadic" slot-scope="fprops">
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.value_payload`"
+                                                            :label="lang('b_value_payload')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_value_payload')"
+                                                            type="text"
+                                                            :form="state.sinks.creations.form" />
+                                                    <finput
+                                                            :name="`${fprops.fname}.${fprops.order}.value_form`"
+                                                            :label="lang('b_value_form')"
+                                                            :is-required="true"
+                                                            :placeholder="lang('b_value_form')"
+                                                            type="text"
+                                                            :form="state.sinks.creations.form" />
                                                 </template>
                                             </fvariadic-element>
+                                            <!--
+                                            <span slot="title">
+                                            {{lang('b_result_table')}}
+                                            </span>
+                                            <fvariadic-element :name="`${props.fname}.${props.order}.dynamic_list.result_table`" :form="state.sinks.creations.form" :tabs="true">
+                                                <template slot="variadic" slot-scope="props2">
+                                                    <finput :name="`${props2.fname}.${props2.order}.value`" :label="lang('b_value')" :is-required="true" :placeholder="lang('b_value')" type="text" :form="state.sinks.creations.form" />
+                                                    <finput :name="`${props2.fname}.${props2.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.form" />
+                                                    <finput :name="`${props2.fname}.${props2.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.form" />
+                                                </template>
+                                            </fvariadic-element>
+                                            <span slot="title">
+                                            {{lang('b_result_mapping')}}
+                                            </span>
+                                            <fvariadic-element :name="`${props.fname}.${props.order}.dynamic_list.result_mapping`" :form="state.sinks.creations.form" :tabs="true">
+                                                <template slot="variadic" slot-scope="props2">
+                                                    <finput :name="`${props2.fname}.${props2.order}.value_payload`" :label="lang('b_value_payload')" :is-required="true" :placeholder="lang('b_value')" type="text" :form="state.sinks.creations.form" />
+                                                    <finput :name="`${props2.fname}.${props2.order}.value_form`" :label="lang('b_value_form')" :is-required="true" :placeholder="lang('b_value')" type="text" :form="state.sinks.creations.form" />
+                                                    <finput :name="`${props2.fname}.${props2.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.form" />
+                                                </template>
+
+                                            </fvariadic-element>
+                                             -->
                                         </div>
                                     </div>
                                 </template>
