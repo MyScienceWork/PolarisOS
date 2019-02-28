@@ -51,6 +51,7 @@ module.exports = {
                     },
                 },
                 link: null,
+                link_website: null,
                 activeSelectTab: 0,
                 activeYearTab: 0,
             },
@@ -59,6 +60,7 @@ module.exports = {
     methods: {
         submit() {
             this.state.link = null;
+            this.state.link_website = null;
             this.send_information(this.state.sinks.creations.export);
         },
         /* select_or_unselect(field, select, info, value) {
@@ -82,6 +84,7 @@ module.exports = {
             if (sink === this.state.sinks.creations.export) {
                 const content = this.fcontent(sink);
                 const myurl = APIRoutes.export_bibliography();
+                const myurl_website = APIRoutes.export_bibliography_for_website();
                 const params = {};
                 const single_values = ['language', 'sort', 'group', 'size', 'start_year', 'end_year', 'csl'];
                 const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypogy', 'internal_collection'];
@@ -133,6 +136,7 @@ module.exports = {
                     return arr;
                 }, []).join('&');
                 this.state.link = `${myurl}?${querystring}`;
+                this.state.link_website = `${myurl_website}?${querystring}`;
             }
         },
         next_year(n) {
@@ -235,7 +239,7 @@ module.exports = {
             ];
         },
         include_code() {
-            return `<iframe src='${this.hostname}${this.state.link} style='width:100%;border:0;'></iframe>`;
+            return `<iframe src='${this.hostname}${this.state.link_website}' style='width:100%;border:0;'></iframe>`;
         },
         hostname() {
             return `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}`;
