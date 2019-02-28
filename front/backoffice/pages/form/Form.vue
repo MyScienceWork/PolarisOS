@@ -480,9 +480,9 @@
                                         </div>
                                         <div v-else-if="['dynamic-list'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput
-                                                    :key="`${props.fname}.${props.order}.dynamic_list.dns`"
-                                                    :name="`${props.fname}.${props.order}.dynamic_list.dns`"
-                                                    :label="lang('b_dynamic_list_dns')" :is-required="true" :placeholder="lang('b_dynamic_list_dns')" type="text" :form="state.sinks.creations.form" />
+                                                    :key="`${props.fname}.${props.order}.dynamic_list.host`"
+                                                    :name="`${props.fname}.${props.order}.dynamic_list.host`"
+                                                    :label="lang('b_dynamic_list_host')" :is-required="true" :placeholder="lang('b_dynamic_list_host')" type="text" :form="state.sinks.creations.form" />
                                             <finput
                                                     :key="`${props.fname}.${props.order}.dynamic_list.port`"
                                                     :name="`${props.fname}.${props.order}.dynamic_list.port`"

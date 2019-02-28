@@ -219,7 +219,7 @@ module.exports = {
                             },
                             dynamic_list: {
                                 properties: {
-                                    dns: {
+                                    host: {
                                         type: 'keyword',
                                     },
                                     port: {

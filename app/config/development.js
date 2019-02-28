@@ -29,7 +29,7 @@ const development = {
         },
     },
     find_diseases: {
-        host: 'localhost',
+        host: 'http://localhost',
         port: 5001,
     },
 };

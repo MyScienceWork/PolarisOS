@@ -54,7 +54,7 @@ const production = {
         },
     },
     find_diseases: {
-        host: 'finddiseases',
+        host: 'http://finddiseases',
         port: 5001,
     },
 };
