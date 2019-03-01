@@ -436,20 +436,22 @@ class BibliographicExporter {
         const csl_json_output = await this.transform_to_csl_json(publications);
         // Logger.info(JSON.stringify(csl_json_output, null, 4));
         const data = new Cite(csl_json_output);
-        // TODO I don't know what that code is for, but it's clearly messing up with
-        // the original sort from the aggregations
-        /* data.sort((objA, objB) => {
-            const authorsA = this.concat_all_authors(objA);
-            const authorsB = this.concat_all_authors(objB);
+        // sort by author
+        const { sort } = this._options;
+        if (sort[0] === 'denormalization.contributors.label.fullname.raw') {
+            data.sort((objA, objB) => {
+                const authorsA = this.concat_all_authors(objA);
+                const authorsB = this.concat_all_authors(objB);
 
-            if (authorsA.length > 0 && authorsB.length > 0) {
-                if (authorsA[0] > authorsB[0]) {
-                    return 1;
+                if (authorsA.length > 0 && authorsB.length > 0) {
+                    if (authorsA[0] > authorsB[0]) {
+                        return 1;
+                    }
+                    return -1;
                 }
-                return -1;
-            }
-            return 0;
-        });*/
+                return 0;
+            });
+        }
         let results = data.get({
             nosort: true,
             format: 'string',
