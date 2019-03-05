@@ -529,24 +529,24 @@
                                                     :useIcons="false">
                                                 <template slot="variadic" slot-scope="fprops">
                                                     <finput
-                                                            :name="`${fprops.fname}.${fprops.order}.value`"
-                                                            :label="lang('b_value')"
+                                                            :name="`${fprops.fname}.${fprops.order}.field`"
+                                                            :label="lang('b_field')"
                                                             :is-required="true"
-                                                            :placeholder="lang('b_value')"
+                                                            :placeholder="lang('b_field')"
                                                             type="text"
                                                             :form="state.sinks.creations.form" />
                                                     <finput
-                                                            :name="`${fprops.fname}.${fprops.order}.label`"
-                                                            :label="lang('b_label')"
+                                                            :name="`${fprops.fname}.${fprops.order}.title`"
+                                                            :label="lang('b_title')"
                                                             :is-required="true"
-                                                            :placeholder="lang('b_label')"
+                                                            :placeholder="lang('b_title')"
                                                             type="text"
                                                             :form="state.sinks.creations.form" />
                                                     <finput
-                                                            :name="`${fprops.fname}.${fprops.order}.order`"
-                                                            :label="lang('b_order')"
+                                                            :name="`${fprops.fname}.${fprops.order}.sort`"
+                                                            :label="lang('b_sort')"
                                                             :is-required="true"
-                                                            :placeholder="lang('b_order')"
+                                                            :placeholder="lang('b_sort')"
                                                             type="number"
                                                             :form="state.sinks.creations.form" />
                                                 </template>

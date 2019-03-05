@@ -89,6 +89,10 @@ module.exports = {
         return `${prefix}/rss/${entity}/${mapping}/${lang}/${query}/${sort}/${size}`;
     },
 
+    external() {
+        return `${prefix}/external`;
+    },
+
     custom(suffix) {
         return `${prefix}/${suffix}`;
     },

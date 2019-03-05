@@ -245,13 +245,13 @@ module.exports = {
                                     result_table: {
                                         type: 'nested',
                                         properties: {
-                                            value: {
+                                            field: {
                                                 type: 'keyword',
                                             },
-                                            label: {
+                                            title: {
                                                 type: 'keyword',
                                             },
-                                            order: {
+                                            sort: {
                                                 type: 'integer',
                                             },
                                         },

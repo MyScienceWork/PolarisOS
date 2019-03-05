@@ -445,9 +445,37 @@
                 </template>
             </template>
             <template v-else-if="field.type === 'dynamic-list'">
-                <h4>testing now</h4>
                 <fdata-table-searching
+                    :search-sink="state.sinks.creations.dynamic_list"
+                    :result-sink="state.sinks.reads.dynamic_list"
+                    :search-path="state.paths.reads.dynamic_list"
+                    :search-query="dynamic_list_search_query(field)"
+                    :empty-search-query="dynamic_list_search_query(field)"
+                    :use-default-query="false"
+                    search-type="dynamic-list"
+                    :checkable="true"
+                    :checked-rows="state.checked_rows"
+                    :columns="state.columns"
                 >
+                    <template slot="rows" slot-scope="props">
+                        <b-table-column v-for="(value, key) in state.columns"
+                                        :field="value.sort"
+                                        :label="lang(value.title, {}, value.lang)"
+                                        :visible="value.visible"
+                                        :sortable="value.sortable"
+                                        :centered="value.centered">
+                                            <span
+                                                    :class="`tag ${value.tag_class}`"
+                                                    v-if="value.is_tag"
+                                                    :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
+                                            >
+                                            </span>
+                            <div v-else
+                                 :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
+                            >
+                            </div>
+                        </b-table-column>
+                    </template>
                 </fdata-table-searching>
             </template>
         </template>

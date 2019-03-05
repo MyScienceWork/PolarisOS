@@ -1,12 +1,21 @@
 const _ = require('lodash');
 const LangMixin = require('../../../../mixins/LangMixin');
 const FormMixin = require('../../../../mixins/FormMixin');
+const OAMixin = require('../../../../mixins/ObjectAccessMixin');
+const ReaderMixin = require('../../../../mixins/ReaderMixin');
+const FiltersMixin = require('../../../../mixins/FiltersMixin');
+const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
+const ESQueryMixin = require('../../../../mixins/ESQueryMixin');
+const RemoveMixin = require('../../../../mixins/RemoveMixin');
+const APIRoutes = require('../../../../../common/api/routes');
 const CrudForm = require('./CrudForm.vue');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
 const Utils = require('../../../../utils/utils');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin],
+    mixins: [LangMixin, OAMixin, FormMixin, ReaderMixin, LangMixin,
+        FiltersMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin],
+
     props: {
         form: { required: true },
         cform: { type: String, required: true },
@@ -17,12 +26,34 @@ module.exports = {
     data() {
         return {
             state: {
+                columns: this.columns || {},
+                checked_rows: [],
                 show: {},
+                paths: {
+                    reads: {
+                        dynamic_list: APIRoutes.external(),
+                    },
+                },
+                sinks: {
+                    reads: {
+                        dynamic_list: 'dynamic_list_read',
+                    },
+                    creations: {
+                        dynamic_list: 'dynamic_list_creation',
+                    },
+                },
             },
         };
     },
     components: {
         CrudForm,
+    },
+    watch: {
+        columns(cols) {
+            if (cols) {
+                this.state.columns = cols;
+            }
+        },
     },
     methods: {
         get_component(type) {
@@ -130,7 +161,57 @@ module.exports = {
             }
             return content;
         },
+        dynamic_list_search_query(field) {
+            if (field.type !== 'dynamic-list') {
+                return JSON.stringify([]);
+            }
+            const content = this.fcontent(this.cform);
+            const dynamic_list_fields = field.dynamic_list;
+
+            dynamic_list_fields.body = {};
+            dynamic_list_fields.send_payload.forEach((key) => {
+                if (key.value && content[key.value]) {
+                    dynamic_list_fields.body[key.value] = content[key.value];
+                }
+            });
+            const result = JSON.stringify({
+                host: dynamic_list_fields.host,
+                port: dynamic_list_fields.port,
+                uri: dynamic_list_fields.uri,
+                method: dynamic_list_fields.method,
+                body: dynamic_list_fields.body,
+            });
+            return result;
+        },
+        dynamic_list_columns(field) {
+            if (field.type !== 'dynamic-list') {
+                return {};
+            }
+            return field.dynamic_list.result_table.reduce((obj, c) => {
+                if (c.field && c.sort && c.title) {
+                    obj[c.field] = c;
+                    obj[c.field].visible = true;
+                    obj[c.field].translatable = true;
+                    obj[c.field].sortable = true;
+                    obj[c.field].show_lang_key = true;
+                    obj[c.field].centered = true;
+                }
+                return obj;
+            }, {});
+        },
     },
     computed: {
+        columns() {
+            if (this.form) {
+                if (this.form.fields
+                    && this.form.fields.length > 0) {
+                    return this.form.fields.reduce((obj, c) => {
+                        obj = this.dynamic_list_columns(c);
+                        return obj;
+                    }, {});
+                }
+            }
+            return {};
+        },
     },
 };
