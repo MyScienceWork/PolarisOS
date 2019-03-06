@@ -48,6 +48,8 @@ module.exports = {
     components: {
         CrudForm,
     },
+    mounted() {
+    },
     watch: {
         columns(cols) {
             if (cols) {
@@ -161,57 +163,77 @@ module.exports = {
             }
             return content;
         },
-        dynamic_list_search_query(field) {
-            if (field.type !== 'dynamic-list') {
-                return JSON.stringify([]);
-            }
-            const content = this.fcontent(this.cform);
-            const dynamic_list_fields = field.dynamic_list;
-
-            dynamic_list_fields.body = {};
-            dynamic_list_fields.send_payload.forEach((key) => {
-                if (key.value && content[key.value]) {
-                    dynamic_list_fields.body[key.value] = content[key.value];
+        build_search_query() {
+            const result = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return {};
                 }
-            });
-            const result = JSON.stringify({
-                host: dynamic_list_fields.host,
-                port: dynamic_list_fields.port,
-                uri: dynamic_list_fields.uri,
-                method: dynamic_list_fields.method,
-                body: dynamic_list_fields.body,
-            });
+                const content = this.fcontent(this.cform);
+                const dynamic_list_fields = field.dynamic_list;
+                if (dynamic_list_fields) {
+                    dynamic_list_fields.body = {};
+                    dynamic_list_fields.send_payload.forEach((key) => {
+                        if (key.value && content[key.value]) {
+                            dynamic_list_fields.body[key.value] = content[key.value];
+                        }
+                    });
+                    return JSON.stringify({
+                        host: dynamic_list_fields.host,
+                        port: dynamic_list_fields.port,
+                        uri: dynamic_list_fields.uri,
+                        method: dynamic_list_fields.method,
+                        body: dynamic_list_fields.body,
+                    });
+                }
+                return JSON.stringify({});
+            }, {});
             return result;
         },
-        dynamic_list_columns(field) {
-            if (field.type !== 'dynamic-list') {
-                return {};
-            }
-            return field.dynamic_list.result_table.reduce((obj, c) => {
-                if (c.field && c.sort && c.title) {
-                    obj[c.field] = c;
-                    obj[c.field].visible = true;
-                    obj[c.field].translatable = true;
-                    obj[c.field].sortable = true;
-                    obj[c.field].show_lang_key = true;
-                    obj[c.field].centered = true;
+        dynamic_list_columns() {
+            const columns = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
                 }
+                const l = field.dynamic_list;
+                l.result_table.forEach((result) => {
+                    if (result && result.field
+                        && result.sort
+                        && result.title) {
+                        obj[result.field] = result;
+                        obj[result.field].visible = true;
+                        obj[result.field].translatable = true;
+                        obj[result.field].sortable = true;
+                        obj[result.field].show_lang_key = false;
+                        obj[result.field].centered = true;
+                        obj[result.field].lang = undefined;
+                    }
+                });
                 return obj;
             }, {});
+            return columns;
+        },
+        on_column_update(obj) {
+            this.state.columns[obj.key].visible = obj.checked;
+            this.$set(this.state, 'columns', this.state.columns);
+            this.$forceUpdate();
+        },
+        on_checked_rows_update(obj) {
+            this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
     },
     computed: {
         columns() {
-            if (this.form) {
-                if (this.form.fields
-                    && this.form.fields.length > 0) {
-                    return this.form.fields.reduce((obj, c) => {
-                        obj = this.dynamic_list_columns(c);
-                        return obj;
-                    }, {});
+            const result = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
                 }
-            }
-            return {};
+                const columns = this.dynamic_list_columns(field);
+                return columns;
+            }, {});
+            return result;
+        },
+        dynamic_list_search_query() {
+            return this.build_search_query();
         },
     },
 };
