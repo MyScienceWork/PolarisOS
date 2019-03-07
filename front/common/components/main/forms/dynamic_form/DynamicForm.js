@@ -2,11 +2,7 @@ const _ = require('lodash');
 const LangMixin = require('../../../../mixins/LangMixin');
 const FormMixin = require('../../../../mixins/FormMixin');
 const OAMixin = require('../../../../mixins/ObjectAccessMixin');
-const ReaderMixin = require('../../../../mixins/ReaderMixin');
 const FiltersMixin = require('../../../../mixins/FiltersMixin');
-const FormCleanerMixin = require('../../../../mixins/FormCleanerMixin');
-const ESQueryMixin = require('../../../../mixins/ESQueryMixin');
-const RemoveMixin = require('../../../../mixins/RemoveMixin');
 const APIRoutes = require('../../../../../common/api/routes');
 const CrudForm = require('./CrudForm.vue');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
@@ -167,13 +163,12 @@ module.exports = {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                const content = this.fcontent(this.cform);
                 const dynamic_list_fields = field.dynamic_list;
                 if (dynamic_list_fields) {
                     dynamic_list_fields.body = {};
                     dynamic_list_fields.send_payload.forEach((key) => {
-                        if (key.value && content[key.value]) {
-                            dynamic_list_fields.body[key.value] = content[key.value];
+                        if (key.value) {
+                            dynamic_list_fields.body[key.value] = '';
                         }
                     });
                     obj = JSON.stringify({

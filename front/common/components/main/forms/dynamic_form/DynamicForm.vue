@@ -446,11 +446,10 @@
             </template>
             <template v-else-if="field.type === 'dynamic-list'">
                 <fdata-table-searching
-                    :search-sink="state.sinks.creations.dynamic_list"
+                    :search-sink="cform"
                     :result-sink="state.sinks.reads.dynamic_list"
                     :search-path="state.paths.reads.dynamic_list"
                     :search-query="dynamic_list_search_query"
-                    :empty-search-query="dynamic_list_search_query"
                     :use-default-query="false"
                     search-type="dynamic-list"
                     :checkable="true"

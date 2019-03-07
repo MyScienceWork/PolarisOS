@@ -43,13 +43,11 @@ module.exports = {
             this.currentPage = page;
         },
         on_checkbox_update(key, checked) {
-            console.log("this is key : ", key);
             this.$emit('column-checkbox-update', { key, checked });
         },
         on_main_checkbox_update(columns, checked) {
             this.state.all_columns_visible = checked;
             Object.keys(columns).forEach((key) => {
-                console.log("this is all key : ", key);
                 this.$emit('column-checkbox-update', { key, checked });
             });
         },
