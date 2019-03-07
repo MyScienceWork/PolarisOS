@@ -21,7 +21,7 @@ module.exports = {
     data() {
         return {
             state: {
-                columns: this.columns || {},
+                columns: {},
                 checked_rows: [],
                 show: {},
                 paths: {
@@ -44,13 +44,6 @@ module.exports = {
         CrudForm,
     },
     mounted() {
-    },
-    watch: {
-        columns(cols) {
-            if (cols) {
-                this.state.columns = cols;
-            }
-        },
     },
     methods: {
         get_component(type) {
@@ -183,7 +176,7 @@ module.exports = {
             }, {});
             return result;
         },
-        dynamic_list_columns() {
+        build_dynamic_list_columns() {
             const columns = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
@@ -196,7 +189,7 @@ module.exports = {
                         obj[result.field] = result;
                         obj[result.field].visible = true;
                         obj[result.field].translatable = true;
-                        obj[result.field].sortable = true;
+                        obj[result.field].sortable = false;
                         obj[result.field].show_lang_key = false;
                         obj[result.field].centered = true;
                         obj[result.field].lang = undefined;
@@ -214,17 +207,21 @@ module.exports = {
         on_checked_rows_update(obj) {
             this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
-    },
-    computed: {
-        columns() {
-            const result = this.form.fields.reduce((obj, field) => {
+        build_all_dynamic_list_columns() {
+            this.state.columns = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                const columns = this.dynamic_list_columns(field);
-                return columns;
+                return this.build_dynamic_list_columns(field);
             }, {});
-            return result;
+            return this.state.columns;
+        },
+    },
+    watch: {
+    },
+    computed: {
+        dynamic_list_columns() {
+            return this.build_all_dynamic_list_columns();
         },
         dynamic_list_search_query() {
             return this.build_search_query();

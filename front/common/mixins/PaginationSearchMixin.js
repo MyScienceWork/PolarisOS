@@ -267,7 +267,6 @@ module.exports = {
                     const squery = JSON.parse(Handlebars.compile(this.searchQuery)({}));
                     if (squery.body) {
                         Object.keys(squery.body).forEach((key) => {
-                            console.log('this is key : ', key);
                             if (content[key]) {
                                 squery.body[key] = content[key];
                             }

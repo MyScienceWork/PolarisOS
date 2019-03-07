@@ -30,7 +30,7 @@
                 </div>
                 <div class="navbar-end">
                     <b-dropdown>
-                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')">
+                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')" v-if="enablePagination">
                             {{lang('f_items_per_page')}}
                         </a>
 

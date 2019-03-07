@@ -22,6 +22,7 @@ module.exports = {
         columns: { default: () => ({}), type: Object },
         all_columns_visible: { default: true, type: Boolean },
         showSearch: { default: true, type: Boolean },
+        enablePagination: { default: true, type: Boolean },
     },
     data() {
         return {

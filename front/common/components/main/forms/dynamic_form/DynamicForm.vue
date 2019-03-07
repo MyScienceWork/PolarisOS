@@ -454,13 +454,14 @@
                     search-type="dynamic-list"
                     :checkable="true"
                     :checked-rows="state.checked_rows"
-                    :columns="columns"
+                    :columns="dynamic_list_columns"
                     @column-checkbox-update="on_column_update"
                     @table-checked-rows-update="on_checked_rows_update"
                     :show-search="false"
+                    :enable-pagination="false"
                 >
                     <template slot="rows" slot-scope="props">
-                        <b-table-column v-for="(value, key) in columns"
+                        <b-table-column v-for="(value, key) in state.columns"
                                         :field="value.sort"
                                         :label="lang(value.title, {}, value.lang)"
                                         :visible="value.visible"
