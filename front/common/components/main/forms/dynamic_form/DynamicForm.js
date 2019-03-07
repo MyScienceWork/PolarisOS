@@ -13,8 +13,7 @@ const Handlebars = require('../../../../../../app/modules/utils/templating');
 const Utils = require('../../../../utils/utils');
 
 module.exports = {
-    mixins: [LangMixin, OAMixin, FormMixin, ReaderMixin, LangMixin,
-        FiltersMixin, FormCleanerMixin, ESQueryMixin, RemoveMixin],
+    mixins: [LangMixin, FiltersMixin, FormMixin, OAMixin],
 
     props: {
         form: { required: true },
@@ -166,7 +165,7 @@ module.exports = {
         build_search_query() {
             const result = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
-                    return {};
+                    return obj;
                 }
                 const content = this.fcontent(this.cform);
                 const dynamic_list_fields = field.dynamic_list;
@@ -177,7 +176,7 @@ module.exports = {
                             dynamic_list_fields.body[key.value] = content[key.value];
                         }
                     });
-                    return JSON.stringify({
+                    obj = JSON.stringify({
                         host: dynamic_list_fields.host,
                         port: dynamic_list_fields.port,
                         uri: dynamic_list_fields.uri,
@@ -185,7 +184,7 @@ module.exports = {
                         body: dynamic_list_fields.body,
                     });
                 }
-                return JSON.stringify({});
+                return obj;
             }, {});
             return result;
         },

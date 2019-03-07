@@ -21,6 +21,7 @@ module.exports = {
         tableClasses: { default: '', type: String },
         columns: { default: () => ({}), type: Object },
         all_columns_visible: { default: true, type: Boolean },
+        showSearch: { default: true, type: Boolean },
     },
     data() {
         return {

@@ -458,6 +458,7 @@
                     :columns="columns"
                     @column-checkbox-update="on_column_update"
                     @table-checked-rows-update="on_checked_rows_update"
+                    :show-search="false"
                 >
                     <template slot="rows" slot-scope="props">
                         <b-table-column v-for="(value, key) in columns"

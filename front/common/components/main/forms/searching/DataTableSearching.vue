@@ -5,7 +5,7 @@
                 <div class="navbar-start">
                     <form @submit.prevent="search">
                         <div class="field has-addons" v-intro="lang('l_backoffice_search_help')">
-                            <p class="control has-icons-left is-expanded">
+                            <p class="control has-icons-left is-expanded" v-if="showSearch">
                                 <finput type="text" :placeholder="lang('l_search')" name="search" :form="searchSink" label="" :is-addon="true" />
                                 <span class="icon is-left">
                                     <i class="fa fa-search"></i>

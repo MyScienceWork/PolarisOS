@@ -263,6 +263,8 @@ module.exports = {
                             where = squery;
                         }
                     }
+                } else {
+                    console.log("this is where I am");
                 }
                 body.where = where;
             } else {
