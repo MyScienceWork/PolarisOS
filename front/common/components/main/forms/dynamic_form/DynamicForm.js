@@ -198,6 +198,14 @@ module.exports = {
             }, {});
             return columns;
         },
+        build_read_only() {
+            return this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
+                }
+                return field.dynamic_list.read_only;
+            }, false);
+        },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
@@ -270,6 +278,9 @@ module.exports = {
         },
         dynamic_list_search_query() {
             return this.build_search_query();
+        },
+        read_only() {
+            return this.build_read_only();
         },
         content_dynamic_list() {
             return this.fcontent(this.state.sinks.reads.dynamic_list);

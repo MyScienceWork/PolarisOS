@@ -234,6 +234,9 @@ module.exports = {
                                     selected_mapping: {
                                         type: 'keyword',
                                     },
+                                    read_only: {
+                                        type: 'boolean',
+                                    },
                                     send_payload: {
                                         type: 'nested',
                                         properties: {

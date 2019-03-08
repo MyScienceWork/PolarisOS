@@ -12,7 +12,7 @@
                                 </span>
                                 </p>
                             <p class="control">
-                                <a class="button is-info" :alt="lang('l_search')" :title="lang('l_search')" @click="search">
+                                <a class="button is-info" :alt="lang('l_search')" :title="lang('l_search')" @click="search" v-if="!readOnly">
                                     <span class="icon">
                                         <i class="fa fa-search"></i>
                                     </span>

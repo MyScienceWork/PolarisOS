@@ -459,6 +459,7 @@
                     @table-checked-rows-update="on_checked_rows_update"
                     :show-search="false"
                     :enable-pagination="false"
+                    :read-only="read_only"
                 >
                     <template slot="rows" slot-scope="props">
                         <b-table-column v-for="(value, key) in state.columns"

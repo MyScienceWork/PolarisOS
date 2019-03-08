@@ -23,6 +23,7 @@ module.exports = {
         all_columns_visible: { default: true, type: Boolean },
         showSearch: { default: true, type: Boolean },
         enablePagination: { default: true, type: Boolean },
+        readOnly: { default: false, type: Boolean },
     },
     data() {
         return {
@@ -83,5 +84,6 @@ module.exports = {
         },
     },
     mounted() {
+        this.search();
     },
 };

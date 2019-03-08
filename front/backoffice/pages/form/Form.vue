@@ -503,6 +503,13 @@
                                                     :key="`${props.fname}.${props.order}.dynamic_list.selected_mapping`"
                                                     :name="`${props.fname}.${props.order}.dynamic_list.selected_mapping`"
                                                     :label="lang('b_dynamic_list_selected_mapping')" :is-required="true" :placeholder="lang('b_dynamic_list_uri')" type="text" :form="state.sinks.creations.form" />
+                                            <finput
+                                                    :key="`${props.fname}.${props.order}.dynamic_list.read_only`"
+                                                    :name="`${props.fname}.${props.order}.dynamic_list.read_only`"
+                                                    :label="lang('b_read_only')"
+                                                    type="checkbox"
+                                                    :form="state.sinks.creations.form"
+                                            />
                                             <span slot="title">
                                             {{lang('b_send_payload')}}
                                             </span>
