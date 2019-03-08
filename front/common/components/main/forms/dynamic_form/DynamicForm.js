@@ -25,6 +25,7 @@ module.exports = {
                 columns: {},
                 checked_rows: [],
                 all_rows: [],
+                selected: [],
                 show: {},
                 paths: {
                     reads: {
@@ -43,6 +44,10 @@ module.exports = {
         CrudForm,
     },
     mounted() {
+        const form_content = this.fcontent(this.cform);
+        if (form_content.disorder_list.length > 0) {
+            this.state.all_rows = form_content.disorder_list;
+        }
     },
     methods: {
         get_component(type) {
@@ -138,7 +143,6 @@ module.exports = {
                 return [];
             }
 
-
             let content = [];
             if (field.datasource.fetch_from_sink) {
                 content = this.fcontent(field.datasource.sink);
@@ -210,41 +214,50 @@ module.exports = {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
         },
-        dispatch_row_check(rows, status) {
-            const result_mapping = this.form.fields.reduce((obj, field) => {
-                if (field.type !== 'dynamic-list') {
-                    return obj;
-                }
-                return field.dynamic_list.result_mapping;
-            }, {});
-            const selected_mapping = this.form.fields.reduce((obj, field) => {
-                if (field.type !== 'dynamic-list') {
-                    return obj;
-                }
-                return field.dynamic_list.selected_mapping;
-            });
-            const original_checked_rows = rows;
+        map_api_result_to_form(result_mapping, selected_mapping, rows, status) {
             const authorized_keys = result_mapping.map(c => c.value_payload);
-
-            let new_check_rows = {};
-
+            let remapped_rows = [];
             authorized_keys.forEach((key) => {
-                new_check_rows = original_checked_rows.map((item_row, item_row_key) => {
-                    item_row = new_check_rows[item_row_key] || {};
-                    item_row[key] = original_checked_rows[item_row_key][key];
-                    item_row[selected_mapping] = status;
+                remapped_rows = rows.map((item_row, item_row_key) => {
+                    item_row = remapped_rows[item_row_key] || {};
+                    item_row[key] = rows[item_row_key][key];
+                    if (status) {
+                        item_row[selected_mapping] = status;
+                    } else if (this.state.all_rows.length > 0
+                        && this.state.all_rows[item_row_key]
+                        && this.state.all_rows[item_row_key][selected_mapping]) {
+                        item_row[selected_mapping] = this.state.all_rows[item_row_key][selected_mapping];
+                    } else {
+                        item_row[selected_mapping] = false;
+                    }
                     return item_row;
                 });
             });
+            return remapped_rows;
+        },
+        dispatch_row_check(rows, status) {
+            if (!(rows instanceof Array)) {
+                return;
+            }
+            const { result_mapping, selected_mapping } = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
+                }
+                return { result_mapping: field.dynamic_list.result_mapping,
+                    selected_mapping: field.dynamic_list.selected_mapping };
+            }, {});
+
+            const remapped_rows = this.map_api_result_to_form(result_mapping, selected_mapping, rows, status);
+
             result_mapping.forEach((result) => {
                 const all_keys = result.value_form.split('.');
                 const root_key = all_keys[0];
                 let new_rows = [];
                 if (status === true) {
-                    new_rows = Utils.merge_by_key(this.state.all_rows, new_check_rows, all_keys[all_keys.length - 1]);
+                    new_rows = Utils.merge_by_key(this.state.all_rows, remapped_rows, all_keys[all_keys.length - 1]);
                 } else {
-                    new_rows = new_check_rows;
-                    this.state.all_rows = new_check_rows;
+                    new_rows = remapped_rows;
+                    this.$set(this.state, 'all_rows', remapped_rows);
                 }
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.cform,
@@ -252,6 +265,31 @@ module.exports = {
                     info: new_rows,
                 });
             });
+        },
+        init_checked_rows(rows) {
+            if (!(rows instanceof Array)) {
+                return;
+            }
+            const { result_mapping, selected_mapping } = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
+                }
+                return { result_mapping: field.dynamic_list.result_mapping,
+                    selected_mapping: field.dynamic_list.selected_mapping };
+            }, {});
+
+            const remapped_rows = this.map_api_result_to_form(result_mapping, selected_mapping, rows);
+            const checked_rows = [];
+
+            rows.forEach((row, index_row) => {
+                console.log("remapped_rows[index_row][selected_mapping] : ", remapped_rows[index_row][selected_mapping]);
+                if (remapped_rows[index_row]
+                    && remapped_rows[index_row][selected_mapping] === true) {
+                    checked_rows.push(row);
+                }
+            });
+            console.log('CHECKED ROW : ', checked_rows);
+            this.$set(this.state, 'checked_rows', checked_rows);
         },
         on_checked_rows_update(row) {
             this.dispatch_row_check(row.checkedRows, true);
@@ -269,7 +307,8 @@ module.exports = {
     },
     watch: {
         content_dynamic_list(dynamic_list) {
-            this.dispatch_row_check(dynamic_list, false);
+            this.dispatch_row_check(dynamic_list);
+            this.init_checked_rows(dynamic_list);
         },
     },
     computed: {
