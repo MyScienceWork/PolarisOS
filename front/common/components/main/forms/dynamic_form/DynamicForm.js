@@ -7,6 +7,7 @@ const APIRoutes = require('../../../../../common/api/routes');
 const CrudForm = require('./CrudForm.vue');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
 const Utils = require('../../../../utils/utils');
+const Messages = require('../../../../../common/api/messages');
 
 module.exports = {
     mixins: [LangMixin, FiltersMixin, FormMixin, OAMixin],
@@ -23,6 +24,7 @@ module.exports = {
             state: {
                 columns: {},
                 checked_rows: [],
+                all_rows: [],
                 show: {},
                 paths: {
                     reads: {
@@ -32,9 +34,6 @@ module.exports = {
                 sinks: {
                     reads: {
                         dynamic_list: 'dynamic_list_read',
-                    },
-                    creations: {
-                        dynamic_list: 'dynamic_list_creation',
                     },
                 },
             },
@@ -202,10 +201,53 @@ module.exports = {
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
-            this.$forceUpdate();
         },
-        on_checked_rows_update(obj) {
-            this.$set(this.state, 'checked_rows', obj.checkedRows);
+        dispatch_row_check(rows, status) {
+            const result_mapping = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
+                }
+                return field.dynamic_list.result_mapping;
+            }, {});
+            const selected_mapping = this.form.fields.reduce((obj, field) => {
+                if (field.type !== 'dynamic-list') {
+                    return obj;
+                }
+                return field.dynamic_list.selected_mapping;
+            });
+            const original_checked_rows = rows;
+            const authorized_keys = result_mapping.map(c => c.value_payload);
+
+            let new_check_rows = {};
+
+            authorized_keys.forEach((key) => {
+                new_check_rows = original_checked_rows.map((item_row, item_row_key) => {
+                    item_row = new_check_rows[item_row_key] || {};
+                    item_row[key] = original_checked_rows[item_row_key][key];
+                    item_row[selected_mapping] = status;
+                    return item_row;
+                });
+            });
+            result_mapping.forEach((result) => {
+                const all_keys = result.value_form.split('.');
+                const root_key = all_keys[0];
+                let new_rows = [];
+                if (status === true) {
+                    new_rows = Utils.merge_by_key(this.state.all_rows, new_check_rows, all_keys[all_keys.length - 1]);
+                } else {
+                    new_rows = new_check_rows;
+                    this.state.all_rows = new_check_rows;
+                }
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.cform,
+                    name: root_key,
+                    info: new_rows,
+                });
+            });
+        },
+        on_checked_rows_update(row) {
+            this.dispatch_row_check(row.checkedRows, true);
+            this.$set(this.state, 'checked_rows', row.checkedRows);
         },
         build_all_dynamic_list_columns() {
             this.state.columns = this.form.fields.reduce((obj, field) => {
@@ -218,6 +260,9 @@ module.exports = {
         },
     },
     watch: {
+        content_dynamic_list(dynamic_list) {
+            this.dispatch_row_check(dynamic_list, false);
+        },
     },
     computed: {
         dynamic_list_columns() {
@@ -225,6 +270,9 @@ module.exports = {
         },
         dynamic_list_search_query() {
             return this.build_search_query();
+        },
+        content_dynamic_list() {
+            return this.fcontent(this.state.sinks.reads.dynamic_list);
         },
     },
 };

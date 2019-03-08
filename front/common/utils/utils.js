@@ -1,6 +1,18 @@
 // @flow
 const _ = require('lodash');
 
+_.mixin({
+    mergeByKey(arr1, arr2, key) {
+        const criteria = {};
+        criteria[key] = null;
+        const newArray = JSON.parse(JSON.stringify(arr1));
+        return _.map(newArray, (item) => {
+            criteria[key] = item[key];
+            return _.merge(item, _.find(arr2, criteria));
+        });
+    },
+});
+
 function truncate(input: string, size: number = 10, ellipsis: string = '...'): string {
     const total_size = size + ellipsis.length;
     if (input.length > total_size) {
@@ -190,6 +202,10 @@ function traverse_and_execute(object: Object, path: Array<string>, f: Function):
     return object;
 }
 
+function merge_by_key(arr1: Array<*>, arr2: Array<*>, key: string) {
+    return _.mergeByKey(arr1, arr2, key);
+}
+
 module.exports = {
     truncate,
     to_matrix,
@@ -197,6 +213,7 @@ module.exports = {
     find_object_with_path,
     make_nested_object_from_path,
     merge_with_replacement,
+    merge_by_key,
     crunch_data_for_fetch,
     traverse_and_execute,
 };
