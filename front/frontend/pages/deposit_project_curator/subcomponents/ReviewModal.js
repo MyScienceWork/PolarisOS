@@ -21,7 +21,6 @@ module.exports = {
     },
     computed: {
         status_options() {
-            console.log("this is status option : ", this.status);
             return this.status;
         },
     },

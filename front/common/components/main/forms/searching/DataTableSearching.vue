@@ -73,6 +73,7 @@
             @check-all="on_checked_rows_update"
             :detail-key="detailKey"
             :checkable="checkable"
+            :is-row-checkable="() => !readOnly"
             @sort="sort"
             v-intro="lang('l_backoffice_datatable_help')"
             >

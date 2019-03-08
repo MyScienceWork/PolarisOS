@@ -88,7 +88,6 @@ module.exports = {
             const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
             if (idx !== -1) {
                 workflows[idx].steps.forEach((step) => {
-                    console.log("this is step : ", step);
                     if (step.roles.length > 0) {
                         step.roles.some((role_workflow) => {
                             const indexRole = _.findKey(this.roles, role_user => role_user._id === role_workflow._id);
