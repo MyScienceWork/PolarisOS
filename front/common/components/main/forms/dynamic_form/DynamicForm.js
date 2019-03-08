@@ -43,6 +43,10 @@ module.exports = {
         CrudForm,
     },
     mounted() {
+        const fcontent = this.fcontent(this.cform);
+        if (fcontent.disorder_list) {
+            this.$set(this.state, 'all_rows', fcontent.disorder_list);
+        }
     },
     methods: {
         get_component(type) {
@@ -211,6 +215,9 @@ module.exports = {
             this.$set(this.state, 'columns', this.state.columns);
         },
         dispatch_row_check(rows, status) {
+            if (!(rows instanceof Array)) {
+                return;
+            }
             const result_mapping = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
@@ -223,29 +230,48 @@ module.exports = {
                 }
                 return field.dynamic_list.selected_mapping;
             });
-            const original_checked_rows = rows;
+            if (!(result_mapping instanceof Array)) {
+                return;
+            }
             const authorized_keys = result_mapping.map(c => c.value_payload);
 
             let new_check_rows = {};
 
             authorized_keys.forEach((key) => {
-                new_check_rows = original_checked_rows.map((item_row, item_row_key) => {
-                    item_row = new_check_rows[item_row_key] || {};
-                    item_row[key] = original_checked_rows[item_row_key][key];
-                    item_row[selected_mapping] = status;
-                    return item_row;
+                new_check_rows = rows.map((item_row, item_row_key) => {
+                    if (item_row !== undefined) {
+                        item_row = new_check_rows[item_row_key] || {};
+                        item_row[key] = rows[item_row_key][key];
+                        if (status) {
+                            item_row[selected_mapping] = status;
+                        } else if (this.state.all_rows && this.state.all_rows[item_row_key] && this.state.all_rows[item_row_key][selected_mapping]) {
+                            item_row[selected_mapping] = this.state.all_rows[item_row_key][selected_mapping];
+                        } else {
+                            item_row[selected_mapping] = false;
+                        }
+                        return item_row;
+                    }
                 });
             });
             result_mapping.forEach((result) => {
                 const all_keys = result.value_form.split('.');
                 const root_key = all_keys[0];
                 let new_rows = [];
-                if (status === true) {
+                if (this.state.all_rows.length > 0) {
                     new_rows = Utils.merge_by_key(this.state.all_rows, new_check_rows, all_keys[all_keys.length - 1]);
                 } else {
                     new_rows = new_check_rows;
-                    this.state.all_rows = new_check_rows;
+                    this.$set(this.state, 'all_rows', new_rows);
                 }
+
+                const checked_rows = [];
+                new_rows.forEach((row, new_row_key) => {
+                    if (row[selected_mapping] === true) {
+                        checked_rows.push(rows[new_row_key]);
+                    }
+                });
+                this.$set(this.state, 'checked_rows', checked_rows);
+
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.cform,
                     name: root_key,
@@ -255,7 +281,6 @@ module.exports = {
         },
         on_checked_rows_update(row) {
             this.dispatch_row_check(row.checkedRows, true);
-            this.$set(this.state, 'checked_rows', row.checkedRows);
         },
         build_all_dynamic_list_columns() {
             this.state.columns = this.form.fields.reduce((obj, field) => {
@@ -269,7 +294,7 @@ module.exports = {
     },
     watch: {
         content_dynamic_list(dynamic_list) {
-            this.dispatch_row_check(dynamic_list, false);
+            this.dispatch_row_check(dynamic_list);
         },
     },
     computed: {
