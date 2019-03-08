@@ -57,6 +57,10 @@ const production = {
         host: 'http://finddiseases',
         port: 5001,
     },
+    classification_rare: {
+        host: 'http://classificationrare',
+        port: 5001,
+    },
 };
 
 module.exports = production;

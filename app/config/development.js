@@ -32,6 +32,10 @@ const development = {
         host: 'http://localhost',
         port: 5001,
     },
+    classification_rare: {
+        host: 'http://localhost',
+        port: 5002,
+    },
 };
 
 module.exports = development;

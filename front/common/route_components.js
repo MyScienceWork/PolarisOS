@@ -13,6 +13,7 @@ const Help = require('../frontend/pages/help/Help.vue');
 const News = require('../frontend/pages/news/News.vue');
 const Events = require('../frontend/pages/events/Events.vue');
 const FindDiseases = require('../frontend/pages/find_diseases/FindDiseases.vue');
+const ClassificationRare = require('../frontend/pages/classification_rare/ClassificationRare.vue');
 const NewsPage = require('../frontend/pages/news/NewsPage.vue');
 const EventPage = require('../frontend/pages/events/EventPage.vue');
 const NewEvent = require('../frontend/pages/events/NewEvent.vue');
@@ -46,6 +47,7 @@ module.exports = {
     single_news: NewsPage,
     events: Events,
     find_diseases: FindDiseases,
+    classification_rare: ClassificationRare,
     single_event: EventPage,
     create_event: NewEvent,
     create_news: CreateNews,
