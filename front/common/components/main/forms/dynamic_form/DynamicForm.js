@@ -45,7 +45,9 @@ module.exports = {
     },
     mounted() {
         const form_content = this.fcontent(this.cform);
-        if (form_content.disorder_list.length > 0) {
+        if (form_content
+            && form_content.disorder_list instanceof Array
+            && form_content.disorder_list.length > 0) {
             this.state.all_rows = form_content.disorder_list;
         }
     },
