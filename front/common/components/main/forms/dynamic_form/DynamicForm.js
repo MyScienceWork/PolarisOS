@@ -190,7 +190,11 @@ module.exports = {
                         && result.sort
                         && result.title) {
                         obj[result.field] = result;
-                        obj[result.field].visible = true;
+                        if (this.state.columns[result.field]) {
+                            obj[result.field].visible = this.state.columns[result.field].visible;
+                        } else {
+                            obj[result.field].visible = true;
+                        }
                         obj[result.field].translatable = true;
                         obj[result.field].sortable = false;
                         obj[result.field].show_lang_key = false;
@@ -213,6 +217,7 @@ module.exports = {
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
+            this.build_all_dynamic_list_columns();
         },
         map_api_result_to_form(result_mapping, selected_mapping, rows, status) {
             const authorized_keys = result_mapping.map(c => c.value_payload);
