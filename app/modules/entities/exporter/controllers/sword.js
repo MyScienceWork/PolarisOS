@@ -111,11 +111,11 @@ async function create(pid: string): Promise<any> {
     try {
         const result = await result_promise;
         // console.log(result.body, result.json, result.text, result.xml);
-        return true;
+        return [true, undefined];
     } catch (err) {
         Logger.error('Error when sending deposit to HAL');
         Logger.error(err);
-        return false;
+        return [false, undefined];
     }
 }
 
@@ -130,7 +130,7 @@ async function remove(pid: string): Promise<any> {
 async function create_controller(ctx: Object): Promise<any> {
     const body = ctx.request.body;
     const pid = body.publication;
-    const res = await create(pid);
+    const [res, id] = await create(pid);
     ctx.body = { ok: res };
 }
 
