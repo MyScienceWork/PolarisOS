@@ -8,6 +8,7 @@ const EntitiesUtils = require('../utils/entities');
 const EnvUtils = require('../utils/env');
 const ConfigUtils = require('../utils/config');
 const HandleAPI = require('../3rdparty/handle/api');
+const SwordAPI = require('../entities/exporter/controllers/sword');
 const Config = require('../../config');
 const Throttle = require('promise-parallel-throttle');
 
@@ -18,6 +19,42 @@ class ApiScheduler extends Scheduler {
 
     async _execute_sitemap_creation() {
 
+    }
+
+    async _execute_hal_export() {
+        if (!EnvUtils.is_production()) {
+            Logger.info('HAL API only runs in production mode');
+            return;
+        }
+
+        const publications = await EntitiesUtils.search_and_get_sources('publication', {
+            where: {
+                $and: [
+                    { status: ['published'] },
+                    { 'system.api.hal': false },
+                    { 'diffusion.rights.exports.hal': true },
+                ],
+            },
+            size: 100,
+        });
+
+        const exec_hal = async (p) => {
+            const [ok, id] = await SwordAPI.create(p._id);
+            if (ok) {
+                if (!('api' in p.system)) {
+                    p.system.api = {};
+                }
+                p.system.api.hal = true;
+                p.system.api.hal_id = id;
+                await EntitiesUtils.update(p, 'publication');
+            }
+            return ok;
+        };
+        const promises = publications.map(p => () => exec_hal(p));
+
+        await Throttle.all(promises, {
+            maxInProgress: 10,
+        });
     }
 
     async _execute_handle_creation() {
@@ -75,6 +112,10 @@ class ApiScheduler extends Scheduler {
         console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
+            Logger.error(err);
+        });
+        this._execute_hal_export().then(() => {}).catch((err) => {
+            Logger.error('Error when exporting to HAL using scheduler');
             Logger.error(err);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {

@@ -3,6 +3,7 @@
 const Request = require('superagent');
 const Config = require('../../../../config');
 const ConfigUtils = require('../../../utils/config');
+const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
 const Logger = require('../../../../logger');
 const Archiver = require('archiver');
@@ -12,6 +13,7 @@ const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
 const HalExporter = require('./hal');
 const StreamBuffers = require('stream-buffers');
+const URL = require('url');
 
 async function get_hal_config(): Promise<?Object> {
     const global_config = await ConfigUtils.get_config();
@@ -110,12 +112,17 @@ async function create(pid: string): Promise<any> {
 
     try {
         const result = await result_promise;
-        // console.log(result.body, result.json, result.text, result.xml);
-        return true;
+        const location = result.headers.location || undefined;
+        if (location == undefined) {
+            return [false, undefined];
+        }
+
+        const id = URL.parse(location).pathname.replace(/\/+/gi, '');
+        return [true, id];
     } catch (err) {
         Logger.error('Error when sending deposit to HAL');
         Logger.error(err);
-        return false;
+        return [false, undefined];
     }
 }
 
@@ -130,7 +137,7 @@ async function remove(pid: string): Promise<any> {
 async function create_controller(ctx: Object): Promise<any> {
     const body = ctx.request.body;
     const pid = body.publication;
-    const res = await create(pid);
+    const [res, id] = await create(pid);
     ctx.body = { ok: res };
 }
 
