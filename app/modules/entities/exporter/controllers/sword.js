@@ -150,6 +150,7 @@ async function remove_controller(ctx: Object): Promise<any> {
 }
 
 module.exports = {
+    create,
     create_controller,
     remove_controller,
     update_controller,
