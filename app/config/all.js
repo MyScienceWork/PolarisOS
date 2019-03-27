@@ -22,8 +22,8 @@ const all = {
     minio: {
         host: 'localhost',
         port: 9000,
-        accessKey: 'D6WOTGX0QWJ0I61CACYZ',
-        secretKey: 'NdD4gVGH3OeK3s+W4kPnF+qU8DntxO1HwDT0luoC',
+        accessKey: 'D6WATDX0QDZ1I61CACYZ',
+        secretKey: 'NdD50gVGH40OeK2s+W3kPnF+qU9DntxO2HwDT2luoC',
         secure: false,
         default_bucket: 'posbucket',
         sitemap_bucket: 'possitemap',
