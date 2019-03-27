@@ -30,18 +30,17 @@ class ApiScheduler extends Scheduler {
                     { 'diffusion.rights.exports.hal': true },
                 ],
             },
-            size: 500,
+            size: 100,
         });
     }
 
     async _execute_hal_export() {
         if (!EnvUtils.is_production()) {
             Logger.info('HAL API only runs in production mode');
-            //return;
+            return;
         }
 
         const publications = await this.get_uploadable_publications();
-        console.log("uploadable publications number : ", publications.length);
 
         const exec_hal = async (p) => {
             const refreshed_pub = await this.get_uploadable_publications();

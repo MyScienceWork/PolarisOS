@@ -60,38 +60,11 @@ async function create(pid: string): Promise<any> {
     }
 
     const xml_tei = await HalExporter.transform_publication_to_hal(publication);
-    console.log("this is publication : ", publication);
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
-    console.log("this is files : ", files);
     const my_file = files.find(f => f.is_master) || (files.length > 0 ? files[0] : null);
-    console.log("this is my_file : ", my_file);
     const skip_files = files.length === 0 || ((my_file.access.restricted || my_file.access.confidential) && !my_file.access.delayed);
-    console.log("this is skip files : ", skip_files);
     // console.log(xml_tei);
 
-    if (skip_files === false) {
-        const archive = Archiver('zip', {
-            zlib: { level: 1 }, // Sets the compression level.
-        }).on('progress', (info) => {
-            // console.log('Archiver progress: ', JSON.stringify(info));
-        }).on('error', (err) => {
-            // console.log('archiver error', err);
-        });
-
-        const xml_stream = new Streams.Readable();
-        xml_stream.push(xml_tei);
-        xml_stream.push(null);
-
-        archive.append(xml_stream, { name: 'meta.xml' });
-        for (const file of files) {
-            console.log("minio this file : ", file.url);
-            console.log("default bucket : ", MinioUtils.default_bucket);
-            const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, file.url);
-            archive.append(stream, { name: file.name });
-        }
-    }
-
-    /*
     const req = Request.post(url)
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
         .auth(encodeURIComponent(login), encodeURIComponent(password));
@@ -151,8 +124,6 @@ async function create(pid: string): Promise<any> {
         Logger.error(err);
         return [false, undefined];
     }
-    */
-    return [false, undefined];
 }
 
 async function update(pid: string): Promise<any> {
