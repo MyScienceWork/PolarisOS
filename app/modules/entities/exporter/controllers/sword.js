@@ -63,7 +63,7 @@ async function create(pid: string): Promise<any> {
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
     const my_file = files.find(f => f.is_master) || (files.length > 0 ? files[0] : null);
     const skip_files = files.length === 0 || ((my_file.access.restricted || my_file.access.confidential) && !my_file.access.delayed);
-    //console.log(xml_tei);
+    console.log(xml_tei);
 
     const req = Request.post(url)
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
