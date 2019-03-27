@@ -63,7 +63,7 @@ async function create(pid: string): Promise<any> {
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
     const my_file = files.find(f => f.is_master) || (files.length > 0 ? files[0] : null);
     const skip_files = files.length === 0 || ((my_file.access.restricted || my_file.access.confidential) && !my_file.access.delayed);
-    // console.log(xml_tei);
+    //console.log(xml_tei);
 
     const req = Request.post(url)
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
@@ -73,7 +73,7 @@ async function create(pid: string): Promise<any> {
         req
         .on('response', result => resolve(result)).on('error', err => reject(err));
     });
-    console.log(xml_tei);
+
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
             .send(xml_tei)
@@ -114,6 +114,8 @@ async function create(pid: string): Promise<any> {
         const result = await result_promise;
         const location = result.headers.location || undefined;
         if (location == undefined) {
+            Logger.error("Error when sending deposit to HAL : ", result.error);
+            Logger.info("XML sent : ", xml_tei)
             return [false, undefined];
         }
 
