@@ -204,6 +204,7 @@ async function get_notes_stmt(publication: Object): Promise<string> {
 async function get_monogr(publication: Object): Promise<string> {
     const ids = Utils.find_value_with_path(publication, 'ids'.split('.')) || [];
     const isbns = ids.filter(id => id.type === 'isbn');
+    const handles = ids.filter(id => id.type === 'handle');
     const journal = Utils.find_value_with_path(publication, 'journal'.split('.')) || '__dummy__';
     const book_title = Utils.find_value_with_path(publication, 'publication_title'.split('.'));
     const dates = Utils.find_value_with_path(publication, 'dates'.split('.')) || {};
@@ -225,6 +226,7 @@ async function get_monogr(publication: Object): Promise<string> {
 
     let journal_ = '';
     let isbn_ = '';
+    let handle_ = '';
     let book_title_ = '';
     let meeting_ = '';
     let settlement_ = '';
@@ -251,6 +253,10 @@ async function get_monogr(publication: Object): Promise<string> {
 
     if (isbns.length > 0) {
         isbn_ = isbns.map(isbn => `<idno type="isbn">${_.escape(isbn._id)}</idno>`).join('\n');
+    }
+
+    if (handles.length > 0) {
+        handle_ = handles.map(handle => `<idno type="localRef">${_.escape(handle._id)}</idno>`).join('\n');
     }
 
     if (book_title) {
@@ -352,7 +358,7 @@ async function get_monogr(publication: Object): Promise<string> {
         imprint_ = `<imprint>${imprint_}</imprint>`;
     }
 
-    return `<monogr>${isbn_}${journal_}${book_title_}${meeting_}${settlement_}${country_}${editor_}${imprint_}${institution_}${authorities_}</monogr>`;
+    return `<monogr>${isbn_}${handle_}${journal_}${book_title_}${meeting_}${settlement_}${country_}${editor_}${imprint_}${institution_}${authorities_}</monogr>`;
 }
 
 async function get_source_desc(publication: Object): Promise<string> {
