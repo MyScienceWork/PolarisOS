@@ -21,13 +21,8 @@ class ApiScheduler extends Scheduler {
 
     }
 
-    async _execute_hal_export() {
-        if (!EnvUtils.is_production()) {
-            Logger.info('HAL API only runs in production mode');
-            return;
-        }
-
-        const publications = await EntitiesUtils.search_and_get_sources('publication', {
+    async get_uploadable_publications() {
+        return await EntitiesUtils.search_and_get_sources('publication', {
             where: {
                 $and: [
                     { status: ['published'] },
@@ -37,8 +32,24 @@ class ApiScheduler extends Scheduler {
             },
             size: 100,
         });
+    }
+
+    async _execute_hal_export() {
+        if (!EnvUtils.is_production()) {
+            Logger.info('HAL API only runs in production mode');
+            return;
+        }
+
+        const publications = await this.get_uploadable_publications();
 
         const exec_hal = async (p) => {
+            const refreshed_pub = await this.get_uploadable_publications();
+            const idx_pub = refreshed_pub.find(pub => pub._id === p._id);
+
+            if (idx_pub !== undefined && idx_pub.system.api.hal === true) {
+                return true;
+            }
+
             const [ok, id] = await SwordAPI.create(p._id);
             if (ok) {
                 if (!('api' in p.system)) {
