@@ -34,6 +34,12 @@ class ApiScheduler extends Scheduler {
         });
     }
 
+    async asyncForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array);
+        }
+    }
+
     async _execute_hal_export() {
         if (!EnvUtils.is_production()) {
             Logger.info('HAL API only runs in production mode');
@@ -43,6 +49,13 @@ class ApiScheduler extends Scheduler {
         const publications = await this.get_uploadable_publications();
 
         const exec_hal = async (p) => {
+            // wait 10 seconds before each send to avoid HAL duplicates
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    resolve();
+                }, 10000);
+            });
+
             const refreshed_pub = await this.get_uploadable_publications();
             const idx_pub = refreshed_pub.find(pub => pub._id === p._id);
 
@@ -64,7 +77,7 @@ class ApiScheduler extends Scheduler {
         const promises = publications.map(p => () => exec_hal(p));
 
         await Throttle.all(promises, {
-            maxInProgress: 10,
+            maxInProgress: 1,
         });
     }
 

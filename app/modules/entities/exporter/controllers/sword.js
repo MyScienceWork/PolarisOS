@@ -119,6 +119,7 @@ async function create(pid: string): Promise<any> {
             return [false, undefined];
         }
 
+        Logger.info("Successfully sent : ", xml_tei);
         const id = URL.parse(location).pathname.replace(/\/+/gi, '');
         return [true, id];
     } catch (err) {
