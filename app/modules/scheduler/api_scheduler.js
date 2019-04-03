@@ -21,6 +21,12 @@ class ApiScheduler extends Scheduler {
 
     }
 
+    async asyncForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array)
+        }
+    }
+
     async get_uploadable_publications() {
         return await EntitiesUtils.search_and_get_sources('publication', {
             where: {
@@ -74,10 +80,14 @@ class ApiScheduler extends Scheduler {
             }
             return ok;
         };
-        const promises = publications.map(p => () => exec_hal(p));
 
-        await Throttle.all(promises, {
-            maxInProgress: 1,
+        await this.asyncForEach(publications, async function(p) {
+            try {
+                await exec_hal(p);
+            } catch (err) {
+                Logger.error('Error when sending publication');
+            }
+
         });
     }
 
