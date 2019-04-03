@@ -76,7 +76,8 @@ async function create(pid: string): Promise<any> {
 
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
-            .send(xml_tei);
+            .send(xml_tei)
+            .end();
     } else {
         req
             .set('Content-Type', 'application/zip')
@@ -105,7 +106,7 @@ async function create(pid: string): Promise<any> {
         archive.finalize();
 
         writableStreamBuffer.on('finish', () => {
-            req.send(writableStreamBuffer.getContents());
+            req.send(writableStreamBuffer.getContents()).end();
         });
     }
 
