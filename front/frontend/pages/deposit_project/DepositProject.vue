@@ -6,10 +6,22 @@
                 <div class="card">
                     <div class="card-content">
                         <h4 class="has-small-top-margin title is-4">{{lang('l_deposit_project')}}</h4>
-                        <div v-if="Object.keys(user_forms('project_form')).length === 0" class="columns is-centered">
-                            <loader />
-                        </div>
-                        <div v-else>
+                        <div>
+                            <div class="column">
+                                <fselect
+                                        :label="lang('f_choose_project_type')"
+                                        :is-required="true"
+                                        :options="project_type_options"
+                                        :form="state.sinks.creations.project"
+                                        name="type"
+                                        class="has-text-centered"
+                                        fieldLabel="name"
+                                        fieldValue="name"
+                                        :view-validation-texts="false"
+                                        :translatable="true"
+                                        @select-change="project_type_change"
+                                />
+                            </div>
                             <fform
                                     :name="state.sinks.creations.project"
                                     :hasButtons="!is_editing()"
@@ -18,7 +30,11 @@
                                     :get_path="state.paths.reads.project"
                                     :get_form="state.sinks.reads.project"
                             >
-                            <dynamic-form :form="user_forms('project_form')" :cform="state.sinks.creations.project"/>
+                            <div v-if="state.project_subform_name !== '' && Object.keys(user_forms(state.project_subform_name)).length === 0" class="columns is-centered">
+                                <br/>
+                                <loader />
+                            </div>
+                            <dynamic-form v-else-if="state.project_subform_name !== ''" :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
                                 <finput
                                     type='hidden'
                                     label=''

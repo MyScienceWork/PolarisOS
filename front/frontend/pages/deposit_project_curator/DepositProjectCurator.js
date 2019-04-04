@@ -129,19 +129,6 @@ module.exports = {
             }
             return '';
         },
-        user_forms() {
-            const content = this.fcontent(this.state.sinks.reads.user_forms);
-            if (!(content instanceof Array) || content.length === 0) {
-                return () => [];
-            }
-            return (f) => {
-                const r = content.filter(c => c.name === f);
-                if (r.length > 0) {
-                    return r[0];
-                }
-                return [];
-            };
-        },
     },
     beforeMount() {
         const query = this.$route.query;

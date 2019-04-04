@@ -18,7 +18,7 @@
                                     :get_path="state.paths.reads.project"
                                     :get_form="state.sinks.reads.project"
                             >
-                            <dynamic-form :form="user_forms('project_curator_form')" :cform="state.sinks.creations.project"/>
+                            <dynamic-form :form="user_forms" :cform="state.sinks.creations.project"/>
                                 <finput
                                     type='hidden'
                                     label=''

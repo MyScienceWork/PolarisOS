@@ -22,6 +22,7 @@ module.exports = {
                         user_forms: 'user_forms_read',
                         project: 'project_read',
                         workflow: 'workflow_read',
+                        project_type: 'project_type_read',
                     },
                 },
                 paths: {
@@ -32,6 +33,7 @@ module.exports = {
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
+                        project_type: APIRoutes.entity('project_type', 'POST', true),
                     },
                 },
                 statuses: {
@@ -40,6 +42,8 @@ module.exports = {
                     },
                 },
                 show_review_modal: false,
+                project_form_name: 'deposit_project_form',
+                project_subform_name: '',
             },
         };
     },
@@ -70,9 +74,8 @@ module.exports = {
             this.state.show_review_modal = true;
         },
         review_project() {
-            console.log("review project");
+            console.log('review project');
             const content = this.fcontent(this.state.sinks.creations.project);
-            console.log("this is the content : ", content);
             this.$store.dispatch('update', {
                 form: this.state.sinks.creations.project,
                 path: this.state.paths.creations.project,
@@ -103,14 +106,46 @@ module.exports = {
             }
             return filtered_states;
         },
+        reset_interface() {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.project,
+            });
+        },
+        project_type_change(form) {
+            console.log('utf', form, this.state.project_subform_name);
+            if (!form.label || form.label === '') {
+                if (this.state.project_subform_name) {
+                    this.state.project_subform_name = undefined;
+                    this.reset_interface();
+                    return;
+                }
+            }
+
+            if (this.state.project_subform_name
+                && this.state.project_subform_name !== form) {
+                this.reset_interface();
+            }
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.label.toLowerCase()}`;
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.user_forms,
+                keep_content: false,
+            });
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [this.state.project_subform_name],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
+        },
     },
     components: {
         ReviewModal,
     },
     watch: {
-        project_id(id) {
-            //console.log('this is project id : ', id);
-        },
     },
     computed: {
         project_id() {
@@ -129,18 +164,12 @@ module.exports = {
             }
             return '';
         },
-        user_forms() {
-            const content = this.fcontent(this.state.sinks.reads.user_forms);
-            if (!(content instanceof Array) || content.length === 0) {
-                return () => [];
-            }
-            return (f) => {
-                const r = content.filter(c => c.name === f);
-                if (r.length > 0) {
-                    return r[0];
-                }
+        project_type_options() {
+            const content = this.fcontent(this.state.sinks.reads.project_type);
+            if (!(content instanceof Array)) {
                 return [];
-            };
+            }
+            return content;
         },
     },
     beforeMount() {
@@ -167,18 +196,11 @@ module.exports = {
                 size: 10000,
             },
         });
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.user_forms,
-            keep_content: false,
-        });
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.user_forms,
-            path: this.state.paths.reads.user_forms,
+            form: this.state.sinks.reads.project_type,
+            path: this.state.paths.reads.project_type,
             body: {
-                where: {
-                    name: ['project_form'],
-                },
-                population: ['fields.subform', 'fields.datasource'],
+                size: 10000,
             },
         });
     },
