@@ -7,7 +7,7 @@
                     <div class="card-content">
                         <h4 class="has-small-top-margin title is-4">{{lang('l_deposit_project')}}</h4>
                         <div>
-                            <div class="column">
+                            <div class="column is-centered">
                                 <fselect
                                         :label="lang('f_choose_project_type')"
                                         :is-required="true"
@@ -22,45 +22,48 @@
                                         @select-change="project_type_change"
                                 />
                             </div>
-                            <fform
-                                    :name="state.sinks.creations.project"
-                                    :hasButtons="!is_editing()"
-                                    :post_path="state.paths.creations.project"
-                                    :put_path="state.paths.creations.project"
-                                    :get_path="state.paths.reads.project"
-                                    :get_form="state.sinks.reads.project"
-                            >
-                            <div v-if="state.project_subform_name !== '' && Object.keys(user_forms(state.project_subform_name)).length === 0" class="columns is-centered">
-                                <br/>
-                                <loader />
+                            <div v-if="state.project_subform_name !== '' && Object.keys(user_forms(state.project_subform_name)).length === 0" class="column">
+                                <div class="columns is-centered">
+                                    <loader />
+                                </div>
                             </div>
-                            <dynamic-form v-else-if="state.project_subform_name !== ''" :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
-                                <finput
-                                    type='hidden'
-                                    label=''
-                                    :hiddenValue="project_id"
-                                    name="_id"
-                                    :form="state.sinks.creations.project"
-                                />
-                                <finput
-                                    v-if="!is_editing()"
-                                    type='hidden'
-                                    label=''
-                                    :hiddenValue="initial_state"
-                                    name="state"
-                                    :form="state.sinks.creations.project"
-                                />
-                                <button v-if="is_editing()"
-                                        @click.prevent="open_review_modal(props)"
-                                        :disabled="success"
-                                        class="button">{{lang('f_finish_review')}}</button>
-                                <review-modal
-                                        @review-project="review_project"
-                                        :sink="state.sinks.creations.project"
-                                        :show.sync="state.show_review_modal"
-                                        :status="after_status()"
-                                ></review-modal>
-                            </fform>
+                            <div v-else-if="state.project_subform_name !== ''">
+                                <fform
+                                        :name="state.sinks.creations.project"
+                                        :hasButtons="!is_editing()"
+                                        :post_path="state.paths.creations.project"
+                                        :put_path="state.paths.creations.project"
+                                        :get_path="state.paths.reads.project"
+                                        :get_form="state.sinks.reads.project"
+                                >
+                                <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
+                                    <finput
+                                        type='hidden'
+                                        label=''
+                                        :hiddenValue="project_id"
+                                        name="_id"
+                                        :form="state.sinks.creations.project"
+                                    />
+                                    <finput
+                                        v-if="!is_editing()"
+                                        type='hidden'
+                                        label=''
+                                        :hiddenValue="initial_state"
+                                        name="state"
+                                        :form="state.sinks.creations.project"
+                                    />
+                                    <button v-if="is_editing()"
+                                            @click.prevent="open_review_modal(props)"
+                                            :disabled="success"
+                                            class="button">{{lang('f_finish_review')}}</button>
+                                    <review-modal
+                                            @review-project="review_project"
+                                            :sink="state.sinks.creations.project"
+                                            :show.sync="state.show_review_modal"
+                                            :status="after_status()"
+                                    ></review-modal>
+                                </fform>
+                            </div>
                         </div>
                         <article class="message is-success" v-if="state.statuses.creations.project === 'ok'">
                             <div class="message-body">

@@ -106,25 +106,18 @@ module.exports = {
             }
             return filtered_states;
         },
-        reset_interface() {
-            this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.creations.project,
-            });
-        },
         project_type_change(form) {
-            console.log('utf', form, this.state.project_subform_name);
-            if (!form.label || form.label === '') {
+            if (!form || !form.label || form.label === '') {
                 if (this.state.project_subform_name) {
-                    this.state.project_subform_name = undefined;
-                    this.reset_interface();
+                    this.state.project_subform_name = '';
                     return;
                 }
             }
-
-            if (this.state.project_subform_name
-                && this.state.project_subform_name !== form) {
-                this.reset_interface();
-            }
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.state.sinks.creations.project,
+                name: 'type',
+                info: form.label,
+            });
             this.state.project_subform_name = `${this.state.project_form_name}_${form.label.toLowerCase()}`;
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.user_forms,
