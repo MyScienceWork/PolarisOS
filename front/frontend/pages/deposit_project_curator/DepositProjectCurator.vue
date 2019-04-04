@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-content">
                         <h4 class="has-small-top-margin title is-4">{{lang('l_deposit_project')}}</h4>
-                        <div v-if="Object.keys(user_forms('project_curator_form')).length === 0" class="columns is-centered">
+                        <div v-if="!show_curator_form() || Object.keys(user_forms(state.project_subform_name)).length === 0" class="columns is-centered">
                             <loader />
                         </div>
                         <div v-else>
@@ -18,7 +18,7 @@
                                     :get_path="state.paths.reads.project"
                                     :get_form="state.sinks.reads.project"
                             >
-                            <dynamic-form :form="user_forms" :cform="state.sinks.creations.project"/>
+                            <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
                                 <finput
                                     type='hidden'
                                     label=''

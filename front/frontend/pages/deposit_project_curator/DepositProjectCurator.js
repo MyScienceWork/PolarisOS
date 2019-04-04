@@ -40,6 +40,8 @@ module.exports = {
                     },
                 },
                 show_review_modal: false,
+                project_form_name: 'project_curator_form',
+                project_subform_name: '',
             },
         };
     },
@@ -129,6 +131,33 @@ module.exports = {
             }
             return '';
         },
+        show_curator_form() {
+            if (this.state.project_subform_name !== '') {
+                return () => true;
+            }
+            const content = this.fcontent(this.state.sinks.creations.project);
+            console.log("this is content baz : ", content);
+            const form = content;
+            if (!form || form.type === undefined || form.type === '') {
+                return () => false;
+            }
+
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.type.toLowerCase()}`;
+
+            console.log("this is content form type : ", form.type);
+            console.log("this is project_subform_name : ", this.state.project_subform_name);
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [this.state.project_subform_name],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
+            return () => true;
+        },
     },
     beforeMount() {
         const query = this.$route.query;
@@ -152,20 +181,6 @@ module.exports = {
             path: this.state.paths.reads.workflow,
             body: {
                 size: 10000,
-            },
-        });
-        this.$store.commit(Messages.INITIALIZE, {
-            form: this.state.sinks.reads.user_forms,
-            keep_content: false,
-        });
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.user_forms,
-            path: this.state.paths.reads.user_forms,
-            body: {
-                where: {
-                    name: ['project_curator_form'],
-                },
-                population: ['fields.subform', 'fields.datasource'],
             },
         });
     },
