@@ -115,7 +115,7 @@ module.exports = {
             }
 
             const data = values.reduce((arr, v) => {
-                const elt = _.find(this.state.options, o => o.value === v || o === v);
+                const elt = _.find(this.state.options, o => o.value === v);
                 if (elt) {
                     arr.push(_.cloneDeep(elt));
                 }
