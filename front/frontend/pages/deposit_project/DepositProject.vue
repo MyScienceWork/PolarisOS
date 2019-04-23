@@ -7,21 +7,18 @@
                     <div class="card-content">
                         <h4 class="has-small-top-margin title is-4">{{lang('l_deposit_project')}}</h4>
                         <div>
-                            <div class="column is-centered">
-                                <fselect
-                                        :label="lang('f_choose_project_type')"
-                                        :is-required="true"
-                                        :options="project_type_options"
-                                        :form="state.sinks.creations.project"
-                                        name="type"
-                                        class="has-text-centered"
-                                        fieldLabel="label"
-                                        fieldValue="value"
-                                        :view-validation-texts="false"
-                                        :translatable="true"
-                                        @select-change="project_type_change"
-                                />
-                            </div>
+                            <fselect
+                                    :label="lang('f_choose_project_type')"
+                                    :is-required="true"
+                                    :options="project_type_options"
+                                    :form="state.sinks.creations.project"
+                                    name="type"
+                                    fieldLabel="label"
+                                    fieldValue="value"
+                                    :view-validation-texts="false"
+                                    :translatable="true"
+                                    @select-change="project_type_change"
+                            />
                             <div v-if="state.project_subform_name !== '' && Object.keys(user_forms(state.project_subform_name)).length === 0" class="column">
                                 <div class="columns is-centered">
                                     <loader />

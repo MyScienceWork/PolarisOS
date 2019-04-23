@@ -26,7 +26,7 @@
                             :form="sink"
                             name="state"
                             :translatable="true"
-                            fieldValue="label"
+                            fieldValue="_id"
                             fieldLabel="label"
                             :view-validation-texts="false"
                         />

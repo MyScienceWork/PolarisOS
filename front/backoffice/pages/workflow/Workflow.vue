@@ -94,7 +94,7 @@
                                     :label="lang('b_initial_state')"
                                     :is-required="true"
                                     :options="entity_states"
-                                    fieldValue="label"
+                                    fieldValue="_id"
                                     fieldLabel="label"
                                     :translatable="true"
                                     :help="lang('l_backoffice_initial_state_before_help')"
