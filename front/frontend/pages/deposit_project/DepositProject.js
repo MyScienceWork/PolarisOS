@@ -118,7 +118,7 @@ module.exports = {
                 name: 'type',
                 info: form.label,
             });
-            this.state.project_subform_name = `${this.state.project_form_name}_${form.label.toLowerCase()}`;
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.value.toLowerCase()}`;
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.user_forms,
                 keep_content: false,
