@@ -7,6 +7,7 @@ const logger = new (winston.Logger)({
             level: config.logger.transports.console.level,
             colorize: true,
             timestamp: true,
+            prettyPrint: true,
         }),
     ],
 });

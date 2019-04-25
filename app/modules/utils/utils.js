@@ -217,6 +217,8 @@ function merge_with_superposition(object: Object, ...sources) {
                 return objValue.concat(srcValue);
             }
             return objValue;
+        } else if (objValue) {
+            return objValue;
         }
     }
     return _.mergeWith(object, ...sources, customizer);
