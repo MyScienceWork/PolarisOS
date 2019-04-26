@@ -8,7 +8,6 @@ const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
-const ReviewModal = require('./subcomponents/ReviewModal.vue');
 
 module.exports = {
     mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin, UserMixin, WorkflowMixin],
@@ -110,7 +109,6 @@ module.exports = {
         },
     },
     components: {
-        ReviewModal,
     },
     watch: {
     },

@@ -16,6 +16,7 @@ module.exports = {
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
+                state_before: undefined,
             },
         };
     },
@@ -53,8 +54,12 @@ module.exports = {
         after_status() {
             let allowed_states = [];
 
+            if (this.state.state_before === undefined) {
+                this.state.state_before = this.fcontent(this.state.sinks.creations.project).state;
+            }
+
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
-            const state_before = this.fcontent(this.state.sinks.creations.project).state;
+            const state_before = this.state.state_before;
             const workflow_states = this.fcontent(this.state.sinks.reads.entity_state);
             const workflow_name = this.$route.query.workflow;
 
@@ -76,7 +81,7 @@ module.exports = {
                         allowed_states[key].label = id_workflow_state.label;
                     }
                 });
-            } else {
+            } else if (idx !== -1) {
                 // search entity_state
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
