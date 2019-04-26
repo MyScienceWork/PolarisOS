@@ -76,7 +76,7 @@ module.exports = {
                         step.roles.some((role_workflow) => {
                             const indexRole = _.findKey(this.roles, role_user => role_user._id === role_workflow._id);
                             if (indexRole !== undefined) {
-                                filtered_states = filtered_states.concat(step.state_before.map(state => state.label));
+                                filtered_states = filtered_states.concat(step.state_before.map(state => state._id));
                                 return true;
                             }
                             return false;
@@ -165,7 +165,9 @@ module.exports = {
                     form: this.state.sinks.reads[e],
                     path: this.state.paths.reads[e],
                     body: {
-                        where: filtered_states,
+                        where: {
+                            _id: filtered_states,
+                        },
                     },
                 });
             });

@@ -42,7 +42,7 @@
                                         @review-project="review_project"
                                         :sink="state.sinks.creations.project"
                                         :show.sync="state.show_review_modal"
-                                        :status="after_status()"
+                                        :status="after_status"
                                 ></review-modal>
                             </fform>
                         </div>
