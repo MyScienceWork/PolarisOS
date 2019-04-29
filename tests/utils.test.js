@@ -331,8 +331,21 @@ describe('Utils#merge_with_superposition', () => {
         const source = { yep: 'test1' };
         const target = { yep: 'test2' };
 
+
         const result = utils.merge_with_superposition(target, source);
+        console.log("resultl : ", result);
+
         result.should.have.property('yep', 'test2');
+    });
+
+    it('should merge simple objects 2', () => {
+        const source = { country: { label: 'Estonia' } };
+        const target = { state: { label: 'Submitted' }, country: { label: 'France' } };
+
+        const result = utils.merge_with_superposition(target, source);
+
+        result.state.should.have.property('label', 'Submitted');
+        result.country.should.have.property('label', 'Estonia');
     });
 });
 
