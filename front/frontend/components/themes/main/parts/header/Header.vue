@@ -19,11 +19,13 @@
                 <p class="subtitle is-5">{{lang('l_site_punchline')}}</p>
                 <!--<widget-stats form="test_form" :infos="[]" />-->
             </div>
+            <!--
             <div class="column is-vcentered container has-text-centered is-2 is-vertical">
                 <div class="container">
                     <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
                 </div>
             </div>
+            -->
             <!-- <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" /> -->
         </div>
     </div>
