@@ -59,6 +59,8 @@ module.exports = {
                 return 'fselect';
             case 'color':
                 return 'fcolor';
+            case 'radio':
+                return 'fradio';
             default:
                 return 'finput';
             }
@@ -141,7 +143,7 @@ module.exports = {
             this.$emit('dropzone-analyze-file', filename);
         },
         datasource(field) {
-            if (field.type !== 'select' && field.type !== 'multi-select') {
+            if (field.type !== 'select' && field.type !== 'multi-select' && field.type !== 'radio') {
                 return [];
             }
 

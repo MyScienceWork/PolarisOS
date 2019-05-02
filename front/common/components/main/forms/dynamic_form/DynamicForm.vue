@@ -34,7 +34,7 @@
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -91,6 +91,24 @@
                     :search-size="generate_ajax_search(field, 'size')"
                     :search-fields="generate_ajax_search(field, 'fields')"
                     />
+                    <fradio
+                    v-else-if="field.type === 'radio'"
+                    :label="lang(field.label || '')"
+                    :name="get_name(field.name)"
+                    :form="cform"
+                    :fieldLabel="generate_select_label(field)"
+                    :fieldValue="generate_select_value(field)"
+                    :options="generate_select_options(field)"
+                    :ajax="field.datasource.ajax"
+                    :ajax-url="generate_ajax_url(field)"
+                    :ajax-value-url="generate_ajax_url(field, 'value')"
+                    :readonly="readonly || field.readonly"
+                    :is-required="field.required"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
+                    :translate-through-hlang="field.datasource.use_hlang"
+                    :translatable="field.datasource.translatable"
+                    />
                 </template>
                 <slot name="form-addons"></slot>
             </template>
@@ -111,7 +129,7 @@
         <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -209,6 +227,24 @@
                         </div>
                     </template>
                 </fselect>
+                <fradio
+                v-else-if="field.type === 'radio'"
+                :label="lang(field.label || '')"
+                :name="get_name(field.name)"
+                :form="cform"
+                :fieldLabel="generate_select_label(field)"
+                :fieldValue="generate_select_value(field)"
+                :options="generate_select_options(field)"
+                :ajax="field.datasource.ajax"
+                :ajax-url="generate_ajax_url(field)"
+                :ajax-value-url="generate_ajax_url(field, 'value')"
+                :readonly="readonly || field.readonly"
+                :is-required="field.required"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :translate-through-hlang="field.datasource.use_hlang"
+                :translatable="field.datasource.translatable"
+                />
                 <crud-form
                     :text="field.datasource.action_text"
                     :header="field.datasource.header_text"
@@ -301,7 +337,7 @@
         </fvariadic-element>
         <template v-else>
             <finput
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -377,6 +413,24 @@
             :translatable="field.datasource.translatable"
             :search-size="generate_ajax_search(field, 'size')"
             :search-fields="generate_ajax_search(field, 'fields')"
+            />
+            <fradio
+            v-else-if="field.type === 'radio'"
+            :label="lang(field.label || '')"
+            :name="get_name(field.name)"
+            :form="cform"
+            :fieldLabel="generate_select_label(field)"
+            :fieldValue="generate_select_value(field)"
+            :options="generate_select_options(field)"
+            :ajax="field.datasource.ajax"
+            :ajax-url="generate_ajax_url(field)"
+            :ajax-value-url="generate_ajax_url(field, 'value')"
+            :readonly="readonly || field.readonly"
+            :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :translate-through-hlang="field.datasource.use_hlang"
+            :translatable="field.datasource.translatable"
             />
             <crud-form
                 :text="field.datasource.action_text"

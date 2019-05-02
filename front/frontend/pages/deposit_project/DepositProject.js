@@ -71,14 +71,6 @@ module.exports = {
         open_review_modal() {
             this.state.show_review_modal = true;
         },
-        review_project() {
-            const content = this.fcontent(this.state.sinks.creations.project);
-            this.$store.dispatch('update', {
-                form: this.state.sinks.creations.project,
-                path: this.state.paths.creations.project,
-                body: content,
-            });
-        },
         project_type_change(form) {
             if (!form || !form.label || form.label === '') {
                 if (this.state.project_subform_name) {

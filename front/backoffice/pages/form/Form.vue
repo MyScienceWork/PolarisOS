@@ -98,7 +98,7 @@
                                         v-on:select-change="(val) => {type_change(val, props.id)}"
                                     />
                                     <div v-if="props.id in state.selected_types">
-                                        <div v-if="['select', 'multi-select'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-if="['select', 'multi-select', 'radio'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput
                                             :name="`${props.fname}.${props.order}.placeholder`"
                                             :key="`${props.fname}.${props.order}.placeholder`"

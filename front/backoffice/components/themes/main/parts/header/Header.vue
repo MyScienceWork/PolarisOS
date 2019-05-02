@@ -9,11 +9,9 @@
             </div>
             <div class="tile is-vertical">
             </div>
-            <!--
             <div class="tile is-parent is-2 is-vertical">
                 <login-lang :website="lang('l_back_to_website_url')" :languages="languages" :back-to-website="true" :backoffice="true" />
             </div>
-            -->
         </div>
     </div>
 </header>
