@@ -111,6 +111,9 @@ module.exports = {
             if (field.range && field.range.enabled) {
                 return _.range(field.range.start, field.range.end, field.range.step).map(v => ({ label: `${v}`, value: `${v}` }));
             }
+            if (field.datasource && field.datasource.sort) {
+                return _.orderBy(this.datasource(field), [field.datasource.sort], ['asc']);
+            }
             return this.datasource(field);
         },
         generate_ajax_url(field, type = 'normal') {
