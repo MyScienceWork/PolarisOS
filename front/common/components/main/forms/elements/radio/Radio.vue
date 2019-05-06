@@ -21,7 +21,7 @@
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
                 <label v-for="(item) in state.options" class="radio">
-                    <input type="radio" :id=item.value :name="name" :value=item.value @change="onChange" :checked="item.value===state.selected.value ? 'checked' : ''">
+                    <input type="radio" :id=item.value :name="name" :value=item.value @change="onChange" :checked="set_checked(state, item)">
                     <label :for=item.value>{{item.label}}</label>
                     <br>
                 </label>

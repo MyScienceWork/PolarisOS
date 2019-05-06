@@ -96,7 +96,6 @@ module.exports = {
             this.set_selected([info]);
         },
         onChange(val) {
-            console.log('on change val : ', val);
             if (!this.readonly) {
                 this.$emit('select-change', val);
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
@@ -104,6 +103,7 @@ module.exports = {
                     name: this.name,
                     info: this.extract_values(val),
                 });
+                this.state.selected= {};
                 this.state.selected.value = this.extract_values(val);
             }
         },
@@ -111,11 +111,8 @@ module.exports = {
             return infos.target.value;
         },
         translate_options(options) {
-            console.log('translate_options : ', this.translatable);
-            console.log('options : ', options);
             if (this.translatable) {
                 return options.map((data) => {
-                    console.log('this.translateThroughHlang : ', this.translateThroughHlang);
                     if (this.translateThroughHlang) {
                         data.label = this.hlang(data.label);
                     } else {
@@ -213,7 +210,13 @@ module.exports = {
             } else {
                 this.state.selected = null;
             }
-        }
+        },
+        set_checked(state, item) {
+            if (state && state.selected && state.selected.value && item.value) {
+                return item.value === state.selected.value ? 'checked' : '';
+            }
+            return '';
+        },
     },
     watch: {
         options() {
