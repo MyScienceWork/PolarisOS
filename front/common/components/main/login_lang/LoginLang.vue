@@ -52,13 +52,11 @@
                 <span>{{lang('f_login')}}</span>
             </router-link>
         </p>
-        <!--
-        <p class="tile is-child has-text-centered pipe-list" v-if="languages.length > 0">
+        <p class="tile is-child has-text-centered pipe-list" v-if="languages.length > 1">
             <ul>
                 <li v-for="item in languages"><a class="has-text-red swap" @click.prevent="change_language(item)">{{item}}</a></li>
             </ul>
         </p>
-        -->
         <p class="tile is-child has-text-centered" v-if="backToWebsite">
             <a class="has-text-red swap" :href='website' :title='website'>{{lang('l_go_to_website')}}</a>
         </p>
