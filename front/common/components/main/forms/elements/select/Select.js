@@ -100,7 +100,7 @@ module.exports = {
                 });
                 console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
-                    const opts = this.translate_options(this.format_options(res.data));
+                    const opts = this.order_options(this.translate_options(this.format_options(res.data)));
                     if (this.multi) {
                         this.state.options = this.merge_options_and_selected(opts, this.state.options);
                         this.state.selected = opts;
@@ -162,9 +162,9 @@ module.exports = {
                     let selected = self.state.selected instanceof Array ?
                         self.state.selected : [self.state.selected];
                     selected = self.format_options(selected, 'from');
-                    self.state.options = self.translate_options(self.format_options(self.merge_options_and_selected(selected, res.data), 'to'));
+                    self.state.options = self.order_options(self.translate_options(self.format_options(self.merge_options_and_selected(selected, res.data), 'to')));
                 } else {
-                    self.state.options = self.translate_options(self.format_options(res.data, 'to'));
+                    self.state.options = self.order_options(self.translate_options(self.format_options(res.data, 'to')));
                 }
             });
         }, 350),
@@ -263,6 +263,12 @@ module.exports = {
             }
             return options;
         },
+        order_options(options) {
+            if (options instanceof Array) {
+                return _.orderBy(options, ['label'], ['asc']);
+            }
+            return options;
+        },
         format_options(options, direction = 'to') {
             // Direction:
             // to -> to vue-select
@@ -303,7 +309,7 @@ module.exports = {
     watch: {
         options() {
             if (!this.prefetchInAjax) {
-                this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+                this.state.options = this.order_options(this.translate_options(this.format_options(this.options, 'to')));
                 this.select_default_value();
             }
         },
@@ -313,7 +319,7 @@ module.exports = {
     },
     beforeMount() {
         if (!this.prefetchInAjax) {
-            this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+            this.state.options = this.order_options(this.translate_options(this.format_options(this.options, 'to')));
         }
     },
     mounted() {
@@ -336,7 +342,7 @@ module.exports = {
             });
 
             promise.then((res) => {
-                const opts = this.translate_options(this.format_options(res.data));
+                const opts = this.order_options(this.translate_options(this.format_options(res.data)));
                 this.state.options = opts;
             });
         }
