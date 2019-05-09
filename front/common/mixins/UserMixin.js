@@ -96,7 +96,7 @@ module.exports = {
                 const url = Browser.getURLHost(window.location);
                 this.redirect_to_cas(this.generate_cas_sso_url(url, backoffice, true));
             } else {
-                this.$router.push({ path: '/' });
+                this.$router.push({ path: '/login' });
                 location.reload();
             }
         },
