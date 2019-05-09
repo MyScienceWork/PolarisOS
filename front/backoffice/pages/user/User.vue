@@ -16,6 +16,7 @@
                             :matrix-row-size="2"
                             :change-with-create-success="true"
                             :form-create-success="state.sinks.creations.user"
+                            :default-sorts="['fullname.raw']"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
