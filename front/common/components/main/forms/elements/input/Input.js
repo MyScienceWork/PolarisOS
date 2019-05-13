@@ -79,10 +79,11 @@ module.exports = {
             } else {
                 info = e;
             }
-
             if (this.type === 'date') {
                 if (typeof info !== 'string') {
-                    info = +moment.utc(info.toISOString());
+                    // date is local timezone so now we convert it to UTC
+                    info = new Date(info.getTime() - (info.getTimezoneOffset() * 60000));
+                    info = +moment.utc(info.toUTCString());
                 }
             } else if (this.type === 'date-year') {
                 const number = Math.min(Math.max(this.yearRangeStart, parseInt(info, 10)), this.yearRangeEnd);
