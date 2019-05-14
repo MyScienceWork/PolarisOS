@@ -5,7 +5,7 @@
             <div class="column">
                 <div class="card">
                     <div class="card-content">
-                        <h4 class="has-small-top-margin title is-4">{{lang('l_deposit_project')}}</h4>
+                        <h4 class="has-small-top-margin title is-4">{{lang('l_validate_project_curator')}}</h4>
                         <div v-if="!show_curator_form() || Object.keys(user_forms(state.project_subform_name)).length === 0" class="columns is-centered">
                             <loader />
                         </div>
