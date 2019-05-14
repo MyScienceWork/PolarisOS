@@ -91,6 +91,12 @@ module.exports = {
                                     sort: {
                                         type: 'keyword',
                                     },
+                                    start_date: {
+                                        type: 'keyword',
+                                    },
+                                    end_date: {
+                                        type: 'keyword',
+                                    },
                                 },
                             },
                             datasource: {

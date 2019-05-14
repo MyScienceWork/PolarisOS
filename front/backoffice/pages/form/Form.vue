@@ -365,11 +365,29 @@
                                                 </div>
                                             </card>
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year', 'date'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput
                                             :name="`${props.fname}.${props.order}.placeholder`"
                                             :key="`${props.fname}.${props.order}.placeholder`"
                                             :label="lang('b_placeholder')" :is-required="true" :placeholder="lang('b_placeholder')" type="text" :form="state.sinks.creations.form" />
+                                            <template v-if="state.selected_types[props.id] === 'date'">
+                                                <finput
+                                                        :name="`${props.fname}.${props.order}.range.start_date`"
+                                                        :key="`${props.fname}.${props.order}.range.start_date`"
+                                                        :label="lang('l_range_start')"
+                                                        :placeholder="lang('l_range_start')"
+                                                        type="text"
+                                                        :form="state.sinks.creations.form"
+                                                />
+                                                <finput
+                                                        :name="`${props.fname}.${props.order}.range.end_date`"
+                                                        :key="`${props.fname}.${props.order}.range.end_date`"
+                                                        :label="lang('l_range_end')"
+                                                        :placeholder="lang('l_range_end')"
+                                                        type="text"
+                                                        :form="state.sinks.creations.form"
+                                                />
+                                            </template>
                                             <template v-if="state.selected_types[props.id] === 'date-year'">
                                                 <finput
                                                 :name="`${props.fname}.${props.order}.range.start`"
