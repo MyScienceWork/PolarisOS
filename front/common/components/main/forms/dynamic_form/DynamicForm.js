@@ -26,6 +26,7 @@ module.exports = {
                 checked_rows: [],
                 all_rows: [],
                 selected: [],
+                selected_date: {},
                 show: {},
                 paths: {
                     reads: {
@@ -294,13 +295,11 @@ module.exports = {
             const checked_rows = [];
 
             rows.forEach((row, index_row) => {
-                console.log("remapped_rows[index_row][selected_mapping] : ", remapped_rows[index_row][selected_mapping]);
                 if (remapped_rows[index_row]
                     && remapped_rows[index_row][selected_mapping] === true) {
                     checked_rows.push(row);
                 }
             });
-            console.log('CHECKED ROW : ', checked_rows);
             this.$set(this.state, 'checked_rows', checked_rows);
         },
         on_checked_rows_update(row) {
@@ -315,6 +314,13 @@ module.exports = {
                 return this.build_dynamic_list_columns(field);
             }, {});
             return this.state.columns;
+        },
+        update_date(info) {
+            if (info.info && info.name) {
+                const new_selected_dates = Object.assign({}, this.state.selected_date);
+                new_selected_dates[info.name] = new Date(info.info);
+                this.$set(this.state, 'selected_date', new_selected_dates);
+            }
         },
     },
     watch: {

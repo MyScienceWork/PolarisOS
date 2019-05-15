@@ -50,6 +50,9 @@
                     :year-range-start="field.range ? field.range.start : 0"
                     :year-range-end="field.range ? field.range.end : 0"
                     :year-step="field.range ? field.range.step : 1"
+                    :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+                    :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+                    @date-value-change="update_date"
                     />
                     <finput
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -145,6 +148,9 @@
                 :year-range-start="field.range ? field.range.start : 0"
                 :year-range-end="field.range ? field.range.end : 0"
                 :year-step="field.range ? field.range.step : 1"
+                :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+                :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+                @date-value-change="update_date"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -352,6 +358,9 @@
             :year-range-start="field.range ? field.range.start : 0"
             :year-range-end="field.range ? field.range.end : 0"
             :year-step="field.range ? field.range.step : 1"
+            :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+            :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+            @date-value-change="update_date"
             />
             <finput
             v-else-if="['hidden'].indexOf(field.type) !== -1"

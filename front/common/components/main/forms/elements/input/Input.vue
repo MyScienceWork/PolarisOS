@@ -53,7 +53,7 @@
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
-        v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1' 
+        v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1'
         || type === 'email' || type === 'date' || type === 'date-year' || type === 'time'"
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
@@ -70,7 +70,7 @@
             <slot v-if="hasAddons" name="left-input-addons" />
             </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
-                <input v-if="type === 'text'" 
+                <input v-if="type === 'text'"
                     type="text"
                     :placeholder="placeholder"
                     :name="name"
@@ -80,7 +80,7 @@
                     :readonly="readonly"
 
                 />
-                <input v-else-if="type === 'number'" 
+                <input v-else-if="type === 'number'"
                     type="number"
                     :placeholder="placeholder"
                     :name="name"
@@ -89,7 +89,7 @@
                     @blur="update"
                     :readonly="readonly"
                 />
-                <input v-else-if="type === 'password' || type === 'password-sha1'" 
+                <input v-else-if="type === 'password' || type === 'password-sha1'"
                     type="password"
                     :placeholder="placeholder"
                     :name="name"
@@ -106,6 +106,8 @@
                     :readonly="readonly"
                     :placeholder="placeholder"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    :min-date="get_min_date"
+                    :max-date="get_max_date"
                     />
                 <input
                     v-else-if="type === 'date-year' && !readonly"
@@ -128,9 +130,10 @@
                     @input="update"
                     :readonly="readonly"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
-                    icon="clock-o" />
+                    icon="clock-o" >
+                </b-timepicker>
                 <p v-else-if="type === 'time' && readonly">{{readonlyValue}}</p>
-                <input v-else 
+                <input v-else
                     type="email"
                     :placeholder="placeholder"
                     :name="name"
@@ -162,7 +165,7 @@
               </span>
             </a>
         </b-tooltip>
-        
+
         <div :class="['field']">
             <div class="control">
                 <textarea

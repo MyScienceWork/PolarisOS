@@ -36,6 +36,9 @@ module.exports = {
             default: parseInt(moment().add(3, 'y').format('YYYY'), 10),
             type: Number },
         yearStep: { required: false, default: 1, type: Number },
+        minDate: { require: false, type: Date },
+        maxDate: { require: false, type: Date },
+        fieldId: { required: false, type: Number },
     },
 
     data() {
@@ -101,6 +104,11 @@ module.exports = {
                 name: this.name,
                 info,
             });
+
+            if (this.type === 'date') {
+                const date_info = { info, name: this.name };
+                this.$emit('date-value-change', date_info);
+            }
 
             this.$emit('value-change', info);
 
@@ -208,6 +216,21 @@ module.exports = {
         },
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
+        },
+        contentForm() {
+            return this.fcontent(this.cform);
+        },
+        get_min_date() {
+            if (this.minDate) {
+                return this.minDate;
+            }
+            return null;
+        },
+        get_max_date() {
+            if (this.maxDate) {
+                return this.maxDate;
+            }
+            return null;
         },
     },
     beforeMount() {
