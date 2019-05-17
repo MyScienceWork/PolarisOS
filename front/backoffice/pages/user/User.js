@@ -38,6 +38,10 @@ module.exports = {
         };
     },
     methods: {
+        reset_authentication_key(user) {
+            delete user.authentication.key;
+            return user;
+        },
     },
     mounted() {
         this.$store.state.requests = ['role'].map(e => ({
