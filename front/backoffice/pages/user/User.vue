@@ -87,7 +87,7 @@
                                 :form="state.sinks.creations.user"
                                 :options="langs"
                             />
-                            <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :is-required="true" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
+                            <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
                             <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
                             <finput
                                 name="sso" :label="lang('b_is_sso')"
@@ -114,7 +114,6 @@
                             <fselect
                                 name="roles"
                                 :label="lang('b_role', {}, 'other')"
-                                :is-required="true"
                                 :options="roles"
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"
@@ -126,7 +125,6 @@
                             <fselect
                                 name="author"
                                 :label="lang('l_author')"
-                                :is-required="true"
                                 :options="[]"
                                 :form="state.sinks.creations.user"
                                 fieldValue="_id"

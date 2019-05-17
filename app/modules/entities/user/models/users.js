@@ -19,6 +19,11 @@ const Validation: Array<any> = [
         preferred_language: Joi.string().required().label('Preferred language'),
         hpassword: Joi.string().label('Password'),
         retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
+        emails: Joi.array().items(
+            Joi.object().keys({
+                email: Joi.string().required().label('Email'),
+            }),
+        ).min(1).required().label('Email'),
     }),
     ValFunctions.checks.is_unique('uid', 'user'),
 ];
