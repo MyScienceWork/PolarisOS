@@ -118,6 +118,13 @@ module.exports = {
             }
             return content;
         },
+        depositor_user_id() {
+            const content = this.fcontent(this.state.sinks.reads.project_type);
+            if (content.depositor) {
+                return content.depositor;
+            }
+            return this.m_user_id();
+        },
     },
     beforeMount() {
         const query = this.$route.query;

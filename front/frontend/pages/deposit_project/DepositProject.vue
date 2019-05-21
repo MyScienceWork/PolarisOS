@@ -42,6 +42,13 @@
                                         :form="state.sinks.creations.project"
                                     />
                                     <finput
+                                        type='hidden'
+                                        label=''
+                                        :hiddenValue="depositor_user_id"
+                                        name="depositor"
+                                        :form="state.sinks.creations.project"
+                                    />
+                                    <finput
                                         v-if="!is_editing()"
                                         type='hidden'
                                         label=''

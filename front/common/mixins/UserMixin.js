@@ -104,5 +104,8 @@ module.exports = {
             Browser.localSet('default_lang', lang);
             location.reload();
         },
+        m_user_id() {
+            return Auth.user()._id;
+        },
     },
 };
