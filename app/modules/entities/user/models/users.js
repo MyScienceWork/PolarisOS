@@ -22,7 +22,7 @@ const Validation: Array<any> = [
         emails: Joi.array().items(
             Joi.object().keys({
                 email: Joi.string().required().label('Email'),
-            }),
+            })
         ).min(1).required().label('Email'),
     }),
     ValFunctions.checks.is_unique('uid', 'user'),
