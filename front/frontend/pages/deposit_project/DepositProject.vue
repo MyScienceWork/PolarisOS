@@ -14,7 +14,7 @@
                                     :form="state.sinks.creations.project"
                                     name="type"
                                     fieldLabel="label"
-                                    fieldValue="value"
+                                    fieldValue="_id"
                                     :view-validation-texts="false"
                                     :translatable="true"
                                     @select-change="project_type_change"
