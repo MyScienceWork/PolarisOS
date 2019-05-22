@@ -11,7 +11,7 @@
                                     :label="lang('f_choose_project_type')"
                                     :is-required="true"
                                     :options="project_type_options"
-                                    :form="state.sinks.creations.project"
+                                    :form="state.sinks.creations.project_type"
                                     name="type"
                                     fieldLabel="label"
                                     fieldValue="_id"
@@ -34,6 +34,13 @@
                                         :get_form="state.sinks.reads.project"
                                 >
                                 <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
+                                    <finput
+                                        type='hidden'
+                                        label=''
+                                        :hiddenValue="project_type"
+                                        name="type"
+                                        :form="state.sinks.creations.project"
+                                    />
                                     <finput
                                         type='hidden'
                                         label=''

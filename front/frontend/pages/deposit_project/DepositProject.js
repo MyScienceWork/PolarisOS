@@ -17,6 +17,7 @@ module.exports = {
                 sinks: {
                     creations: {
                         project: 'project_creation',
+                        project_type: 'project_creation_type',
                     },
                     reads: {
                         user_forms: 'user_forms_read',
@@ -42,6 +43,7 @@ module.exports = {
                 show_review_modal: false,
                 project_form_name: 'deposit_project_form',
                 project_subform_name: '',
+                project_type: '',
             },
         };
     },
@@ -72,22 +74,23 @@ module.exports = {
             this.state.show_review_modal = true;
         },
         project_type_change(form) {
-            if (!form || !form.label || form.label === '') {
+            if (!form || !form.value || form.value === '') {
                 if (this.state.project_subform_name) {
                     this.state.project_subform_name = '';
                     return;
                 }
             }
-            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                form: this.state.sinks.creations.project,
-                name: 'type',
-                info: form.label,
-            });
-            this.state.project_subform_name = `${this.state.project_form_name}_${form.value.toLowerCase()}`;
+            /*
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.reads.user_forms,
                 keep_content: false,
             });
+            */
+            const forms = this.fcontent(this.state.sinks.reads.project_type);
+            if (forms instanceof Array) {
+                form.name = forms.find(my_form => my_form._id === form.value).value;
+            }
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.name.toLowerCase()}`;
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
@@ -98,6 +101,14 @@ module.exports = {
                     population: ['fields.subform', 'fields.datasource'],
                 },
             });
+            /*
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.state.sinks.creations.project,
+                name: 'type',
+                info: form,
+            });
+            */
+            this.$set(this.state, 'project_type', form.value);
         },
     },
     components: {
@@ -110,6 +121,9 @@ module.exports = {
                 return this.$route.query._id;
             }
             return '';
+        },
+        project_type() {
+            return this.state.project_type;
         },
         project_type_options() {
             const content = this.fcontent(this.state.sinks.reads.project_type);
@@ -146,6 +160,13 @@ module.exports = {
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.project_type,
             path: this.state.paths.reads.project_type,
+            body: {
+                size: 10000,
+            },
+        });
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.user_forms,
+            path: this.state.paths.reads.user_forms,
             body: {
                 size: 10000,
             },
