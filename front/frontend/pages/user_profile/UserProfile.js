@@ -11,6 +11,7 @@ const Messages = require('../../../common/api/messages');
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const Project = require('./subcomponents/Project.vue');
 const VueClickAway = require('vue-clickaway');
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
         LastDeposits,
         SearchResults,
         SearchBar,
+        Project,
     },
     directives: {
         onClickAway: VueClickAway.directive,
@@ -73,7 +75,7 @@ module.exports = {
         },
         switch_tab(t) {
             try {
-                this.state.current_tab = Math.min(Math.max(0, parseInt(t, 10)), 3);
+                this.state.current_tab = Math.min(Math.max(0, parseInt(t, 10)), 4);
             } catch (err) {
                 // noop
             }
@@ -94,7 +96,9 @@ module.exports = {
                     body: body.author,
                 });
 
-                body.author = '_id' in body.author ? body.author._id : undefined;
+                if (body.author) {
+                    body.author = '_id' in body.author ? body.author._id : undefined;
+                }
                 body.roles = body.roles.map(r => ({ _id: r._id._id }));
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.user,
