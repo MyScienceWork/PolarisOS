@@ -218,7 +218,7 @@ module.exports = {
             });
         },*/
         onChange(val) {
-            if (!this.readonly) {
+            if (!this.readonly && val) {
                 this.$emit('select-change', val);
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
