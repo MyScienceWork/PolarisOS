@@ -218,7 +218,7 @@ module.exports = {
             });
         },*/
         onChange(val) {
-            if (!this.readonly) {
+            if (!this.readonly && val) {
                 this.$emit('select-change', val);
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
@@ -288,7 +288,6 @@ module.exports = {
         select_default_value() {
             if (this.defaultValue == null) {
                 if (this.state.options.length === 0) {
-                    this.state.selected = null;
                     return;
                 }
 
@@ -296,8 +295,6 @@ module.exports = {
                     this.set_selected([this.state.options[0]]);
                 } else if (this.selectAllValues && this.multi) {
                     this.set_selected(this.state.options);
-                } else {
-                    this.state.selected = null;
                 }
             } else if (this.defaultValue instanceof Array) {
                 this.state.selected = this.set_selected(this.defaultValue);
