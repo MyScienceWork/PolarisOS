@@ -217,6 +217,9 @@ module.exports = {
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
         },
+        contentForm() {
+            return this.fcontent(this.cform);
+        },
         get_min_date() {
             if (this.minDate) {
                 return this.minDate;
