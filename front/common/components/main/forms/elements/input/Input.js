@@ -96,14 +96,21 @@ module.exports = {
                     info = moment.utc(info.toISOString()).format('HH:mm');
                 }
             } else if (this.type === 'password-sha1' && info != null && info.trim() !== '') {
-                info = Crypto.createHash('sha1').update(info).digest('hex');
+                const hashedPassword = Crypto.createHash('sha1').update(info).digest('hex');
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: hashedPassword,
+                });
             }
 
-            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                form: this.form,
-                name: this.name,
-                info,
-            });
+            if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info,
+                });
+            }
 
             if (this.type === 'date') {
                 const date_info = { info, name: this.name };
