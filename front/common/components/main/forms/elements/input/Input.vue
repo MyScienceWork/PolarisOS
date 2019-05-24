@@ -108,7 +108,7 @@
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :min-date="get_min_date"
                     :max-date="get_max_date"
-                    />
+                ></b-datepicker>
                 <input
                     v-else-if="type === 'date-year' && !readonly"
                     :value="state.value"
