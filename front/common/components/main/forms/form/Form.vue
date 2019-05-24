@@ -31,17 +31,17 @@
                 v-intro="lang('l_backoffice_save_button_help')"
                 >{{mode_text}}</button>
         </div>
-        <div class="control">
-            <button 
-                type="submit" 
-                @click="cancel" 
+        <div v-if="hasCancelButton" class="control">
+            <button
+                type="submit"
+                @click="cancel"
                 class="button button-background-red"
                 v-intro="lang('l_backoffice_cancel_button_help')"
             >{{lang('b_cancel')}}</button>
         </div>
     </div>
     <slot v-else
-        name="buttons" 
+        name="buttons"
         :cancel="cancel"
         :submit="submit"
         :update_mode="state.update_mode"

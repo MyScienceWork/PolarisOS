@@ -28,6 +28,7 @@
                                 <fform
                                         :name="state.sinks.creations.project"
                                         :hasButtons="!is_editing()"
+                                        :hasCancelButton="false"
                                         :post_path="state.paths.creations.project"
                                         :put_path="state.paths.creations.project"
                                         :get_path="state.paths.reads.project"
