@@ -23,6 +23,7 @@ module.exports = {
                         user_forms: 'user_forms_read',
                         project: 'project_read',
                         workflow: 'workflow_read',
+                        project_type: 'project_type_read',
                     },
                 },
                 paths: {
@@ -33,6 +34,7 @@ module.exports = {
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
+                        project_type: APIRoutes.entity('project_type', 'POST', true),
                     },
                 },
                 statuses: {
@@ -103,7 +105,15 @@ module.exports = {
                 return () => false;
             }
 
-            this.state.project_subform_name = `${this.state.project_form_name}_${form.type.toLowerCase()}`;
+            // now get name of the form
+            const forms = this.fcontent(this.state.sinks.reads.project_type);
+            if (forms instanceof Array) {
+                form.name = forms.find(my_form => my_form._id === form.type).value;
+            } else {
+                return () => false;
+            }
+
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.name.toLowerCase()}`;
 
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
@@ -135,5 +145,12 @@ module.exports = {
         }
     },
     mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.project_type,
+            path: this.state.paths.reads.project_type,
+            body: {
+                size: 10000,
+            },
+        });
     },
 };
