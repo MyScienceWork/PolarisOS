@@ -724,6 +724,12 @@ module.exports = {
                             size: {
                                 type: 'float',
                             },
+                            mimetype: {
+                                type: 'keyword',
+                            },
+                            preview_url: {
+                                type: 'keyword',
+                            },
                             access: {
                                 properties: {
                                     restricted: {

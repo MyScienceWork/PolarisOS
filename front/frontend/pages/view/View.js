@@ -102,6 +102,18 @@ module.exports = {
             }
             return '#';
         },
+        generate_preview_link(status) {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return null;
+            }
+
+            if (status === 'master') {
+                const file = _.find(files, f => f.is_master) || files[0];
+                return `/download/${file.preview_url}`;
+            }
+            return null;
+        },
         generate_handle_link(item) {
             const handle = (item.ids || []).find(f => f.type === 'handle');
             if (handle) {

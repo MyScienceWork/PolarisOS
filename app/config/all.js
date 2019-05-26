@@ -26,6 +26,7 @@ const all = {
         secretKey: 'NdD4gVGH3OeK3s+W4kPnF+qU8DntxO1HwDT0luoC',
         secure: false,
         default_bucket: 'posbucket',
+        public_bucket: 'pospubbucket',
         sitemap_bucket: 'possitemap',
     },
     grobid: {

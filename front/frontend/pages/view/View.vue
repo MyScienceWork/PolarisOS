@@ -160,15 +160,20 @@
                                 class="card-content has-text-centered"
                                 v-if="is_files_accessible"
                             >
-                                <div>
-                                    <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
-                                        <a :href="generate_download_link('master')" class="swap">
-                                            <span class="icon is-large">
-                                                <i class="fa fa-file fa-3x"></i>
-                                            </span>
+                                <div class="columns is-centered">
+                                    <div class="column is-6 has-vertically-aligned-content is-vcentered">
+                                        <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
+                                            <a :href="generate_download_link('master')" class="swap">
+                                                <span class="icon is-large">
+                                                    <i class="fa fa-file fa-3x"></i>
+                                                </span>
 
-                                        </a>
-                                    </b-tooltip>
+                                            </a>
+                                        </b-tooltip>
+                                    </div>
+                                    <div v-if="generate_preview_link('master')" class="column is-6">
+                                        <img :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' />
+                                    </div>
                                 </div>
                                 <p class="has-small-top-margin" v-if="has_extra_files">
                                     <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">

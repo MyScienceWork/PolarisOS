@@ -74,6 +74,7 @@ module.exports = {
         dropzone_success(file, response) {
             const name = `${file.name}_${file.lastModified}`;
             file.pathOnServer = response.file;
+            file.previewUrl = response.preview;
             this.state.files.content = Object.assign({},
                 this.state.files.content, { [name]: file });
         },

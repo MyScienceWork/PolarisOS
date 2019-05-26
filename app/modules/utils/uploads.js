@@ -1,6 +1,8 @@
 // @flow
 const moment = require('moment');
 const FS = require('fs');
+const Path = require('path');
+const FilePreview = require('filepreview');
 const Errors = require('../exceptions/errors');
 const MinioUtils = require('./minio');
 const Archiver = require('archiver');
@@ -78,16 +80,40 @@ async function update_download_stats(info: Object, entity_type: string) {
     }
 }
 
+async function generate_preview(file) {
+    return new Promise((resolve, reject) => {
+        const path = `${file.path}-thumbnail.png`;
+        const name = Path.basename(path);
+        const ret = FilePreview.generateSync(file.path, path);
+        if (!ret) {
+            return reject();
+        }
+        return resolve({ filename: name, mimetype: 'image/png', path });
+    });
+}
+
 async function add_single(ctx) {
     const file = ctx.request.file;
     console.log(file);
     await MinioUtils.create_bucket_if_needed(MinioUtils.default_bucket);
+    await MinioUtils.create_bucket_if_needed(MinioUtils.public_bucket);
     await MinioUtils.put_into_bucket(MinioUtils.default_bucket, file);
+
+    let thumbnailInfo = { filename: null };
+    try {
+        thumbnailInfo = await generate_preview(file);
+        await MinioUtils.put_into_bucket(MinioUtils.public_bucket, thumbnailInfo);
+    } catch (err) {
+        Logger.error(`Unable to generate preview for file ${file.path}`);
+    }
 
     try {
         FS.unlinkSync(file.path);
+        if ('path' in thumbnailInfo) {
+            FS.unlinkSync(thumbnailInfo.path);
+        }
     } catch (errfs) {}
-    ctx.body = { file: file.filename };
+    ctx.body = { file: file.filename, preview: thumbnailInfo.filename };
 }
 
 async function generic_download(ctx) {
@@ -106,6 +132,20 @@ async function generic_download(ctx) {
 
     const shown_name = filename;
     const final_stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, filename);
+    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
+    ctx.statusCode = 200;
+    ctx.body = final_stream;
+}
+
+async function public_download(ctx) {
+    const filename = ctx.params.filename.trim();
+
+    if (filename === '') {
+        throw Errors.DownloadDoesNotExist;
+    }
+
+    const shown_name = filename;
+    const final_stream = await MinioUtils.retrieve_file(MinioUtils.public_bucket, filename);
     ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
     ctx.statusCode = 200;
     ctx.body = final_stream;
@@ -192,4 +232,5 @@ module.exports = {
     download,
     multi_download,
     generic_download,
+    public_download,
 };

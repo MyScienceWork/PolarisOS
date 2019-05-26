@@ -76,6 +76,12 @@
                             :form="form" 
                             :hidden-value="state.files.content[filename].pathOnServer || ''" 
                             />
+                        <finput 
+                            :name="`${files}.${i}.preview_url`" 
+                            label="" type="hidden" 
+                            :form="form" 
+                            :hidden-value="state.files.content[filename].previewUrl || ''" 
+                            />
                         <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
                             <span>{{lang('b_file_status')}} </span><progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
                         </div>
@@ -104,7 +110,16 @@
                             :form="form"
                             :hidden-value="parseFloat(state.files.content[filename].size / 1024).toFixed(2)"
                         />
-                
+                        <div 
+                            v-if="state.files.content[filename].previewUrl"
+                            class="columns is-centered">
+                            <div class="column is-6">
+                                <img v-if="state.files.content[filename].previewUrl" 
+                                     :src='`/download/${state.files.content[filename].previewUrl}`' 
+                                     alt='Thumbnail' class="pos-thumbnail-preview" 
+                                />
+                            </div>
+                        </div>
                         <hr />
                     </div>
                 </div>
@@ -151,6 +166,13 @@
                                         label="" type="hidden" 
                                         :form="form" 
                                         :hidden-value="state.files.content[filename].pathOnServer || ''" 
+                                        />
+                                    <finput 
+                                        :readonly="readonly"
+                                        :name="`${files}.${i}.preview_url`" 
+                                        label="" type="hidden" 
+                                        :form="form" 
+                                        :hidden-value="state.files.content[filename].previewUrl || ''" 
                                         />
                                 </td>
                                 <td>{{parseFloat(state.files.content[filename].size / 1024).toFixed(2)}} KB</td>
