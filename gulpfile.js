@@ -32,6 +32,7 @@ gulp.task('front-fonts', front.copyFonts.bind(front));
 gulp.task('front-imgs', front.copyImgs.bind(front));
 gulp.task('front-customers-fonts', front.copyCustomersFont.bind(front));
 gulp.task('front-views', front.copyViews.bind(front));
+gulp.task('front-3rdparties', front.copy3rdparties.bind(front));
 gulp.task('front-revision-clean', front.revisionClean.bind(front));
 gulp.task('front-revision', ['front-scripts', 'front-vendors', 'front-external-vendors',
     'front-vendor-styles', 'front-styles', 'front-biblio-styles',
@@ -50,7 +51,7 @@ const backs = ['back-scripts', 'back-vendors', 'back-external-vendors',
 
 const fronts = ['front-scripts', 'front-vendors', 'front-external-vendors',
     'front-vendor-styles', 'front-styles', 'front-biblio-styles',
-    'front-fonts', 'front-customers-fonts', 'front-imgs', 'front-views', 'front-gzip', 'front-revision-clean',
+    'front-fonts', 'front-customers-fonts', 'front-imgs', 'front-views', 'front-3rdparties', 'front-gzip', 'front-revision-clean',
     'front-revision', 'front-revision-replace',
 ];
 

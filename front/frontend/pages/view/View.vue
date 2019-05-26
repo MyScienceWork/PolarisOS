@@ -175,6 +175,7 @@
                                         <img :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' />
                                     </div>
                                 </div>
+                                <a :href="`/public/front/3rdparty/ViewerJS/index.html#${generate_download_link('master', true)}`">Link</a>
                                 <p class="has-small-top-margin" v-if="has_extra_files">
                                     <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
                                         {{lang('f_click_here_to_download_extra_files')}}

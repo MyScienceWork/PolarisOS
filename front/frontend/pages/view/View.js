@@ -88,7 +88,7 @@ module.exports = {
                 f.s = s;
             });
         },
-        generate_download_link(status) {
+        generate_download_link(status, generic = false) {
             const files = this.content_item.files || [];
             if (files.length === 0) {
                 return '#';
@@ -96,7 +96,7 @@ module.exports = {
 
             if (status === 'master') {
                 const file = _.find(files, f => f.is_master) || files[0];
-                return `/download/publication/${this.content_item._id}/${file.url}`;
+                return `/${generic ? 'gdownload' : 'download'}/publication/${this.content_item._id}/${file.url}`;
             } else if (status === 'all') {
                 return '#';
             }
