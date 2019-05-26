@@ -114,6 +114,22 @@ module.exports = {
             }
             return null;
         },
+        generate_viewer_link(status) {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return null;
+            }
+
+            if (status === 'master') {
+                const file = _.find(files, f => f.is_master) || files[0];
+                const legitMimeType = ['pdf', 'odp', 'odt', 'ods'].find(ext => file.url.endsWith(ext));
+                if (!legitMimeType) {
+                    return null;
+                }
+                return `/public/front/3rdparty/ViewerJS/index.html#${this.generate_download_link('master', true)}`;
+            }
+            return null;
+        },
         generate_handle_link(item) {
             const handle = (item.ids || []).find(f => f.type === 'handle');
             if (handle) {
