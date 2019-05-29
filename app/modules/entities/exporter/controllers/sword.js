@@ -65,7 +65,7 @@ async function create(pid: string): Promise<any> {
     const skip_files = files.length === 0 || ((my_file.access.restricted || my_file.access.confidential) && !my_file.access.delayed);
     console.log(xml_tei);
 
-    const result_promise = Request.post(url)
+    const req = Request.post(url)
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
         .auth(encodeURIComponent(login), encodeURIComponent(password));
 
@@ -107,7 +107,7 @@ async function create(pid: string): Promise<any> {
     let result;
 
     try {
-        result = await result_promise;
+        result = await req;
     } catch (err) {
         Logger.error('Error when sending deposit to HAL');
         Logger.error(err);
