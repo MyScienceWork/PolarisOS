@@ -685,6 +685,9 @@ module.exports = {
                                             hal: {
                                                 type: 'boolean',
                                             },
+                                            datacite: {
+                                                type: 'boolean',
+                                            },
                                             nowhere: {
                                                 type: 'boolean',
                                             },
@@ -980,6 +983,9 @@ module.exports = {
                             api: {
                                 properties: {
                                     handle: {
+                                        type: 'boolean',
+                                    },
+                                    datacite: {
                                         type: 'boolean',
                                     },
                                     hal: {
