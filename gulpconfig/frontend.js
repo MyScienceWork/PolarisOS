@@ -36,11 +36,13 @@ class GulpFrontend {
             fonts: 'public/front/fonts',
             imgs: 'public/front/imgs',
             views: 'public/front/views',
+            thirdparty: 'public/front/3rdparty',
         };
 
         this.FRONT_LOCATIONS = {
             fonts: './front/frontend/fonts',
             imgs: './front/frontend/imgs',
+            thirdparty: './front/common/3rdparty',
         };
 
         this.dependencies = [
@@ -77,7 +79,7 @@ class GulpFrontend {
         ];
 
         this.css_biblio_files = [
-            './front/frontend/styles/biblio-base.css'
+            './front/frontend/styles/biblio-base.css',
         ];
 
         this.scriptsCount = 0;
@@ -226,6 +228,10 @@ class GulpFrontend {
         gulp.src([
             './front/frontend/views/front.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
+    }
+
+    copy3rdparties() {
+        gulp.src(`${this.FRONT_LOCATIONS.thirdparty}/**/*`).pipe(gulp.dest(this.PUB_LOCATIONS.thirdparty));
     }
 
     copyImgs() {
