@@ -162,9 +162,21 @@ async function post(id: string, type: string = 'ALL', doi_suffix: string): Promi
     return true;
 }
 
+async function export_datacite(ctx: any) {
+    const ok = await post(ctx.params.id, 'ALL');
+    ctx.body = { ok };
+}
+
+async function delete_datacite(ctx: any) {
+    const ok = await del(ctx.params.id);
+    ctx.body = { ok };
+}
+
 module.exports = {
     get_datacite_config,
     post_resource_url,
     post,
     del,
+    export_datacite,
+    delete_datacite,
 };
