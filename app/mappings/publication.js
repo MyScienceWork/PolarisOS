@@ -13,6 +13,9 @@ module.exports = {
                         contributors: {
                             label: 'author',
                         },
+                        funders: {
+                            _id: 'funder',
+                        },
                         conference: 'conference',
                         delivery_institution: 'institution',
                         depositor: 'user',
@@ -560,6 +563,14 @@ module.exports = {
                             },
                         },
                     },
+                    funders: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     classifications: {
                         type: 'nested',
                         properties: {
@@ -913,6 +924,25 @@ module.exports = {
                     },
                     duration: {
                         type: 'integer',
+                    },
+                    dataset_information: {
+                        size: {
+                            type: 'keyword',
+                        },
+                        version: {
+                            type: 'text',
+                            analyzer: 'folding',
+                            fields: {
+                                raw: { type: 'keyword' },
+                            },
+                        },
+                        format: {
+                            type: 'text',
+                            analyzer: 'folding',
+                            fields: {
+                                raw: { type: 'keyword' },
+                            },
+                        },
                     },
                     system: {
                         properties: {
