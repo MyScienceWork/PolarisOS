@@ -111,10 +111,14 @@ module.exports = {
 
     UnableToCreateReport: new GenericError('UnableToCreateReport', new Error('Unable to create report for a requested task'), 500),
 
+    DataCite400: new GenericError('DataCiteBadRequest',
+        new Error('[DataCite] Unable to create the resource (bad request)'), 400),
     DataCite401: new GenericError('DataCiteUnauthorized',
         new Error('[DataCite] Unable to create the resource (unauthorized)'), 401),
     DataCite403: new GenericError('DataCiteForbidden',
         new Error('[DataCite] Unable to create the resource (forbidden)'), 403),
+    DataCite412: new GenericError('DataCitePreconditionFailed',
+        new Error('[DataCite] Unable to create the resource (precondition failed), you may not have registered your metadata first'), 412),
     DataCite415: new GenericError('DataCiteWrongContentType',
         new Error('[DataCite] Unable to create the resource (wrong content type)'), 415),
     DataCite422: new GenericError('DataCiteWrongContent',

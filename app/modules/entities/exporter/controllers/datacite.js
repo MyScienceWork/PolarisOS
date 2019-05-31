@@ -86,6 +86,18 @@ async function post_resource_url(config: object, id: string, doi_suffix: string)
             .send(`doi=${doi_prefix}/${doi_suffix}\nurl=${publication_url}`);
         const { status } = res;
         if (status && status === 201) {
+            const { ids } = publication;
+            if (!ids) {
+                publication.ids = [{ _id: `${doi_prefix}/${doi_suffix}`, type: 'doi' }];
+            } else {
+                const doi = ids.find(i => i.type === 'doi');
+                if (doi) {
+                    doi._id = `${doi_prefix}/${doi_suffix}`;
+                } else {
+                    publications.ids.push({ type: 'doi', _id: `${doi_prefix}/${doi_suffix}` });
+                }
+            }
+            await EntitiesUtils.update('publication', publication);
             return true;
         }
         throw Errors[`DataCite${status}`];
@@ -96,23 +108,56 @@ async function post_resource_url(config: object, id: string, doi_suffix: string)
     }
 }
 
-async function post_all(id: string, doi_suffix: string): Promise<boolean> {
+async function del(id: string, doi_suffix: string): Promise<boolean> {
     const config = await get_datacite_config();
     if (!config) {
-        Logger.error('[DataCite(post_all)] Unable to find DataCite config');
+        Logger.error('[DataCite(del)] Unable to find DataCite config');
         return false;
     }
 
-    const metadata_ok = await post_resource(id, doi_suffix);
-    if (!metadata_ok) {
-        Logger.error('[DataCite(post_all)] Unable to post metadata to DataCite');
+    const { url, username, password, doi_prefix } = config;
+
+    if (!doi_suffix) {
+        doi_suffix = id;
+    }
+
+    try {
+        const res = await Request.del(`${url}/metadata/${doi_prefix}/${doi_suffix}`)
+            .auth(username, password)
+            .type('application/plain;charset=UTF-8');
+        const { status } = res;
+        if (status && status === 201) {
+            return true;
+        }
+        throw Errors[`DataCite${status}`];
+    } catch (err) {
+        Logger.error(`[DataCite(del)] Error when deleting metadata from the API: ${err.message}`);
+    } finally {
+        return false;
+    }
+}
+
+async function post(id: string, type: string = 'ALL', doi_suffix: string): Promise<boolean> {
+    const config = await get_datacite_config();
+    if (!config) {
+        Logger.error('[DataCite(post)] Unable to find DataCite config');
         return false;
     }
 
-    const url_ok = await post_resource_url(id, doi_suffix);
-    if (!url_ok) {
-        Logger.error('[DataCite(post_all)] Unable to post URL to DataCite');
-        return false;
+    if (type === 'ALL' || type === 'METADATA') {
+        const metadata_ok = await post_resource(id, doi_suffix);
+        if (!metadata_ok) {
+            Logger.error('[DataCite(post)] Unable to post metadata to DataCite');
+            return false;
+        }
+    }
+
+    if (type === 'ALL' || type === 'URL') {
+        const url_ok = await post_resource_url(id, doi_suffix);
+        if (!url_ok) {
+            Logger.error('[DataCite(post)] Unable to post URL to DataCite');
+            return false;
+        }
     }
     return true;
 }
@@ -120,6 +165,6 @@ async function post_all(id: string, doi_suffix: string): Promise<boolean> {
 module.exports = {
     get_datacite_config,
     post_resource_url,
-    post_resource,
-    post_all,
+    post,
+    del,
 };
