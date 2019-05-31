@@ -929,21 +929,23 @@ module.exports = {
                         type: 'integer',
                     },
                     dataset_information: {
-                        size: {
-                            type: 'keyword',
-                        },
-                        version: {
-                            type: 'text',
-                            analyzer: 'folding',
-                            fields: {
-                                raw: { type: 'keyword' },
+                        properties: {
+                            size: {
+                                type: 'keyword',
                             },
-                        },
-                        format: {
-                            type: 'text',
-                            analyzer: 'folding',
-                            fields: {
-                                raw: { type: 'keyword' },
+                            version: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            format: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
                             },
                         },
                     },

@@ -45,6 +45,7 @@ async function post_resource(config: object, id: string, doi_suffix: string): Pr
         const res = await Request.put(`${url}/metadata/${doi_prefix}/${doi_suffix}`)
             .auth(username, password)
             .type('application/xml;charset=UTF-8');
+
         const { status } = res;
         if (status && status === 201) {
             return true;
@@ -145,7 +146,7 @@ async function post(id: string, type: string = 'ALL', doi_suffix: string): Promi
     }
 
     if (type === 'ALL' || type === 'METADATA') {
-        const metadata_ok = await post_resource(id, doi_suffix);
+        const metadata_ok = await post_resource(config, id, doi_suffix);
         if (!metadata_ok) {
             Logger.error('[DataCite(post)] Unable to post metadata to DataCite');
             return false;
@@ -153,7 +154,7 @@ async function post(id: string, type: string = 'ALL', doi_suffix: string): Promi
     }
 
     if (type === 'ALL' || type === 'URL') {
-        const url_ok = await post_resource_url(id, doi_suffix);
+        const url_ok = await post_resource_url(config, id, doi_suffix);
         if (!url_ok) {
             Logger.error('[DataCite(post)] Unable to post URL to DataCite');
             return false;

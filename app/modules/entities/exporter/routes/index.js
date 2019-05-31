@@ -31,9 +31,9 @@ function routes(router: KoaRouter) {
     router.get(`${puprefix}/export/masas`, compose([...get_mware,
         MyControllerMasas.export_masas]));
     router.get(`${puprefix}/export/datacite/:id`, compose([...get_mware,
-        MyControllerMasas.export_datacite]));
+        MyControllerDatacite.export_datacite]));
     router.del(`${puprefix}/export/datacite/:id`, compose([...del_mware,
-        MyControllerMasas.delete_datacite]));
+        MyControllerDatacite.delete_datacite]));
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
 

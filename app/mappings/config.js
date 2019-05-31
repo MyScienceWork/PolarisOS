@@ -54,7 +54,7 @@ module.exports = {
                                         type: 'keyword',
                                     },
                                     username: {
-                                        type: 'integer',
+                                        type: 'keyword',
                                     },
                                     password: {
                                         type: 'keyword',

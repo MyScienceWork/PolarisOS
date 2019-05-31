@@ -14,14 +14,12 @@ const Validation: Array<any> = [
         langs: Joi.array().min(1).items(Joi.any().required()).label('Lang'),
     }),
     {
-        api: {
-            datacite: Joi.object({
-                url: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite URL') }),
-                username: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite username') }),
-                password: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite password') }),
-                doi_prefix: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite DOI Prefix') }),
-            }),
-        },
+        'api.datacite': Joi.object({
+            url: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite URL') }),
+            username: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite username') }),
+            password: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite password') }),
+            doi_prefix: Joi.any().when('enabled', { is: true, then: Joi.string().required().label('DataCite DOI Prefix') }),
+        }),
     },
 ];
 
