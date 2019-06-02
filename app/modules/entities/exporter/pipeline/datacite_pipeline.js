@@ -20,7 +20,7 @@ const mapping = {
                     descriptions: [
                         { description: a.content.replace(/\n+/gim, ' '),
                             attrs: {
-                                'xml:lang': pub.lang,
+                                'xml:lang': pub.lang.toLowerCase(),
                                 descriptionType: 'Abstract',
                             } },
                     ],
@@ -28,10 +28,45 @@ const mapping = {
             },
         },
     },
+    type: {
+        __default: {
+            transformers: [],
+            picker: async (t, pub) => {
+                const type = await EntitiesUtils.retrieve_and_get_source('typology', t);
+                if (!type) {
+                    return null;
+                }
+
+                const { subtype } = pub;
+                const { datacite } = type;
+                const resourceType = d => ({
+                    resourceType: '',
+                    attrs: { resourceTypeGeneral: d },
+                });
+
+                if (!subtype) {
+                    return resourceType(datacite);
+                }
+
+                const subtypeInfo = type.children.find(c => c.name === subtype);
+                if (!subtypeInfo) {
+                    return resourceType(datacite);
+                }
+
+
+                const { datacite: subDatacite } = subtypeInfo;
+
+                if (!subDatacite) {
+                    return resourceType(datacite);
+                }
+                return resourceType(subDatacite);
+            },
+        },
+    },
     'dates.publication': {
         __default: {
-            transformers: [o => ({ PublicationYear: moment(o.PublicationYear).format('YYYY') })],
-            picker: c => ({ PublicationYear: c }),
+            transformers: [o => ({ publicationYear: moment(o.publicationYear).format('YYYY') })],
+            picker: c => ({ publicationYear: c }),
         },
     },
     description: {
@@ -58,20 +93,22 @@ const mapping = {
                     return null;
                 }
 
+                const all = [];
                 const alternates = [];
                 if (DOI) {
-                    alternates.push({ alternateIdentifier: DOI._id, alternateIdentifierType: 'DOI' });
+                    all.push({ identifier: DOI._id, attrs: { identifierType: 'DOI' } });
+                    alternates.push({ alternateIdentifier: DOI._id, attrs: { alternateIdentifierType: 'DOI' } });
                 }
 
                 if (handle) {
-                    alternates.push({ alternateIdentifier: handle._id, alternateIdentifierType: 'Handle' });
+                    alternates.push({ alternateIdentifier: handle._id, attrs: { alternateIdentifierType: 'Handle' } });
                 }
 
                 if (ISBN) {
-                    alternates.push({ alternateIdentifier: ISBN._id, alternateIdentifierType: 'ISBN' });
+                    alternates.push({ alternateIdentifier: ISBN._id, attrs: { alternateIdentifierType: 'ISBN' } });
                 }
 
-                return { alternateIdentifiers: alternates };
+                return [...all, { alternateIdentifiers: alternates }];
             },
         },
     },
@@ -92,19 +129,18 @@ const mapping = {
     title: {
         __default: {
             transformers: [],
-            picker: async t => ({
-                titles: [
-                    { title: t.content, attrs: { 'xml:lang': t.lang } },
-                ],
-            }),
-        },
-    },
-    subtitles: {
-        __default: {
-            transformers: [],
-            picker: async info => ({
-                titles: info.map(t => ({ title: t.content, attrs: { 'xml:lang': t.lang, titleType: 'Subtitle' } })),
-            }),
+            picker: async (t, pub) => {
+                const info = pub.subtitles || [];
+                const subtitles = info.map(st => ({
+                    title: st.content, attrs: { titleType: 'Subtitle' },
+                }));
+
+                return {
+                    titles: [
+                        { title: t.content }, ...subtitles,
+                    ],
+                };
+            },
         },
     },
     'denormalization.editor': {
@@ -116,7 +152,7 @@ const mapping = {
     lang: {
         __default: {
             transformers: [],
-            picker: async v => ({ language: v }),
+            picker: async v => ({ language: v.toLowerCase() }),
         },
     },
     dataset_information: {
@@ -159,9 +195,7 @@ const mapping = {
                     && contribs[idx].label && contribs[idx].label.lastname)
                     .map((idx) => {
                         const info = contribs[idx].label;
-                        const obj = [{
-                            familyName: contribs[idx].label.lastname,
-                        }];
+                        const obj = [];
 
                         if (info.firstname) {
                             obj.push({ creatorName: `${contribs[idx].label.firstname} ${contribs[idx].label.lastname}`, attrs: { nameType: 'Personal' } });
@@ -170,6 +204,7 @@ const mapping = {
                             obj.push({ creatorName: contribs[idx].label.lastname, attrs: { nameType: 'Personal' } });
                         }
 
+                        obj.push({ familyName: contribs[idx].label.lastname });
                         return { creator: obj };
                     });
                 return { creators: au_contribs };

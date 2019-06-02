@@ -1,7 +1,7 @@
 // @flow
-
+const Json2Xml = require('json2xml');
 const Request = require('superagent');
-const Config = require('../../../../config');
+const DataCitePipeline = require('../pipeline/datacite_pipeline');
 const ConfigUtils = require('../../../utils/config');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
@@ -28,6 +28,57 @@ async function get_datacite_config(): Promise<?Object> {
     return config;
 }
 
+async function to_datacite(publication: Object): Promise<string> {
+    const typology = (await EntitiesUtils.search_and_get_sources('typology', {
+        size: 100,
+    })).reduce((obj, typo) => {
+        obj[typo._id] = typo.name;
+        return obj;
+    }, {});
+
+    const records = [];
+    const pos_type = typology[publication.type];
+
+    for (const key in DataCitePipeline.mapping) {
+        const pub_info = Utils.find_value_with_path(publication, key.split('.'));
+        if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
+            continue;
+        }
+
+        const info = DataCitePipeline.mapping[key];
+        let mapper = null;
+        if (pos_type in info) {
+            mapper = info[pos_type];
+        } else if ('__default' in info) {
+            mapper = info.__default;
+        }
+
+        if (!mapper) {
+            continue;
+        }
+
+        let subobj = await mapper.picker(pub_info, publication, 'en', key);
+        if (!subobj) {
+            continue;
+        }
+
+        if (mapper.transformers.length > 0) {
+            subobj = await mapper.transformers.reduce((o, tr) => {
+                o = tr(o);
+                return o;
+            }, subobj);
+        }
+        records.push(subobj);
+    }
+    return Json2Xml({ resource: records,
+        attrs: {
+            'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+            xmlns: 'http://datacite.org/schema/kernel-4',
+            'xsi:schemaLocation': 'http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.2/metadata.xsd',
+        },
+    }, { header: true, attributes_key: 'attrs' });
+}
+
 async function post_resource(config: object, id: string, doi_suffix: string): Promise<boolean> {
     const { url, username, password, doi_prefix } = config;
 
@@ -41,10 +92,24 @@ async function post_resource(config: object, id: string, doi_suffix: string): Pr
         Logger.error('[DataCite(post_resource)] Publication id does not refer to an existing publication');
         return false;
     }
+
+    const { ids } = publication;
+    if (!ids) {
+        publication.ids = [{ _id: `${doi_prefix}/${doi_suffix}`, type: 'doi' }];
+    } else {
+        const doi = ids.find(i => i.type === 'doi');
+        if (!doi) {
+            publication.ids.push({ type: 'doi', _id: `${doi_prefix}/${doi_suffix}` });
+        }
+    }
+    await EntitiesUtils.update(publication, 'publication');
+
     try {
-        const res = await Request.put(`${url}/metadata/${doi_prefix}/${doi_suffix}`)
+        const xml = await to_datacite(publication);
+        const res = await Request.put(`${url}/metadata`)// /${doi_prefix}/${doi_suffix}`)
             .auth(username, password)
-            .type('application/xml;charset=UTF-8');
+            .type('application/xml;charset=UTF-8')
+            .send(xml);
 
         const { status } = res;
         if (status && status === 201) {
@@ -87,18 +152,6 @@ async function post_resource_url(config: object, id: string, doi_suffix: string)
             .send(`doi=${doi_prefix}/${doi_suffix}\nurl=${publication_url}`);
         const { status } = res;
         if (status && status === 201) {
-            const { ids } = publication;
-            if (!ids) {
-                publication.ids = [{ _id: `${doi_prefix}/${doi_suffix}`, type: 'doi' }];
-            } else {
-                const doi = ids.find(i => i.type === 'doi');
-                if (doi) {
-                    doi._id = `${doi_prefix}/${doi_suffix}`;
-                } else {
-                    publications.ids.push({ type: 'doi', _id: `${doi_prefix}/${doi_suffix}` });
-                }
-            }
-            await EntitiesUtils.update('publication', publication);
             return true;
         }
         throw Errors[`DataCite${status}`];
