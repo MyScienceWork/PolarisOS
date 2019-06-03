@@ -192,7 +192,7 @@ const mapping = {
     A3: {
         __default: {
             transformers: [],
-            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'editor' })) }),
         },
     },
 };
