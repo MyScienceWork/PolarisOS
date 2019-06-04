@@ -2,6 +2,7 @@ const Handlebars = require('handlebars');
 const moment = require('moment');
 
 Handlebars.registerHelper('moment', (array) => {
+    console.log("this is format : ", format)
     const hash = array.hash;
     const format = hash.format;
     const date = hash.date;
