@@ -274,6 +274,15 @@ module.exports = {
 
         switch (type) {
         case 'model':
+            this.$store.state.requests.push({
+                name: Messages.TRANSFERT_INTO_FORM,
+                type: 'commit',
+                content: {
+                    form: this.state.sinks.creations.publication,
+                    body: { ids: [], dates: { deposit: undefined }, depositor: undefined },
+                },
+            });
+            break;
         case 'new_version':
             this.$store.state.requests.push({
                 name: Messages.TRANSFERT_INTO_FORM,
