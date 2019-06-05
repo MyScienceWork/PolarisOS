@@ -2,11 +2,13 @@ const Handlebars = require('handlebars');
 const moment = require('moment');
 
 Handlebars.registerHelper('moment', (array) => {
-    console.log("this is format : ", format)
     const hash = array.hash;
-    const format = hash.format;
-    const date = hash.date;
-    return moment(date).format(format);
+    if (hash && hash.date) {
+        const format = hash.format;
+        const date = hash.date;
+        return moment(date).format(format);
+    }
+    return moment(array).valueOf();
 });
 
 Handlebars.registerHelper('join', (array, sep, options) => array.map(item => options.fn(item)).join(sep));
