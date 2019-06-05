@@ -106,20 +106,18 @@ async function post_resource(config: object, id: string, doi_suffix: string): Pr
 
     try {
         const xml = await to_datacite(publication);
-        const res = await Request.put(`${url}/metadata`)// /${doi_prefix}/${doi_suffix}`)
+        const res = await Request.put(`${url}/metadata/${doi_prefix}/${doi_suffix}`)
             .auth(username, password)
             .type('application/xml;charset=UTF-8')
             .send(xml);
 
         const { status } = res;
-        if (status && status === 201) {
+        if (status && (status === 201 || status === '201')) {
             return true;
         }
         throw Errors[`DataCite${status}`];
     } catch (err) {
         Logger.error(`[DataCite(post_resource)] Error when sending data to the API: ${err.message}`);
-    } finally {
-        return false;
     }
 }
 
@@ -151,13 +149,12 @@ async function post_resource_url(config: object, id: string, doi_suffix: string)
             .type('text/plain;charset=UTF-8')
             .send(`doi=${doi_prefix}/${doi_suffix}\nurl=${publication_url}`);
         const { status } = res;
-        if (status && status === 201) {
+        if (status && (status === 201 || status === '201')) {
             return true;
         }
         throw Errors[`DataCite${status}`];
     } catch (err) {
         Logger.error(`[DataCite(post_resource_url)] Error when sending data to the API: ${err.message}`);
-    } finally {
         return false;
     }
 }
@@ -180,13 +177,12 @@ async function del(id: string, doi_suffix: string): Promise<boolean> {
             .auth(username, password)
             .type('application/plain;charset=UTF-8');
         const { status } = res;
-        if (status && status === 201) {
+        if (status && (status === 200 || status === '200')) {
             return true;
         }
         throw Errors[`DataCite${status}`];
     } catch (err) {
         Logger.error(`[DataCite(del)] Error when deleting metadata from the API: ${err.message}`);
-    } finally {
         return false;
     }
 }
