@@ -192,7 +192,7 @@ const mapping = {
     A3: {
         __default: {
             transformers: [],
-            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'editor' })) }),
         },
     },
 };
@@ -268,6 +268,7 @@ async function run(publication, typology, idx, maps) {
         const [type, list_path, path] = info;
         maps = await CommonFunctions.list_ref(type, list_path, path, final_publication, idx, maps);
     }
+    console.log('final publication : ', final_publication);
     return final_publication;
 }
 
