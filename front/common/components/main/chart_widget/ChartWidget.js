@@ -87,7 +87,9 @@ module.exports = {
             });
         },
         compile_subtitle(info) {
-            if (info.subtitle) {
+            if (info.subtitle && this.state.dates) {
+                return this.hlang(Handlebars.compile(info.subtitle)(this.state.dates));
+            } else if (info.subtitle) {
                 return this.hlang(Handlebars.compile(info.subtitle)({}));
             }
             return '';
