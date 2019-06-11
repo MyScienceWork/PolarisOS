@@ -107,13 +107,14 @@ module.exports = {
 
             // now get name of the form
             const forms = this.fcontent(this.state.sinks.reads.project_type);
+            let form_name;
             if (forms instanceof Array) {
-                form.name = forms.find(my_form => my_form._id === form.type).value;
+                form_name = forms.find(my_form => my_form._id === form.type).value;
             } else {
                 return () => false;
             }
 
-            this.state.project_subform_name = `${this.state.project_form_name}_${form.name.toLowerCase()}`;
+            this.state.project_subform_name = `${this.state.project_form_name}_${form_name.toLowerCase()}`;
 
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
