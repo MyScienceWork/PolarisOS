@@ -98,7 +98,6 @@ module.exports = {
                         size: values.length,
                     },
                 });
-                console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
                     const opts = this.order_options(this.translate_options(this.format_options(res.data)));
                     if (this.multi) {
