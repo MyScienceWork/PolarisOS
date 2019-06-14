@@ -84,6 +84,5 @@ module.exports = {
         },
     },
     mounted() {
-        this.search();
     },
 };
