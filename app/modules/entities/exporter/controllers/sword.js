@@ -110,7 +110,7 @@ async function create(pid: string): Promise<any> {
         result = await req;
     } catch (err) {
         Logger.error('Error when sending deposit to HAL');
-        Logger.error(err);
+        Logger.error(err.message);
     }
 
     const location = result.headers.location || undefined;
