@@ -269,18 +269,22 @@ module.exports = {
             if (!(rows instanceof Array)) {
                 rows = [rows];
             }
-            const { result_mapping } = this.dynamic_list_mappings();
+            const { result_mapping, select_field_name } = this.dynamic_list_mappings();
             const authorized_keys = result_mapping.map(c => c.value_payload);
             let filtered_rows = [];
             authorized_keys.forEach((key) => {
-                const new_rows = rows.map((item_row, item_row_key) => {
-                    if (rows[item_row_key]) {
-                        item_row[key] = rows[item_row_key][key];
+                rows.forEach((item_row, item_row_key) => {
+                    if (filtered_rows[item_row_key] === undefined) {
+                        filtered_rows[item_row_key] = {};
                     }
-                    return item_row;
+                    filtered_rows[item_row_key][key] = item_row[key];
                 });
-                filtered_rows = Utils.merge_by_key(new_rows, filtered_rows, key);
             });
+
+            rows.forEach((item_row, item_row_key) => {
+                filtered_rows[item_row_key][select_field_name] = item_row[select_field_name];
+            });
+
             return filtered_rows;
         },
         dispatch_row_check(updated_row) {
