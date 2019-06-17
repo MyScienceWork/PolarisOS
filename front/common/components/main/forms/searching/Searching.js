@@ -9,6 +9,7 @@ const PaginationSearchMixin = require('../../../../mixins/PaginationSearchMixin'
 module.exports = {
     mixins: [LangMixin, FormMixin, PaginationSearchMixin],
     props: {
+        autoSearch: { default: true, type: Boolean },
         sizeList: { default: () => [10, 30, 50, 100], type: Array },
         sortList: { required: false, type: Array, default: () => [] },
         filters: { required: false, type: Array, default: () => [] },
@@ -84,5 +85,8 @@ module.exports = {
         },
     },
     mounted() {
+        if (this.autoSearch) {
+            this.search();
+        }
     },
 };
