@@ -188,7 +188,7 @@ module.exports = {
             const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
-                this.select_default_value();
+                this.set_selected([]);
                 return;
             }
 

@@ -17,6 +17,8 @@
                                     :put_path="state.paths.creations.project"
                                     :get_path="state.paths.reads.project"
                                     :get_form="state.sinks.reads.project"
+                                    :redirectAfterSuccess="true"
+                                    redirectURI="/workflow?workflow=global"
                             >
                             <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
                                 <finput

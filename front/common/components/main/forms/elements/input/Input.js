@@ -83,7 +83,7 @@ module.exports = {
                 info = e;
             }
             if (this.type === 'date') {
-                if (typeof info !== 'string') {
+                if (info && typeof info !== 'string') {
                     // date is local timezone so now we convert it to UTC
                     info = new Date(info.getTime() - (info.getTimezoneOffset() * 60000));
                     info = +moment.utc(info.toUTCString());

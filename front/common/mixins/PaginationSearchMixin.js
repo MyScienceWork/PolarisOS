@@ -58,6 +58,10 @@ module.exports = {
                 this.state.loading = true;
             }
         },
+        initialize() {
+            this.state.loading = false;
+            this.$store.commit(Messages.INITIALIZE, { form: this.resultSink });
+        },
         get_information(query, opt, default_value) {
             if (!query) {
                 return default_value;
