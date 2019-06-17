@@ -98,7 +98,6 @@ module.exports = {
                         size: values.length,
                     },
                 });
-                console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
                     const opts = this.order_options(this.translate_options(this.format_options(res.data)));
                     if (this.multi) {
@@ -189,7 +188,7 @@ module.exports = {
             const info = Utils.find_value_with_path(form.content, this.name.split('.'));
 
             if (info == null) {
-                this.select_default_value();
+                this.set_selected([]);
                 return;
             }
 

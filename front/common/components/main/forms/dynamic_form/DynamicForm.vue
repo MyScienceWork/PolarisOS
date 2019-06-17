@@ -523,6 +523,7 @@
                     :show-search="false"
                     :enable-pagination="false"
                     :read-only="read_only"
+                    :auto-search="false"
                 >
                     <template slot="rows" slot-scope="props">
                         <b-table-column v-for="(value, key) in state.columns"

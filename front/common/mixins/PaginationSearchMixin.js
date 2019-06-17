@@ -58,6 +58,10 @@ module.exports = {
                 this.state.loading = true;
             }
         },
+        initialize() {
+            this.state.loading = false;
+            this.$store.commit(Messages.INITIALIZE, { form: this.resultSink });
+        },
         get_information(query, opt, default_value) {
             if (!query) {
                 return default_value;
@@ -215,6 +219,7 @@ module.exports = {
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
+            this.state.loading = true;
             const content = this.fcontent(sink);
             let new_content = {};
 
@@ -367,6 +372,9 @@ module.exports = {
             this.dispatch(s, this, this.searchSink);
         },
         current_state_result(s) {
+            if (s !== 'loading') {
+                this.state.loading = false;
+            }
             this.dispatch(s, this, this.resultSink);
         },
         create_state_result(s) {

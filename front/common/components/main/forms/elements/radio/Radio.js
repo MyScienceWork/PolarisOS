@@ -179,7 +179,6 @@ module.exports = {
                         size: values.length,
                     },
                 });
-                console.log('fetch selected values', this.state.options);
                 promise.then((res) => {
                     const opts = this.translate_options(this.format_options(res.data));
                     if (this.multi) {
@@ -231,7 +230,6 @@ module.exports = {
     },
     beforeMount() {
         if (!this.prefetchInAjax) {
-            console.log('no prefetch in ajax');
             this.state.options = this.translate_options(this.format_options(this.options, 'to'));
         }
     },

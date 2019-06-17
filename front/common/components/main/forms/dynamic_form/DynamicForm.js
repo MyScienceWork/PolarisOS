@@ -24,7 +24,6 @@ module.exports = {
             state: {
                 columns: {},
                 checked_rows: [],
-                all_rows: [],
                 selected: [],
                 selected_date: {},
                 show: {},
@@ -45,11 +44,18 @@ module.exports = {
         CrudForm,
     },
     mounted() {
-        const form_content = this.fcontent(this.cform);
-        if (form_content
-            && form_content.disorder_list instanceof Array
-            && form_content.disorder_list.length > 0) {
-            this.state.all_rows = form_content.disorder_list;
+        const cform_content = this.fcontent(this.cform);
+        const { root_key, select_field_name } = this.dynamic_list_mappings();
+        if (cform_content
+            && cform_content[root_key] instanceof Array
+            && cform_content[root_key].length > 0) {
+            // init raw table from database
+            this.$store.commit(Messages.READ, {
+                form: this.state.sinks.reads.dynamic_list,
+                content: cform_content[root_key],
+            });
+            // init checked rows
+            this.$set(this.state, 'checked_rows', cform_content[root_key].filter(item_row => item_row[select_field_name] === true));
         }
     },
     methods: {
@@ -227,84 +233,21 @@ module.exports = {
             this.$set(this.state, 'columns', this.state.columns);
             this.build_all_dynamic_list_columns();
         },
-        map_api_result_to_form(result_mapping, selected_mapping, rows, status) {
-            const authorized_keys = result_mapping.map(c => c.value_payload);
-            let remapped_rows = [];
-            authorized_keys.forEach((key) => {
-                remapped_rows = rows.map((item_row, item_row_key) => {
-                    item_row = remapped_rows[item_row_key] || {};
-                    item_row[key] = rows[item_row_key][key];
-                    if (status) {
-                        item_row[selected_mapping] = status;
-                    } else if (this.state.all_rows.length > 0
-                        && this.state.all_rows[item_row_key]
-                        && this.state.all_rows[item_row_key][selected_mapping]) {
-                        item_row[selected_mapping] = this.state.all_rows[item_row_key][selected_mapping];
-                    } else {
-                        item_row[selected_mapping] = false;
-                    }
-                    return item_row;
-                });
-            });
-            return remapped_rows;
-        },
-        dispatch_row_check(rows, status) {
-            if (!(rows instanceof Array)) {
-                return;
-            }
-            const { result_mapping, selected_mapping } = this.form.fields.reduce((obj, field) => {
+        dynamic_list_mappings() {
+            return this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                return { result_mapping: field.dynamic_list.result_mapping,
-                    selected_mapping: field.dynamic_list.selected_mapping };
-            }, {});
-
-            const remapped_rows = this.map_api_result_to_form(result_mapping, selected_mapping, rows, status);
-
-            result_mapping.forEach((result) => {
-                const all_keys = result.value_form.split('.');
-                const root_key = all_keys[0];
-                let new_rows = [];
-                if (status === true) {
-                    new_rows = Utils.merge_by_key(this.state.all_rows, remapped_rows, all_keys[all_keys.length - 1]);
-                } else {
-                    new_rows = remapped_rows;
-                    this.$set(this.state, 'all_rows', remapped_rows);
-                }
-                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                    form: this.cform,
-                    name: root_key,
-                    info: new_rows,
+                let root_key = '';
+                // TODO: improve root key with a field in dynamic_list
+                field.dynamic_list.result_mapping.forEach((result) => {
+                    const all_keys = result.value_form.split('.');
+                    root_key = all_keys[0];
                 });
-            });
-        },
-        init_checked_rows(rows) {
-            if (!(rows instanceof Array)) {
-                return;
-            }
-            const { result_mapping, selected_mapping } = this.form.fields.reduce((obj, field) => {
-                if (field.type !== 'dynamic-list') {
-                    return obj;
-                }
                 return { result_mapping: field.dynamic_list.result_mapping,
-                    selected_mapping: field.dynamic_list.selected_mapping };
+                    select_field_name: field.dynamic_list.selected_mapping,
+                    root_key };
             }, {});
-
-            const remapped_rows = this.map_api_result_to_form(result_mapping, selected_mapping, rows);
-            const checked_rows = [];
-
-            rows.forEach((row, index_row) => {
-                if (remapped_rows[index_row]
-                    && remapped_rows[index_row][selected_mapping] === true) {
-                    checked_rows.push(row);
-                }
-            });
-            this.$set(this.state, 'checked_rows', checked_rows);
-        },
-        on_checked_rows_update(row) {
-            this.dispatch_row_check(row.checkedRows, true);
-            this.$set(this.state, 'checked_rows', row.checkedRows);
         },
         build_all_dynamic_list_columns() {
             this.state.columns = this.form.fields.reduce((obj, field) => {
@@ -322,11 +265,130 @@ module.exports = {
                 this.$set(this.state, 'selected_date', new_selected_dates);
             }
         },
+        filter_authorized_fields(rows) {
+            if (!(rows instanceof Array)) {
+                rows = [rows];
+            }
+            const { result_mapping, select_field_name } = this.dynamic_list_mappings();
+            const authorized_keys = result_mapping.map(c => c.value_payload);
+            let filtered_rows = [];
+            authorized_keys.forEach((key) => {
+                rows.forEach((item_row, item_row_key) => {
+                    if (filtered_rows[item_row_key] === undefined) {
+                        filtered_rows[item_row_key] = {};
+                    }
+                    filtered_rows[item_row_key][key] = item_row[key];
+                });
+            });
+
+            rows.forEach((item_row, item_row_key) => {
+                filtered_rows[item_row_key][select_field_name] = item_row[select_field_name];
+            });
+
+            return filtered_rows;
+        },
+        dispatch_row_check(updated_row) {
+            console.log('dispatch_row_check : ', updated_row);
+            // TODO: filter fields with authorized fields
+            let filtered_rows = this.filter_authorized_fields(updated_row);
+            // TODO: get actual form and remove selected field
+            const cform_content = this.fcontent(this.cform);
+            const { root_key, select_field_name } = this.dynamic_list_mappings();
+            const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key]);
+
+            console.log('filtered_rows : ', filtered_rows);
+            console.log('actual_filtered_raws : ', actual_filtered_raws);
+
+            filtered_rows = filtered_rows.map((item_raw) => {
+                delete item_raw[select_field_name];
+                return item_raw;
+            });
+
+            const keys = Object.keys(filtered_rows[0]);
+            console.log('keys : ', keys);
+
+            filtered_rows.forEach((filtered_row) => {
+                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => {
+                    console.log('obj : ', obj);
+                    console.log('filtered_rows[key] : ', filtered_row[key]);
+                    console.log('raw[key] : ', raw[key]);
+                    console.log('updated_row[key] === raw[key] : ', filtered_row[key] === raw[key]);
+                    return obj && filtered_row[key] === raw[key];
+                }, true));
+                console.log('this is idx : ', idx);
+                // TODO: toogle field changed
+                if (idx !== -1) {
+                    actual_filtered_raws[idx][select_field_name] = !(actual_filtered_raws[idx][select_field_name]);
+                }
+            });
+
+            console.log('new actual_filtered_raws : ', actual_filtered_raws);
+            // TODO: commit to main form
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.cform,
+                name: root_key,
+                info: actual_filtered_raws,
+            });
+        },
+        update_rows_from_api(data) {
+            console.log('update_rows_from_api data : ', data);
+            if (!(data instanceof Array)) {
+                return;
+            }
+            // TODO: filter fields with authorized fields
+            const filtered_rows = this.filter_authorized_fields(data);
+            const { root_key, select_field_name } = this.dynamic_list_mappings();
+            filtered_rows.map((item_raw) => {
+                if (item_raw[select_field_name] === undefined) {
+                    item_raw[select_field_name] = false;
+                }
+                return item_raw;
+            });
+            console.log('filtered_rows : ', filtered_rows);
+
+            // TODO: commit to main form
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.cform,
+                name: root_key,
+                info: filtered_rows,
+            });
+        },
+        on_checked_rows_update(row) {
+            console.log('on_checked_rows_update data : ', row);
+            if (row.checkedRow) {
+                // row.checkedRow is the row changed
+                this.dispatch_row_check(row.checkedRow);
+            } else {
+                const { root_key, select_field_name } = this.dynamic_list_mappings();
+                let cform_content = this.fcontent(this.cform)[root_key];
+
+                if (row.checkedRows.length === 0) {
+                    // global checkbox has been unchecked
+                    console.log('global checkbox has been unchecked');
+                    cform_content = cform_content.map((cfom_row) => {
+                        cfom_row[select_field_name] = false;
+                        return cfom_row;
+                    });
+                } else {
+                    // global checkbox has been checked
+                    console.log('global checkbox has been checked');
+                    cform_content = cform_content.map((cfom_row) => {
+                        cfom_row[select_field_name] = true;
+                        return cfom_row;
+                    });
+                }
+
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.cform,
+                    name: root_key,
+                    info: cform_content,
+                });
+            }
+        },
     },
     watch: {
-        content_dynamic_list(dynamic_list) {
-            this.dispatch_row_check(dynamic_list);
-            this.init_checked_rows(dynamic_list);
+        content_dynamic_list(data) {
+            this.update_rows_from_api(data);
         },
     },
     computed: {

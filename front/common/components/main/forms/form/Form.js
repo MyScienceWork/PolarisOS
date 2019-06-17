@@ -17,6 +17,8 @@ module.exports = {
         showErrors: { type: Boolean, default: true },
         mode: { type: String, default: 'default' },
         noReinitializeAfterSuccess: { type: Boolean, default: false },
+        redirectAfterSuccess: { type: Boolean, default: false },
+        redirectURI: { type: String, default: '' }
     },
     data() {
         return {
@@ -63,6 +65,9 @@ module.exports = {
                         form: this.name,
                     });
                     this.$emit('form-success-reset');
+                    if (this.redirectAfterSuccess) {
+                        this.$router.push({ path: this.redirectURI });
+                    }
                 }, 2500);
             }
         },
