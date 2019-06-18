@@ -59,6 +59,12 @@
                                      -->
                                 </b-table-column>
                             </template>
+                            <template slot="detail" slot-scope="props">
+                                <div class="has-medium-font">
+                                    <p><strong>{{lang('l_project_title')}} : </strong> {{props.row.title}}</p>
+                                    <p><strong>{{lang('l_project_abstract')}} : </strong> {{props.row.abstract}}</p>
+                                </div>
+                            </template>
                         </fdata-table-searching>
                         <div v-else class="columns is-centered">
                             <loader/>
