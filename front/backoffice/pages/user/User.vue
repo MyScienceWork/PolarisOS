@@ -54,7 +54,16 @@
                                     {{props.info.firstname}} {{props.info.lastname}}
                                 </span>
                                 <div slot="body">
-                                    <h4 class="title is-4">{{props.info.firstname}} {{props.info.lastname}}</h4>
+                                    <div class="has-medium-font">
+                                        <div v-for="email in props.info.emails">
+                                            <p><strong>{{lang('b_email')}} : {{email.email}}</strong></p>
+                                        </div>
+                                        <p><strong>{{lang('b_role')}} : </strong>
+                                        <span v-for="role in props.info.roles">
+                                             {{ get_role(role._id)}}
+                                        </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </widget>
                         </fsearching>
