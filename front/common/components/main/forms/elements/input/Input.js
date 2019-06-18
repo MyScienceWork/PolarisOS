@@ -17,7 +17,7 @@ module.exports = {
         read: { default: false, type: Boolean },
         hidden: { default: false, type: Boolean },
         // form: { required: true, type: String }, //InputMixin
-        rows: { default: 10 },
+        rows: { default: 15 },
         radioButtons: { default: () => [], type: Array },
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
