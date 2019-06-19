@@ -132,11 +132,11 @@ class ApiScheduler extends Scheduler {
         console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
-            Logger.error(err);
+            Logger.error('Error : ', err);
         });
         this._execute_hal_export().then(() => {}).catch((err) => {
             Logger.error('Error when exporting to HAL using scheduler');
-            Logger.error(err);
+            Logger.error('Error : ', err);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {
             Logger.error('Error when sending SMS through scheduler');
