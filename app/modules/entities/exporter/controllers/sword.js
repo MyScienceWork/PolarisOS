@@ -69,9 +69,18 @@ async function create(pid: string): Promise<any> {
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
         .auth(encodeURIComponent(login), encodeURIComponent(password));
 
+    let result = {};
+
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
-            .send(xml_tei);
+            .send(xml_tei).end((err, res) => {
+                if (err) {
+                    Logger.error('Error when sending deposit to HAL');
+                    Logger.error(err);
+                } else {
+                    result = res;
+                }
+            });
     } else {
         req
             .set('Content-Type', 'application/zip')
@@ -100,17 +109,15 @@ async function create(pid: string): Promise<any> {
         archive.finalize();
 
         writableStreamBuffer.on('finish', () => {
-            req.send(writableStreamBuffer.getContents());
+            req.send(writableStreamBuffer.getContents()).end((err, res) => {
+                if (err) {
+                    Logger.error('Error when sending deposit to HAL');
+                    Logger.error(err);
+                } else {
+                    result = res;
+                }
+            });
         });
-    }
-
-    let result;
-
-    try {
-        result = await req;
-    } catch (err) {
-        Logger.error('Error when sending deposit to HAL');
-        Logger.error(err.message);
     }
 
     const location = result.headers.location || undefined;
