@@ -50,7 +50,15 @@ class ApiScheduler extends Scheduler {
                 return true;
             }
 
-            const [ok, id] = await SwordAPI.create(p._id);
+            let ok,
+                id;
+
+            try {
+                [ok, id] = await SwordAPI.create(p._id);
+            } catch (err) {
+                Logger.error('fail swordAPI create : ', err);
+            }
+
             if (ok) {
                 if (!('api' in p.system)) {
                     p.system.api = {};

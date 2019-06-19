@@ -76,7 +76,8 @@ async function create(pid: string): Promise<any> {
             .send(xml_tei).end((err, res) => {
                 if (err) {
                     Logger.error('Error when sending deposit to HAL');
-                    Logger.error(err);
+                    Logger.error('Error response : ', err.response.body);
+                    result = err;
                 } else {
                     result = res;
                 }
@@ -112,7 +113,8 @@ async function create(pid: string): Promise<any> {
             req.send(writableStreamBuffer.getContents()).end((err, res) => {
                 if (err) {
                     Logger.error('Error when sending deposit to HAL');
-                    Logger.error(err);
+                    Logger.error('Error response : ', err.response.body);
+                    result = err;
                 } else {
                     result = res;
                 }
@@ -120,9 +122,13 @@ async function create(pid: string): Promise<any> {
         });
     }
 
-    const location = result.headers.location || undefined;
+    let location;
+
+    if (result.headers && result.headers.location) {
+        location = result.headers.location;
+    }
     if (location === undefined) {
-        Logger.error('Error when sending deposit to HAL : ', result.error);
+        Logger.error('Error when sending deposit to HAL');
         Logger.info('XML sent : ', xml_tei);
         return [false, undefined];
     }
