@@ -6,7 +6,7 @@
             </span>
         </router-link>
         <div
-            v-for="(item, i) in menu.elements"
+            v-for="(item, i) in menu_filtered_with_roles()"
             :class="`column is-paddingless navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"
         >
             <b-dropdown hoverable v-if="item.submenus && item.submenus.length > 0" :class="`is-${state.colors[i]}`">

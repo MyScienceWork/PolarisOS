@@ -57,10 +57,10 @@
                     <span slot="title">{{lang('l_add_or_modify_menu')}}</span>
                     <div slot="body">
                         <fform
-                            :name="state.sinks.creations.menu" 
-                            :post_path="state.paths.creations.menu" 
-                            :put_path="state.paths.creations.menu" 
-                            :get_path="state.paths.reads.menu" 
+                            :name="state.sinks.creations.menu"
+                            :post_path="state.paths.creations.menu"
+                            :put_path="state.paths.creations.menu"
+                            :get_path="state.paths.reads.menu"
                             :get_form="state.sinks.reads.menu"
                         >
                             <finput name="name" :label="lang('l_menu_name')" :is-required="true" :placeholder="lang('l_menu_name')" type="text" :form="state.sinks.creations.menu" />
@@ -68,85 +68,109 @@
                             <fvariadic-element name="elements" :form="state.sinks.creations.menu" :is-required="true" :draggable="true">
                                 <template slot="variadic" slot-scope="fprops">
                                     <div class="card">
-                                        <finput 
-                                            :name="`${fprops.fname}.${fprops.order}.name`" 
-                                            :label="lang('l_menu_element_name')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('l_menu_element_name')" 
-                                            type="text" 
+                                        <finput
+                                            :name="`${fprops.fname}.${fprops.order}.name`"
+                                            :label="lang('l_menu_element_name')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_menu_element_name')"
+                                            type="text"
                                             :form="state.sinks.creations.menu"
                                             :key="`${fprops.fname}.${fprops.id}.name`"
                                         />
-                                        <finput 
-                                            :name="`${fprops.fname}.${fprops.order}.icon`" 
-                                            :key="`${fprops.fname}.${fprops.id}.icon`" 
-                                            :label="lang('l_menu_icon')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('l_menu_icon')" type="text" 
+                                        <finput
+                                            :name="`${fprops.fname}.${fprops.order}.icon`"
+                                            :key="`${fprops.fname}.${fprops.id}.icon`"
+                                            :label="lang('l_menu_icon')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_menu_icon')" type="text"
                                             :form="state.sinks.creations.menu"
                                         />
-                                        <fselect 
-                                            :name="`${fprops.fname}.${fprops.order}.page`" 
-                                            :key="`${fprops.fname}.${fprops.id}.page`" 
-                                            :label="lang('l_page')" 
-                                            :placeholder="lang('l_page')" 
-                                            :form="state.sinks.creations.menu" 
-                                            :options="content_page" 
+                                        <fselect
+                                            :name="`${fprops.fname}.${fprops.order}.page`"
+                                            :key="`${fprops.fname}.${fprops.id}.page`"
+                                            :label="lang('l_page')"
+                                            :placeholder="lang('l_page')"
+                                            :form="state.sinks.creations.menu"
+                                            :options="content_page"
                                             :is-required="true"
-                                            fieldLabel="route" 
+                                            fieldLabel="route"
                                             fieldValue="_id"
                                         />
-                                        <finput 
-                                            :name="`${fprops.fname}.${fprops.order}.query`" 
-                                            :key="`${fprops.fname}.${fprops.id}.query`" 
-                                            :label="lang('l_menu_query')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('l_menu_query')" type="text" 
+                                        <fselect
+                                            :name="`${fprops.fname}.${fprops.order}.roles`"
+                                            :key="`${fprops.fname}.${fprops.id}.roles`"
+                                            :label="lang('b_role', {}, 'other')"
+                                            :options="roles"
+                                            :form="state.sinks.creations.menu"
+                                            fieldValue="_id"
+                                            fieldLabel="name"
+                                            :multi="true"
+                                            :translatable="true"
+                                            :help="lang('l_backoffice_role_help')"
+                                        />
+                                        <finput
+                                            :name="`${fprops.fname}.${fprops.order}.query`"
+                                            :key="`${fprops.fname}.${fprops.id}.query`"
+                                            :label="lang('l_menu_query')"
+                                            :is-required="true"
+                                            :placeholder="lang('l_menu_query')" type="text"
                                             :form="state.sinks.creations.menu"
                                         />
-                                        <fvariadic-element 
-                                            :name="`${fprops.fname}.${fprops.order}.submenus`" 
-                                            :key="`${fprops.fname}.${fprops.id}.submenus`" 
-                                            :form="state.sinks.creations.menu" 
-                                            :draggable="true" 
+                                        <fvariadic-element
+                                            :name="`${fprops.fname}.${fprops.order}.submenus`"
+                                            :key="`${fprops.fname}.${fprops.id}.submenus`"
+                                            :form="state.sinks.creations.menu"
+                                            :draggable="true"
                                             :is-required="false"
                                         >
                                             <template slot="variadic" slot-scope="props">
-                                                <finput 
-                                                    :name="`${props.fname}.${props.order}.name`" 
-                                                    :key="`${props.fname}.${props.id}.name`" 
-                                                    :label="lang('l_menu_name')" 
-                                                    :is-required="true" 
-                                                    :placeholder="lang('l_menu_name')" 
-                                                    type="text" 
+                                                <finput
+                                                    :name="`${props.fname}.${props.order}.name`"
+                                                    :key="`${props.fname}.${props.id}.name`"
+                                                    :label="lang('l_menu_name')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('l_menu_name')"
+                                                    type="text"
                                                     :form="state.sinks.creations.menu"
                                                 />
-                                                <finput 
-                                                    :name="`${props.fname}.${props.order}.icon`" 
-                                                    :key="`${props.fname}.${props.id}.icon`" 
-                                                    :label="lang('l_menu_icon')" 
-                                                    :is-required="true" 
-                                                    :placeholder="lang('l_menu_icon')" 
-                                                    type="text" 
-                                                    :form="state.sinks.creations.menu" 
+                                                <finput
+                                                    :name="`${props.fname}.${props.order}.icon`"
+                                                    :key="`${props.fname}.${props.id}.icon`"
+                                                    :label="lang('l_menu_icon')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('l_menu_icon')"
+                                                    type="text"
+                                                    :form="state.sinks.creations.menu"
                                                 />
-                                                <fselect 
-                                                    :name="`${props.fname}.${props.order}.page`" 
-                                                    :key="`${props.fname}.${props.id}.page`" 
-                                                    :label="lang('l_page')" 
-                                                    :is-required="true" 
-                                                    :placeholder="lang('l_page')" 
-                                                    fieldLabel="route" 
+                                                <fselect
+                                                    :name="`${props.fname}.${props.order}.page`"
+                                                    :key="`${props.fname}.${props.id}.page`"
+                                                    :label="lang('l_page')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('l_page')"
+                                                    fieldLabel="route"
                                                     fieldValue="_id"
-                                                    :form="state.sinks.creations.menu" 
+                                                    :form="state.sinks.creations.menu"
                                                     :options="content_page"
                                                 />
-                                                <finput 
-                                                    :name="`${props.fname}.${props.order}.query`" 
-                                                    :key="`${props.fname}.${props.id}.query`" 
-                                                    :label="lang('l_menu_query')" 
-                                                    :is-required="true" 
-                                                    :placeholder="lang('l_menu_query')" type="text" 
+                                                <fselect
+                                                    :name="`${props.fname}.${props.order}.roles`"
+                                                    :key="`${props.fname}.${props.id}.roles`"
+                                                    :label="lang('b_role', {}, 'other')"
+                                                    :options="roles"
+                                                    :form="state.sinks.creations.menu"
+                                                    fieldValue="_id"
+                                                    fieldLabel="name"
+                                                    :multi="true"
+                                                    :translatable="true"
+                                                    :help="lang('l_backoffice_role_help')"
+                                                />
+                                                <finput
+                                                    :name="`${props.fname}.${props.order}.query`"
+                                                    :key="`${props.fname}.${props.id}.query`"
+                                                    :label="lang('l_menu_query')"
+                                                    :is-required="true"
+                                                    :placeholder="lang('l_menu_query')" type="text"
                                                     :form="state.sinks.creations.menu"
                                                 />
                                             </template>

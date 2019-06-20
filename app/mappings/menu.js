@@ -46,6 +46,14 @@ module.exports = {
                                     query: {
                                         type: 'keyword',
                                     },
+                                    roles: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
