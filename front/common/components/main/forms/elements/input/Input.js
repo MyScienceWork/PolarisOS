@@ -5,6 +5,7 @@ const InputMixin = require('../../mixins/InputMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
+const APIRoutes = require('../../../../../api/routes');
 
 module.exports = {
     mixins: [InputMixin],
@@ -24,6 +25,7 @@ module.exports = {
         hiddenValue: { default: '', type: String },
         default: { default: null },
         readonly: { default: false, type: Boolean },
+        duplicate_warning: { default: false, type: Boolean },
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
@@ -46,6 +48,12 @@ module.exports = {
             state: {
                 value: undefined,
                 showHelpModal: false,
+                duplicate_warning_message: '',
+                sinks: {
+                    reads: {
+                        duplicate_warning: [],
+                    },
+                },
             },
         };
     },
@@ -124,6 +132,28 @@ module.exports = {
             if (this.type !== 'date') {
                 this.state.value = formatted_info;
             }
+        },
+        blur(e) {
+            if (!this.duplicate_warning) {
+                return;
+            }
+            const info = e.target.value;
+            if (info.trim() === '') {
+                return;
+            }
+            const cform_name = this.form.split('_')[0];
+            this.state.sinks.reads.duplicate_warning[this.name] = `duplicate_warning_${this.name}_read`;
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.duplicate_warning[this.name],
+                path: APIRoutes.entity(cform_name, 'POST', true),
+                body: {
+                    where: {
+                        $and: {
+                            [this.name]: info,
+                        },
+                    },
+                },
+            });
         },
         defaultValue() {
             if (this.default != null) {
@@ -210,6 +240,13 @@ module.exports = {
         readonlyValue(v) {
             return this.computeReadonlyValue(v);
         },
+        content_duplicate_warning(data) {
+            if (!(data instanceof Array) || data.length === 0) {
+                this.$set(this.state, 'duplicate_warning_message', '');
+                return;
+            }
+            this.$set(this.state, 'duplicate_warning_message', `l_duplicate_${this.form}_${this.name}`);
+        },
     },
     computed: {
         emptyValue() {
@@ -238,6 +275,12 @@ module.exports = {
                 return this.maxDate;
             }
             return null;
+        },
+        content_duplicate_warning() {
+            return this.fcontent(this.state.sinks.reads.duplicate_warning[this.name]);
+        },
+        duplicate_warning_message() {
+            return this.state.duplicate_warning_message;
         },
     },
     beforeMount() {

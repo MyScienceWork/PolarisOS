@@ -59,14 +59,11 @@ const Cache = {
      * @param {String} key First part of key
      */
     async clear(entity) {
-        console.log('1BRYAN CLEAR CACHE !');
         const response = await EntitiesUtils.search_and_get_sources('cache', { where: {
             $and: [{ entity }],
         } });
-        console.log('2BRYAN CLEAR CACHE RESPONSE !', response);
         if (response.length > 0) {
             response.forEach((async (c) => {
-                console.log('3BRYAN CLEAR CACHE RESPONSE !', c._id);
                 this.remove(c._id);
             }));
         }
