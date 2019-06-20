@@ -19,12 +19,14 @@ module.exports = {
                     reads: {
                         menu: APIRoutes.entity('menu', 'POST', true),
                         page: APIRoutes.entity('page', 'GET'),
+                        role: APIRoutes.entity('role', 'POST', true),
                     },
                 },
                 sinks: {
                     reads: {
                         menu: 'menu_read',
                         page: 'page_read',
+                        role: 'role_read',
                     },
                     creations: {
                         menu: 'menu_creation',
@@ -54,6 +56,17 @@ module.exports = {
                 },
             });
         });
+        this.$store.state.requests = ['role'].map(e => ({
+            name: 'search',
+            type: 'dispatch',
+            content: {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    size: 10000,
+                },
+            },
+        }));
     },
     watch: {
         error_page(n) {
@@ -76,6 +89,10 @@ module.exports = {
         },
         current_read_state_page() {
             return this.mcurrent_read_state(this.state.sinks.reads.page);
+        },
+        roles() {
+            const content = this.mcontent(this.state.sinks.reads.role);
+            return content;
         },
     },
 };

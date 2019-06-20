@@ -58,6 +58,9 @@ module.exports = {
                             readonly: {
                                 type: 'boolean',
                             },
+                            duplicate_warning: {
+                                type: 'boolean',
+                            },
                             subform: {
                                 type: 'keyword',
                             },

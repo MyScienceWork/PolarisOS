@@ -77,6 +77,7 @@
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
                     @input="update"
+                    @blur="blur"
                     :readonly="readonly"
 
                 />
@@ -151,6 +152,11 @@
                 {{lang(text)}}
             </p>
         </div>
+        <div v-if="duplicate_warning && state.duplicate_warning_message.trim() !== ''">
+            <p class="redify inline-block">
+                {{lang(duplicate_warning_message)}}
+            </p>
+        </div>
     </div>
 
     <div v-else-if="type === 'textarea'" :class="['field', {'is-hidden': readonly && emptyValue}]">
@@ -175,6 +181,7 @@
                     :rows="rows"
                     :value="state.value"
                     @input="update"
+                    @blur="blur"
                     v-if="!readonly"
                 />
                 <p v-else>{{state.value}}</p>
@@ -187,6 +194,11 @@
         <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
                 {{lang(text)}}
+            </p>
+        </div>
+        <div v-if="duplicate_warning && state.duplicate_warning_message.trim() !== ''">
+            <p class="redify inline-block">
+                {{lang(duplicate_warning_message)}}
             </p>
         </div>
     </div>

@@ -271,7 +271,7 @@ module.exports = {
             }
             const { result_mapping, select_field_name } = this.dynamic_list_mappings();
             const authorized_keys = result_mapping.map(c => c.value_payload);
-            let filtered_rows = [];
+            const filtered_rows = [];
             authorized_keys.forEach((key) => {
                 rows.forEach((item_row, item_row_key) => {
                     if (filtered_rows[item_row_key] === undefined) {
@@ -288,16 +288,10 @@ module.exports = {
             return filtered_rows;
         },
         dispatch_row_check(updated_row) {
-            console.log('dispatch_row_check : ', updated_row);
-            // TODO: filter fields with authorized fields
             let filtered_rows = this.filter_authorized_fields(updated_row);
-            // TODO: get actual form and remove selected field
             const cform_content = this.fcontent(this.cform);
             const { root_key, select_field_name } = this.dynamic_list_mappings();
             const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key]);
-
-            console.log('filtered_rows : ', filtered_rows);
-            console.log('actual_filtered_raws : ', actual_filtered_raws);
 
             filtered_rows = filtered_rows.map((item_raw) => {
                 delete item_raw[select_field_name];
@@ -305,25 +299,13 @@ module.exports = {
             });
 
             const keys = Object.keys(filtered_rows[0]);
-            console.log('keys : ', keys);
-
             filtered_rows.forEach((filtered_row) => {
-                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => {
-                    console.log('obj : ', obj);
-                    console.log('filtered_rows[key] : ', filtered_row[key]);
-                    console.log('raw[key] : ', raw[key]);
-                    console.log('updated_row[key] === raw[key] : ', filtered_row[key] === raw[key]);
-                    return obj && filtered_row[key] === raw[key];
-                }, true));
-                console.log('this is idx : ', idx);
-                // TODO: toogle field changed
+                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => obj && filtered_row[key] === raw[key], true));
                 if (idx !== -1) {
                     actual_filtered_raws[idx][select_field_name] = !(actual_filtered_raws[idx][select_field_name]);
                 }
             });
 
-            console.log('new actual_filtered_raws : ', actual_filtered_raws);
-            // TODO: commit to main form
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.cform,
                 name: root_key,
@@ -331,11 +313,9 @@ module.exports = {
             });
         },
         update_rows_from_api(data) {
-            console.log('update_rows_from_api data : ', data);
             if (!(data instanceof Array)) {
                 return;
             }
-            // TODO: filter fields with authorized fields
             const filtered_rows = this.filter_authorized_fields(data);
             const { root_key, select_field_name } = this.dynamic_list_mappings();
             filtered_rows.map((item_raw) => {
@@ -344,9 +324,6 @@ module.exports = {
                 }
                 return item_raw;
             });
-            console.log('filtered_rows : ', filtered_rows);
-
-            // TODO: commit to main form
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.cform,
                 name: root_key,
@@ -354,7 +331,6 @@ module.exports = {
             });
         },
         on_checked_rows_update(row) {
-            console.log('on_checked_rows_update data : ', row);
             if (row.checkedRow) {
                 // row.checkedRow is the row changed
                 this.dispatch_row_check(row.checkedRow);
@@ -364,14 +340,12 @@ module.exports = {
 
                 if (row.checkedRows.length === 0) {
                     // global checkbox has been unchecked
-                    console.log('global checkbox has been unchecked');
                     cform_content = cform_content.map((cfom_row) => {
                         cfom_row[select_field_name] = false;
                         return cfom_row;
                     });
                 } else {
                     // global checkbox has been checked
-                    console.log('global checkbox has been checked');
                     cform_content = cform_content.map((cfom_row) => {
                         cfom_row[select_field_name] = true;
                         return cfom_row;
