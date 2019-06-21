@@ -8,6 +8,7 @@ function years_aggregation(field, name, min_doc_count = 0) {
             format: 'YYYY',
             keyed: true,
             min_doc_count,
+            timezone: 'Europe/Paris',
             order: {
                 _key: 'desc',
             },

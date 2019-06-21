@@ -3,6 +3,7 @@
 const Request = require('superagent');
 const Config = require('../../../../config');
 const ConfigUtils = require('../../../utils/config');
+const XMLUtils = require('../../../utils/xml');
 const Utils = require('../../../utils/utils');
 const Logger = require('../../../../logger');
 const Archiver = require('archiver');
@@ -12,6 +13,7 @@ const Errors = require('../../../exceptions/errors');
 const EntitiesUtils = require('../../../utils/entities');
 const HalExporter = require('./hal');
 const StreamBuffers = require('stream-buffers');
+const URL = require('url');
 
 async function get_hal_config(): Promise<?Object> {
     const global_config = await ConfigUtils.get_config();
@@ -61,21 +63,23 @@ async function create(pid: string): Promise<any> {
     const files = Utils.find_value_with_path(publication, 'files'.split('.')) || [];
     const my_file = files.find(f => f.is_master) || (files.length > 0 ? files[0] : null);
     const skip_files = files.length === 0 || ((my_file.access.restricted || my_file.access.confidential) && !my_file.access.delayed);
-    // console.log(xml_tei);
+    console.log(xml_tei);
 
     const req = Request.post(url)
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
         .auth(encodeURIComponent(login), encodeURIComponent(password));
 
-    const result_promise = new Promise((resolve, reject) => {
-        req
-        .on('response', result => resolve(result)).on('error', err => reject(err));
-    });
-    console.log(xml_tei);
+    let result = {};
+
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
-            .send(xml_tei)
-            .end();
+            .send(xml_tei).end((err, res) => {
+                if (err) {
+                    Logger.error('Error when sending deposit to HAL');
+                    Logger.error('Error response : ', res.body.message);
+                }
+                result = res;
+            });
     } else {
         req
             .set('Content-Type', 'application/zip')
@@ -104,19 +108,30 @@ async function create(pid: string): Promise<any> {
         archive.finalize();
 
         writableStreamBuffer.on('finish', () => {
-            req.send(writableStreamBuffer.getContents()).end();
+            req.send(writableStreamBuffer.getContents()).end((err, res) => {
+                if (err) {
+                    Logger.error('Error when sending deposit to HAL');
+                    Logger.error('Error response : ', res.body.message);
+                }
+                result = res;
+            });
         });
     }
 
-    try {
-        const result = await result_promise;
-        // console.log(result.body, result.json, result.text, result.xml);
-        return true;
-    } catch (err) {
-        Logger.error('Error when sending deposit to HAL');
-        Logger.error(err);
-        return false;
+    let location;
+
+    if (result.headers && result.headers.location) {
+        location = result.headers.location;
     }
+    if (location === undefined) {
+        Logger.error('Error when sending deposit to HAL');
+        Logger.info('XML sent : ', xml_tei);
+        return [false, undefined];
+    }
+
+    Logger.info('Successfully sent : ', xml_tei);
+    const id = URL.parse(location).pathname.replace(/\/+/gi, '');
+    return [true, id];
 }
 
 async function update(pid: string): Promise<any> {
@@ -130,7 +145,7 @@ async function remove(pid: string): Promise<any> {
 async function create_controller(ctx: Object): Promise<any> {
     const body = ctx.request.body;
     const pid = body.publication;
-    const res = await create(pid);
+    const [res, id] = await create(pid);
     ctx.body = { ok: res };
 }
 
@@ -143,6 +158,7 @@ async function remove_controller(ctx: Object): Promise<any> {
 }
 
 module.exports = {
+    create,
     create_controller,
     remove_controller,
     update_controller,

@@ -19,6 +19,7 @@ class Scheduler {
     }
 
     run() {
+        this._wrapper();
         setInterval(this._wrapper.bind(this), this._interval);
     }
 }

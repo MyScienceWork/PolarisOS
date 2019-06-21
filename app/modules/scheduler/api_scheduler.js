@@ -8,16 +8,73 @@ const EntitiesUtils = require('../utils/entities');
 const EnvUtils = require('../utils/env');
 const ConfigUtils = require('../utils/config');
 const HandleAPI = require('../3rdparty/handle/api');
+const SwordAPI = require('../entities/exporter/controllers/sword');
 const Config = require('../../config');
 const Throttle = require('promise-parallel-throttle');
 
 class ApiScheduler extends Scheduler {
-    /* constructor(interval: number) {
-        super(interval);
-    }*/
 
-    async _execute_sitemap_creation() {
+    async get_uploadable_publications() {
+        return await EntitiesUtils.search_and_get_sources('publication', {
+            where: {
+                $and: [
+                    { status: ['published'] },
+                    { 'system.api.hal': false },
+                    { 'diffusion.rights.exports.hal': true },
+                ],
+            },
+            size: 100,
+        });
+    }
 
+    async _execute_hal_export() {
+        if (!EnvUtils.is_production()) {
+            Logger.info('HAL API only runs in production mode');
+            return;
+        }
+
+        const publications = await this.get_uploadable_publications();
+
+        const exec_hal = async (p) => {
+            // wait 10 seconds before each send to avoid HAL duplicates
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 10000);
+            });
+
+            const refreshed_pub = await this.get_uploadable_publications();
+            const idx_pub = refreshed_pub.find(pub => pub._id === p._id);
+
+            if (idx_pub !== undefined && idx_pub.system.api.hal === true) {
+                return true;
+            }
+
+            let ok,
+                id;
+
+            try {
+                [ok, id] = await SwordAPI.create(p._id);
+            } catch (err) {
+                Logger.error('fail swordAPI create : ', err);
+            }
+
+            if (ok) {
+                if (!('api' in p.system)) {
+                    p.system.api = {};
+                }
+                p.system.api.hal = true;
+                p.system.api.hal_id = id;
+                await EntitiesUtils.update(p, 'publication');
+            }
+            return ok;
+        };
+
+        const promises = publications.map(p => () => exec_hal(p));
+
+        await Throttle.all(promises, {
+            maxInProgress: 1,
+        });
     }
 
     async _execute_handle_creation() {
@@ -75,7 +132,11 @@ class ApiScheduler extends Scheduler {
         console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
-            Logger.error(err);
+            Logger.error('Error : ', err);
+        });
+        this._execute_hal_export().then(() => {}).catch((err) => {
+            Logger.error('Error when exporting to HAL using scheduler');
+            Logger.error('Error : ', err);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {
             Logger.error('Error when sending SMS through scheduler');
