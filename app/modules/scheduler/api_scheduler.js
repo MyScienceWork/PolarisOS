@@ -13,7 +13,6 @@ const Config = require('../../config');
 const Throttle = require('promise-parallel-throttle');
 
 class ApiScheduler extends Scheduler {
-
     async get_uploadable_publications() {
         return await EntitiesUtils.search_and_get_sources('publication', {
             where: {
@@ -50,15 +49,7 @@ class ApiScheduler extends Scheduler {
                 return true;
             }
 
-            let ok,
-                id;
-
-            try {
-                [ok, id] = await SwordAPI.create(p._id);
-            } catch (err) {
-                Logger.error('fail swordAPI create : ', err);
-            }
-
+            const [ok, id] = await SwordAPI.create(p._id);
             if (ok) {
                 if (!('api' in p.system)) {
                     p.system.api = {};
@@ -69,7 +60,6 @@ class ApiScheduler extends Scheduler {
             }
             return ok;
         };
-
         const promises = publications.map(p => () => exec_hal(p));
 
         await Throttle.all(promises, {
@@ -132,11 +122,11 @@ class ApiScheduler extends Scheduler {
         console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
-            Logger.error('Error : ', err);
+            Logger.error(err);
         });
         this._execute_hal_export().then(() => {}).catch((err) => {
             Logger.error('Error when exporting to HAL using scheduler');
-            Logger.error('Error : ', err);
+            Logger.error(err);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {
             Logger.error('Error when sending SMS through scheduler');
