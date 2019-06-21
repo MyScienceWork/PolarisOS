@@ -14,7 +14,6 @@
         "GROBID_HOST": "grobid",
         "GROBID_PORT": 8080,
         "MINIO_HOST": "minio",
-        "MINIO_PORT": 9000,
         "MINIO_ACCESS_KEY": "D6WATDX0QDZ1I61CACYZ",
         "MINIO_SECRET_KEY": "NdD50gVGH40OeK2s+W3kPnF+qU9DntxO2HwDT2luoC"
     }
