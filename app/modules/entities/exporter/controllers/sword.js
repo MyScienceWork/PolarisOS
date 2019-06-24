@@ -69,9 +69,15 @@ async function create(pid: string): Promise<any> {
         .set('Packaging', 'http://purl.org/net/sword-types/AOfr')
         .auth(encodeURIComponent(login), encodeURIComponent(password));
 
+    const result_promise = new Promise((resolve, reject) => {
+        req
+        .on('response', result => resolve(result)).on('error', err => reject(err));
+    });
+
     if (skip_files) {
         req.set('Content-Type', 'text/xml')
-            .send(xml_tei);
+            .send(xml_tei)
+            .end();
     } else {
         req
             .set('Content-Type', 'application/zip')
@@ -100,29 +106,27 @@ async function create(pid: string): Promise<any> {
         archive.finalize();
 
         writableStreamBuffer.on('finish', () => {
-            req.send(writableStreamBuffer.getContents());
+            req.send(writableStreamBuffer.getContents()).end();
         });
     }
 
-    let result;
-
     try {
-        result = await req;
+        const result = await result_promise;
+        const location = result.headers.location || undefined;
+        if (location == undefined) {
+            Logger.error("Error when sending deposit to HAL : ", result.error);
+            Logger.info("XML sent : ", xml_tei)
+            return [false, undefined];
+        }
+
+        Logger.info("Successfully sent : ", xml_tei);
+        const id = URL.parse(location).pathname.replace(/\/+/gi, '');
+        return [true, id];
     } catch (err) {
         Logger.error('Error when sending deposit to HAL');
         Logger.error(err);
-    }
-
-    const location = result.headers.location || undefined;
-    if (location === undefined) {
-        Logger.error('Error when sending deposit to HAL : ', result.error);
-        Logger.info('XML sent : ', xml_tei);
         return [false, undefined];
     }
-
-    Logger.info('Successfully sent : ', xml_tei);
-    const id = URL.parse(location).pathname.replace(/\/+/gi, '');
-    return [true, id];
 }
 
 async function update(pid: string): Promise<any> {

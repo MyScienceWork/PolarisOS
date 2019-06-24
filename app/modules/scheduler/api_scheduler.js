@@ -13,20 +13,6 @@ const Config = require('../../config');
 const Throttle = require('promise-parallel-throttle');
 
 class ApiScheduler extends Scheduler {
-    /* constructor(interval: number) {
-        super(interval);
-    }*/
-
-    async _execute_sitemap_creation() {
-
-    }
-
-    async asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-        }
-    }
-
     async get_uploadable_publications() {
         return await EntitiesUtils.search_and_get_sources('publication', {
             where: {
@@ -53,7 +39,7 @@ class ApiScheduler extends Scheduler {
             await new Promise((resolve) => {
                 setTimeout(() => {
                     resolve();
-                }, 60000);
+                }, 10000);
             });
 
             const refreshed_pub = await this.get_uploadable_publications();
@@ -74,7 +60,6 @@ class ApiScheduler extends Scheduler {
             }
             return ok;
         };
-
         const promises = publications.map(p => () => exec_hal(p));
 
         await Throttle.all(promises, {
