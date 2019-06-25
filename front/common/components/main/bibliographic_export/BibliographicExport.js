@@ -87,7 +87,7 @@ module.exports = {
                 const myurl_website = APIRoutes.export_bibliography_for_website();
                 const params = {};
                 const single_values = ['language', 'sort', 'group', 'size', 'start_year', 'end_year', 'csl'];
-                const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypogy', 'internal_collection'];
+                const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypology', 'internal_collection'];
 
                 single_values.forEach((n) => {
                     if (n in content && content[n]) {
@@ -152,32 +152,6 @@ module.exports = {
         export_state() {
             return this.fstate(this.state.sinks.creations.export);
         },
-        /* typology() {
-            const content = this.fcontent(this.state.sinks.creations.export);
-            if ('typology' in content) {
-                return content.typology;
-            }
-            return null;
-        },
-        subtypology() {
-            const content = this.fcontent(this.state.sinks.creations.export);
-            if ('subtypology' in content) {
-                return content.subtypology;
-            }
-            return null;
-        },
-        all_types_selected() {
-            if (!this.typology) {
-                return false;
-            }
-            return this.typology.length === this.content(this.state.sinks.reads.typology).length;
-        },
-        all_subtypes_selected() {
-            if (!this.subtypology) {
-                return false;
-            }
-            return this.subtypology.length === this.subtypology_content.length;
-        },*/
         content() {
             return (sink) => {
                 const _content = this.fcontent(sink);
@@ -213,7 +187,7 @@ module.exports = {
         subtypology_content() {
             const typology = this.content(this.state.sinks.reads.typology);
             const children = _.flatten(typology.map(t => t.children)).reduce((arr, st) => {
-                arr.push({ label: st.label, value: st.name });
+                arr.push({ label: st.label, _id: st.name });
                 return arr;
             }, []);
             return children;

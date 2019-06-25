@@ -119,7 +119,7 @@
                 :label="lang('l_subtypology_bexport')"
                 :placeholder="lang('l_subtypology_bexport')"
                 field-label="label"
-                field-value="value"
+                field-value="_id"
                 :multi="true"
                 :options="subtypology_content"
                 :translatable="true"
