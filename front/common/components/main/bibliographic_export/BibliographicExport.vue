@@ -8,14 +8,14 @@
     <div class="columns">
         <div class="column">
             <div class="buttons has-addons has-small-bottom-margin">
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeSelectTab === 0}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeSelectTab === 0}]"
                     @click.prevent="state.activeSelectTab = 0">{{lang('l_select_by_author_bexport')}}</span>
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeSelectTab === 1}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeSelectTab === 1}]"
                     @click.prevent="state.activeSelectTab = 1">{{lang('l_select_by_lab_bexport')}}</span>
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeSelectTab === 2}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeSelectTab === 2}]"
                     @click.prevent="state.activeSelectTab = 2">{{lang('l_select_by_project_bexport')}}</span>
             </div>
             <fselect
@@ -34,7 +34,7 @@
                 ajax-value-url="/api/public/v2/authors/search"
                 :ajax-filters="[{is_ined: true}]"
                 search-fields="fullname.__pauc"
-            />        
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="laboratory"
@@ -42,11 +42,11 @@
                 :placeholder="lang('l_lab_bexport')"
                 field-label="name"
                 field-value="_id"
-                :options="content(state.sinks.reads.laboratory) | translate(lang, 'name')"
+                :options="laboratory_options"
                 v-if="state.activeSelectTab === 1"
                 key="select-laboratory"
                 :multi="true"
-            />        
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="project"
@@ -54,23 +54,23 @@
                 :placeholder="lang('l_project_bexport')"
                 field-label="label"
                 field-value="_id"
-                :options="content(state.sinks.reads.project) | translate(hlang, 'label')"
+                :options="project_options"
                 key="select-project"
                 v-if="state.activeSelectTab === 2"
                 :multi="true"
-            />        
+            />
             <div class="buttons has-addons has-small-bottom-margin">
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeYearTab === 0}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeYearTab === 0}]"
                     @click.prevent="state.activeYearTab = 0">{{lang('l_select_all_years_bexport')}}</span>
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeYearTab === 1}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeYearTab === 1}]"
                     @click.prevent="state.activeYearTab = 1">{{lang('l_select_since_bexport')}}</span>
-                <span 
-                    :class="['button', {'is-info is-selected': state.activeYearTab === 2}]" 
+                <span
+                    :class="['button', {'is-info is-selected': state.activeYearTab === 2}]"
                     @click.prevent="state.activeYearTab = 2">{{lang('l_select_interval_years_bexport')}}</span>
             </div>
-            <finput 
+            <finput
                 :form="this.state.sinks.creations.export"
                 name="start_year"
                 :label="lang('l_start_year_bexport')"
@@ -79,8 +79,8 @@
                 :year-range-start="0"
                 :year-range-end="next_year(4)"
                 v-if="state.activeYearTab === 1 || state.activeYearTab === 2"
-            />        
-            <finput 
+            />
+            <finput
                 :form="this.state.sinks.creations.export"
                 name="end_year"
                 :label="lang('l_end_year_bexport')"
@@ -100,7 +100,7 @@
                 :multi="true"
                 :options="content(state.sinks.reads.internal_collection)"
                 :translatable="true"
-            />        
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="typology"
@@ -112,18 +112,18 @@
                 :multi="true"
                 :options="content(state.sinks.reads.typology)"
                 :translatable="true"
-            /> 
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="subtypology"
                 :label="lang('l_subtypology_bexport')"
                 :placeholder="lang('l_subtypology_bexport')"
                 field-label="label"
-                field-value="value"
+                field-value="_id"
                 :multi="true"
                 :options="subtypology_content"
                 :translatable="true"
-            /> 
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="language"
@@ -134,7 +134,7 @@
                 :select-first-value="true"
                 :options="langref_content"
                 :translatable="true"
-            />       
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="sort"
@@ -143,7 +143,7 @@
                 :options="sort_content"
                 :translatable="true"
                 :select-first-value="true"
-            />        
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="group"
@@ -152,7 +152,7 @@
                 :options="group_content"
                 :select-first-value="true"
                 :translatable="true"
-            />        
+            />
             <fselect
                 :form="this.state.sinks.creations.export"
                 name="csl"
@@ -160,16 +160,16 @@
                 :placeholder="lang('l_csl_format_bexport')"
                 :options="csl_format_content"
                 :select-first-value="true"
-            />        
-            <finput 
+            />
+            <finput
                 :form="this.state.sinks.creations.export"
                 name="size"
                 :label="lang('l_max_size_bexport')"
                 :placeholder="lang('l_max_size_bexport')"
                 type="number"
                 :default="1000"
-            />        
-            <button 
+            />
+            <button
                 type="submit" @click.prevent="submit"
                 class="button button-background-blue"
             >{{lang('l_submit_bexport')}}</button>
