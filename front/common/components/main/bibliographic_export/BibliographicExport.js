@@ -190,6 +190,26 @@ module.exports = {
                 return _content;
             };
         },
+        laboratory_options() {
+            const content = this.fcontent(this.state.sinks.reads.laboratory);
+            if (content instanceof Array) {
+                return content.map((lab) => {
+                    lab.name = this.lang(lab.name);
+                    return lab;
+                });
+            }
+            return [];
+        },
+        project_options() {
+            const content = this.fcontent(this.state.sinks.reads.project);
+            if (content instanceof Array) {
+                return content.map((lab) => {
+                    lab.label = this.hlang(lab.label);
+                    return lab;
+                });
+            }
+            return [];
+        },
         subtypology_content() {
             const typology = this.content(this.state.sinks.reads.typology);
             const children = _.flatten(typology.map(t => t.children)).reduce((arr, st) => {
