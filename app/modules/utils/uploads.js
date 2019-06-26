@@ -30,10 +30,32 @@ async function generate_cover_page(publication: Object,
     if (coverStream) {
         const first_file_path = `/tmp/${+moment.utc()}_cover`;
         const second_file_path = `/tmp/${+moment.utc()}`;
-        const writableStream1 = FS.createWriteStream(first_file_path);
-        const writableStream2 = FS.createWriteStream(second_file_path);
-        coverStream.pipe(writableStream1);
-        file_stream.pipe(writableStream2);
+
+        await new Promise((resolve, reject) => {
+            const writableStream1 = FS.createWriteStream(first_file_path);
+            coverStream.pipe(writableStream1);
+            writableStream1.on('error', (err) => {
+                writableStream1.close();
+                reject(err);
+            });
+            writableStream1.on('finish', () => {
+                writableStream1.close();
+                resolve();
+            });
+        });
+
+        await new Promise((resolve, reject) => {
+            const writableStream2 = FS.createWriteStream(second_file_path);
+            file_stream.pipe(writableStream2);
+            writableStream2.on('error', (err) => {
+                writableStream2.close();
+                reject(err);
+            });
+            writableStream2.on('finish', () => {
+                writableStream2.close();
+                resolve();
+            });
+        });
 
         try {
             const mergedStream = await PDFUtils.merge_pdfs([first_file_path, second_file_path]);
