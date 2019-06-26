@@ -17,6 +17,9 @@
                 <span
                     :class="['button', {'is-info is-selected': state.activeSelectTab === 2}]"
                     @click.prevent="state.activeSelectTab = 2">{{lang('l_select_by_project_bexport')}}</span>
+                <span
+                    :class="['button', {'is-info is-selected': state.activeSelectTab === 3}]"
+                    @click.prevent="state.activeSelectTab = 3">{{lang('l_select_by_survey_bexport')}}</span>
             </div>
             <fselect
                 :form="this.state.sinks.creations.export"
@@ -57,6 +60,18 @@
                 :options="project_options"
                 key="select-project"
                 v-if="state.activeSelectTab === 2"
+                :multi="true"
+            />
+            <fselect
+                :form="this.state.sinks.creations.export"
+                name="survey"
+                :label="lang('l_survey_bexport')"
+                :placeholder="lang('l_survey_bexport')"
+                field-label="label"
+                field-value="_id"
+                :options="survey_options"
+                key="select-survey"
+                v-if="state.activeSelectTab === 3"
                 :multi="true"
             />
             <div class="buttons has-addons has-small-bottom-margin">
