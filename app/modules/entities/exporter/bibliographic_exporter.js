@@ -36,7 +36,7 @@ class BibliographicExporter {
     }
 
     async _generate_default_options() {
-        const empty_arrays = ['types', 'subtypes', 'projects', 'authors',
+        const empty_arrays = ['types', 'subtypes', 'projects', 'surveys', 'authors',
             'labs', 'collections', 'labs', 'collections', 'sort',
             'group', 'start_year', 'end_year', 'extra_filters'];
 
@@ -53,9 +53,9 @@ class BibliographicExporter {
 
     async _validate_options(): Promise<boolean> {
         const { types, subtypes, projects, authors,
-            labs, sort } = this._options;
+            labs, surveys, sort } = this._options;
 
-        if (projects.length === 0 && authors.length === 0 && labs.length === 0) {
+        if (projects.length === 0 && authors.length === 0 && labs.length === 0 && surveys.length === 0) {
             const e = Errors.InvalidEntity;
             e.message = 'l_err_no_project_author_lab_bexport';
             throw e;
@@ -278,7 +278,7 @@ class BibliographicExporter {
     }
 
     async generate_query(): Promise<Object> {
-        const { authors, projects, labs, types,
+        const { authors, projects, labs, surveys, types,
             subtypes, collections, start_year, end_year, extra_filters } = this._options;
 
         const where = { $and: [] };
@@ -293,6 +293,10 @@ class BibliographicExporter {
 
         if (labs.length > 0) {
             where.$and.push({ 'diffusion.research_teams._id': labs });
+        }
+
+        if (surveys.length > 0) {
+            where.$and.push({ 'diffusion.surveys._id': surveys });
         }
 
         if (types.length > 0) {

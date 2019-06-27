@@ -23,6 +23,7 @@ module.exports = {
                         internal_collection: 'internal_collection_read',
                         typology: 'typology_read',
                         project: 'project_read',
+                        survey: 'suervey_read',
                         laboratory: 'laboratory_read',
                         author: 'author_read',
                     },
@@ -39,6 +40,7 @@ module.exports = {
                         author: APIRoutes.entity('author', 'POST', true),
                         laboratory: APIRoutes.entity('laboratory', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
+                        survey: APIRoutes.entity('survey', 'POST', true),
                     },
                 },
                 orders: {
@@ -46,6 +48,7 @@ module.exports = {
                         typology: ['order'],
                         langref: ['order'],
                         project: ['-in_progress', '-start_year', 'name.raw'],
+                        survey: ['name.raw'],
                         laboratory: ['-validity', '-types.ined', 'name.raw'],
                         author: ['lastname.raw', 'fullname.raw'],
                     },
@@ -87,7 +90,7 @@ module.exports = {
                 const myurl_website = APIRoutes.export_bibliography_for_website();
                 const params = {};
                 const single_values = ['language', 'sort', 'group', 'size', 'start_year', 'end_year', 'csl'];
-                const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypology', 'internal_collection'];
+                const multi_values = ['project', 'author', 'laboratory', 'survey', 'typology', 'subtypology', 'internal_collection'];
 
                 single_values.forEach((n) => {
                     if (n in content && content[n]) {
@@ -123,12 +126,19 @@ module.exports = {
                 if (this.state.activeSelectTab === 0) {
                     delete params.project;
                     delete params.laboratory;
+                    delete params.survey;
                 } else if (this.state.activeSelectTab === 1) {
                     delete params.author;
                     delete params.project;
+                    delete params.survey;
+                } else if (this.state.activeSelectTab === 2) {
+                    delete params.author;
+                    delete params.laboratory;
+                    delete params.survey;
                 } else {
                     delete params.author;
                     delete params.laboratory;
+                    delete params.project;
                 }
 
                 const querystring = _.reduce(params, (arr, value, key) => {
@@ -180,6 +190,16 @@ module.exports = {
                 return content.map((lab) => {
                     lab.label = this.hlang(lab.label);
                     return lab;
+                });
+            }
+            return [];
+        },
+        survey_options() {
+            const content = this.fcontent(this.state.sinks.reads.survey);
+            if (content instanceof Array) {
+                return content.map((survey) => {
+                    survey.label = this.hlang(survey.label);
+                    return survey;
                 });
             }
             return [];
