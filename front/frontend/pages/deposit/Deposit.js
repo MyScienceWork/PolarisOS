@@ -279,7 +279,8 @@ module.exports = {
                 type: 'commit',
                 content: {
                     form: this.state.sinks.creations.publication,
-                    body: { ids: [], files: [],
+                    body: { ids: [],
+                        files: [],
                         dates: { deposit: undefined },
                         depositor: undefined,
                         system: { api: { handle: false } } },
