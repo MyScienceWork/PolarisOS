@@ -172,20 +172,16 @@ async function get_publication_stmt(publication: Object): Promise<string> {
     if (!license_info) {
         return '';
     }
-    if ((!license_info.link || license_info.link.trim() === '')
-        && (!license_info.label || license_info.label.trim() === '')) {
+    if (!license_info.link_HAL || license_info.link_HAL.trim() === '') {
         return '';
     }
 
-    let license_ = '';
-
     let enclosure = '<publicationStmt><availability>';
 
-    if (license_info.link) {
-        license_ += `<licence target="${_.escape(license_info.link_HAL)}">`;
-        license_ += '</licence>';
-        enclosure += license_;
-    }
+    let license_ = `<licence target="${_.escape(license_info.link_HAL)}">`;
+    license_ += '</licence>';
+    enclosure += license_;
+
     enclosure += '</availability></publicationStmt>';
     return enclosure;
 }
