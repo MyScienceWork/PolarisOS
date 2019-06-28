@@ -5,6 +5,7 @@ const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
+const HtmlMixin = require('../../../common/mixins/HtmlMixin');
 const Queries = require('../../../common/specs/queries');
 const BrowserUtils = require('../../../common/utils/browser');
 const Handlebars = require('../../../../app/modules/utils/templating');
@@ -14,7 +15,7 @@ const LastDeposits = require('./subcomponents/LastDeposits.vue');
 const Search = require('./subcomponents/Search.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin, HtmlMixin],
     data() {
         return {
             state: {
@@ -119,9 +120,10 @@ module.exports = {
             ];
         },
         items() {
+            console.log("this is items");
             if (this.content && this.content instanceof Array && this.content.length > 0) {
                 const items = this.content.map((c) => {
-                    const html = this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c));
+                    const html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c)));
                     c.html = html;
                     return c;
                 });

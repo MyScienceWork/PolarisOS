@@ -15,6 +15,11 @@ koa = koaqs(koa, 'strict');
 koa.use(KoaCompress({}));
 koa.use(cors());
 koa.use(winstonKoaLogger(logger));
+// increase node.JS timeout to 15 minutes
+koa.use(async (ctx, next) => {
+    ctx.req.setTimeout(900000);
+    await next();
+});
 koa.use(async (context, next) => {
     try {
         await next();

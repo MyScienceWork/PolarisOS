@@ -86,6 +86,14 @@ module.exports = {
                 dates: this.state.dates,
             });
         },
+        compile_subtitle(info) {
+            if (info.subtitle && this.state.dates) {
+                return this.hlang(Handlebars.compile(info.subtitle)(this.state.dates));
+            } else if (info.subtitle) {
+                return this.hlang(Handlebars.compile(info.subtitle)({}));
+            }
+            return '';
+        },
     },
     watch: {
         charts(new_charts) {

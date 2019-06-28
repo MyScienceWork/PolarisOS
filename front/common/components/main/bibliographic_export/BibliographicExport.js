@@ -23,6 +23,7 @@ module.exports = {
                         internal_collection: 'internal_collection_read',
                         typology: 'typology_read',
                         project: 'project_read',
+                        survey: 'suervey_read',
                         laboratory: 'laboratory_read',
                         author: 'author_read',
                     },
@@ -39,6 +40,7 @@ module.exports = {
                         author: APIRoutes.entity('author', 'POST', true),
                         laboratory: APIRoutes.entity('laboratory', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
+                        survey: APIRoutes.entity('survey', 'POST', true),
                     },
                 },
                 orders: {
@@ -46,11 +48,13 @@ module.exports = {
                         typology: ['order'],
                         langref: ['order'],
                         project: ['-in_progress', '-start_year', 'name.raw'],
+                        survey: ['name.raw'],
                         laboratory: ['-validity', '-types.ined', 'name.raw'],
                         author: ['lastname.raw', 'fullname.raw'],
                     },
                 },
                 link: null,
+                link_website: null,
                 activeSelectTab: 0,
                 activeYearTab: 0,
             },
@@ -59,6 +63,7 @@ module.exports = {
     methods: {
         submit() {
             this.state.link = null;
+            this.state.link_website = null;
             this.send_information(this.state.sinks.creations.export);
         },
         /* select_or_unselect(field, select, info, value) {
@@ -82,9 +87,10 @@ module.exports = {
             if (sink === this.state.sinks.creations.export) {
                 const content = this.fcontent(sink);
                 const myurl = APIRoutes.export_bibliography();
+                const myurl_website = APIRoutes.export_bibliography_for_website();
                 const params = {};
                 const single_values = ['language', 'sort', 'group', 'size', 'start_year', 'end_year', 'csl'];
-                const multi_values = ['project', 'author', 'laboratory', 'typology', 'subtypogy', 'internal_collection'];
+                const multi_values = ['project', 'author', 'laboratory', 'survey', 'typology', 'subtypology', 'internal_collection'];
 
                 single_values.forEach((n) => {
                     if (n in content && content[n]) {
@@ -120,12 +126,19 @@ module.exports = {
                 if (this.state.activeSelectTab === 0) {
                     delete params.project;
                     delete params.laboratory;
+                    delete params.survey;
                 } else if (this.state.activeSelectTab === 1) {
                     delete params.author;
                     delete params.project;
+                    delete params.survey;
+                } else if (this.state.activeSelectTab === 2) {
+                    delete params.author;
+                    delete params.laboratory;
+                    delete params.survey;
                 } else {
                     delete params.author;
                     delete params.laboratory;
+                    delete params.project;
                 }
 
                 const querystring = _.reduce(params, (arr, value, key) => {
@@ -133,6 +146,7 @@ module.exports = {
                     return arr;
                 }, []).join('&');
                 this.state.link = `${myurl}?${querystring}`;
+                this.state.link_website = `${myurl_website}?${querystring}`;
             }
         },
         next_year(n) {
@@ -148,32 +162,6 @@ module.exports = {
         export_state() {
             return this.fstate(this.state.sinks.creations.export);
         },
-        /* typology() {
-            const content = this.fcontent(this.state.sinks.creations.export);
-            if ('typology' in content) {
-                return content.typology;
-            }
-            return null;
-        },
-        subtypology() {
-            const content = this.fcontent(this.state.sinks.creations.export);
-            if ('subtypology' in content) {
-                return content.subtypology;
-            }
-            return null;
-        },
-        all_types_selected() {
-            if (!this.typology) {
-                return false;
-            }
-            return this.typology.length === this.content(this.state.sinks.reads.typology).length;
-        },
-        all_subtypes_selected() {
-            if (!this.subtypology) {
-                return false;
-            }
-            return this.subtypology.length === this.subtypology_content.length;
-        },*/
         content() {
             return (sink) => {
                 const _content = this.fcontent(sink);
@@ -186,10 +174,40 @@ module.exports = {
                 return _content;
             };
         },
+        laboratory_options() {
+            const content = this.fcontent(this.state.sinks.reads.laboratory);
+            if (content instanceof Array) {
+                return content.map((lab) => {
+                    lab.name = this.lang(lab.name);
+                    return lab;
+                });
+            }
+            return [];
+        },
+        project_options() {
+            const content = this.fcontent(this.state.sinks.reads.project);
+            if (content instanceof Array) {
+                return content.map((lab) => {
+                    lab.label = this.hlang(lab.label);
+                    return lab;
+                });
+            }
+            return [];
+        },
+        survey_options() {
+            const content = this.fcontent(this.state.sinks.reads.survey);
+            if (content instanceof Array) {
+                return content.map((survey) => {
+                    survey.label = this.hlang(survey.label);
+                    return survey;
+                });
+            }
+            return [];
+        },
         subtypology_content() {
             const typology = this.content(this.state.sinks.reads.typology);
             const children = _.flatten(typology.map(t => t.children)).reduce((arr, st) => {
-                arr.push({ label: st.label, value: st.name });
+                arr.push({ label: st.label, _id: st.name });
                 return arr;
             }, []);
             return children;
@@ -235,7 +253,7 @@ module.exports = {
             ];
         },
         include_code() {
-            return `<iframe src='${this.hostname}${this.state.link} style='width:100%;border:0;'></iframe>`;
+            return `<iframe src='${this.hostname}${this.state.link_website}' style='width:100%;border:0;'></iframe>`;
         },
         hostname() {
             return `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}`;

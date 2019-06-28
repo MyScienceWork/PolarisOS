@@ -77,6 +77,10 @@ module.exports = {
         return `${prefix}/export/bibliography`;
     },
 
+    export_bibliography_for_website() {
+        return `${prefix}/export/bibliography/web`;
+    },
+
     export_masas() {
         return `${prefix}/export/masas`;
     },

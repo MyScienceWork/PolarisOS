@@ -6,6 +6,7 @@ const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const HtmlMixin = require('../../../../common/mixins/HtmlMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlebars = require('../../../../../app/modules/utils/templating');
 
@@ -13,7 +14,7 @@ const Toastr = require('toastr');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin, HtmlMixin],
     props: {
         showStatus: { default: false, type: Boolean },
         catName: { default: () => [], type: Array },
@@ -30,6 +31,7 @@ module.exports = {
                 export_type: '',
                 export_subtype: null,
                 select_all_to_export: false,
+
                 sinks: {
                     reads: {
                         export: 'exporter_read',
@@ -75,7 +77,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
-                console.log('running_search in SearchResults, send_information, for sink', sink);
+                //console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },
@@ -123,6 +125,10 @@ module.exports = {
         },
     },
     computed: {
+        content_received() {
+            const content = this.fcontent(this.resultSink);
+            return content instanceof Array;
+        },
         content() {
             const content = this.fcontent(this.resultSink);
             if (!(content instanceof Array)) {
@@ -130,7 +136,7 @@ module.exports = {
             }
 
             return content.map((c) => {
-                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
+                c.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template)(c)));
                 return c;
             });
         },

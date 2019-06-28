@@ -1,6 +1,8 @@
 // @flow
 const _ = require('lodash');
 const Errors = require('../exceptions/errors');
+const Crypto = require('crypto');
+
 
 
 function hasProperty(obj: Object, key: string | number): boolean {
@@ -339,6 +341,11 @@ function filterIndexes(collection: Array<any>, pred: Function): Array<number> {
     }, []);
 }
 
+function hash_object(obj: Object) {
+    const hash = Crypto.createHash('sha256');
+    return hash.update(JSON.stringify(obj)).digest('hex');
+}
+
 
 module.exports = {
     hasProperty,
@@ -356,4 +363,5 @@ module.exports = {
     isNil,
     filter_empty_or_null_objects,
     filterIndexes,
+    hash_object,
 };

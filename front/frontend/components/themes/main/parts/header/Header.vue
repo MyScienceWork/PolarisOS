@@ -21,7 +21,7 @@
             </div>
             <div class="column is-vcentered container has-text-centered is-2 is-vertical">
                 <div class="container">
-                    <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
+                    <login-lang :backoffice="false" :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
                 </div>
             </div>
             <!-- <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" /> -->

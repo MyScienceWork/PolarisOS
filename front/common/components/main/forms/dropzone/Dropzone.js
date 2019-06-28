@@ -34,6 +34,7 @@ module.exports = {
                 previewTemplate: '<div></div>',
                 autoQueue: true,
                 dictFileTooBig: '', // this.lang('l_dropzone_file_too_big'),
+                timeout: 3600000,
             },
             state: {
                 files: { order: [], content: {} },
@@ -73,6 +74,7 @@ module.exports = {
         dropzone_success(file, response) {
             const name = `${file.name}_${file.lastModified}`;
             file.pathOnServer = response.file;
+            file.previewUrl = response.preview;
             this.state.files.content = Object.assign({},
                 this.state.files.content, { [name]: file });
         },

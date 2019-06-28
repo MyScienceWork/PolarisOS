@@ -1,5 +1,5 @@
 // @flow
-const Feed = require('feed');
+const Feed = require('feed').Feed;
 const EntitiesUtils = require('../../utils/entities');
 const LangUtils = require('../../utils/lang');
 const Errors = require('../../exceptions/errors');
@@ -68,7 +68,7 @@ async function generate_rss_feed(ctx: Object): Promise<*> {
         });
     });
 
-    ctx.set('Content-Type', 'application/rss+xml');
+    ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
     ctx.body = feed.rss2();
 }
 

@@ -59,4 +59,5 @@ module.exports = {
     retrieve_file,
     create_bucket_if_needed,
     default_bucket: Config.minio.default_bucket,
+    public_bucket: Config.minio.public_bucket,
 };

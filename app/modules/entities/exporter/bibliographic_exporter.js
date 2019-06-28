@@ -1,4 +1,5 @@
 // @flow
+const moment = require('moment');
 const Readable = require('stream').Readable;
 const _ = require('lodash');
 const HtmlDocx = require('html-docx-js');
@@ -11,7 +12,7 @@ const CSLUtils = require('../../utils/csl');
 const CSLJSONPipeline = require('./pipeline/csl_pipeline');
 const Errors = require('../../exceptions/errors');
 const ExtraCSLStyles = require('../../../csl_styles/register');
-const Logger = require ('../../../logger.js');
+const Logger = require('../../../logger.js');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -35,9 +36,9 @@ class BibliographicExporter {
     }
 
     async _generate_default_options() {
-        const empty_arrays = ['types', 'subtypes', 'projects', 'authors',
+        const empty_arrays = ['types', 'subtypes', 'projects', 'surveys', 'authors',
             'labs', 'collections', 'labs', 'collections', 'sort',
-            'group', 'start_year', 'end_year'];
+            'group', 'start_year', 'end_year', 'extra_filters'];
 
         this._options = empty_arrays.reduce((obj, a) => {
             obj[a] = obj[a] || [];
@@ -52,9 +53,9 @@ class BibliographicExporter {
 
     async _validate_options(): Promise<boolean> {
         const { types, subtypes, projects, authors,
-            labs, sort } = this._options;
+            labs, surveys, sort } = this._options;
 
-        if (projects.length === 0 && authors.length === 0 && labs.length === 0) {
+        if (projects.length === 0 && authors.length === 0 && labs.length === 0 && surveys.length === 0) {
             const e = Errors.InvalidEntity;
             e.message = 'l_err_no_project_author_lab_bexport';
             throw e;
@@ -277,8 +278,8 @@ class BibliographicExporter {
     }
 
     async generate_query(): Promise<Object> {
-        const { authors, projects, labs, types,
-            subtypes, collections, start_year, end_year } = this._options;
+        const { authors, projects, labs, surveys, types,
+            subtypes, collections, start_year, end_year, extra_filters } = this._options;
 
         const where = { $and: [] };
 
@@ -294,6 +295,10 @@ class BibliographicExporter {
             where.$and.push({ 'diffusion.research_teams._id': labs });
         }
 
+        if (surveys.length > 0) {
+            where.$and.push({ 'diffusion.surveys._id': surveys });
+        }
+
         if (types.length > 0) {
             where.$and.push({ type: types });
         }
@@ -307,12 +312,24 @@ class BibliographicExporter {
         }
 
         if (start_year.length > 0) {
-            const range = { '>=': parseInt(start_year[0], 10) };
+            // start year is 31 jan 23:00 UTC or 1st jan 00:00 UTC+1
+            // (due to bug in database storage timestamp is in local time)
+            // get offset milliseconds :
+            const offset = moment("2013-01-01").tz("Europe/Paris").format('Z');
+            const offset_parsed = parseInt(moment(("2013-02-08 "+offset.substr(1))).format("hh"));
+            const offset_sec = offset_parsed * 3600;
+            const offset_millisec = offset_sec * 1000;
+            const range = { '>=': moment(parseInt(start_year[0], 10)).valueOf()-offset_millisec };
 
             if (end_year.length > 0) {
-                range['<='] = parseInt(end_year[0], 10);
+                // get the end of the year
+                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec-1;
             }
             where.$and.push({ 'dates.publication': range });
+        }
+
+        if (extra_filters.length > 0) {
+            where.$and.push(extra_filters[0]);
         }
         return where;
     }
@@ -414,36 +431,40 @@ class BibliographicExporter {
         return results;
     }
 
-    concat_all_authors(obj){
+    concat_all_authors(obj) {
         let final = [];
         if (obj.author) {
-            final = final.concat(obj.author[0].family.toLowerCase()+obj.author[0].given.toLowerCase());
+            final = final.concat(obj.author[0].family.toLowerCase() + obj.author[0].given.toLowerCase());
         }
         if (obj.director) {
-            final = final.concat(obj.director[0].family.toLowerCase()+obj.director[0].given.toLowerCase());
+            final = final.concat(obj.director[0].family.toLowerCase() + obj.director[0].given.toLowerCase());
         }
         if (obj.editor) {
-            final = final.concat(obj.editor[0].family.toLowerCase()+obj.editor[0].given.toLowerCase());
+            final = final.concat(obj.editor[0].family.toLowerCase() + obj.editor[0].given.toLowerCase());
         }
         return final.sort();
     }
 
     async format_bibliography_results(publications: Array<Object>): Promise<string> {
         const csl_json_output = await this.transform_to_csl_json(publications);
-        Logger.info(JSON.stringify(csl_json_output, null, 4));
+        // Logger.info(JSON.stringify(csl_json_output, null, 4));
         const data = new Cite(csl_json_output);
-        data.sort((objA, objB) => {
-            const authorsA = this.concat_all_authors(objA);
-            const authorsB = this.concat_all_authors(objB);
+        // sort by author
+        const { sort } = this._options;
+        if (sort[0] === 'denormalization.contributors.label.fullname.raw') {
+            data.sort((objA, objB) => {
+                const authorsA = this.concat_all_authors(objA);
+                const authorsB = this.concat_all_authors(objB);
 
-            if (authorsA.length > 0 && authorsB.length > 0) {
-                if( authorsA[0] > authorsB[0] ) {
-                    return 1;
+                if (authorsA.length > 0 && authorsB.length > 0) {
+                    if (authorsA[0] > authorsB[0]) {
+                        return 1;
+                    }
+                    return -1;
                 }
-                return -1;
-            }
-            return 0;
-        });
+                return 0;
+            });
+        }
         let results = data.get({
             nosort: true,
             format: 'string',

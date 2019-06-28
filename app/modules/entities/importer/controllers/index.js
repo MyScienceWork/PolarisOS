@@ -176,7 +176,7 @@ async function import_sherpa_romeo(ctx: Object): Promise<any> {
     const body = ctx.request.body;
     const issn = body.issn;
 
-    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?issn=';
+    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?ak=hBIkszCV4ZE&issn=';
     const final_url = url + issn;
 
     const response = await Request.get(final_url).type('xml');

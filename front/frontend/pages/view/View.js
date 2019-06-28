@@ -14,9 +14,10 @@ const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
 const TrackingMixin = require('../../../common/mixins/TrackingMixin');
+const HtmlMixin = require('../../../common/mixins/HtmlMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin, HtmlMixin],
     components: {
         CopyRequester,
     },
@@ -88,7 +89,7 @@ module.exports = {
                 f.s = s;
             });
         },
-        generate_download_link(status) {
+        generate_download_link(status, generic = false) {
             const files = this.content_item.files || [];
             if (files.length === 0) {
                 return '#';
@@ -96,11 +97,39 @@ module.exports = {
 
             if (status === 'master') {
                 const file = _.find(files, f => f.is_master) || files[0];
-                return `/download/publication/${this.content_item._id}/${file.url}`;
+                return `/${generic ? 'gdownload' : 'download'}/publication/${this.content_item._id}/${file.url}`;
             } else if (status === 'all') {
                 return '#';
             }
             return '#';
+        },
+        generate_preview_link(status) {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return null;
+            }
+
+            if (status === 'master') {
+                const file = _.find(files, f => f.is_master) || files[0];
+                return `/download/${file.preview_url}`;
+            }
+            return null;
+        },
+        generate_viewer_link(status) {
+            const files = this.content_item.files || [];
+            if (files.length === 0) {
+                return null;
+            }
+
+            if (status === 'master') {
+                const file = _.find(files, f => f.is_master) || files[0];
+                const legitMimeType = ['pdf', 'odp', 'odt', 'ods'].find(ext => file.url.endsWith(ext));
+                if (!legitMimeType) {
+                    return null;
+                }
+                return `/public/front/3rdparty/ViewerJS/index.html#${this.generate_download_link('master', true)}`;
+            }
+            return null;
         },
         generate_handle_link(item) {
             const handle = (item.ids || []).find(f => f.type === 'handle');
@@ -253,7 +282,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.reads.item);
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
-                item.html = this.hlang(Handlebars.compile(item.denormalization.type.template)(item));
+                item.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(item.denormalization.type.template)(item)));
                 this.state.selected_files = item.files.reduce((obj, file) => {
                     obj[file.name] = {
                         name: file.name,
@@ -366,6 +395,35 @@ module.exports = {
                 if (!info) {
                     return null;
                 }
+
+                const _affiliations = this._oa_find(info, 'denormalization.affiliations', []);
+                let my_affiliations = _affiliations.filter((aff) => {
+                    const from = parseInt(aff.from, 10);
+                    if (aff.to) {
+                        const to = parseInt(aff.to, 10);
+                        return from <= publication_date && publication_date <= to;
+                    }
+                    return from <= publication_date;
+                });
+
+                if (my_affiliations.length === 0 && _affiliations.length > 0) {
+                    my_affiliations = [_affiliations[0]];
+                }
+
+                const affiliation_numbers = [];
+                if (my_affiliations.length > 0) {
+                    my_affiliations.forEach((affiliation) => {
+                        const iname = this._oa_find(affiliation, 'institution.name');
+                        const teams = this._oa_find(affiliation, 'teams', []);
+                        if (iname) {
+                            const uid = `${affiliation.institution.name}_${teams.map(t => t._id).join('_')}`;
+                            if (!(uid in affiliations)) {
+                                affiliations[uid] = { a: affiliation, order: Object.keys(affiliations).length + 1 };
+                            }
+                            affiliation_numbers.push(affiliations[uid].order);
+                        }
+                    });
+                }
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
 
@@ -373,7 +431,16 @@ module.exports = {
                 if (info.firstname) {
                     fullname = `${info.firstname} ${fullname}`;
                 }
-                return `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
+                let result = '';
+                if (role.abbreviation) {
+                    result = `<strong>${fullname} (${this.lang(role.abbreviation)})</strong>`;
+                } else if (role.label) {
+                    result = `<strong>${fullname} (${this.lang(role.label)})</strong>`;
+                }
+                if (affiliation_numbers.length > 0) {
+                    result += `<sup>${affiliation_numbers.join(',')}</sup>`;
+                }
+                return result;
             }).filter(a => a != null);
 
             return { contributors: [...authors_content, ...others_content].join(', '),
