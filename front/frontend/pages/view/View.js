@@ -14,9 +14,10 @@ const Utils = require('../../../common/utils/utils');
 const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
 const TrackingMixin = require('../../../common/mixins/TrackingMixin');
+const HtmlMixin = require('../../../common/mixins/HtmlMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin, HtmlMixin],
     components: {
         CopyRequester,
     },
@@ -281,7 +282,7 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.reads.item);
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
-                item.html = this.hlang(Handlebars.compile(item.denormalization.type.template)(item));
+                item.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(item.denormalization.type.template)(item)));
                 this.state.selected_files = item.files.reduce((obj, file) => {
                     obj[file.name] = {
                         name: file.name,

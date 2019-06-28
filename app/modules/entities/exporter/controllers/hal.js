@@ -1,5 +1,5 @@
 // @flow
-const moment = require('moment');
+const moment = require('moment-timezone');
 const _ = require('lodash');
 const Utils = require('../../../utils/utils');
 const EntitiesUtils = require('../../../utils/entities');
@@ -137,7 +137,7 @@ async function get_edition_stmt(publication: Object): Promise<string> {
 
     if (master.access.delayed) {
         const embargo_date = Utils.find_value_with_path(publication, 'diffusion.rights.embargo'.split('.'));
-        embargo = `<date notBefore="${moment(embargo_date).format('YYYY-MM-DD')}"/>`;
+        embargo = `<date notBefore="${moment(embargo_date).tz('Europe/Paris').format('YYYY-MM-DD')}"/>`;
     }
 
     const file_version = Utils.find_value_with_path(publication, 'publication_version'.split('.')) || '';
@@ -150,7 +150,7 @@ async function get_edition_stmt(publication: Object): Promise<string> {
     const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
     const master_ref = `<ref type="file" subtype="${_.escape(subtype)}" target="${_.escape(master.name)}" n="1">${_.escape(embargo)}</ref>`;
     const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${_.escape(a.name)}" n="${_.escape(i)}"><desc>Deposited annex</desc></ref>`);
-    const written = `<date type="whenWritten">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+    const written = `<date type="whenWritten">${moment(dates.publication).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
 
 
     let enclosure = '<editionStmt><edition>';
@@ -172,27 +172,16 @@ async function get_publication_stmt(publication: Object): Promise<string> {
     if (!license_info) {
         return '';
     }
-    if ((!license_info.link || license_info.link.trim() === '')
-        && (!license_info.label || license_info.label.trim() === '')) {
+    if (!license_info.link_HAL || license_info.link_HAL.trim() === '') {
         return '';
     }
 
-    let license_ = '';
-
-    if (license_info.link) {
-        license_ += `<licence target="${_.escape(license_info.link)}">`;
-    } else {
-        license_ += `<licence>`;
-    }
-
-    if (license_info.label) {
-        license_ += `${_.escape(license_info.label)}`;
-    }
-
-    license_ += `</licence>`;
-
     let enclosure = '<publicationStmt><availability>';
+
+    let license_ = `<licence target="${_.escape(license_info.link_HAL)}">`;
+    license_ += '</licence>';
     enclosure += license_;
+
     enclosure += '</availability></publicationStmt>';
     return enclosure;
 }
@@ -289,10 +278,10 @@ async function get_monogr(publication: Object): Promise<string> {
     if (conference_info) {
         meeting_ += `<meeting><title>${_.escape(conference_info.name)}</title>`;
         if (dates.start) {
-            meeting_ += `<date type="start">${moment(dates.start).format('YYYY-MM-DD')}</date>`;
+            meeting_ += `<date type="start">${moment(dates.start).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
         }
         if (dates.end) {
-            meeting_ += `<date type="end">${moment(dates.end).format('YYYY-MM-DD')}</date>`;
+            meeting_ += `<date type="end">${moment(dates.end).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
         }
 
         meeting_ += settlement_;
@@ -358,10 +347,10 @@ async function get_monogr(publication: Object): Promise<string> {
         case 'DOUV':
         case 'THESE':
         case 'OUV':
-            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY')}</date>`;
+            imprint_ += `<date type="datePub">${moment(dates.publication).tz('Europe/Paris').format('YYYY')}</date>`;
             break;
         default:
-            imprint_ += `<date type="datePub">${moment(dates.publication).format('YYYY-MM-DD')}</date>`;
+            imprint_ += `<date type="datePub">${moment(dates.publication).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
             break;
         }
     }

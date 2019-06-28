@@ -97,8 +97,10 @@ async function create(pid: string): Promise<any> {
 
         archive.append(xml_stream, { name: 'meta.xml' });
         for (const file of files) {
-            const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, file.url);
-            archive.append(stream, { name: file.name });
+            if (!file.restricted && !file.confidential) {
+                const stream = await MinioUtils.retrieve_file(MinioUtils.default_bucket, file.url);
+                archive.append(stream, { name: file.name });
+            }
         }
 
         const writableStreamBuffer = new StreamBuffers.WritableStreamBuffer();

@@ -14,6 +14,15 @@ const ConfigUtils = require('./config');
 const Handlebars = require('./templating');
 const LangUtils = require('./lang');
 
+function disable_profiles_link(html) {
+    const list_contrib_without_link = html.split(/<\/?a(?:(?= )[^>]*)?>/);
+    const list_contrib_with_link = html.split(/(<\/?a(?:(?= )[^>]*)?>.+?<\/?a(?:(?= )[^>]*)?>)/);
+
+    const reprocessed_html = list_contrib_with_link.map((contrib, index) => list_contrib_without_link[index]);
+
+    return reprocessed_html.join('');
+}
+
 async function generate_cover_page(publication: Object,
     file: Object, file_stream: any): Promise<any> {
     let coverStream = null;
@@ -22,7 +31,7 @@ async function generate_cover_page(publication: Object,
         if (my_config) {
             const cover_page = Utils.find_value_with_path(my_config, 'gui.cover_page'.split('.'));
             if (cover_page) {
-                const cover_page_html = Handlebars.compile(Handlebars.compile(cover_page)(publication))(publication);
+                const cover_page_html = disable_profiles_link(Handlebars.compile(Handlebars.compile(cover_page)(publication))(publication));
                 const translated_cover_page_html = await LangUtils.strings_to_translation(cover_page_html, 'EN');
                 coverStream = await PDFUtils.transform_html_to_pdf(translated_cover_page_html);
             }
@@ -32,10 +41,32 @@ async function generate_cover_page(publication: Object,
     if (coverStream) {
         const first_file_path = `/tmp/${+moment.utc()}_cover`;
         const second_file_path = `/tmp/${+moment.utc()}`;
-        const writableStream1 = FS.createWriteStream(first_file_path);
-        const writableStream2 = FS.createWriteStream(second_file_path);
-        coverStream.pipe(writableStream1);
-        file_stream.pipe(writableStream2);
+
+        await new Promise((resolve, reject) => {
+            const writableStream1 = FS.createWriteStream(first_file_path);
+            coverStream.pipe(writableStream1);
+            writableStream1.on('error', (err) => {
+                writableStream1.close();
+                reject(err);
+            });
+            writableStream1.on('finish', () => {
+                writableStream1.close();
+                resolve();
+            });
+        });
+
+        await new Promise((resolve, reject) => {
+            const writableStream2 = FS.createWriteStream(second_file_path);
+            file_stream.pipe(writableStream2);
+            writableStream2.on('error', (err) => {
+                writableStream2.close();
+                reject(err);
+            });
+            writableStream2.on('finish', () => {
+                writableStream2.close();
+                resolve();
+            });
+        });
 
         try {
             const mergedStream = await PDFUtils.merge_pdfs([first_file_path, second_file_path]);

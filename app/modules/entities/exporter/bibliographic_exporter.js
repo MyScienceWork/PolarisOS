@@ -1,4 +1,5 @@
 // @flow
+const moment = require('moment');
 const Readable = require('stream').Readable;
 const _ = require('lodash');
 const HtmlDocx = require('html-docx-js');
@@ -35,7 +36,7 @@ class BibliographicExporter {
     }
 
     async _generate_default_options() {
-        const empty_arrays = ['types', 'subtypes', 'projects', 'authors',
+        const empty_arrays = ['types', 'subtypes', 'projects', 'surveys', 'authors',
             'labs', 'collections', 'labs', 'collections', 'sort',
             'group', 'start_year', 'end_year', 'extra_filters'];
 
@@ -52,9 +53,9 @@ class BibliographicExporter {
 
     async _validate_options(): Promise<boolean> {
         const { types, subtypes, projects, authors,
-            labs, sort } = this._options;
+            labs, surveys, sort } = this._options;
 
-        if (projects.length === 0 && authors.length === 0 && labs.length === 0) {
+        if (projects.length === 0 && authors.length === 0 && labs.length === 0 && surveys.length === 0) {
             const e = Errors.InvalidEntity;
             e.message = 'l_err_no_project_author_lab_bexport';
             throw e;
@@ -277,7 +278,7 @@ class BibliographicExporter {
     }
 
     async generate_query(): Promise<Object> {
-        const { authors, projects, labs, types,
+        const { authors, projects, labs, surveys, types,
             subtypes, collections, start_year, end_year, extra_filters } = this._options;
 
         const where = { $and: [] };
@@ -294,6 +295,10 @@ class BibliographicExporter {
             where.$and.push({ 'diffusion.research_teams._id': labs });
         }
 
+        if (surveys.length > 0) {
+            where.$and.push({ 'diffusion.surveys._id': surveys });
+        }
+
         if (types.length > 0) {
             where.$and.push({ type: types });
         }
@@ -307,10 +312,18 @@ class BibliographicExporter {
         }
 
         if (start_year.length > 0) {
-            const range = { '>=': parseInt(start_year[0], 10) };
+            // start year is 31 jan 23:00 UTC or 1st jan 00:00 UTC+1
+            // (due to bug in database storage timestamp is in local time)
+            // get offset milliseconds :
+            const offset = moment("2013-01-01").tz("Europe/Paris").format('Z');
+            const offset_parsed = parseInt(moment(("2013-02-08 "+offset.substr(1))).format("hh"));
+            const offset_sec = offset_parsed * 3600;
+            const offset_millisec = offset_sec * 1000;
+            const range = { '>=': moment(parseInt(start_year[0], 10)).valueOf()-offset_millisec };
 
             if (end_year.length > 0) {
-                range['<='] = parseInt(end_year[0], 10);
+                // get the end of the year
+                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec-1;
             }
             where.$and.push({ 'dates.publication': range });
         }
