@@ -19,6 +19,7 @@ class ApiScheduler extends Scheduler {
                 $and: [
                     { status: ['published'] },
                     { 'system.api.hal': false },
+                    { 'system.api.handle': true },
                     { 'diffusion.rights.exports.hal': true },
                 ],
             },
