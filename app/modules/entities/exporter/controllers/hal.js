@@ -149,7 +149,7 @@ async function get_edition_stmt(publication: Object): Promise<string> {
 
     const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
     const master_ref = `<ref type="file" subtype="${_.escape(subtype)}" target="${_.escape(master.name)}" n="1">${embargo}</ref>`;
-    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${_.escape(a.name)}" n="${_.escape(i)}"><desc>Deposited annex</desc></ref>`);
+    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${_.escape(a.name)}" n="${_.escape(i)}"><desc>Deposited annex</desc>${embargo}</ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
 
 
