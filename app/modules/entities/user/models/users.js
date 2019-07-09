@@ -25,7 +25,7 @@ const Validation: Array<any> = [
             }),
         ).min(1).required().label('Email'),
     }),
-    ValFunctions.checks.is_unique('uid', 'user'),
+    //ValFunctions.checks.is_unique('uid', 'user'),
 ];
 
 const Formatting: Array<any> = [
