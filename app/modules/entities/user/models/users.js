@@ -17,8 +17,8 @@ const Validation: Array<any> = [
         lastname: Joi.string().required().label('Lastname'),
         fullname: Joi.string().required().label('Fullname'),
         preferred_language: Joi.string(),
-        hpassword: Joi.string().label('Password'),
-        retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
+        hpassword: Joi.string().required().label('Password'),
+        retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).required().label('Password validation'),
         emails: Joi.array().items(
             Joi.object().keys({
                 email: Joi.string().required().label('Email'),
