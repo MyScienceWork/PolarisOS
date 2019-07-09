@@ -91,7 +91,6 @@
                             <fselect
                                 name="preferred_language"
                                 :label="lang('l_preferred_language')"
-                                :is-required="true"
                                 :placeholder="lang('l_preferred_language')"
                                 :form="state.sinks.creations.user"
                                 :options="langs"
