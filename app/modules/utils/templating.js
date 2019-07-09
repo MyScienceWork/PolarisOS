@@ -1,10 +1,11 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
 
-Handlebars.registerHelper('moment', (array) => {
-    const hash = array.hash;
+Handlebars.registerHelper('moment', (date, options) => {
+    const hash = options.hash;
     const format = hash.format;
-    const date = hash.date;
+
+    console.log(date, options);
     return moment(date).format(format);
 });
 
