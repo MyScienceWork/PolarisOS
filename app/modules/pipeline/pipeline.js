@@ -204,9 +204,9 @@ class Pipeline {
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
                 'complete', method, range, extra);
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
-                'filter', method, range, extra);
-        item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
                 'validate', method, range, extra);
+        item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
+                'filter', method, range, extra);
         return item;
     }
 

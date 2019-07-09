@@ -88,26 +88,6 @@
                         >
                             <finput name="firstname" :label="lang('b_firstname')" :is-required="true" :placeholder="lang('b_firstname')" type="text" :form="state.sinks.creations.user" />
                             <finput name="lastname" :label="lang('b_lastname')" :is-required="true" :placeholder="lang('b_lastname')" type="text" :form="state.sinks.creations.user" />
-                            <fselect
-                                name="preferred_language"
-                                :label="lang('l_preferred_language')"
-                                :is-required="true"
-                                :placeholder="lang('l_preferred_language')"
-                                :form="state.sinks.creations.user"
-                                :options="langs"
-                            />
-                            <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
-                            <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
-                            <finput
-                                name="sso" :label="lang('b_is_sso')"
-                                type="checkbox" :form="state.sinks.creations.user"
-                                :help="lang('l_backoffice_sso_help')"
-                            />
-                            <finput
-                                name="ldap" :label="lang('b_is_ldap')"
-                                type="checkbox" :form="state.sinks.creations.user"
-                                :help="lang('l_backoffice_ldap_help')"
-                            />
                             <fvariadic-element name="emails" :form="state.sinks.creations.user" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                     <finput :name="`${props.fname}.${props.order}.email`" :label="lang('b_email')" :is-required="true" :placeholder="lang('b_email')" type="email" :form="state.sinks.creations.user" />
@@ -116,6 +96,25 @@
                             </fvariadic-element>
                             <finput name="hpassword" :label="lang('b_password')" :is-required="true" :placeholder="lang('b_password')" type="password-sha1" :form="state.sinks.creations.user" />
                             <finput name="retype_hpassword" :label="lang('b_retype_password')" :is-required="true" :placeholder="lang('b_retype_password')" type="password-sha1" :form="state.sinks.creations.user" />
+                            <fselect
+                                    name="preferred_language"
+                                    :label="lang('l_preferred_language')"
+                                    :placeholder="lang('l_preferred_language')"
+                                    :form="state.sinks.creations.user"
+                                    :options="langs"
+                            />
+                            <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
+                            <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
+                            <finput
+                                    name="sso" :label="lang('b_is_sso')"
+                                    type="checkbox" :form="state.sinks.creations.user"
+                                    :help="lang('l_backoffice_sso_help')"
+                            />
+                            <finput
+                                    name="ldap" :label="lang('b_is_ldap')"
+                                    type="checkbox" :form="state.sinks.creations.user"
+                                    :help="lang('l_backoffice_ldap_help')"
+                            />
                             <finput
                                 name="public_profile" :label="lang('b_is_profile_public')"
                                 type="checkbox" :form="state.sinks.creations.user"
