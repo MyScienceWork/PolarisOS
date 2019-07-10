@@ -37,6 +37,10 @@
                                     :form="state.sinks.creations.project"
                                 />
                                 <button v-if="is_editing()"
+                                        @click.prevent="back()"
+                                        :disabled="success"
+                                        class="button">{{lang('f_back')}}</button>
+                                <button v-if="is_editing()"
                                         @click.prevent="open_review_modal(props)"
                                         :disabled="success"
                                         class="button">{{lang('f_finish_review')}}</button>
