@@ -49,6 +49,7 @@ module.exports = {
                 value: undefined,
                 showHelpModal: false,
                 duplicate_warning_message: '',
+                duplicate_warning_items: [],
                 sinks: {
                     reads: {
                         duplicate_warning: [],
@@ -245,7 +246,12 @@ module.exports = {
                 this.$set(this.state, 'duplicate_warning_message', '');
                 return;
             }
+            const duplicate_warning_items = [];
+            data.forEach((item) => {
+                duplicate_warning_items.push(item[this.name]);
+            });
             this.$set(this.state, 'duplicate_warning_message', `l_duplicate_${this.form}_${this.name}`);
+            this.$set(this.state, 'duplicate_warning_items', duplicate_warning_items);
         },
     },
     computed: {
