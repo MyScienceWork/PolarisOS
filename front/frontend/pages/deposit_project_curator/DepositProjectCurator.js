@@ -74,6 +74,9 @@ module.exports = {
         open_review_modal() {
             this.state.show_review_modal = true;
         },
+        back() {
+            this.$router.go(-1);
+        },
         review_project() {
             const content = this.fcontent(this.state.sinks.creations.project);
             this.$store.dispatch('update', {
