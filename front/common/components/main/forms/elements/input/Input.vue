@@ -156,6 +156,11 @@
             <p class="redify inline-block">
                 {{lang(duplicate_warning_message)}}
             </p>
+            <ul>
+                <li v-for="item in state.duplicate_warning_items">
+                    {{item}}
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -200,6 +205,11 @@
             <p class="redify inline-block">
                 {{lang(duplicate_warning_message)}}
             </p>
+            <ul>
+                <li v-for="item in state.duplicate_warning_items">
+                    {{item}}
+                </li>
+            </ul>
         </div>
     </div>
 
