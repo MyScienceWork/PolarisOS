@@ -2,9 +2,9 @@ const development = {
     port: 4002,
     elasticsearch: {
         hosts: [
-            'http://localhost:9200',
+            'http://localhost:9201',
         ],
-        apiVersion: '5.2',
+        apiVersion: '6.6',
     },
     grobid: {
         host: 'gitlab.cocophotos.eu',
@@ -27,6 +27,14 @@ const development = {
         api: {
             interval: 45 * 1000,
         },
+    },
+    find_diseases: {
+        host: 'http://localhost',
+        port: 5001,
+    },
+    classification_rare: {
+        host: 'http://localhost',
+        port: 5002,
     },
 };
 

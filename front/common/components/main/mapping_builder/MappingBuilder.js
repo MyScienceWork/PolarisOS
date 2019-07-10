@@ -62,7 +62,7 @@ module.exports = {
                     },
                 },
             };
-            console.log(mapping);
+            console.log('mapping : ', mapping);
             this.$emit('update:mapping', mapping);
         },
     },

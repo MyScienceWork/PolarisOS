@@ -12,6 +12,7 @@
             :form="cform"
             :has-addons="form.addons"
             :readonly="readonly || form.fields[0].readonly"
+            :duplicate_warning="form.fields[0].duplicate_warning"
             :help="form.fields[0].help ? form.fields[0].help.content : ''"
             :modal_help="form.fields[0].help ? form.fields[0].help.use_modal : false"
             :is-required="form.fields[0].required"
@@ -33,8 +34,8 @@
             <template slot="input-addons">
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
-                    <finput 
-                    v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                    <finput
+                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -42,6 +43,7 @@
                     :form="cform"
                     :is-addon="true"
                     :readonly="readonly || field.readonly"
+                    :duplicate_warning="field.duplicate_warning"
                     :is-required="field.required"
                     :key="get_name(field.name)"
                     :help="field.help ? field.help.content : ''"
@@ -50,8 +52,11 @@
                     :year-range-start="field.range ? field.range.start : 0"
                     :year-range-end="field.range ? field.range.end : 0"
                     :year-step="field.range ? field.range.step : 1"
+                    :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+                    :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+                    @date-value-change="update_date"
                     />
-                    <finput 
+                    <finput
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
                     :name="get_name(field.name)"
                     :type="field.type"
@@ -66,7 +71,7 @@
                     :view-validation-texts="false"
                     label=""
                     />
-                    <fselect 
+                    <fselect
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
                     :label="lang(field.label || '')"
                     :placeholder="lang(field.placeholder || '')"
@@ -91,11 +96,29 @@
                     :search-size="generate_ajax_search(field, 'size')"
                     :search-fields="generate_ajax_search(field, 'fields')"
                     />
-                </template> 
+                    <fradio
+                    v-else-if="field.type === 'radio'"
+                    :label="lang(field.label || '')"
+                    :name="get_name(field.name)"
+                    :form="cform"
+                    :fieldLabel="generate_select_label(field)"
+                    :fieldValue="generate_select_value(field)"
+                    :options="generate_select_options(field)"
+                    :ajax="field.datasource.ajax"
+                    :ajax-url="generate_ajax_url(field)"
+                    :ajax-value-url="generate_ajax_url(field, 'value')"
+                    :readonly="readonly || field.readonly"
+                    :is-required="field.required"
+                    :help="field.help ? field.help.content : ''"
+                    :modal_help="field.help ? field.help.use_modal : false"
+                    :translate-through-hlang="field.datasource.use_hlang"
+                    :translatable="field.datasource.translatable"
+                    />
+                </template>
                 <slot name="form-addons"></slot>
             </template>
         </component>
-        <crud-form 
+        <crud-form
             :text="form.fields[0].datasource.action_text"
             :header="form.fields[0].datasource.header_text"
             :help="form.fields[0].datasource.help_text"
@@ -104,14 +127,14 @@
             :put-path="form.fields[0].datasource.form_paths.put"
             :post-path="form.fields[0].datasource.form_paths.post"
             @crud-form-change="crud_form_change"
-            v-if="form.fields[0].datasource && (form.fields[0].datasource.add || form.fields[0].datasource.modify) && !readonly" 
+            v-if="form.fields[0].datasource && (form.fields[0].datasource.add || form.fields[0].datasource.modify) && !readonly"
         />
     </template>
     <template v-else v-for="(field, i) in form.fields">
         <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
-                <finput 
-                v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                <finput
+                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -119,6 +142,7 @@
                 :form="cform"
                 :has-addons="field.single_multiple"
                 :readonly="readonly || field.readonly"
+                :duplicate_warning="field.duplicate_warning"
                 :is-required="field.required"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :help="field.help ? field.help.content : ''"
@@ -127,6 +151,9 @@
                 :year-range-start="field.range ? field.range.start : 0"
                 :year-range-end="field.range ? field.range.end : 0"
                 :year-step="field.range ? field.range.step : 1"
+                :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+                :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+                @date-value-change="update_date"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -137,7 +164,7 @@
                         </div>
                     </template>
                 </finput>
-                <finput 
+                <finput
                 v-else-if="['hidden'].indexOf(field.type) !== -1"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :type="field.type"
@@ -175,7 +202,7 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 :template="field.hiddenValue"
                 />
-                <fselect 
+                <fselect
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
                 :label="lang(field.label || '')"
                 :placeholder="lang(field.placeholder || '')"
@@ -209,7 +236,25 @@
                         </div>
                     </template>
                 </fselect>
-                <crud-form 
+                <fradio
+                v-else-if="field.type === 'radio'"
+                :label="lang(field.label || '')"
+                :name="get_name(field.name)"
+                :form="cform"
+                :fieldLabel="generate_select_label(field)"
+                :fieldValue="generate_select_value(field)"
+                :options="generate_select_options(field)"
+                :ajax="field.datasource.ajax"
+                :ajax-url="generate_ajax_url(field)"
+                :ajax-value-url="generate_ajax_url(field, 'value')"
+                :readonly="readonly || field.readonly"
+                :is-required="field.required"
+                :help="field.help ? field.help.content : ''"
+                :modal_help="field.help ? field.help.use_modal : false"
+                :translate-through-hlang="field.datasource.use_hlang"
+                :translatable="field.datasource.translatable"
+                />
+                <crud-form
                     :text="field.datasource.action_text"
                     :header="field.datasource.header_text"
                     :help="field.datasource.help_text"
@@ -218,9 +263,9 @@
                     :put-path="field.datasource.form_paths.put"
                     :post-path="field.datasource.form_paths.post"
                     @crud-form-change="crud_form_change"
-                    v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
+                    v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly"
                 />
-                <fdropzone 
+                <fdropzone
                 v-else-if="field.type === 'file'"
                 :form="cform"
                 :files="get_name(`${props.fname}.${props.order}.${field.name}`)"
@@ -241,8 +286,8 @@
                         <widget>
                             <span slot="title">{{lang(field.subform_information.title)}}</span>
                             <div slot="body">
-                                <dynamic-form 
-                                    :form="field.subform" 
+                                <dynamic-form
+                                    :form="field.subform"
                                     :cform="cform"
                                     :prefix="`${props.fname}.${props.order}`"
                                     :single="field.single_multiple"
@@ -273,8 +318,8 @@
                         <template v-else-if="form_is_of_type('hidden', field)">
                             <p class="has-small-bottom-margin"><a @click.prevent="show_hidden_form(field)">{{lang(field.subform_information.title)}}</a></p>
                         </template>
-                        <dynamic-form 
-                            :form="field.subform" 
+                        <dynamic-form
+                            :form="field.subform"
                             :cform="cform"
                             :prefix="`${props.fname}.${props.order}`"
                             :single="field.single_multiple"
@@ -300,8 +345,8 @@
             </template>
         </fvariadic-element>
         <template v-else>
-            <finput 
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+            <finput
+            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -309,6 +354,7 @@
             :form="cform"
             :key="get_name(field.name)"
             :readonly="readonly || field.readonly"
+            :duplicate_warning="field.duplicate_warning"
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
@@ -316,8 +362,11 @@
             :year-range-start="field.range ? field.range.start : 0"
             :year-range-end="field.range ? field.range.end : 0"
             :year-step="field.range ? field.range.step : 1"
+            :min-date="field.range ? state.selected_date[field.range.start_date] : null"
+            :max-date="field.range ? state.selected_date[field.range.end_date] : null"
+            @date-value-change="update_date"
             />
-            <finput 
+            <finput
             v-else-if="['hidden'].indexOf(field.type) !== -1"
             :key="get_name(field.name)"
             :name="get_name(field.name)"
@@ -354,7 +403,7 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 :template="field.hiddenValue"
             />
-            <fselect 
+            <fselect
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
             :label="lang(field.label || '')"
             :placeholder="lang(field.placeholder || '')"
@@ -378,7 +427,25 @@
             :search-size="generate_ajax_search(field, 'size')"
             :search-fields="generate_ajax_search(field, 'fields')"
             />
-            <crud-form 
+            <fradio
+            v-else-if="field.type === 'radio'"
+            :label="lang(field.label || '')"
+            :name="get_name(field.name)"
+            :form="cform"
+            :fieldLabel="generate_select_label(field)"
+            :fieldValue="generate_select_value(field)"
+            :options="generate_select_options(field)"
+            :ajax="field.datasource.ajax"
+            :ajax-url="generate_ajax_url(field)"
+            :ajax-value-url="generate_ajax_url(field, 'value')"
+            :readonly="readonly || field.readonly"
+            :is-required="field.required"
+            :help="field.help ? field.help.content : ''"
+            :modal_help="field.help ? field.help.use_modal : false"
+            :translate-through-hlang="field.datasource.use_hlang"
+            :translatable="field.datasource.translatable"
+            />
+            <crud-form
                 :text="field.datasource.action_text"
                 :header="field.datasource.header_text"
                 :help="field.datasource.help_text"
@@ -387,9 +454,9 @@
                 :put-path="field.datasource.form_paths.put"
                 :post-path="field.datasource.form_paths.post"
                 @crud-form-change="crud_form_change"
-                v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly" 
+                v-if="field.datasource && (field.datasource.add || field.datasource.modify) && !readonly"
             />
-            <fdropzone 
+            <fdropzone
             v-else-if="field.type === 'file'"
             :form="cform"
             :files="get_name(field.name)"
@@ -410,8 +477,8 @@
                     <widget>
                         <span slot="title">{{lang(field.subform_information.title)}}</span>
                         <div slot="body">
-                            <dynamic-form 
-                                :form="field.subform" 
+                            <dynamic-form
+                                :form="field.subform"
                                 :cform="cform"
                                 :single="field.single_multiple"
                                 :readonly="readonly"
@@ -431,8 +498,8 @@
                     <template v-else-if="form_is_of_type('hidden', field)">
                         <p class="has-small-bottom-margin"><a @click.prevent="show_hidden_form(field)">{{lang(field.subform_information.title)}}</a></p>
                     </template>
-                    <dynamic-form 
-                        :form="field.subform" 
+                    <dynamic-form
+                        :form="field.subform"
                         :cform="cform"
                         :single="field.single_multiple"
                         :readonly="readonly"
@@ -443,6 +510,45 @@
                     >
                     </dynamic-form>
                 </template>
+            </template>
+            <template v-else-if="field.type === 'dynamic-list'">
+                <fdata-table-searching
+                    :search-sink="cform"
+                    :result-sink="state.sinks.reads.dynamic_list"
+                    :search-path="state.paths.reads.dynamic_list"
+                    :search-query="dynamic_list_search_query"
+                    :use-default-query="false"
+                    search-type="dynamic-list"
+                    :checkable="true"
+                    :checked-rows="state.checked_rows"
+                    :columns="dynamic_list_columns"
+                    @column-checkbox-update="on_column_update"
+                    @table-checked-rows-update="on_checked_rows_update"
+                    :show-search="false"
+                    :enable-pagination="false"
+                    :read-only="read_only"
+                    :auto-search="false"
+                >
+                    <template slot="rows" slot-scope="props">
+                        <b-table-column v-for="(value, key) in state.columns"
+                                        :field="value.sort"
+                                        :label="lang(value.title, {}, value.lang)"
+                                        :visible="value.visible"
+                                        :sortable="value.sortable"
+                                        :centered="value.centered">
+                                            <span
+                                                    :class="`tag ${value.tag_class}`"
+                                                    v-if="value.is_tag"
+                                                    :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
+                                            >
+                                            </span>
+                            <div v-else
+                                 :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
+                            >
+                            </div>
+                        </b-table-column>
+                    </template>
+                </fdata-table-searching>
             </template>
         </template>
     </template>

@@ -21,7 +21,7 @@ module.exports = {
             state: {
                 paths: {
                     creations: {
-                        search: APIRoutes.entity('publication', 'POST', true),
+                    //    search: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 sinks: {

@@ -11,6 +11,7 @@ const Messages = require('../../../common/api/messages');
 const LastDeposits = require('../home/subcomponents/LastDeposits.vue');
 const SearchBar = require('../browse/subcomponents/SearchBar.vue');
 const SearchResults = require('../browse/subcomponents/SearchResults.vue');
+const Project = require('./subcomponents/Project.vue');
 const VueClickAway = require('vue-clickaway');
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
         LastDeposits,
         SearchResults,
         SearchBar,
+        Project,
     },
     directives: {
         onClickAway: VueClickAway.directive,
@@ -49,7 +51,7 @@ module.exports = {
                         user: APIRoutes.entity('user', 'POST', true),
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                    //    publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 statuses: {
@@ -73,7 +75,7 @@ module.exports = {
         },
         switch_tab(t) {
             try {
-                this.state.current_tab = Math.min(Math.max(0, parseInt(t, 10)), 3);
+                this.state.current_tab = Math.min(Math.max(0, parseInt(t, 10)), 4);
             } catch (err) {
                 // noop
             }
@@ -94,7 +96,9 @@ module.exports = {
                     body: body.author,
                 });
 
-                body.author = '_id' in body.author ? body.author._id : undefined;
+                if (body.author) {
+                    body.author = '_id' in body.author ? body.author._id : undefined;
+                }
                 body.roles = body.roles.map(r => ({ _id: r._id._id }));
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: this.state.sinks.creations.user,
@@ -176,19 +180,6 @@ module.exports = {
                 return content[0];
             }
             return {};
-        },
-        user_forms() {
-            const content = this.fcontent(this.state.sinks.reads.user_forms);
-            if (!(content instanceof Array) || content.length === 0) {
-                return () => [];
-            }
-            return (f) => {
-                const r = content.filter(c => c.name === f);
-                if (r.length > 0) {
-                    return r[0];
-                }
-                return [];
-            };
         },
         affiliations() {
             const author = this.author;

@@ -30,7 +30,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                    //    publication: APIRoutes.entity('publication', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
@@ -46,6 +46,7 @@ module.exports = {
 
     },
     mounted() {
+        /*
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.publication,
             path: this.state.paths.reads.publication,
@@ -93,6 +94,7 @@ module.exports = {
                 },
             },
         });
+        */
     },
     computed: {
         content() {

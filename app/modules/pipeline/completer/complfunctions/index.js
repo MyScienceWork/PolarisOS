@@ -97,7 +97,16 @@ function denormalization(from_entity: string, from_path: string,
                 const last = eseg[eseg.length - 1];
                 const value = eobj[last];
                 if (flat) {
+                    if (value && translatable) {
+                        return await LangUtils
+                            .string_to_translation(value, 'EN', 0);
+                    }
                     return value;
+                }
+                if (value && translatable) {
+                    const value_translated = await LangUtils
+                        .string_to_translation(value, 'EN', 0);
+                    return { [last]: value_translated };
                 }
                 return { [last]: value };
             }

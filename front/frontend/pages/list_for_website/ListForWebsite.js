@@ -31,7 +31,7 @@ module.exports = {
                 paths: {
                     reads: {
                         typology: APIRoutes.entity('typology', 'POST', true),
-                        publication: APIRoutes.entity('publication', 'POST', true),
+                    //    publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
             },

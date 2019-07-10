@@ -40,7 +40,7 @@ function configure_app($store) {
             path: lang_path,
             body: lang_body,
         });
-    }).catch((err) => { console.log(err); });
+    }).catch((err) => { console.log('err : ', err); });
 }
 
 module.exports = {

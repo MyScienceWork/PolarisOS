@@ -91,7 +91,7 @@ async function render_router(part) {
         menu = cmenus.content.result.hits[0].source;
     }
 
-    const routes = pages.map((page) => {
+    const common_routes = pages.map((page) => {
         const obj = {
             path: page.route,
             name: page.route,
@@ -115,6 +115,20 @@ async function render_router(part) {
         };
         return obj;
     });
+
+    const workflow_routes = [{
+        path: '/workflow/:id',
+        name: 'f_nav_workflow',
+        navbar: true,
+        components: {
+            default: get_default_component({ predefined_page: 'workflow_review' }),
+            header: Header,
+            footer: Footer,
+        },
+        meta: { requiresAuth: false, access: '', subaccess: [], page_id: 'workflow_page' },
+    }];
+
+    const routes = [...workflow_routes, ...common_routes];
 
 
     routes.push({

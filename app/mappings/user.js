@@ -48,6 +48,9 @@ module.exports = {
                     public_profile: {
                         type: 'boolean',
                     },
+                    funding_institution: {
+                        type: 'keyword',
+                    },
                     locked: {
                         type: 'boolean',
                     },

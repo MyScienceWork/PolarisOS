@@ -96,13 +96,16 @@ module.exports = {
                 const url = Browser.getURLHost(window.location);
                 this.redirect_to_cas(this.generate_cas_sso_url(url, backoffice, true));
             } else {
-                this.$router.push({ path: '/' });
+                this.$router.push({ path: '/login' });
                 location.reload();
             }
         },
         change_language(lang) {
             Browser.localSet('default_lang', lang);
             location.reload();
+        },
+        m_user_id() {
+            return Auth.user()._id;
         },
     },
 };

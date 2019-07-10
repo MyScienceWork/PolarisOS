@@ -9,6 +9,7 @@ const PaginationSearchMixin = require('../../../../mixins/PaginationSearchMixin'
 module.exports = {
     mixins: [LangMixin, FormMixin, PaginationSearchMixin],
     props: {
+        autoSearch: { default: true, type: Boolean },
         sizeList: { default: () => [10, 30, 50, 100], type: Array },
         sortList: { required: false, type: Array, default: () => [] },
         filters: { required: false, type: Array, default: () => [] },
@@ -20,10 +21,15 @@ module.exports = {
         detailKey: { default: '', type: String },
         tableClasses: { default: '', type: String },
         columns: { default: () => ({}), type: Object },
+        all_columns_visible: { default: true, type: Boolean },
+        showSearch: { default: true, type: Boolean },
+        enablePagination: { default: true, type: Boolean },
+        readOnly: { default: false, type: Boolean },
     },
     data() {
         return {
             state: {
+                all_columns_visible: true,
             },
         };
     },
@@ -41,6 +47,12 @@ module.exports = {
         },
         on_checkbox_update(key, checked) {
             this.$emit('column-checkbox-update', { key, checked });
+        },
+        on_main_checkbox_update(columns, checked) {
+            this.state.all_columns_visible = checked;
+            Object.keys(columns).forEach((key) => {
+                this.$emit('column-checkbox-update', { key, checked });
+            });
         },
         on_checked_rows_update(checkedList, row) {
             this.$emit('table-checked-rows-update', { checkedRows: checkedList, checkedRow: row });
@@ -73,5 +85,8 @@ module.exports = {
         },
     },
     mounted() {
+        if (this.autoSearch) {
+            this.search();
+        }
     },
 };

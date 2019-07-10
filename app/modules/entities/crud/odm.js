@@ -152,7 +152,7 @@ class ODM {
     }
 
     static async fetch_mapping(index: string, type: string, client: Object, include_meta: boolean = false) {
-        const mapping = await client.indices.getMapping({ index, type });
+        const mapping = await client.indices.getMapping({ index });
         if (index in mapping && type in mapping[index].mappings) {
             if (include_meta) {
                 return mapping[index].mappings[type];
@@ -163,7 +163,7 @@ class ODM {
     }
 
     static async fetch_settings(index: string, type: string, client: Object) {
-        const settings = await client.indices.getSettings({ index, type });
+        const settings = await client.indices.getSettings({ index });
         if (settings && index in settings) {
             return settings[index];
         }
@@ -346,7 +346,7 @@ class ODM {
             }
 
             const response = await client.index(content);
-            if (('created' in response && response.created)
+            if (('result' in response && response.result === 'created')
                 || ('result' in response && response.result === 'updated')) {
                 try {
                     const get_response = await client.get({

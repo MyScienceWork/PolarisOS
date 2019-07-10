@@ -119,7 +119,7 @@ class ApiScheduler extends Scheduler {
     }
 
     async _execute_data() {
-        console.log('execute api scheduler');
+        //console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
             Logger.error(err);

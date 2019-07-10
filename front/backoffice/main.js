@@ -11,6 +11,7 @@ const Loader = require('./components/loader/Loader.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
 const ColorInput = require('../common/components/main/forms/elements/color/Color.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const Radio = require('../common/components/main/forms/elements/radio/Radio.vue');
 const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('../common/components/main/forms/form/Form.vue');
@@ -28,7 +29,7 @@ const MappingItem = require('../common/components/main/mapping_builder/subcompon
 const ChartWidget = require('../common/components/main/chart_widget/ChartWidget.vue');
 const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
 
-const ActionButton = require('./components/themes/main/components/action_button/ActionButton.vue');
+const ActionButton = require('../common/components/main/action_button/ActionButton.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
 
 const App = require('./pages/App.vue');
@@ -54,6 +55,7 @@ Vue.component('fform', Form);
 Vue.component('finput', Input);
 Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
+Vue.component('fradio', Radio);
 Vue.component('fstatic', Static);
 Vue.component('fgrid', Grid);
 Vue.component('fvariadic-element', VariadicElement);

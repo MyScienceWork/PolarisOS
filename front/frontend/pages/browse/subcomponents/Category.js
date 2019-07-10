@@ -77,7 +77,7 @@ module.exports = {
             this.send_information(this.state.sinks.creations.selected);
         },
         post_hook_query_changed(query, old_query) {
-            console.log(query, old_query);
+            console.log('query : ', query, 'old_query : ', old_query);
             const { agge, aggf, aggt, entity, label } = query;
             let restrictions = query.restrictions || undefined;
 

@@ -9,6 +9,7 @@ module.exports = {
     props: {
         name: { default: 'default_form' },
         hasButtons: { default: true, type: Boolean },
+        hasCancelButton: { default: true, type: Boolean },
         post_path: { type: String, required: true },
         put_path: { type: String, required: true },
         get_path: { type: String, required: true },
@@ -16,6 +17,8 @@ module.exports = {
         showErrors: { type: Boolean, default: true },
         mode: { type: String, default: 'default' },
         noReinitializeAfterSuccess: { type: Boolean, default: false },
+        redirectAfterSuccess: { type: Boolean, default: false },
+        redirectURI: { type: String, default: '' }
     },
     data() {
         return {
@@ -62,6 +65,9 @@ module.exports = {
                         form: this.name,
                     });
                     this.$emit('form-success-reset');
+                    if (this.redirectAfterSuccess) {
+                        this.$router.push({ path: this.redirectURI });
+                    }
                 }, 2500);
             }
         },

@@ -119,6 +119,11 @@
                 </div>
             </div>
         </template>
+        <div v-if="validations.length > 0">
+            <p v-for="text in validations" class="redify inline-block">
+                {{lang(text)}}
+            </p>
+        </div>
     </div>
 </template>
 

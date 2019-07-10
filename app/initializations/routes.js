@@ -14,6 +14,7 @@ const ImporterRoutes = require('../modules/entities/importer/routes');
 const ExporterRoutes = require('../modules/entities/exporter/routes');
 const PublicationRoutes = require('../modules/entities/publication/routes');
 const RssRoutes = require('../modules/3rdparty/rss/routes');
+const ExternalApiRoutes = require('../modules/3rdparty/external_api/routes');
 const TrackingRoutes = require('../modules/entities/tracking_stat/routes');
 const LangRoutes = require('../modules/entities/lang/routes');
 
@@ -64,7 +65,7 @@ async function initialize_routes(singleton) {
     const extra_entities = response.result.hits.map(e => e.db.source.type);
     const entities = ['user', 'role', 'config', 'form', 'function',
         'pipeline', 'widget', 'page', 'template', 'menu', 'query',
-        'importer', 'exporter', 'connector', 'identifier',
+        'importer', 'exporter', 'connector', 'identifier', 'workflow',
         'chart', 'mail_template', 'tracking_stat', 'system_report', ...extra_entities];
 
     entities.forEach((e) => {
@@ -76,6 +77,7 @@ async function initialize_routes(singleton) {
     ImporterRoutes(router, singleton);
     ExporterRoutes(router, singleton);
     RssRoutes(router, singleton);
+    ExternalApiRoutes(router, singleton);
     TrackingRoutes(router, singleton);
     LangRoutes(router, singleton);
 

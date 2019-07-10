@@ -2,6 +2,7 @@ require('babel-polyfill'); // For very very old browser
 const Vue = require('vue');
 const Buefy = require('buefy');
 const VueWysiwyg = require('vue-wysiwyg');
+const VueIntro = require('vue-introjs').default;
 const RouterRenderer = require('../common/router');
 const router = require('./router');
 const store = require('../common/store');
@@ -17,12 +18,14 @@ const Stepper = require('../common/components/main/stepper/Stepper.vue');
 const Input = require('../common/components/main/forms/elements/input/Input.vue');
 const ColorInput = require('../common/components/main/forms/elements/color/Color.vue');
 const Select = require('../common/components/main/forms/elements/select/Select.vue');
+const Radio = require('../common/components/main/forms/elements/radio/Radio.vue');
 const Static = require('../common/components/main/forms/elements/static/Static.vue');
 const VariadicElement = require('../common/components/main/forms/elements/variadic_element/VariadicElement.vue');
 const Form = require('../common/components/main/forms/form/Form.vue');
 const DynamicForm = require('../common/components/main/forms/dynamic_form/DynamicForm.vue');
 const Paginator = require('../common/components/main/paginator/Paginator.vue');
 const Dropzone = require('../common/components/main/forms/dropzone/Dropzone.vue');
+const ActionButton = require('../common/components/main/action_button/ActionButton.vue');
 const HierarchicalSelect = require('../common/components/main/forms/elements/hierarchical_select/HierarchicalSelect.vue');
 const Card = require('../common/components/main/card/Card.vue');
 const Widget = require('../common/components/main/widget/Widget.vue');
@@ -34,6 +37,7 @@ const BibliographicExport = require('../common/components/main/bibliographic_exp
 const Indexer = require('../common/components/main/indexer/Indexer.vue');
 const HierarchicalStructure = require('../common/components/main/forms/elements/hierarchical_structure/HierarchicalStructure.vue');
 const AggregateForm = require('../common/components/main/forms/aggregate_form/AggregateForm.vue');
+const DataTableSearching = require('../common/components/main/forms/searching/DataTableSearching.vue');
 
 // Widgets
 const SearchWidget = require('./components/themes/main/widgets/search_widget/SearchWidget.vue');
@@ -47,6 +51,11 @@ const MediaWidget = require('./components/themes/main/widgets/media_widget/Media
 
 
 const App = require('./pages/App.vue');
+
+const introJs = require('intro.js');
+
+window.introJs = introJs;
+Vue.use(VueIntro);
 
 
 const LOCALE = BrowserUtils.getDefaultLanguage();
@@ -71,8 +80,10 @@ Vue.component('fform', Form);
 Vue.component('finput', Input);
 Vue.component('fcolor', ColorInput);
 Vue.component('fselect', Select);
+Vue.component('fradio', Radio);
 Vue.component('fstatic', Static);
 Vue.component('fdropzone', Dropzone);
+Vue.component('action-button', ActionButton);
 Vue.component('fhselect', HierarchicalSelect);
 Vue.component('fvariadic-element', VariadicElement);
 Vue.component('faggregate-form', AggregateForm);
@@ -86,6 +97,7 @@ Vue.component('login-lang', LoginLang);
 Vue.component('login-choice', LoginChoice);
 Vue.component('rss-feed-icon', RSSC);
 Vue.component('bibliographic-export', BibliographicExport);
+Vue.component('fdata-table-searching', DataTableSearching);
 
 // Widgets
 Vue.component('widget-search', SearchWidget);
