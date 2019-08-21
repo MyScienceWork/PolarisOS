@@ -41,7 +41,7 @@
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
-                                    {{props.info.name}} ({{props.info.type}}) 
+                                    {{props.info.name}} ({{props.info.type}})
                                 </span>
                                 <div slot="body">
                                 </div>
@@ -57,8 +57,8 @@
                     <span slot="title">{{lang('l_add_or_modify_function')}}</span>
                     <div slot="body">
                         <fform
-                            :name="state.sinks.creations.function" 
-                            :post_path="state.paths.creations.function" 
+                            :name="state.sinks.creations.function"
+                            :post_path="state.paths.creations.function"
                             :put_path="state.paths.creations.function"
                             :get_path="state.paths.reads.function"
                             :get_form="state.sinks.reads.function"
@@ -67,34 +67,34 @@
                                 <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.sinks.creations.function" />
                                 <h4 class="title is-3">{{lang('b_function_argument', {}, 'other')}}</h4>
                                 <hr />
-                                <fvariadic-element 
-                                    name="arguments" 
-                                    :form="state.sinks.creations.function" 
+                                <fvariadic-element
+                                    name="arguments"
+                                    :form="state.sinks.creations.function"
                                     :tabs="true">
                                     <template slot="variadic" slot-scope="props">
-                                        <finput 
+                                        <finput
                                             :name="`${props.fname}.${props.order}.name`"
-                                            :label="lang('b_name')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('b_name')" 
-                                            type="text" 
+                                            :label="lang('b_name')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_name')"
+                                            type="text"
                                             :form="state.sinks.creations.function"
                                         />
-                                        <finput 
+                                        <finput
                                             :name="`${props.fname}.${props.order}.type`"
-                                            :label="lang('b_type')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('b_type')" 
-                                            type="text" 
+                                            :label="lang('b_type')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_type')"
+                                            type="text"
                                             :form="state.sinks.creations.function"
                                         />
-                                        <finput 
+                                        <finput
                                             :name="`${props.fname}.${props.order}.default`"
-                                            :label="lang('b_default_value')" 
-                                            :is-required="true" 
-                                            :placeholder="lang('b_default_value')" 
-                                            type="text" 
-                                            :form="state.sinks.creations.function" 
+                                            :label="lang('b_default_value')"
+                                            :is-required="true"
+                                            :placeholder="lang('b_default_value')"
+                                            type="text"
+                                            :form="state.sinks.creations.function"
                                         />
                                     </template>
                                     </fvariadic-element>
