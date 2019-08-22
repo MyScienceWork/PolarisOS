@@ -156,12 +156,7 @@ function flatten(from_entity: string, from_path: string,
                     return null;
                 }
                 const last = eseg[eseg.length - 1];
-                Logger.info("eseg : ", eseg);
-                Logger.info("eobj : ", eobj);
-                Logger.info("last : ", last);
                 const value = eobj[last];
-                Logger.info("translatable : ", translatable);
-                Logger.info("value : ", value);
                 if (value && translatable) {
                     const value_translated = await LangUtils
                       .string_to_translation(value, 'EN', 0);
@@ -177,19 +172,12 @@ function flatten(from_entity: string, from_path: string,
         const entity_segments = entity_path.split('.');
 
         const from_path_segments = from_path.split('.');
-        Logger.info("from_entity : ", from_entity);
-        Logger.info("object: ", object);
-        Logger.info("from_path_segments : ", from_path_segments);
-        Logger.info("func(need_to_retrieve, from_entity, entity_segments, search_value) : ", func(need_to_retrieve, from_entity, entity_segments, search_value))
         const final = {}
         const last = entity_segments[entity_segments.length - 1];
         const new_field = from_path_segments[0]+'_'+last+'_flatten';
         final[new_field] = [];
         const result = await Utils.traverse_recreate_and_execute(object, from_path_segments,
           func(need_to_retrieve, from_entity, entity_segments, search_value));
-        Logger.info("entity_segments : ", entity_segments);
-        Logger.info("result : ", result);
-        Logger.info("object with path : ");
         const values = Utils.find_object_with_path(result, from_path_segments);
         if (values instanceof Array) {
             values.forEach(value => {
@@ -199,7 +187,6 @@ function flatten(from_entity: string, from_path: string,
             const value = Utils.find_object_with_path(result, from_path_segments)[0]
             final[new_field].push(value);
         }
-        Logger.info("final BRYAN : ", final);
         return { denormalization: final };
     };
 }
