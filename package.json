@@ -98,7 +98,7 @@
     "vuex": "^2.5.0",
     "winston": "^2.2.0",
     "winston-koa-logger": "0.0.2",
-    "ws": "^2.3.1",
+    "ws": "^7.1.0",
     "xml2js-parser": "^1.1.1"
   },
   "devDependencies": {
@@ -117,7 +117,7 @@
     "esdoc-flow-type-plugin": "^1.0.x",
     "esdoc-node": "^1.0.x",
     "esdoc-standard-plugin": "^1.0.x",
-    "eslint": "^3.17.1",
+    "eslint": "^6.0.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-flowtype": "^2.32.1",
     "eslint-plugin-import": "^2.2.0",
