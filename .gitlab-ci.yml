@@ -19,6 +19,7 @@ export version:
   #  - client/INSERM
   #  - client/INED
   script:
+   - apt-get install jq
    - export VERSION=$(cat package.json | jq -r .version)
    - echo version:$PACKAGE_VERSION
 
