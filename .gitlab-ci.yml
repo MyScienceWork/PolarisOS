@@ -1,0 +1,10 @@
+image: docker:stable
+
+stages:
+  - Build image
+
+docker build:
+  stage: Build image
+  script:
+    - docker info
+    - docker build -t myimage .
