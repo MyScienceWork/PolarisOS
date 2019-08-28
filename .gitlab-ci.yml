@@ -9,12 +9,12 @@ services:
   - docker:18-dind
 
 stages:
-  - Get version
+  - Install jq
   - Build image
   - Push image
 
-export version:
-  stage: Get version
+install jq:
+  stage: Install jq
   only:
     - client/INSERM
     - client/INED
@@ -30,6 +30,7 @@ docker build:
     - client/INED
   script:
     - docker info
+    - export VERSION=$(cat package.json | jq -r .version)
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
 
 docker push:
@@ -38,4 +39,5 @@ docker push:
     - client/INSERM
     - client/INED
   script:
+    - export VERSION=$(cat package.json | jq -r .version)
     - docker push $CI_REGISTRY_IMAGE:$VERSION
