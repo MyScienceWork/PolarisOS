@@ -20,6 +20,7 @@ export version:
   #  - client/INED
   script:
    - export VERSION=$(cat package.json | jq -r .version)
+   - echo version:$PACKAGE_VERSION
 
 
 docker build:
