@@ -26,10 +26,11 @@ export version:
 
 docker build:
   stage: Build image
-  only:
-    - client/INSERM
-    - client/INED
+  #only:
+  #  - client/INSERM
+  #  - client/INED
   script:
+    - echo version:$VERSION
     - docker info
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
 
