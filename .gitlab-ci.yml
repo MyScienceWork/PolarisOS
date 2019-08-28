@@ -1,0 +1,41 @@
+image: docker:18-git
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
+
+services:
+  - docker:18-dind
+
+stages:
+  - Get version
+  - Build image
+  - Push image
+
+export version:
+  stage: Get version
+  only:
+    - client/INSERM
+    - client/INED
+  script:
+    - apk add jq
+    - export VERSION=$(cat package.json | jq -r .version)
+
+
+docker build:
+  stage: Build image
+  only:
+    - client/INSERM
+    - client/INED
+  script:
+    - docker info
+    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
+
+docker push:
+  stage: Push image
+  only:
+    - client/INSERM
+    - client/INED
+  script:
+    - docker push $CI_REGISTRY_IMAGE:$VERSION
