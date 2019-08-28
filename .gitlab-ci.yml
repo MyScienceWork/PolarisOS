@@ -1,7 +1,11 @@
-image: docker:stable
+image: docker:18-git
 
 variables:
+  DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
+
+services:
+  - docker:18-dind
 
 stages:
   - Build image
