@@ -32,12 +32,12 @@ const unpublished_websiteok = {
 };
 
 const filter_out_types_and_subtypes = (types, subtypes) =>
-({
-    $nfand: [
-    { type: types },
-    { subtype: subtypes },
-    ],
-});
+    ({
+        $nfand: [
+            { type: types },
+            { subtype: subtypes },
+        ],
+    });
 
 function viewable(uid, aid) {
     const base = { $or: [{ 'diffusion.rights.exports.nowhere': false }] };
@@ -67,15 +67,36 @@ module.exports = {
     no_other_version: {
         has_other_version: false,
     },
-    published: {
-        status: 'published',
-    },
     viewable,
-    last_deposits: (uid, aid) => ({
+    last_deposits_submitted: () => ({
+        sort: [{ creation_date: 'desc' }],
         $and: [
-            { has_other_version: false },
-            { status: 'published' },
-            viewable(uid, aid),
+            { 'denormalization.state.label': 'Published' },
+        ],
+    }),
+    last_deposits_published: () => ({
+        $and: [
+            { 'denormalization.state.label': 'Published' },
+        ],
+    }),
+    last_deposits_reviewed_by_curator_1: () => ({
+        $and: [
+            { 'denormalization.state.label': 'Reviewed by curator 1' },
+        ],
+    }),
+    last_deposits_reviewed_by_curator_2: () => ({
+        $and: [
+            { 'denormalization.state.label': 'Reviewed by curator 2' },
+        ],
+    }),
+    last_deposits_rejected_by_curator_1: () => ({
+        $and: [
+            { 'denormalization.state.label': 'Rejected by curator 1' },
+        ],
+    }),
+    last_deposits_rejected_by_curator_2: () => ({
+        $and: [
+            { 'denormalization.state.label': 'Rejected by curator 2' },
         ],
     }),
     form: {
