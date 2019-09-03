@@ -91,6 +91,15 @@ async function initialize_routes(singleton) {
     router.get('/download/:entity/:eid/:filename', Compose([UploadUtils.download]));
     router.get('/gdownload/:entity/:eid/:filename', Compose([UploadUtils.generic_download]));
     router.get('/downloads/:entity/:eid/:names/:filenames', Compose([UploadUtils.multi_download]));
+
+    router.get('/robots.txt', async (ctx) => {
+        await Send(ctx, ctx.path,
+            {
+                root: `${Config.root}/public/front/seo`,
+                maxage: 1000 * 60 * 60 * 24 * 7,
+            });
+    });
+
     return router;
 }
 

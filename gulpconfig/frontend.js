@@ -36,6 +36,7 @@ class GulpFrontend {
             fonts: 'public/front/fonts',
             imgs: 'public/front/imgs',
             views: 'public/front/views',
+            seo: 'public/front/seo',
         };
 
         this.FRONT_LOCATIONS = {
@@ -231,6 +232,12 @@ class GulpFrontend {
     copyImgs() {
         return gulp.src([`${this.FRONT_LOCATIONS.imgs}/**/*`], { base: this.FRONT_LOCATIONS.imgs })
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
+    }
+
+    copyRobots() {
+        gulp.src([
+            './front/frontend/seo/robots.txt',
+        ]).pipe(gulp.dest(this.PUB_LOCATIONS.seo));
     }
 
     revisionClean() {
