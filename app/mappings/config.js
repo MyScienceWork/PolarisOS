@@ -77,7 +77,6 @@ module.exports = {
                                             enabled: {
                                                 type: 'boolean',
                                             },
-
                                             interval: {
                                                 type: 'integer',
                                             },

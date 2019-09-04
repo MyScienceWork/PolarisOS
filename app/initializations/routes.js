@@ -14,6 +14,7 @@ const ImporterRoutes = require('../modules/entities/importer/routes');
 const ExporterRoutes = require('../modules/entities/exporter/routes');
 const PublicationRoutes = require('../modules/entities/publication/routes');
 const RssRoutes = require('../modules/3rdparty/rss/routes');
+const SitemapRoutes = require('../modules/3rdparty/google/routes');
 const TrackingRoutes = require('../modules/entities/tracking_stat/routes');
 const LangRoutes = require('../modules/entities/lang/routes');
 
@@ -76,6 +77,7 @@ async function initialize_routes(singleton) {
     ImporterRoutes(router, singleton);
     ExporterRoutes(router, singleton);
     RssRoutes(router, singleton);
+    SitemapRoutes(router, singleton);
     TrackingRoutes(router, singleton);
     LangRoutes(router, singleton);
 

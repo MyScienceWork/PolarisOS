@@ -7,7 +7,7 @@ const Errors = require('../exceptions/errors');
 const minio_client = new Minio.Client({
     endPoint: Config.minio.host,
     port: Config.minio.port,
-    secure: Config.minio.secure,
+    useSSL: Config.minio.secure,
     accessKey: Config.minio.accessKey,
     secretKey: Config.minio.secretKey,
 });
@@ -23,8 +23,8 @@ async function create_bucket_if_needed(bucket_name) {
             });
         });
     } catch (err) {
-        Logger.error(`Unable to create bucket ${bucket_name} for Minio server`);
-        Logger.error(err);
+        //Logger.error(`Unable to create bucket ${bucket_name} for Minio server`);
+        //Logger.error(err);
     }
 }
 
@@ -59,4 +59,5 @@ module.exports = {
     retrieve_file,
     create_bucket_if_needed,
     default_bucket: Config.minio.default_bucket,
+    sitemap_bucket: Config.minio.sitemap_bucket,
 };
