@@ -6,7 +6,7 @@ const RouterUtils = require('../../utils/router');
 const MyController = require('./controllers');
 
 function routes(router: KoaRouter) {
-    router.get(`/sitemap.xml`, compose([MyController.generate_sitemap_feed]));
+    router.get(`/sitemap.xml`, compose([MyController.generate_sitemap_file]));
 }
 
 module.exports = routes;

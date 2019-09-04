@@ -1,8 +1,5 @@
 // @flow
 const _ = require('lodash');
-const moment = require('moment');
-const FS = require('fs');
-const Readable = require('stream').Readable;
 const Scheduler = require('./scheduler');
 const Logger = require('../../logger');
 const Errors = require('../exceptions/errors');
@@ -12,9 +9,9 @@ const ConfigUtils = require('../utils/config');
 const HandleAPI = require('../3rdparty/handle/api');
 const SitemapAPI = require('../3rdparty/google/sitemap_generator');
 const SwordAPI = require('../entities/exporter/controllers/sword');
-const Config = require('../../config');
+
 const Throttle = require('promise-parallel-throttle');
-const MinioUtils = require('../utils/minio');
+
 
 class ApiScheduler extends Scheduler {
     async _execute_sitemap_creation() {
@@ -23,44 +20,7 @@ class ApiScheduler extends Scheduler {
             return;
         }
         Logger.info('Execute sitemap creation');
-        let sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
-        sitemap += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-               <url>
-                  <loc>http://www.example.com/</loc>
-                  <lastmod>2005-01-01</lastmod>
-                  <changefreq>monthly</changefreq>
-                  <priority>0.8</priority>
-               </url>
-            </urlset> `;
-        const sitemap_path = '/tmp/sitemap.xml';
-
-        const sitemap_stream = new Readable();
-        sitemap_stream.push(sitemap);
-        sitemap_stream.push(null);
-
-        await new Promise((resolve, reject) => {
-            const writableStream1 = FS.createWriteStream(sitemap_path);
-            sitemap_stream.pipe(writableStream1);
-            writableStream1.on('error', (err) => {
-                writableStream1.close();
-                reject(err);
-            });
-            writableStream1.on('finish', () => {
-                writableStream1.close();
-                resolve();
-            });
-        });
-
-        const fileinfo = {
-            filename: 'sitemap.xml',
-            path: sitemap_path,
-            mimetype: {
-                'Content-Type': 'application/xml',
-            },
-        };
-
-        await MinioUtils.create_bucket_if_needed(MinioUtils.sitemap_bucket);
-        await MinioUtils.put_into_bucket(MinioUtils.sitemap_bucket, fileinfo);
+        await SitemapAPI.generate();
     }
 
     async get_uploadable_publications() {
