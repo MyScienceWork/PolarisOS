@@ -3,6 +3,10 @@ const FS = require('fs');
 const Readable = require('stream').Readable;
 const ConfigUtils = require('../../utils/config');
 const MinioUtils = require('../../utils/minio');
+const Pages = require('../../utils/pages');
+const Publications = require('../../utils/publications');
+const Logger = require('../../../logger');
+const Profiles = require('../../utils/profiles');
 
 async function get_google_config(): Promise<?Object> {
     const myconfig = await ConfigUtils.get_config();
@@ -12,14 +16,40 @@ async function get_google_config(): Promise<?Object> {
     return myconfig.api.google;
 }
 
-async function generate(): Promise<?Object> {
-    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
+async function get_base_url(): Promise<?Object> {
+    const myconfig = await ConfigUtils.get_config();
+    return myconfig.base_url;
+}
 
-    sitemap += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-               <url>
-                  <loc>http://www.example.com/</loc>
-               </url>
-            </urlset> `;
+async function generate(): Promise<?Object> {
+    const pages = await Pages.get_pages();
+    const publications = await Publications.get_publications();
+    const profiles = await Profiles.get_profiles();
+    const base_url = await get_base_url();
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
+    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+    // add pages menu
+    pages.forEach((page) => {
+        if (page.route.lastIndexOf(':') === -1) {
+            sitemap += `<url><loc>${base_url}${page.route}</loc></url>`;
+        }
+    });
+
+    // add view publications
+    publications.forEach((publication) => {
+        sitemap += `<url><loc>${base_url}/view/${publication._id}</loc></url>`;
+    });
+
+    // add author profile
+    profiles.forEach((profile) => {
+        if (profile.author && profile.public_profile && profile.public_profile === true) {
+            Logger.info("add sitemap : ", profile.author);
+            sitemap += `<url><loc>${base_url}/a/${profile.author}/profile</loc></url>`;
+        }
+    });
+
+    sitemap += '</urlset>';
 
     const sitemap_path = '/tmp/sitemap.xml';
 
@@ -48,8 +78,10 @@ async function generate(): Promise<?Object> {
         },
     };
 
+
     await MinioUtils.create_bucket_if_needed(MinioUtils.sitemap_bucket);
     await MinioUtils.put_into_bucket(MinioUtils.sitemap_bucket, fileinfo);
+    Logger.info("done");
 }
 
 module.exports = {
