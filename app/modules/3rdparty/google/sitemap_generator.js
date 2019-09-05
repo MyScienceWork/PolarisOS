@@ -44,7 +44,6 @@ async function generate(): Promise<?Object> {
     // add author profile
     profiles.forEach((profile) => {
         if (profile.author && profile.public_profile && profile.public_profile === true) {
-            Logger.info("add sitemap : ", profile.author);
             sitemap += `<url><loc>${base_url}/a/${profile.author}/profile</loc></url>`;
         }
     });
@@ -81,7 +80,6 @@ async function generate(): Promise<?Object> {
 
     await MinioUtils.create_bucket_if_needed(MinioUtils.sitemap_bucket);
     await MinioUtils.put_into_bucket(MinioUtils.sitemap_bucket, fileinfo);
-    Logger.info("done");
 }
 
 module.exports = {
