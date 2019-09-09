@@ -4,7 +4,6 @@
         <div class="columns">
             <div class="column is-6">
                 <card color="orange" class="card-equal-height">
-                    <!--
                     <template slot="card-title">
                         {{lang('l_last_deposits')}}
                     </template>
@@ -13,53 +12,52 @@
                         slot="card-extra-header"
                         class="is-pulled-right"
                     >
-                        <rss-feed-icon
-                            entity="publication"
-                            :sort="['-dates.deposit', '-dates.update']"
-                            :query="lastDepositsQuery"
-                            :mapping="rssMapping"
-                            :lang-code="$store.state.interfaceLang"
-                        />
                     </div>
                     <div slot="card-content">
-                        <last-deposits :items="items" />
+                        <ul>
+                        <li v-for="item in items">{{item.html}}<br/><br/></li>
+                        </ul>
                         <div class="level has-medium-bottom-margin has-medium-top-margin">
                             <div class="level-left">
                             </div>
+                            <!--
                             <div class="level-right">
-                                <router-link class="level-item" to="/browse?b=dates.publication&entity=&view=list&aggt=date&label=&agge=publication&aggf=dates.publication">{{lang('l_see_more')}}</router-link>
+                                <router-link class="level-item" to="/">{{lang('l_see_more')}}</router-link>
                             </div>
+                            -->
                         </div>
                     </div>
-                    -->
                 </card>
             </div>
             <div class="column is-6">
                 <div class="columns is-multiline">
                     <div class="column is-12">
-                        <card color="red" class="">
-                            <!--
-                            <template slot="card-title">
-                                {{lang('l_search')}}
-                            </template>
-                            <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
-                            -->
-                        </card>
+                        <widget-stats :items="stats_submitted" />
                     </div>
+                </div>
+                <div class="columns is-multiline">
                     <div class="column is-12">
-                        <card color="purple">
-                            <!--
-                            <template slot="card-title">
-                                {{lang('l_discover')}}
-                            </template>
-                            <discovery :nav-items="navs" slot="card-content" />
-                            -->
-                        </card>
+                        <widget-stats :items="stats_published" />
                     </div>
+                </div>
+                <div class="columns is-multiline">
                     <div class="column is-12">
-                        <!--
-                        <widget-stats :items="stats" />
-                        -->
+                        <widget-stats :items="stats_reviewed_by_curator_1" />
+                    </div>
+                </div>
+                <div class="columns is-multiline">
+                    <div class="column is-12">
+                        <widget-stats :items="stats_reviewed_by_curator_2" />
+                    </div>
+                </div>
+                <div class="columns is-multiline">
+                    <div class="column is-12">
+                        <widget-stats :items="stats_rejected_by_curator_1" />
+                    </div>
+                </div>
+                <div class="columns is-multiline">
+                    <div class="column is-12">
+                        <widget-stats :items="stats_rejected_by_curator_2" />
                     </div>
                 </div>
             </div>
