@@ -7,7 +7,7 @@ const Errors = require('../exceptions/errors');
 const minio_client = new Minio.Client({
     endPoint: Config.minio.host,
     port: Config.minio.port,
-    useSSL: Config.minio.secure,
+    secure: Config.minio.secure,
     accessKey: Config.minio.accessKey,
     secretKey: Config.minio.secretKey,
 });

@@ -1,6 +1,6 @@
 {
   "name": "PolarisOS",
-  "version": "0.9.46",
+  "version": "0.9.47",
   "description": "",
   "keywords": [
     "Open repository"
@@ -63,7 +63,7 @@
     "ldapjs": "^1.0.2",
     "lodash": "^4.17.4",
     "mime": "^2.2.0",
-    "minio": "^7.0.12",
+    "minio": "^4.0.0",
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.23",
     "natural": "^0.6.2",

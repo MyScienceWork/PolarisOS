@@ -72,9 +72,7 @@ async function generate(): Promise<?Object> {
     const fileinfo = {
         filename: 'sitemap.xml',
         path: sitemap_path,
-        mimetype: {
-            'Content-Type': 'application/xml',
-        },
+        mimetype: 'application/xml',
     };
 
 
