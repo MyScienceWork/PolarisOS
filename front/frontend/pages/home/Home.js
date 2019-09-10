@@ -160,22 +160,22 @@ module.exports = {
             return [];
         },
         lastDepositsQuery() {
-            return Queries.last_deposits_submitted(this.user._id, this.author);
+            return Queries.last_deposits_submitted();
         },
         lastDepositsQueryPublished() {
-            return Queries.last_deposits_published(this.user._id, this.author);
+            return Queries.last_deposits_published();
         },
         lastDepositsQueryReviewed1() {
-            return Queries.last_deposits_reviewed_by_curator_1(this.user._id, this.author);
+            return Queries.last_deposits_reviewed_by_curator_1();
         },
         lastDepositsQueryReviewed2() {
-            return Queries.last_deposits_reviewed_by_curator_2(this.user._id, this.author);
+            return Queries.last_deposits_reviewed_by_curator_2();
         },
         lastDepositsQueryRejected1() {
-            return Queries.last_deposits_rejected_by_curator_1(this.user._id, this.author);
+            return Queries.last_deposits_rejected_by_curator_1();
         },
         lastDepositsQueryRejected2() {
-            return Queries.last_deposits_rejected_by_curator_2(this.user._id, this.author);
+            return Queries.last_deposits_rejected_by_curator_2();
         },
     },
 };
