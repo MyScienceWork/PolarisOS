@@ -71,7 +71,7 @@ module.exports = {
     last_deposits_submitted: () => ({
         sort: [{ creation_date: 'desc' }],
         $and: [
-            { 'denormalization.state.label': 'Published' },
+            { 'denormalization.state.label': 'Submitted' },
         ],
     }),
     last_deposits_published: () => ({
