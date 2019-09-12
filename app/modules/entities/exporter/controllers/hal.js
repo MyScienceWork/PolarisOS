@@ -295,11 +295,9 @@ async function get_monogr(publication: Object): Promise<string> {
     const hal_type = await get_hal_type(publication);
 
     if (institution_info && institution_info.name) {
-        // if (hal_type === 'HDR' || hal_type === 'THESE') {
-        // school_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // } else {
         institution_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // }
+    } else if (hal_type === 'REPORT') {
+        institution_ = `<authority type="institution">${_.escape(editor_info.label)}</authority>`;
     }
 
     if (hal_type === 'HDR' || hal_type === 'THESE') {
