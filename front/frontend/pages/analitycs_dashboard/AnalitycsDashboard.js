@@ -19,7 +19,7 @@ module.exports = {
     },
     computed: {
         route_dashboard() {
-            return `analitycs-${window.location.origin}/app/kibana#/dashboard/abb46710-7d60-11e9-8a19-69b7396e45c9?embed=true`;
+            return `https://analitycs-${window.location.host}/app/kibana#/dashboard/abb46710-7d60-11e9-8a19-69b7396e45c9?embed=true`;
         },
     },
     beforeMount() {
