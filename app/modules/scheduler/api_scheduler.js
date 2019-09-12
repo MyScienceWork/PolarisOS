@@ -15,6 +15,10 @@ const Throttle = require('promise-parallel-throttle');
 
 class ApiScheduler extends Scheduler {
     async _execute_sitemap_creation() {
+        if (!EnvUtils.is_production()) {
+            return;
+        }
+
         const sitemap_config = await SitemapAPI.get_google_config();
         if (sitemap_config.enabled === false) {
             return;
@@ -39,7 +43,6 @@ class ApiScheduler extends Scheduler {
 
     async _execute_hal_export() {
         if (!EnvUtils.is_production()) {
-            Logger.info('HAL API only runs in production mode');
             return;
         }
 
