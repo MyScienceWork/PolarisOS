@@ -5,9 +5,6 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 
-const APIRoutes = require('../../../common/api/routes');
-const Messages = require('../../../common/api/messages');
-
 module.exports = {
     mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin, UserMixin],
     data() {
@@ -21,6 +18,9 @@ module.exports = {
     watch: {
     },
     computed: {
+        route_dashboard() {
+            return `${window.location.origin}/app/kibana#/dashboard/abb46710-7d60-11e9-8a19-69b7396e45c9?embed=true`;
+        },
     },
     beforeMount() {
     },
