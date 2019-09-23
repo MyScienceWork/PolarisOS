@@ -20,7 +20,7 @@ class ApiScheduler extends Scheduler {
         }
 
         const sitemap_config = await SitemapAPI.get_google_config();
-        if (sitemap_config.enabled === false) {
+        if (!sitemap_config || sitemap_config.enabled === false) {
             return;
         }
         Logger.info('Execute sitemap creation');

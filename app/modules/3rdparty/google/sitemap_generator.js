@@ -13,7 +13,7 @@ async function get_google_config(): Promise<?Object> {
     if (!myconfig || !('api' in myconfig) || !('google' in myconfig.api)) {
         return null;
     }
-    return myconfig.api.google;
+    return myconfig.api.google.sitemap;
 }
 
 async function get_base_url(): Promise<?Object> {

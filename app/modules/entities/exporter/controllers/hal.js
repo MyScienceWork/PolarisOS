@@ -195,9 +195,21 @@ async function get_series_stmt(publication: Object): Promise<string> {
 async function get_notes_stmt(publication: Object): Promise<string> {
     const description = Utils.find_value_with_path(publication, 'description'.split('.')) || '.';
     const description_ = `<note type="description">${_.escape(description)}</note>`;
+    const hal_type = await get_hal_type(publication);
+    let report = '';
+
+    if (hal_type === 'REPORT') {
+        const report_subtype = Utils.find_value_with_path(publication, 'subtype'.split('.'));
+        if (report_subtype === 'research-report' ) {
+            report += `<note type="report">${_.escape('Research Report')}</note>`;
+        }
+    }
 
     let enclosure = '<notesStmt>';
     enclosure += description_;
+    if (hal_type === 'REPORT' && report !== '') {
+        enclosure += report;
+    }
     enclosure += '</notesStmt>';
     return enclosure;
 }
