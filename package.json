@@ -1,6 +1,6 @@
 {
   "name": "PolarisOS",
-  "version": "0.9.34",
+  "version": "0.9.48",
   "description": "",
   "keywords": [
     "Open repository"
@@ -58,7 +58,6 @@
     "koa-multer": "^1.0.2",
     "koa-qs": "^2.0.0",
     "koa-router": "^7.0.1",
-    "koa-router-static": "^1.2.0",
     "koa-send": "^3.3.0",
     "koa-views": "^6.0.2",
     "ldapjs": "^1.0.2",
@@ -72,10 +71,11 @@
     "node-xlsx": "^0.12.1",
     "nodemailer": "^4.6.4",
     "oai-pmh": "^1.1.1",
-    "pdf-merge": "^1.0.2",
+    "pdf-merge": "^1.2.0",
     "phantom-html2pdf": "^4.0.1",
     "promise-parallel-throttle": "^3.1.0",
     "shortid": "^2.2.8",
+    "stream": "0.0.2",
     "stream-buffers": "^3.0.2",
     "stream-transform": "^1.0.2",
     "superagent": "^3.3.1",

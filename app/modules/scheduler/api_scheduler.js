@@ -1,6 +1,5 @@
 // @flow
 const _ = require('lodash');
-const moment = require('moment');
 const Scheduler = require('./scheduler');
 const Logger = require('../../logger');
 const Errors = require('../exceptions/errors');
@@ -8,17 +7,29 @@ const EntitiesUtils = require('../utils/entities');
 const EnvUtils = require('../utils/env');
 const ConfigUtils = require('../utils/config');
 const HandleAPI = require('../3rdparty/handle/api');
+const SitemapAPI = require('../3rdparty/google/sitemap_generator');
 const SwordAPI = require('../entities/exporter/controllers/sword');
-const Config = require('../../config');
+
 const Throttle = require('promise-parallel-throttle');
 
+
 class ApiScheduler extends Scheduler {
+    async _execute_sitemap_creation() {
+        const sitemap_config = await SitemapAPI.get_google_config();
+        if (sitemap_config.enabled === false) {
+            return;
+        }
+        Logger.info('Execute sitemap creation');
+        await SitemapAPI.generate();
+    }
+
     async get_uploadable_publications() {
         return await EntitiesUtils.search_and_get_sources('publication', {
             where: {
                 $and: [
                     { status: ['published'] },
                     { 'system.api.hal': false },
+                    { 'system.api.handle': true },
                     { 'diffusion.rights.exports.hal': true },
                 ],
             },
@@ -126,6 +137,10 @@ class ApiScheduler extends Scheduler {
         });
         this._execute_hal_export().then(() => {}).catch((err) => {
             Logger.error('Error when exporting to HAL using scheduler');
+            Logger.error(err);
+        });
+        this._execute_sitemap_creation(() => {}).catch((err) => {
+            Logger.error('Error when generating sitemap');
             Logger.error(err);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {
