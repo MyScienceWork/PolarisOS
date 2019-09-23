@@ -16,7 +16,7 @@ const Throttle = require('promise-parallel-throttle');
 class ApiScheduler extends Scheduler {
     async _execute_sitemap_creation() {
         const sitemap_config = await SitemapAPI.get_google_config();
-        if (sitemap_config.enabled === false) {
+        if (!sitemap_config || sitemap_config.enabled === false) {
             return;
         }
         Logger.info('Execute sitemap creation');
