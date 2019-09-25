@@ -30,32 +30,32 @@
                 </card>
             </div>
             <div class="column is-6">
-                <div class="columns is-multiline">
+                <div v-if="stats_submitted[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_submitted" />
                     </div>
                 </div>
-                <div class="columns is-multiline">
+                <div v-if="stats_published[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_published" />
                     </div>
                 </div>
-                <div class="columns is-multiline">
+                <div v-if="stats_reviewed_by_curator_1[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_reviewed_by_curator_1" />
                     </div>
                 </div>
-                <div class="columns is-multiline">
+                <div v-if="stats_reviewed_by_curator_2[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_reviewed_by_curator_2" />
                     </div>
                 </div>
-                <div class="columns is-multiline">
+                <div v-if="stats_rejected_by_curator_1[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_rejected_by_curator_1" />
                     </div>
                 </div>
-                <div class="columns is-multiline">
+                <div v-if="stats_rejected_by_curator_2[0].count > 0" class="columns is-multiline">
                     <div class="column is-12">
                         <widget-stats :items="stats_rejected_by_curator_2" />
                     </div>
