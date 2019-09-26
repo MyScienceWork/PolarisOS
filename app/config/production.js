@@ -61,6 +61,10 @@ const production = {
         host: 'http://classificationrare',
         port: 5001,
     },
+    translation: {
+        host: 'http://translation',
+        port: 5001,
+    },
 };
 
 module.exports = production;
