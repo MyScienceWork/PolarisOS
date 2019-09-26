@@ -181,52 +181,61 @@ module.exports = {
                             dynamic_list_fields.body[key.value] = '';
                         }
                     });
-                    obj = JSON.stringify({
-                        host: dynamic_list_fields.host,
-                        port: dynamic_list_fields.port,
-                        uri: dynamic_list_fields.uri,
-                        method: dynamic_list_fields.method,
-                        body: dynamic_list_fields.body,
-                    });
+                    obj.push = {
+                        query: JSON.stringify({
+                            host: dynamic_list_fields.host,
+                            port: dynamic_list_fields.port,
+                            uri: dynamic_list_fields.uri,
+                            method: dynamic_list_fields.method,
+                            body: dynamic_list_fields.body,
+
+                        }),
+                        name: field.name,
+                    };
                 }
                 return obj;
-            }, {});
+            }, []);
             return result;
         },
         build_dynamic_list_columns() {
-            const columns = this.form.fields.reduce((obj, field) => {
+            return this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
+                const tempObj = {};
+                tempObj.name = field.name;
+                tempObj.columns = [];
                 const l = field.dynamic_list;
                 l.result_table.forEach((result) => {
                     if (result && result.field
                         && result.sort
                         && result.title) {
-                        obj[result.field] = result;
+                        tempObj.columns[result.field] = result;
                         if (this.state.columns[result.field]) {
-                            obj[result.field].visible = this.state.columns[result.field].visible;
+                            tempObj.columns[result.field].visible = this.state.columns[result.field].visible;
                         } else {
-                            obj[result.field].visible = true;
+                            tempObj.columns[result.field].visible = true;
                         }
-                        obj[result.field].translatable = true;
-                        obj[result.field].sortable = false;
-                        obj[result.field].show_lang_key = false;
-                        obj[result.field].centered = true;
-                        obj[result.field].lang = undefined;
+                        tempObj.columns[result.field].translatable = true;
+                        tempObj.columns[result.field].sortable = false;
+                        tempObj.columns[result.field].show_lang_key = false;
+                        tempObj.columns[result.field].centered = true;
+                        tempObj.columns[result.field].lang = undefined;
                     }
                 });
-                return obj;
-            }, {});
-            return columns;
+                return obj.push(tempObj);
+            }, []);
         },
         build_read_only() {
             return this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                return field.dynamic_list.read_only;
-            }, false);
+                return obj.push({
+                    read_only: field.dynamic_list.read_only,
+                    name: field.name,
+                });
+            }, []);
         },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
@@ -244,18 +253,23 @@ module.exports = {
                     const all_keys = result.value_form.split('.');
                     root_key = all_keys[0];
                 });
-                return { result_mapping: field.dynamic_list.result_mapping,
+                return obj.push({
+                    name: field.name,
+                    result_mapping: field.dynamic_list.result_mapping,
                     select_field_name: field.dynamic_list.selected_mapping,
-                    root_key };
-            }, {});
+                    root_key });
+            }, []);
         },
         build_all_dynamic_list_columns() {
             this.state.columns = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                return this.build_dynamic_list_columns(field);
-            }, {});
+                return obj.push({
+                    columns: this.build_dynamic_list_columns(field),
+                    name: field.name,
+                });
+            }, []);
             return this.state.columns;
         },
         update_date(info) {
