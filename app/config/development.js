@@ -36,6 +36,10 @@ const development = {
         host: 'http://localhost',
         port: 5002,
     },
+    translation: {
+        host: 'http://localhost',
+        port: 5003,
+    },
 };
 
 module.exports = development;
