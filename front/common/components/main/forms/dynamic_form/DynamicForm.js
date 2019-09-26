@@ -34,7 +34,7 @@ module.exports = {
                 },
                 sinks: {
                     reads: {
-                        dynamic_list: 'dynamic_list_read',
+                        dynamic_list: {},
                     },
                 },
             },
@@ -43,20 +43,31 @@ module.exports = {
     components: {
         CrudForm,
     },
+    beforeMount() {
+        const list_mappings = this.dynamic_list_mappings();
+
+        Object.keys(list_mappings).forEach((list_mapping) => {
+            this.state.sinks.reads.dynamic_list[list_mapping] = `dynamic_list_read_${list_mapping}`;
+        });
+    },
     mounted() {
         const cform_content = this.fcontent(this.cform);
-        const { root_key, select_field_name } = this.dynamic_list_mappings();
-        if (cform_content
-            && cform_content[root_key] instanceof Array
-            && cform_content[root_key].length > 0) {
-            // init raw table from database
-            this.$store.commit(Messages.READ, {
-                form: this.state.sinks.reads.dynamic_list,
-                content: cform_content[root_key],
-            });
-            // init checked rows
-            this.$set(this.state, 'checked_rows', cform_content[root_key].filter(item_row => item_row[select_field_name] === true));
-        }
+        const list_mappings = this.dynamic_list_mappings();
+        Object.keys(list_mappings).forEach((list_mapping) => {
+            const { root_key, select_field_name } = list_mappings[list_mapping];
+
+            if (cform_content
+                && cform_content[root_key] instanceof Array
+                && cform_content[root_key].length > 0) {
+                // init raw table from database
+                this.$store.commit(Messages.READ, {
+                    form: this.state.sinks.reads.dynamic_list,
+                    content: cform_content[root_key],
+                });
+                // init checked rows
+                this.$set(this.state, 'checked_rows', cform_content[root_key].filter(item_row => item_row[select_field_name] === true));
+            }
+        });
     },
     methods: {
         get_component(type) {
@@ -181,20 +192,18 @@ module.exports = {
                             dynamic_list_fields.body[key.value] = '';
                         }
                     });
-                    obj.push = {
-                        query: JSON.stringify({
+                    obj[field.name] =
+                        JSON.stringify({
                             host: dynamic_list_fields.host,
                             port: dynamic_list_fields.port,
                             uri: dynamic_list_fields.uri,
                             method: dynamic_list_fields.method,
                             body: dynamic_list_fields.body,
 
-                        }),
-                        name: field.name,
-                    };
+                        });
                 }
                 return obj;
-            }, []);
+            }, {});
             return result;
         },
         build_dynamic_list_columns() {
@@ -223,22 +232,21 @@ module.exports = {
                         tempObj.columns[result.field].lang = undefined;
                     }
                 });
-                return obj.push(tempObj);
-            }, []);
+                obj[field.name] = tempObj;
+                return obj;
+            }, {});
         },
         build_read_only() {
             return this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                return obj.push({
-                    read_only: field.dynamic_list.read_only,
-                    name: field.name,
-                });
-            }, []);
+                obj[field.name] = field.dynamic_list.read_only;
+                return obj;
+            }, {});
         },
         on_column_update(obj) {
-            this.state.columns[obj.key].visible = obj.checked;
+            this.state.columns[obj.name][obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
             this.build_all_dynamic_list_columns();
         },
@@ -253,23 +261,22 @@ module.exports = {
                     const all_keys = result.value_form.split('.');
                     root_key = all_keys[0];
                 });
-                return obj.push({
+                obj[field.name] = {
                     name: field.name,
                     result_mapping: field.dynamic_list.result_mapping,
                     select_field_name: field.dynamic_list.selected_mapping,
-                    root_key });
-            }, []);
+                    root_key };
+                return obj;
+            }, {});
         },
         build_all_dynamic_list_columns() {
             this.state.columns = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                return obj.push({
-                    columns: this.build_dynamic_list_columns(field),
-                    name: field.name,
-                });
-            }, []);
+                obj[field.name] = this.build_dynamic_list_columns(field);
+                return obj;
+            }, {});
             return this.state.columns;
         },
         update_date(info) {
@@ -279,11 +286,11 @@ module.exports = {
                 this.$set(this.state, 'selected_date', new_selected_dates);
             }
         },
-        filter_authorized_fields(rows) {
+        filter_authorized_fields(rows, form_name) {
             if (!(rows instanceof Array)) {
                 rows = [rows];
             }
-            const { result_mapping, select_field_name } = this.dynamic_list_mappings();
+            const { result_mapping, select_field_name } = this.dynamic_list_mappings()[form_name];
             const authorized_keys = result_mapping.map(c => c.value_payload);
             const filtered_rows = [];
             authorized_keys.forEach((key) => {
@@ -301,8 +308,8 @@ module.exports = {
 
             return filtered_rows;
         },
-        dispatch_row_check(updated_row) {
-            let filtered_rows = this.filter_authorized_fields(updated_row);
+        dispatch_row_check(updated_row, form_name) {
+            let filtered_rows = this.filter_authorized_fields(updated_row, form_name);
             const cform_content = this.fcontent(this.cform);
             const { root_key, select_field_name } = this.dynamic_list_mappings();
             const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key]);
@@ -345,9 +352,10 @@ module.exports = {
             });
         },
         on_checked_rows_update(row) {
+            const form_name = row.name;
             if (row.checkedRow) {
                 // row.checkedRow is the row changed
-                this.dispatch_row_check(row.checkedRow);
+                this.dispatch_row_check(row.checkedRow, form_name);
             } else {
                 const { root_key, select_field_name } = this.dynamic_list_mappings();
                 let cform_content = this.fcontent(this.cform)[root_key];
@@ -375,8 +383,13 @@ module.exports = {
         },
     },
     watch: {
-        content_dynamic_list(data) {
-            this.update_rows_from_api(data);
+        content_dynamic_list(datas) {
+            if (!(datas instanceof Array)) {
+                return;
+            }
+            datas.forEach((data) => {
+                this.update_rows_from_api(data);
+            });
         },
     },
     computed: {
