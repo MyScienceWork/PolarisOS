@@ -61,7 +61,7 @@ module.exports = {
                 && cform_content[root_key].length > 0) {
                 // init raw table from database
                 this.$store.commit(Messages.READ, {
-                    form: this.state.sinks.reads.dynamic_list,
+                    form: this.state.sinks.reads.dynamic_list[list_mapping],
                     content: cform_content[root_key],
                 });
                 // init checked rows
@@ -206,33 +206,30 @@ module.exports = {
             }, {});
             return result;
         },
-        build_dynamic_list_columns() {
+        build_dynamic_list_columns(myField) {
             return this.form.fields.reduce((obj, field) => {
-                if (field.type !== 'dynamic-list') {
+                if (field.type !== 'dynamic-list' || myField.name !== field.name) {
                     return obj;
                 }
-                const tempObj = {};
-                tempObj.name = field.name;
-                tempObj.columns = [];
+                obj.columns = [];
                 const l = field.dynamic_list;
                 l.result_table.forEach((result) => {
                     if (result && result.field
                         && result.sort
                         && result.title) {
-                        tempObj.columns[result.field] = result;
+                        obj.columns[result.field] = result;
                         if (this.state.columns[result.field]) {
-                            tempObj.columns[result.field].visible = this.state.columns[result.field].visible;
+                            obj.columns[result.field].visible = this.state.columns[result.field].visible;
                         } else {
-                            tempObj.columns[result.field].visible = true;
+                            obj.columns[result.field].visible = true;
                         }
-                        tempObj.columns[result.field].translatable = true;
-                        tempObj.columns[result.field].sortable = false;
-                        tempObj.columns[result.field].show_lang_key = false;
-                        tempObj.columns[result.field].centered = true;
-                        tempObj.columns[result.field].lang = undefined;
+                        obj.columns[result.field].translatable = true;
+                        obj.columns[result.field].sortable = false;
+                        obj.columns[result.field].show_lang_key = false;
+                        obj.columns[result.field].centered = true;
+                        obj.columns[result.field].lang = undefined;
                     }
                 });
-                obj[field.name] = tempObj;
                 return obj;
             }, {});
         },
