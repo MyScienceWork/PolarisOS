@@ -199,7 +199,6 @@ module.exports = {
                             uri: dynamic_list_fields.uri,
                             method: dynamic_list_fields.method,
                             body: dynamic_list_fields.body,
-
                         });
                 }
                 return obj;
@@ -233,13 +232,14 @@ module.exports = {
             }, {});
         },
         build_read_only() {
-            return this.form.fields.reduce((obj, field) => {
+            const readOnly = this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
                 }
-                obj[field.name] = field.dynamic_list.read_only;
+                obj[field.name] = field.readonly;
                 return obj;
             }, {});
+            return readOnly;
         },
         on_column_update(obj) {
             this.state.columns[obj.name][obj.key].visible = obj.checked;
@@ -307,8 +307,8 @@ module.exports = {
         dispatch_row_check(updated_row, form_name) {
             let filtered_rows = this.filter_authorized_fields(updated_row, form_name);
             const cform_content = this.fcontent(this.cform);
-            const { root_key, select_field_name } = this.dynamic_list_mappings();
-            const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key]);
+            const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
+            const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key], form_name);
 
             filtered_rows = filtered_rows.map((item_raw) => {
                 delete item_raw[select_field_name];
@@ -353,7 +353,7 @@ module.exports = {
                 // row.checkedRow is the row changed
                 this.dispatch_row_check(row.checkedRow, form_name);
             } else {
-                const { root_key, select_field_name } = this.dynamic_list_mappings();
+                const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
                 let cform_content = this.fcontent(this.cform)[root_key];
 
                 if (row.checkedRows.length === 0) {
