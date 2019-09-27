@@ -316,8 +316,9 @@ module.exports = {
             });
 
             const keys = Object.keys(filtered_rows[0]);
+
             filtered_rows.forEach((filtered_row) => {
-                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => obj && filtered_row[key] === raw[key], true));
+                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => obj && Utils.find_object_with_path(filtered_row, key) === Utils.find_object_with_path(raw, key), true));
                 if (idx !== -1) {
                     actual_filtered_raws[idx][select_field_name] = !(actual_filtered_raws[idx][select_field_name]);
                 }
