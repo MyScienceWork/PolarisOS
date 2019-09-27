@@ -75,6 +75,8 @@ module.exports = {
                 return [];
             }
 
+            this.$emit('update-data-from-api', { name: this.name, data: content });
+
             return content;
         },
         matrix_content() {

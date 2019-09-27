@@ -524,6 +524,7 @@
                     :columns="dynamic_list_columns[field.name]"
                     @column-checkbox-update="on_column_update"
                     @table-checked-rows-update="on_checked_rows_update"
+                    @update-data-from-api="on_update_data_from_api"
                     :show-search="false"
                     :enable-pagination="false"
                     :read-only="read_only[field.name]"

@@ -330,12 +330,12 @@ module.exports = {
                 info: actual_filtered_raws,
             });
         },
-        update_rows_from_api(data) {
+        update_rows_from_api(data, form_name) {
             if (!(data instanceof Array)) {
                 return;
             }
-            const filtered_rows = this.filter_authorized_fields(data);
-            const { root_key, select_field_name } = this.dynamic_list_mappings();
+            const filtered_rows = this.filter_authorized_fields(data, form_name);
+            const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
             filtered_rows.map((item_raw) => {
                 if (item_raw[select_field_name] === undefined) {
                     item_raw[select_field_name] = false;
@@ -377,6 +377,9 @@ module.exports = {
                     info: cform_content,
                 });
             }
+        },
+        on_update_data_from_api(data) {
+            this.update_rows_from_api(data.data, data.name);
         },
     },
     watch: {
