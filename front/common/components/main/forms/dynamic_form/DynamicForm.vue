@@ -531,7 +531,7 @@
                     :name="field.name"
                 >
                     <template slot="rows" slot-scope="props">
-                        <b-table-column v-for="(value, key) in state.columns"
+                        <b-table-column v-for="(value, key) in state.columns[field.name]"
                                         :field="value.sort"
                                         :label="lang(value.title, {}, value.lang)"
                                         :visible="value.visible"

@@ -211,23 +211,22 @@ module.exports = {
                 if (field.type !== 'dynamic-list' || myField.name !== field.name) {
                     return obj;
                 }
-                obj.columns = [];
                 const l = field.dynamic_list;
                 l.result_table.forEach((result) => {
                     if (result && result.field
                         && result.sort
                         && result.title) {
-                        obj.columns[result.field] = result;
+                        obj[result.field] = result;
                         if (this.state.columns[result.field]) {
-                            obj.columns[result.field].visible = this.state.columns[result.field].visible;
+                            obj[result.field].visible = this.state.columns[result.field].visible;
                         } else {
-                            obj.columns[result.field].visible = true;
+                            obj[result.field].visible = true;
                         }
-                        obj.columns[result.field].translatable = true;
-                        obj.columns[result.field].sortable = false;
-                        obj.columns[result.field].show_lang_key = false;
-                        obj.columns[result.field].centered = true;
-                        obj.columns[result.field].lang = undefined;
+                        obj[result.field].translatable = true;
+                        obj[result.field].sortable = false;
+                        obj[result.field].show_lang_key = false;
+                        obj[result.field].centered = true;
+                        obj[result.field].lang = undefined;
                     }
                 });
                 return obj;
