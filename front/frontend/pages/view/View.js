@@ -728,7 +728,7 @@ module.exports = {
                 return '';
             }
 
-            return Utils.find_value_with_path(item, 'denormalization.diffusion.internal_collection'.split('.')) || '';
+            return item.denormalization.diffusion.internal_collection2.map(s => s._id.name);
         },
         editor() {
             const item = this.content_item;
