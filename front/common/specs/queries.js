@@ -7,7 +7,7 @@ const publication_search = {
         { 'denormalization.authors._id.fullname': '{{{search}}}' },
         { 'denormalization.classifications._id.label': '{{{search}}}' },
         { 'denormalization.contributors.label.fullname': '{{{search}}}' },
-        { 'denormalization.diffusion.internal_collection': '{{{search}}}' },
+        { 'denormalization.diffusion.internal_collection2._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.projects._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.research_teams._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.surveys._id.name': '{{{search}}}' },
