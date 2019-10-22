@@ -309,7 +309,7 @@ async function get_monogr(publication: Object): Promise<string> {
 
     if (institution_info && institution_info.name) {
         institution_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-    } else if (hal_type === 'REPORT') {
+    } else if (hal_type === 'REPORT' && editor_info && editor_info.label) {
         institution_ = `<authority type="institution">${_.escape(editor_info.label)}</authority>`;
     }
 
