@@ -201,7 +201,8 @@ async function get_notes_stmt(publication: Object): Promise<string> {
     if (hal_type === 'REPORT') {
         const report_subtype = Utils.find_value_with_path(publication, 'subtype'.split('.'));
         if (report_subtype === 'research-report' ) {
-            report += `<note type="report">${_.escape('Research Report')}</note>`;
+            // http://api-preprod.archives-ouvertes.fr/ref/metadataList/?q=metaName_s:reportType&fl=*&wt=xml
+            report += `<note type="report" n="6">${_.escape('Research Report')}</note>`;
         }
     }
 
@@ -307,11 +308,9 @@ async function get_monogr(publication: Object): Promise<string> {
     const hal_type = await get_hal_type(publication);
 
     if (institution_info && institution_info.name) {
-        // if (hal_type === 'HDR' || hal_type === 'THESE') {
-        // school_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // } else {
         institution_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // }
+    } else if (hal_type === 'REPORT') {
+        institution_ = `<authority type="institution">${_.escape(editor_info.label)}</authority>`;
     }
 
     if (hal_type === 'HDR' || hal_type === 'THESE') {
