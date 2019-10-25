@@ -164,9 +164,9 @@ module.exports = {
             const host = BrowserUtils.getURLHost(window.location);
             const argument = checkRows.reduce(((obj, row, index) => {
                 if (index === 0) {
-                    return `${obj}publications=${row._id}`;
+                    return `${obj}publications=${row._id}&types=${row.type}`;
                 }
-                return `${obj}&publications=${row._id}`;
+                return `${obj}&publications=${row._id}&types=${row.type}`;
             }), '');
             return `${host}/bulk?${argument}`;
         },

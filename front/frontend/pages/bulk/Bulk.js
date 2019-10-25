@@ -220,99 +220,14 @@ module.exports = {
         });
 
         const query = this.$route.query;
-        if (!query || (query && (!query.type || !query._id))) {
-            const saved_deposit = BrowserUtils.localGet('saved_deposit');
-            if (saved_deposit) {
-                this.$store.state.requests.push({
-                    name: Messages.TRANSFERT_INTO_FORM,
-                    type: 'commit',
-                    content: {
-                        form: this.state.sinks.creations.publication,
-                        body: saved_deposit,
-                    },
-                });
-            }
-            this.execute_requests().then(() => {}).catch(err => console.error(err));
-            return;
-        }
-
-        const type = query.type;
-        const id = query._id;
-
-        switch (type) {
-        default:
-        case 'review':
-        case 'model':
-        case 'new_version':
-        case 'modify':
-        case 'modify-nf':
-            this.$store.state.requests.push({
-                name: 'single_read',
-                type: 'dispatch',
-                content: {
-                    form: this.state.sinks.creations.publication,
-                    path: APIRoutes.entity('publication', 'GET', false, id),
-                },
-            });
-            this.$store.state.requests.push({
-                name: Messages.INITIALIZE,
-                type: 'commit',
-                content: {
-                    form: this.state.sinks.creations.publication,
-                    keep_content: true,
-                },
-            });
-            break;
-        }
-
-        switch (type) {
-        case 'model':
-            this.$store.state.requests.push({
-                name: Messages.TRANSFERT_INTO_FORM,
-                type: 'commit',
-                content: {
-                    form: this.state.sinks.creations.publication,
-                    body: { ids: [],
-                        files: [],
-                        dates: { deposit: undefined },
-                        depositor: undefined,
-                        system: { api: { handle: false } } },
-
-                },
-            });
-            break;
-        case 'new_version':
-            this.$store.state.requests.push({
-                name: Messages.TRANSFERT_INTO_FORM,
-                type: 'commit',
-                content: {
-                    form: this.state.sinks.creations.publication,
-                    body: { files: [], _id: undefined, system: undefined },
-                },
-            });
-            break;
-        default:
-            break;
-        }
-
-        switch (type) {
-        case 'model':
-        case 'new_version':
-        case 'modify':
-        case 'modify-nf':
-            this.$store.state.requests.push({
-                name: Messages.TRANSFERT_INTO_FORM,
-                type: 'commit',
-                content: {
-                    form: this.state.sinks.creations.publication,
-                    body: { status: undefined, reviewer: undefined },
-                },
-            });
-            break;
-        default:
-            break;
-        }
-
+        this.$store.state.requests.push({
+            name: Messages.TRANSFERT_INTO_FORM,
+            type: 'commit',
+            content: {
+                form: this.state.sinks.creations.publication,
+                body: { type: query.types[0] },
+            },
+        });
         this.execute_requests().then(() => {}).catch(err => console.error(err));
     },
     computed: {
