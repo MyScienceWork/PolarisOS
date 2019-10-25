@@ -9,7 +9,9 @@
                         <div class="columns">
                             <div class="column">
                                 <div class="level">
-                                    <div class="level-left"></div>
+                                    <div class="level-left">
+                                        <a :href='get_bulk_link()'>{{lang('l_bulk_edition')}}</a>
+                                    </div>
                                     <div class="level-right">
                                         <a href='#' @click="state.show_import_modal = !state.show_import_modal" class="has-text-info">
                                             <template v-if="!state.show_import_modal">{{lang('l_import_publications')}}</template>
@@ -38,6 +40,9 @@
                             detail-key="_id"
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
+                            @table-checked-rows-update="on_checked_rows_update"
+                            :checkable="true"
+                            :checked-rows="state.checked_rows"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column field="denormalization.type.label.raw" :label="lang('l_p_type')" centered :visible="state.columns['denormalization.type.label'].visible" sortable centered>
@@ -50,17 +55,17 @@
                                         {{lang(find_subtype(props.row)) | truncate(30)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="denormalization.authors._id.fullname" 
-                                    :label="lang('l_p_author', {}, 'other')" 
+                                <b-table-column
+                                    field="denormalization.authors._id.fullname"
+                                    :label="lang('l_p_author', {}, 'other')"
                                     :visible="state.columns['denormalization.authors._id.fullname'].visible"
                                     v-if="props.row.denormalization.authors.length > 0"
                                 >
                                     {{props.row.denormalization.authors | join('_id.fullname') | truncate(30)}}
                                 </b-table-column>
-                                <b-table-column 
-                                    field="denormalization.contributors.label.fullname" 
-                                    :label="lang('l_p_author', {}, 'other')" 
+                                <b-table-column
+                                    field="denormalization.contributors.label.fullname"
+                                    :label="lang('l_p_author', {}, 'other')"
                                     :visible="state.columns['denormalization.authors._id.fullname'].visible"
                                     v-else
                                 >
@@ -137,18 +142,18 @@
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
-                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p> 
-                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(find_subtype(props.row))}}</span></p> 
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p>
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(find_subtype(props.row))}}</span></p>
                                     <h4 class="title is-4">{{lang('l_general_information')}}</h4>
-                                    <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p> 
+                                    <p><strong>{{lang('l_publication_title')}}</strong> {{props.row.title.content}}</p>
                                     <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
                                         {{props.row.denormalization.authors | join('_id.fullname')}}
-                                    </p> 
-                                    <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p> 
-                                    <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p> 
+                                    </p>
+                                    <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p>
+                                    <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p>
                                     <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
-                                    <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p> 
+                                    <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p>
                                     <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
                                     </p>
                                     <p><strong>{{lang('l_publication_depositor_comment')}}</strong></p>

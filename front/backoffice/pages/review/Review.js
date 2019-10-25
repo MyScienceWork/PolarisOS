@@ -21,6 +21,7 @@ module.exports = {
     data() {
         return {
             state: {
+                checked_rows: [],
                 itemsPerPage: 1000,
                 itemsPerRow: 1,
                 show_import_modal: false,
@@ -153,6 +154,22 @@ module.exports = {
 
             return APIRoutes.multi_download('publication', item._id, names, filenames);
         },
+        get_bulk_link() {
+            const checkRows = this.state.checked_rows;
+
+            if (checkRows.length === 0) {
+                return '#';
+            }
+
+            const host = BrowserUtils.getURLHost(window.location);
+            const argument = checkRows.reduce(((obj, row, index) => {
+                if (index === 0) {
+                    return `${obj}publications=${row._id}`;
+                }
+                return `${obj}&publications=${row._id}`;
+            }), '');
+            return `${host}/bulk?${argument}`;
+        },
         find_subtype(info) {
             if (Object.keys(this.typology).length === 0) {
                 return '';
@@ -164,6 +181,9 @@ module.exports = {
             const result = typo.children.find(t => t.name === subtype);
 
             return result ? result.label : '';
+        },
+        on_checked_rows_update(obj) {
+            this.$set(this.state, 'checked_rows', obj.checkedRows);
         },
     },
     mounted() {
