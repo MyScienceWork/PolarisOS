@@ -45,6 +45,17 @@
                                     :review="in_mode('review')"
                                     @refetch-form="refetch_form"
                                 />
+                                <div class="control">
+                                    <button @click.prevent="review_publication"
+                                            :disabled="success"
+                                            class="button">{{lang('f_finish_review_step')}}
+                                    </button>
+                                    <button
+                                            :disabled="success"
+                                            @click.prevent="give_up"
+                                            class="button">{{lang('f_give_up_button')}}
+                                    </button>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -52,28 +63,6 @@
         </div>
     </div>
     </div>
-    <b-modal :active.sync="state.show_give_up_modal">
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">{{lang('l_please_confirm')}}</p>
-                <button class="delete" aria-label="close"
-                        @click.prevent="state.show_give_up_modal = false"></button>
-            </header>
-            <div class="modal-card-body">
-                <div class="columns">
-                    <div class="column">
-                        <h4 class="has-text-centered title is-4">{{lang('l_sure_give_up')}}</h4>
-                    </div>
-                </div>
-            </div>
-            <footer class="modal-card-foot">
-                <button class="button is-info" @click.prevent="give_up">
-                    {{lang('l_give_up_deposit')}}</button>
-                <button class="button" @click.prevent="state.show_give_up_modal = false">
-                    {{lang('b_cancel')}}</button>
-            </footer>
-        </div>
-    </b-modal>
 </div>
 </template>
 

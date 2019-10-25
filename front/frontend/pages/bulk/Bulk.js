@@ -70,12 +70,7 @@ module.exports = {
             });
         },
         give_up() {
-            if (this.state.show_give_up_modal) {
-                this.go_after_success(true);
-                window.location.reload();
-            } else {
-                this.state.show_give_up_modal = !this.state.show_give_up_modal;
-            }
+            window.location.reload();
         },
         transfert_to_subtypology_sink(children) {
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
@@ -135,20 +130,19 @@ module.exports = {
                 return;
             }
 
-            if (this.state.current_step === 0) {
-                if (this.state.deposit_form_name) {
-                    this.run_next_or_previous(this.state.stepper.next);
-                    this.state.paths.validations.publication = APIRoutes.entity('publication',
-                        'VALIDATE', false, `0-${this.state.current_step + 1}`);
-                }
-            } else {
-                const content = this.fcontent(this.state.sinks.creations.publication);
-                this.$store.dispatch(this.form_mode, {
+            const content = this.fcontent(this.state.sinks.creations.publication);
+            const publications = this.$route.query.publications;
+
+            publications.forEach((publication) => {
+                content._id = publication
+                this.$store.dispatch('update', {
                     form: this.state.sinks.creations.publication,
-                    path: this.path,
+                    path: this.state.paths.creations.publication,
                     body: content,
                 });
-            }
+            })
+
+            this.$router.push({ path: '/' });
         },
         show_success_validate(sink) {
             if (this.state.sinks.creations.publication !== sink) {
@@ -229,28 +223,9 @@ module.exports = {
             },
         });
         this.execute_requests().then(() => {}).catch(err => console.error(err));
+        this.reset_interface();
     },
     computed: {
-        form_mode() {
-            if (this.state.current_step === 0) {
-                return '';
-            } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
-                return 'validate';
-            } else if (this.in_mode('review') || this.in_mode('modify') || this.in_mode('modify-nf')) {
-                return 'update';
-            }
-            return 'create';
-        },
-        path() {
-            if (this.state.current_step === 0) {
-                return '';
-            } else if (this.state.current_step < this.state.total_steps && this.state.next_step !== this.state.total_steps) {
-                return this.state.paths.validations.publication;
-            } else if (this.in_mode('review') || this.in_mode('modify') || this.in_mode('modify-nf')) {
-                return this.state.paths.creations.publication;
-            }
-            return this.state.paths.creations.publication;
-        },
         current_state() {
             return this.fstate(this.state.sinks.creations.publication);
         },
