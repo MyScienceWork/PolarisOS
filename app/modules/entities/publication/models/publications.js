@@ -44,6 +44,7 @@ const Formatting: Array<any> = [
         'diffusion.anr_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.european_projects': a => FormatFunctions.oarray_to_array(a),
         'diffusion.surveys': a => FormatFunctions.oarray_to_array(a),
+        'diffusion.internal_collection2': a => FormatFunctions.oarray_to_array(a),
         'diffusion.research_teams': a => FormatFunctions.oarray_to_array(a),
         files: a => FormatFunctions.oarray_to_array(a),
         ids: a => FormatFunctions.oarray_to_array(a),
@@ -66,6 +67,7 @@ const Formatting: Array<any> = [
         'diffusion.anr_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.european_projects': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.surveys': FormatFunctions.filter_empty_or_null_objects,
+        'diffusion.internal_collection2': FormatFunctions.filter_empty_or_null_objects,
         'diffusion.research_teams': FormatFunctions.filter_empty_or_null_objects,
         ids: FormatFunctions.filter_empty_or_null_objects,
         keywords: FormatFunctions.filter_empty_or_null_objects,
@@ -224,7 +226,7 @@ const Completion: Array<any> = [
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
     },
     {
-        'denormalization.diffusion.internal_collection2': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection2._id', 'label', false),
+        'denormalization.diffusion.internal_collection2': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection2._id', 'name', false),
     },
     {
         'denormalization.diffusion.research_teams': ComplFunctions.denormalization('laboratory', 'diffusion.research_teams._id', 'name', false),
@@ -367,6 +369,7 @@ const Defaults: Object = {
         research_teams: [],
         projects: [],
         surveys: [],
+        internal_collection2: [],
         european_projects: [],
         anr_projects: [],
     },
