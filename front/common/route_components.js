@@ -1,5 +1,6 @@
 const Home = require('../frontend/pages/home/Home.vue');
 const Deposit = require('../frontend/pages/deposit/Deposit.vue');
+const Bulk = require('../frontend/pages/bulk/Bulk.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
 const ListForWebsite = require('../frontend/pages/list_for_website/ListForWebsite.vue');
 const Search = require('../frontend/pages/search/Search.vue');
@@ -31,6 +32,7 @@ module.exports = {
     view: View,
     user_profile: UserProfile,
     deposit: Deposit,
+    bulk: Bulk,
     about: About,
     help: Help,
     news: News,

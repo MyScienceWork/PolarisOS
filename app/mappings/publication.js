@@ -30,6 +30,9 @@ module.exports = {
                         },
                         diffusion: {
                             internal_collection: 'internal_collection',
+                            internal_collection2: {
+                                _id: 'internal_collection',
+                            },
                             surveys: {
                                 _id: 'survey',
                             },
@@ -413,6 +416,24 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    internal_collection2: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    name: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                     research_teams: {
                                         type: 'nested',
                                         properties: {
@@ -626,6 +647,14 @@ module.exports = {
                     diffusion: {
                         properties: {
                             internal_collection: { type: 'keyword' },
+                            internal_collection2: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                             projects: {
                                 type: 'nested',
                                 properties: {
