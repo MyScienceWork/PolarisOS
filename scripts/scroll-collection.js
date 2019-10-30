@@ -109,6 +109,7 @@ client.search({
         } else {
             await initInternalCollection(hit._id);
         }
+        await sleep(500);
     });
 
     if (response.hits.total !== numberOfRecods) {
