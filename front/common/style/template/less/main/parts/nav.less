@@ -10,7 +10,7 @@
     }
 
     .navbar-item-@{name}.is-active {
-        background-color: @@name; 
+        background-color: @@name;
     }
 
     .navbar-item-@{name} {
@@ -23,8 +23,8 @@
 
     .breadcrumb-@{name} {
         a::after {
-            box-shadow: 
-            2px -2px 0 2px @@name, 
+            box-shadow:
+            2px -2px 0 2px @@name,
             3px -3px 0 2px @@name;
         }
 
@@ -34,10 +34,10 @@
         }
 
         a:first-child::after {
-            background: @@name; 
+            background: @@name;
         }
     }
-    
+
     .navbar-item {
         .dropdown.is-@{name} {
             .dropdown-menu {
@@ -92,7 +92,7 @@ nav.navigation-menu {
             align-items: center;
             justify-content: center;
         }
-        
+
         a:hover {
             color: @white;
         }
@@ -113,6 +113,11 @@ nav.navigation-menu {
             }
         }
     }
+}
+nav.navigation-menu-hidden {
+    position: fixed;
+    top: 0px;
+    width: 100%;
 }
 
 .breadcrumb {
@@ -136,16 +141,16 @@ nav.navigation-menu {
             }
         }
 
-        a::after { 
+        a::after {
             content: '';
             position: absolute;
-            top: 0; 
-            right: -18px; 
-            width: 36px; 
+            top: 0;
+            right: -18px;
+            width: 36px;
             height: 36px;
             transform: scale(0.707) rotate(45deg);
             z-index: 1;
-            background: @white-transparent-breadcrumb; 
+            background: @white-transparent-breadcrumb;
             border-radius: 0 5px 0 50px;
         }
     }
