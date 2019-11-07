@@ -28,7 +28,7 @@ module.exports = {
             }
             // Stop executing this function if the difference between
             // current scroll position and last scroll position is less than some offset
-            if (Math.abs(currentScrollPosition - this.lastScrollPosition) < 60) {
+            if (Math.abs(currentScrollPosition - this.lastScrollPosition) < 66) {
                 return;
             }
             this.showNavbar = currentScrollPosition < this.lastScrollPosition;
