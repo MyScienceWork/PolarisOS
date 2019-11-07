@@ -68,37 +68,61 @@ module.exports = {
         has_other_version: false,
     },
     viewable,
-    last_deposits_submitted: () => ({
-        sort: [{ creation_date: 'desc' }],
-        $and: [
-            { 'denormalization.state.label': 'Submitted' },
-        ],
-    }),
-    last_deposits_published: () => ({
-        $and: [
-            { 'denormalization.state.label': 'Published' },
-        ],
-    }),
-    last_deposits_reviewed_by_curator_1: () => ({
-        $and: [
-            { 'denormalization.state.label': 'Reviewed by curator 1' },
-        ],
-    }),
-    last_deposits_reviewed_by_curator_2: () => ({
-        $and: [
-            { 'denormalization.state.label': 'Reviewed by curator 2' },
-        ],
-    }),
-    last_deposits_rejected_by_curator_1: () => ({
-        $and: [
-            { 'denormalization.state.label': 'Rejected by curator 1' },
-        ],
-    }),
-    last_deposits_rejected_by_curator_2: () => ({
-        $and: [
-            { 'denormalization.state.label': 'Rejected by curator 2' },
-        ],
-    }),
+    filter_role(userId, roles, filter) {
+        if (roles.funder) {
+            filter.$and.push({ depositor: userId });
+        }
+        return filter;
+    },
+    last_deposits_submitted(userId, roles) {
+        const filter = {
+            sort: [{ creation_date: 'desc' }],
+            $and: [
+                { 'denormalization.state.label': 'Submitted' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_published(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Published' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_reviewed_by_curator_1(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Reviewed by curator 1' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_reviewed_by_curator_2(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Reviewed by curator 2' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_rejected_by_curator_1(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Rejected by curator 1' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_rejected_by_curator_2(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Rejected by curator 2' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
     form: {
         $or: [
             { name: '{{{search}}}' },
