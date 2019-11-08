@@ -148,13 +148,10 @@ module.exports = {
 
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
-                console.log("yes we have content ! ", this.content);
                 const item_show = this.content.slice(0, 11);
-                console.log("item_show : ", item_show);
                 const items = item_show.map((c) => {
                     const html = this.hlang(Handlebars.compile('{{title}}' || '')(c));
                     c.html = html;
-                    console.log('html : ', html);
                     return c;
                 });
                 return items;
