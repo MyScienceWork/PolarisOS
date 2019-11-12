@@ -226,7 +226,7 @@ const Completion: Array<any> = [
         'denormalization.diffusion.surveys': ComplFunctions.denormalization('survey', 'diffusion.surveys._id', 'name', false),
     },
     {
-        'denormalization.diffusion.internal_collection2': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection2._id', 'name', false),
+        'denormalization.diffusion.internal_collection2': ComplFunctions.denormalization('internal_collection', 'diffusion.internal_collection2._id', 'label', false),
     },
     {
         'denormalization.diffusion.research_teams': ComplFunctions.denormalization('laboratory', 'diffusion.research_teams._id', 'name', false),
