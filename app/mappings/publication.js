@@ -421,7 +421,7 @@ module.exports = {
                                         properties: {
                                             _id: {
                                                 properties: {
-                                                    name: {
+                                                    label: {
                                                         type: 'text',
                                                         analyzer: 'folding',
                                                         fields: {

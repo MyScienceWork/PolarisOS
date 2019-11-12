@@ -91,7 +91,7 @@ client.search({
                                 diffusion: {
                                     internal_collection2: [{
                                         _id: {
-                                            name: sourceInternalCollection.label,
+                                            label: sourceInternalCollection.label,
                                         },
                                     }],
                                 },

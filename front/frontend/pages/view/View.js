@@ -727,7 +727,7 @@ module.exports = {
             if (!item) {
                 return '';
             }
-            return item.denormalization.diffusion.internal_collection2.map(s => s._id.name);
+            return item.denormalization.diffusion.internal_collection2.map(s => s._id.label);
         },
         editor() {
             const item = this.content_item;
