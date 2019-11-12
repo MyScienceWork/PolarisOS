@@ -122,6 +122,11 @@ module.exports = {
                         title: 'l_p_download',
                         lang: 'other',
                     },
+                    'dates.deposit': {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_deposit',
+                    },
                 },
             },
         };

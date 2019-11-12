@@ -107,6 +107,11 @@
                                         {{props.row.dates.update | format_date('DD/MM/YYYY')}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="dates.deposit" :label="lang('l_p_deposit')" sortable centered :visible="state.columns['dates.deposit'].visible">
+                                    <span class="tag is-warning">
+                                        {{props.row.dates.deposit | format_date('DD/MM/YYYY')}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="files" :label="lang('l_p_file', {}, 'other')" centered :visible="state.columns.files.visible">
                                     <span class="icon is-info">
                                         <a v-if="get_multi_download_link(props.row) != null" :href='get_multi_download_link(props.row)' title="Download file"><i class="fa fa-cloud-download"></i></a>
@@ -152,6 +157,7 @@
                                     <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p>
                                     <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p>
                                     <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
+                                    <p><strong>{{lang('l_publication_deposit')}}</strong> {{props.row.dates.deposit | format_date()}}</p>
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
                                     <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p>
                                     <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
