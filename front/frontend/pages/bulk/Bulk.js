@@ -1,10 +1,12 @@
 const VueScrollTo = require('vue-scrollto');
+const Utils = require('../../../common/utils/utils');
 
 const APIRoutes = require('../../../common/api/routes');
 const BrowserUtils = require('../../../common/utils/browser');
 const Messages = require('../../../common/api/messages');
 
 const FormMixin = require('../../../common/mixins/FormMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const FileAnalyzerMixin = require('./mixins/FileAnalyzerMixin');
@@ -13,7 +15,7 @@ const ImportMixin = require('./mixins/ImportMixin');
 const SecondDepositStep = require('./second_step/SecondDepositStep.vue');
 
 module.exports = {
-    mixins: [FormMixin, RequestsMixin, UserMixin, FileAnalyzerMixin, ImportMixin],
+    mixins: [FiltersMixin, FormMixin, RequestsMixin, UserMixin, FileAnalyzerMixin, ImportMixin],
     data() {
         return {
             state: {
@@ -25,6 +27,7 @@ module.exports = {
                     reads: {
                         typology: 'typology_read',
                         subtypology: 'subtypology_read',
+                        publication: 'publication_read',
                     },
                 },
                 paths: {
@@ -61,6 +64,31 @@ module.exports = {
         };
     },
     methods: {
+        get_info(content, path) {
+            const val = Utils.find_value_with_path(content, path.split('.'));
+            if (val || val === false) {
+                return val;
+            }
+            return '';
+        },
+        get_array_info(content, path, sub_path) {
+            let results = '';
+            const val = Utils.find_object_with_path(content, path.split('.'));
+            if (val) {
+                const split_path = path.split('.');
+                const last_key = split_path[split_path.length - 1];
+                const deep_val = val[last_key];
+                deep_val.forEach((my_val) => {
+                    const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
+                    if (results.length === 0) {
+                        results = this.lang(new_val);
+                    } else {
+                        results = `, ${this.lang(new_val)}`;
+                    }
+                });
+            }
+            return results;
+        },
         reset_interface() {
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.publication,
@@ -131,16 +159,21 @@ module.exports = {
             }
 
             const content = this.fcontent(this.state.sinks.creations.publication);
-            const publications = this.$route.query.publications;
+            let publications = [];
+            if (!(this.$route.query.publications instanceof Array)) {
+                publications[0] = this.$route.query.publications;
+            } else {
+                publications = this.$route.query.publications;
+            }
 
             publications.forEach((publication) => {
-                content._id = publication
+                content._id = publication;
                 this.$store.dispatch('update', {
                     form: this.state.sinks.creations.publication,
                     path: this.state.paths.creations.publication,
                     body: content,
                 });
-            })
+            });
 
             this.$router.push({ path: '/' });
         },
@@ -213,15 +246,39 @@ module.exports = {
             },
         });
 
-        const query = this.$route.query;
+        let type;
+        if (!(this.$route.query.types instanceof Array)) {
+            type = this.$route.query.types;
+        } else {
+            type = this.$route.query.types[0];
+        }
+
         this.$store.state.requests.push({
             name: Messages.TRANSFERT_INTO_FORM,
             type: 'commit',
             content: {
                 form: this.state.sinks.creations.publication,
-                body: { type: query.types[0] },
+                body: { type },
             },
         });
+
+        let publications_id = [];
+        if (!(this.$route.query.publications instanceof Array)) {
+            publications_id[0] = this.$route.query.publications;
+        } else {
+            publications_id = this.$route.query.publications;
+        }
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.publication,
+            path: this.state.paths.reads.publication,
+            body: {
+                where: {
+                    _id: publications_id,
+                },
+            },
+        });
+
         this.execute_requests().then(() => {}).catch(err => console.error(err));
         this.reset_interface();
     },
@@ -290,6 +347,13 @@ module.exports = {
                 return content.files;
             }
             return [];
+        },
+        content_publi() {
+            const content = this.fcontent(this.state.sinks.reads.publication);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
         },
     },
     watch: {
