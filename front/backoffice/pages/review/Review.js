@@ -127,6 +127,16 @@ module.exports = {
                         force: false,
                         title: 'l_p_deposit',
                     },
+                    'diffusion.rights.exports.nowhere': {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_rights_nowhere',
+                    },
+                    'diffusion.rights.exports.hal': {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_rights_hal',
+                    },
                 },
             },
         };
@@ -134,7 +144,7 @@ module.exports = {
     methods: {
         get_info(content, path) {
             const val = Utils.find_value_with_path(content, path.split('.'));
-            if (val) {
+            if (val || val === false) {
                 return val;
             }
             return '';

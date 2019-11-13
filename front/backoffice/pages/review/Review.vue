@@ -118,6 +118,18 @@
                                         <i v-else class="fa fa-times"></i>
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.nowhere" :label="lang('l_p_rights_nowhere', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.nowhere'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.nowhere') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.nowhere') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.hal" :label="lang('l_p_rights_hal', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.hal'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.hal') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.hal') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
@@ -159,6 +171,8 @@
                                     <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
                                     <p><strong>{{lang('l_publication_deposit')}}</strong> {{props.row.dates.deposit | format_date()}}</p>
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.nowhere')}} {{get_info(props.row, 'diffusion.rights.exports.nowhere')}}</p>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.hal')}} {{get_info(props.row, 'diffusion.rights.exports.hal')}}</p>
                                     <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p>
                                     <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
                                     </p>
