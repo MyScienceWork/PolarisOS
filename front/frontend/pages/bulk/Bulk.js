@@ -131,16 +131,21 @@ module.exports = {
             }
 
             const content = this.fcontent(this.state.sinks.creations.publication);
-            const publications = this.$route.query.publications;
-
+            let publications = [];
+            if (!(this.$route.query.publications instanceof Array)) {
+                publications[0] = this.$route.query.publications;
+            } else {
+                publications = this.$route.query.publications;
+            }
+            
             publications.forEach((publication) => {
-                content._id = publication
+                content._id = publication;
                 this.$store.dispatch('update', {
                     form: this.state.sinks.creations.publication,
                     path: this.state.paths.creations.publication,
                     body: content,
                 });
-            })
+            });
 
             this.$router.push({ path: '/' });
         },
@@ -213,13 +218,19 @@ module.exports = {
             },
         });
 
-        const query = this.$route.query;
+        let type;
+        if (!(this.$route.query.types instanceof Array)) {
+            type = this.$route.query.types;
+        } else {
+            type = this.$route.query.types[0];
+        }
+
         this.$store.state.requests.push({
             name: Messages.TRANSFERT_INTO_FORM,
             type: 'commit',
             content: {
                 form: this.state.sinks.creations.publication,
-                body: { type: query.types[0] },
+                body: { type },
             },
         });
         this.execute_requests().then(() => {}).catch(err => console.error(err));
