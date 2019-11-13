@@ -137,6 +137,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_rights_hal',
                     },
+                    'denormalization.diffusion.research_teams': {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_research_teams',
+                    },
                 },
             },
         };
@@ -148,6 +153,24 @@ module.exports = {
                 return val;
             }
             return '';
+        },
+        get_array_info(content, path, sub_path) {
+            let results = '';
+            const val = Utils.find_object_with_path(content, path.split('.'));
+            if (val) {
+                const split_path = path.split('.');
+                const last_key = split_path[split_path.length - 1];
+                const deep_val = val[last_key];
+                deep_val.forEach((my_val) => {
+                    const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
+                    if (results.length === 0) {
+                        results = this.lang(new_val);
+                    } else {
+                        results = `, ${this.lang(new_val)}`;
+                    }
+                });
+            }
+            return results;
         },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
