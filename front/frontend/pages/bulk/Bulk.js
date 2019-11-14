@@ -98,7 +98,7 @@ module.exports = {
             });
         },
         give_up() {
-            window.location.reload();
+            this.$router.back();
         },
         transfert_to_subtypology_sink(children) {
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
