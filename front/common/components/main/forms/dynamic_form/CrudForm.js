@@ -45,5 +45,15 @@ module.exports = {
         },
     },
     computed: {
+        form_content() {
+            return this.fcontent(this.state.specs);
+        },
+    },
+    watch: {
+        form_content(content) {
+            if (content.name) {
+                this.state.cform = content.name;
+            }
+        },
     },
 };
