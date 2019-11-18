@@ -48,6 +48,9 @@ module.exports = {
         form_content() {
             return this.fcontent(this.state.specs);
         },
+        form_content_empty() {
+            return Object.keys(this.fcontent(this.state.specs)).length === 0;
+        },
     },
     watch: {
         form_content(content) {

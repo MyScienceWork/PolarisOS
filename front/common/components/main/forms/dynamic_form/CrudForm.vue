@@ -18,9 +18,14 @@
                         <div class="column" v-html="lang(help)">
                         </div>
                     </div>
+                    <div class="columns" v-if="form_content_empty">
+                        <div class="column">
+                            <loader />
+                        </div>
+                    </div>
                     <fform
-                        :name="state.cform" 
-                        :post_path="postPath" 
+                        :name="state.cform"
+                        :post_path="postPath"
                         :put_path="putPath"
                         :get_path="getPath"
                         get_form="dummy_form"
