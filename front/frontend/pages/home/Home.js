@@ -148,11 +148,10 @@ module.exports = {
 
         items() {
             if (this.content && this.content instanceof Array && this.content.length > 0) {
-                const item_show = this.content.slice(1,11);
+                const item_show = this.content.slice(0, 11);
                 const items = item_show.map((c) => {
                     const html = this.hlang(Handlebars.compile('{{title}}' || '')(c));
                     c.html = html;
-                    console.log('html : ', html);
                     return c;
                 });
                 return items;
@@ -160,22 +159,22 @@ module.exports = {
             return [];
         },
         lastDepositsQuery() {
-            return Queries.last_deposits_submitted();
+            return Queries.last_deposits_submitted(this.user._id, this.roles);
         },
         lastDepositsQueryPublished() {
-            return Queries.last_deposits_published();
+            return Queries.last_deposits_published(this.user._id, this.roles);
         },
         lastDepositsQueryReviewed1() {
-            return Queries.last_deposits_reviewed_by_curator_1();
+            return Queries.last_deposits_reviewed_by_curator_1(this.user._id, this.roles);
         },
         lastDepositsQueryReviewed2() {
-            return Queries.last_deposits_reviewed_by_curator_2();
+            return Queries.last_deposits_reviewed_by_curator_2(this.user._id, this.roles);
         },
         lastDepositsQueryRejected1() {
-            return Queries.last_deposits_rejected_by_curator_1();
+            return Queries.last_deposits_rejected_by_curator_1(this.user._id, this.roles);
         },
         lastDepositsQueryRejected2() {
-            return Queries.last_deposits_rejected_by_curator_2();
+            return Queries.last_deposits_rejected_by_curator_2(this.user._id, this.roles);
         },
     },
 };

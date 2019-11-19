@@ -2,7 +2,6 @@ const elasticsearch = require('elasticsearch');
 const _ = require('lodash');
 const config = require('./config');
 const mappings = require('./mappings');
-// const mappings = require('/Users/Cocophotos/Desktop/mappings');
 const settings = require('./settings');
 
 const client = new elasticsearch.Client(config.elasticsearch);
