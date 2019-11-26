@@ -123,22 +123,22 @@ module.exports = {
                         lang: 'other',
                     },
                     'dates.deposit': {
-                        visible: true,
+                        visible: false,
                         force: false,
                         title: 'l_p_deposit',
                     },
                     'diffusion.rights.exports.nowhere': {
-                        visible: true,
+                        visible: false,
                         force: false,
                         title: 'l_p_rights_nowhere',
                     },
                     'diffusion.rights.exports.hal': {
-                        visible: true,
+                        visible: false,
                         force: false,
                         title: 'l_p_rights_hal',
                     },
                     'denormalization.diffusion.research_teams': {
-                        visible: true,
+                        visible: false,
                         force: false,
                         title: 'l_p_research_teams',
                     },
