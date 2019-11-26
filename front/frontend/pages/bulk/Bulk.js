@@ -98,7 +98,8 @@ module.exports = {
             });
         },
         give_up() {
-            this.$router.back();
+            const host = BrowserUtils.getURLHost(window.location);
+            window.location = `${host}/admin/review`;
         },
         transfert_to_subtypology_sink(children) {
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
@@ -175,7 +176,8 @@ module.exports = {
                 });
             });
 
-            this.$router.push({ path: '/' });
+            const host = BrowserUtils.getURLHost(window.location);
+            window.location = `${host}/admin/review`;
         },
         show_success_validate(sink) {
             if (this.state.sinks.creations.publication !== sink) {
