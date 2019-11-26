@@ -29,12 +29,14 @@ module.exports = {
                     reads: {
                         publication: APIRoutes.entity('publication', 'POST', true),
                         typology: APIRoutes.entity('typology', 'POST', true),
+                        laboratory: APIRoutes.entity('laboratory', 'POST', true),
                     },
                 },
                 sinks: {
                     reads: {
                         publication: 'publication_read',
                         typology: 'typology_read',
+                        laboratory: 'laboratory_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -161,14 +163,35 @@ module.exports = {
                 const split_path = path.split('.');
                 const last_key = split_path[split_path.length - 1];
                 const deep_val = val[last_key];
+                const list_values = [];
                 deep_val.forEach((my_val) => {
                     const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
-                    if (results.length === 0) {
-                        results = this.lang(new_val);
-                    } else {
-                        results = `, ${this.lang(new_val)}`;
-                    }
+                    //list_values.push(this.lang(new_val));
+                    list_values.push(new_val);
                 });
+
+                list_values.forEach((value, key) => {
+                    const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
+                    if (content_research_team && content_research_team instanceof Array) {
+                        const reasearch_team = content_research_team.find((research_team) => {
+                            return research_team.name === value;
+                        })
+                        if (reasearch_team) {
+                            list_values[key] = reasearch_team.acronym;
+                        }
+                    }
+                })
+
+                if (list_values.length > 0) {
+                    list_values.sort();
+                    list_values.forEach((value) => {
+                        if (results.length === 0) {
+                            results += value;
+                        } else {
+                            results += `, ${value}`;
+                        }
+                    });
+                }
             }
             return results;
         },
@@ -228,6 +251,14 @@ module.exports = {
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.typology,
             path: this.state.paths.reads.typology,
+            body: {
+                size: 10000,
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.laboratory,
+            path: this.state.paths.reads.laboratory,
             body: {
                 size: 10000,
             },

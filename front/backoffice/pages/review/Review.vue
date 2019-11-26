@@ -130,7 +130,7 @@
                                         <i v-else-if="get_info(props.row, 'diffusion.rights.exports.hal') === false" class="fa fa-times"></i>
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="denormalization.diffusion.research_teams" :label="lang('l_p_research_teams', {}, 'other')" sortable centered :visible="state.columns['denormalization.diffusion.research_teams'].visible">
+                                <b-table-column field="denormalization.diffusion.research_teams" :label="lang('l_p_research_teams', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.research_teams'].visible">
                                     <span class="icon is-info">
                                         {{get_array_info(props.row, 'denormalization.diffusion.research_teams', '_id.name')}}
                                     </span>
