@@ -159,6 +159,7 @@ module.exports = {
         get_array_info(content, path, sub_path) {
             let results = '';
             const val = Utils.find_object_with_path(content, path.split('.'));
+
             if (val) {
                 const split_path = path.split('.');
                 const last_key = split_path[split_path.length - 1];
@@ -166,21 +167,21 @@ module.exports = {
                 const list_values = [];
                 deep_val.forEach((my_val) => {
                     const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
-                    //list_values.push(this.lang(new_val));
                     list_values.push(new_val);
                 });
 
-                list_values.forEach((value, key) => {
-                    const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
-                    if (content_research_team && content_research_team instanceof Array) {
-                        const reasearch_team = content_research_team.find((research_team) => {
-                            return research_team.name === value;
-                        })
-                        if (reasearch_team) {
-                            list_values[key] = reasearch_team.acronym;
+                if (path.split('.')[path.split('.').length - 1] === 'research_teams') {
+                    list_values.forEach((value, key) => {
+                        const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
+                        if (content_research_team && content_research_team instanceof Array) {
+                            const my_research_team = content_research_team.find(research_team => research_team.name === value);
+                            if (my_research_team) {
+                                list_values[key] = my_research_team.acronym;
+                            }
                         }
-                    }
-                })
+                    });
+                }
+
 
                 if (list_values.length > 0) {
                     list_values.sort();
