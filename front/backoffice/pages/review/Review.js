@@ -33,6 +33,7 @@ module.exports = {
                         project: APIRoutes.entity('project', 'POST', true),
                         anr_project: APIRoutes.entity('anr_project', 'POST', true),
                         european_project: APIRoutes.entity('european_project', 'POST', true),
+                        survey: APIRoutes.entity('survey', 'POST', true),
                     },
                 },
                 sinks: {
@@ -43,6 +44,7 @@ module.exports = {
                         project: 'project_read',
                         anr_project: 'anr_project_read',
                         european_project: 'european_project_read',
+                        survey: 'survey_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -170,6 +172,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_european_project',
                     },
+                    'denormalization.diffusion.surveys': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_survey',
+                    },
                 },
             },
         };
@@ -182,6 +189,18 @@ module.exports = {
             }
             return '';
         },
+        get_acronyms(list_values, entity, fieldAcronym) {
+            list_values.forEach((value, key) => {
+                const contents = this.fcontent(this.state.sinks.reads[entity]);
+                if (contents && contents instanceof Array) {
+                    const my_content = contents.find(content => content.name === value);
+                    if (my_content && my_content[fieldAcronym] && my_content[fieldAcronym] !== '') {
+                        list_values[key] = my_content[fieldAcronym];
+                    }
+                }
+            });
+            return list_values;
+        },
         get_array_info(content, path, sub_path) {
             let results = '';
             const val = Utils.find_object_with_path(content, path.split('.'));
@@ -190,56 +209,25 @@ module.exports = {
                 const split_path = path.split('.');
                 const last_key = split_path[split_path.length - 1];
                 const deep_val = val[last_key];
-                const list_values = [];
+                let list_values = [];
                 deep_val.forEach((my_val) => {
                     const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
                     list_values.push(new_val);
                 });
 
                 if (path.split('.')[path.split('.').length - 1] === 'research_teams') {
-                    list_values.forEach((value, key) => {
-                        const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
-                        if (content_research_team && content_research_team instanceof Array) {
-                            const my_research_team = content_research_team.find(research_team => research_team.name === value);
-                            if (my_research_team) {
-                                list_values[key] = my_research_team.acronym;
-                            }
-                        }
-                    });
+                    list_values = this.get_acronyms(list_values, 'laboratory', 'acronym');
                 } else if (path.split('.')[path.split('.').length - 1] === 'projects') {
-                    list_values.forEach((value, key) => {
-                        const projects = this.fcontent(this.state.sinks.reads.project);
-                        if (projects && projects instanceof Array) {
-                            const my_project = projects.find(project => project.name === value);
-                            if (my_project) {
-                                list_values[key] = my_project.id;
-                            }
-                        }
-                    });
+                    list_values = this.get_acronyms(list_values, 'project', 'id');
                 } else if (path.split('.')[path.split('.').length - 1] === 'anr_projects') {
-                    list_values.forEach((value, key) => {
-                        const projects = this.fcontent(this.state.sinks.reads.anr_project);
-                        if (projects && projects instanceof Array) {
-                            const my_project = projects.find(project => project.name === value);
-                            if (my_project) {
-                                list_values[key] = my_project.acronym;
-                            }
-                        }
-                    });
+                    list_values = this.get_acronyms(list_values, 'anr_project', 'acronym');
                 } else if (path.split('.')[path.split('.').length - 1] === 'european_projects') {
-                    list_values.forEach((value, key) => {
-                        const projects = this.fcontent(this.state.sinks.reads.european_project);
-                        if (projects && projects instanceof Array) {
-                            const my_project = projects.find(project => project.name === value);
-                            if (my_project) {
-                                list_values[key] = my_project.acronym;
-                            }
-                        }
-                    });
+                    list_values = this.get_acronyms(list_values, 'european_project', 'acronym');
+                } else if (path.split('.')[path.split('.').length - 1] === 'surveys') {
+                    list_values = this.get_acronyms(list_values, 'survey', 'acronym');
                 }
 
-
-                if (list_values.length > 0) {
+                if (list_values && list_values.length > 0) {
                     list_values.sort();
                     list_values.forEach((value) => {
                         if (results.length === 0) {
@@ -305,7 +293,7 @@ module.exports = {
         },
     },
     mounted() {
-        ['typology', 'laboratory', 'project', 'anr_project', 'european_project'].forEach((entity) => {
+        ['typology', 'laboratory', 'project', 'anr_project', 'european_project', 'survey'].forEach((entity) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[entity],
                 path: this.state.paths.reads[entity],
