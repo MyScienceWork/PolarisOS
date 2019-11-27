@@ -15,36 +15,41 @@
                 </div>
             </div>
             <div v-for="publi in content_publi">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="has-medium-font">
-                            <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(publi.denormalization.type.label)}}</span></p>
-                            <h4 class="title is-4">{{lang('l_general_information')}}</h4>
-                            <p><strong>{{lang('l_publication_title')}}</strong> {{publi.title.content}}</p>
-                            <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
-                                {{publi.denormalization.authors | join('_id.fullname')}}
-                            </p>
-                            <p><strong>{{lang('l_publication_year')}}</strong> {{publi.dates.publication | format_date('YYYY')}}</p>
-                            <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${publi.status}_status`)}}</p>
-                            <p><strong>{{lang('l_publication_update')}}</strong> {{publi.dates.update | format_date()}}</p>
-                            <p><strong>{{lang('l_publication_deposit')}}</strong> {{publi.dates.deposit | format_date()}}</p>
-                            <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
-                            <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(publi, 'denormalization.depositor.firstname')}} {{get_info(publi, 'denormalization.depositor.lastname')}}</p>
-                            <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(publi, 'denormalization.reviewer.firstname')}} {{get_info(publi, 'denormalization.reviewer.lastname')}}
-                            </p>
-                            <p><strong>{{lang('l_publication_depositor_comment')}}</strong></p>
-                            <p>{{_oa_find(publi, 'system.depositor_comment', lang('l_na')) | eol_to_br}}</p>
-                            <div v-for="email in _oa_find(publi, 'system.emails', [])">
-                                <p><strong>{{lang('l_comment')}} ({{_oa_find(email, 'created_at') | format_date('DD-MM-YYYY')}} {{lang('l_at')}} {{_oa_find(email, 'created_at') | format_date('HH:mm')}})</strong></p>
-                                <p>{{_oa_find(email, 'body')}}</p>
+                <widget :collapsed="true">
+                    <strong slot="title">{{publi.title.content}}</strong>
+                    <div slot="body">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="has-medium-font">
+                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(publi.denormalization.type.label)}}</span></p>
+                                    <h4 class="title is-4">{{lang('l_general_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_title')}}</strong> {{publi.title.content}}</p>
+                                    <p><strong>{{lang('l_publication_author', {}, 'other')}}</strong>
+                                        {{publi.denormalization.authors | join('_id.fullname')}}
+                                    </p>
+                                    <p><strong>{{lang('l_publication_year')}}</strong> {{publi.dates.publication | format_date('YYYY')}}</p>
+                                    <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${publi.status}_status`)}}</p>
+                                    <p><strong>{{lang('l_publication_update')}}</strong> {{publi.dates.update | format_date()}}</p>
+                                    <p><strong>{{lang('l_publication_deposit')}}</strong> {{publi.dates.deposit | format_date()}}</p>
+                                    <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(publi, 'denormalization.depositor.firstname')}} {{get_info(publi, 'denormalization.depositor.lastname')}}</p>
+                                    <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(publi, 'denormalization.reviewer.firstname')}} {{get_info(publi, 'denormalization.reviewer.lastname')}}
+                                    </p>
+                                    <p><strong>{{lang('l_publication_depositor_comment')}}</strong></p>
+                                    <p>{{_oa_find(publi, 'system.depositor_comment', lang('l_na')) | eol_to_br}}</p>
+                                    <div v-for="email in _oa_find(publi, 'system.emails', [])">
+                                        <p><strong>{{lang('l_comment')}} ({{_oa_find(email, 'created_at') | format_date('DD-MM-YYYY')}} {{lang('l_at')}} {{_oa_find(email, 'created_at') | format_date('HH:mm')}})</strong></p>
+                                        <p>{{_oa_find(email, 'body')}}</p>
+                                    </div>
+                                    <h4 class="title is-4 has-small-top-margin">{{lang('l_detailed_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(publi, 'diffusion.rights.exports.nowhere')}}</p>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(publi, 'diffusion.rights.exports.hal')}}</p>
+                                    <p><strong>{{lang('l_publication_research_teams')}}</strong> {{get_array_info(publi, 'denormalization.diffusion.research_teams', '_id.name')}}</p>
+                                </div>
                             </div>
-                            <h4 class="title is-4 has-small-top-margin">{{lang('l_detailed_information')}}</h4>
-                            <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(publi, 'diffusion.rights.exports.nowhere')}}</p>
-                            <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(publi, 'diffusion.rights.exports.hal')}}</p>
-                            <p><strong>{{lang('l_publication_research_teams')}}</strong> {{get_array_info(publi, 'denormalization.diffusion.research_teams', '_id.name')}}</p>
                         </div>
                     </div>
-                </div>
+                </widget>
             </div>
             <div class="columns is-centered">
                 <div class="column">
