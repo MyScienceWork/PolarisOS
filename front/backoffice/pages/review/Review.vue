@@ -175,6 +175,11 @@
                                         {{lang(get_info(props.row, 'denormalization.publication_version'))}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="diffusion.rights.embargo" :label="lang('l_p_embargo', {}, 'other')" centered :visible="state.columns['diffusion.rights.embargo'].visible">
+                                    <span class="icon is-info">
+                                        {{get_info(props.row, 'diffusion.rights.embargo') | format_date('DD/MM/YYYY')}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
@@ -237,6 +242,7 @@
                                     <p><strong>{{lang('l_publication_license')}}</strong> {{get_license_info(props.row, 'denormalization.diffusion.rights.license')}}</p>
                                     <p><strong>{{lang('l_publication_access')}}</strong> {{get_info(props.row, 'denormalization.diffusion.rights.access')}}</p>
                                     <p><strong>{{lang('l_publication_version')}}</strong> {{get_info(props.row, 'denormalization.publication_version')}}</p>
+                                    <p><strong>{{lang('l_publication_embargo')}}</strong> {{get_info(props.row, 'diffusion.rights.embargo')}}</p>
                                 </div>
                             </template>
                         </fdata-table-searching>

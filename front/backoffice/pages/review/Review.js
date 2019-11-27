@@ -192,7 +192,12 @@ module.exports = {
                     'denormalization.publication_version': {
                         visible: false,
                         force: false,
-                        title: 'l_p_access',
+                        title: 'l_p_version',
+                    },
+                    'diffusion.rights.embargo': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_embargo',
                     },
                 },
             },
