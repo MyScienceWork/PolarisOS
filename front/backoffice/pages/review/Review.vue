@@ -160,6 +160,11 @@
                                         {{get_array_info(props.row, 'denormalization.diffusion.surveys', '_id.name')}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="denormalization.rights.license" :label="lang('l_p_license', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.rights.license'].visible">
+                                    <span class="icon is-info">
+                                        {{get_license_info(props.row, 'denormalization.diffusion.rights.license')}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
@@ -219,6 +224,7 @@
                                     <p><strong>{{lang('l_publication_anr_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.anr_projects', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_european_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.european_projects', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_survey')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.surveys', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_license')}}</strong> {{get_license_info(props.row, 'denormalization.diffusion.rights.license')}}</p>
                                 </div>
                             </template>
                         </fdata-table-searching>

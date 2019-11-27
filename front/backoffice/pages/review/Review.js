@@ -34,6 +34,7 @@ module.exports = {
                         anr_project: APIRoutes.entity('anr_project', 'POST', true),
                         european_project: APIRoutes.entity('european_project', 'POST', true),
                         survey: APIRoutes.entity('survey', 'POST', true),
+                        license: APIRoutes.entity('license', 'POST', true),
                     },
                 },
                 sinks: {
@@ -45,6 +46,7 @@ module.exports = {
                         anr_project: 'anr_project_read',
                         european_project: 'european_project_read',
                         survey: 'survey_read',
+                        license: 'license_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -177,6 +179,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_survey',
                     },
+                    'denormalization.diffusion.rights.license': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_license',
+                    },
                 },
             },
         };
@@ -188,6 +195,16 @@ module.exports = {
                 return val;
             }
             return '';
+        },
+        get_license_info(content, path) {
+            let license = this.get_info(content, path);
+            const regExp = /\(([^)]+)\)/;
+            const matches = regExp.exec(license);
+            console.log("matches : ", matches);
+            if (matches && matches.length === 2) {
+                license = matches[1];
+            }
+            return license;
         },
         get_acronyms(list_values, entity, fieldAcronym) {
             list_values.forEach((value, key) => {
@@ -293,7 +310,7 @@ module.exports = {
         },
     },
     mounted() {
-        ['typology', 'laboratory', 'project', 'anr_project', 'european_project', 'survey'].forEach((entity) => {
+        ['typology', 'laboratory', 'project', 'anr_project', 'european_project', 'survey', 'license'].forEach((entity) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[entity],
                 path: this.state.paths.reads[entity],
