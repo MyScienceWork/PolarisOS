@@ -144,6 +144,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_research_teams',
                     },
+                    'denormalization.diffusion.internal_collection2': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_internal_collection',
+                    },
                 },
             },
         };
@@ -187,9 +192,9 @@ module.exports = {
                     list_values.sort();
                     list_values.forEach((value) => {
                         if (results.length === 0) {
-                            results += value;
+                            results += this.lang(value);
                         } else {
-                            results += `, ${value}`;
+                            results += `, ${this.lang(value)}`;
                         }
                     });
                 }
