@@ -184,6 +184,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_license',
                     },
+                    'denormalization.diffusion.rights.access': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_access',
+                    },
                 },
             },
         };
@@ -200,7 +205,6 @@ module.exports = {
             let license = this.get_info(content, path);
             const regExp = /\(([^)]+)\)/;
             const matches = regExp.exec(license);
-            console.log("matches : ", matches);
             if (matches && matches.length === 2) {
                 license = matches[1];
             }
