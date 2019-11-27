@@ -124,6 +124,12 @@
                                         <i v-else-if="get_info(props.row, 'diffusion.rights.exports.nowhere') === false" class="fa fa-times"></i>
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.website" :label="lang('l_p_rights_website', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.website'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.website') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.website') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="diffusion.rights.exports.hal" :label="lang('l_p_rights_hal', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.hal'].visible">
                                     <span class="icon is-info">
                                         <i v-if="get_info(props.row, 'diffusion.rights.exports.hal') === true" class="fa fa-check"></i>
@@ -232,6 +238,7 @@
                                     </div>
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_detailed_information')}}</h4>
                                     <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.nowhere')}}</p>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_website')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.website')}}</p>
                                     <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.hal')}}</p>
                                     <p><strong>{{lang('l_publication_research_teams')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.research_teams', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_internal_collection')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.name')}}</p>

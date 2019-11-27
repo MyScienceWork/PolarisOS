@@ -144,6 +144,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_rights_nowhere',
                     },
+                    'diffusion.rights.exports.website': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_rights_website',
+                    },
                     'diffusion.rights.exports.hal': {
                         visible: false,
                         force: false,
