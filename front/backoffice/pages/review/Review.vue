@@ -130,16 +130,21 @@
                                         <i v-else-if="get_info(props.row, 'diffusion.rights.exports.website') === false" class="fa fa-times"></i>
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.hal" :label="lang('l_p_rights_hal', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.hal'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.hal') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.hal') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="system.api.hal" :label="lang('l_p_system_api_hal', {}, 'other')" sortable centered :visible="state.columns['system.api.hal'].visible">
                                     <span class="icon is-info">
                                         <i v-if="get_info(props.row, 'system.api.hal') === true" class="fa fa-check"></i>
                                         <i v-else-if="get_info(props.row, 'system.api.hal') === false" class="fa fa-times"></i>
                                     </span>
                                 </b-table-column>
-                                <b-table-column field="diffusion.rights.exports.hal" :label="lang('l_p_rights_hal', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.hal'].visible">
+                                <b-table-column field="system.api.hal_id" :label="lang('l_p_hal_id', {}, 'other')" centered :visible="state.columns['system.api.hal_id'].visible">
                                     <span class="icon is-info">
-                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.hal') === true" class="fa fa-check"></i>
-                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.hal') === false" class="fa fa-times"></i>
+                                        {{get_license_info(props.row, 'system.api.hal_id')}}
                                     </span>
                                 </b-table-column>
                                 <b-table-column field="denormalization.diffusion.research_teams" :label="lang('l_p_research_teams', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.research_teams'].visible">
@@ -246,6 +251,7 @@
                                     <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.nowhere')}}</p>
                                     <p><strong>{{lang('l_publication_diffusion_exports_website')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.website')}}</p>
                                     <p><strong>{{lang('l_publication_system_api_hal')}}</strong> {{get_info(props.row, 'system.api.hal')}}</p>
+                                    <p><strong>{{lang('l_publication_system_api_hal_id')}}</strong> {{get_info(props.row, 'system.api.hal_id')}}</p>
                                     <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.hal')}}</p>
                                     <p><strong>{{lang('l_publication_research_teams')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.research_teams', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_internal_collection')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.name')}}</p>

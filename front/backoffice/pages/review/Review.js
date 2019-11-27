@@ -154,6 +154,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_system_api_hal',
                     },
+                    'system.api.hal_id': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_system_api_hal_id',
+                    },
                     'diffusion.rights.exports.hal': {
                         visible: false,
                         force: false,
