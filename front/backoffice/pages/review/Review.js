@@ -30,6 +30,7 @@ module.exports = {
                         publication: APIRoutes.entity('publication', 'POST', true),
                         typology: APIRoutes.entity('typology', 'POST', true),
                         laboratory: APIRoutes.entity('laboratory', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                     },
                 },
                 sinks: {
@@ -37,6 +38,7 @@ module.exports = {
                         publication: 'publication_read',
                         typology: 'typology_read',
                         laboratory: 'laboratory_read',
+                        project: 'project_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -149,6 +151,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_internal_collection',
                     },
+                    'denormalization.diffusion.projects': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_project',
+                    },
                 },
             },
         };
@@ -174,7 +181,7 @@ module.exports = {
                     const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
                     list_values.push(new_val);
                 });
-
+                
                 if (path.split('.')[path.split('.').length - 1] === 'research_teams') {
                     list_values.forEach((value, key) => {
                         const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
@@ -182,6 +189,16 @@ module.exports = {
                             const my_research_team = content_research_team.find(research_team => research_team.name === value);
                             if (my_research_team) {
                                 list_values[key] = my_research_team.acronym;
+                            }
+                        }
+                    });
+                } else if (path.split('.')[path.split('.').length - 1] === 'projects') {
+                    list_values.forEach((value, key) => {
+                        const projects = this.fcontent(this.state.sinks.reads.project);
+                        if (projects && projects instanceof Array) {
+                            const my_project = projects.find(project => project.name === value);
+                            if (my_project) {
+                                list_values[key] = my_project.id;
                             }
                         }
                     });
@@ -265,6 +282,14 @@ module.exports = {
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.laboratory,
             path: this.state.paths.reads.laboratory,
+            body: {
+                size: 10000,
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.project,
+            path: this.state.paths.reads.project,
             body: {
                 size: 10000,
             },
