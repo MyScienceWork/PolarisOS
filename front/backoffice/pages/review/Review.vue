@@ -150,6 +150,11 @@
                                         {{get_array_info(props.row, 'denormalization.diffusion.anr_projects', '_id.name')}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="denormalization.diffusion.european_projects" :label="lang('l_p_european_projects', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.european_projects'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.european_projects', '_id.name')}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
                                     {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}
                                 </b-table-column>
@@ -207,6 +212,7 @@
                                     <p><strong>{{lang('l_publication_internal_collection')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.projects', '_id.name')}}</p>
                                     <p><strong>{{lang('l_publication_anr_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.anr_projects', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_european_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.european_projects', '_id.name')}}</p>
                                 </div>
                             </template>
                         </fdata-table-searching>
