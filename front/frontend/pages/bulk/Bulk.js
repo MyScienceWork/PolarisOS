@@ -73,6 +73,7 @@ module.exports = {
         },
         get_array_info(content, path, sub_path) {
             let results = '';
+
             const val = Utils.find_object_with_path(content, path.split('.'));
             if (val) {
                 const split_path = path.split('.');
