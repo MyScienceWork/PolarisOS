@@ -31,6 +31,7 @@ module.exports = {
                         typology: APIRoutes.entity('typology', 'POST', true),
                         laboratory: APIRoutes.entity('laboratory', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
+                        anr_project: APIRoutes.entity('anr_project', 'POST', true),
                     },
                 },
                 sinks: {
@@ -39,6 +40,7 @@ module.exports = {
                         typology: 'typology_read',
                         laboratory: 'laboratory_read',
                         project: 'project_read',
+                        anr_project: 'anr_project_read',
                     },
                     creations: {
                         search: 'search_creation_publication',
@@ -156,6 +158,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_project',
                     },
+                    'denormalization.diffusion.anr_projects': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_anr_project',
+                    },
                 },
             },
         };
@@ -181,7 +188,7 @@ module.exports = {
                     const new_val = Utils.find_value_with_path(my_val, sub_path.split('.'));
                     list_values.push(new_val);
                 });
-                
+
                 if (path.split('.')[path.split('.').length - 1] === 'research_teams') {
                     list_values.forEach((value, key) => {
                         const content_research_team = this.fcontent(this.state.sinks.reads.laboratory);
@@ -199,6 +206,16 @@ module.exports = {
                             const my_project = projects.find(project => project.name === value);
                             if (my_project) {
                                 list_values[key] = my_project.id;
+                            }
+                        }
+                    });
+                } else if (path.split('.')[path.split('.').length - 1] === 'anr_projects') {
+                    list_values.forEach((value, key) => {
+                        const projects = this.fcontent(this.state.sinks.reads.anr_project);
+                        if (projects && projects instanceof Array) {
+                            const my_project = projects.find(project => project.name === value);
+                            if (my_project) {
+                                list_values[key] = my_project.acronym;
                             }
                         }
                     });
@@ -290,6 +307,14 @@ module.exports = {
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.project,
             path: this.state.paths.reads.project,
+            body: {
+                size: 10000,
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.anr_project,
+            path: this.state.paths.reads.anr_project,
             body: {
                 size: 10000,
             },
