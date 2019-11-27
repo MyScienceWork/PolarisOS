@@ -189,6 +189,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_access',
                     },
+                    'denormalization.publication_version': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_access',
+                    },
                 },
             },
         };
