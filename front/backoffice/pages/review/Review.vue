@@ -154,7 +154,7 @@
                                 </b-table-column>
                                 <b-table-column field="denormalization.diffusion.internal_collection2" :label="lang('l_p_internal_collection', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.internal_collection2'].visible">
                                     <span class="icon is-info">
-                                        {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.name')}}
+                                        {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.label')}}
                                     </span>
                                 </b-table-column>
                                 <b-table-column field="denormalization.diffusion.projects" :label="lang('l_p_projects', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.projects'].visible">
