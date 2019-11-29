@@ -111,7 +111,10 @@ module.exports = {
 
             if (status === 'master') {
                 const file = _.find(files, f => f.is_master) || files[0];
-                return `/download/${file.preview_url}`;
+                if (file.preview_url) {
+                    return `/download/${file.preview_url}`;
+                }
+                return null;
             }
             return null;
         },

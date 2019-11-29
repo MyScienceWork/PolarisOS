@@ -279,6 +279,49 @@
                                             />
                                         </div>
                                     </widget>
+                                    <widget :collapsed="true">
+                                        <span slot="title">DataCite</span>
+                                        <div slot="body">
+                                            <finput
+                                                name="api.datacite.enabled" 
+                                                :label="lang('l_datacite_enabled')" 
+                                                :form="state.sinks.creations.config" 
+                                                type="checkbox"
+                                            />
+                                            <finput
+                                                name="api.datacite.url" 
+                                                :label="lang('l_datacite_url')" 
+                                                :placeholder="lang('l_datacite_url')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.datacite.username" 
+                                                :label="lang('l_datacite_username')" 
+                                                :placeholder="lang('l_datacite_username')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                            <finput
+                                                name="api.datacite.password" 
+                                                :label="lang('l_datacite_password')" 
+                                                :placeholder="lang('l_datacite_password')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="password"
+                                            />
+                                            <finput
+                                                name="api.datacite.doi_prefix" 
+                                                :label="lang('l_datacite_doi_prefix')" 
+                                                :placeholder="lang('l_datacite_doi_prefix')" 
+                                                :is-required="true" 
+                                                :form="state.sinks.creations.config" 
+                                                type="text"
+                                            />
+                                        </div>
+                                    </widget>
                                 </div>
                             </widget>
                             <widget :collapsed="true">

@@ -45,6 +45,25 @@ module.exports = {
                                     },
                                 },
                             },
+                            datacite: {
+                                properties: {
+                                    enabled: {
+                                        type: 'boolean',
+                                    },
+                                    url: {
+                                        type: 'keyword',
+                                    },
+                                    username: {
+                                        type: 'keyword',
+                                    },
+                                    password: {
+                                        type: 'keyword',
+                                    },
+                                    doi_prefix: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                             handle: {
                                 properties: {
                                     enabled: {

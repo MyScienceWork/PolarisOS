@@ -10,6 +10,7 @@ const ConfigUtils = require('../utils/config');
 const HandleAPI = require('../3rdparty/handle/api');
 const SwordAPI = require('../entities/exporter/controllers/sword');
 const Config = require('../../config');
+const DataCiteAPI = require('../entities/exporter/controllers/datacite');
 const Throttle = require('promise-parallel-throttle');
 
 class ApiScheduler extends Scheduler {
@@ -61,9 +62,13 @@ class ApiScheduler extends Scheduler {
             return ok;
         };
         const promises = publications.map(p => () => exec_hal(p));
-
-        await Throttle.all(promises, {
-            maxInProgress: 1,
+        
+        await this.asyncForEach(publications, async (p) => {
+            try {
+                await exec_hal(p);
+            } catch (err) {
+                Logger.error('Error when sending publication');
+            }
         });
     }
 
@@ -118,6 +123,40 @@ class ApiScheduler extends Scheduler {
         });
     }
 
+    async _execute_datacite_export() {
+        if (!EnvUtils.is_production()) {
+            Logger.info('DataCite export only runs in production mode');
+            return;
+        }
+
+        const publications = await EntitiesUtils.search_and_get_sources('publication', {
+            where: {
+                $and: [
+                    { status: ['published'] },
+                    { 'system.api.datacite': false },
+                    { 'diffusion.rights.exports.datacite': true },
+                ],
+            },
+            size: 500,
+        });
+
+        const exec_datacite = async (p) => {
+            const ok = await DataCiteAPI.post(p._id);
+            if (ok) {
+                if (!('api' in p.system)) {
+                    p.system.api = {};
+                }
+                p.system.api.datacite = true;
+                await EntitiesUtils.update(p, 'publication');
+            }
+            return ok;
+        };
+        const promises = publications.map(p => () => exec_datacite(p));
+        await Throttle.all(promises, {
+            maxInProgress: 10,
+        });
+    }
+
     async _execute_data() {
         //console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
@@ -127,6 +166,10 @@ class ApiScheduler extends Scheduler {
         this._execute_hal_export().then(() => {}).catch((err) => {
             Logger.error('Error when exporting to HAL using scheduler');
             Logger.error(err);
+        });
+        this._execute_datacite_export().then(() => {}).catch((err) => {
+            Logger.error('Error when exporting to DataCite using scheduler');
+            Logger.error(err.message);
         });
         /* this._execute_sms_sending().then(() => {}).catch((err) => {
             Logger.error('Error when sending SMS through scheduler');
