@@ -25,6 +25,7 @@ module.exports = {
         showSearch: { default: true, type: Boolean },
         enablePagination: { default: true, type: Boolean },
         readOnly: { default: false, type: Boolean },
+        name: { default: '', type: String },
     },
     data() {
         return {
@@ -46,16 +47,16 @@ module.exports = {
             this.currentPage = page;
         },
         on_checkbox_update(key, checked) {
-            this.$emit('column-checkbox-update', { key, checked });
+            this.$emit('column-checkbox-update', { name: this.name, key, checked });
         },
         on_main_checkbox_update(columns, checked) {
             this.state.all_columns_visible = checked;
             Object.keys(columns).forEach((key) => {
-                this.$emit('column-checkbox-update', { key, checked });
+                this.$emit('column-checkbox-update', { name: this.name, key, checked });
             });
         },
         on_checked_rows_update(checkedList, row) {
-            this.$emit('table-checked-rows-update', { checkedRows: checkedList, checkedRow: row });
+            this.$emit('table-checked-rows-update', { name: this.name, checkedRows: checkedList, checkedRow: row });
         },
     },
     watch: {
@@ -74,6 +75,8 @@ module.exports = {
                 return [];
             }
 
+            this.$emit('update-data-from-api', { name: this.name, data: content });
+
             return content;
         },
         matrix_content() {
@@ -88,5 +91,5 @@ module.exports = {
         if (this.autoSearch) {
             this.search();
         }
-    },
+    }
 };

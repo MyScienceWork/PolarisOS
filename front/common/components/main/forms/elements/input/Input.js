@@ -142,7 +142,7 @@ module.exports = {
             if (info.trim() === '') {
                 return;
             }
-            const cform_name = this.form.split('_')[0];
+            const cform_name = this.form.split('_').slice(0, -1).join('_');
             this.state.sinks.reads.duplicate_warning[this.name] = `duplicate_warning_${this.name}_read`;
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.duplicate_warning[this.name],

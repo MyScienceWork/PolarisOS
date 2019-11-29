@@ -1,5 +1,7 @@
 <template>
-<iframe src="https://inserm-analitycs.msw-testing.com/app/kibana#/dashboard/28449480-3536-11e9-ba72-5d2dcda39eb7?embed=true" height="1500px" width="100%"></iframe>
+    <div style="width: 100%; margin: auto">
+        <iframe style="overflow: hidden;" id="analytics-dashboard" :src="route_dashboard" height="4000px" width="100%"></iframe>
+    </div>
 </template>
 
 <script>

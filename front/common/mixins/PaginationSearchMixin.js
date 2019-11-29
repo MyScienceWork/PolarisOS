@@ -272,8 +272,9 @@ module.exports = {
                     const squery = JSON.parse(Handlebars.compile(this.searchQuery)({}));
                     if (squery.body) {
                         Object.keys(squery.body).forEach((key) => {
-                            if (content[key]) {
-                                squery.body[key] = content[key];
+                            const value = Utils.find_value_with_path(content, key.split('.'));
+                            if (value && value !== '') {
+                                squery.body[key] = Utils.find_value_with_path(content, key.split('.'));
                             }
                         });
                     }
