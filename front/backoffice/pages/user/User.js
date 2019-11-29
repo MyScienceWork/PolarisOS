@@ -38,6 +38,14 @@ module.exports = {
         };
     },
     methods: {
+        reset_authentication_key(user) {
+            delete user.authentication.key;
+            return user;
+        },
+        get_role(role_id) {
+            const content = this.mcontent(this.state.sinks.reads.role);
+            return content.find(role => role._id === role_id).name;
+        },
     },
     mounted() {
         this.$store.state.requests = ['role'].map(e => ({

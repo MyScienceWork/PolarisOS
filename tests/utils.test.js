@@ -276,7 +276,7 @@ describe('Utils#merge_with_superposition', () => {
         const source = { test: [] };
         const target = { test: [{ yep: 'nok' }] };
 
-        const result = utils.merge_with_superposition(source, target);
+        const result = utils.merge_with_superposition(target, source);
         result.should.have.property('test');
         result.test.should.have.lengthOf(1);
         result.test[0].should.have.property('yep', 'nok');
@@ -286,7 +286,7 @@ describe('Utils#merge_with_superposition', () => {
         const source = { test: [{ yep: 'nok' }] };
         const target = { test: [] };
 
-        const result = utils.merge_with_superposition(source, target);
+        const result = utils.merge_with_superposition(target, source);
         result.should.have.property('test');
         result.test.should.have.lengthOf(1);
         result.test[0].should.have.property('yep', 'nok');
@@ -296,7 +296,7 @@ describe('Utils#merge_with_superposition', () => {
         const source = { test: [{ nope: 'ok' }] };
         const target = { test: [{ yep: 'nok' }] };
 
-        const result = utils.merge_with_superposition(source, target);
+        const result = utils.merge_with_superposition(target, source);
         result.should.have.property('test');
         result.test.should.have.lengthOf(1);
         result.test[0].should.have.property('nope', 'ok');
@@ -307,7 +307,7 @@ describe('Utils#merge_with_superposition', () => {
         const source = { test: [{ nope: 'ok' }, { second: 'ok' }] };
         const target = { test: [{ yep: 'nok' }, { second_nope: 'ok' }] };
 
-        const result = utils.merge_with_superposition(source, target);
+        const result = utils.merge_with_superposition(target, source);
 
         result.should.have.property('test');
         result.test.should.have.lengthOf(2);
@@ -320,12 +320,32 @@ describe('Utils#merge_with_superposition', () => {
         const source = { test: [{ yep: 'nok' }, { second_nope: 'ok' }] };
         const target = { test: null };
 
-        const result = utils.merge_with_superposition(source, target);
+        const result = utils.merge_with_superposition(target, source);
 
         result.should.have.property('test');
         result.test.should.have.lengthOf(2);
         result.test[0].should.have.property('yep', 'nok');
         result.test[1].should.have.property('second_nope', 'ok');
+    });
+    it('should merge simple objects', () => {
+        const source = { yep: 'test1' };
+        const target = { yep: 'test2' };
+
+
+        const result = utils.merge_with_superposition(target, source);
+        console.log("resultl : ", result);
+
+        result.should.have.property('yep', 'test2');
+    });
+
+    it('should merge simple objects 2', () => {
+        const source = { country: { label: 'Estonia' } };
+        const target = { state: { label: 'Submitted' }, country: { label: 'France' } };
+
+        const result = utils.merge_with_superposition(target, source);
+
+        result.state.should.have.property('label', 'Submitted');
+        result.country.should.have.property('label', 'Estonia');
     });
 });
 

@@ -9,11 +9,18 @@
 .input.is-danger {
     border-style: solid;
     border-width: 1px;
+    border-color: #ff3860;
+}
+
+.datepicker.control.is-danger .input {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ff3860;
 }
 
 .input:focus, .input:hover, .input:active {
-    border-color: transparent; 
-    box-shadow: none; 
+    border-color: transparent;
+    box-shadow: none;
 }
 
 .v-select .dropdown-toggle {
@@ -44,5 +51,18 @@ label.readonly {
 
 .field:not(:last-child){
     //margin-bottom: 0;
+}
+
+.b-table.is-loading {
+        // show loader
+        margin-bottom: 100px;
+}
+
+input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
 }
 

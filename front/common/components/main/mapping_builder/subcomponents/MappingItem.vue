@@ -19,7 +19,7 @@
             </button>
         </div>
         <div class="control" v-if="openable">
-            <button class="button is-info" @click="state.opened = !state.opened">
+            <button class="button is-info" @click.prevent="state.opened = !state.opened">
                 <span class="icon is-small">
                     <i class="fa fa-chevron-down" v-if="!state.opened"></i>
                     <i class="fa fa-chevron-up" v-else></i>

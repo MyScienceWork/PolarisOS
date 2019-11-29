@@ -28,6 +28,7 @@
         </div>
     </div>
     <navbar :menu="menu" />
+    <div :style="showNavbar ? 'height: 0px' : 'height: 53px'"></div>
 </div>
 </template>
 

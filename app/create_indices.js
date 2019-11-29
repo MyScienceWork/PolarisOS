@@ -2,7 +2,6 @@ const elasticsearch = require('elasticsearch');
 const _ = require('lodash');
 const config = require('./config');
 const mappings = require('./mappings');
-// const mappings = require('/Users/Cocophotos/Desktop/mappings');
 const settings = require('./settings');
 
 const client = new elasticsearch.Client(config.elasticsearch);
@@ -40,7 +39,7 @@ function create() {
             console.warn(`No settings for mapping ${name}`);
         }
 
-        if (['msw', 'uspc'].indexOf(index_prefix) !== -1) {
+        if (['msw', 'uspc', 'inserm'].indexOf(index_prefix) !== -1) {
             if (name === 'publication') {
                 return;
             }
@@ -71,7 +70,7 @@ function create() {
 
 function update() {
     _.forEach(mappings, (mapping, name) => {
-        if (['msw', 'uspc'].indexOf(index_prefix) !== -1) {
+        if (['msw', 'uspc', 'inserm'].indexOf(index_prefix) !== -1) {
             if (name === 'publication') {
                 return;
             }

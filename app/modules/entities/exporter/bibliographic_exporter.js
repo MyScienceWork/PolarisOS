@@ -308,7 +308,7 @@ class BibliographicExporter {
         }
 
         if (collections.length > 0) {
-            where.$and.push({ 'diffusion.internal_collection': collections });
+            where.$and.push({ 'diffusion.internal_collection2._id': collections });
         }
 
         if (start_year.length > 0) {

@@ -17,12 +17,13 @@ const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
 const Template = require('./pages/template/Template.vue');
-const Connector = require('./pages/connector/Connector.vue');
-const Importer = require('./pages/importer/Importer.vue');
+//const Connector = require('./pages/connector/Connector.vue');
+//const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 const Masas = require('./pages/masas/Masas.vue');
+const Workflow = require('./pages/workflow/Workflow.vue');
 
 module.exports.menu = [
     [
@@ -70,6 +71,7 @@ module.exports.menu = [
             component: Review,
             intro: 'l_backoffice_review_menu_help',
         },
+        /*
         {
             section: 'l_general_section',
             name: 'l_masas_page',
@@ -80,10 +82,21 @@ module.exports.menu = [
             submenu: [],
             component: Masas,
             intro: 'l_backoffice_masas_menu_help',
-        },
+        },*/
     ],
 
     [
+        {
+            section: 'l_admin_section',
+            name: 'l_workflow_page',
+            access: 'back-workflow',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'workflow',
+            routes: [Routes.workflow],
+            submenu: [],
+            component: Workflow,
+            intro: 'l_backoffice_workflow_menu_help',
+        },
         {
             section: 'l_admin_section',
             name: 'l_entities_page',
@@ -186,7 +199,7 @@ module.exports.menu = [
             component: Template,
             intro: 'l_backoffice_template_menu_help',
         },
-        /* {
+        {
             section: 'l_ui_ux_section',
             name: 'l_widgets_page',
             access: 'entity',
@@ -195,7 +208,7 @@ module.exports.menu = [
             routes: [Routes.widget],
             submenu: [],
             component: Widget,
-        },*/
+        },
         {
             section: 'l_ui_ux_section',
             name: 'l_pages_page',
@@ -208,8 +221,8 @@ module.exports.menu = [
             intro: 'l_backoffice_page_menu_help',
         },
     ],
-
-    /* [
+    /*
+     [
         {
             section: 'l_import_export_section',
             name: 'l_connectors_page',
@@ -240,8 +253,8 @@ module.exports.menu = [
             submenu: [],
             component: Widget,
         },
-    ],*/
-
+    ],
+    */
     [
         {
             section: 'l_advanced_section',

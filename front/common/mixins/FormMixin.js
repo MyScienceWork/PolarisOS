@@ -5,6 +5,22 @@ const LangMixin = require('./LangMixin');
 
 module.exports = {
     mixins: [LangMixin],
+    data() {
+        return {
+            state: {
+                sinks: {
+                    reads: {
+                        user_forms: 'user_forms_read',
+                    },
+                    paths: {
+                        reads: {
+                            user_forms: APIRoutes.entity('form', 'POST', true),
+                        },
+                    },
+                },
+            },
+        };
+    },
     computed: {
         fform() {
             return (sink) => {
@@ -52,6 +68,19 @@ module.exports = {
                     return myform.state;
                 }
                 return 'initial';
+            };
+        },
+        user_forms() {
+            const content = this.fcontent(this.state.sinks.reads.user_forms);
+            if (!(content instanceof Array) || content.length === 0) {
+                return () => [];
+            }
+            return (f) => {
+                const r = content.filter(c => c.name === f);
+                if (r.length > 0) {
+                    return r[0];
+                }
+                return [];
             };
         },
     },

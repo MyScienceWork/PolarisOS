@@ -43,7 +43,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
-                        item: APIRoutes.entity('publication', 'POST', true),
+                    //    item: APIRoutes.entity('publication', 'POST', true),
                         license: APIRoutes.entity('license', 'POST', true),
                         contributor: APIRoutes.entity('author', 'POST', true),
                         contributor_role: APIRoutes.entity('contributor_role', 'POST', true),
@@ -111,7 +111,10 @@ module.exports = {
 
             if (status === 'master') {
                 const file = _.find(files, f => f.is_master) || files[0];
-                return `/download/${file.preview_url}`;
+                if (file.preview_url) {
+                    return `/download/${file.preview_url}`;
+                }
+                return null;
             }
             return null;
         },
@@ -755,8 +758,7 @@ module.exports = {
             if (!item) {
                 return '';
             }
-
-            return Utils.find_value_with_path(item, 'denormalization.diffusion.internal_collection'.split('.')) || '';
+            return item.denormalization.diffusion.internal_collection2.map(s => s._id.label);
         },
         editor() {
             const item = this.content_item;

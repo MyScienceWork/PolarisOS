@@ -41,7 +41,7 @@
                                     >
                                     <i class="fa fa-times"></i>
                                     </action-button>
-                                    {{props.info.name}}
+                                    {{props.info.name}} ({{props.info.id}})
                                 </span>
                                 <div slot="body">
                                 </div>
@@ -56,36 +56,36 @@
                 <widget id="mwidget">
                 <span slot="title">{{lang('l_add_or_modify_query')}}</span>
                     <div slot="body">
-                        <fform 
-                            :name="state.sinks.creations.query" 
-                            :post_path="state.paths.creations.query" 
+                        <fform
+                            :name="state.sinks.creations.query"
+                            :post_path="state.paths.creations.query"
                             :put_path="state.paths.creations.query"
                             :get_path="state.paths.reads.query"
                             :get_form="state.sinks.reads.query"
                         >
-                        <finput 
-                            name="name" 
-                            :label="lang('l_query_name')" 
-                            :is-required="true" 
-                            :placeholder="lang('l_query_name')" 
-                            type="text" 
-                            :form="state.sinks.creations.query" 
+                        <finput
+                            name="name"
+                            :label="lang('l_query_name')"
+                            :is-required="true"
+                            :placeholder="lang('l_query_name')"
+                            type="text"
+                            :form="state.sinks.creations.query"
                         />
-                        <finput 
-                            name="id" 
-                            :label="lang('l_query_id')" 
-                            :is-required="true" 
-                            :placeholder="lang('l_query_id')" 
-                            type="text" 
-                            :form="state.sinks.creations.query" 
+                        <finput
+                            name="id"
+                            :label="lang('l_query_id')"
+                            :is-required="true"
+                            :placeholder="lang('l_query_id')"
+                            type="text"
+                            :form="state.sinks.creations.query"
                         />
-                        <finput 
+                        <finput
                             rows="30"
-                            name="content" 
-                            :label="lang('l_query_content_json')" 
-                            :is-required="true" 
-                            type="textarea" 
-                            :form="state.sinks.creations.query" 
+                            name="content"
+                            :label="lang('l_query_content_json')"
+                            :is-required="true"
+                            type="textarea"
+                            :form="state.sinks.creations.query"
                         />
                         </fform>
                     </div>

@@ -12,6 +12,7 @@ module.exports = {
         searchSink: { default: 'search_read', type: String },
         resultSink: { required: true, type: String },
         searchQuery: { required: true, type: String },
+        emptySearchQuery: { required: false, type: String },
         searchType: { required: true, type: String },
         useDefaultQuery: { default: false, type: Boolean }, // Run default query when typed_search === '' ?
         defaultQuery: { default: '{}', type: String },
@@ -56,6 +57,10 @@ module.exports = {
             if (sink === this.searchSink) {
                 this.state.loading = true;
             }
+        },
+        initialize() {
+            this.state.loading = false;
+            this.$store.commit(Messages.INITIALIZE, { form: this.resultSink });
         },
         get_information(query, opt, default_value) {
             if (!query) {
@@ -211,10 +216,10 @@ module.exports = {
                 return o;
             }, {});
 
-            console.log(JSON.stringify(filters));
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
+            this.state.loading = true;
             const content = this.fcontent(sink);
             let new_content = {};
 
@@ -252,14 +257,29 @@ module.exports = {
                             where = squery;
                         }
                     }
-                }
+                } else if (this.emptySearchQuery) {
+                    const squery = JSON.parse(Handlebars.compile(this.emptySearchQuery)({}));
 
-                if (this.state.seso.filters.length === 0
-                    && Object.keys(extra_filters).length === 0
-                    && !this.useDefaultQuery) {
-                    return;
+                    if (Object.keys(squery).length > 0) {
+                        if (this.state.seso.filters.length > 0
+                            || Object.keys(extra_filters).length > 0) {
+                            where.$and.push(squery);
+                        } else {
+                            where = squery;
+                        }
+                    }
+                } else {
+                    const squery = JSON.parse(Handlebars.compile(this.searchQuery)({}));
+                    if (squery.body) {
+                        Object.keys(squery.body).forEach((key) => {
+                            const value = Utils.find_value_with_path(content, key.split('.'));
+                            if (value && value !== '') {
+                                squery.body[key] = Utils.find_value_with_path(content, key.split('.'));
+                            }
+                        });
+                    }
+                    where = squery;
                 }
-
                 body.where = where;
             } else {
                 new_content = _.cloneDeep(content);
@@ -296,8 +316,6 @@ module.exports = {
             }
 
             body.sort.push({ _uid: 'desc' });
-
-            console.log(body);
 
             this.$store.dispatch('search', {
                 path: this.searchPath,
@@ -347,7 +365,6 @@ module.exports = {
         },
         filters(nf) {
             this.state.seso.filters = nf;
-            console.log('filters', nf);
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);
             }
@@ -356,6 +373,9 @@ module.exports = {
             this.dispatch(s, this, this.searchSink);
         },
         current_state_result(s) {
+            if (s !== 'loading') {
+                this.state.loading = false;
+            }
             this.dispatch(s, this, this.resultSink);
         },
         create_state_result(s) {

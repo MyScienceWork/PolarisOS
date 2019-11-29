@@ -77,6 +77,9 @@ const TrackingStatsModel = require('../entities/tracking_stat/models/tracking_st
 const SystemReport = require('../entities/system_report/system_report');
 const SystemReportModel = require('../entities/system_report/models/system_reports');
 
+const Workflow = require('../entities/workflow/workflow');
+const WorkflowModel = require('../entities/workflow/models/workflows');
+
 const Cache = require('../entities/cache/cache');
 const CacheModel = require('../entities/cache/models/caches');
 
@@ -290,6 +293,8 @@ async function get_model_from_type(type: string): ?Object {
         return TrackingStatsModel;
     case 'system_report':
         return SystemReportModel;
+    case 'workflow':
+        return WorkflowModel;
     case 'cache':
         return CacheModel;
     default: {
@@ -348,6 +353,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new TrackingStats(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'system_report':
         return new SystemReport(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'workflow':
+        return new Workflow(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'cache':
         return new Cache(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {

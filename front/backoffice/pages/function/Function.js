@@ -23,6 +23,7 @@ module.exports = {
                     },
                     creations: {
                         search: 'function_creation_search',
+                        function: 'function_creation',
                     },
                 },
                 selected_types: {},

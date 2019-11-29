@@ -6,13 +6,9 @@ const logger = new (winston.Logger)({
         new (winston.transports.Console)({
             level: config.logger.transports.console.level,
             colorize: true,
-            timestamp: true
+            timestamp: true,
+            prettyPrint: true,
         }),
-//         new (winston.transports.File)({
-//             filename: config.logger.logFile,
-//             level: config.logger.transports.file.level,
-//             colorize: true,
-//         }),
     ],
 });
 

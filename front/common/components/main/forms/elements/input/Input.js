@@ -5,6 +5,7 @@ const InputMixin = require('../../mixins/InputMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
+const APIRoutes = require('../../../../../api/routes');
 
 module.exports = {
     mixins: [InputMixin],
@@ -17,13 +18,14 @@ module.exports = {
         read: { default: false, type: Boolean },
         hidden: { default: false, type: Boolean },
         // form: { required: true, type: String }, //InputMixin
-        rows: { default: 10 },
+        rows: { default: 15 },
         radioButtons: { default: () => [], type: Array },
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
         default: { default: null },
         readonly: { default: false, type: Boolean },
+        duplicate_warning: { default: false, type: Boolean },
         modal_help: { default: false, type: Boolean },
         help: { required: false, type: String, default: '' },
         viewValidationTexts: { required: false, type: Boolean, default: true },
@@ -36,6 +38,9 @@ module.exports = {
             default: parseInt(moment().add(3, 'y').format('YYYY'), 10),
             type: Number },
         yearStep: { required: false, default: 1, type: Number },
+        minDate: { require: false, type: Date },
+        maxDate: { require: false, type: Date },
+        fieldId: { required: false, type: Number },
     },
 
     data() {
@@ -43,6 +48,13 @@ module.exports = {
             state: {
                 value: undefined,
                 showHelpModal: false,
+                duplicate_warning_message: '',
+                duplicate_warning_items: [],
+                sinks: {
+                    reads: {
+                        duplicate_warning: [],
+                    },
+                },
             },
         };
     },
@@ -79,10 +91,11 @@ module.exports = {
             } else {
                 info = e;
             }
-
             if (this.type === 'date') {
-                if (typeof info !== 'string') {
-                    info = +moment.utc(info.toISOString());
+                if (info && typeof info !== 'string') {
+                    // date is local timezone so now we convert it to UTC
+                    info = new Date(info.getTime() - (info.getTimezoneOffset() * 60000));
+                    info = +moment.utc(info.toUTCString());
                 }
             } else if (this.type === 'date-year') {
                 const number = Math.min(Math.max(this.yearRangeStart, parseInt(info, 10)), this.yearRangeEnd);
@@ -92,14 +105,26 @@ module.exports = {
                     info = moment.utc(info.toISOString()).format('HH:mm');
                 }
             } else if (this.type === 'password-sha1' && info != null && info.trim() !== '') {
-                info = Crypto.createHash('sha1').update(info).digest('hex');
+                const hashedPassword = Crypto.createHash('sha1').update(info).digest('hex');
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info: hashedPassword,
+                });
             }
 
-            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                form: this.form,
-                name: this.name,
-                info,
-            });
+            if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
+                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                    info,
+                });
+            }
+
+            if (this.type === 'date') {
+                const date_info = { info, name: this.name };
+                this.$emit('date-value-change', date_info);
+            }
 
             this.$emit('value-change', info);
 
@@ -108,6 +133,28 @@ module.exports = {
             if (this.type !== 'date') {
                 this.state.value = formatted_info;
             }
+        },
+        blur(e) {
+            if (!this.duplicate_warning) {
+                return;
+            }
+            const info = e.target.value;
+            if (info.trim() === '') {
+                return;
+            }
+            const cform_name = this.form.split('_').slice(0, -1).join('_');
+            this.state.sinks.reads.duplicate_warning[this.name] = `duplicate_warning_${this.name}_read`;
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.duplicate_warning[this.name],
+                path: APIRoutes.entity(cform_name, 'POST', true),
+                body: {
+                    where: {
+                        $and: {
+                            [this.name]: info,
+                        },
+                    },
+                },
+            });
         },
         defaultValue() {
             if (this.default != null) {
@@ -194,6 +241,18 @@ module.exports = {
         readonlyValue(v) {
             return this.computeReadonlyValue(v);
         },
+        content_duplicate_warning(data) {
+            if (!(data instanceof Array) || data.length === 0) {
+                this.$set(this.state, 'duplicate_warning_message', '');
+                return;
+            }
+            const duplicate_warning_items = [];
+            data.forEach((item) => {
+                duplicate_warning_items.push(item[this.name]);
+            });
+            this.$set(this.state, 'duplicate_warning_message', `l_duplicate_${this.form}_${this.name}`);
+            this.$set(this.state, 'duplicate_warning_items', duplicate_warning_items);
+        },
     },
     computed: {
         emptyValue() {
@@ -207,6 +266,27 @@ module.exports = {
         },
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
+        },
+        contentForm() {
+            return this.fcontent(this.cform);
+        },
+        get_min_date() {
+            if (this.minDate) {
+                return this.minDate;
+            }
+            return null;
+        },
+        get_max_date() {
+            if (this.maxDate) {
+                return this.maxDate;
+            }
+            return null;
+        },
+        content_duplicate_warning() {
+            return this.fcontent(this.state.sinks.reads.duplicate_warning[this.name]);
+        },
+        duplicate_warning_message() {
+            return this.state.duplicate_warning_message;
         },
     },
     beforeMount() {

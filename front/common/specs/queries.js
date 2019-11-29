@@ -7,7 +7,7 @@ const publication_search = {
         { 'denormalization.authors._id.fullname': '{{{search}}}' },
         { 'denormalization.classifications._id.label': '{{{search}}}' },
         { 'denormalization.contributors.label.fullname': '{{{search}}}' },
-        { 'denormalization.diffusion.internal_collection': '{{{search}}}' },
+        { 'denormalization.diffusion.internal_collection2._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.projects._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.research_teams._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.surveys._id.name': '{{{search}}}' },
@@ -32,12 +32,12 @@ const unpublished_websiteok = {
 };
 
 const filter_out_types_and_subtypes = (types, subtypes) =>
-({
-    $nfand: [
-    { type: types },
-    { subtype: subtypes },
-    ],
-});
+    ({
+        $nfand: [
+            { type: types },
+            { subtype: subtypes },
+        ],
+    });
 
 function viewable(uid, aid) {
     const base = { $or: [{ 'diffusion.rights.exports.nowhere': false }] };
@@ -67,17 +67,62 @@ module.exports = {
     no_other_version: {
         has_other_version: false,
     },
-    published: {
-        status: 'published',
-    },
     viewable,
-    last_deposits: (uid, aid) => ({
-        $and: [
-            { has_other_version: false },
-            { status: 'published' },
-            viewable(uid, aid),
-        ],
-    }),
+    filter_role(userId, roles, filter) {
+        if (roles.funder) {
+            filter.$and.push({ depositor: userId });
+        }
+        return filter;
+    },
+    last_deposits_submitted(userId, roles) {
+        const filter = {
+            sort: [{ creation_date: 'desc' }],
+            $and: [
+                { 'denormalization.state.label': 'Submitted' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_published(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Published' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_reviewed_by_curator_1(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Reviewed by curator 1' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_reviewed_by_curator_2(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Reviewed by curator 2' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_rejected_by_curator_1(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Rejected by curator 1' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
+    last_deposits_rejected_by_curator_2(userId, roles) {
+        const filter = {
+            $and: [
+                { 'denormalization.state.label': 'Rejected by curator 2' },
+            ],
+        };
+        return this.filter_role(userId, roles, filter);
+    },
     form: {
         $or: [
             { name: '{{{search}}}' },

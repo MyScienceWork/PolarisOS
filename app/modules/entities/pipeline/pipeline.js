@@ -135,6 +135,11 @@ class Pipeline extends ODM {
                         ComplFunctions.denormalization(args[0].value, args[1].value,
                             args[2].value, args[3].value, args[4].value)(o, p, i),
                     };
+                case 'flatten':
+                    return { [f.field]: (o, p, i) =>
+                          ComplFunctions.flatten(args[0].value, args[1].value,
+                            args[2].value, args[3].value)(o, p, i),
+                    };
                 case 'initial':
                     return { [f.field]: (o, p, i) =>
                         ComplFunctions.initial(args[0].value, args[1].value)(o, p, i),

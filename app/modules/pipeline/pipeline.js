@@ -138,6 +138,9 @@ class Pipeline {
             const validator = new Validator();
             const errors = await validator
                 .validate(item, pipeline.Validation, method);
+            if (errors) {
+                Logger.error('These are validation errors : ', errors);
+            }
             return { item, errors };
         }
         }
@@ -201,9 +204,9 @@ class Pipeline {
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
                 'complete', method, range, extra);
         item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
-                'filter', method, range, extra);
-        item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
                 'validate', method, range, extra);
+        item = await Pipeline._run_part_of_pipeline(item, type, pipelines,
+                'filter', method, range, extra);
         return item;
     }
 
@@ -212,6 +215,7 @@ class Pipeline {
             const item = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = await EntitiesUtils.get_model_from_type(type);
+            Logger.info("This is the model : ", model);
             const pipelines = model.Pipelines || [];
             const extra = ctx.__md || {};
 

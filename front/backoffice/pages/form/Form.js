@@ -76,6 +76,9 @@ module.exports = {
             });
     },
     computed: {
+        api_method() {
+            return [{ label: 'GET' }, { label: 'PUT' }, { label: 'POST' }];
+        },
         importers() {
             const content = this.fcontent(this.state.sinks.reads.importer);
             if (content instanceof Array) {

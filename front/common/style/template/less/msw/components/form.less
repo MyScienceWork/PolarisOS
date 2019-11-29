@@ -12,8 +12,8 @@
 }
 
 .input:focus, .input:hover, .input:active {
-    border-color: transparent; 
-    box-shadow: none; 
+    border-color: transparent;
+    box-shadow: none;
 }
 
 .v-select .dropdown-toggle {
@@ -44,5 +44,13 @@ label.readonly {
 
 .field:not(:last-child){
     //margin-bottom: 0;
+}
+
+input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
 }
 

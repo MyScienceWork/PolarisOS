@@ -5,14 +5,14 @@
                 <div class="navbar-start">
                     <form @submit.prevent="search">
                         <div class="field has-addons" v-intro="lang('l_backoffice_search_help')">
-                            <p class="control has-icons-left is-expanded">
+                            <p class="control has-icons-left is-expanded" v-if="showSearch">
                                 <finput type="text" :placeholder="lang('l_search')" name="search" :form="searchSink" label="" :is-addon="true" />
                                 <span class="icon is-left">
                                     <i class="fa fa-search"></i>
                                 </span>
                                 </p>
                             <p class="control">
-                                <a class="button is-info" :alt="lang('l_search')" :title="lang('l_search')" @click="search">
+                                <a class="button is-info" :alt="lang('l_search')" :title="lang('l_search')" @click="search" v-if="!readOnly">
                                     <span class="icon">
                                         <i class="fa fa-search"></i>
                                     </span>
@@ -30,21 +30,27 @@
                 </div>
                 <div class="navbar-end">
                     <b-dropdown>
-                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')">
+                        <a class="navbar-link swap" slot="trigger" v-intro="lang('l_backoffice_items_per_page_help')" v-if="enablePagination">
                             {{lang('f_items_per_page')}}
                         </a>
 
                         <b-dropdown-item v-for="s in sizeList" :class="['navbar-item', {'is-active': state.seso.size === s}]" @click="() => size(s)">
-                                {{s}} 
+                                {{s}}
                             </b-dropdown-item>
                     </b-dropdown>
                 </div>
             </div>
         </nav>
         <section v-if="Object.keys(columns).length > 0" v-intro="lang('l_backoffice_show_columns_help')">
-            <p class="has-small-top-margin has-small-bottom-margin">{{lang('l_show_columns')}}</p>
             <b-field grouped group-multiline>
-                <div v-for="(val, key) in columns" v-if="!columns[key].force" 
+                <div>
+                    <b-checkbox type="is-info" :value="all_columns_visible" @input="(c) => on_main_checkbox_update(columns, c)">
+                        {{ lang('main_checkbox_columns') }}
+                    </b-checkbox>
+                </div>
+            </b-field>
+            <b-field grouped group-multiline>
+                <div v-for="(val, key) in columns" v-if="!columns[key].force"
                     :key="key"
                     class="control"
                 >
@@ -67,6 +73,7 @@
             @check-all="on_checked_rows_update"
             :detail-key="detailKey"
             :checkable="checkable"
+            :is-row-checkable="() => !readOnly"
             @sort="sort"
             v-intro="lang('l_backoffice_datatable_help')"
             >

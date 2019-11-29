@@ -13,7 +13,6 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             :search-type="entity()"
-                            :table-classes="{'has-small-font': state.visible_columns > 5}"
                             :detailed="true"
                             detail-key="_id"
                             :checkable="true"
@@ -26,19 +25,19 @@
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column v-for="(value, key) in state.columns"
-                                    :field="value.sort" 
-                                    :label="lang(value.title, {}, value.lang)" 
+                                    :field="value.sort"
+                                    :label="lang(value.title, {}, value.lang)"
                                     :visible="value.visible"
                                     :sortable="value.sortable"
                                     :centered="value.centered">
-                                    <span 
-                                        :class="`tag ${value.tag_class}`" 
+                                    <span
+                                        :class="`tag ${value.tag_class}`"
                                         v-if="value.is_tag"
                                         :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
                                     >
                                     </span>
                                     <div v-else
-                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"  
+                                        :inner-html.prop="props.row | find(value.field) | need_translation(value.translate, hlang, lang) | truncate(value.truncate) | show_lang_key(value.show_lang_key, _oa_find(props.row, value.field)) | format(value)"
                                     >
                                     </div>
                                 </b-table-column>
@@ -80,9 +79,9 @@
                 <widget id="mwidget">
                 <span slot="title">{{lang('b_add_entity')}}</span>
                     <div slot="body">
-                        <fform 
-                            :name="state.sinks.creations[entity()]" 
-                            :post_path="state.paths.creations[entity()]" 
+                        <fform
+                            :name="state.sinks.creations[entity()]"
+                            :post_path="state.paths.creations[entity()]"
                             :put_path="state.paths.creations[entity()]"
                             :get_path="state.paths.reads[entity()]"
                             :get_form="state.sinks.reads[entity()]"

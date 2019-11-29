@@ -16,11 +16,16 @@ const Validation: Array<any> = [
         firstname: Joi.string().required().label('Firstname'),
         lastname: Joi.string().required().label('Lastname'),
         fullname: Joi.string().required().label('Fullname'),
-        preferred_language: Joi.string().required().label('Preferred language'),
-        hpassword: Joi.string().label('Password'),
-        retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).label('Password validation'),
+        preferred_language: Joi.string(),
+        hpassword: Joi.string().required().label('Password'),
+        retype_hpassword: Joi.string().valid(Joi.ref('hpassword')).required().label('Password validation'),
+        emails: Joi.array().items(
+            Joi.object().keys({
+                email: Joi.string().required().label('Email'),
+            })
+        ).min(1).required().label('Email'),
     }),
-    ValFunctions.checks.is_unique('uid', 'user'),
+    //ValFunctions.checks.is_unique('uid', 'user'),
 ];
 
 const Formatting: Array<any> = [

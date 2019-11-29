@@ -5,6 +5,7 @@ const Utils = require('../../../utils/utils');
 const CryptoUtils = require('../../../utils/crypto');
 const EntitiesUtils = require('../../../utils/entities');
 const LangUtils = require('../../../utils/lang');
+const Logger = require('../../../../logger');
 
 function generic_complete(template: string): Function {
     return async (object: Object, path: string, info: Object = {}) => {
@@ -97,7 +98,16 @@ function denormalization(from_entity: string, from_path: string,
                 const last = eseg[eseg.length - 1];
                 const value = eobj[last];
                 if (flat) {
+                    if (value && translatable) {
+                        return await LangUtils
+                            .string_to_translation(value, 'EN', 0);
+                    }
                     return value;
+                }
+                if (value && translatable) {
+                    const value_translated = await LangUtils
+                        .string_to_translation(value, 'EN', 0);
+                    return { [last]: value_translated };
                 }
                 return { [last]: value };
             }
@@ -115,10 +125,77 @@ function denormalization(from_entity: string, from_path: string,
     };
 }
 
+function flatten(from_entity: string, from_path: string,
+                         entity_path: string, translatable: boolean, search_value: string = ''): Function {
+    return async (object: Object, path: string, info: Object = {}) => {
+        const func = (nr, from, eseg, svalue) => async (id) => {
+            if (!id) {
+                return null;
+            }
+            if (nr) {
+                let source = null;
+
+                if (svalue !== '') {
+                    const sources = await EntitiesUtils.search_and_get_sources(from, {
+                        where: { [svalue]: id },
+                        size: 1,
+                    });
+                    if (sources.length > 0) {
+                        source = sources[0];
+                    }
+                } else {
+                    source = await EntitiesUtils.retrieve_and_get_source(from, id);
+                }
+
+                if (source == null) {
+                    return null;
+                }
+
+                const eobj = Utils.find_object_with_path(source, eseg);
+                if (eobj == null) {
+                    return null;
+                }
+                const last = eseg[eseg.length - 1];
+                const value = eobj[last];
+                if (value && translatable) {
+                    const value_translated = await LangUtils
+                      .string_to_translation(value, 'EN', 0);
+                    return value_translated;
+                }
+                return value;
+            }
+            return id;
+        };
+
+        const need_to_retrieve = from_entity != null && from_entity.trim() !== ''
+          && entity_path != null && entity_path.trim() !== '';
+        const entity_segments = entity_path.split('.');
+
+        const from_path_segments = from_path.split('.');
+        const final = {}
+        const last = entity_segments[entity_segments.length - 1];
+        const new_field = from_path_segments[0]+'_'+last+'_flatten';
+        final[new_field] = [];
+        const result = await Utils.traverse_recreate_and_execute(object, from_path_segments,
+          func(need_to_retrieve, from_entity, entity_segments, search_value));
+        const values = Utils.find_object_with_path(result, from_path_segments);
+        if (values instanceof Array) {
+            values.forEach(value => {
+                final[new_field].push(value[from_path_segments[from_path_segments.length - 1]]);
+            })
+        } else {
+            const value = Utils.find_object_with_path(result, from_path_segments)[0]
+            final[new_field].push(value);
+        }
+        return { denormalization: final };
+    };
+}
+
 module.exports = {
     generic_complete,
     key_complete,
     secret_complete,
     denormalization,
     initial,
+    flatten,
 };

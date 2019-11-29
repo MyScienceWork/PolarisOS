@@ -36,7 +36,7 @@ module.exports = {
         login_status(ns) {
             if (ns === 'success') {
                 const redirect = this.$route.query.redirect;
-                if (redirect == null) {
+                if (redirect == null || redirect === undefined) {
                     this.$router.push({ path: '/' });
                 } else {
                     this.$router.push({ path: redirect });

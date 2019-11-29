@@ -10,5 +10,7 @@ try {
     // process.exit(1);
 }
 
-const config = _.merge({}, { _env: env }, baseConfig, tmp);
+const fromEnv = require('./from_env');
+
+const config = _.merge({}, { _env: env }, baseConfig, tmp, fromEnv);
 module.exports = config;

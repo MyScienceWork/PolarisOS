@@ -18,6 +18,7 @@ module.exports = {
                         entity: APIRoutes.entity('entity', 'POST', true),
                         pipeline: APIRoutes.entity('pipeline', 'POST', true),
                         form: APIRoutes.entity('form', 'POST', true),
+                        query: APIRoutes.entity('query', 'POST', true),
                     },
                     creations: {
                         entity: APIRoutes.entity('entity', 'POST'),
@@ -28,6 +29,7 @@ module.exports = {
                         entity: 'entity_read',
                         pipeline: 'pipeline_read',
                         form: 'form_read',
+                        query: 'query_read',
                     },
                     creations: {
                         entity: 'entity_creation',
@@ -52,6 +54,16 @@ module.exports = {
                 },
             });
         });
+        ['query'].forEach((e) => {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    projection: ['id'],
+                    size: 10000,
+                },
+            });
+        });
     },
     computed: {
         forms() {
@@ -59,6 +71,9 @@ module.exports = {
         },
         pipelines() {
             return this.mcontent(this.state.sinks.reads.pipeline);
+        },
+        querys() {
+            return this.mcontent(this.state.sinks.reads.query);
         },
         mapping_object: {
             get() {

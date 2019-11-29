@@ -18,7 +18,7 @@ async function complete(object: Object, completers: Array<any>,
         const promises = _.map(completer, (func: Function, path: string) =>
             func(final_object, path, info));
         const results = await Promise.all(promises);
-        final_object = Utils.merge_with_superposition(...results, final_object);
+        final_object = Utils.merge_with_superposition(final_object, ...results);
     }
     return final_object;
 }

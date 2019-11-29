@@ -12,7 +12,7 @@ module.exports = {
     beforeMount() {
     },
     mounted() {
-        console.log(JSON.stringify(this.page));
+        console.log('page : ', JSON.stringify(this.page));
     },
     computed: {
         pages() {

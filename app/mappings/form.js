@@ -58,6 +58,9 @@ module.exports = {
                             readonly: {
                                 type: 'boolean',
                             },
+                            duplicate_warning: {
+                                type: 'boolean',
+                            },
                             subform: {
                                 type: 'keyword',
                             },
@@ -89,6 +92,12 @@ module.exports = {
                                         type: 'integer',
                                     },
                                     sort: {
+                                        type: 'keyword',
+                                    },
+                                    start_date: {
+                                        type: 'keyword',
+                                    },
+                                    end_date: {
                                         type: 'keyword',
                                     },
                                 },
@@ -214,6 +223,61 @@ module.exports = {
                                     },
                                     keeper_sink: {
                                         type: 'keyword',
+                                    },
+                                },
+                            },
+                            dynamic_list: {
+                                properties: {
+                                    host: {
+                                        type: 'keyword',
+                                    },
+                                    port: {
+                                        type: 'keyword',
+                                    },
+                                    uri: {
+                                        type: 'keyword',
+                                    },
+                                    method: {
+                                        type: 'keyword',
+                                    },
+                                    selected_mapping: {
+                                        type: 'keyword',
+                                    },
+                                    read_only: {
+                                        type: 'boolean',
+                                    },
+                                    send_payload: {
+                                        type: 'nested',
+                                        properties: {
+                                            value: {
+                                                type: 'keyword',
+                                            },
+                                        },
+                                    },
+                                    result_table: {
+                                        type: 'nested',
+                                        properties: {
+                                            field: {
+                                                type: 'keyword',
+                                            },
+                                            title: {
+                                                type: 'keyword',
+                                            },
+                                            sort: {
+                                                type: 'integer',
+                                            },
+                                        },
+                                    },
+                                    result_mapping: {
+                                        type: 'nested',
+                                        properties: {
+                                            value_payload: {
+                                                type: 'keyword',
+                                            },
+                                            value_form: {
+                                                type: 'keyword',
+                                            },
+                                        },
                                     },
                                 },
                             },

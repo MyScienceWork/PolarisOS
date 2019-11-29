@@ -108,7 +108,14 @@
                                             </li>
                                         </ul>
                                     </p>
-                                    <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
+                                    <p v-if="collection.length > 0"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong>
+                                    <ul>
+                                        <li v-for="col in collection">
+                                            {{lang(col)}}
+                                        </li>
+                                    </ul>
+                                    </p>
+
                                     <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="p in projects">
@@ -136,7 +143,7 @@
                                     <template v-if="last_version_link">
                                     <p>
                                     <span>{{lang('f_more_recent_version_exists')}}</span> <router-link
-                                        class="has-text-purple" 
+                                        class="has-text-purple"
                                         v-html="lang('f_click_here_see_most_recent_version')"
                                         :to="last_version_link"
                                         ></router-link>
@@ -160,26 +167,38 @@
                                 class="card-content has-text-centered"
                                 v-if="is_files_accessible"
                             >
-                                <div class="columns is-centered">
-                                    <div class="column is-6 has-vertically-aligned-content is-vcentered">
+                                <template v-if="generate_preview_link('master')">
+                                    <div class="columns is-centered">
+                                        <div class="column has-vertically-aligned-content is-vcentered">
+                                            <a target="_blank" :href="generate_viewer_link('master')" v-if="generate_viewer_link('master')">
+                                                <img :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' width="256px" />
+                                            </a>
+                                            <img v-else :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' />
+                                        </div>
+                                    </div>
+                                    <div class="has-small-top-margin">
                                         <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
                                             <a :href="generate_download_link('master')" class="swap">
                                                 <span class="icon is-large">
-                                                    <i class="fa fa-file fa-3x"></i>
+                                                    <i class="fa fa-cloud-download fa-3x"></i>
                                                 </span>
-
                                             </a>
                                         </b-tooltip>
                                     </div>
-                                    <div v-if="generate_preview_link('master')" class="column is-6">
-                                        <img :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' />
+                                </template>
+                                <template v-else>
+                                    <div class="columns is-centered">
+                                        <div class="column has-vertically-aligned-content is-vcentered">
+                                            <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
+                                                <a :href="generate_download_link('master')" class="swap">
+                                                    <span class="icon is-large">
+                                                        <i class="fa fa-file fa-3x"></i>
+                                                    </span>
+                                                </a>
+                                            </b-tooltip>
+                                        </div>
                                     </div>
-                                </div>
-                                <p class="has-small-top-margin" v-if="generate_viewer_link('master')">
-                                    <a class="swap" target="_blank" :href="generate_viewer_link('master')">
-                                        {{lang('f_click_here_to_view_file_in_browser')}}
-                                    </a>
-                                </p>
+                                </template>
                                 <p class="has-small-top-margin" v-if="has_extra_files">
                                     <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
                                         {{lang('f_click_here_to_download_extra_files')}}

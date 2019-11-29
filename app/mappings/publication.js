@@ -13,6 +13,9 @@ module.exports = {
                         contributors: {
                             label: 'author',
                         },
+                        funders: {
+                            _id: 'funder',
+                        },
                         conference: 'conference',
                         delivery_institution: 'institution',
                         depositor: 'user',
@@ -30,6 +33,9 @@ module.exports = {
                         },
                         diffusion: {
                             internal_collection: 'internal_collection',
+                            internal_collection2: {
+                                _id: 'internal_collection',
+                            },
                             surveys: {
                                 _id: 'survey',
                             },
@@ -413,6 +419,24 @@ module.exports = {
                                             },
                                         },
                                     },
+                                    internal_collection2: {
+                                        type: 'nested',
+                                        properties: {
+                                            _id: {
+                                                properties: {
+                                                    label: {
+                                                        type: 'text',
+                                                        analyzer: 'folding',
+                                                        fields: {
+                                                            raw: {
+                                                                type: 'keyword',
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                     research_teams: {
                                         type: 'nested',
                                         properties: {
@@ -560,6 +584,14 @@ module.exports = {
                             },
                         },
                     },
+                    funders: {
+                        type: 'nested',
+                        properties: {
+                            _id: {
+                                type: 'keyword',
+                            },
+                        },
+                    },
                     classifications: {
                         type: 'nested',
                         properties: {
@@ -626,6 +658,14 @@ module.exports = {
                     diffusion: {
                         properties: {
                             internal_collection: { type: 'keyword' },
+                            internal_collection2: {
+                                type: 'nested',
+                                properties: {
+                                    _id: {
+                                        type: 'keyword',
+                                    },
+                                },
+                            },
                             projects: {
                                 type: 'nested',
                                 properties: {
@@ -672,6 +712,9 @@ module.exports = {
                                     exports: {
                                         properties: {
                                             hal: {
+                                                type: 'boolean',
+                                            },
+                                            datacite: {
                                                 type: 'boolean',
                                             },
                                             nowhere: {
@@ -914,6 +957,27 @@ module.exports = {
                     duration: {
                         type: 'integer',
                     },
+                    dataset_information: {
+                        properties: {
+                            size: {
+                                type: 'keyword',
+                            },
+                            version: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                            format: {
+                                type: 'text',
+                                analyzer: 'folding',
+                                fields: {
+                                    raw: { type: 'keyword' },
+                                },
+                            },
+                        },
+                    },
                     system: {
                         properties: {
                             depositor_comment: {
@@ -950,6 +1014,9 @@ module.exports = {
                             api: {
                                 properties: {
                                     handle: {
+                                        type: 'boolean',
+                                    },
+                                    datacite: {
                                         type: 'boolean',
                                     },
                                     hal: {
