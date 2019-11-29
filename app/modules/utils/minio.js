@@ -23,8 +23,8 @@ async function create_bucket_if_needed(bucket_name) {
             });
         });
     } catch (err) {
-        Logger.error(`Unable to create bucket ${bucket_name} for Minio server`);
-        Logger.error(err);
+        //Logger.error(`Unable to create bucket ${bucket_name} for Minio server`);
+        //Logger.error(err);
     }
 }
 
@@ -60,4 +60,5 @@ module.exports = {
     create_bucket_if_needed,
     default_bucket: Config.minio.default_bucket,
     public_bucket: Config.minio.public_bucket,
+    sitemap_bucket: Config.minio.sitemap_bucket,
 };

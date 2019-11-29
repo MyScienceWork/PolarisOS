@@ -6,5 +6,5 @@ module.exports = [
     { type: 'classifications._id', text: 'l_browse_by_subject', entity: 'subject' },
     { type: 'diffusion.projects._id', text: 'l_browse_by_project', entity: 'project' },
     { type: 'diffusion.surveys._id', text: 'l_browse_by_survey', entity: 'survey' },
-    { type: 'diffusion.internal_collection', text: 'l_browse_by_collection', entity: 'internal_collection' },
+    { type: 'diffusion.internal_collection2._id', text: 'l_browse_by_collection', entity: 'internal_collection' },
 ];

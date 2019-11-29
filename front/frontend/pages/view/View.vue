@@ -108,7 +108,14 @@
                                             </li>
                                         </ul>
                                     </p>
-                                    <p v-if="collection"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong> {{lang(collection)}}</p>
+                                    <p v-if="collection.length > 0"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong>
+                                    <ul>
+                                        <li v-for="col in collection">
+                                            {{lang(col)}}
+                                        </li>
+                                    </ul>
+                                    </p>
+
                                     <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong>
                                         <ul>
                                             <li v-for="p in projects">
@@ -136,7 +143,7 @@
                                     <template v-if="last_version_link">
                                     <p>
                                     <span>{{lang('f_more_recent_version_exists')}}</span> <router-link
-                                        class="has-text-purple" 
+                                        class="has-text-purple"
                                         v-html="lang('f_click_here_see_most_recent_version')"
                                         :to="last_version_link"
                                         ></router-link>

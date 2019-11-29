@@ -9,7 +9,9 @@
                         <div class="columns">
                             <div class="column">
                                 <div class="level">
-                                    <div class="level-left"></div>
+                                    <div class="level-left">
+                                        <a :href='get_bulk_link()'>{{lang('l_bulk_edition')}}</a>
+                                    </div>
                                     <div class="level-right">
                                         <a href='#' @click="state.show_import_modal = !state.show_import_modal" class="has-text-info">
                                             <template v-if="!state.show_import_modal">{{lang('l_import_publications')}}</template>
@@ -37,6 +39,9 @@
                             detail-key="_id"
                             :columns="state.columns"
                             @column-checkbox-update="on_column_update"
+                            @table-checked-rows-update="on_checked_rows_update"
+                            :checkable="true"
+                            :checked-rows="state.checked_rows"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column field="denormalization.type.label.raw" :label="lang('l_p_type')" centered :visible="state.columns['denormalization.type.label'].visible" sortable centered>
@@ -101,10 +106,94 @@
                                         {{props.row.dates.update | format_date('DD/MM/YYYY')}}
                                     </span>
                                 </b-table-column>
+                                <b-table-column field="dates.deposit" :label="lang('l_p_deposit')" sortable centered :visible="state.columns['dates.deposit'].visible">
+                                    <span class="tag is-warning">
+                                        {{props.row.dates.deposit | format_date('DD/MM/YYYY')}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="files" :label="lang('l_p_file', {}, 'other')" centered :visible="state.columns.files.visible">
                                     <span class="icon is-info">
                                         <a v-if="get_multi_download_link(props.row) != null" :href='get_multi_download_link(props.row)' title="Download file"><i class="fa fa-cloud-download"></i></a>
                                         <i v-else class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.nowhere" :label="lang('l_p_rights_nowhere', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.nowhere'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.nowhere') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.nowhere') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.website" :label="lang('l_p_rights_website', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.website'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.website') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.website') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="diffusion.rights.exports.hal" :label="lang('l_p_rights_hal', {}, 'other')" sortable centered :visible="state.columns['diffusion.rights.exports.hal'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'diffusion.rights.exports.hal') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'diffusion.rights.exports.hal') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="system.api.hal" :label="lang('l_p_system_api_hal', {}, 'other')" sortable centered :visible="state.columns['system.api.hal'].visible">
+                                    <span class="icon is-info">
+                                        <i v-if="get_info(props.row, 'system.api.hal') === true" class="fa fa-check"></i>
+                                        <i v-else-if="get_info(props.row, 'system.api.hal') === false" class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="system.api.hal_id" :label="lang('l_p_hal_id', {}, 'other')" centered :visible="state.columns['system.api.hal_id'].visible">
+                                    <span class="icon is-info">
+                                        {{get_license_info(props.row, 'system.api.hal_id')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.research_teams" :label="lang('l_p_research_teams', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.research_teams'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.research_teams', '_id.name')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.internal_collection2" :label="lang('l_p_internal_collection', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.internal_collection2'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.label')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.projects" :label="lang('l_p_projects', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.projects'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.projects', '_id.name')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.anr_projects" :label="lang('l_p_anr_projects', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.anr_projects'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.anr_projects', '_id.name')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.european_projects" :label="lang('l_p_european_projects', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.european_projects'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.european_projects', '_id.name')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.diffusion.surveys" :label="lang('l_p_surveys', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.surveys'].visible">
+                                    <span class="icon is-info">
+                                        {{get_array_info(props.row, 'denormalization.diffusion.surveys', '_id.name')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.rights.license" :label="lang('l_p_license', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.rights.license'].visible">
+                                    <span class="icon is-info">
+                                        {{get_license_info(props.row, 'denormalization.diffusion.rights.license')}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.rights.access" :label="lang('l_p_access', {}, 'other')" centered :visible="state.columns['denormalization.diffusion.rights.access'].visible">
+                                    <span class="icon is-info">
+                                        {{lang(get_info(props.row, 'denormalization.diffusion.rights.access'))}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="denormalization.publication_version" :label="lang('l_p_version', {}, 'other')" centered :visible="state.columns['denormalization.publication_version'].visible">
+                                    <span class="icon is-info">
+                                        {{lang(get_info(props.row, 'denormalization.publication_version'))}}
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="diffusion.rights.embargo" :label="lang('l_p_embargo', {}, 'other')" centered :visible="state.columns['diffusion.rights.embargo'].visible">
+                                    <span class="icon is-info">
+                                        {{get_info(props.row, 'diffusion.rights.embargo') | format_date('DD/MM/YYYY')}}
                                     </span>
                                 </b-table-column>
                                 <b-table-column field="denormalization.depositor.lastname.raw" :label="lang('l_p_depositor')" sortable centered :visible="state.columns['denormalization.depositor.lastname.raw'].visible">
@@ -146,6 +235,7 @@
                                     <p><strong>{{lang('l_publication_year')}}</strong> {{props.row.dates.publication | format_date('YYYY')}}</p>
                                     <p><strong>{{lang('l_publication_status')}}</strong> {{lang(`l_${props.row.status}_status`)}}</p>
                                     <p><strong>{{lang('l_publication_update')}}</strong> {{props.row.dates.update | format_date()}}</p>
+                                    <p><strong>{{lang('l_publication_deposit')}}</strong> {{props.row.dates.deposit | format_date()}}</p>
                                     <h4 class="title is-4 has-small-top-margin">{{lang('l_user_information')}}</h4>
                                     <p><strong>{{lang('l_publication_depositor')}}</strong> {{get_info(props.row, 'denormalization.depositor.firstname')}} {{get_info(props.row, 'denormalization.depositor.lastname')}}</p>
                                     <p><strong>{{lang('l_publication_reviewer')}}</strong> {{get_info(props.row, 'denormalization.reviewer.firstname')}} {{get_info(props.row, 'denormalization.reviewer.lastname')}}
@@ -156,6 +246,22 @@
                                         <p><strong>{{lang('l_comment')}} ({{_oa_find(email, 'created_at') | format_date('DD-MM-YYYY')}} {{lang('l_at')}} {{_oa_find(email, 'created_at') | format_date('HH:mm')}})</strong></p>
                                         <p>{{_oa_find(email, 'body')}}</p>
                                     </div>
+                                    <h4 class="title is-4 has-small-top-margin">{{lang('l_detailed_information')}}</h4>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_nowhere')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.nowhere')}}</p>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_website')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.website')}}</p>
+                                    <p><strong>{{lang('l_publication_system_api_hal')}}</strong> {{get_info(props.row, 'system.api.hal')}}</p>
+                                    <p><strong>{{lang('l_publication_system_api_hal_id')}}</strong> {{get_info(props.row, 'system.api.hal_id')}}</p>
+                                    <p><strong>{{lang('l_publication_diffusion_exports_hal')}}</strong> {{get_info(props.row, 'diffusion.rights.exports.hal')}}</p>
+                                    <p><strong>{{lang('l_publication_research_teams')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.research_teams', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_internal_collection')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.internal_collection2', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.projects', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_anr_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.anr_projects', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_european_project')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.european_projects', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_survey')}}</strong> {{get_array_info(props.row, 'denormalization.diffusion.surveys', '_id.name')}}</p>
+                                    <p><strong>{{lang('l_publication_license')}}</strong> {{get_license_info(props.row, 'denormalization.diffusion.rights.license')}}</p>
+                                    <p><strong>{{lang('l_publication_access')}}</strong> {{get_info(props.row, 'denormalization.diffusion.rights.access')}}</p>
+                                    <p><strong>{{lang('l_publication_version')}}</strong> {{get_info(props.row, 'denormalization.publication_version')}}</p>
+                                    <p><strong>{{lang('l_publication_embargo')}}</strong> {{get_info(props.row, 'diffusion.rights.embargo')}}</p>
                                 </div>
                             </template>
                         </fdata-table-searching>

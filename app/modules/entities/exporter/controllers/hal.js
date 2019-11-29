@@ -148,14 +148,13 @@ async function get_edition_stmt(publication: Object): Promise<string> {
     }
 
     const annexes = files.length === 1 ? [] : files.filter(f => !f.is_master);
-    const master_ref = `<ref type="file" subtype="${_.escape(subtype)}" target="${_.escape(master.name)}" n="1">${_.escape(embargo)}</ref>`;
-    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${_.escape(a.name)}" n="${_.escape(i)}"><desc>Deposited annex</desc></ref>`);
+    const master_ref = `<ref type="file" subtype="${_.escape(subtype)}" target="${_.escape(master.name)}" n="1">${embargo}</ref>`;
+    const annexes_refs = annexes.map((a, i) => `<ref type="annex" subtype="other" target="${_.escape(a.name)}" n="${_.escape(i)}"><desc>Deposited annex</desc>${embargo}</ref>`);
     const written = `<date type="whenWritten">${moment(dates.publication).tz('Europe/Paris').format('YYYY-MM-DD')}</date>`;
 
 
     let enclosure = '<editionStmt><edition>';
     enclosure += written;
-    enclosure += embargo;
     enclosure += master_ref;
     enclosure += annexes_refs.join('');
     enclosure += '</edition></editionStmt>';
@@ -196,9 +195,22 @@ async function get_series_stmt(publication: Object): Promise<string> {
 async function get_notes_stmt(publication: Object): Promise<string> {
     const description = Utils.find_value_with_path(publication, 'description'.split('.')) || '.';
     const description_ = `<note type="description">${_.escape(description)}</note>`;
+    const hal_type = await get_hal_type(publication);
+    let report = '';
+
+    if (hal_type === 'REPORT') {
+        const report_subtype = Utils.find_value_with_path(publication, 'subtype'.split('.'));
+        if (report_subtype === 'research-report' ) {
+            // http://api-preprod.archives-ouvertes.fr/ref/metadataList/?q=metaName_s:reportType&fl=*&wt=xml
+            report += `<note type="report" n="6">${_.escape('Research Report')}</note>`;
+        }
+    }
 
     let enclosure = '<notesStmt>';
     enclosure += description_;
+    if (hal_type === 'REPORT' && report !== '') {
+        enclosure += report;
+    }
     enclosure += '</notesStmt>';
     return enclosure;
 }
@@ -296,11 +308,9 @@ async function get_monogr(publication: Object): Promise<string> {
     const hal_type = await get_hal_type(publication);
 
     if (institution_info && institution_info.name) {
-        // if (hal_type === 'HDR' || hal_type === 'THESE') {
-        // school_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // } else {
         institution_ = `<authority type="institution">${_.escape(institution_info.name)}</authority>`;
-        // }
+    } else if (hal_type === 'REPORT' && editor_info && editor_info.label) {
+        institution_ = `<authority type="institution">${_.escape(editor_info.label)}</authority>`;
     }
 
     if (hal_type === 'HDR' || hal_type === 'THESE') {
