@@ -77,8 +77,9 @@ module.exports = {
             // init project type form choices
             this.$set(this.state, 'project_type', '');
             this.$set(this.state, 'project_subform_name', '');
-            this.$store.commit(Messages.INITIALIZE, {
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                 form: this.state.sinks.creations.project_type,
+                body: undefined,
             });
         },
         project_type_change(form) {
