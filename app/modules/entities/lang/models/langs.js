@@ -5,8 +5,7 @@ const LangMapping = require('../../../../mappings/lang');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
 
-const Mapping: Object = LangMapping.msw
-.mappings.lang.properties;
+const Mapping: Object = LangMapping.msw.mappings.properties;
 
 const valuesSchema = Joi.object({
     value: Joi.string().required().label('Translation'),

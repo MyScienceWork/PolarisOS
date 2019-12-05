@@ -1,11 +1,6 @@
 module.exports = {
     msw: {
         settings: {
-            index: {
-                mapper: {
-                    dynamic: false,
-                },
-            },
             analysis: {
                 filter: {
                     french_elision: {

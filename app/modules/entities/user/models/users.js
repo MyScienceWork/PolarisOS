@@ -9,7 +9,7 @@ const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const Utils = require('../../../utils/utils');
 const Config = require('../../../../config');
 
-const Mapping: Object = UserMapping.msw.mappings.user.properties;
+const Mapping: Object = UserMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
     Joi.object().keys({

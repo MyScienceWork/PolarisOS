@@ -61,72 +61,70 @@ const Slot = {
 module.exports = {
     msw: {
         mappings: {
-            page: {
-                dynamic: 'strict',
-                dynamic_date_formats: [],
-                _meta: {
-                    refs: {
-                        header: {
-                            rows: {
-                                widgets: {
-                                    _id: 'widget',
-                                },
+            dynamic: 'strict',
+            dynamic_date_formats: [],
+            _meta: {
+                refs: {
+                    header: {
+                        rows: {
+                            widgets: {
+                                _id: 'widget',
                             },
                         },
-                        main: {
-                            rows: {
-                                widgets: {
-                                    _id: 'widget',
-                                },
+                    },
+                    main: {
+                        rows: {
+                            widgets: {
+                                _id: 'widget',
                             },
                         },
-                        footer: {
-                            rows: {
-                                widgets: {
-                                    _id: 'widget',
-                                },
+                    },
+                    footer: {
+                        rows: {
+                            widgets: {
+                                _id: 'widget',
                             },
                         },
                     },
                 },
-                properties: {
-                    name: {
-                        type: 'text',
-                        fields: {
-                            raw: {
-                                type: 'keyword',
-                            },
+            },
+            properties: {
+                name: {
+                    type: 'text',
+                    fields: {
+                        raw: {
+                            type: 'keyword',
                         },
                     },
-                    template: {
-                        type: 'keyword',
-                    },
-                    predefined_page: {
-                        type: 'keyword',
-                    },
-                    route: {
-                        type: 'keyword',
-                    },
-                    global_access: {
-                        properties: {
-                            access: {
-                                type: 'keyword',
-                            },
-                            subaccess: Access,
+                },
+                template: {
+                    type: 'keyword',
+                },
+                predefined_page: {
+                    type: 'keyword',
+                },
+                route: {
+                    type: 'keyword',
+                },
+                global_access: {
+                    properties: {
+                        access: {
+                            type: 'keyword',
                         },
+                        subaccess: Access,
                     },
-                    has_menu: {
-                        type: 'boolean',
-                    },
-                    header: {
-                        properties: Slot,
-                    },
-                    main: {
-                        properties: Slot,
-                    },
-                    footer: {
-                        properties: Slot,
-                    },
+                },
+                has_menu: {
+                    type: 'boolean',
+                },
+                header: {
+                    properties: Slot,
+                },
+                main: {
+                    properties: Slot,
+                },
+                footer: {
+                    properties: Slot,
                 },
             },
         },

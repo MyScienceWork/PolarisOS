@@ -4,7 +4,7 @@ const development = {
         hosts: [
             'http://pos:swnEvjbnkRdRRuker66ifBuGu9@localhost:9201',
         ],
-        apiVersion: '6.8',
+        apiVersion: '7.x',
     },
     grobid: {
         host: 'gitlab.cocophotos.eu',

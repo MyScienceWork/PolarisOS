@@ -8,8 +8,7 @@ const Utils = require('../../../utils/utils');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
-const Mapping: Object = FormMapping.msw
-.mappings.form.properties;
+const Mapping: Object = FormMapping.msw.mappings.properties;
 
 const fieldsSchema = Joi.object({
     type: Joi.string().required().label('Type'),

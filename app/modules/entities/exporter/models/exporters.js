@@ -5,7 +5,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = ExporterMapping.msw.mappings.exporter.properties;
+const Mapping: Object = ExporterMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
 ];

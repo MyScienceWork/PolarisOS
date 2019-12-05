@@ -6,7 +6,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = WorkflowMapping.msw.mappings.workflow.properties;
+const Mapping: Object = WorkflowMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [];
 

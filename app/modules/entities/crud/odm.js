@@ -153,11 +153,11 @@ class ODM {
 
     static async fetch_mapping(index: string, type: string, client: Object, include_meta: boolean = false) {
         const mapping = await client.indices.getMapping({ index });
-        if (index in mapping && type in mapping[index].mappings) {
+        if (index in mapping) {
             if (include_meta) {
-                return mapping[index].mappings[type];
+                return mapping[index].mappings;
             }
-            return mapping[index].mappings[type].properties;
+            return mapping[index].mappings.properties;
         }
         return null;
     }
