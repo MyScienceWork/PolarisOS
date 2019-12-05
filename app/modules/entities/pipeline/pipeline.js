@@ -192,6 +192,9 @@ class Pipeline extends ODM {
                 case 'number':
                     myinfo = Joi.number();
                     break;
+                case 'url':
+                    myinfo = Joi.string().uri();
+                    break;
                 default:
                     myinfo = Joi.any();
                 }
