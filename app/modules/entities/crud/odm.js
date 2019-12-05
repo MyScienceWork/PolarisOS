@@ -261,7 +261,6 @@ class ODM {
         } else {
             const req = {
                 index,
-                type,
                 body,
             };
 
