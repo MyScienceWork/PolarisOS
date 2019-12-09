@@ -7,7 +7,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = SRMapping.msw.mappings.system_report.properties;
+const Mapping: Object = SRMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [];
 

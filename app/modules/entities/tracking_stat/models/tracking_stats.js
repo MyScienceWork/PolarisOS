@@ -7,7 +7,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = TSMapping.msw.mappings.tracking_stat.properties;
+const Mapping: Object = TSMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [];
 

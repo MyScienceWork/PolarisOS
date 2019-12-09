@@ -6,7 +6,7 @@ const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
 const Mapping: Object = ESMapping.msw
-    .mappings.function.properties;
+    .mappings.properties;
 
 const Validation: Array<any> = [
     Joi.object({

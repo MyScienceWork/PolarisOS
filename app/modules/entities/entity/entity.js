@@ -24,11 +24,11 @@ class _Entity extends ODM {
         try {
             const m = JSON.parse(mapping);
             const body = {
-                properties: m.mappings[name].properties,
+                properties: m.mappings.properties,
             };
 
-            if ('_meta' in m.mappings[name]) {
-                body._meta = m.mappings[name]._meta;
+            if ('_meta' in m.mappings) {
+                body._meta = m.mappings._meta;
             }
 
             await client.indices.putMapping({
