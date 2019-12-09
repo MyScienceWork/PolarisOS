@@ -279,7 +279,6 @@ class ODM {
         const query = search.generate();
         const response = await client.count({
             index,
-            type,
             body: {
                 query,
             },
@@ -291,7 +290,6 @@ class ODM {
         const query = search.generate();
         await client.deleteByQuery({
             index,
-            type,
             refresh: true,
             body: {
                 query,
@@ -303,7 +301,6 @@ class ODM {
         try {
             const response = await client.delete({
                 index,
-                type,
                 id,
                 refresh: true,
             });
@@ -321,7 +318,6 @@ class ODM {
         try {
             const content = {
                 index,
-                type,
                 body,
                 refresh: true,
             };
@@ -351,7 +347,6 @@ class ODM {
                 try {
                     const get_response = await client.get({
                         index,
-                        type,
                         id: response._id,
                     });
                     const odm = new this(index, type, client, model, response._id);
@@ -411,7 +406,6 @@ class ODM {
         try {
             const response = await this._client.get({
                 index: this.index,
-                type: this.type,
                 id: this._id,
                 _source: source,
             });

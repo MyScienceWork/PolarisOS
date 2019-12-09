@@ -215,7 +215,7 @@ class Pipeline {
             const item = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = await EntitiesUtils.get_model_from_type(type);
-            Logger.info("This is the model : ", model);
+            //Logger.info("This is the model : ", model);
             const pipelines = model.Pipelines || [];
             const extra = ctx.__md || {};
 
