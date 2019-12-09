@@ -375,7 +375,6 @@ class ODM {
         try {
             const content = {
                 index,
-                type,
                 body: _.flatten(body.map((e) => {
                     if (action === 'create') {
                         return [{ index: {} }, e];
