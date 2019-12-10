@@ -511,7 +511,7 @@ async function retrieve(id: string, type: string,
 
     if (_source === true) {
         const info = await odm.read({ population: _population });
-        if (info._db.found) {
+        if (info.db.found) {
             return info;
         }
         return null;
