@@ -84,16 +84,16 @@ class _Entity extends ODM {
 
     async post_read_hook(population: Array<String>) {
         super.post_read_hook(population);
-        const index = `${Config.elasticsearch.index_prefix}_${this.source.type}`;
+        const index = `${Config.elasticsearch.index_prefix}_${this._type}`;
         const mapping = await this.constructor.fetch_mapping(index,
-            this.source.type, this._client, true);
+            this._type, this._client, true);
 
         const settings = await this.constructor.fetch_settings(index,
-            this.source.type, this._client);
+            this._type, this._client);
 
         this._db.source.mapping = {
             mappings: {
-                [this.source.type]: mapping,
+                [this._type]: mapping,
             },
         };
 
