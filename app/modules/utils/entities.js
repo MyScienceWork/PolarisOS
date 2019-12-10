@@ -413,6 +413,7 @@ async function update(info: Object, type: string): Promise<*> {
 
     const id = info._id;
     delete info._id;
+    delete info.type;
     const response = await cls.constructor.update(get_index(type), type,
             es_client, model, info, id);
     return response;
