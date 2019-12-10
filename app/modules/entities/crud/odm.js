@@ -90,7 +90,7 @@ class ODM {
 
         let score = 0;
         const index = hit._index;
-        const type = hit._type;
+        const type = hit._index.split('_')[1];
         const id = hit._id;
         const source = '_source' in hit ? hit._source : {};
         const sort = 'sort' in hit ? hit.sort : [];
@@ -268,6 +268,7 @@ class ODM {
                 req.scroll = opts.scroll;
             }
 
+            delete req.body.type;
             response = await client.search(req);
         }
 
@@ -279,7 +280,6 @@ class ODM {
         const query = search.generate();
         const response = await client.count({
             index,
-            type,
             body: {
                 query,
             },
@@ -291,7 +291,6 @@ class ODM {
         const query = search.generate();
         await client.deleteByQuery({
             index,
-            type,
             refresh: true,
             body: {
                 query,
@@ -300,10 +299,10 @@ class ODM {
     }
 
     static async remove(index: string, type: string, client: Object, id: string): Promise<boolean> {
+        delete body.type;
         try {
             const response = await client.delete({
                 index,
-                type,
                 id,
                 refresh: true,
             });
@@ -317,11 +316,11 @@ class ODM {
 
     static async _create_or_update(index: string, type: string,
             client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
+        delete body.type;
         console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
                 index,
-                type,
                 body,
                 refresh: true,
             };
@@ -351,7 +350,6 @@ class ODM {
                 try {
                     const get_response = await client.get({
                         index,
-                        type,
                         id: response._id,
                     });
                     const odm = new this(index, type, client, model, response._id);
@@ -380,13 +378,13 @@ class ODM {
         try {
             const content = {
                 index,
-                type,
                 body: _.flatten(body.map((e) => {
                     if (action === 'create') {
                         return [{ index: {} }, e];
                     } else if (action === 'update') {
                         const _id = e._id;
                         delete e._id;
+                        delete e.type;
                         return [{ update: { _id } }, { doc: e }];
                     }
                     return [];
@@ -411,7 +409,6 @@ class ODM {
         try {
             const response = await this._client.get({
                 index: this.index,
-                type: this.type,
                 id: this._id,
                 _source: source,
             });

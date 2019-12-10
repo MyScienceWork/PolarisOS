@@ -33,7 +33,6 @@ class _Entity extends ODM {
 
             await client.indices.putMapping({
                 index: `${Config.elasticsearch.index_prefix}_${name}`,
-                type: name,
                 body,
             });
             return true;
@@ -63,7 +62,7 @@ class _Entity extends ODM {
 
     static async pre_create_hook(index: string, type: string,
             client: Object, model: Object, body: Object): Promise<boolean> {
-        const ret = await this._add_mapping(client, body.type, body.mapping, body.settings || {});
+        const ret = await this._add_mapping(client, type, body.mapping, body.settings || {});
         delete body.mapping;
         delete body.settings;
         delete body.update_settings;
@@ -72,10 +71,10 @@ class _Entity extends ODM {
 
     static async pre_update_hook(index: string, type: string,
             client: Object, model: Object, body: Object, id: string): Promise<boolean> {
-        const ret = await this._update_mapping(client, body.type, body.mapping);
+        const ret = await this._update_mapping(client, type, body.mapping);
 
         if (body.update_settings) {
-            await this._update_settings(client, body.type, body.settings);
+            await this._update_settings(client, type, body.settings);
         }
         delete body.mapping;
         delete body.settings;
