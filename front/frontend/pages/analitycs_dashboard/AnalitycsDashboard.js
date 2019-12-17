@@ -30,7 +30,7 @@ module.exports = {
             // 174px height header
             // 24px height footer
             //return `${window.innerHeight - 174 - 24}px`;
-            return `${window.innerHeight}px`;
+            return `${window.innerHeight + 24}px`;
         },
     },
     beforeMount() {
