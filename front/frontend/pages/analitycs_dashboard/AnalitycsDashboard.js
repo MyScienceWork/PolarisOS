@@ -29,7 +29,8 @@ module.exports = {
         heightIFrame() {
             // 174px height header
             // 24px height footer
-            return `${window.innerHeight - 174 - 24}px`;
+            //return `${window.innerHeight - 174 - 24}px`;
+            return `${window.innerHeight}px`;
         },
     },
     beforeMount() {
