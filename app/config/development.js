@@ -2,7 +2,7 @@ const development = {
     port: 4002,
     elasticsearch: {
         hosts: [
-            'http://pos:swnEvjbnkRdRRuker66ifBuGu9@localhost:9201',
+            'http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9200',
         ],
         apiVersion: '7.x',
     },
