@@ -51,8 +51,6 @@ module.exports = {
                 this.state.import_state = 'fail';
             } else {
                 this.state.import_state = 'success';
-                const contentForm = this.fcontent(creationSink);
-                content.type = contentForm.type;
                 this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                     form: creationSink,
                     body: content,
