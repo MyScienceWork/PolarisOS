@@ -84,6 +84,7 @@ class BibliographicExporter {
                 interval: 'year',
                 format: 'YYYY',
                 keyed: true,
+                timezone: 'Europe/Paris',
                 min_doc_count: 1,
                 order: { _time: 'desc' }, // Deprecated in ES 6.x TODO
                 $aggregations: {
@@ -327,7 +328,6 @@ class BibliographicExporter {
                 // get the end of the year
                 range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec2;
             }
-            console.log("this is range : ", range);
             where.$and.push({ 'dates.publication': range });
         }
 
