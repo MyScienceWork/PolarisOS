@@ -325,8 +325,9 @@ class BibliographicExporter {
 
             if (end_year.length > 0) {
                 // get the end of the year
-                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec2-1;
+                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec2;
             }
+            console.log("this is range : ", range);
             where.$and.push({ 'dates.publication': range });
         }
 
