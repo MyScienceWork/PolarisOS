@@ -2,8 +2,6 @@ const Handlebars = require('handlebars');
 const moment = require('moment-timezone');
 const _moment = require('moment');
 
-_moment.locale('fr');
-
 Handlebars.registerHelper('moment', (array) => {
     const hash = array.hash;
     if (hash && hash.date && hash.utc) {
