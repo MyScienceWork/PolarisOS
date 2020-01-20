@@ -320,14 +320,13 @@ class BibliographicExporter {
             const offset_parsed = parseInt(moment(("2013-02-08 "+offset.substr(1))).format("hh"));
             const offset_sec = offset_parsed * 3600;
             const offset_millisec = offset_sec * 1000;
-            // offset is 23:00 convert to 23:59
-            const offset_millisec2 = offset_millisec - (3600 - 1) * 1000;
-            const range = { '>=': moment(parseInt(start_year[0], 10)).valueOf()-offset_millisec2 };
+            const range = { '>=': moment(parseInt(start_year[0], 10)).valueOf()-offset_millisec };
 
             if (end_year.length > 0) {
                 // get the end of the year
-                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec2;
+                range['<'] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec;
             }
+            console.log("range : ", range);
             where.$and.push({ 'dates.publication': range });
         }
 
