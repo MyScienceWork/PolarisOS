@@ -13,6 +13,21 @@ const Errors = require('../../../exceptions/errors');
 
 module.exports = {};
 
+async function findMasterEmail(depositor) {
+    const emails = Utils.find_value_with_path(depositor, 'emails'.split('.'));
+    if (!emails) {
+        return publication;
+    }
+
+    let master = emails.find(elt => elt.is_master);
+
+    if (!master && emails.length > 0) {
+        master = emails[0];
+    }
+
+    return master;
+}
+
 async function send_emails_to_depositor(publication: Object, options: Object) {
     const d = publication.source.depositor;
 
@@ -26,16 +41,13 @@ async function send_emails_to_depositor(publication: Object, options: Object) {
         return publication;
     }
 
-    const emails = Utils.find_value_with_path(depositor, 'emails'.split('.'));
-    if (!emails) {
-        return publication;
-    }
+    const master = [findMasterEmail(depositor)];
 
-    let master = emails.find(elt => elt.is_master);
+    const e = publication.source.authors;
 
-    if (!master && emails.length > 0) {
-        master = emails[0];
-    }
+    e.forEach((author) => {
+        master.push(author._id);
+    });
 
     let unsent_messages = [];
     let templates = [];
@@ -84,7 +96,8 @@ async function send_emails_to_depositor(publication: Object, options: Object) {
                 message: msg.body });
             const subject = await LangUtils.strings_to_translation(info_subject, lang);
             const body = await LangUtils.strings_to_translation(info_body, lang);
-            return await MailerUtils.send_email_with(default_sender, master.email, subject, body);
+
+            return await Promise.all(master.map(recipient => MailerUtils.send_email_with(default_sender, recipient.email, subject, body)));
         });
 
         Promise.all(sent_messages).then(() => {}).catch(err => Logger.error(err));
@@ -102,7 +115,8 @@ async function send_emails_to_depositor(publication: Object, options: Object) {
         });
         const subject = await LangUtils.strings_to_translation(info_subject, lang);
         const body = await LangUtils.strings_to_translation(info_body, lang);
-        const promise = MailerUtils.send_email_with(default_sender, master.email, subject, body);
+
+        const promise = Promise.all(master.map(recipient => MailerUtils.send_email_with(default_sender, recipient.email, subject, body)));
         promise.then(() => {}).catch(err => Logger.error(err));
     }
     return publication;
