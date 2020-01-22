@@ -57,19 +57,19 @@ class BibliographicExporter {
 
         if (projects.length === 0 && authors.length === 0 && labs.length === 0 && surveys.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_project_author_lab_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_project_author_lab_bexport', 'EN');
             throw e;
         }
 
         if (types.length === 0 && subtypes.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_typology_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_typology_bexport', 'EN');
             throw e;
         }
 
         if (sort.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_sort_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_sort_bexport', 'EN');
             throw e;
         }
 
