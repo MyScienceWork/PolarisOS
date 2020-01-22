@@ -13,8 +13,8 @@ const Errors = require('../../../exceptions/errors');
 
 module.exports = {};
 
-async function findMasterEmail(depositor) {
-    const emails = Utils.find_value_with_path(depositor, 'emails'.split('.'));
+async function findMasterEmail(person) {
+    const emails = Utils.find_value_with_path(person, 'emails'.split('.'));
     if (!emails) {
         return publication;
     }
@@ -41,12 +41,26 @@ async function send_emails_to_depositor(publication: Object, options: Object) {
         return publication;
     }
 
-    const master = [findMasterEmail(depositor)];
+    const depositor_email = await findMasterEmail(depositor);
+
+    const master = [depositor_email];
 
     const e = publication.source.authors;
 
-    e.forEach((author) => {
-        master.push(author._id);
+    await e.forEach(async (author) => {
+        const author_info = await EntitiesUtils.search('user', {
+            size: 1,
+            where: {
+                author: author._id,
+            },
+        });
+
+        let hits = EntitiesUtils.get_hits(author_info);
+
+        if (hits.length > 0) {
+            const author_email = await findMasterEmail(hits[0].source);
+            master.push(author_email);
+        }
     });
 
     let unsent_messages = [];
