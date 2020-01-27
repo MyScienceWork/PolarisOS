@@ -12,7 +12,7 @@ function get_affiliations(contrib, pub) {
         return [];
     }
 
-    publication_date = parseInt(moment(publication_date).tz('Europe/Paris').format('YYYY'), 10);
+    publication_date = parseInt(moment(publication_date).tz('Europe/Paris').format('DD/MM/YYYY'), 10);
     const eligible_affiliations = affiliations.filter((aff) => {
         const from = parseInt(aff.from, 10);
         if (aff.to) {
@@ -96,7 +96,7 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('DD/MM/YYYY') }),
         },
     },
     'localisation.city': CSVPipeline.mapping['localisation.city'],
