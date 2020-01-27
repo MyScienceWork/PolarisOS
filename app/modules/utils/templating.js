@@ -1,5 +1,6 @@
 const Handlebars = require('handlebars');
 const moment = require('moment-timezone');
+const _moment = require('moment');
 
 Handlebars.registerHelper('moment', (array) => {
     const hash = array.hash;
@@ -11,13 +12,13 @@ Handlebars.registerHelper('moment', (array) => {
         const offset_sec = offset_parsed * 3600;
         const offset_millisec = offset_sec * 1000;
         const fixed_start_date = moment(date).valueOf() + offset_millisec;
-        return moment(fixed_start_date).format(format);
+        return _moment(fixed_start_date).format(format);
     } else if (hash && hash.date) {
         const format = hash.format;
         const date = hash.date;
-        return moment(date).format(format);
+        return _moment(date).format(format);
     }
-    return moment(array).valueOf();
+    return _moment(array).valueOf();
 });
 
 Handlebars.registerHelper('join', (array, sep, options) => array.map(item => options.fn(item)).join(sep));
