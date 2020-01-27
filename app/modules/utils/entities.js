@@ -469,7 +469,7 @@ async function search(type: string, body: Object,
     }
 
     const response = format_search(body, cls.model);
-    console.log("this is body : ", JSON.stringify(body));
+    //console.log("this is body : ", JSON.stringify(body));
     const result = await cls.constructor.search(get_index(type), type, es_client,
             cls.model, response.search, response.options);
 
