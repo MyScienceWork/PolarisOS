@@ -268,7 +268,6 @@ class ODM {
                 req.scroll = opts.scroll;
             }
 
-            delete req.body.type;
             response = await client.search(req);
         }
 
@@ -299,7 +298,6 @@ class ODM {
     }
 
     static async remove(index: string, type: string, client: Object, id: string): Promise<boolean> {
-        delete body.type;
         try {
             const response = await client.delete({
                 index,
@@ -316,7 +314,6 @@ class ODM {
 
     static async _create_or_update(index: string, type: string,
             client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
-        delete body.type;
         console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
@@ -384,7 +381,6 @@ class ODM {
                     } else if (action === 'update') {
                         const _id = e._id;
                         delete e._id;
-                        delete e.type;
                         return [{ update: { _id } }, { doc: e }];
                     }
                     return [];

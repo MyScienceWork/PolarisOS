@@ -18,6 +18,7 @@ module.exports = {
                 sinks: {
                     creations: {
                         project: 'project_creation',
+                        project_type: 'project_type_creation',
                     },
                     reads: {
                         user_forms: 'user_forms_read',
@@ -85,6 +86,32 @@ module.exports = {
                 body: content,
             });
         },
+        project_type_change(form) {
+            if (!form || !form.value || form.value === '') {
+                if (this.state.project_subform_name) {
+                    this.state.project_subform_name = '';
+                    return;
+                }
+            }
+            const forms = this.fcontent(this.state.sinks.reads.project_type);
+            if (forms instanceof Array) {
+                form.name = forms.find(my_form => my_form._id === form.value).value;
+            } else {
+                return;
+            }
+            this.state.project_subform_name = `${this.state.project_form_name}_${form.name.toLowerCase()}`;
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [this.state.project_subform_name],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
+            this.$set(this.state, 'project_type', form.value);
+        },
     },
     components: {
         ReviewModal,
@@ -129,7 +156,24 @@ module.exports = {
                     population: ['fields.subform', 'fields.datasource'],
                 },
             });
+
+            const content_options = this.fcontent(this.state.sinks.reads.project_type);
+            if (!(content_options instanceof Array)) {
+                return [];
+            }
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.creations.project_type,
+                body: {type: content.type},
+            });
+
             return () => true;
+        },
+        project_type_options() {
+            const content = this.fcontent(this.state.sinks.reads.project_type);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
         },
     },
     beforeMount() {
