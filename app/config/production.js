@@ -39,7 +39,6 @@ const production = {
     port,
     elasticsearch: {
         hosts,
-        version: '7.x',
     },
     minio,
     grobid,

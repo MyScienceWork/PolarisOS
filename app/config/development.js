@@ -4,7 +4,6 @@ const development = {
         hosts: [
             'http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9200',
         ],
-        apiVersion: '7.x',
     },
     grobid: {
         host: 'gitlab.cocophotos.eu',
