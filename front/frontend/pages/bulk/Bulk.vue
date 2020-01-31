@@ -87,6 +87,18 @@
                                         :review="in_mode('review')"
                                         @refetch-form="refetch_form"
                                     />
+                                    <finput
+                                        name="system.api.hal"
+                                        type="checkbox"
+                                        :form="state.sinks.creations.publication"
+                                        label="Exporter de nouveau vers HAL ? (si oui cocher puis décocher la case)"
+                                    />
+                                    <finput
+                                        name="system.api.hal_id"
+                                        type="text"
+                                        :form="state.sinks.creations.publication"
+                                        label="HAL ID"
+                                    />
                                     <div class="control">
                                         <button @click.prevent="review_publication"
                                                 :disabled="success"
