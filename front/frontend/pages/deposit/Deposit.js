@@ -283,8 +283,7 @@ module.exports = {
                         files: [],
                         dates: { deposit: undefined },
                         depositor: undefined,
-                        system: { api: { handle: false, hal: false, hal_id: "" } } },
-
+                        system: { api: { handle: false, hal: false, hal_id: "", has_other_version: false } } },
                 },
             });
             break;
