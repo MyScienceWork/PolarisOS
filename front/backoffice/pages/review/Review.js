@@ -164,6 +164,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_rights_hal',
                     },
+                    'has_other_version': {
+                        visible: false,
+                        force: false,
+                        title: 'l_p_has_other_version',
+                    },
                     'denormalization.diffusion.research_teams': {
                         visible: false,
                         force: false,
