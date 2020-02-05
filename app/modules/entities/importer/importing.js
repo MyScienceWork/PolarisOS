@@ -45,9 +45,11 @@ class Importer {
 
         const res = { total: 0, success: 0, errors_count: 0, results: [] };
         const results = [];
-        for (const chunk of presults) {
+        for (let i = 0, len = presults.length; i < len; i++) {
+            const chunk = presults[i];
             res.total += chunk.length;
             if ('change' in chunk[0] || chunk[0].error) {
+                chunk[0].title = items[i].title.content;
                 results.push(chunk);
                 res.errors_count += chunk.length;
             } else {
@@ -61,7 +63,7 @@ class Importer {
                 }
                 results.push(response.items);
             }
-        }
+        };
 
         res.results = _.flatten(results);
         res.success = res.total - res.errors_count;
