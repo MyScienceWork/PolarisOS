@@ -202,7 +202,6 @@
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
-                                    <h4>{{lang('l_errors_found')}}</h4>
                                     <div v-for="(row, key) in JSON.parse(props.row.result)"
                                        v-if="JSON.parse(props.row.result)[key].title && JSON.parse(props.row.result)[key].errors">
                                         <p>
