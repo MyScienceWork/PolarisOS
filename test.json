@@ -1,0 +1,191 @@
+{
+    "pos_author": {
+        "mappings": {
+            "author": {
+                "dynamic": "strict",
+                "_meta": {
+                    "refs": {
+                        "affiliations": {
+                            "teams": {
+                                "_id": "team"
+                            },
+                            "ined_status": "ined_status",
+                            "institution": "institution"
+                        },
+                        "denormalization": {
+                            "affiliations": {
+                                "ined_status": "lang"
+                            }
+                        }
+                    }
+                },
+                "dynamic_date_formats": [],
+                "properties": {
+                    "affiliations": {
+                        "type": "nested",
+                        "properties": {
+                            "from": {
+                                "type": "integer"
+                            },
+                            "id": {
+                                "type": "keyword"
+                            },
+                            "ined_status": {
+                                "type": "keyword"
+                            },
+                            "institution": {
+                                "type": "keyword"
+                            },
+                            "name": {
+                                "type": "text"
+                            },
+                            "teams": {
+                                "type": "nested",
+                                "properties": {
+                                    "_id": {
+                                        "type": "keyword"
+                                    }
+                                }
+                            },
+                            "to": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "denormalization": {
+                        "properties": {
+                            "affiliations": {
+                                "type": "nested",
+                                "properties": {
+                                    "country": {
+                                        "type": "text"
+                                    },
+                                    "from": {
+                                        "type": "date"
+                                    },
+                                    "ined_status": {
+                                        "type": "text"
+                                    },
+                                    "institution": {
+                                        "properties": {
+                                            "country": {
+                                                "type": "text"
+                                            },
+                                            "name": {
+                                                "type": "text"
+                                            }
+                                        }
+                                    },
+                                    "teams": {
+                                        "type": "nested",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "text"
+                                            }
+                                        }
+                                    },
+                                    "to": {
+                                        "type": "date"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "first_initial": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "firstname": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "fullname": {
+                        "type": "text",
+                        "fields": {
+                            "__pauc": {
+                                "type": "text",
+                                "analyzer": "autocomplete",
+                                "search_analyzer": "standard"
+                            },
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "is_ined": {
+                        "type": "boolean"
+                    },
+                    "last_initial": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "lastname": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "system": {
+                        "properties": {
+                            "locked": {
+                                "type": "boolean"
+                            },
+                            "valid": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+{
+    "pos_author": {
+        "settings": {
+            "index": {
+                "number_of_shards": "5",
+                "provided_name": "pos_author",
+                "creation_date": "1540252297783",
+                "analysis": {
+                    "filter": {
+                        "autocomplete_filter": {
+                            "type": "edge_ngram",
+                            "min_gram": "1",
+                            "max_gram": "20"
+                        }
+                    },
+                    "analyzer": {
+                        "autocomplete": {
+                            "filter": [
+                                "lowercase",
+                                "autocomplete_filter"
+                            ],
+                            "type": "custom",
+                            "tokenizer": "standard"
+                        }
+                    }
+                },
+                "number_of_replicas": "1",
+                "uuid": "MkftPDJxRoKC-CZJhTNYWA",
+                "version": {
+                    "created": "5020299"
+                }
+            }
+        }
+    }
+}
