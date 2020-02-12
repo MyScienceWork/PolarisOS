@@ -32,6 +32,6 @@ docker push-int:
     - INTEGRATION-INSERM
   script:
     - docker info
-    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
+    - docker build -t $CI_REGISTRY_IMAGE:INSERM .
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - docker push $CI_REGISTRY_IMAGE:INSERM
