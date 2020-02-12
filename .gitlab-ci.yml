@@ -29,7 +29,7 @@ docker push:
 docker push-int:
   stage: Push image int
   only:
-    - client/INTEGRATION-INSERM
+    - INTEGRATION-INSERM
   script:
     - docker info
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
