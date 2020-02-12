@@ -10,6 +10,7 @@ services:
 
 stages:
     - Push image
+    - Push image int
 
 docker push:
   stage: Push image
@@ -23,3 +24,14 @@ docker push:
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - docker push $CI_REGISTRY_IMAGE:$VERSION
+
+
+docker push-int:
+  stage: Push image int
+  only:
+    - client/INTEGRATION-INSERM
+  script:
+    - docker info
+    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
+    - docker push $CI_REGISTRY_IMAGE:INSERM
