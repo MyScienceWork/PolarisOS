@@ -1,12 +1,7 @@
-image: docker:18-git
+image: tiangolo/docker-with-compose
 
 variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
   CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
-
-services:
-  - docker:18-dind
 
 stages:
     - Build
