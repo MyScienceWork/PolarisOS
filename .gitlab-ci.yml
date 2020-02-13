@@ -9,14 +9,14 @@ services:
   - docker:18-dind
 
 stages:
-    - Push image
+    - Build
     - Deploy
 
 before_script:
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
 
-docker push-int:
-  stage: Push image
+Build and Push image:
+  stage: Build
   tags:
     - test
   only:
@@ -26,7 +26,7 @@ docker push-int:
     - docker build -t $CI_REGISTRY_IMAGE:INSERM .
     - docker push $CI_REGISTRY_IMAGE:INSERM
 
-deploy:
+Deploy test infra:
   stage: Deploy
   tags:
     - test
