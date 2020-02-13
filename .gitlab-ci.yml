@@ -32,4 +32,5 @@ Deploy test infra:
   only:
     - INTEGRATION-INSERM
   script:
-    - docker stack deploy -c docker-compose.yml --resolve-image changed --with-registry-auth test
+    - docker service update --force test_app
+
