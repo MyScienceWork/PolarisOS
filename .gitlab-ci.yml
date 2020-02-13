@@ -17,6 +17,8 @@ before_script:
 
 docker push-int:
   stage: Push image
+  tags:
+    - test
   only:
     - INTEGRATION-INSERM
   script:
@@ -26,6 +28,8 @@ docker push-int:
 
 deploy:
   stage: Deploy
+  tags:
+    - test
   only:
     - INTEGRATION-INSERM
   script:
