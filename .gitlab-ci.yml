@@ -17,6 +17,8 @@ before_script:
 
 Build and Push image production:
   stage: Build
+  tags:
+    - docker-test
   only:
     - client/INSERM
     - client/INED
@@ -31,7 +33,7 @@ Build and Push image production:
 Build and Push image integration:
   stage: Build
   tags:
-    - test
+    - docker-test
   only:
     - INTEGRATION-INSERM
   script:
@@ -41,7 +43,7 @@ Build and Push image integration:
 Deploy test infra:
   stage: Deploy
   tags:
-    - test
+    - docker-test
   only:
     - INTEGRATION-INSERM
   script:
