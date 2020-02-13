@@ -15,7 +15,20 @@ stages:
 before_script:
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
 
-Build and Push image:
+Build and Push image production:
+  stage: Build
+  only:
+    - client/INSERM
+    - client/INED
+  script:
+    - apk add jq
+    - export VERSION=$(cat package.json | jq -r .version)
+    - docker info
+    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
+    - docker push $CI_REGISTRY_IMAGE:$VERSION
+
+Build and Push image integration:
   stage: Build
   tags:
     - test
