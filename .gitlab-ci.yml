@@ -29,4 +29,4 @@ deploy:
   only:
     - INTEGRATION-INSERM
   script:
-    - docker stack deploy -c docker-compose.yml --with-registry-auth my-stack
+    - docker stack deploy -c docker-compose.yml --resolve-image changed --with-registry-auth test
