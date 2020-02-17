@@ -43,7 +43,7 @@ Build and Push image integration:
 Deploy test infra:
   stage: Deploy
   when: delayed
-    start_in: 1 minutes
+  start_in: 1 minutes
   tags:
     - docker-test
   only:
