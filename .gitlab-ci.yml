@@ -8,9 +8,6 @@ stages:
     - Build
     - Deploy
 
-before_script:
-  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-
 Build and Push image production:
   image: docker:18.09.7-dind
   stage: Build
@@ -22,6 +19,7 @@ Build and Push image production:
     - client/INSERM
     - client/INED
   script:
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - apk add jq
     - export VERSION=$(cat package.json | jq -r .version)
     - docker info
@@ -39,6 +37,7 @@ Build and Push image integration:
   only:
     - INTEGRATION-INSERM
   script:
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - docker build -t $CI_REGISTRY_IMAGE:INSERM .
     - docker push $CI_REGISTRY_IMAGE:INSERM
 
