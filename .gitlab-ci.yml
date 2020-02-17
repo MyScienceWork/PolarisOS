@@ -42,8 +42,6 @@ Build and Push image integration:
 
 Deploy test infra:
   stage: Deploy
-  when: delayed
-  start_in: 1 minutes
   tags:
     - docker-test
   only:
@@ -54,6 +52,6 @@ Deploy test infra:
     - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" mysciencework@${IP_IRDIRC_TEST01}
+    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01}
     - docker service update --force test_app
 
