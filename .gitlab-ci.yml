@@ -49,11 +49,11 @@ Deploy test infra:
   only:
     - INTEGRATION-INSERM
   script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - 'which ssh-agent || ( apk update && apk add openssh-client -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh mysciencework@${IP_IRDIRC_TEST01}
+    - ssh -o "StrictHostKeyChecking=no" mysciencework@${IP_IRDIRC_TEST01}
     - docker service update --force test_app
 
