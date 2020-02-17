@@ -5,8 +5,8 @@ variables:
   DOCKER_DRIVER: overlay2
   CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
 
-#services:
-#  - docker:18-dind
+services:
+  - docker:18-dind
 
 stages:
     - Build
@@ -47,5 +47,11 @@ Deploy test infra:
   only:
     - INTEGRATION-INSERM
   script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh mysciencework@${IP_IRDIRC_TEST01}"
     - docker service update --force test_app
 
