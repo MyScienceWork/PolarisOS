@@ -43,6 +43,8 @@ Build and Push image integration:
 
 Deploy test infra:
   stage: Deploy
+  variables:
+    GIT_STRATEGY: none
   tags:
     - docker-test
   only:
