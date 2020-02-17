@@ -49,7 +49,7 @@ Deploy test infra:
   only:
     - INTEGRATION-INSERM
   script:
-    - 'which ssh-agent || ( apk update && apk add openssh-client -y )'
+    - 'which ssh-agent || ( apk update && apk add openssh-client )'
     - eval $(ssh-agent -s)
     - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
