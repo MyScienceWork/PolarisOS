@@ -5,9 +5,6 @@ variables:
   DOCKER_DRIVER: overlay2
   CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
 
-services:
-  - docker:18-dind
-
 stages:
     - Build
     - Deploy
@@ -17,6 +14,8 @@ before_script:
 
 Build and Push image production:
   stage: Build
+  services:
+    - docker:18-dind
   tags:
     - docker-test
   only:
@@ -32,6 +31,8 @@ Build and Push image production:
 
 Build and Push image integration:
   stage: Build
+  services:
+    - docker:18-dind
   tags:
     - docker-test
   only:
