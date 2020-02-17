@@ -57,5 +57,4 @@ Deploy test infra:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker service update --force test_app'
-    - exit
 
