@@ -14,7 +14,7 @@ Build and Push image production:
   image: docker:18.09.7-dind
   stage: Build
   services:
-    - docker:18-dind
+    - docker:18.09.7-dind
   tags:
     - docker-test
   only:
@@ -32,7 +32,7 @@ Build and Push image integration:
   image: docker:18.09.7-dind
   stage: Build
   services:
-    - docker:18-dind
+    - docker:18.09.7-dind
   tags:
     - docker-test
   only:
