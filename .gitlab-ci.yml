@@ -56,6 +56,5 @@ Deploy test infra:
     - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker login registry.gitlab.com'
-    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker service update --force test_app'
+    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM test_app'
 
