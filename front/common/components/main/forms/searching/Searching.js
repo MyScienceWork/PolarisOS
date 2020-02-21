@@ -37,6 +37,7 @@ module.exports = {
         };
     },
     methods: {
+        initialize() {},
         search() {
             this.send_information(this.searchSink);
         },
@@ -109,5 +110,13 @@ module.exports = {
         if (this.autoSearch) {
             this.search();
         }
-    }
+        if (this.readOnly) {
+            const content = this.fcontent(this.searchSink);
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.resultSink,
+                name: this.name,
+                info: content[this.name],
+            });
+        }
+    },
 };
