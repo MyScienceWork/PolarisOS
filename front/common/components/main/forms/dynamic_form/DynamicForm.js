@@ -45,6 +45,9 @@ module.exports = {
     },
     beforeMount() {
         const list_mappings = this.dynamic_list_mappings();
+        if (list_mappings === undefined) {
+            return;
+        }
 
         Object.keys(list_mappings).forEach((list_mapping) => {
             this.state.sinks.reads.dynamic_list[list_mapping] = `dynamic_list_read_${list_mapping}`;
@@ -53,6 +56,9 @@ module.exports = {
     mounted() {
         const cform_content = this.fcontent(this.cform);
         const list_mappings = this.dynamic_list_mappings();
+        if (list_mappings === undefined) {
+            return;
+        }
         Object.keys(list_mappings).forEach((list_mapping) => {
             const { root_key, select_field_name } = list_mappings[list_mapping];
 
@@ -247,6 +253,9 @@ module.exports = {
             this.build_all_dynamic_list_columns();
         },
         dynamic_list_mappings() {
+            if (this.form.fields === undefined) {
+                return;
+            }
             return this.form.fields.reduce((obj, field) => {
                 if (field.type !== 'dynamic-list') {
                     return obj;
@@ -283,6 +292,9 @@ module.exports = {
             }
         },
         filter_authorized_fields(rows, form_name) {
+            if (rows === undefined) {
+                return [];
+            }
             if (!(rows instanceof Array)) {
                 rows = [rows];
             }
@@ -304,38 +316,38 @@ module.exports = {
 
             return filtered_rows;
         },
-        dispatch_row_check(updated_row, form_name) {
-            let filtered_rows = this.filter_authorized_fields(updated_row, form_name);
-            const cform_content = this.fcontent(this.cform);
+        dispatch_row_check(checked_rows, updated_row, form_name) {
             const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
-            const actual_filtered_raws = this.filter_authorized_fields(cform_content[root_key], form_name);
 
-            filtered_rows = filtered_rows.map((item_raw) => {
+            const cform_content = this.fcontent(this.cform);
+            const filtered_rows_actual = this.filter_authorized_fields(cform_content[root_key], form_name);
+            const filtered_rows_checked = this.filter_authorized_fields(checked_rows, form_name);
+            const filtered_row_changed = this.filter_authorized_fields(updated_row, form_name);
+
+            const filtered_rows = filtered_rows_actual.map((item_raw) => {
                 delete item_raw[select_field_name];
                 return item_raw;
             });
+            filtered_rows.forEach((filtered_row, idx0) => {
+                const idx1 = filtered_rows_checked.findIndex(raw => JSON.stringify(raw) === JSON.stringify(filtered_row));
+                const idx2 = filtered_row_changed.findIndex(raw => JSON.stringify(raw) === JSON.stringify(filtered_row));
 
-            const keys = Object.keys(filtered_rows[0]);
-
-            filtered_rows.forEach((filtered_row) => {
-                const idx = actual_filtered_raws.findIndex(raw => keys.reduce((obj, key) => obj && Utils.find_object_with_path(filtered_row, key) === Utils.find_object_with_path(raw, key), true));
-                if (idx !== -1) {
-                    actual_filtered_raws[idx][select_field_name] = !(actual_filtered_raws[idx][select_field_name]);
+                if (idx1 !== -1 && filtered_rows[idx1]) {
+                    filtered_rows[idx0][select_field_name] = true;
+                } else if (idx2 !== -1 && filtered_rows_actual[idx2][select_field_name]) {
+                    filtered_rows[idx0][select_field_name] = !(filtered_rows_actual[idx2][select_field_name]);
+                } else {
+                    filtered_rows[idx0][select_field_name] = false;
                 }
             });
-
-            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                form: this.cform,
-                name: root_key,
-                info: actual_filtered_raws,
-            });
+            return filtered_rows;
         },
         update_rows_from_api(data, form_name) {
             if (!(data instanceof Array)) {
                 return;
             }
             const filtered_rows = this.filter_authorized_fields(data, form_name);
-            const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
+            const { select_field_name } = this.dynamic_list_mappings()[form_name];
             filtered_rows.map((item_raw) => {
                 if (item_raw[select_field_name] === undefined) {
                     item_raw[select_field_name] = false;
@@ -344,39 +356,38 @@ module.exports = {
             });
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.cform,
-                name: root_key,
+                name: form_name,
                 info: filtered_rows,
             });
         },
         on_checked_rows_update(row) {
             const form_name = row.name;
+            const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
+
+            let cform_content = this.fcontent(this.cform)[root_key];
+
             if (row.checkedRow) {
                 // row.checkedRow is the row changed
-                this.dispatch_row_check(row.checkedRow, form_name);
+                cform_content = this.dispatch_row_check(row.checkedRows, row.checkedRow, form_name);
+            } else if (row.checkedRows.length === 0) {
+                // global checkbox has been unchecked
+                cform_content = cform_content.map((cfom_row) => {
+                    cfom_row[select_field_name] = false;
+                    return cfom_row;
+                });
             } else {
-                const { root_key, select_field_name } = this.dynamic_list_mappings()[form_name];
-                let cform_content = this.fcontent(this.cform)[root_key];
-
-                if (row.checkedRows.length === 0) {
-                    // global checkbox has been unchecked
-                    cform_content = cform_content.map((cfom_row) => {
-                        cfom_row[select_field_name] = false;
-                        return cfom_row;
-                    });
-                } else {
-                    // global checkbox has been checked
-                    cform_content = cform_content.map((cfom_row) => {
-                        cfom_row[select_field_name] = true;
-                        return cfom_row;
-                    });
-                }
-
-                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                    form: this.cform,
-                    name: root_key,
-                    info: cform_content,
+                // global checkbox has been checked
+                cform_content = cform_content.map((cfom_row) => {
+                    cfom_row[select_field_name] = true;
+                    return cfom_row;
                 });
             }
+
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.cform,
+                name: root_key,
+                info: cform_content,
+            });
         },
         on_update_data_from_api(data) {
             this.update_rows_from_api(data.data, data.name);

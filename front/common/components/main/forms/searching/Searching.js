@@ -64,6 +64,11 @@ module.exports = {
         },
     },
     watch: {
+        on_checked_rows_update(checked_list, row) {
+            this.state.checked_list = checked_list;
+            this.state.row = row;
+            this.$emit('table-checked-rows-update', { name: this.name, checkedRows: checked_list, checkedRow: row });
+        },
         current_state_search(s) {
             if (s === 'error_validate') {
                 // restore checked rows
