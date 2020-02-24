@@ -71,7 +71,7 @@ module.exports = {
                     content: cform_content[root_key],
                 });
                 // init checked rows
-                this.$set(this.state, 'checked_rows', cform_content[root_key].filter(item_row => item_row[select_field_name] === true));
+                this.$set(this.state, 'checked_rows', { [root_key] : cform_content[root_key].filter(item_row => item_row[select_field_name] === true) });
             }
         });
     },
