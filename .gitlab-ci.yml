@@ -73,5 +73,5 @@ Deploy prod infra:
     - echo "$SSH_IRDIRC_PROD01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM test_app'
+    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app'
 
