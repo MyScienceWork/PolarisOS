@@ -10,7 +10,7 @@
     "env_test" : {
       "NODE_ENV": "test",
       "NODE_PORT": "5556",
-      "ES_HOSTS": "http://elastic:vZE5zl8HVGQMquAQJ4Nn@elasticsearch:9200"
+      "ES_HOSTS": "http://elastic:hOPQDLg7YEzWdYIxmh1a@elasticsearch:9200"
     },
     "env_production" : {
         "NODE_ENV": "production",
