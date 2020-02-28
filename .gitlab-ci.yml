@@ -13,8 +13,6 @@ Build and Push image production:
   stage: Build
   services:
     - docker:18.09.7-dind
-  tags:
-    - docker-test
   only:
     - client/INSERM
     - client/INED
@@ -32,8 +30,6 @@ Build and Push image integration:
   stage: Build
   services:
     - docker:18.09.7-dind
-  tags:
-    - docker-test
   only:
     - INTEGRATION-INSERM
   script:
