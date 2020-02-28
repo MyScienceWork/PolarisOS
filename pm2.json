@@ -7,6 +7,11 @@
     "env": {
         "NODE_ENV": "development"
     },
+    "env_test" : {
+      "NODE_ENV": "test",
+      "NODE_PORT": "5556",
+      "ES_HOSTS": "http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9201"
+    },
     "env_production" : {
         "NODE_ENV": "production",
         "NODE_PORT": "5556",
