@@ -60,7 +60,7 @@ Deploy prod infra:
   variables:
     GIT_STRATEGY: none
   tags:
-    - docker-test
+    - docker-prod
   only:
     - client/INSERM
   script:
