@@ -31,10 +31,13 @@ module.exports = {
         return {
             state: {
                 all_columns_visible: true,
+                checked_list: [],
+                row: {},
             },
         };
     },
     methods: {
+        initialize() {},
         search() {
             this.send_information(this.searchSink);
         },
@@ -55,11 +58,24 @@ module.exports = {
                 this.$emit('column-checkbox-update', { name: this.name, key, checked });
             });
         },
-        on_checked_rows_update(checkedList, row) {
-            this.$emit('table-checked-rows-update', { name: this.name, checkedRows: checkedList, checkedRow: row });
+        on_checked_rows_update(checked_list, row) {
+            this.state.checked_list = checked_list;
+            this.state.row = row;
+            this.$emit('table-checked-rows-update', { name: this.name, checkedRows: checked_list, checkedRow: row });
         },
     },
     watch: {
+        on_checked_rows_update(checked_list, row) {
+            this.state.checked_list = checked_list;
+            this.state.row = row;
+            this.$emit('table-checked-rows-update', { name: this.name, checkedRows: checked_list, checkedRow: row });
+        },
+        current_state_search(s) {
+            if (s === 'error_validate') {
+                // restore checked rows
+                this.$emit('table-checked-rows-update', { name: this.name, checkedRows: this.state.checked_list, checkedRow: this.state.row });
+            }
+        },
     },
     computed: {
         default_sort() {
@@ -86,10 +102,21 @@ module.exports = {
             const form = this.fform(this.resultSink);
             return form.total || 0;
         },
+        current_state_search() {
+            return this.fstate(this.searchSink);
+        },
     },
     mounted() {
         if (this.autoSearch) {
             this.search();
         }
-    }
+        if (this.readOnly) {
+            const content = this.fcontent(this.searchSink);
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.resultSink,
+                name: this.name,
+                info: content[this.name],
+            });
+        }
+    },
 };
