@@ -8,7 +8,7 @@ stages:
     - Build
     - Deploy
 
-Build and Push image production:
+Build and Push image production Ined:
   image: docker:18.09.7-dind
   stage: Build
   services:
@@ -24,7 +24,7 @@ Build and Push image production:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - docker push $CI_REGISTRY_IMAGE:$VERSION
 
-Build and Push image integration:
+Build and Push image integration and production INSERM:
   image: docker:18.09.7-dind
   stage: Build
   services:
