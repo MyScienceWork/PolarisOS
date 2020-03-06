@@ -14,7 +14,6 @@ Build and Push image production:
   services:
     - docker:18.09.7-dind
   only:
-    - client/INSERM
     - client/INED
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
@@ -31,6 +30,7 @@ Build and Push image integration:
   services:
     - docker:18.09.7-dind
   only:
+    - client/INSERM
     - INTEGRATION-INSERM
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
