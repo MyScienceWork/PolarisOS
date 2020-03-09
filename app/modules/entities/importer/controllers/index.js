@@ -32,6 +32,10 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             ],
         };
 
+        if (message.language && message.language.length > 0) {
+            ctx.body.lang = message.language.toUpperCase();
+        }
+
         if (message.title && message.title.length > 0) {
             ctx.body.title = { content: message.title[0] };
         }
