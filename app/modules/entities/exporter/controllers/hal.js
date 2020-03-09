@@ -200,8 +200,10 @@ async function get_notes_stmt(publication: Object): Promise<string> {
 
     if (hal_type === 'REPORT') {
         const report_subtype = Utils.find_value_with_path(publication, 'subtype'.split('.'));
-        if (report_subtype === 'research-report' ) {
+        if (report_subtype === 'research-report') {
             // http://api-preprod.archives-ouvertes.fr/ref/metadataList/?q=metaName_s:reportType&fl=*&wt=xml
+            report += `<note type="report" n="6">${_.escape('Research Report')}</note>`;
+        } else if (report_subtype === 'official-report') {
             report += `<note type="report" n="6">${_.escape('Research Report')}</note>`;
         }
     }
