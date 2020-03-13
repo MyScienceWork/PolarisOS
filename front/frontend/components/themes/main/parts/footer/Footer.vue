@@ -3,11 +3,9 @@
     <footer>
         <div class="columns footer-disclaimer is-centered">
             <div class="column">
-                <router-link
-                    :alt="lang('l_footer_disclaimer')"
-                    :to="{ path: '/about', query: {legacy_notice: 'true'}}">
+                <a :href="'//www.mysciencework.com/'" target="_blank">
                     <span v-html="lang('l_footer_disclaimer')"></span>
-                </router-link>
+                </a>
             </div>
         </div>
     </footer>
