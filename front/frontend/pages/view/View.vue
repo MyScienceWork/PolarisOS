@@ -10,8 +10,8 @@
                         </a>
                         <div class="card-header-title">
                         </div>
-                        <a href='#' class="card-header-icon card-header-tag" v-for="tt in titles" @click.prevent="activate_lang('title', tt.lang)">
-                            <span :class="['tag is-purple', {'is-active': state.current_title.lang === tt.lang}]">{{tt.lang}}</span>
+                        <a href='#' class="card-header-icon card-header-tag" v-for="(tt, index) in titles" @click.prevent="activate_lang('title', tt.lang)">
+                            <span :class="['tag is-purple', {'is-active': state.current_title.lang === tt.lang}]">{{good_language(index, lang, tt)}}</span>
                         </a>
                     </div>
                     <div class="card-content content">
