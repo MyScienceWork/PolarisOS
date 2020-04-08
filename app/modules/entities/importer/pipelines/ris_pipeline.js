@@ -30,7 +30,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: (abs, pub) => {
-                const lang = pub.LA ? pub.LA[0] : 'EN';
+                const lang = pub.LA ? pub.LA[0].toUpperCase() : 'EN';
                 return { abstracts: [{ content: abs[0], lang }] };
             },
         },
@@ -102,7 +102,7 @@ const mapping = {
     LA: {
         __default: {
             transformers: [],
-            picker: l => ({ lang: l[0] }),
+            picker: l => ({ lang: l[0].toUpperCase() }),
         },
     },
     CY: {
@@ -134,7 +134,7 @@ const mapping = {
     TI: {
         __default: {
             transformers: [],
-            picker: async (t, pub) => ({ title: { content: t[0], lang: pub.LA ? pub.LA[0] : 'EN' } }),
+            picker: async (t, pub) => ({ title: { content: t[0], lang: pub.LA ? pub.LA[0].toUpperCase() : 'EN' } }),
         },
     },
     VL: {
