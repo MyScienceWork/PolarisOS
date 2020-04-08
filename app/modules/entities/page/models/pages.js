@@ -6,7 +6,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = PageMapping.msw.mappings.page.properties;
+const Mapping: Object = PageMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [];
 

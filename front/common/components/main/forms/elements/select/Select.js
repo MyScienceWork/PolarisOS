@@ -263,7 +263,7 @@ module.exports = {
             return options;
         },
         order_options(options) {
-            if (options instanceof Array) {
+            if (options instanceof Array && !this.ajax) {
                 return _.orderBy(options, ['label'], ['asc']);
             }
             return options;

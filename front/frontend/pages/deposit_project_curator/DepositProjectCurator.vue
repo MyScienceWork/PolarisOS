@@ -10,6 +10,18 @@
                             <loader />
                         </div>
                         <div v-else>
+                            <fselect
+                                    :label="lang('f_choose_project_type')"
+                                    :is-required="true"
+                                    :options="project_type_options"
+                                    :form="state.sinks.creations.project_type"
+                                    name="type"
+                                    fieldLabel="label"
+                                    fieldValue="_id"
+                                    :view-validation-texts="false"
+                                    :translatable="true"
+                                    @select-change="project_type_change"
+                            />
                             <fform
                                     :name="state.sinks.creations.project"
                                     :hasButtons="!is_editing()"

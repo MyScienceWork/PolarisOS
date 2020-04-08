@@ -24,16 +24,15 @@ class _Entity extends ODM {
         try {
             const m = JSON.parse(mapping);
             const body = {
-                properties: m.mappings[name].properties,
+                properties: m.mappings.properties,
             };
 
-            if ('_meta' in m.mappings[name]) {
-                body._meta = m.mappings[name]._meta;
+            if ('_meta' in m.mappings) {
+                body._meta = m.mappings._meta;
             }
 
             await client.indices.putMapping({
                 index: `${Config.elasticsearch.index_prefix}_${name}`,
-                type: name,
                 body,
             });
             return true;
@@ -63,7 +62,7 @@ class _Entity extends ODM {
 
     static async pre_create_hook(index: string, type: string,
             client: Object, model: Object, body: Object): Promise<boolean> {
-        const ret = await this._add_mapping(client, body.type, body.mapping, body.settings || {});
+        const ret = await this._add_mapping(client, type, body.mapping, body.settings || {});
         delete body.mapping;
         delete body.settings;
         delete body.update_settings;
@@ -72,10 +71,10 @@ class _Entity extends ODM {
 
     static async pre_update_hook(index: string, type: string,
             client: Object, model: Object, body: Object, id: string): Promise<boolean> {
-        const ret = await this._update_mapping(client, body.type, body.mapping);
+        const ret = await this._update_mapping(client, type, body.mapping);
 
         if (body.update_settings) {
-            await this._update_settings(client, body.type, body.settings);
+            await this._update_settings(client, type, body.settings);
         }
         delete body.mapping;
         delete body.settings;
@@ -85,16 +84,16 @@ class _Entity extends ODM {
 
     async post_read_hook(population: Array<String>) {
         super.post_read_hook(population);
-        const index = `${Config.elasticsearch.index_prefix}_${this.source.type}`;
+        const index = `${Config.elasticsearch.index_prefix}_${this._type}`;
         const mapping = await this.constructor.fetch_mapping(index,
-            this.source.type, this._client, true);
+            this._type, this._client, true);
 
         const settings = await this.constructor.fetch_settings(index,
-            this.source.type, this._client);
+            this._type, this._client);
 
         this._db.source.mapping = {
             mappings: {
-                [this.source.type]: mapping,
+                [this._type]: mapping,
             },
         };
 

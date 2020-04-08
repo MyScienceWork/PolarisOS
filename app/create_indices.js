@@ -8,28 +8,6 @@ const client = new elasticsearch.Client(config.elasticsearch);
 const index_prefix = config.elasticsearch.index_prefix;
 
 function create() {
-    /* Object.keys(mappings).forEach((name) => {
-        let index = mappings[name];
-
-        if (name in settings) {
-            index = _.merge({}, mapping, settings[name]);
-        } else {
-            console.warn(`No settings for mapping ${name}`);
-        }
-        const response = client.indices.create({
-            index: name, // `${config.elasticsearch.index_prefix}_${name}`,
-            body: index,
-        });
-
-        response.then((result) => {
-            console.log(`Success when creating index for ${name}`);
-            console.log(result);
-        }).catch((err) => {
-            console.error(`Error when creating index for ${name}`);
-            console.error(err);
-        });
-    });*/
-
     _.forEach(mappings, (mapping, name) => {
         let index = mapping;
 
@@ -48,7 +26,7 @@ function create() {
         }
 
         if (name === 'mswpublication') {
-            index = _.merge({}, { mappings: { publication: mapping.mappings[name] } },
+            index = _.merge({}, { mappings: mapping.mappings },
                 settings[name]);
             name = 'publication';
         }
@@ -79,11 +57,11 @@ function update() {
         }
 
         const body = {
-            properties: mapping.mappings[name].properties,
+            properties: mapping.mappings.properties,
         };
 
-        if ('_meta' in mapping.mappings[name]) {
-            body._meta = mapping.mappings[name]._meta;
+        if ('_meta' in mapping.mappings) {
+            body._meta = mapping.mappings._meta;
         }
 
         if (name === 'mswpublication') {
@@ -92,7 +70,6 @@ function update() {
 
         const response = client.indices.putMapping({
             index: `${config.elasticsearch.index_prefix}_${name}`,
-            type: name,
             body,
         });
 

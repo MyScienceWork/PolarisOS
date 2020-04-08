@@ -100,6 +100,7 @@
                     :readonly="readonly"
                 />
                 <b-datepicker
+                    v-model="state.value"
                     v-else-if="type === 'date' && !readonly"
                     :value="state.value"
                     @input="update"

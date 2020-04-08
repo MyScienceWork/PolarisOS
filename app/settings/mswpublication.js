@@ -1,11 +1,7 @@
 module.exports = {
     msw: {
         settings: {
-            index: {
-                mapper: {
-                    dynamic: false,
-                },
-            },
+            max_ngram_diff: '50',
             analysis: {
                 filter: {
                     msw_snowball: {

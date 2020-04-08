@@ -315,7 +315,7 @@ module.exports = {
                 body.sort = body.sort.concat(this.defaultSorts);
             }
 
-            body.sort.push({ _uid: 'desc' });
+            body.sort.push({ _id: 'desc' });
 
             this.$store.dispatch('search', {
                 path: this.searchPath,
@@ -370,6 +370,9 @@ module.exports = {
             }
         },
         current_state_search(s) {
+            if (s === 'error_validate') {
+                this.state.loading = false;
+            }
             this.dispatch(s, this, this.searchSink);
         },
         current_state_result(s) {

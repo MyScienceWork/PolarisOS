@@ -4,6 +4,7 @@ const all = {
     root: path.resolve(path.join(__dirname, '..')),
     elasticsearch: {
         index_prefix: 'pos',
+        apiVersion: '7.x',
     },
     logger: {
         logFile: 'polarisos.log',
