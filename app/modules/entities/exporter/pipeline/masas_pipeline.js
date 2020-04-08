@@ -96,7 +96,7 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [],
-            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('YYYY') }),
+            picker: (c, pub, lang, key) => ({ [key]: moment(c).tz('Europe/Paris').format('DD/MM/YYYY') }),
         },
     },
     'localisation.city': CSVPipeline.mapping['localisation.city'],

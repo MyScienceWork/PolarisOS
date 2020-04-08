@@ -57,19 +57,19 @@ class BibliographicExporter {
 
         if (projects.length === 0 && authors.length === 0 && labs.length === 0 && surveys.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_project_author_lab_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_project_author_lab_bexport', 'EN');
             throw e;
         }
 
         if (types.length === 0 && subtypes.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_typology_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_typology_bexport', 'EN');
             throw e;
         }
 
         if (sort.length === 0) {
             const e = Errors.InvalidEntity;
-            e.message = 'l_err_no_sort_bexport';
+            e.message = await LangUtils.string_to_translation('l_err_no_sort_bexport', 'EN');
             throw e;
         }
 
@@ -84,6 +84,7 @@ class BibliographicExporter {
                 interval: 'year',
                 format: 'YYYY',
                 keyed: true,
+                timezone: 'Europe/Paris',
                 min_doc_count: 1,
                 order: { _time: 'desc' }, // Deprecated in ES 6.x TODO
                 $aggregations: {
@@ -323,8 +324,9 @@ class BibliographicExporter {
 
             if (end_year.length > 0) {
                 // get the end of the year
-                range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec-1;
+                range['<'] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf()-offset_millisec;
             }
+            console.log("range : ", range);
             where.$and.push({ 'dates.publication': range });
         }
 

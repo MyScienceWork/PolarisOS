@@ -225,6 +225,7 @@ class ODM {
         const sort = search.sort();
         const aggs = search.aggs();
         const population = 'population' in opts ? opts.population : [];
+        //console.log("this is ES body : ", JSON.stringify(query));
         const body = {
             from: 'from' in opts ? opts.from : 0,
             size: 'size' in opts ? opts.size : 1000,

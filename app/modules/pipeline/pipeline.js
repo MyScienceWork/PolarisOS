@@ -244,6 +244,8 @@ class Pipeline {
                 Logger.info(`Bulk pipeline ${parseInt(i, 10) + 1}/${items.length}`);
             }
 
+            // check authors exist
+
             const item = items[i];
             try {
                 const result = await Pipeline.run(item, type, pipelines, method, range, extra);
