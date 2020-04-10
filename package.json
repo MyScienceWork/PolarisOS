@@ -36,6 +36,7 @@
     "citation-js": "git+https://git@github.com/louismarie/citation.js.git#b686f1d52750ded99cee1cdca1963184c4660738",
     "csv-parse": "^2.0.4",
     "csv-stringify": "^2.0.4",
+    "dejats": "^1.7.0",
     "elasticsearch": "^15.4.1",
     "enumify": "^1.0.4",
     "fast-html-parser": "^1.0.1",
