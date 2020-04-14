@@ -8,7 +8,7 @@ const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
 
 
-const Mapping: Object = PubMapping.msw.mappings.mswpublication.properties;
+const Mapping: Object = PubMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
 ];

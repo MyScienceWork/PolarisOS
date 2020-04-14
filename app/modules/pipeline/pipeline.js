@@ -215,7 +215,7 @@ class Pipeline {
             const item = ctx.request.body;
             const method = ctx.request.method.toLowerCase();
             const model = await EntitiesUtils.get_model_from_type(type);
-            Logger.info("This is the model : ", model);
+            //Logger.info("This is the model : ", model);
             const pipelines = model.Pipelines || [];
             const extra = ctx.__md || {};
 
@@ -243,6 +243,8 @@ class Pipeline {
             if (parseInt(i, 10) % 50 === 0) {
                 Logger.info(`Bulk pipeline ${parseInt(i, 10) + 1}/${items.length}`);
             }
+
+            // check authors exist
 
             const item = items[i];
             try {

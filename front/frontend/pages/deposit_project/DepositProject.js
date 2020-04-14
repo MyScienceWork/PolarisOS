@@ -73,6 +73,15 @@ module.exports = {
         open_review_modal() {
             this.state.show_review_modal = true;
         },
+        project_submitted() {
+            // init project type form choices
+            this.$set(this.state, 'project_type', '');
+            this.$set(this.state, 'project_subform_name', '');
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.creations.project_type,
+                body: undefined,
+            });
+        },
         project_type_change(form) {
             if (!form || !form.value || form.value === '') {
                 if (this.state.project_subform_name) {

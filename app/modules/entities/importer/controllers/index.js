@@ -1,6 +1,8 @@
 // @flow
 const moment = require('moment');
 const Request = require('superagent');
+const dejats = require('dejats');
+const htmlToText = require('html-to-text');
 const EntitiesUtils = require('../../../utils/entities');
 const Config = require('../../../../config');
 const Logger = require('../../../../logger');
@@ -32,12 +34,30 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             ],
         };
 
+        if (message.language && message.language.length > 0) {
+            ctx.body.lang = message.language.toUpperCase();
+        }
+
         if (message.title && message.title.length > 0) {
             ctx.body.title = { content: message.title[0] };
         }
 
         if (message.subtitle && message.subtitle.length > 0) {
             ctx.body.subtitles = [{ content: message.subtitle[0] }];
+        }
+
+        if (message.abstract && message.abstract.length > 0) {
+            dejats(message.abstract, (err, doc) => {
+                if (err) {
+                    console.error('fail to dejat abstract : ', message.abstract);
+                } else {
+                    const html_content = doc.documentElement.innerHTML;
+                    const text_content = htmlToText.fromString(html_content, {
+                        wordwrap: false,
+                    });
+                    ctx.body.abstracts = [{ content: text_content }];
+                }
+            });
         }
 
         if (message.issued && message.issued['date-parts']

@@ -2,7 +2,7 @@
 const CacheMapping = require('../../../../mappings/cache');
 const MMapping = require('../../crud/mapping');
 
-const Mapping: Object = CacheMapping.msw.mappings.cache.properties;
+const Mapping: Object = CacheMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [];
 

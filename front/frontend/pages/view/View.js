@@ -75,6 +75,14 @@ module.exports = {
         };
     },
     methods: {
+        good_language(index, lang, tt) {
+            if (index === 0 && this.fcontent(this.state.sinks.reads.item)[0] && this.fcontent(this.state.sinks.reads.item)[0].lang) {
+                return this.fcontent(this.state.sinks.reads.item)[0].lang;
+            }
+            if (tt.lang) {
+                return tt.lang;
+            }
+        },
         run_export(format) {
             this.$store.dispatch('download', {
                 path: APIRoutes.export(),
@@ -240,6 +248,9 @@ module.exports = {
                         },
                     });
                 }
+            }
+            if (this.titles[0] && this.titles[0].lang) {
+                this.activate_lang('title', this.titles[0].lang);
             }
         },
     },

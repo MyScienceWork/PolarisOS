@@ -6,7 +6,7 @@ const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');
 
-const Mapping: Object = IdentifierMapping.msw.mappings.identifier.properties;
+const Mapping: Object = IdentifierMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
     // Joi.object({

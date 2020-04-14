@@ -113,7 +113,12 @@ module.exports = {
                 });
             }
 
-            if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
+            if (this.type === 'number' && e.target.value === "") {
+                this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                });
+            } else if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,

@@ -17,7 +17,7 @@ const Importers = require('../../importer/controllers');
 const PipelineTypeFiles = require('./pipeline_type_files');
 const PipelineDiffusion = require('./pipeline_diffusion');
 
-const Mapping: Object = PubMapping.msw.mappings.publication.properties;
+const Mapping: Object = PubMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
     {

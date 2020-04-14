@@ -116,7 +116,7 @@ class DuplicatesRemover {
         while (true) {
             const query = {
                 size: 100,
-                sort: [{ _uid: 'desc' }],
+                sort: [{ _id: 'desc' }],
                 search_after,
                 projection,
             };
@@ -184,7 +184,7 @@ class DuplicatesRemover {
             while (true) {
                 const query = {
                     size: 100,
-                    sort: [{ _uid: 'desc' }],
+                    sort: [{ _id: 'desc' }],
                     search_after,
                     where,
                 };
@@ -225,7 +225,7 @@ class DuplicatesRemover {
             const where = forger(duplicate);
             const query = {
                 size: 100,
-                sort: [{ _uid: 'desc' }],
+                sort: [{ _id: 'desc' }],
                 where,
             };
 

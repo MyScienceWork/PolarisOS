@@ -33,6 +33,7 @@
                                         :put_path="state.paths.creations.project"
                                         :get_path="state.paths.reads.project"
                                         :get_form="state.sinks.reads.project"
+                                        @form-success-reset="project_submitted"
                                 >
                                 <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
                                     <finput

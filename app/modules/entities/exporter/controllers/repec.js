@@ -102,7 +102,7 @@ async function export_repec_paper(ctx: Object): Promise<any> {
         while (true) {
             const query = {
                 size: 1000,
-                sort: [{ _uid: 'desc' }],
+                sort: [{ _id: 'desc' }],
                 search_after,
                 projection: [],
                 where: {

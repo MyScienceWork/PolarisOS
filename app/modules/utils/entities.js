@@ -122,7 +122,7 @@ function get_index(type: string): string {
 function format_search_for_lang(body: Object, lang: string = 'EN'): Object {
     const default_object = {
         size: Math.min(20, body.size || 20),
-        sort: [{ _uid: 'desc' }],
+        sort: [{ _id: 'desc' }],
     };
 
     if (!('where' in body)) {
@@ -476,6 +476,7 @@ async function search(type: string, body: Object,
     }
 
     const response = format_search(body, cls.model);
+    //console.log("this is body : ", JSON.stringify(body));
     const result = await cls.constructor.search(get_index(type), type, es_client,
             cls.model, response.search, response.options);
 
@@ -564,7 +565,7 @@ async function search_and_get_sources(type: string, body: Object): Array<Object>
 }
 
 async function search_in_order_and_get_sources(type: string, body: Object, cb: Function) {
-    body.sort = [{ _uid: 'asc' }];
+    body.sort = [{ _id: 'asc' }];
     let sources = await search_and_get_sources(type, body);
     cb(sources);
     while (sources.length > 0) {

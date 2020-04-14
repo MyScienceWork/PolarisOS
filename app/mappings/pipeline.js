@@ -29,97 +29,95 @@ const FunctionMapping = {
 module.exports = {
     msw: {
         mappings: {
-            pipeline: {
-                dynamic: 'strict',
-                dynamic_date_formats: [],
-                properties: {
-                    name: {
-                        type: 'text',
-                        fields: {
-                            raw: {
-                                type: 'keyword',
-                            },
+            dynamic: 'strict',
+            dynamic_date_formats: [],
+            properties: {
+                name: {
+                    type: 'text',
+                    fields: {
+                        raw: {
+                            type: 'keyword',
                         },
                     },
-                    filters: {
-                        type: 'nested',
-                        properties: {
-                            value: {
-                                type: 'keyword',
-                            },
+                },
+                filters: {
+                    type: 'nested',
+                    properties: {
+                        value: {
+                            type: 'keyword',
                         },
                     },
-                    resetters: {
-                        type: 'nested',
-                        properties: {
-                            key: {
-                                type: 'keyword',
-                            },
-                            value: {
-                                type: 'keyword',
-                            },
+                },
+                resetters: {
+                    type: 'nested',
+                    properties: {
+                        key: {
+                            type: 'keyword',
+                        },
+                        value: {
+                            type: 'keyword',
                         },
                     },
-                    defaults: {
-                        type: 'nested',
-                        properties: {
-                            key: {
-                                type: 'keyword',
-                            },
-                            value: {
-                                type: 'keyword',
-                            },
+                },
+                defaults: {
+                    type: 'nested',
+                    properties: {
+                        key: {
+                            type: 'keyword',
+                        },
+                        value: {
+                            type: 'keyword',
                         },
                     },
-                    formatters: {
-                        type: 'nested',
-                        properties: {
-                            field: {
-                                type: 'keyword',
-                            },
-                            function: FunctionMapping,
+                },
+                formatters: {
+                    type: 'nested',
+                    properties: {
+                        field: {
+                            type: 'keyword',
                         },
+                        function: FunctionMapping,
                     },
-                    completers: {
-                        type: 'nested',
-                        properties: {
-                            field: {
-                                type: 'keyword',
-                            },
-                            function: FunctionMapping,
+                },
+                completers: {
+                    type: 'nested',
+                    properties: {
+                        field: {
+                            type: 'keyword',
                         },
+                        function: FunctionMapping,
                     },
-                    transformers: {
-                        type: 'nested',
-                        properties: {
-                            input: {
-                                type: 'keyword',
-                            },
-                            rules: {
-                                type: 'nested',
-                                properties: {
+                },
+                transformers: {
+                    type: 'nested',
+                    properties: {
+                        input: {
+                            type: 'keyword',
+                        },
+                        rules: {
+                            type: 'nested',
+                            properties: {
 
-                                },
                             },
-                            output: {
-                                type: 'keyword',
-                            },
+                        },
+                        output: {
+                            type: 'keyword',
                         },
                     },
-                    validators: {
-                        type: 'nested',
-                        properties: {
-                            field: {
-                                type: 'keyword',
-                            },
-                            type: {
-                                type: 'keyword',
-                            },
-                            required: {
-                                type: 'boolean',
-                            },
-                            function: FunctionMapping,
+                },
+                validators: {
+                    type: 'nested',
+                    properties: {
+                        field: {
+                            type: 'keyword',
                         },
+                        type: {
+                            type: 'keyword',
+                        },
+                        required: {
+                            type: 'boolean',
+                        },
+                        function: FunctionMapping,
                     },
                 },
             },

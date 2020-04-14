@@ -4,7 +4,7 @@ const QMapping = require('../../../../mappings/query');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
 
-const Mapping: Object = QMapping.msw.mappings.query.properties;
+const Mapping: Object = QMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
     Joi.object({

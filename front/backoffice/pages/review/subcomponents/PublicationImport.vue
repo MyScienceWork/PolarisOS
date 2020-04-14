@@ -25,7 +25,7 @@
                                 :translatable="true"
                                 :select-first-value="true"
                             />
-                            <fdropzone 
+                            <fdropzone
                                 :form="this.state.sinks.creations.import"
                                 files="files"
                                 name="filepath"
@@ -37,28 +37,28 @@
                             >
                                 <div slot-scope="props">
                                     <div class="dz-message" v-if="props.files.order.length === 0">
-                                        <a class="has-text-info" href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a> 
+                                        <a class="has-text-info" href='javascript:undefined'>{{lang('dropzone_click_here_to_upload')}}</a>
                                     </div>
                                     <div v-else v-for="(filename, i) in props.files.order">
-                                        <finput 
-                                            :readonly="true" 
-                                            name="filename" 
-                                            :label="lang('b_file_deposit_name')" 
-                                            type="text" 
-                                            :placeholder="lang('dropzone_file_deposit_name')" 
+                                        <finput
+                                            :readonly="true"
+                                            name="filename"
+                                            :label="lang('b_file_deposit_name')"
+                                            type="text"
+                                            :placeholder="lang('dropzone_file_deposit_name')"
                                             :form="state.sinks.creations.import"
                                             :default="props.files.content[filename].name"
                                         />
-                                        <finput 
-                                            name="url" 
-                                            label="" type="hidden" 
-                                            :form="state.sinks.creations.import" 
-                                            :hidden-value="props.files.content[filename].pathOnServer || ''" 
+                                        <finput
+                                            name="url"
+                                            label="" type="hidden"
+                                            :form="state.sinks.creations.import"
+                                            :hidden-value="props.files.content[filename].pathOnServer || ''"
                                         />
                                     </div>
                                 </div>
                             </fdropzone>
-                            <button 
+                            <button
                                 type="submit" @click.prevent="import_publications"
                                 class="button is-info has-small-bottom-margin"
                             >
@@ -104,63 +104,63 @@
                             @column-checkbox-update="on_column_update"
                         >
                             <template slot="rows" slot-scope="props">
-                                <b-table-column 
-                                    field="name.raw" 
-                                    :label="lang(state.columns.name.title)" 
-                                    :visible="state.columns.name.visible" 
+                                <b-table-column
+                                    field="name.raw"
+                                    :label="lang(state.columns.name.title)"
+                                    :visible="state.columns.name.visible"
                                     :sortable="state.columns.name.sortable"
                                 >
                                     {{props.row.name}}
                                 </b-table-column>
-                                <b-table-column 
-                                    field="created_at" 
-                                    :label="lang(state.columns.created_at.title)" 
-                                    centered 
-                                    :visible="state.columns.created_at.visible" 
+                                <b-table-column
+                                    field="created_at"
+                                    :label="lang(state.columns.created_at.title)"
+                                    centered
+                                    :visible="state.columns.created_at.visible"
                                     :sortable="state.columns.created_at.sortable"
                                 >
                                     <span class="tag is-light">
                                         {{props.row.created_at | format_date('fromNow') }}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="report.success" 
-                                    :label="lang(state.columns['report.success'].title)" 
-                                    centered 
-                                    :visible="state.columns['report.success'].visible" 
+                                <b-table-column
+                                    field="report.success"
+                                    :label="lang(state.columns['report.success'].title)"
+                                    centered
+                                    :visible="state.columns['report.success'].visible"
                                     :sortable="state.columns['report.success'].sortable"
                                 >
                                     <span class="tag is-success">
                                         {{_oa_find(props.row, 'report.success', 0)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="report.errors" 
-                                    :label="lang(state.columns['report.errors'].title)" 
-                                    centered 
-                                    :visible="state.columns['report.errors'].visible" 
+                                <b-table-column
+                                    field="report.errors"
+                                    :label="lang(state.columns['report.errors'].title)"
+                                    centered
+                                    :visible="state.columns['report.errors'].visible"
                                     :sortable="state.columns['report.errors'].sortable"
                                 >
                                     <span class="tag is-danger">
                                         {{_oa_find(props.row, 'report.errors', 0)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="report.total" 
-                                    :label="lang(state.columns['report.total'].title)" 
-                                    centered 
-                                    :visible="state.columns['report.total'].visible" 
+                                <b-table-column
+                                    field="report.total"
+                                    :label="lang(state.columns['report.total'].title)"
+                                    centered
+                                    :visible="state.columns['report.total'].visible"
                                     :sortable="state.columns['report.total'].sortable"
                                 >
                                     <span class="tag is-info">
                                         {{_oa_find(props.row, 'report.total', 0)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="status" 
-                                    :label="lang(state.columns.status.title)" 
-                                    centered 
-                                    :visible="state.columns.status.visible" 
+                                <b-table-column
+                                    field="status"
+                                    :label="lang(state.columns.status.title)"
+                                    centered
+                                    :visible="state.columns.status.visible"
                                     :sortable="state.columns.status.sortable"
                                 >
                                     <span class="tag is-light" v-if="props.row.status === 'on_wait'">
@@ -179,11 +179,11 @@
                                         {{lang(`l_${props.row.status}_report_status`)}}
                                     </span>
                                 </b-table-column>
-                                <b-table-column 
-                                    field="denormalization.requester.fullname.raw" 
-                                    :label="lang(state.columns['denormalization.requester.fullname'].title)" 
-                                    centered 
-                                    :visible="state.columns['denormalization.requester.fullname'].visible" 
+                                <b-table-column
+                                    field="denormalization.requester.fullname.raw"
+                                    :label="lang(state.columns['denormalization.requester.fullname'].title)"
+                                    centered
+                                    :visible="state.columns['denormalization.requester.fullname'].visible"
                                     :sortable="state.columns['denormalization.requester.fullname'].sortable"
                                 >
                                         {{_oa_find(props.row, 'denormalization.requester.fullname', '')}}
@@ -199,6 +199,18 @@
                                         <i class="fa fa-times"></i>
                                     </action-button>
                                 </b-table-column>
+                            </template>
+                            <template slot="detail" slot-scope="props">
+                                <div class="has-medium-font">
+                                    <div v-for="(row, key) in JSON.parse(props.row.result)"
+                                       v-if="JSON.parse(props.row.result)[key].title && JSON.parse(props.row.result)[key].errors">
+                                        <p>
+                                        <span class="tag is-danger">{{key+1}}</span>
+                                        <span><strong>{{row.title}}</strong></span>
+                                        </p>
+                                        <p>Message : {{row.errors}}</p>
+                                    </div>
+                                </div>
                             </template>
                         </fdata-table-searching>
                     </div>

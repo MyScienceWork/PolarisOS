@@ -5,6 +5,28 @@ const LangUtils = require('../../utils/lang');
 const Errors = require('../../exceptions/errors');
 const Handlebars = require('../../utils/templating');
 
+function removeXMLInvalidChars(string, removeDiscouragedChars = true)
+{
+    // remove everything forbidden by XML 1.0 specifications, plus the unicode replacement character U+FFFD
+    var regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
+    string = string.replace(regex, "");
+
+    if (removeDiscouragedChars) {
+        // remove everything not suggested by XML 1.0 specifications
+        regex = new RegExp(
+          "([\\x7F-\\x84]|[\\x86-\\x9F]|[\\uFDD0-\\uFDEF]|(?:\\uD83F[\\uDFFE\\uDFFF])|(?:\\uD87F[\\uDF"+
+          "FE\\uDFFF])|(?:\\uD8BF[\\uDFFE\\uDFFF])|(?:\\uD8FF[\\uDFFE\\uDFFF])|(?:\\uD93F[\\uDFFE\\uD"+
+          "FFF])|(?:\\uD97F[\\uDFFE\\uDFFF])|(?:\\uD9BF[\\uDFFE\\uDFFF])|(?:\\uD9FF[\\uDFFE\\uDFFF])"+
+          "|(?:\\uDA3F[\\uDFFE\\uDFFF])|(?:\\uDA7F[\\uDFFE\\uDFFF])|(?:\\uDABF[\\uDFFE\\uDFFF])|(?:\\"+
+          "uDAFF[\\uDFFE\\uDFFF])|(?:\\uDB3F[\\uDFFE\\uDFFF])|(?:\\uDB7F[\\uDFFE\\uDFFF])|(?:\\uDBBF"+
+          "[\\uDFFE\\uDFFF])|(?:\\uDBFF[\\uDFFE\\uDFFF])(?:[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uD7FF\\"+
+          "uE000-\\uFFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[\\uD800-\\uDBFF](?![\\uDC00-\\uDFFF])|"+
+          "(?:[^\\uD800-\\uDBFF]|^)[\\uDC00-\\uDFFF]))", "g");
+        string = string.replace(regex, "");
+    }
+
+    return string;
+}
 
 async function generate_rss_feed(ctx: Object): Promise<*> {
     const body = ctx.params;
@@ -60,11 +82,11 @@ async function generate_rss_feed(ctx: Object): Promise<*> {
 
     items.forEach((item) => {
         feed.addItem({
-            title: Handlebars.compile(mapping.title)(item),
-            id: Handlebars.compile(mapping.id)(item),
-            link: Handlebars.compile(mapping.link)(item),
-            description: mapping.description ? Handlebars.compile(mapping.description)(item) : '',
-            content: mapping.content ? Handlebars.compile(mapping.content)(item) : '',
+            title: removeXMLInvalidChars(Handlebars.compile(mapping.title)(item)),
+            id: removeXMLInvalidChars(Handlebars.compile(mapping.id)(item)),
+            link: removeXMLInvalidChars(Handlebars.compile(mapping.link)(item)),
+            description: removeXMLInvalidChars(mapping.description.toString("utf8")) ? removeXMLInvalidChars(Handlebars.compile(mapping.description)(item)) : '',
+            content: removeXMLInvalidChars(mapping.content) ? removeXMLInvalidChars(Handlebars.compile(mapping.content)(item)) : '',
         });
     });
 

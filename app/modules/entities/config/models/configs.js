@@ -4,8 +4,7 @@ const ConfigMapping = require('../../../../mappings/config');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 
-const Mapping: Object = ConfigMapping.msw
-.mappings.config.properties;
+const Mapping: Object = ConfigMapping.msw.mappings.properties;
 
 
 const Validation: Array<any> = [

@@ -220,7 +220,7 @@ module.exports = {
                 path: this.state.paths.reads.typology,
                 body: {
                     size: 10000,
-                    sort: [{ order: 'asc' }, { _uid: 'desc' }],
+                    sort: [{ order: 'asc' }, { _id: 'desc' }],
                 },
             },
         });
@@ -282,8 +282,8 @@ module.exports = {
                         files: [],
                         dates: { deposit: undefined },
                         depositor: undefined,
-                        system: { api: { handle: false } } },
-
+                        system: { api: { handle: false, hal: false, hal_id: "" } } },
+                        has_other_version: false,
                 },
             });
             break;

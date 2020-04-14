@@ -139,7 +139,6 @@ module.exports = {
             f();
             VueScrollTo.scrollTo('#deposit-stepper', 500);
             const content = this.fcontent(this.state.sinks.creations.publication);
-            BrowserUtils.localSet('saved_deposit', content);
         },
         update_step(info) {
             this.state.next_step = info.next_step;
@@ -170,6 +169,9 @@ module.exports = {
 
             publications.forEach((publication) => {
                 content._id = publication;
+                delete content.type;
+                delete content.dates.publication;
+                delete content.diffusion.rights.embargo;
                 this.$store.dispatch('update', {
                     form: this.state.sinks.creations.publication,
                     path: this.state.paths.creations.publication,
@@ -209,7 +211,6 @@ module.exports = {
             this.acknowledge_submission_error(sink);
         },
         go_after_success(give_up = false) {
-            BrowserUtils.localRemove('saved_deposit');
             if (give_up) {
                 this.$router.push({ path: '/' });
             } else {

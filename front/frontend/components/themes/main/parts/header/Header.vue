@@ -11,7 +11,7 @@
             </div>
             <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8">
                 <div class="container">
-                    <img :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' />
+                    <img style="max-width: 15%;" :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' />
                 </div>
             </div>
             <div v-else class="column is-vertical has-text-centered">

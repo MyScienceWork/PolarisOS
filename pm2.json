@@ -7,10 +7,15 @@
     "env": {
         "NODE_ENV": "development"
     },
+    "env_test" : {
+      "NODE_ENV": "test",
+      "NODE_PORT": "5556",
+      "ES_HOSTS": "http://elastic:hOPQDLg7YEzWdYIxmh1a@elasticsearch:9200"
+    },
     "env_production" : {
         "NODE_ENV": "production",
         "NODE_PORT": "5556",
-        "ES_HOSTS": "elasticsearch:9200",
+        "ES_HOSTS": "http://elastic:hiOIPWZv9sLFJK8QcZ2k@elasticsearch:9200",
         "GROBID_HOST": "grobid",
         "GROBID_PORT": 8080,
         "MINIO_HOST": "minio",
