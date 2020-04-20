@@ -15,6 +15,7 @@ Build and Push image production DEMO:
     - docker:18.09.7-dind
   only:
     - master
+    - demo
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
     - apk add jq
