@@ -29,6 +29,9 @@ module.exports = {
                     },
                     diffusion: {
                         internal_collection: 'internal_collection',
+                        internal_collection2: {
+                            _id: 'internal_collection',
+                        },
                         surveys: {
                             _id: 'survey',
                         },
