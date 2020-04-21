@@ -1,9 +1,15 @@
+const env = process.env;
+
+let hosts = ['http://localhost:9200'];
+
+if (env.ES_HOSTS != null) {
+    hosts = env.ES_HOSTS.split(',');
+}
+
 const production = {
     port: 5556,
     elasticsearch: {
-        hosts: [
-            'http://elastic:password@localhost:9201',
-        ],
+        hosts,
     },
     logger: {
         transports: {
