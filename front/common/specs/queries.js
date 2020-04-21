@@ -68,6 +68,13 @@ module.exports = {
         has_other_version: false,
     },
     viewable,
+    last_deposits: (uid, aid) => ({
+        $and: [
+            { has_other_version: false },
+            { status: 'published' },
+            viewable(uid, aid),
+        ],
+    }),
     filter_role(userId, roles, filter) {
         if (roles.funder) {
             filter.$and.push({ depositor: userId });
@@ -123,6 +130,7 @@ module.exports = {
         };
         return this.filter_role(userId, roles, filter);
     },
+
     form: {
         $or: [
             { name: '{{{search}}}' },
