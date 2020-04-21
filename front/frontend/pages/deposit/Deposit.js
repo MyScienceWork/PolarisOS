@@ -33,15 +33,15 @@ module.exports = {
                 },
                 paths: {
                     creations: {
-                        //publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
+                        publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
                         specs: 'publication_specs',
                     },
                     reads: {
-                        //publication: APIRoutes.entity('publication', 'GET'),
+                        publication: APIRoutes.entity('publication', 'GET'),
                         typology: APIRoutes.entity('typology', 'POST', true),
                     },
                     validations: {
-                        //publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
+                        publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
                     },
                 },
                 forms: {
