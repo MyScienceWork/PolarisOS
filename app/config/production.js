@@ -62,7 +62,7 @@ const production = {
     },
     translation: {
         host: 'http://translation',
-        port: 5001,
+        port: 8080,
     },
 };
 
