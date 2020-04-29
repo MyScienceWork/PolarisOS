@@ -739,6 +739,12 @@ module.exports = {
                                 },
                             },
                         },
+                        mimetype: {
+                            type: 'keyword',
+                        },
+                        preview_url: {
+                            type: 'keyword',
+                        },
                     },
                 },
                 ids: {
