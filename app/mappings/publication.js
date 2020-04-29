@@ -415,6 +415,24 @@ module.exports = {
                                         },
                                     },
                                 },
+                                internal_collection2: {
+                                    type: 'nested',
+                                    properties: {
+                                        _id: {
+                                            properties: {
+                                                label: {
+                                                    type: 'text',
+                                                    analyzer: 'folding',
+                                                    fields: {
+                                                        raw: {
+                                                            type: 'keyword',
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                                 research_teams: {
                                     type: 'nested',
                                     properties: {
@@ -628,6 +646,14 @@ module.exports = {
                 diffusion: {
                     properties: {
                         internal_collection: { type: 'keyword' },
+                        internal_collection2: {
+                            type: 'nested',
+                            properties: {
+                                _id: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
                         projects: {
                             type: 'nested',
                             properties: {
