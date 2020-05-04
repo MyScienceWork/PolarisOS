@@ -113,17 +113,36 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             }
         }
 
-        if (message.author && message.author.length > 0) {
-            const author_search_promises = message.author.map((a) => {
-                const name = `${a.given} ${a.family}`;
-                return EntitiesUtils.search('author',
-                        { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
-            });
+        ctx.body.contributors = [];
 
-            let results = await Promise.all(author_search_promises);
-            results = results.map(r => EntitiesUtils.get_hits(r))
-            .filter(r => r != null && r.length > 0);
-            ctx.body.contributors = results.map(r => ({ label: r[0].id }));
+        if (message.author && message.author.length > 0) {
+            console.log("message.author : ", message.author);
+
+            for (const a in message.author) {
+                const name = `${a.given} ${a.family}`;
+                const author_search = await EntitiesUtils.search('author',
+                    { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
+                const hits = EntitiesUtils.get_hits(author_search);
+
+                console.log("author_search name : ", name);
+                console.log("author_search : ", JSON.stringify(author_search));
+                console.log("hits : ", JSON.stringify(hits));
+
+                if (hits.length > 0) {
+                    const results = hits.map(r => EntitiesUtils.get_hits(r))
+                        .filter(r => r != null && r.length > 0);
+                    console.log("BRYAN results1 : ", results);
+                    ctx.body.contributors.push(results.map(r => ({ label: r[0].id })));
+                } else {
+                    const author_result = await EntitiesUtils.create({ firstname: a.given, lastname: a.family }, 'author');
+                    if (author_result) {
+                        console.log("BRYAN results2 : ", author_result);
+                        ctx.body.contributors.push({ label: author_result.id });
+                    }
+                }
+            }
+
+            console.log("ctx.body.contributors : ", ctx.body.contributors);
         }
         return;
     }
