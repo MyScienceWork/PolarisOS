@@ -257,7 +257,7 @@ module.exports = {
                 type: 'dispatch',
                 content: {
                     form: this.state.sinks.creations.publication,
-                    //path: APIRoutes.entity('publication', 'GET', false, id),
+                    path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });
             this.$store.state.requests.push({
