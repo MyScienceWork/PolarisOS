@@ -116,33 +116,23 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
         ctx.body.contributors = [];
 
         if (message.author && message.author.length > 0) {
-            console.log("message.author : ", message.author);
-
-            for (const a in message.author) {
+            for (let i = 0; i < message.author.length; i++) {
+                const a = message.author[i];
                 const name = `${a.given} ${a.family}`;
                 const author_search = await EntitiesUtils.search('author',
                     { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
                 const hits = EntitiesUtils.get_hits(author_search);
-
-                console.log("author_search name : ", name);
-                console.log("author_search : ", JSON.stringify(author_search));
-                console.log("hits : ", JSON.stringify(hits));
-
                 if (hits.length > 0) {
                     const results = hits.map(r => EntitiesUtils.get_hits(r))
                         .filter(r => r != null && r.length > 0);
-                    console.log("BRYAN results1 : ", results);
-                    ctx.body.contributors.push(results.map(r => ({ label: r[0].id })));
+                    ctx.body.contributors.push({ label: hits[0].id });
                 } else {
-                    const author_result = await EntitiesUtils.create({ firstname: a.given, lastname: a.family }, 'author');
+                    const author_result = await EntitiesUtils.create({ firstname: a.given, lastname: a.family, fullname: name }, 'author');
                     if (author_result) {
-                        console.log("BRYAN results2 : ", author_result);
-                        ctx.body.contributors.push({ label: author_result.id });
+                        ctx.body.contributors.push({ label: author_result._id });
                     }
                 }
             }
-
-            console.log("ctx.body.contributors : ", ctx.body.contributors);
         }
         return;
     }
