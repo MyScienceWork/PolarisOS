@@ -138,7 +138,11 @@ module.exports = {
             if (!this.duplicate_warning) {
                 return;
             }
-            const info = e.target.value;
+
+            let info = Utils.find_value_with_path(e, 'target.value'.split('.'));
+            if (info == null) {
+                info = e;
+            }
             if (info.trim() === '') {
                 return;
             }
@@ -220,6 +224,7 @@ module.exports = {
             } else {
                 this.state.value = this.formatValue(value);
             }
+            this.blur(this.state.value);
         },
     },
 
