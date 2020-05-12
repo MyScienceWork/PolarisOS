@@ -139,7 +139,12 @@ module.exports = {
                 return;
             }
 
-            let info = Utils.find_value_with_path(e, 'target.value'.split('.'));
+            let info = null;
+
+            if (_.isObject(e)) {
+                info = Utils.find_value_with_path(e, 'target.value'.split('.'));
+            }
+
             if (info == null) {
                 info = e;
             }
