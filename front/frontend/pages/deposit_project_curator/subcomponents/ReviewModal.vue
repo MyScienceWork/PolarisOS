@@ -32,10 +32,25 @@
                         />
                         <finput
                             :label="lang('l_email_remark')"
+                            :form="sink"
                             :is-required="true"
-                            name="comment"
+                            :name="'history.'+index_comment+'.comment'"
                             :rows="10"
                             type="textarea"
+                        />
+                        <finput
+                            label="l_history_date"
+                            :form="sink"
+                            :name="'history.'+index_comment+'.date'"
+                            :hidden-value="updated_date"
+                            type="hidden"
+                        />
+                        <finput
+                            label="l_history_state"
+                            :form="sink"
+                            :name="'history.'+index_comment+'.state'"
+                            :hidden-value="new_state"
+                            type="hidden"
                         />
                     </div>
                 </div>

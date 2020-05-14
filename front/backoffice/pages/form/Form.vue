@@ -419,6 +419,10 @@
                                             </template>
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">
+                                            <finput :name="`${props.fname}.${props.order}.template`"
+                                            :key="`${props.fname}.${props.order}.template`"
+                                            :label="lang('b_is_template')" type="checkbox"
+                                            :form="state.sinks.creations.form" />
                                             <finput
                                             :name="`${props.fname}.${props.order}.hiddenValue`"
                                             :key="`${props.fname}.${props.order}.hiddenValue`"

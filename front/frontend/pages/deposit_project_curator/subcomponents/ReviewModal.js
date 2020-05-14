@@ -1,7 +1,10 @@
+const moment = require('moment');
+
 const LangMixin = require('../../../../common/mixins/LangMixin');
 const FormMixin = require('../../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
 const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
+const Handlebars = require('../../../../../app/modules/utils/templating');
 
 module.exports = {
     mixins: [LangMixin, FormMixin, FormCleanerMixin, FiltersMixin],
@@ -22,6 +25,20 @@ module.exports = {
     computed: {
         status_options() {
             return this.status;
+        },
+        index_comment() {
+            const content = this.fcontent(this.sink);
+            if (content.history) {
+                return `${content.history.length}`;
+            }
+            return 0;
+        },
+        new_state() {
+            const content = this.fcontent(this.sink);
+            return content.state;
+        },
+        updated_date() {
+            return Handlebars.compile('{{moment unix=true}}')({});
         },
     },
 };
