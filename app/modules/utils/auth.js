@@ -2,6 +2,8 @@
 const CAS = require('cas');
 const Request = require('superagent');
 const Crypto = require('crypto');
+const moment = require('moment');
+
 const Config = require('../../config');
 const Logger = require('../../logger');
 const EntitiesUtils = require('./entities');
@@ -50,6 +52,66 @@ async function login_auth(email: string, password: string): Promise<Object> {
     }
 
     return { ok: false, user: {} };
+}
+
+async function send_password_email(email: string, url: string): Promise<Object> {
+    const email_config = await MailerUtils.get_email_config();
+    if (!email_config) {
+        return false;
+    }
+
+    const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+        where: {
+            id: 'forgot-password',
+        },
+        size: 1,
+    });
+
+    if (templates.length === 0) {
+        return false;
+    }
+
+    const template = templates[0];
+
+    const template_subject = await LangUtils.strings_to_translation(template.subject, lang);
+    const template_content = await LangUtils.strings_to_translation(template.body, lang);
+    const subject = Handlebars.compile(template_subject)({ email, url });
+    const content = Handlebars.compile(template_content)({ email, url });
+
+    console.log("subject : ", subject);
+    console.log("content : ", content);
+
+    const sender = email_config.default_sender;
+    const r = await MailerUtils.send_email_with(sender, email, subject, content)
+
+    return r !== null;
+}
+
+async function forgot_password(email: string, host: string): Promise<Object> {
+    const user = await find_user(email, 'emails.email');
+    logger.info("db : ", user);
+    if (!user) {
+        return { ok: false, user: {} };
+    }
+
+    do_standard_checks(user);
+
+    const last_connection = +moment().utc();
+    const up = { last_connection_at: last_connection, _id: user._id };
+    await EntitiesUtils.update(up, 'user');
+
+    const emails = Utils.find_value_with_path(user, 'emails'.split('.'));
+    let master = emails.find(elt => elt.is_master);
+
+    if (!master && emails.length > 0) {
+        master = emails[0];
+    }
+
+    const key = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
+    const url = "https://" + host + "/forgot-password?key=" + key;
+    const result = await send_password_email(master, url);
+
+    return { ok: result, user: {} };
 }
 
 async function get_cas_info(global_config: Object): Promise<?Object> {
@@ -256,4 +318,5 @@ module.exports = {
     login_auth,
     cas_auth,
     get_cas_info,
+    forgot_password,
 };

@@ -8,6 +8,7 @@ module.exports = {
             state: {
                 email: undefined,
                 password: undefined,
+                forgot_password: false,
             },
         };
     },
@@ -18,6 +19,20 @@ module.exports = {
                 email: this.state.email,
                 password: this.state.password,
             });
+        },
+        forgot_password(e) {
+            e.preventDefault();
+            this.$store.dispatch('forgot_password', {
+                email: this.state.email,
+            });
+        },
+        show_forgot_password(e) {
+            e.preventDefault();
+            this.state.forgot_password = true;
+        },
+        show_login(e) {
+            e.preventDefault();
+            this.state.forgot_password = false;
         },
     },
     beforeMount() {
@@ -47,6 +62,9 @@ module.exports = {
     computed: {
         login_status() {
             return this.$store.state.login_status;
+        },
+        forgot_password_status() {
+            return this.$store.state.forgot_password_status;
         },
     },
 };

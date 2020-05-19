@@ -39,6 +39,21 @@ async function authenticate(ctx: Object) {
     }
 }
 
+async function forgot_password(ctx: Object) {
+    const body = ctx.request.body;
+    const email = body.email;
+    const host = body.host;
+
+    if (!email) {
+        ctx.body = { ok: false, user: {} };
+    } else {
+        const result = await AuthUtils.forgot_password(email, host);
+        ctx.body = result;
+    }
+
+    ctx.body = { ok: false, user: {} };
+}
+
 async function access(ctx: Object) {
     const body = ctx.request.body;
     const key = body.key || '';
@@ -170,4 +185,5 @@ module.exports = {
     authenticate,
     list_publications_for_iid,
     access,
+    forgot_password
 };
