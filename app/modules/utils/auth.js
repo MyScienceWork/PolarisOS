@@ -12,6 +12,8 @@ const Utils = require('./utils');
 const Errors = require('../exceptions/errors');
 const LDAP = require('ldapjs');
 const MURL = require('url');
+const MailerUtils = require('./mailer');
+const Handlebars = require('./templating');
 
 async function find_user(info: string, field: string = 'emails.email'): Promise<?Object> {
     const sources = await EntitiesUtils.search_and_get_sources('user', {
@@ -73,15 +75,13 @@ async function send_password_email(email: string, url: string): Promise<Object> 
 
     const template = templates[0];
 
-    const template_subject = await LangUtils.strings_to_translation(template.subject, lang);
-    const template_content = await LangUtils.strings_to_translation(template.body, lang);
+    const template_subject = await LangUtils.strings_to_translation(template.subject, 'EN');
+    const template_content = await LangUtils.strings_to_translation(template.body, 'EN');
     const subject = Handlebars.compile(template_subject)({ email, url });
     const content = Handlebars.compile(template_content)({ email, url });
 
-    console.log("subject : ", subject);
-    console.log("content : ", content);
-
     const sender = email_config.default_sender;
+
     const r = await MailerUtils.send_email_with(sender, email, subject, content)
 
     return r !== null;
@@ -97,18 +97,18 @@ async function forgot_password(email: string, host: string): Promise<Object> {
     do_standard_checks(user);
 
     const last_connection = +moment().utc();
-    const up = { last_connection_at: last_connection, _id: user._id };
-    await EntitiesUtils.update(up, 'user');
+    user.last_connection_at = last_connection;
+    await EntitiesUtils.update(user, 'user');
 
     const emails = Utils.find_value_with_path(user, 'emails'.split('.'));
     let master = emails.find(elt => elt.is_master);
 
     if (!master && emails.length > 0) {
-        master = emails[0];
+        master = emails[0].email;
     }
 
     const key = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
-    const url = "https://" + host + "/forgot-password?key=" + key;
+    const url = "https://" + host + "/login?key=" + key;
     const result = await send_password_email(master, url);
 
     return { ok: result, user: {} };
