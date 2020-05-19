@@ -11,7 +11,24 @@
         <div class="columns is-centered">
             <div class="column is-4">
                 <div class="box">
-                    <form v-if="!state.forgot_password" >
+                    <form v-if="forgot_password_page">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="password-sha1" class="input is-large" :placeholder="lang('f_new_password')"
+                                               autofocus="" v-model="state.new_password"
+                                        >
+                                        <input type="password-sha1" class="input is-large" :placeholder="lang('f_confirm_new_password')"
+                                               autofocus="" v-model="state.confirm_new_password"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a @click="reset_password" class="button is-block is-info is-large">{{lang('f_set_new_password')}}</a>
+                    </form>
+                    <form v-else-if="!state.forgot_password" >
                         <div class="columns">
                             <div class="column">
                                 <div class="field">
@@ -67,7 +84,8 @@
                     </form>
 
                     <p class="redify" v-if="login_status === 'fail' && !state.forgot_password">{{lang('f_check_login')}}</p>
-                    
+                    <p class="redify" v-if="forgot_password_page && !matching_new_password">{{lang('f_check_confirm_password')}}</p>
+
                     <p v-if="forgot_password_status === 'success' && state.forgot_password">{{lang('f_password_sent')}}</p>
                     <p v-if="forgot_password_status !== 'success' && state.forgot_password">{{lang('f_check_email')}}</p>
                 </div>

@@ -8,7 +8,10 @@ module.exports = {
             state: {
                 email: undefined,
                 password: undefined,
+                new_password: undefined,
+                confirm_new_password: undefined,
                 forgot_password: false,
+                matching_new_password: true,
             },
         };
     },
@@ -24,6 +27,17 @@ module.exports = {
             e.preventDefault();
             this.$store.dispatch('forgot_password', {
                 email: this.state.email,
+            });
+        },
+        reset_password(e) {
+            e.preventDefault();
+            if (this.state.new_password !== this.state.confirm_new_password) {
+                return;
+            }
+            this.$store.dispatch('reset_password', {
+                email: this.state.email,
+                password: this.state.new_password,
+                key: this.$route.query.key,
             });
         },
         show_forgot_password(e) {
@@ -60,11 +74,18 @@ module.exports = {
         },
     },
     computed: {
+        forgot_password_page() {
+            const query = this.$route.query;
+            return query.key;
+        },
         login_status() {
             return this.$store.state.login_status;
         },
         forgot_password_status() {
             return this.$store.state.forgot_password_status;
+        },
+        matching_new_password() {
+            return this.state.new_password === this.state.confirm_new_password;
         },
     },
 };
