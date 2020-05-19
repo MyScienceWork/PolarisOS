@@ -77,8 +77,8 @@ async function send_password_email(email: string, url: string): Promise<Object> 
 
     const template_subject = await LangUtils.strings_to_translation(template.subject, 'EN');
     const template_content = await LangUtils.strings_to_translation(template.body, 'EN');
-    const subject = Handlebars.compile(template_subject)({ email, url });
-    const content = Handlebars.compile(template_content)({ email, url });
+    const subject = Handlebars.compile(template_subject)();
+    const content = Handlebars.compile(template_content)({ url });
 
     const sender = email_config.default_sender;
 
