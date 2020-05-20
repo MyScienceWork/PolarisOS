@@ -30,6 +30,20 @@ async function find_user(info: string, field: string = 'emails.email'): Promise<
     return sources[0];
 }
 
+async function find_user_without_population(info: string, field: string = 'emails.email'): Promise<?Object> {
+    const sources = await EntitiesUtils.search_and_get_sources('user', {
+        where: {
+            [field]: info,
+        },
+        size: 1,
+    });
+
+    if (sources.length === 0) {
+        return null;
+    }
+    return sources[0];
+}
+
 function do_standard_checks(user: Object): boolean {
     if (user.locked) {
         throw Errors.AccountIsLocked;
@@ -88,8 +102,7 @@ async function send_password_email(email: string, url: string): Promise<Object> 
 }
 
 async function forgot_password(email: string, host: string): Promise<Object> {
-    const user = await find_user(email, 'emails.email');
-    logger.info("db : ", user);
+    const user = await find_user_without_population(email, 'emails.email');
     if (!user) {
         return { ok: false, user: {} };
     }
@@ -98,7 +111,10 @@ async function forgot_password(email: string, host: string): Promise<Object> {
 
     const last_connection = +moment().utc();
     user.last_connection_at = last_connection;
-    await EntitiesUtils.update(user, 'user');
+    const result_update_user = await EntitiesUtils.update(user, 'user');
+    if (result_update_user === null) {
+        return { ok: false, user: {} };
+    }
 
     const emails = Utils.find_value_with_path(user, 'emails'.split('.'));
     let master = emails.find(elt => elt.is_master);
@@ -108,10 +124,30 @@ async function forgot_password(email: string, host: string): Promise<Object> {
     }
 
     const key = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
-    const url = "https://" + host + "/login?key=" + key;
+    const url = "https://" + host + "/login?key=" + key + "&email=" + master;
     const result = await send_password_email(master, url);
 
     return { ok: result, user: {} };
+}
+
+async function reset_password(email: string, key: string, password: string): Promise<Object> {
+    const user = await find_user_without_population(email, 'emails.email');
+    logger.info("db : ", user);
+    if (!user) {
+        return { ok: false, user: {} };
+    }
+
+    do_standard_checks(user);
+
+    const last_connection = user.last_connection_at;
+    const hkey = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
+    if (hkey !== key) {
+        return { ok: false, user: {} };
+    }
+    user.password = Crypto.createHash('sha1').update(password).digest('hex');
+    const result = await EntitiesUtils.update(user, 'user');
+
+    return { ok: result !== null , user: {} };
 }
 
 async function get_cas_info(global_config: Object): Promise<?Object> {
@@ -319,4 +355,5 @@ module.exports = {
     cas_auth,
     get_cas_info,
     forgot_password,
+    reset_password
 };

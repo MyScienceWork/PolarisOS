@@ -49,6 +49,24 @@ async function forgot_password(ctx: Object) {
     } else {
         const result = await AuthUtils.forgot_password(email, host);
         ctx.body = result;
+        return;
+    }
+
+    ctx.body = { ok: false, user: {} };
+}
+
+async function reset_password(ctx: Object) {
+    const body = ctx.request.body;
+    const email = body.email;
+    const key = body.key;
+    const password = body.password;
+
+    if (!email || !key || !password) {
+        ctx.body = { ok: false, user: {} };
+    } else {
+        const result = await AuthUtils.reset_password(email, key, password);
+        ctx.body = result;
+        return;
     }
 
     ctx.body = { ok: false, user: {} };
@@ -185,5 +203,6 @@ module.exports = {
     authenticate,
     list_publications_for_iid,
     access,
-    forgot_password
+    forgot_password,
+    reset_password
 };

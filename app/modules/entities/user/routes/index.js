@@ -12,6 +12,7 @@ function routes(router: KoaRouter) {
 
     router.post(`${puprefix}/authenticate`, compose([...RouterUtils.koa_middlewares({}), MyController.authenticate]));
     router.post(`${puprefix}/forgotpassword`, compose([...RouterUtils.koa_middlewares({}), MyController.forgot_password]));
+    router.post(`${puprefix}/resetpassword`, compose([...RouterUtils.koa_middlewares({}), MyController.reset_password]));
 
     router.get(`${puprefix}/list/publications/:iid`, compose([MyController.list_publications_for_iid]));
 

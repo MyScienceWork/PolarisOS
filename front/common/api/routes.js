@@ -66,6 +66,10 @@ module.exports = {
         return `${prefix}/forgotpassword`;
     },
 
+    reset_password() {
+        return `${prefix}/resetpassword`;
+    },
+
     import(type) {
         if (type) {
             return `${prefix}/import/${type}`;

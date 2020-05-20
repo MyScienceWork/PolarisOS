@@ -11,16 +11,24 @@
         <div class="columns is-centered">
             <div class="column is-4">
                 <div class="box">
-                    <form v-if="forgot_password_page">
+                    <form v-if="forgot_password_page && reset_password_status !== 'success'">
                         <div class="columns">
                             <div class="column">
                                 <div class="field">
                                     <div class="control">
-                                        <input type="password-sha1" class="input is-large" :placeholder="lang('f_new_password')"
-                                               autofocus="" v-model="state.new_password"
+                                        <input type="password"
+                                               :is-required="true"
+                                               class="input is-large"
+                                               :placeholder="lang('f_new_password')"
+                                               autofocus=""
+                                               v-model="state.new_password"
                                         >
-                                        <input type="password-sha1" class="input is-large" :placeholder="lang('f_confirm_new_password')"
-                                               autofocus="" v-model="state.confirm_new_password"
+                                        <input type="password"
+                                               :is-required="true"
+                                               class="input is-large"
+                                               :placeholder="lang('f_confirm_new_password')"
+                                               autofocus=""
+                                               v-model="state.confirm_new_password"
                                         >
                                     </div>
                                 </div>
@@ -84,10 +92,11 @@
                     </form>
 
                     <p class="redify" v-if="login_status === 'fail' && !state.forgot_password">{{lang('f_check_login')}}</p>
-                    <p class="redify" v-if="forgot_password_page && !matching_new_password">{{lang('f_check_confirm_password')}}</p>
+                    <p class="redify" v-if="forgot_password_page && not_matching_new_password">{{lang('f_check_confirm_password')}}</p>
 
-                    <p v-if="forgot_password_status === 'success' && state.forgot_password">{{lang('f_password_sent')}}</p>
-                    <p v-if="forgot_password_status !== 'success' && state.forgot_password">{{lang('f_check_email')}}</p>
+                    <p v-if="forgot_password_status === 'success'">{{lang('f_password_sent')}}</p>
+                    <p v-if="state.forgot_password && forgot_password_status !== 'success' && forgot_password_status !== 'na'">{{lang('f_check_email')}}</p>
+                    <p v-if="forgot_password_page && reset_password_status === 'success'">{{lang('f_reset_password_success')}}</p>
                 </div>
                 <p class="has-text-grey">
                 <!--<a class="has-text-grey" href="../">{{lang('f_signup')}}</a> &nbsp;·&nbsp;-->

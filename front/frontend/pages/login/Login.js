@@ -11,6 +11,7 @@ module.exports = {
                 new_password: undefined,
                 confirm_new_password: undefined,
                 forgot_password: false,
+                reset_password: false,
                 matching_new_password: true,
             },
         };
@@ -39,6 +40,7 @@ module.exports = {
                 password: this.state.new_password,
                 key: this.$route.query.key,
             });
+            this.state.reset_password = false;
         },
         show_forgot_password(e) {
             e.preventDefault();
@@ -60,6 +62,10 @@ module.exports = {
                 fullPath: this.$route.fullPath,
             });
         }
+
+        if (this.$route.query.email) {
+            this.state.email = this.$route.query.email;
+        }
     },
     watch: {
         login_status(ns) {
@@ -70,6 +76,12 @@ module.exports = {
                 } else {
                     this.$router.push({ path: redirect });
                 }
+            }
+        },
+        reset_password_status(ns) {
+            if (ns === 'success') {
+                const redirect = this.$route.query.redirect;
+                this.$router.push({ path: '/login' });
             }
         },
     },
@@ -84,8 +96,11 @@ module.exports = {
         forgot_password_status() {
             return this.$store.state.forgot_password_status;
         },
-        matching_new_password() {
-            return this.state.new_password === this.state.confirm_new_password;
+        reset_password_status() {
+            return this.$store.state.reset_password_status;
+        },
+        not_matching_new_password() {
+            return this.state.new_password !== this.state.confirm_new_password;
         },
     },
 };

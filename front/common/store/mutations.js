@@ -243,6 +243,11 @@ module.exports = {
         state.forgot_password_status = status || 'fail';
     },
 
+    [Messages.RESET_PASSWORD_PASS]: (state, payload) => {
+        const status = payload.status;
+        state.reset_password_status = status || 'fail';
+    },
+
     [Messages.SET_PAGES]: (state, payload) => {
         state.interface.pages = payload.pages;
     },

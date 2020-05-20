@@ -12,6 +12,7 @@ module.exports = {
     },
     login_status: 'na',
     forgot_password_status: 'na',
+    reset_password_status: 'na',
     interface: {
         pages: [],
     },
