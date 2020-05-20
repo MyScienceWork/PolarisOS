@@ -93,9 +93,9 @@
 
                     <p class="redify" v-if="login_status === 'fail' && !state.forgot_password">{{lang('f_check_login')}}</p>
                     <p class="redify" v-if="forgot_password_page && not_matching_new_password">{{lang('f_check_confirm_password')}}</p>
+                    <p class="redify" v-if="state.forgot_password && forgot_password_status !== 'success' && forgot_password_status !== 'na'">{{lang('f_check_email')}}</p>
 
                     <p v-if="forgot_password_status === 'success'">{{lang('f_password_sent')}}</p>
-                    <p v-if="state.forgot_password && forgot_password_status !== 'success' && forgot_password_status !== 'na'">{{lang('f_check_email')}}</p>
                     <p v-if="forgot_password_page && reset_password_status === 'success'">{{lang('f_reset_password_success')}}</p>
                 </div>
                 <p class="has-text-grey">
