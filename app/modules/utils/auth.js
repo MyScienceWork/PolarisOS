@@ -2,6 +2,8 @@
 const CAS = require('cas');
 const Request = require('superagent');
 const Crypto = require('crypto');
+const moment = require('moment');
+
 const Config = require('../../config');
 const Logger = require('../../logger');
 const EntitiesUtils = require('./entities');
@@ -10,6 +12,8 @@ const Utils = require('./utils');
 const Errors = require('../exceptions/errors');
 const LDAP = require('ldapjs');
 const MURL = require('url');
+const MailerUtils = require('./mailer');
+const Handlebars = require('./templating');
 
 async function find_user(info: string, field: string = 'emails.email'): Promise<?Object> {
     const sources = await EntitiesUtils.search_and_get_sources('user', {
@@ -18,6 +22,20 @@ async function find_user(info: string, field: string = 'emails.email'): Promise<
         },
         size: 1,
         population: ['roles._id'],
+    });
+
+    if (sources.length === 0) {
+        return null;
+    }
+    return sources[0];
+}
+
+async function find_user_without_population(info: string, field: string = 'emails.email'): Promise<?Object> {
+    const sources = await EntitiesUtils.search_and_get_sources('user', {
+        where: {
+            [field]: info,
+        },
+        size: 1,
     });
 
     if (sources.length === 0) {
@@ -50,6 +68,86 @@ async function login_auth(email: string, password: string): Promise<Object> {
     }
 
     return { ok: false, user: {} };
+}
+
+async function send_password_email(email: string, url: string): Promise<Object> {
+    const email_config = await MailerUtils.get_email_config();
+    if (!email_config) {
+        return false;
+    }
+
+    const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+        where: {
+            id: 'forgot-password',
+        },
+        size: 1,
+    });
+
+    if (templates.length === 0) {
+        return false;
+    }
+
+    const template = templates[0];
+
+    const template_subject = await LangUtils.strings_to_translation(template.subject, 'EN');
+    const template_content = await LangUtils.strings_to_translation(template.body, 'EN');
+    const subject = Handlebars.compile(template_subject)();
+    const content = Handlebars.compile(template_content)({ url });
+
+    const sender = email_config.default_sender;
+
+    const r = await MailerUtils.send_email_with(sender, email, subject, content)
+
+    return r !== null;
+}
+
+async function forgot_password(email: string, host: string): Promise<Object> {
+    const user = await find_user_without_population(email, 'emails.email');
+    if (!user) {
+        return { ok: false, user: {} };
+    }
+
+    do_standard_checks(user);
+
+    const last_connection = +moment().utc();
+    user.last_connection_at = last_connection;
+    const result_update_user = await EntitiesUtils.update(user, 'user');
+    if (result_update_user === null) {
+        return { ok: false, user: {} };
+    }
+
+    const emails = Utils.find_value_with_path(user, 'emails'.split('.'));
+    let master = emails.find(elt => elt.is_master);
+
+    if (!master && emails.length > 0) {
+        master = emails[0].email;
+    }
+
+    const key = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
+    const url = "https://" + host + "/login?key=" + key + "&email=" + master;
+    const result = await send_password_email(master, url);
+
+    return { ok: result, user: {} };
+}
+
+async function reset_password(email: string, key: string, password: string): Promise<Object> {
+    const user = await find_user_without_population(email, 'emails.email');
+    logger.info("db : ", user);
+    if (!user) {
+        return { ok: false, user: {} };
+    }
+
+    do_standard_checks(user);
+
+    const last_connection = user.last_connection_at;
+    const hkey = Crypto.createHash('sha1').update(user.authentication.secret + last_connection).digest('hex');
+    if (hkey !== key) {
+        return { ok: false, user: {} };
+    }
+    user.password = Crypto.createHash('sha1').update(password).digest('hex');
+    const result = await EntitiesUtils.update(user, 'user');
+
+    return { ok: result !== null , user: {} };
 }
 
 async function get_cas_info(global_config: Object): Promise<?Object> {
@@ -256,4 +354,6 @@ module.exports = {
     login_auth,
     cas_auth,
     get_cas_info,
+    forgot_password,
+    reset_password
 };

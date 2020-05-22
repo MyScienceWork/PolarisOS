@@ -127,6 +127,7 @@
     "flow-bin": "^0.45.0",
     "flow-remove-types": "^1.2.1",
     "funwithflags": "^1.0.2",
+    "generate-password": "^1.5.1",
     "gh-pages": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.0.0",

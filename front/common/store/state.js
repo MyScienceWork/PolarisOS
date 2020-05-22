@@ -11,6 +11,8 @@ module.exports = {
         /* form_name: {error: {}, content: {}, update: false/true}*/
     },
     login_status: 'na',
+    forgot_password_status: 'na',
+    reset_password_status: 'na',
     interface: {
         pages: [],
     },

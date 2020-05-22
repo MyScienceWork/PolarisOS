@@ -233,10 +233,19 @@ module.exports = {
         }
     },
 
-
     [Messages.LOGIN_PASS]: (state, payload) => {
         const status = payload.status;
         state.login_status = status || 'fail';
+    },
+
+    [Messages.FORGOT_PASSWORD_PASS]: (state, payload) => {
+        const status = payload.status;
+        state.forgot_password_status = status || 'fail';
+    },
+
+    [Messages.RESET_PASSWORD_PASS]: (state, payload) => {
+        const status = payload.status;
+        state.reset_password_status = status || 'fail';
     },
 
     [Messages.SET_PAGES]: (state, payload) => {

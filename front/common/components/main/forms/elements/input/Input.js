@@ -6,6 +6,7 @@ const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
 const APIRoutes = require('../../../../../api/routes');
+const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
     mixins: [InputMixin],
@@ -23,6 +24,7 @@ module.exports = {
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
+        template: { default: false, type: Boolean },
         default: { default: null },
         readonly: { default: false, type: Boolean },
         duplicate_warning: { default: false, type: Boolean },
@@ -138,7 +140,16 @@ module.exports = {
             if (!this.duplicate_warning) {
                 return;
             }
-            const info = e.target.value;
+
+            let info = null;
+
+            if (_.isObject(e)) {
+                info = Utils.find_value_with_path(e, 'target.value'.split('.'));
+            }
+
+            if (info == null) {
+                info = e;
+            }
             if (info.trim() === '') {
                 return;
             }
@@ -168,6 +179,9 @@ module.exports = {
             } else if (this.type === 'date-year') {
                 return null;// +moment.utc(moment.utc().format('YYYY'), 'YYYY');
             } else if (this.type === 'hidden') {
+                if (this.template) {
+                    return Handlebars.compile(this.hiddenValue)({});
+                }
                 return this.hiddenValue;
             } else if (this.type === 'ide-editor') {
                 return '';
@@ -220,13 +234,18 @@ module.exports = {
             } else {
                 this.state.value = this.formatValue(value);
             }
+            this.blur(this.state.value);
         },
     },
 
     watch: {
         hiddenValue(n) {
             if (this.type === 'hidden' && this.value !== n) {
-                this.update({ target: { value: n } });
+                if (this.template) {
+                    this.update({ target: { value: Handlebars.compile(n) } });
+                } else {
+                    this.update({ target: { value: n } });
+                }
             }
         },
         current_state(s) {
