@@ -44,6 +44,13 @@
                                         :form="state.sinks.creations.project"
                                     />
                                     <finput
+                                        type="hidden"
+                                        label=''
+                                        :hiddenValue="creation_date"
+                                        name="creation_date"
+                                        :form="state.sinks.creations.project"
+                                    />
+                                    <finput
                                         type='hidden'
                                         label=''
                                         :hiddenValue="project_id"
