@@ -330,7 +330,7 @@ const mapping = {
                 const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
                 const collaborators = Utils.filterIndexes(pub.contributors, c => c.role === 'collaborator');
 
-                const fallback_authors = authors.concat(coordinators).concat(directors).concat(collaborators);
+                const fallback_authors = authors.concat(coordinators).concat(collaborators);
                 fallback_authors.sort();
                 const all = { author: fallback_authors,
                     director: directors,
