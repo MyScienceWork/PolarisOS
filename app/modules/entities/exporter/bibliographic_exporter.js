@@ -284,6 +284,9 @@ class BibliographicExporter {
 
         const where = { $and: [] };
 
+        // disable new version
+        where.$and.push({ has_other_version: false });
+
         if (authors.length > 0) {
             where.$and.push({ 'contributors.label': authors });
         }
