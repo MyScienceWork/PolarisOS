@@ -33,6 +33,19 @@
                                     redirectURI="/workflow?workflow=global"
                             >
                             <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
+                            <widget :collapsed="true">
+                                <strong slot="title" class="is-uppercase">{{lang('l_history')}}</strong>
+                                <div v-if="historys" slot="body">
+                                    <widget v-for="history in historys" :collapsed="false">
+                                        <strong v-if="history.denormalization" slot="title">
+                                            <time class="is-pulled-right" :datetime="history.date">{{history.date | format_date('LLL')}}</time>
+                                            {{lang('l_step')}} {{lang(history.step)}} - {{lang(history.denormalization.label)}}</strong>
+                                        <div slot="body">
+                                            <strong slot="title">{{history.comment}}</strong>
+                                        </div>
+                                    </widget>
+                                </div>
+                            </widget>
                                 <finput
                                     type='hidden'
                                     label=''
