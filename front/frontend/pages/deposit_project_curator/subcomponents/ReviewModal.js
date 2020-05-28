@@ -29,7 +29,7 @@ module.exports = {
         index_comment() {
             const content = this.fcontent(this.sink);
             if (content.history) {
-                return `${content.history.length}`;
+                return `${Object.keys(content.history).length}`;
             }
             return 0;
         },
