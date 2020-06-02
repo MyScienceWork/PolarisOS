@@ -16,6 +16,7 @@ module.exports = {
         // form: { required: true, type: String }, //InputMixin
         multi: { default: false, type: Boolean },
         readonly: { default: false, type: Boolean },
+        conditionalReadonly: { default: '', type: String },
         options: { required: true, type: Array },
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
@@ -94,7 +95,7 @@ module.exports = {
                         where: {
                             [this.fieldValue]: values,
                         },
-                        projection: [this.fieldLabel, this.fieldValue],
+                        projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                         size: values.length,
                     },
                 });
@@ -131,7 +132,7 @@ module.exports = {
         },
         search: _.debounce((loading, search, self) => {
             const body = {
-                projection: [self.fieldLabel, self.fieldValue],
+                projection: [self.fieldLabel, self.fieldValue, self.conditionalReadonly],
                 size: self.searchSize + (self.multi ? (self.state.selected ? self.state.selected.length : 1) : 1),
             };
 
@@ -194,7 +195,10 @@ module.exports = {
 
             if (info instanceof Array) {
                 this.set_selected(info.map(i =>
-                    ({ label: i[this.fieldLabel], value: i[this.fieldValue] })));
+                    ({ label: i[this.fieldLabel],
+                        value: i[this.fieldValue],
+                        readonly: !!i[this.conditionalReadonly],
+                    })));
                 return;
             }
 
@@ -272,16 +276,19 @@ module.exports = {
             // Direction:
             // to -> to vue-select
             // from -> from vue-select
+
             if (direction === 'to') {
                 return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
+                    readonly: !!opt[this.conditionalReadonly],
                 }));
             }
 
             return options.map(opt => ({
                 [this.fieldLabel]: opt.label,
                 [this.fieldValue]: opt.value,
+                [this.readonly]: opt.readonly,
             }));
         },
         select_default_value() {
@@ -312,6 +319,18 @@ module.exports = {
         current_state(s) {
             this.dispatch(s, this, this.form);
         },
+        selected(s) {
+            if (s instanceof Array) {
+                this.state.selected_readonly = s.filter(c => c.readonly === false);
+                this.state.selected_not_readonly = s.filter(c => c.readonly === true);
+            } else if (s && s.readonly) {
+                this.state.selected_readonly = s;
+                this.state.selected_not_readonly = null;
+            } else if (s && s.readonly === false) {
+                this.state.selected_not_readonly = s;
+                this.state.selected_readonly = null;
+            }
+        },
     },
     beforeMount() {
         if (!this.prefetchInAjax) {
@@ -332,7 +351,7 @@ module.exports = {
                 path: this.ajaxUrl,
                 body: {
                     where,
-                    projection: [this.fieldLabel, this.fieldValue],
+                    projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                     size: this.searchSize,
                 },
             });
@@ -350,13 +369,16 @@ module.exports = {
             (this.state.selected instanceof Array && this.state.selected.length === 0));
         },
         readonlyValue() {
-            if (this.state.selected instanceof Array) {
-                return this.state.selected.map(s => s.label);
+            if (this.state.selected_readonly instanceof Array) {
+                return this.state.selected_readonly.map(s => s.label);
             }
-            return this.state.selected ? this.state.selected.label : '';
+            return this.state.selected_readonly ? this.state.selected_readonly.label : '';
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        selected() {
+            return this.state.selected;
         },
     },
 };

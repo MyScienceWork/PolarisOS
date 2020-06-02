@@ -1,6 +1,6 @@
 <template>
     <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
-        <label 
+        <label
             v-if="label.trim().length > 0"
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
@@ -18,7 +18,7 @@
             </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
-                    <li v-for="selected in readonlyValue">{{selected}}</li> 
+                    <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
                 <v-select
@@ -26,7 +26,7 @@
                     :multiple="multi"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected"
+                    :value="state.selected_not_readonly"
                     :placeholder="placeholder"
                     :reset-on-options-change="resetOnOptionsChange"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
@@ -40,16 +40,22 @@
                     :filterable="false"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected" 
+                    :value="state.selected_not_readonly"
                     :placeholder="placeholder"
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"
                     @search="onSearch"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
+
+                    <ul v-if="multi && state.selected_readonly">
+                        <li v-for="selected in state.selected_readonly">{{selected}}</li>
+                    </ul>
+                    <p v-else-if="state.selected_readonly">{{state.selected_readonly}}</p>
+
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
-            </div> 
+            </div>
             <slot v-if="hasAddons" name="input-addons" />
             </slot>
         </div>
