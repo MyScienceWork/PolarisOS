@@ -392,5 +392,11 @@ module.exports = {
         selected() {
             return this.state.selected;
         },
+        dynamic_value() {
+            if (this.conditionalReadonly === '' ) {
+                return this.state.selected;
+            }
+            return this.state.selected_not_readonly;
+        }
     },
 };
