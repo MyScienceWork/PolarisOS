@@ -130,6 +130,18 @@ module.exports = {
                 this.state.selected = null;
             }
         },
+        set_selected_readonly(s) {
+            if (s instanceof Array) {
+                this.state.selected_readonly = s.filter(c => c.readonly === true);
+                this.state.selected_not_readonly = s.filter(c => c.readonly === false);
+            } else if (s && s.readonly) {
+                this.state.selected_readonly = s;
+                this.state.selected_not_readonly = null;
+            } else if (s && s.readonly === false) {
+                this.state.selected_not_readonly = s;
+                this.state.selected_readonly = null;
+            }
+        },
         search: _.debounce((loading, search, self) => {
             const body = {
                 projection: [self.fieldLabel, self.fieldValue, self.conditionalReadonly],
@@ -329,16 +341,7 @@ module.exports = {
             this.dispatch(s, this, this.form);
         },
         selected(s) {
-            if (s instanceof Array) {
-                this.state.selected_readonly = s.filter(c => c.readonly === true);
-                this.state.selected_not_readonly = s.filter(c => c.readonly === false);
-            } else if (s && s.readonly) {
-                this.state.selected_readonly = s;
-                this.state.selected_not_readonly = null;
-            } else if (s && s.readonly === false) {
-                this.state.selected_not_readonly = s;
-                this.state.selected_readonly = null;
-            }
+            this.set_selected_readonly(s);
         },
     },
     beforeMount() {
