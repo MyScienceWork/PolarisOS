@@ -60,6 +60,9 @@ module.exports = {
                         readonly: {
                             type: 'boolean',
                         },
+                        conditional_readonly: {
+                            type: 'keyword',
+                        },
                         duplicate_warning: {
                             type: 'boolean',
                         },
