@@ -174,6 +174,15 @@ module.exports = {
                 this.state.showHelpModal = !this.state.showHelpModal;
             }
         },
+        test_read_only(val, key) {
+            if (key === null || key === '') {
+                return false;
+            }
+            if (val[key] && val[key] !== '') {
+                return false;
+            }
+            return true;
+        },
         initialize(sink) {
             if (this.form !== sink) {
                 return;
@@ -197,7 +206,7 @@ module.exports = {
                 this.set_selected(info.map(i =>
                     ({ label: i[this.fieldLabel],
                         value: i[this.fieldValue],
-                        readonly: !!i[this.conditionalReadonly],
+                        readonly: this.test_read_only(i, this.conditionalReadonly),
                     })));
                 return;
             }
@@ -281,14 +290,14 @@ module.exports = {
                 return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
-                    readonly: !!opt[this.conditionalReadonly],
+                    readonly: this.test_read_only(opt, this.conditionalReadonly),
                 }));
             }
 
             return options.map(opt => ({
                 [this.fieldLabel]: opt.label,
                 [this.fieldValue]: opt.value,
-                [this.readonly]: opt.readonly,
+                readonly: this.test_read_only(opt, this.conditionalReadonly),
             }));
         },
         select_default_value() {
@@ -321,8 +330,8 @@ module.exports = {
         },
         selected(s) {
             if (s instanceof Array) {
-                this.state.selected_readonly = s.filter(c => c.readonly === false);
-                this.state.selected_not_readonly = s.filter(c => c.readonly === true);
+                this.state.selected_readonly = s.filter(c => c.readonly === true);
+                this.state.selected_not_readonly = s.filter(c => c.readonly === false);
             } else if (s && s.readonly) {
                 this.state.selected_readonly = s;
                 this.state.selected_not_readonly = null;

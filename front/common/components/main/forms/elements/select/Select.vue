@@ -15,7 +15,6 @@
         </b-tooltip>
         <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
             <slot v-if="hasAddons" name="left-input-addons" />
-            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li>
@@ -47,16 +46,14 @@
                     @search="onSearch"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
-
-                    <ul v-if="multi && state.selected_readonly">
-                        <li v-for="selected in state.selected_readonly">{{selected}}</li>
-                    </ul>
-                    <p v-else-if="state.selected_readonly">{{state.selected_readonly}}</p>
-
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
+                <ul v-if="multi && state.selected_readonly">
+                    <li v-for="selected in readonlyValue">{{selected}}</li>
+                </ul>
+                <p v-else-if="state.selected_readonly">{{readonlyValue}}</p>
             </div>
-            <slot v-if="hasAddons" name="input-addons" />
+            <slot v-if="hasAddons" name="input-addons">
             </slot>
         </div>
         <div v-if="validations.length > 0 && viewValidationTexts">
