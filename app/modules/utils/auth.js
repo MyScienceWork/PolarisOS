@@ -145,6 +145,9 @@ async function reset_password(email: string, key: string, password: string): Pro
         return { ok: false, user: {} };
     }
     user.password = Crypto.createHash('sha1').update(password).digest('hex');
+
+    const updated_last_connection = +moment().utc();
+    user.last_connection_at = updated_last_connection;
     const result = await EntitiesUtils.update(user, 'user');
 
     return { ok: result !== null , user: {} };
