@@ -59,12 +59,13 @@ module.exports = {
             if (this.$route.path === '/browse') {
                 return 1;
             }
-            const index = _.findIndex(this.menu.elements, r => this.$route.path === r.$route);
+            const index = _.findIndex(this.menu_filtered_with_roles(), r => this.$route.path === r.$route);
             if (index === -1) {
                 return -1;
             }
 
-            const info = this.menu.elements[index];
+            const menu_filtered = this.menu_filtered_with_roles();
+            const info = menu_filtered[index];
             if (info) {
                 return index;
             }
