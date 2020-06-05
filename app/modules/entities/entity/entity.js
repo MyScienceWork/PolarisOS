@@ -62,7 +62,7 @@ class _Entity extends ODM {
 
     static async pre_create_hook(index: string, type: string,
             client: Object, model: Object, body: Object): Promise<boolean> {
-        const ret = await this._add_mapping(client, type, body.mapping, body.settings || {});
+        const ret = await this._add_mapping(client, body.type, body.mapping, body.settings || {});
         delete body.mapping;
         delete body.settings;
         delete body.update_settings;
