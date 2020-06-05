@@ -2,15 +2,15 @@
     <div>
         <div class="menu">
             <div class="field">
-                <div class="control"> 
+                <div class="control">
                     <a href='#' class="has-text-success" @click.prevent="add_child">
                         {{lang('l_add_child')}}
                     </a>
                 </div>
             </div>
             <ul class="menu-list">
-                <li v-for="(value, key) in state.mapping.mappings[mappingName].properties">
-                    <mapping-item 
+                <li v-for="(value, key) in state.mapping.mappings.properties">
+                    <mapping-item
                         :ref="`item_${key}`"
                         :key="key"
                         :content="value"
