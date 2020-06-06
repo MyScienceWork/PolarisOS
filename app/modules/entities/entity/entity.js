@@ -71,10 +71,10 @@ class _Entity extends ODM {
 
     static async pre_update_hook(index: string, type: string,
             client: Object, model: Object, body: Object, id: string): Promise<boolean> {
-        const ret = await this._update_mapping(client, type, body.mapping);
+        const ret = await this._update_mapping(client, body.type, body.mapping);
 
         if (body.update_settings) {
-            await this._update_settings(client, type, body.settings);
+            await this._update_settings(client, body_type, body.settings);
         }
         delete body.mapping;
         delete body.settings;
@@ -92,9 +92,7 @@ class _Entity extends ODM {
             this._type, this._client);
 
         this._db.source.mapping = {
-            mappings: {
-                [this._type]: mapping,
-            },
+            mappings: mapping,
         };
 
         this._db.source.settings = settings.settings;
