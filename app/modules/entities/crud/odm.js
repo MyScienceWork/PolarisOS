@@ -203,8 +203,13 @@ class ODM {
                 _.reverse(o.hits);
             }
 
+            let entity_type = type;
+            if (type === "entity" && o.hits.length > 0) {
+                entity_type = o.hits[0].source.type
+            }
+
             await o.hits.reduce((pr, hit) =>
-                pr.then(() => hit.post_read_hook(population)), Promise.resolve());
+                pr.then(() => hit.post_read_hook(population, entity_type)), Promise.resolve());
 
             o.total = response.hits.total;
             o.count = response.hits.total;
@@ -469,7 +474,7 @@ class ODM {
         return true;
     }
 
-    async post_read_hook(population: Array<String>) {
+    async post_read_hook(population: Array<String>, type: string) {
         // To be re-implemented in subclass (if needed)
         await this._handle_population(population);
     }
