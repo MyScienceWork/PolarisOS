@@ -90,7 +90,13 @@ class ODM {
 
         let score = 0;
         const index = hit._index;
-        const type = hit._index.split('_')[1];
+        let type = "";
+        if (hit._index) {
+            type = hit._index.split('_')[1];
+        } else if (hit._source) {
+            // for entity type
+            type = hit._source.type;
+        }
         const id = hit._id;
         const source = '_source' in hit ? hit._source : {};
         const sort = 'sort' in hit ? hit.sort : [];
@@ -416,7 +422,11 @@ class ODM {
 
 
             this.db = this.constructor.format_hit(response, response.found);
-            await this.post_read_hook(population);
+            let type = "";
+            if (this.db.source && this.db.source.type){
+                type = this.db.source.type;
+            }
+            await this.post_read_hook(population, type);
         } catch (err) {
             const response = err.body;
             this.db = this.constructor.format_hit(response, response ? response.found : false);
