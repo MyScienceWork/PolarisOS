@@ -74,7 +74,7 @@ class _Entity extends ODM {
         const ret = await this._update_mapping(client, body.type, body.mapping);
 
         if (body.update_settings) {
-            await this._update_settings(client, body_type, body.settings);
+            await this._update_settings(client, body.type, body.settings);
         }
         delete body.mapping;
         delete body.settings;
@@ -82,14 +82,14 @@ class _Entity extends ODM {
         return ret;
     }
 
-    async post_read_hook(population: Array<String>) {
-        super.post_read_hook(population);
-        const index = `${Config.elasticsearch.index_prefix}_${this._type}`;
+    async post_read_hook(population: Array<String>, type: string) {
+        super.post_read_hook(population, type);
+        const index = `${Config.elasticsearch.index_prefix}_${type}`;
         const mapping = await this.constructor.fetch_mapping(index,
-            this._type, this._client, true);
+            type, this._client, true);
 
         const settings = await this.constructor.fetch_settings(index,
-            this._type, this._client);
+            type, this._client);
 
         this._db.source.mapping = {
             mappings: mapping,
