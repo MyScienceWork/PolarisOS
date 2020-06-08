@@ -106,7 +106,9 @@ module.exports = {
     },
     watch: {
         current_state_export(s) {
-            this.dispatch(s, this, this.state.sinks.reads.export);
+            if (s !== 'initial') {
+                this.dispatch(s, this, this.state.sinks.reads.export);
+            }
         },
         select_all_to_export(s) {
             this.state.select_all_to_export = s;
@@ -145,7 +147,7 @@ module.exports = {
         },
         total() {
             const form = this.fform(this.resultSink);
-            return form.total || 0;
+            return form.total.value || 0;
         },
         current_state_export() {
             return this.fstate(this.state.sinks.reads.export);

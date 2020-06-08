@@ -46,48 +46,23 @@ module.exports = {
                                     type: 'keyword',
                                 },
                             },
-                            datacite: {
-                                properties: {
-                                    enabled: {
-                                        type: 'boolean',
-                                    },
-                                    url: {
-                                        type: 'keyword',
-                                    },
-                                    username: {
-                                        type: 'keyword',
-                                    },
-                                    password: {
-                                        type: 'keyword',
-                                    },
-                                    doi_prefix: {
-                                        type: 'keyword',
-                                    },
+                        },
+                        datacite: {
+                            properties: {
+                                enabled: {
+                                    type: 'boolean',
                                 },
-                            },
-                            handle: {
-                                properties: {
-                                    enabled: {
-                                        type: 'boolean',
-                                    },
-                                    ip: {
-                                        type: 'keyword',
-                                    },
-                                    port: {
-                                        type: 'integer',
-                                    },
-                                    admin_handle: {
-                                        type: 'keyword',
-                                    },
-                                    admin_password: {
-                                        type: 'keyword',
-                                    },
-                                    prefix: {
-                                        type: 'keyword',
-                                    },
-                                    proxy: {
-                                        type: 'keyword',
-                                    },
+                                url: {
+                                    type: 'keyword',
+                                },
+                                username: {
+                                    type: 'keyword',
+                                },
+                                password: {
+                                    type: 'keyword',
+                                },
+                                doi_prefix: {
+                                    type: 'keyword',
                                 },
                             },
                         },
@@ -123,6 +98,7 @@ module.exports = {
                                         enabled: {
                                             type: 'boolean',
                                         },
+
                                         interval: {
                                             type: 'integer',
                                         },

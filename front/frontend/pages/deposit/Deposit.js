@@ -33,15 +33,15 @@ module.exports = {
                 },
                 paths: {
                     creations: {
-                        //publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
+                        publication: APIRoutes.entity('publication', 'POST'), // Same path for PUT,
                         specs: 'publication_specs',
                     },
                     reads: {
-                        //publication: APIRoutes.entity('publication', 'GET'),
+                        publication: APIRoutes.entity('publication', 'GET'),
                         typology: APIRoutes.entity('typology', 'POST', true),
                     },
                     validations: {
-                        //publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
+                        publication: APIRoutes.entity('publication', 'VALIDATE', false, '0'),
                     },
                 },
                 forms: {
@@ -60,6 +60,7 @@ module.exports = {
                 step_props: {},
                 show_review_modal: false,
                 show_give_up_modal: false,
+                show_loader: false,
             },
         };
     },
@@ -130,7 +131,7 @@ module.exports = {
         },
         previous(func, step, total) {
             this.run_next_or_previous(func);
-            //this.state.paths.validations.publication = APIRoutes.entity('publication',
+            // this.state.paths.validations.publication = APIRoutes.entity('publication',
             //    'VALIDATE', false, `0-${this.state.current_step + 1}`);
         },
         send_information(sink) {
@@ -141,8 +142,8 @@ module.exports = {
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
                     this.run_next_or_previous(this.state.stepper.next);
-                 //   this.state.paths.validations.publication = APIRoutes.entity('publication',
-                 //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
+                    //   this.state.paths.validations.publication = APIRoutes.entity('publication',
+                    //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
                 }
             } else {
                 const content = this.fcontent(this.state.sinks.creations.publication);
@@ -151,6 +152,7 @@ module.exports = {
                     path: this.path,
                     body: content,
                 });
+                this.state.show_loader = true;
             }
         },
         show_success_validate(sink) {
@@ -160,8 +162,8 @@ module.exports = {
 
             this.run_next_or_previous(this.state.stepper.next);
 
-         //   this.state.paths.validations.publication = APIRoutes.entity('publication',
-         //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
+            //   this.state.paths.validations.publication = APIRoutes.entity('publication',
+            //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
         },
         show_success_read(sink) {
             this.handle_import(sink, this.state.sinks.creations.publication);
@@ -257,7 +259,7 @@ module.exports = {
                 type: 'dispatch',
                 content: {
                     form: this.state.sinks.creations.publication,
-                    //path: APIRoutes.entity('publication', 'GET', false, id),
+                    path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });
             this.$store.state.requests.push({
@@ -282,8 +284,8 @@ module.exports = {
                         files: [],
                         dates: { deposit: undefined },
                         depositor: undefined,
-                        system: { api: { handle: false, hal: false, hal_id: "" } } },
-                        has_other_version: false,
+                        system: { api: { handle: false, hal: false, hal_id: '' } } },
+                    has_other_version: false,
                 },
             });
             break;
@@ -410,6 +412,9 @@ module.exports = {
     },
     watch: {
         current_state(s) {
+            if (s !== 'loading') {
+                this.state.show_loader = false;
+            }
             this.dispatch(s, this, this.state.sinks.creations.publication);
         },
         publication_type(nt) {
