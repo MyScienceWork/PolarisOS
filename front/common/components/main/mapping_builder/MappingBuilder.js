@@ -19,23 +19,21 @@ module.exports = {
         default_mapping() {
             return {
                 mappings: {
-                    [this.mappingName]: {
-                        dynamic: 'strict',
-                        dynamic_date_formats: [],
-                        properties: {},
-                    },
+                    dynamic: 'strict',
+                    dynamic_date_formats: [],
+                    properties: {},
                 },
             };
         },
         add_child() {
-            const children = this.state.mapping.mappings[this.mappingName].properties;
+            const children = this.state.mapping.mappings.properties;
             children[`__field_name_${+moment()}__`] = {
                 type: 'keyword',
             };
             this.$forceUpdate();
         },
         remove_child(name) {
-            const children = this.state.mapping.mappings[this.mappingName].properties || {};
+            const children = this.state.mapping.mappings.properties || {};
             if (name in children) {
                 console.log('removing child', name);
                 delete children[name];
@@ -51,15 +49,13 @@ module.exports = {
             }, {});
 
             const subobj = _.reduce(children, (obj, value) =>
-                    _.merge(obj, value.generate()), {});
+                _.merge(obj, value.generate()), {});
 
             const mapping = {
                 mappings: {
-                    [this.mappingName]: {
-                        dynamic: 'strict',
-                        dynamic_date_formats: [],
-                        properties: subobj,
-                    },
+                    dynamic: 'strict',
+                    dynamic_date_formats: [],
+                    properties: subobj,
                 },
             };
             console.log('mapping : ', mapping);
