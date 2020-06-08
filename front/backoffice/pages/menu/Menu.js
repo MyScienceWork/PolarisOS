@@ -18,7 +18,7 @@ module.exports = {
                     },
                     reads: {
                         menu: APIRoutes.entity('menu', 'POST', true),
-                        page: APIRoutes.entity('page', 'GET'),
+                        page: APIRoutes.entity('page', 'POST', true),
                         role: APIRoutes.entity('role', 'POST', true),
                     },
                 },
@@ -40,23 +40,7 @@ module.exports = {
     methods: {
     },
     mounted() {
-        ['page'].forEach((sink) => {
-            this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.reads[sink],
-                keep_content: false,
-            });
-        });
-
-        ['page'].forEach((sink) => {
-            this.$store.state.requests.push({
-                name: 'single_read',
-                content: {
-                    form: this.state.sinks.reads[sink],
-                    path: this.state.paths.reads[sink],
-                },
-            });
-        });
-        this.$store.state.requests = ['role'].map(e => ({
+        this.$store.state.requests = ['role', 'page'].map(e => ({
             name: 'search',
             type: 'dispatch',
             content: {
