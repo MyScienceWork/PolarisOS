@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const ESMapping = require('../../../../mappings/function');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
@@ -10,7 +10,7 @@ const Mapping: Object = ESMapping.msw
 
 const Validation: Array<any> = [
     Joi.object({
-        type: Joi.any().valid('completer', 'formatter').label('Type'),
+        type: Joi.any().valid(['completer', 'formatter']).label('Type'),
         name: Joi.string().required().label('Name'),
     }),
 ];

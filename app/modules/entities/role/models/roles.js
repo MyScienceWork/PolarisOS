@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const RoleMapping = require('../../../../mappings/role');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');

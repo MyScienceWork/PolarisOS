@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const QMapping = require('../../../../mappings/query');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');

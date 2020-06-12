@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const Crypto = require('crypto');
 const PubMapping = require('../../../../mappings/publication');
 const MMapping = require('../../crud/mapping');

@@ -1,6 +1,6 @@
 // @flow
 const mongoose = require('mongoose');
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const AccessSchema = require('../../../auth/access_schema');
 const CryptoUtils = require('../../../utils/crypto');
 

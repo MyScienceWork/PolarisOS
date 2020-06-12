@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
 const ComplFunctions = require('../../../pipeline/completer/complfunctions');

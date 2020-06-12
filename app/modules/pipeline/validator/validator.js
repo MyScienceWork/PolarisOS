@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const _ = require('lodash');
 const utils = require('../../utils/utils');
 const GCExp = require('../../exceptions/generic');
