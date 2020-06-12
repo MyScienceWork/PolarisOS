@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const PubMapping = require('../../../../mappings/mswpublication');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');

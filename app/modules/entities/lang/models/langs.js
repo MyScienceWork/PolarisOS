@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const LangMapping = require('../../../../mappings/lang');
 const MMapping = require('../../crud/mapping');
 const ValFunctions = require('../../../pipeline/validator/valfunctions');
@@ -9,7 +9,7 @@ const Mapping: Object = LangMapping.msw.mappings.properties;
 
 const valuesSchema = Joi.object({
     value: Joi.string().required().label('Translation'),
-    quantity: Joi.any().valid(['0', '1', '2', 'few', 'many', 'other', 'n/a']).required().label('Quantity'),
+    quantity: Joi.any().valid('0', '1', '2', 'few', 'many', 'other', 'n/a').required().label('Quantity'),
 });
 
 const Validation: Array<any> = [

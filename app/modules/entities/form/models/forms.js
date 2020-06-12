@@ -1,6 +1,6 @@
 // @flow
 const _ = require('lodash');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const FormMapping = require('../../../../mappings/form');
 const MMapping = require('../../crud/mapping');
 const Handlebars = require('../../../utils/templating');

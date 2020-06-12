@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const ConfigMapping = require('../../../../mappings/config');
 const MMapping = require('../../crud/mapping');
 const FormatFunctions = require('../../../pipeline/formatter/formatfunctions');
@@ -9,7 +9,7 @@ const Mapping: Object = ConfigMapping.msw.mappings.properties;
 
 const Validation: Array<any> = [
     Joi.object({
-        environment: Joi.any().valid(['local', 'production', 'development', 'demo']).label('Environment'),
+        environment: Joi.any().valid('local', 'production', 'development', 'demo').label('Environment'),
         langs: Joi.array().min(1).items(Joi.any().required()).label('Lang'),
     }),
 ];

@@ -1,6 +1,6 @@
 // @flow
 const moment = require('moment');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const Crypto = require('crypto');
 const SRMapping = require('../../../../mappings/system_report');
 const MMapping = require('../../crud/mapping');

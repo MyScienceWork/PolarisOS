@@ -1,5 +1,5 @@
 // @flow
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const Crypto = require('crypto');
 const WidgetMapping = require('../../../../mappings/widget');
 const MMapping = require('../../crud/mapping');
