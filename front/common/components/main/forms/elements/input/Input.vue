@@ -79,7 +79,7 @@
                     @input="update"
                     @blur="blur"
                     :readonly="readonly"
-
+                     v-on:keydown.enter.prevent='handleEnter'
                 />
                 <input v-else-if="type === 'number'"
                     type="number"
