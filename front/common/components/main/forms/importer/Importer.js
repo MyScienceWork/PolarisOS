@@ -3,9 +3,10 @@ const LangMixin = require('../../../../../common/mixins/LangMixin');
 const ESQueryMixin = require('../../../../../common/mixins/ESQueryMixin');
 const ObjectAccessMixin = require('../../../../../common/mixins/ObjectAccessMixin');
 const FiltersMixin = require('../../../../../common/mixins/FiltersMixin');
+const ReaderMixin = require('../../../../../common/mixins/ReaderMixin');
 
 module.exports = {
-    mixins: [LangMixin, APIRoutes, ESQueryMixin, ObjectAccessMixin, FiltersMixin],
+    mixins: [LangMixin, APIRoutes, ESQueryMixin, ObjectAccessMixin, FiltersMixin, ReaderMixin],
     props: {
         form: { required: true, type: String },
         importer: { required: true, type: String },
