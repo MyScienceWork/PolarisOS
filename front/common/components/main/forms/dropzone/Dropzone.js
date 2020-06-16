@@ -22,6 +22,7 @@ module.exports = {
         keeper: { default: 'keeper_sink', type: String },
         keep_files: { default: false, type: Boolean },
         restore_files: { default: false, type: Boolean },
+        show_master_checkboxes: { default: true, type: Boolean },
     },
     data() {
         return {

@@ -69,6 +69,16 @@
                             @select-change="change_importer_type"
                             />
                             <fselect
+                            v-if="state.importer_type === 'file'"
+                            name="file_format"
+                            :label="lang('l_importer_file_format')"
+                            :is-required="true"
+                            :placeholder="lang('l_importer_file_format')"
+                            :options="files_format"
+                            :form="state.sinks.creations.importer"
+                            @select-change="change_importer_file_format"
+                            />
+                            <fselect
                             name="entity"
                             :label="lang('l_importer_entity')"
                             :is-required="true"

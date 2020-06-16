@@ -1,5 +1,41 @@
 <template>
-<div class="hero-body">
+    <div class="hero-body">
+        <div class="container is-fluid">
+            <div class="columns is-centered">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                            <h4 class="has-small-top-margin title is-4">{{lang('l_import_project')}}</h4>
+                            <div>
+                                <div v-if="Object.keys(user_forms(state.project_subform_name)).length === 0" class="column">
+                                    <div class="columns is-centered">
+                                        <loader />
+                                    </div>
+                                </div>
+                                <div v-else-if="state.project_subform_name !== ''">
+                                    <fform
+                                            :name="state.sinks.creations.project"
+                                            :hasButtons="false"
+                                            :post_path="state.paths.creations.project"
+                                            :put_path="state.paths.creations.project"
+                                            :get_path="state.paths.reads.project"
+                                            :get_form="state.sinks.reads.project"
+                                    >
+                                        <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
+                                    </fform>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--
     <div class="container is-fluid">
         <div class="columns is-centered">
             <div class="column">
@@ -248,6 +284,7 @@
         </div>
     </div>
 </div>
+-->
 </template>
 
 <script>

@@ -285,6 +285,11 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 @analyze-file="dropzone_analyze_file"
                 />
+                <fimporter
+                v-else-if="field.type === 'importer'"
+                :form="cform"
+                :file_format="field.file_format"
+                />
                 <template v-else-if="field.type === 'subform' && field.subform != null">
                     <template v-if="form_is_of_type('widget', field)">
                         <widget>
@@ -477,6 +482,11 @@
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
             @analyze-file="dropzone_analyze_file"
+            />
+            <fimporter
+            v-else-if="field.type === 'importer'"
+            :form="cform"
+            :importer="field.importer"
             />
             <template v-else-if="field.type === 'subform' && field.subform != null">
                 <template v-if="form_is_of_type('widget', field)">

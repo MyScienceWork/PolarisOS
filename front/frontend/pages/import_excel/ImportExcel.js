@@ -8,25 +8,36 @@ const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
+const RequestsMixin = require('../../../common/mixins/RequestsMixin');
+const UserMixin = require('../../../common/mixins/UserMixin');
+const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
 
 module.exports = {
-    mixins: [FormCleanerMixin, FormMixin, LangMixin, ReaderMixin, FiltersMixin, OAMixin, ESQueryMixin, RemoveMixin],
-    props: {},
+    mixins: [WorkflowMixin, UserMixin, RequestsMixin, FormCleanerMixin, FormMixin, LangMixin, ReaderMixin, FiltersMixin, OAMixin, ESQueryMixin, RemoveMixin],
+
     data() {
         return {
             state: {
                 sinks: {
                     reads: {
+                        project: 'project_read',
                         system_report: 'report_read',
+                        user_forms: 'user_forms_read',
                     },
                     creations: {
+                        project: 'project_creation',
                         import: 'import_creation',
                         search: 'import_report_creation_search',
                         system_report: 'report_creation',
                     },
                 },
                 paths: {
+                    creations: {
+                        project: APIRoutes.entity('project', 'POST'),
+                    },
                     reads: {
+                        user_forms: APIRoutes.entity('form', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                         system_report: APIRoutes.entity('system_report', 'POST', true),
                     },
                 },
@@ -35,6 +46,7 @@ module.exports = {
                 in_progress: false,
                 succeeded: false,
                 my_entity: 'report',
+                project_subform_name: 'import_excel',
                 columns: {
                     name: {
                         visible: true,
@@ -160,5 +172,15 @@ module.exports = {
         },
     },
     mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.user_forms,
+            path: this.state.paths.reads.user_forms,
+            body: {
+                where: {
+                    name: [this.state.project_subform_name],
+                },
+                population: ['fields.subform', 'fields.datasource'],
+            },
+        });
     },
 };
