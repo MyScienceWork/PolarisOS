@@ -5,6 +5,7 @@ const valtypes = [
     { value: 'array', label: 'Array' },
     { value: 'any', label: 'Any' },
     { value: 'url', label: 'Url' },
+    { value: 'condition', label: 'Condition' },
 ];
 
 module.exports = valtypes;

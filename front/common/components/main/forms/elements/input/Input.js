@@ -66,6 +66,10 @@ module.exports = {
     },
 
     methods: {
+        handleEnter(e) {
+            if(e) e.preventDefault();
+            console.log("enter key");
+        },
         IDEInit() {
             require('brace/ext/language_tools');
             require('brace/mode/json');

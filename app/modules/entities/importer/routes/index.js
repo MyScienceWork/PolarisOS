@@ -21,6 +21,8 @@ function routes(router: KoaRouter) {
         MyController.import_ris]));
     router.post(`${puprefix}/import/endnote`, compose([...post_mware,
         MyController.import_endnote]));
+    router.post(`${puprefix}/import/excel`, compose([...post_mware,
+        MyController.import_excel]));
 }
 
 module.exports = routes;
