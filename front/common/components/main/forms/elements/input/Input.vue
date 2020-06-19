@@ -185,10 +185,11 @@
                     :placeholder="placeholder"
                     :name="name"
                     :rows="rows"
-                    :value="state.value"
                     @input="update"
                     @blur="blur"
                     v-if="!readonly"
+                    v-model="state.value"
+                    v-on:input="check_textarea_limit"
                 />
                 <p v-else>{{state.value}}</p>
             </div>

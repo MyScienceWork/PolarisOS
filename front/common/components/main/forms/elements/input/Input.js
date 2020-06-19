@@ -57,6 +57,7 @@ module.exports = {
                         duplicate_warning: [],
                     },
                 },
+                limit_textarea: 5000,
             },
         };
     },
@@ -278,6 +279,11 @@ module.exports = {
         },
     },
     computed: {
+        check_textarea_limit() {
+            if (this.state.value) {
+                this.state.value = this.state.value.substr(0, this.state.limit_textarea);
+            }
+        },
         emptyValue() {
             return this.state.value === null ||
                 this.state.value === undefined ||
