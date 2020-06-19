@@ -53,7 +53,7 @@
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
-        v-else-if="type === 'text' || type === 'number' || type === 'password' || type === 'password-sha1'
+        v-else-if="type === 'text' || type === 'number' || type === 'price' || type === 'password' || type === 'password-sha1'
         || type === 'email' || type === 'date' || type === 'date-year' || type === 'time'"
     >
     <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
@@ -89,6 +89,16 @@
                     :value="state.value"
                     @blur="update"
                     :readonly="readonly"
+                />
+                <input v-else-if="type === 'price'"
+                       type="text"
+                       :placeholder="placeholder"
+                       :name="name"
+                       :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
+                       @blur="update"
+                       :readonly="readonly"
+                       v-model="state.value"
+                       v-on:input="handle_price_value"
                 />
                 <input v-else-if="type === 'password' || type === 'password-sha1'"
                     type="password"
@@ -185,10 +195,11 @@
                     :placeholder="placeholder"
                     :name="name"
                     :rows="rows"
-                    :value="state.value"
                     @input="update"
                     @blur="blur"
                     v-if="!readonly"
+                    v-model="state.value"
+                    v-on:input="check_textarea_limit"
                 />
                 <p v-else>{{state.value}}</p>
             </div>

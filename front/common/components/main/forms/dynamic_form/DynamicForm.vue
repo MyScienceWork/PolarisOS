@@ -3,7 +3,7 @@
     <template v-if="form.addons && form.fields.length > 0">
         <component
             :is="get_component(form.fields[0].type)"
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select', 'color'].indexOf(form.fields[0].type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select', 'color'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
             :name="get_name(form.fields[0].name)"
             :key="get_name(form.fields[0].name)"
@@ -35,7 +35,7 @@
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput
-                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -136,7 +136,7 @@
         <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
             <template slot="variadic" slot-scope="props">
                 <finput
-                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -355,7 +355,7 @@
         </fvariadic-element>
         <template v-else>
             <finput
-            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
