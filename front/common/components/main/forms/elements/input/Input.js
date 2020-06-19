@@ -68,8 +68,8 @@ module.exports = {
 
     methods: {
         handleEnter(e) {
-            if(e) e.preventDefault();
-            console.log("enter key");
+            if (e) e.preventDefault();
+            console.log('enter key');
         },
         IDEInit() {
             require('brace/ext/language_tools');
@@ -282,6 +282,16 @@ module.exports = {
         check_textarea_limit() {
             if (this.state.value) {
                 this.state.value = this.state.value.substr(0, this.state.limit_textarea);
+            }
+        },
+        handle_price_value() {
+            if (this.state.value) {
+                const value_without_text = this.state.value.replace(/\D/g,'');
+                if (Number.parseInt(value_without_text, 10)) {
+                    this.state.value = Number.parseInt(value_without_text, 10).toLocaleString('en-EN', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                } else {
+                    this.state.value = "$0";
+                }
             }
         },
         emptyValue() {

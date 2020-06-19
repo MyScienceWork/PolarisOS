@@ -375,7 +375,7 @@
                                                 </div>
                                             </card>
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year', 'date'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'price', 'email', 'password', 'html-editor', 'date-year', 'date'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput
                                             :name="`${props.fname}.${props.order}.placeholder`"
                                             :key="`${props.fname}.${props.order}.placeholder`"
