@@ -143,7 +143,7 @@ async function add_single(ctx) {
     const ext = splitted_name[splitted_name.length - 1];
     if (ext === 'zip') {
         // get zip infos
-        tree = new AdmZip(file.path).getEntries();
+        tree = new AdmZip(file.path).getEntries().filter((c) => c.isDirectory === false).sort((a, b) => a.entryName < b.entryName);
     } else {
         try {
             thumbnailInfo = await generate_preview(file);

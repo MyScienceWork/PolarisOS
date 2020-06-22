@@ -75,6 +75,8 @@ module.exports = {
             const name = `${file.name}_${file.lastModified}`;
             file.pathOnServer = response.file;
             file.previewUrl = response.preview;
+            file.tree = response.tree;
+            console.log('file.tree : ', file.tree);
             this.state.files.content = Object.assign({},
                 this.state.files.content, { [name]: file });
         },
