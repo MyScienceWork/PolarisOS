@@ -45,7 +45,7 @@
                     v-if="Object.keys(uploadForm).length > 0 || Object.keys(importForm).length > 0"
                 >
                     <div class="column has-text-centered">
-                        <p class="title is-4">{{lang('f_upload_import_help')}}</p>
+                        <p class="title is-4">{{lang('f_upload_dataset_help')}}</p>
                     </div>
                 </div>
                 <div class="columns is-centered" v-if="Object.keys(uploadForm).length > 0 || Object.keys(importForm).length > 0">
@@ -59,6 +59,7 @@
                             :analyze-state="analyzeState"
                         />
                     </div>
+                    <!--
                     <div class="column" v-if="Object.keys(importForm).length > 0">
                         <import-completion-widget
                             :sink="importSink"
@@ -66,6 +67,7 @@
                             :import-state="importState"
                         />
                     </div>
+                    -->
                 </div>
                 <div class="columns is-centered"
                     v-else-if="Object.keys(uploadForm).length === 0 && Object.keys(importForm).length === 0 && datasetType">

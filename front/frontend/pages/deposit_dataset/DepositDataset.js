@@ -38,7 +38,7 @@ module.exports = {
                     },
                     reads: {
                         dataset: APIRoutes.entity('dataset', 'GET'),
-                        typology: APIRoutes.entity('typology', 'POST', true),
+                        typology: APIRoutes.entity('typology_dataset', 'POST', true),
                     },
                     validations: {
                         dataset: APIRoutes.entity('dataset', 'VALIDATE', false, '0'),

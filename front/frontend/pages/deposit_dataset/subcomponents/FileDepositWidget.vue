@@ -12,7 +12,7 @@
                             </a>
                         </b-tooltip>
                     </h4>
-                    <p v-html="lang('f_upload_deposit_file_help')"></p>
+                    <p v-html="lang('f_upload_deposit_dataset_file_help')"></p>
                 </div>
             </div>
             <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="uploadForm" :cform="sink"/>
