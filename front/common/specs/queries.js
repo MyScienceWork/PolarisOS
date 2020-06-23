@@ -17,6 +17,12 @@ const publication_search = {
     ],
 };
 
+const dataset_search = {
+    $or: [
+        { 'title': '{{{search}}}' },
+    ],
+};
+
 const author_name_or_id = {
     $or: [
         { 'denormalization.contributors.label.fullname': '{{{search}}}' },
@@ -53,6 +59,7 @@ function viewable(uid, aid) {
 
 module.exports = {
     publication_search,
+    dataset_search,
     author_name_or_id,
     filter_out_types_and_subtypes,
     unpublished_websiteok,

@@ -10,6 +10,7 @@ module.exports = {
     template: '/admin/template',
     function: '/admin/function',
     review: '/admin/review',
+    review_dataset: '/admin/review_dataset',
     datasource: '/admin/datasource',
     entity_view: '/admin/entity/:datainstance',
     publication: '/admin/publication',

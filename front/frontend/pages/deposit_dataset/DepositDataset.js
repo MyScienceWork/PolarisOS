@@ -131,19 +131,18 @@ module.exports = {
         },
         previous(func, step, total) {
             this.run_next_or_previous(func);
-            // this.state.paths.validations.dataset = APIRoutes.entity('dataset',
-            //    'VALIDATE', false, `0-${this.state.current_step + 1}`);
+            this.state.paths.validations.dataset = APIRoutes.entity('dataset',
+                'VALIDATE');
         },
         send_information(sink) {
             if (sink !== this.state.sinks.creations.dataset) {
                 return;
             }
-
             if (this.state.current_step === 0) {
                 if (this.state.deposit_form_name) {
                     this.run_next_or_previous(this.state.stepper.next);
-                    //   this.state.paths.validations.dataset = APIRoutes.entity('dataset',
-                    //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
+                    this.state.paths.validations.dataset = APIRoutes.entity('dataset',
+                        'VALIDATE');
                 }
             } else {
                 const content = this.fcontent(this.state.sinks.creations.dataset);
@@ -162,8 +161,8 @@ module.exports = {
 
             this.run_next_or_previous(this.state.stepper.next);
 
-            //   this.state.paths.validations.dataset = APIRoutes.entity('dataset',
-            //       'VALIDATE', false, `0-${this.state.current_step + 1}`);
+            this.state.paths.validations.dataset = APIRoutes.entity('dataset',
+                'VALIDATE');
         },
         show_success_read(sink) {
             this.handle_import(sink, this.state.sinks.creations.dataset);
