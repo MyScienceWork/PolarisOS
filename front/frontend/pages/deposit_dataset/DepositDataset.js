@@ -51,7 +51,7 @@ module.exports = {
                 current_step: 0,
                 next_step: 0,
                 prev_step: 0,
-                total_steps: 5,
+                total_steps: 2,
                 stepper: {
                     next: undefined,
                 },
