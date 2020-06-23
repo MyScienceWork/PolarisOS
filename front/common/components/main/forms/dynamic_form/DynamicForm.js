@@ -18,6 +18,7 @@ module.exports = {
         prefix: { type: String, default: '' },
         single: { type: Boolean, default: false },
         readonly: { type: Boolean, default: false },
+        allowGrobid: { type: Boolean, default: true },
     },
     data() {
         return {

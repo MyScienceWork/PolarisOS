@@ -15,7 +15,7 @@
                     <p v-html="lang('f_upload_deposit_dataset_file_help')"></p>
                 </div>
             </div>
-            <dynamic-form @dropzone-analyze-file="analyze_from_file" :form="uploadForm" :cform="sink"/>
+            <dynamic-form :allow-grobid="allowGrobid" @dropzone-analyze-file="analyze_from_file" :form="uploadForm" :cform="sink"/>
             <div class="columns is-centered">
                 <div class="column">
                     <p v-if="analyzeState === 'loading'">{{lang('l_analyze_in_progress')}}</p>

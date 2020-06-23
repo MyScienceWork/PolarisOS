@@ -57,6 +57,7 @@
                             :sink="creationSink"
                             @analyze-from-file="analyze_from_file"
                             :analyze-state="analyzeState"
+                            :allow-grobid="false"
                         />
                     </div>
                     <!--

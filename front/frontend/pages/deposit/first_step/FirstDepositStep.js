@@ -18,6 +18,7 @@ module.exports = {
         noDepositedFiles: { default: false, type: Boolean },
         importState: { required: true, type: String },
         analyzeState: { required: true, type: String },
+        allowGrobid: { default: true, type: Boolean },
     },
     components: {
         FileDepositWidget,

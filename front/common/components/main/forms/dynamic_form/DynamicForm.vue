@@ -280,6 +280,7 @@
                 :help="field.help ? field.help.content : ''"
                 :modal_help="field.help ? field.help.use_modal : false"
                 @analyze-file="dropzone_analyze_file"
+                :allow-grobid="allowGrobid"
                 />
                 <template v-else-if="field.type === 'subform' && field.subform != null">
                     <template v-if="form_is_of_type('widget', field)">
@@ -295,6 +296,7 @@
                                     :key="`${props.fname}.${props.order}`"
                                     @crud-form-change="crud_form_change"
                                     @dropzone-analyze-file="dropzone_analyze_file"
+                                    :allow-grobid="allowGrobid"
                                 >
                                     <template v-if="field.single_multiple && !readonly" slot="form-addons">
                                         <div class="field has-addons">
@@ -328,6 +330,7 @@
                             v-if="!form_is_of_type('hidden', field) || state.show[field.name]"
                             @crud-form-change="crud_form_change"
                             @dropzone-analyze-file="dropzone_analyze_file"
+                            :allow-grobid="allowGrobid"
                         >
                             <template v-if="field.single_multiple && !readonly" slot="form-addons">
                                 <div class="field has-addons">
@@ -471,6 +474,7 @@
             :help="field.help ? field.help.content : ''"
             :modal_help="field.help ? field.help.use_modal : false"
             @analyze-file="dropzone_analyze_file"
+            :allow-grobid="allowGrobid"
             />
             <template v-else-if="field.type === 'subform' && field.subform != null">
                 <template v-if="form_is_of_type('widget', field)">
@@ -485,6 +489,7 @@
                                 :key="get_name(field.name)"
                                 @crud-form-change="crud_form_change"
                                 @dropzone-analyze-file="dropzone_analyze_file"
+                                :allow-grobid="allowGrobid"
                             >
                             </dynamic-form>
                         </div>
@@ -507,6 +512,7 @@
                         v-if="!form_is_of_type('hidden', field) || state.show[field.name]"
                         @crud-form-change="crud_form_change"
                         @dropzone-analyze-file="dropzone_analyze_file"
+                        :allow-grobid="allowGrobid"
                     >
                     </dynamic-form>
                 </template>

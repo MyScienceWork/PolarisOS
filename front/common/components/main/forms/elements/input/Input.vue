@@ -146,7 +146,6 @@
                 />
             </div>
             <slot v-if="hasAddons" name="input-addons" />
-            </slot>
         </div>
         <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
