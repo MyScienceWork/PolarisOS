@@ -46,6 +46,7 @@
                             :help="filename_help(filename)"
                             :default="state.files.content[filename].name"
                             :has-addons="true"
+                            :allow-grobid="allowGrobid"
                         >
                             <template slot="input-addons">
                                 <p class="control" v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
@@ -59,7 +60,7 @@
                                         </a>
                                     </b-tooltip>
                                 </p>
-                                <p class="control">
+                                <p class="control" v-if="allowGrobid">
                                     <b-tooltip class="is-dark" :label="lang('l_dropzone_analyze_file_help')" multilined>
                                         <a class="button is-info" @click.prevent="analyze(state.files.content[filename].pathOnServer)">
                                             <span class="icon">

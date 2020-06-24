@@ -11,6 +11,7 @@ module.exports = {
         analyzeState: { required: true, type: String },
         modificationMode: { default: false, type: Boolean },
         noDepositedFiles: { default: false, type: Boolean },
+        allowGrobid: { default: true, type: Boolean },
     },
     data() {
         return {

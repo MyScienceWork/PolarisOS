@@ -137,7 +137,7 @@ async function add_single(ctx) {
     await MinioUtils.put_into_bucket(MinioUtils.default_bucket, file);
 
     let thumbnailInfo = { filename: null };
-    let tree = {};
+    let tree = undefined;
 
     const splitted_name = file.originalname.split('.');
     const ext = splitted_name[splitted_name.length - 1];

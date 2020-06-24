@@ -11,6 +11,7 @@ const Pipeline = require('./pages/pipeline/Pipeline.vue');
 const PFunction = require('./pages/function/Function.vue');
 const PEntity = require('./pages/entity/Entity.vue');
 const Review = require('./pages/review/Review.vue');
+const ReviewDataset = require('./pages/review_dataset/ReviewDataset.vue');
 const Login = require('./pages/login/Login.vue');
 const LoginChoice = require('./pages/login_choice/LoginChoice.vue');
 const Page = require('./pages/page/Page.vue');
@@ -70,6 +71,17 @@ module.exports.menu = [
             submenu: [],
             component: Review,
             intro: 'l_backoffice_review_menu_help',
+        },
+        {
+            section: 'l_general_section',
+            name: 'l_reviews_dataset_page',
+            access: 'back-review-dataset',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'review-dataset',
+            routes: [Routes.review_dataset],
+            submenu: [],
+            component: ReviewDataset,
+            intro: 'l_backoffice_review_dataset_menu_help',
         },
         /*
         {

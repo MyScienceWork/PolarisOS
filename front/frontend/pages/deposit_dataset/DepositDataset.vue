@@ -20,7 +20,7 @@
                                         {{lang('f_deposit_step')}} {{props.id+1}}
                                     </template>
                                     <template slot="step-details" slot-scope="props">
-                                        {{lang('f_deposit_step_details_' + props.id)}}
+                                        {{lang('f_deposit_dataset_step_details_' + props.id)}}
                                     </template>
                                     <template slot="step-content" slot-scope="props">
                                             <div v-if="state.show_loader">
@@ -30,7 +30,6 @@
                                                 <first-deposit-step
                                                     v-if="state.current_step === 0"
                                                     :key="state.current_step"
-
                                                     :creation-sink="state.sinks.creations.dataset"
                                                     :import-sink="state.sinks.creations.import"
                                                     :upload-form="upload_form"
@@ -49,7 +48,7 @@
                                                     @analyze-from-file="analyze_from_file"
                                                 />
                                                 <second-deposit-step
-                                                    v-if="state.current_step === 1"
+                                                    v-if="state.current_step === 0"
                                                     :creation-sink="state.sinks.creations.dataset"
                                                     :dataset-specs="state.sinks.creations.specs"
                                                     :key="state.current_step"
@@ -60,7 +59,7 @@
                                                     @refetch-form="refetch_form"
                                                 />
                                                 <second-deposit-step
-                                                    v-if="state.current_step === 2 && !unvalidated"
+                                                    v-if="state.current_step === 0 && !unvalidated"
                                                     :creation-sink="state.sinks.creations.dataset"
                                                     :dataset-specs="state.sinks.creations.specs"
                                                     :key="state.current_step"
@@ -70,21 +69,10 @@
                                                     :review="in_mode('review')"
                                                     @refetch-form="refetch_form"
                                                 />
-                                                <second-deposit-step
-                                                    v-if="state.current_step === 3"
-                                                    :key="state.current_step"
-                                                    :creation-sink="state.sinks.creations.dataset"
-                                                    :dataset-specs="state.sinks.creations.specs"
-                                                    subform-name="permission"
-                                                    :validated="!unvalidated"
-                                                    :deposit-form="state.deposit_form_name"
-                                                    :review="in_mode('review')"
-                                                    @refetch-form="refetch_form"
-                                                />
                                                 <review-deposit-step
                                                     :creation-sink="state.sinks.creations.dataset"
                                                     :dataset-specs="state.sinks.creations.specs"
-                                                    v-if="state.current_step === 4"
+                                                    v-if="state.current_step === 1"
                                                     :key="state.current_step"
                                                     :success="success"
                                                     :review="in_mode('review')"
