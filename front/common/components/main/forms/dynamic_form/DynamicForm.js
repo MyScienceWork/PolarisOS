@@ -19,6 +19,7 @@ module.exports = {
         single: { type: Boolean, default: false },
         readonly: { type: Boolean, default: false },
         allowGrobid: { type: Boolean, default: true },
+        index: { type: Number, default: undefined },
     },
     data() {
         return {
@@ -55,7 +56,12 @@ module.exports = {
         });
     },
     mounted() {
-        const cform_content = this.fcontent(this.cform);
+        let cform_content = {};
+        if (this.index) {
+            cform_content = this.fcontent(this.cform)[this.index];
+        } else {
+            cform_content = this.fcontent(this.cform);
+        }
         const list_mappings = this.dynamic_list_mappings();
         if (list_mappings === undefined) {
             return;

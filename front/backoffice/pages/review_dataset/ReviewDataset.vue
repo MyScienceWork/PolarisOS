@@ -28,10 +28,9 @@
                             </template>
                             <template slot="detail" slot-scope="props">
                                 <div class="has-medium-font">
-                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(props.row.denormalization.type.label)}}</span></p>
-                                    <p class="has-small-bottom-margin"><span class="tag is-info">{{lang(find_subtype(props.row))}}</span></p>
                                     <h4 class="title is-4">{{lang('l_general_information')}}</h4>
                                     <p><strong>{{lang('l_dataset_title')}}</strong> {{props.row.title}}</p>
+                                    <dynamic-form :form="fform(state.sinks.creations.specs).content || {}" :cform="state.sinks.reads.dataset" :index="props.index" :readonly="true" />
                                 </div>
                             </template>
                         </fdata-table-searching>

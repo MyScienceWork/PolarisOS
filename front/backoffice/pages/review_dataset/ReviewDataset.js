@@ -33,6 +33,9 @@ module.exports = {
                         survey: APIRoutes.entity('survey', 'POST', true),
                         license: APIRoutes.entity('license', 'POST', true),
                     },
+                    creations: {
+                        specs: 'dataset_specs',
+                    },
                 },
                 sinks: {
                     reads: {
@@ -47,6 +50,7 @@ module.exports = {
                     },
                     creations: {
                         search: 'search_creation_dataset',
+                        specs: 'dataset_specs', //Expose by ImportMixin & FileAnalyzerMixin
                     },
                 },
                 my_entity: 'dataset',
@@ -190,6 +194,8 @@ module.exports = {
                 },
             });
         });
+        // fetch datacite form
+        this.fetch_form('2na-2HIBxQuWEHRpL4xG', this.state.sinks.creations.specs);
     },
     watch: {
     },
@@ -210,6 +216,14 @@ module.exports = {
                 obj[c._id] = c;
                 return obj;
             }, {});
+        },
+        form() {
+            if (this.datasetSpecs in this.$store.state.forms) {
+                const sink = this.$store.state.forms[this.datasetSpecs];
+                const content = sink.content || {};
+                return content;
+            }
+            return {};
         },
     },
 };
