@@ -25,6 +25,29 @@
                                 <b-table-column field="title.content" :label="lang('l_p_title')" :visible="state.columns['title'].visible">
                                     {{props.row.title | truncate(30)}}
                                 </b-table-column>
+                                <b-table-column field="files" :label="lang('l_p_file', {}, 'other')" centered :visible="state.columns.files.visible">
+                                    <span class="icon is-info">
+                                        <a v-if="get_multi_download_link(props.row) != null" :href='get_multi_download_link(props.row)' title="Download file"><i class="fa fa-cloud-download"></i></a>
+                                        <i v-else class="fa fa-times"></i>
+                                    </span>
+                                </b-table-column>
+                                <b-table-column field="status" :label="lang('l_p_status')" sortable centered :visible="state.columns.status.visible">
+                                    <span class="tag is-warning" v-if="props.row.status === 'pending'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                    <span class="tag is-danger" v-else-if="props.row.status === 'rejected'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                    <span class="tag is-info" v-else-if="props.row.status === 'incomplete'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                    <span class="tag is-light" v-else-if="props.row.status === 'withdrawn'">
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                    <span class="tag is-success" v-else>
+                                        {{lang(`l_${props.row.status}_status`)}}
+                                    </span>
+                                </b-table-column>
                                 <b-table-column field="depositor" :label="lang('l_p_action', {}, 'other')" centered :visible="state.columns.depositor.visible">
                                     <a target="_blank" class="has-text-green" :href="`${host}/deposit_dataset?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
                                     <action-button
