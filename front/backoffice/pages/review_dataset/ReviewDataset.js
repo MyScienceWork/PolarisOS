@@ -60,6 +60,12 @@ module.exports = {
                         force: false,
                         title: 'l_p_title',
                     },
+                    depositor: {
+                        visible: true,
+                        force: true,
+                        title: 'l_p_action',
+                        lang: 'other',
+                    },
                 },
             },
         };
