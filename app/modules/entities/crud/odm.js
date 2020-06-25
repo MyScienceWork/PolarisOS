@@ -264,6 +264,7 @@ class ODM {
                 index,
                 type,
                 body,
+                requestTimeout: 600000,
             };
 
             if ('scroll' in opts) {

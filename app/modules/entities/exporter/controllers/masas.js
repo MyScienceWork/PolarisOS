@@ -208,7 +208,7 @@ async function export_masas(ctx: Object): Promise<any> {
 
     const pub_results = await EntitiesUtils.search_and_get_sources('publication', {
         where,
-        size: 1000, // size[0],
+        size: 10000, // size[0],
         sort,
     });
 
