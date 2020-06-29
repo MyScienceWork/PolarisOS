@@ -74,6 +74,7 @@
                     />
                     <fselect
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
+                    class="control is-expanded"
                     :label="lang(field.label || '')"
                     :placeholder="lang(field.placeholder || '')"
                     :name="get_name(field.name)"
