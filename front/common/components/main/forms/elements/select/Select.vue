@@ -48,10 +48,10 @@
                 >
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
-                <ul v-if="multi && state.selected_readonly">
+                <ul v-if="multi && !readonly && state.selected_readonly">
                     <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
-                <p v-else-if="state.selected_readonly">{{readonlyValue}}</p>
+                <p v-else-if="state.selected_readonly && !readonly">{{readonlyValue}}</p>
             </div>
             <slot v-if="hasAddons" name="input-addons">
             </slot>
