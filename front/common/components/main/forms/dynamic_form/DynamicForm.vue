@@ -134,7 +134,7 @@
         />
     </template>
     <template v-else v-for="(field, i) in form.fields">
-        <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
+        <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple" :readonly="field.readonly">
             <template slot="variadic" slot-scope="props">
                 <finput
                 v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
