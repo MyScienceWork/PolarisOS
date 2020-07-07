@@ -263,9 +263,6 @@ module.exports = {
             return options;
         },
         order_options(options) {
-            if (options instanceof Array && !this.ajax) {
-                return _.orderBy(options, ['label'], ['asc']);
-            }
             return options;
         },
         format_options(options, direction = 'to') {
