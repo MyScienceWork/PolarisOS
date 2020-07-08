@@ -184,10 +184,12 @@ class ApiScheduler extends Scheduler {
             Logger.error('Error when exporting to HAL using scheduler');
             Logger.error(err);
         });
+        /*
         this._execute_datacite_export('publication').then(() => {}).catch((err) => {
             Logger.error('Error when exporting publications to DataCite using scheduler');
             Logger.error(err.message);
         });
+        */
         this._execute_datacite_export('dataset').then(() => {}).catch((err) => {
             Logger.error('Error when exporting dataset to DataCite using scheduler');
             Logger.error(err.message);
