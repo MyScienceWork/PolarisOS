@@ -7,9 +7,13 @@ const RouterUtils = require('../../../utils/router');
 const MyController = require('../controllers');
 const MyControllerMasas = require('../controllers/masas');
 const MyControllerRepec = require('../controllers/repec');
-const MyControllerDatacite = require('../controllers/datacite');
+const ControllerDatacitePublication = require('../controllers/datacite_publication');
+const ControllerDataciteDataset = require('../controllers/datacite_dataset');
 const SwordController = require('../controllers/sword');
 const Middlewares = require('../middlewares').M;
+
+let MyControllerDatacitePublication = new ControllerDatacitePublication();
+let MyControllerDataciteDataset = new ControllerDataciteDataset();
 
 function routes(router: KoaRouter) {
     const type = 'exporter';
@@ -30,10 +34,17 @@ function routes(router: KoaRouter) {
 
     router.get(`${puprefix}/export/masas`, compose([...get_mware,
         MyControllerMasas.export_masas]));
-    router.get(`${puprefix}/export/datacite/:id`, compose([...get_mware,
-        MyControllerDatacite.export_datacite]));
-    router.del(`${puprefix}/export/datacite/:id`, compose([...del_mware,
-        MyControllerDatacite.delete_datacite]));
+
+    router.get(`${puprefix}/export/datacite_publication/:id`, compose([...get_mware,
+        MyControllerDatacitePublication.export_datacite]));
+    router.del(`${puprefix}/export/datacite_publication/:id`, compose([...del_mware,
+        MyControllerDatacitePublication.delete_datacite]));
+
+    router.get(`${puprefix}/export/datacite_dataset/:id`, compose([...get_mware,
+        MyControllerDataciteDataset.export_datacite]));
+    router.del(`${puprefix}/export/datacite_dataset/:id`, compose([...del_mware,
+        MyControllerDataciteDataset.delete_datacite]));
+
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
 

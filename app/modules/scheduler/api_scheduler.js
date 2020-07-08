@@ -10,7 +10,8 @@ const HandleAPI = require('../3rdparty/handle/api');
 const SitemapAPI = require('../3rdparty/google/sitemap_generator');
 const SwordAPI = require('../entities/exporter/controllers/sword');
 const Config = require('../../config');
-const DataCiteAPI = require('../entities/exporter/controllers/datacite');
+const DataCitePublicationAPI = require('../entities/exporter/controllers/datacite_publication');
+const DataCiteDatasetAPI = require('../entities/exporter/controllers/datacite_dataset');
 
 const Throttle = require('promise-parallel-throttle');
 
@@ -138,13 +139,13 @@ class ApiScheduler extends Scheduler {
         });
     }
 
-    async _execute_datacite_export() {
+    async _execute_datacite_export(entity) {
         if (!EnvUtils.is_production()) {
-            Logger.info('DataCite export only runs in production mode');
+            Logger.info(`${entity} DataCite export only runs in production mode`);
             return;
         }
 
-        const publications = await EntitiesUtils.search_and_get_sources('publication', {
+        const publications = await EntitiesUtils.search_and_get_sources(entity, {
             where: {
                 $and: [
                     { status: ['published'] },
@@ -156,13 +157,14 @@ class ApiScheduler extends Scheduler {
         });
 
         const exec_datacite = async (p) => {
+            const DataCiteAPI = entity === 'publication' ? DataCitePublicationAPI : DataCiteDatasetAPI;
             const ok = await DataCiteAPI.post(p._id);
             if (ok) {
                 if (!('api' in p.system)) {
                     p.system.api = {};
                 }
                 p.system.api.datacite = true;
-                await EntitiesUtils.update(p, 'publication');
+                await EntitiesUtils.update(p, entity);
             }
             return ok;
         };
@@ -173,7 +175,7 @@ class ApiScheduler extends Scheduler {
     }
 
     async _execute_data() {
-        //console.log('execute api scheduler');
+        // console.log('execute api scheduler');
         this._execute_handle_creation().then(() => {}).catch((err) => {
             Logger.error('Error when creating handles through scheduler');
             Logger.error(err);
@@ -182,8 +184,12 @@ class ApiScheduler extends Scheduler {
             Logger.error('Error when exporting to HAL using scheduler');
             Logger.error(err);
         });
-        this._execute_datacite_export().then(() => {}).catch((err) => {
-            Logger.error('Error when exporting to DataCite using scheduler');
+        this._execute_datacite_export('publication').then(() => {}).catch((err) => {
+            Logger.error('Error when exporting publications to DataCite using scheduler');
+            Logger.error(err.message);
+        });
+        this._execute_datacite_export('dataset').then(() => {}).catch((err) => {
+            Logger.error('Error when exporting dataset to DataCite using scheduler');
             Logger.error(err.message);
         });
         this._execute_sitemap_creation(() => {}).catch((err) => {
