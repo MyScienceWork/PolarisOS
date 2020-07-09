@@ -1,7 +1,9 @@
 // @flow
 const Json2Xml = require('json2xml');
 const Request = require('superagent');
-const DataCitePipeline = require('../pipeline/datacite_dataset_pipeline');
+const moment = require('moment');
+const DataCiteDatasetPipeline = require('../pipeline/datacite_dataset_pipeline');
+const DataCitePublicationPipeline = require('../pipeline/datacite_publication_pipeline');
 const ConfigUtils = require('../../../utils/config');
 const EntitiesUtils = require('../../../utils/entities');
 const Utils = require('../../../utils/utils');
@@ -9,6 +11,16 @@ const Logger = require('../../../../logger');
 const Errors = require('../../../exceptions/errors');
 
 class Datacite {
+    _entity: string;
+    _typology_index: string;
+    _DatacitePipeline: Object;
+
+    constructor(entity, typology_index) {
+        this._entity = entity;
+        this._typology_index = typology_index;
+        this._DatacitePipeline = entity === 'publication' ? DataCitePublicationPipeline : DataCiteDatasetPipeline;
+    }
+
     async get_datacite_config(): Promise<?Object> {
         const global_config = await ConfigUtils.get_config();
         if (!global_config) {
@@ -30,7 +42,7 @@ class Datacite {
     }
 
     async to_datacite(publication: Object): Promise<string> {
-        const typology = (await EntitiesUtils.search_and_get_sources('typology', {
+        const typology = (await EntitiesUtils.search_and_get_sources(this._typology_index, {
             size: 100,
         })).reduce((obj, typo) => {
             obj[typo._id] = typo.name;
@@ -40,13 +52,13 @@ class Datacite {
         const records = [];
         const pos_type = typology[publication.type];
 
-        for (const key in DataCitePipeline.mapping) {
+        for (const key in this._DatacitePipeline.mapping) {
             const pub_info = Utils.find_value_with_path(publication, key.split('.'));
             if (!pub_info || (pub_info instanceof Array && pub_info.length === 0)) {
                 continue;
             }
 
-            const info = DataCitePipeline.mapping[key];
+            const info = this._DatacitePipeline.mapping[key];
             let mapper = null;
             if (pos_type in info) {
                 mapper = info[pos_type];
@@ -69,8 +81,15 @@ class Datacite {
                     return o;
                 }, subobj);
             }
+
             records.push(subobj);
         }
+
+        records.push({ attrs: { 'xml:lang': 'en', }, publisher: "Université de Lorraine" });
+        records.push({ publicationYear: moment().format('YYYY' )});
+        records.push({ language: "en" });
+        records.push({ version: "1.0" });
+
         return Json2Xml({ resource: records,
             attrs: {
                 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -87,10 +106,10 @@ class Datacite {
             doi_suffix = id;
         }
 
-        const publication = await EntitiesUtils.retrieve_and_get_source('publication', id);
+        const publication = await EntitiesUtils.retrieve_and_get_source(this._entity, id);
 
         if (!publication) {
-            Logger.error('[DataCite(post_resource)] Publication id does not refer to an existing publication');
+            Logger.error('[DataCite(post_resource)] Publication id does not refer to an existing '+ this._entity);
             return false;
         }
 
@@ -103,13 +122,14 @@ class Datacite {
                 publication.ids.push({ type: 'doi', _id: `${doi_prefix}/${doi_suffix}` });
             }
         }
-        await EntitiesUtils.update(publication, 'publication');
+        await EntitiesUtils.update(publication, this._entity);
 
         try {
-            const xml = await to_datacite(publication);
-            const res = await Request.put(`${url}/metadata/${doi_prefix}/${doi_suffix}`)
+            const xml = await this.to_datacite(publication);
+            const datacite_url = `${url}/metadata/${doi_prefix}/${doi_suffix}`;
+            const res = await Request.put(datacite_url)
                 .auth(username, password)
-                .type('application/xml;charset=UTF-8')
+                .type('application/xml')
                 .send(xml);
 
             const { status } = res;
@@ -129,7 +149,7 @@ class Datacite {
             doi_suffix = id;
         }
 
-        const publication = await EntitiesUtils.retrieve_and_get_source('publication', id);
+        const publication = await EntitiesUtils.retrieve_and_get_source(this._entity, id);
         if (!publication) {
             Logger.error('[DataCite(post_resource_url)] Publication id does not refer to an existing publication');
             return false;
@@ -145,7 +165,8 @@ class Datacite {
         const publication_url = `${pos_base_url}/view/${id}`;
 
         try {
-            const res = await Request.put(`${url}/doi/${doi_prefix}/${doi_suffix}`)
+            const datacite_url = `${url}/doi/${doi_prefix}/${doi_suffix}`;
+            const res = await Request.put(datacite_url)
                 .auth(username, password)
                 .type('text/plain;charset=UTF-8')
                 .send(`doi=${doi_prefix}/${doi_suffix}\nurl=${publication_url}`);
@@ -189,14 +210,14 @@ class Datacite {
     }
 
     async post(id: string, type: string = 'ALL', doi_suffix: string): Promise<boolean> {
-        const config = await get_datacite_config();
+        const config = await this.get_datacite_config();
         if (!config) {
             Logger.error('[DataCite(post)] Unable to find DataCite config');
             return false;
         }
 
         if (type === 'ALL' || type === 'METADATA') {
-            const metadata_ok = await post_resource(config, id, doi_suffix);
+            const metadata_ok = await this.post_resource(config, id, doi_suffix);
             if (!metadata_ok) {
                 Logger.error('[DataCite(post)] Unable to post metadata to DataCite');
                 return false;
@@ -204,12 +225,13 @@ class Datacite {
         }
 
         if (type === 'ALL' || type === 'URL') {
-            const url_ok = await post_resource_url(config, id, doi_suffix);
+            const url_ok = await this.post_resource_url(config, id, doi_suffix);
             if (!url_ok) {
                 Logger.error('[DataCite(post)] Unable to post URL to DataCite');
                 return false;
             }
         }
+
         return true;
     }
 

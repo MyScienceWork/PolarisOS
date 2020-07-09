@@ -145,19 +145,20 @@ class ApiScheduler extends Scheduler {
             return;
         }
 
-        const publications = await EntitiesUtils.search_and_get_sources(entity, {
+        const data = await EntitiesUtils.search_and_get_sources(entity, {
             where: {
                 $and: [
                     { status: ['published'] },
                     { 'system.api.datacite': false },
-                    { 'diffusion.rights.exports.datacite': true },
                 ],
             },
             size: 500,
         });
 
+        Logger.info('data : ', data);
+
         const exec_datacite = async (p) => {
-            const DataCiteAPI = entity === 'publication' ? DataCitePublicationAPI : DataCiteDatasetAPI;
+            const DataCiteAPI = entity === 'publication' ? new DataCitePublicationAPI() : new DataCiteDatasetAPI();
             const ok = await DataCiteAPI.post(p._id);
             if (ok) {
                 if (!('api' in p.system)) {
@@ -168,7 +169,7 @@ class ApiScheduler extends Scheduler {
             }
             return ok;
         };
-        const promises = publications.map(p => () => exec_datacite(p));
+        const promises = data.map(p => () => exec_datacite(p));
         await Throttle.all(promises, {
             maxInProgress: 10,
         });
