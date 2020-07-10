@@ -4,6 +4,7 @@
         <div class="columns footer-disclaimer is-centered">
             <div class="row">
                 <div class="column">
+                    <img style="width:150px;height:70px;" src="/public/front/imgs/footers/logo_ifb.png" alt="Logo IFB"/>
                     <img style="width:150px;height:70px;" src="/public/front/imgs/footers/logo_inserm.png" alt="Logo Inserm"/>
                     <img style="width:300px;height:70px;" height="60px" src="/public/front/imgs/footers/logo_ejp.png" alt="Logo EJP"/>
                 </div>
