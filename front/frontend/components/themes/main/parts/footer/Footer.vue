@@ -4,7 +4,7 @@
         <div class="columns footer-disclaimer is-centered">
             <div class="row">
                 <div class="column">
-                    <img style="width:150px;height:70px;" src="/public/front/imgs/footers/logo_ifb.png" alt="Logo IFB"/>
+                    <a href="https://www.france-bioinformatique.fr/en" target="_blank"><img style="width:150px;height:70px;" src="/public/front/imgs/footers/logo_ifb.png" alt="Logo IFB"/></a>
                     <img style="width:150px;height:70px;" src="/public/front/imgs/footers/logo_inserm.png" alt="Logo Inserm"/>
                     <img style="width:300px;height:70px;" height="60px" src="/public/front/imgs/footers/logo_ejp.png" alt="Logo EJP"/>
                 </div>
@@ -23,7 +23,7 @@
         <div style="margin-bottom: -10px;" class="columns footer-disclaimer is-centered">
             <div class="row">
                 <div class="column">
-                    <a :href="'//www.mysciencework.com/'" target="_blank">
+                    <a href="https://www.mysciencework.com/" target="_blank">
                         <span v-html="lang('l_footer_disclaimer')"></span>
                     </a>
                 </div>
