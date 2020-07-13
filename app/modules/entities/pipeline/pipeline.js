@@ -29,8 +29,11 @@ class Pipeline extends ODM {
             if (typeof value === 'boolean') {
                 return value;
             }
-            const v = value.toLowerCase();
-            return (v === 'yes' || v === 'true');
+            if (value) {
+                const v = value.toLowerCase();
+                return (v === 'yes' || v === 'true');
+            }
+            return false;
         }
         case 'integer':
             return parseInt(value, 10);
