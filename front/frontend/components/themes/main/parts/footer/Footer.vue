@@ -10,12 +10,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="column" style="width:300px;">
+                <div class="column has-vertically-aligned-content" style="height:100%">
                     <div class="row">
                         <img style="width:60px;height:35px;" src="/public/front/imgs/footers/logo_europe.png" alt="Logo Europe"/>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column has-vertically-aligned-content" style="width:300px;height:100%">
                     <div class="row">
-                        <p style="font-size:8px">The EJP RD initiative has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement N°825575</p>
+                        <p style="font-size:8px">This web service is funded by the European Union through the European Joint Programme on Rare Disease under the European Union’s Horizon 2020 research and innovation programme Grant Agreement N°825575.</p>
                     </div>
                 </div>
             </div>
