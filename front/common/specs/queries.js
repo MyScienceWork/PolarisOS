@@ -82,6 +82,11 @@ module.exports = {
             viewable(uid, aid),
         ],
     }),
+    last_deposits_dataset: () => ({
+        $and: [
+            { status: 'published' }
+        ],
+    }),
     filter_role(userId, roles, filter) {
         if (roles.funder) {
             filter.$and.push({ depositor: userId });

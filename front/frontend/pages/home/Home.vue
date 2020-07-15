@@ -3,6 +3,8 @@
         <div class="container is-fluid">
             <div class="columns">
                 <div class="column is-6">
+                    <!-- last deposit publication -->
+                    <!--
                     <card color="orange" class="card-equal-height">
                         <template slot="card-title">
                             {{lang('l_last_deposits')}}
@@ -28,6 +30,21 @@
                                     <router-link class="level-item" to="/browse?b=dates.publication&entity=&view=list&aggt=date&label=&agge=publication&aggf=dates.publication">{{lang('l_see_more')}}</router-link>
                                 </div>
                             </div>
+                        </div>
+                    </card>
+                    -->
+                    <!-- last deposit dataset -->
+                    <card color="orange" class="card-equal-height">
+                        <template slot="card-title">
+                            {{lang('l_last_deposits_dataset')}}
+                        </template>
+                        <div
+                                slot="card-extra-header"
+                                class="is-pulled-right"
+                        >
+                        </div>
+                        <div slot="card-content">
+                            <last-deposits-dataset :items="items_dataset" />
                         </div>
                     </card>
                 </div>
