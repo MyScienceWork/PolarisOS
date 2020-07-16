@@ -123,10 +123,11 @@ class Datacite {
             }
         }
         await EntitiesUtils.update(publication, this._entity);
+        let datacite_url = '';
 
         try {
             const xml = await this.to_datacite(publication);
-            const datacite_url = `${url}/metadata/${doi_prefix}/${doi_suffix}`;
+            datacite_url = `${url}/metadata/${doi_prefix}/${doi_suffix}`;
             const res = await Request.put(datacite_url)
                 .auth(username, password)
                 .type('application/xml')
@@ -139,6 +140,7 @@ class Datacite {
             throw Errors[`DataCite${status}`];
         } catch (err) {
             Logger.error(`[DataCite(post_resource)] Error when sending data to the API: ${err.message}`);
+            Logger.error(`[DataCite(post_resource)] URL: ${datacite_url}`)
         }
     }
 
@@ -163,9 +165,10 @@ class Datacite {
 
         const pos_base_url = Utils.find_value_with_path(global_config, 'base_url'.split('.'));
         const publication_url = `${pos_base_url}/view/${id}`;
+        let datacite_url = '';
 
         try {
-            const datacite_url = `${url}/doi/${doi_prefix}/${doi_suffix}`;
+            datacite_url = `${url}/doi/${doi_prefix}/${doi_suffix}`;
             const res = await Request.put(datacite_url)
                 .auth(username, password)
                 .type('text/plain;charset=UTF-8')
@@ -177,6 +180,7 @@ class Datacite {
             throw Errors[`DataCite${status}`];
         } catch (err) {
             Logger.error(`[DataCite(post_resource_url)] Error when sending data to the API: ${err.message}`);
+            Logger.error(`[DataCite(post_resource_url)] URL: ${datacite_url}`);
             return false;
         }
     }
