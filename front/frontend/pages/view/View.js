@@ -73,6 +73,15 @@ module.exports = {
         };
     },
     methods: {
+        run_export(format) {
+            this.$store.dispatch('download', {
+                path: APIRoutes.export_publication(),
+                body: {
+                    ids: [this.content_item._id],
+                    type: format || null,
+                },
+            });
+        },
         good_language(index, lang, tt) {
             if (index === 0 && this.fcontent(this.state.sinks.reads.item)[0] && this.fcontent(this.state.sinks.reads.item)[0].lang) {
                 return this.fcontent(this.state.sinks.reads.item)[0].lang;
@@ -80,15 +89,6 @@ module.exports = {
             if (tt.lang) {
                 return tt.lang;
             }
-        },
-        run_export(format) {
-            this.$store.dispatch('download', {
-                path: APIRoutes.export(),
-                body: {
-                    ids: [this.content_item._id],
-                    type: format || null,
-                },
-            });
         },
         generate_handle_link(item) {
             const handle = (item.ids || []).find(f => f.type === 'handle');

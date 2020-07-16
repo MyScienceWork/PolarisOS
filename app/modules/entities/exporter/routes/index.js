@@ -25,8 +25,10 @@ function routes(router: KoaRouter) {
     const get_mware = RouterUtils.get_middlewares(type, Middlewares);
     const del_mware = RouterUtils.del_middlewares(type, Middlewares);
 
-    router.post(`${puprefix}/export`, compose([...post_mware,
-        MyController.export_information()]));
+    router.post(`${puprefix}/export_publication`, compose([...post_mware,
+        MyController.export_publication_information()]));
+    router.post(`${puprefix}/export_dataset`, compose([...post_mware,
+        MyController.export_dataset_information()]));
     router.get(`${puprefix}/export/bibliography`, compose([...get_mware,
         MyController.export_bibliography]));
     router.get(`${puprefix}/export/bibliography/web`, compose([...get_mware,

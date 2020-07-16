@@ -45,10 +45,29 @@
                             </p>
                         </div>
 
+                        <h4>Descriptions</h4>
+
                         <widget class="has-small-top-margin" v-for="(description, idx) in _oa_find(content_item, 'description')" :collapsed="idx > 1">
-                            <span slot="title"><strong>Description </strong>{{ description.date | format_date('MM/DD/YYYY') }}</span>
+                            <span slot="title">{{ description.date | format_date('MM/DD/YYYY') }}</span>
                             <div slot="body"><p>{{ description.description }}</p></div>
                         </widget>
+
+                        <h4>Related Publications</h4>
+
+                        <widget class="has-small-top-margin" v-for="(related, idx) in _oa_find(content_item, 'related_publication')">
+                            <span slot="title"><a class="break-word has-text-purple" target='_blank' :href="related.url"><strong>{{ content_item.denormalization.related_publication[idx].id_type.label.toUpperCase() }} {{ related.id_number }} </strong></a></span>
+                            <div slot="body"><p>{{ related.citation }}</p></div>
+                        </widget>
+
+                        <p v-if="_oa_find(content_item, 'notes')">
+                            <strong>Notes</strong><br/>
+                            {{ content_item.notes }}
+                        </p>
+
+                        <p v-if="_oa_find(content_item, 'dates.deposit')">
+                            <strong>Publication date</strong><br/>
+                            {{ parseInt(content_item.dates.deposit, 10) | format_date('MM/DD/YYYY') }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -123,6 +142,18 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column">
+                        <div class="card info-card info-card-purple">
+                            <header class="card-header">
+                                <p class="card-header-title">{{lang('f_publication_export')}}</p>
+                            </header>
+                            <div class="card-content">
+                                <p class="has-text-centered"><a @click.prevent="run_export('datacite')">{{lang('l_datacite_export')}}</a></p>
                             </div>
                         </div>
                     </div>

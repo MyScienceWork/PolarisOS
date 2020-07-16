@@ -26,6 +26,15 @@ module.exports = {
         };
     },
     methods: {
+        run_export(format) {
+            this.$store.dispatch('download', {
+                path: APIRoutes.export_dataset(),
+                body: {
+                    ids: [this.content_item._id],
+                    type: format || null,
+                },
+            });
+        },
     },
     watch: {
     },
