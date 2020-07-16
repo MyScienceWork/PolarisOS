@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="has-small-top-margin">
                                         <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
-                                            <a :href="generate_download_link('master')" class="swap">
+                                            <a :href="generate_download_link('dataset', 'master')" class="swap">
                                                 <span class="icon is-large">
                                                     <i class="fa fa-cloud-download fa-3x"></i>
                                                 </span>
@@ -104,7 +104,7 @@
                                     <div class="columns is-centered">
                                         <div class="column has-vertically-aligned-content is-vcentered">
                                             <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
-                                                <a :href="generate_download_link('master')" class="swap">
+                                                <a :href="generate_download_link('dataset', 'master')" class="swap">
                                                     <span class="icon is-large">
                                                         <i class="fa fa-file fa-3x"></i>
                                                     </span>

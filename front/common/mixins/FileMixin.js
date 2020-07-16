@@ -13,7 +13,7 @@ module.exports = {
         };
     },
     methods: {
-        generate_download_link(status, generic = false) {
+        generate_download_link(entity, status, generic = false) {
             const files = this.content_item.files || [];
             if (files.length === 0) {
                 return '#';
@@ -21,7 +21,7 @@ module.exports = {
 
             if (status === 'master') {
                 const file = _.find(files, f => f.is_master) || files[0];
-                return `/${generic ? 'gdownload' : 'download'}/publication/${this.content_item._id}/${file.url}`;
+                return `/${generic ? 'gdownload' : 'download'}/${entity}/${this.content_item._id}/${file.url}`;
             } else if (status === 'all') {
                 return '#';
             }
