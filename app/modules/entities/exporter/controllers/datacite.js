@@ -164,7 +164,7 @@ class Datacite {
         }
 
         const pos_base_url = Utils.find_value_with_path(global_config, 'base_url'.split('.'));
-        const publication_url = `${pos_base_url}/view/${id}`;
+        const publication_url = this._entity === 'publication' ? `${pos_base_url}/view/${id}` : `${pos_base_url}/view_dataset/${id}`;
         let datacite_url = '';
 
         try {
