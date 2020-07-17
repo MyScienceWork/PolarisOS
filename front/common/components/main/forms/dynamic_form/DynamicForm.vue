@@ -95,6 +95,7 @@
                     :translatable="field.datasource.translatable"
                     :search-size="generate_ajax_search(field, 'size')"
                     :search-fields="generate_ajax_search(field, 'fields')"
+                    :ajax-query="field.datasource.query"
                     />
                     <fradio
                     v-else-if="field.type === 'radio'"
@@ -113,6 +114,7 @@
                     :modal_help="field.help ? field.help.use_modal : false"
                     :translate-through-hlang="field.datasource.use_hlang"
                     :translatable="field.datasource.translatable"
+                    :ajax-query="field.datasource.query"
                     />
                 </template>
                 <slot name="form-addons"></slot>
@@ -429,6 +431,8 @@
             :translatable="field.datasource.translatable"
             :search-size="generate_ajax_search(field, 'size')"
             :search-fields="generate_ajax_search(field, 'fields')"
+            :ajax-query="field.datasource.query"
+
             />
             <fradio
             v-else-if="field.type === 'radio'"

@@ -5,7 +5,9 @@ const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const LangMixin = require('../../../../../mixins/LangMixin');
+const ESQueryMixin = require('../../../../../mixins/ESQueryMixin');
 const ASCIIFolder = require('fold-to-ascii');
+const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
     props: {
@@ -38,11 +40,12 @@ module.exports = {
         searchFields: { default: '', type: String },
         searchSize: { default: 10, type: Number },
         flattenList: { default: false, type: Boolean },
+        ajaxQuery: { default: '', type: String },
     },
     components: {
         'v-select': VSelect,
     },
-    mixins: [InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin, ESQueryMixin],
     data() {
         return {
             state: {
@@ -50,6 +53,7 @@ module.exports = {
                 options: [],
                 showHelpModal: false,
                 form: `${this.name}_${+moment()}`,
+                es_query_ids: this.ajaxQuery !== null ? [this.ajaxQuery] : [],
             },
         };
     },
@@ -148,6 +152,11 @@ module.exports = {
                 body.where = {
                     $and: [body.where].concat(self.ajaxFilters),
                 };
+            }
+
+            const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber);
+            if (contentQuery && contentQuery instanceof Array && contentQuery.length > 0 && contentQuery[0].content) {
+                body.where = _.merge(body.where, JSON.parse(Handlebars.compile(contentQuery[0].content)({ search })));
             }
 
             const promise = self.$store.dispatch('search', {
