@@ -7,6 +7,7 @@ const Bulk = require('../frontend/pages/bulk/Bulk.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
 const ListForWebsite = require('../frontend/pages/list_for_website/ListForWebsite.vue');
 const Search = require('../frontend/pages/search/Search.vue');
+const SearchDataset = require('../frontend/pages/search_dataset/SearchDataset.vue');
 const SearchResearchTrials = require('../frontend/pages/searchResearchTrials/SearchResearchTrials.vue');
 const View = require('../frontend/pages/view/View.vue');
 const ViewDataset = require('../frontend/pages/view_dataset/ViewDataset.vue');
@@ -37,6 +38,7 @@ module.exports = {
     home: Home,
     browse: Browse,
     search: Search,
+    search_dataset: SearchDataset,
     search_research_trials: SearchResearchTrials,
     project: Project,
     view: View,

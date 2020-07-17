@@ -63,6 +63,11 @@ module.exports = {
     author_name_or_id,
     filter_out_types_and_subtypes,
     unpublished_websiteok,
+    published_dataset_search: () => ({
+        $and: [
+            { status: 'published' },
+        ],
+    }),
     published_publication_search: (uid, aid) => ({
         $and: [
             { has_other_version: false },
