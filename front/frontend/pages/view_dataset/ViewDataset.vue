@@ -45,7 +45,7 @@
                             </p>
                         </div>
 
-                        <h4>Descriptions</h4>
+                        <h4 class="has-small-top-margin">Descriptions</h4>
 
                         <widget class="has-small-top-margin" v-for="(description, idx) in _oa_find(content_item, 'description')" :collapsed="idx > 1">
                             <span slot="title">{{ description.date | format_date('MM/DD/YYYY') }}</span>
