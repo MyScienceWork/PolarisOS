@@ -26,6 +26,10 @@ module.exports = {
         };
     },
     methods: {
+        enable_link_citation(citation) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return citation.replace(urlRegex, url => `<a target="_blank" href="${url}">${url}</a>`);
+        },
         run_export(format) {
             this.$store.dispatch('download', {
                 path: APIRoutes.export_dataset(),

@@ -56,7 +56,7 @@
 
                         <widget class="has-small-top-margin" v-for="(related, idx) in _oa_find(content_item, 'related_publication')">
                             <span slot="title"><a class="break-word has-text-purple" target='_blank' :href="related.url"><strong>{{ content_item.denormalization.related_publication[idx].id_type.label.toUpperCase() }} {{ related.id_number }} </strong></a></span>
-                            <div slot="body"><p>{{ related.citation }}</p></div>
+                            <div slot="body"><p v-html="enable_link_citation(related.citation)"></p></div>
                         </widget>
 
                         <p v-if="_oa_find(content_item, 'notes')">
