@@ -24,7 +24,7 @@
                         <div class="has-small-top-margin" v-if="_oa_find(content_item, 'denormalization.contact') && content_item.denormalization.contact.length > 0">
                             <strong>Contacts</strong>
                             <ul v-for="contact in content_item.denormalization.contact">
-                                <li>{{ contact.label.fullname }}</li>
+                                <li><a :href="`mailto:${contact.label.email}`">{{contact.label.fullname}}</a></li>
                             </ul>
                         </div>
                         <p class="has-small-top-margin" v-if="_oa_find(content_item, 'denormalization.laboratory.0._id.name')">
