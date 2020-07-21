@@ -82,6 +82,7 @@
             </div>
             <div class="level-item is-hidden-mobile">
                 <div class="field has-addons">
+                    <!--
                     <p class="control">
                         <b-dropdown hoverable>
                             <a class="button" slot="trigger">
@@ -105,6 +106,7 @@
                             </template>
                         </b-dropdown>
                     </p>
+                    -->
                     <p class="control">
                         <b-dropdown hoverable>
                             <a class="button" slot="trigger">
@@ -187,7 +189,7 @@
                 </span>
                 <span v-if="_oa_find(info, 'dates.deposit')">{{ parseInt(info.dates.deposit, 10) | format_date('MM/DD/YYYY') }}</span>
             </div>
-            <div class="level-right level is-mobile is-hidden-mobile">
+            <div class="level-left level is-mobile is-hidden-mobile">
                 <div class="level-left">
                     <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view_dataset/${info._id}`">
                         <span class="icon is-small"><i class="fa fa-eye"></i></span>
