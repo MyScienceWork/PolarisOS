@@ -3,7 +3,7 @@
     <article class="media is-flex-mobile pos-search-result" v-for="(info, idx) in items">
         <div class="media-content">
             <div class="has-small-bottom-margin">
-                <span v-html="info.title"></span>
+                <a :href="`/view_dataset/${info._id}`"><span v-html="info.title"></span></a>
                 <span> - </span>
                 <span v-if="_oa_find(info, 'denormalization.author')" >
                     <span v-for="author in info.denormalization.author">{{ author.label.fullname }} - </span>
