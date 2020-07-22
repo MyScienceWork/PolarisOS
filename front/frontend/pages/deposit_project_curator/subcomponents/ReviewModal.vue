@@ -41,7 +41,7 @@
                         <finput
                             label="l_history_date"
                             :form="sink"
-                            :name="'history.'+index_comment+'.date'"
+                            :name="'history.'+index_comment+'.updated_date'"
                             :hidden-value="updated_date"
                             type="hidden"
                         />
