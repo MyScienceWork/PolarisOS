@@ -8,7 +8,7 @@ module.exports = {
             state: {
                 sinks: {
                     reads: {
-                        query_grabber: 'query_grabber_read',
+                        query_grabber: {},
                     },
                 },
                 paths: {
@@ -32,10 +32,13 @@ module.exports = {
         es_query_ids(q) {
             const queries = q.filter(_q => _q && _q.trim() !== '');
             if (queries.length > 0) {
+                this.state.sinks.reads.query_grabber[btoa(this.name)] = 'query_grabber_read_' + btoa(this.name);
+
                 this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.query_grabber,
+                    form: this.state.sinks.reads.query_grabber[btoa(this.name)],
                     path: this.state.paths.reads.query_grabber,
                     body: {
+                        size: 1000,
                         where: {
                             id: queries,
                         },
@@ -91,9 +94,10 @@ module.exports = {
         } else if (this.state.es_query_ids.length > 0) {
             this.state.es_query_id = this.state.es_query_ids[0];
         }
+        this.state.sinks.reads.query_grabber[btoa(this.name)] = 'query_grabber_read_' + btoa(this.name);
 
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.query_grabber,
+            form: this.state.sinks.reads.query_grabber[btoa(this.name)],
             path: this.state.paths.reads.query_grabber,
             body: {
                 where: {
