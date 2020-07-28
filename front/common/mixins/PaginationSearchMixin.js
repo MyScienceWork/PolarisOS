@@ -315,7 +315,7 @@ module.exports = {
                 body.sort = body.sort.concat(this.defaultSorts);
             }
 
-            body.sort.push({ _id: 'desc' });
+            body.sort.push({ _score: 'desc' });
 
             this.$store.dispatch('search', {
                 path: this.searchPath,
