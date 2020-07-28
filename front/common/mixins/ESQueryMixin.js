@@ -49,14 +49,18 @@ module.exports = {
     },
     computed: {
         es_queries() {
-            const content = this.fcontent(this.state.sinks.reads.query_grabber);
+            const content = this.fcontent(this.state.sinks.reads.query_grabber[btoa(this.name)]);
             if (content && content instanceof Array && content.length > 0) {
                 return content;
             }
             return [];
         },
         es_query() {
-            const queries = this.es_queries.filter(q => q.id === this.es_query_id);
+            const content = this.fcontent(this.state.sinks.reads.query_grabber[btoa(this.name)]);
+            if (!(content instanceof Array)) {
+                return null;
+            }
+            const queries = content.filter(q => q.id === this.es_query_id);
             if (queries.length > 0) {
                 return queries[0];
             }
