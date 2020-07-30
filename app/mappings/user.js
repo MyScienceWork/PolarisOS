@@ -12,6 +12,14 @@ module.exports = {
                 },
             },
             properties: {
+                countrys: {
+                    type: 'nested',
+                    properties: {
+                        country: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 created_at: {
                     type: 'date',
                 },
