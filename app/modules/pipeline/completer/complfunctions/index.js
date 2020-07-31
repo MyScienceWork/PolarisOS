@@ -34,7 +34,7 @@ function concat(template: string): Function {
             }
             Logger.info("temps : ", temp);
             if (temp && temp._id) {
-                result = result.filter(q => q._id !== temp).concat(temp);
+                result = result.filter(q => q._id !== temp._id).concat(temp);
             } else if (temp) {
                 result = result.filter(q => q._id !== temp).concat({ _id: temp });
             }
