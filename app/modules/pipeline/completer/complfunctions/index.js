@@ -30,7 +30,7 @@ function concat(template: string): Function {
             if (temp instanceof Array) {
                 result = result.concat(temp);
             } else if (temp) {
-                result = result.concat({ _id: temp });
+                result = result.concat([{ _id: temp }]);
             }
         })
         return Utils.make_nested_object_from_path(path.split('.'), result);
