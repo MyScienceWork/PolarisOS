@@ -128,6 +128,8 @@ class Pipeline extends ODM {
 
                 const args = f.function.arguments;
                 switch (f.function.name) {
+                case 'concat':
+                    return { [f.field]: (o, p, i) => ComplFunctions.concat(args[0].value)(o, p, i) };
                 case 'copy':
                     return { [f.field]: (o, p, i) => ComplFunctions.copy(args[0].value)(o, p, i) };
                 case 'generic_complete':
