@@ -25,21 +25,14 @@ function concat(template: string): Function {
     return (object: Object, path: string, info: Object = {}) => {
         const keys = template.split(',');
         let result = [];
-        Logger.info("object : ", object);
         keys.forEach(key => {
             let temp = Utils.find_value_with_path(object, key.split("."));
-
             if (temp instanceof Array) {
-                temp = temp[0];
-            }
-            Logger.info("temps : ", temp);
-            if (temp && temp._id) {
-                result = result.filter(q => q._id !== temp._id).concat(temp);
+                result = result.concat(temp);
             } else if (temp) {
-                result = result.filter(q => q._id !== temp).concat({ _id: temp });
+                result = result.concat({ _id: temp });
             }
         })
-        Logger.info("result : ", result);
         return Utils.make_nested_object_from_path(path.split('.'), result);
     };
 }
