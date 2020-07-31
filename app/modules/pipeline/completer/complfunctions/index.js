@@ -33,12 +33,11 @@ function concat(template: string): Function {
                 temp = temp[0];
             }
             Logger.info("temps : ", temp);
-            if (temp._id) {
+            if (temp && temp._id) {
                 result = result.filter(q => q._id !== temp).concat(temp);
-            } else {
+            } else if (temp) {
                 result = result.filter(q => q._id !== temp).concat({ _id: temp });
             }
-
         })
         Logger.info("result : ", result);
         return Utils.make_nested_object_from_path(path.split('.'), result);
