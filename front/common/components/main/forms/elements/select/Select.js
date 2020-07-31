@@ -55,6 +55,7 @@ module.exports = {
                 showHelpModal: false,
                 form: `${this.name}_${+moment()}`,
                 es_query_ids: this.ajaxQuery !== null ? [this.ajaxQuery] : [],
+                readonlyValue: '',
             },
         };
     },
@@ -145,6 +146,7 @@ module.exports = {
                 this.state.selected_not_readonly = s;
                 this.state.selected_readonly = null;
             }
+            this.setReadonlyValue(this.state.selected_readonly);
         },
         search: _.debounce((loading, search, self) => {
             const body = {
@@ -232,7 +234,7 @@ module.exports = {
                 this.set_selected(info.map(i =>
                     ({ label: i[this.fieldLabel],
                         value: i[this.fieldValue],
-                        readonly: this.test_read_only(i, this.conditionalReadonly),
+                        readonly: this.readonly ? true : this.test_read_only(i, this.conditionalReadonly),
                     })));
                 return;
             }
@@ -316,14 +318,14 @@ module.exports = {
                 return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
-                    readonly: this.test_read_only(opt, this.conditionalReadonly),
+                    readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
                 }));
             }
 
             return options.map(opt => ({
                 [this.fieldLabel]: opt.label,
                 [this.fieldValue]: opt.value,
-                readonly: this.test_read_only(opt, this.conditionalReadonly),
+                readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
             }));
         },
         select_default_value() {
@@ -341,6 +343,15 @@ module.exports = {
                 this.state.selected = this.set_selected(this.defaultValue);
             } else {
                 this.state.selected = this.set_selected([{ value: this.defaultValue }]);
+            }
+        },
+        setReadonlyValue(selected_readonly) {
+            if (selected_readonly instanceof Array) {
+                this.state.readonlyValue = selected_readonly.map(s => s.label);
+            } else if (this.state.selected_readonly) {
+                this.state.readonlyValue = selected_readonly.label;
+            } else {
+                this.state.readonlyValue = '';
             }
         },
     },
@@ -395,10 +406,7 @@ module.exports = {
             (this.state.selected instanceof Array && this.state.selected.length === 0));
         },
         readonlyValue() {
-            if (this.state.selected_readonly instanceof Array) {
-                return this.state.selected_readonly.map(s => s.label);
-            }
-            return this.state.selected_readonly ? this.state.selected_readonly.label : '';
+            return this.state.readonlyValue;
         },
         current_state() {
             return this.fstate(this.form);

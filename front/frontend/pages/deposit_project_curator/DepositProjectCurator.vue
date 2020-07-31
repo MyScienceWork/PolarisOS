@@ -33,6 +33,7 @@
                                     redirectURI="/workflow?workflow=global"
                             >
                             <dynamic-form :form="user_forms(state.project_subform_name)" :cform="state.sinks.creations.project"/>
+                            <br/>
                             <widget :collapsed="true">
                                 <strong slot="title" class="is-uppercase">{{lang('l_history')}}</strong>
                                 <div v-if="historys" slot="body">

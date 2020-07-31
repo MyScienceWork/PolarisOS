@@ -16,6 +16,7 @@ module.exports = {
         draggable: { type: Boolean, default: false },
         single: { type: Boolean, default: false },
         defaultSize: { type: Number, default: 0 },
+        readonly: { type: Boolean, default: false },
     },
 
     components: {
