@@ -9,13 +9,16 @@ module.exports = {
                         _id: 'role',
                     },
                     author: 'author',
+                    countries: {
+                        _id: 'country',
+                    },
                 },
             },
             properties: {
-                countrys: {
+                countries: {
                     type: 'nested',
                     properties: {
-                        country: {
+                        _id: {
                             type: 'keyword',
                         },
                     },
