@@ -14,6 +14,9 @@ const publication_search = {
         { 'denormalization.journal': '{{{search}}}' },
         { 'denormalization.type': '{{{search}}}' },
         { 'denormalization.subtype': '{{{search}}}' },
+        { collection: '{{{search}}}' },
+        { 'keywords.value': '{{{search}}}' },
+        { 'denormalization.demovoc_keywords._id.label': '{{{search}}}' },
     ],
 };
 
