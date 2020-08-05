@@ -27,6 +27,8 @@ function routes(router: KoaRouter) {
         MyController.export_bibliography_for_website]));
     router.get(`${puprefix}/export/masas`, compose([...get_mware,
         MyControllerMasas.export_masas]));
+    router.get(`${puprefix}/export/masas/:id`, compose([...get_mware,
+        MyControllerMasas.export_masas_file]));
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
     router.get('/api/private/repec/:handle',
