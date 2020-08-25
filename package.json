@@ -48,7 +48,7 @@
     "handlebars": "^4.0.11",
     "handlebars.moment": "^1.0.4",
     "heapq": "0.0.3",
-    "highcharts": "^6.0.6",
+    "highcharts": "^8.2.0",
     "html-docx-js": "^0.3.1",
     "html-to-text": "^5.1.1",
     "intro.js": "^2.9.3",
