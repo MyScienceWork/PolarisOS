@@ -76,7 +76,7 @@ const mapping = {
     T2: {
         __default: {
             transformers: [],
-            picker: async pt => ({ publication_title: pt[0] }),
+            picker: async pt => ({ journal: pt[0] }),
         },
         NEWS: {
             transformers: [],
