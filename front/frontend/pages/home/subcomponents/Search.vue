@@ -36,12 +36,13 @@
             </form>
         </div>
     </div>
+    <!--
     <div class="columns" v-if="showAdvancedSearch">
         <div class="column">
             <div class="level">
                 <div class="level-left">
-
                 </div>
+
                 <div class="level-right">
                     <router-link
                         :class="`has-text-${color} swap`"
@@ -52,6 +53,7 @@
             </div>
         </div>
     </div>
+    -->
     <!--<div class="columns" v-if="state.showAdvanced && showAdvancedSearch">
         <div class="column">
             <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="trigger_click">

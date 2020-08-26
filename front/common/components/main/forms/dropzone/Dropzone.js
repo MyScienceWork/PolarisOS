@@ -22,6 +22,7 @@ module.exports = {
         keeper: { default: 'keeper_sink', type: String },
         keep_files: { default: false, type: Boolean },
         restore_files: { default: false, type: Boolean },
+        allowGrobid: { default: true, type: Boolean },
     },
     data() {
         return {
@@ -75,6 +76,8 @@ module.exports = {
             const name = `${file.name}_${file.lastModified}`;
             file.pathOnServer = response.file;
             file.previewUrl = response.preview;
+            file.tree = response.tree;
+            console.log('file.tree : ', file.tree);
             this.state.files.content = Object.assign({},
                 this.state.files.content, { [name]: file });
         },

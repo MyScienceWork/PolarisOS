@@ -3,63 +3,82 @@
         <div class="container is-fluid">
             <div class="columns">
                 <div class="column is-6">
-                    <card color="red" class="has-small-bottom-margin">
-                        <template slot="card-title">
-                            {{lang('l_search')}}
-                        </template>
-                        <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
-                    </card>
-                    <card color="orange" class="card-equal-height">
-                        <template slot="card-title">
-                            {{lang('l_last_deposits')}}
-                        </template>
-                        <div
-                                slot="card-extra-header"
-                                class="is-pulled-right"
-                        >
-                            <rss-feed-icon
-                                    entity="publication"
-                                    :sort="['-dates.deposit', '-dates.update']"
-                                    :query="lastDepositsQuery"
-                                    :mapping="rssMapping"
-                                    :lang-code="$store.state.interfaceLang"
-                            />
+                    <div class="columns is-multiline">
+                        <div class="column is-12">
+                            <!-- last deposit publication -->
+                            <card color="red" class="has-small-bottom-margin">
+                                <template slot="card-title">
+                                    {{lang('l_search')}}
+                                </template>
+                                <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false"/>
+                            </card>
                         </div>
-                        <div class="has-small-bottom-margin" slot="card-content">
-                            <last-deposits :items="items" />
-                            <div class="level has-medium-bottom-margin has-medium-top-margin">
-                                <div class="level-left">
+                        <div class="column is-12">
+                            <card color="orange" class="card-equal-height">
+                                <template slot="card-title">
+                                    {{lang('l_last_deposits')}}
+                                </template>
+                                <div
+                                        slot="card-extra-header"
+                                        class="is-pulled-right"
+                                >
+                                    <rss-feed-icon
+                                            entity="publication"
+                                            :sort="['-dates.deposit', '-dates.update']"
+                                            :query="lastDepositsQuery"
+                                            :mapping="rssMapping"
+                                            :lang-code="$store.state.interfaceLang"
+                                    />
                                 </div>
-                                <div class="level-right">
-                                    <router-link class="level-item" to="/browse?b=dates.publication&entity=&view=list&aggt=date&label=&agge=publication&aggf=dates.publication">{{lang('l_see_more')}}</router-link>
+                                <div class="has-small-bottom-margin" slot="card-content">
+                                    <last-deposits :items="items"/>
+                                    <div class="level has-medium-bottom-margin has-medium-top-margin">
+                                        <div class="level-left">
+                                        </div>
+                                        <div class="level-right">
+                                            <router-link class="level-item"
+                                                         to="/browse?b=dates.publication&entity=&view=list&aggt=date&label=&agge=publication&aggf=dates.publication">
+                                                {{lang('l_see_more')}}
+                                            </router-link>
+                                        </div>
+                                    </div>
                                 </div>
+                            </card>
+                        </div>
+                        <div class="column is-12">
+                            <div class="has-small-bottom-margin column is-12">
+                                <widget-stats :items="stats"/>
                             </div>
                         </div>
-                    </card>
-                    <div class="column is-12">
-                        <widget-stats :items="stats" />
                     </div>
                 </div>
                 <div class="column is-6">
-                    <card color="red" class="has-small-bottom-margin">
-                        <template slot="card-title">
-                            {{lang('l_search')}}
-                        </template>
-                        <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
-                    </card>
-                    <card color="orange" class="card-equal-height">
-                        <template slot="card-title">
-                            {{lang('l_last_deposits_dataset')}}
-                        </template>
-                        <div
-                                slot="card-extra-header"
-                                class="is-pulled-right"
-                        >
+                    <div class="columns is-multiline">
+                        <div class="column is-12">
+                            <!-- last deposit dataset -->
+                            <card color="red" class="has-small-bottom-margin">
+                                <template slot="card-title">
+                                    {{lang('l_search')}}
+                                </template>
+                                <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false"/>
+                            </card>
                         </div>
-                        <div slot="card-content">
-                            <last-deposits-dataset :items="items_dataset" />
+                        <div class="column is-12">
+                            <card color="orange" class="card-equal-height">
+                                <template slot="card-title">
+                                    {{lang('l_last_deposits_dataset')}}
+                                </template>
+                                <div
+                                        slot="card-extra-header"
+                                        class="is-pulled-right"
+                                >
+                                </div>
+                                <div slot="card-content">
+                                    <last-deposits-dataset :items="items_dataset"/>
+                                </div>
+                            </card>
                         </div>
-                    </card>
+                    </div>
                 </div>
             </div>
         </div>

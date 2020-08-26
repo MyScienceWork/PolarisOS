@@ -24,6 +24,7 @@
             </form>
         </div>
     </div>
+    <!--
     <div class="columns has-no-bottom-margin">
         <div class="column">
             <div class="level">
@@ -36,6 +37,7 @@
             </div>
         </div>
     </div>
+    -->
     <div class="columns is-clearfix" v-if="showAdvancedSearch">
         <div class="column">
             <faggregate-form :sink="searchSink" :specs="specs" @aggregate-search="search">

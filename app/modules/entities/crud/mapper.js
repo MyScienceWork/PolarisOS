@@ -111,7 +111,7 @@ class Mapper {
                     }
                     return new queries.Match().match({ [key]: elt }).operator('and');
                 }).filter(elt => elt != null);
-                const bool = matches.reduce((q, elt) => q.should(elt), new queries.Bool());
+                const bool = matches.reduce((q, elt) => q.must(elt), new queries.Bool());
 
                 if (outer_query != null) {
                     most_inner_query.query(bool);

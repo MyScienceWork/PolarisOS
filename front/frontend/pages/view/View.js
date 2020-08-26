@@ -15,9 +15,10 @@ const CopyRequester = require('./subcomponents/CopyRequester.vue');
 const BrowserUtils = require('../../../common/utils/browser');
 const TrackingMixin = require('../../../common/mixins/TrackingMixin');
 const HtmlMixin = require('../../../common/mixins/HtmlMixin');
+const FileMixin = require('../../../common/mixins/FileMixin');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin, HtmlMixin],
+    mixins: [FileMixin, LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin, HtmlMixin],
     components: {
         CopyRequester,
     },
@@ -68,13 +69,19 @@ module.exports = {
                 },
                 more_metadata: false,
                 show_extra_files: false,
-                selected_files: {
-
-                },
             },
         };
     },
     methods: {
+        run_export(format) {
+            this.$store.dispatch('download', {
+                path: APIRoutes.export_publication(),
+                body: {
+                    ids: [this.content_item._id],
+                    type: format || null,
+                },
+            });
+        },
         good_language(index, lang, tt) {
             if (index === 0 && this.fcontent(this.state.sinks.reads.item)[0] && this.fcontent(this.state.sinks.reads.item)[0].lang) {
                 return this.fcontent(this.state.sinks.reads.item)[0].lang;
@@ -82,65 +89,6 @@ module.exports = {
             if (tt.lang) {
                 return tt.lang;
             }
-        },
-        run_export(format) {
-            this.$store.dispatch('download', {
-                path: APIRoutes.export(),
-                body: {
-                    ids: [this.content_item._id],
-                    type: format || null,
-                },
-            });
-        },
-        select_all_extra_files(s) {
-            this.$lodash.forEach(this.state.selected_files, (f) => {
-                f.s = s;
-            });
-        },
-        generate_download_link(status, generic = false) {
-            const files = this.content_item.files || [];
-            if (files.length === 0) {
-                return '#';
-            }
-
-            if (status === 'master') {
-                const file = _.find(files, f => f.is_master) || files[0];
-                return `/${generic ? 'gdownload' : 'download'}/publication/${this.content_item._id}/${file.url}`;
-            } else if (status === 'all') {
-                return '#';
-            }
-            return '#';
-        },
-        generate_preview_link(status) {
-            const files = this.content_item.files || [];
-            if (files.length === 0) {
-                return null;
-            }
-
-            if (status === 'master') {
-                const file = _.find(files, f => f.is_master) || files[0];
-                if (file.preview_url) {
-                    return `/download/${file.preview_url}`;
-                }
-                return null;
-            }
-            return null;
-        },
-        generate_viewer_link(status) {
-            const files = this.content_item.files || [];
-            if (files.length === 0) {
-                return null;
-            }
-
-            if (status === 'master') {
-                const file = _.find(files, f => f.is_master) || files[0];
-                const legitMimeType = ['pdf', 'odp', 'odt', 'ods'].find(ext => file.url.endsWith(ext));
-                if (!legitMimeType) {
-                    return null;
-                }
-                return `/public/front/3rdparty/ViewerJS/index.html#${this.generate_download_link('master', true)}`;
-            }
-            return null;
         },
         generate_handle_link(item) {
             const handle = (item.ids || []).find(f => f.type === 'handle');
@@ -255,37 +203,6 @@ module.exports = {
         },
     },
     computed: {
-        last_version_link() {
-            const content = this.fcontent(this.state.sinks.reads.last_version) || [];
-            if (!(content instanceof Array) || content.length === 0) {
-                return null;
-            }
-            return `/view/${content[0]._id}`;
-        },
-        multi_download_link() {
-            const names = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
-                if (f.s) {
-                    arr.push(f.name);
-                }
-                return arr;
-            }, []);
-
-            const filenames = this.$lodash.reduce(this.state.selected_files, (arr, f) => {
-                if (f.s) {
-                    arr.push(f.url);
-                }
-                return arr;
-            }, []);
-
-            if (!this.content_item || names.length === 0 || filenames.length === 0) {
-                return '#';
-            }
-
-            return APIRoutes.multi_download('publication', this.content_item._id, names, filenames);
-        },
-        is_all_extra_files_selected() {
-            return this.$lodash.every(this.state.selected_files, f => f.s);
-        },
         item_id() {
             return this.$route.params.id || '';
         },
