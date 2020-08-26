@@ -3,6 +3,12 @@
         <div class="container is-fluid">
             <div class="columns">
                 <div class="column is-6">
+                    <card color="red" class="has-small-bottom-margin">
+                        <template slot="card-title">
+                            {{lang('l_search')}}
+                        </template>
+                        <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
+                    </card>
                     <card color="orange" class="card-equal-height">
                         <template slot="card-title">
                             {{lang('l_last_deposits')}}
@@ -19,7 +25,7 @@
                                     :lang-code="$store.state.interfaceLang"
                             />
                         </div>
-                        <div slot="card-content">
+                        <div class="has-small-bottom-margin" slot="card-content">
                             <last-deposits :items="items" />
                             <div class="level has-medium-bottom-margin has-medium-top-margin">
                                 <div class="level-left">
@@ -30,29 +36,30 @@
                             </div>
                         </div>
                     </card>
+                    <div class="column is-12">
+                        <widget-stats :items="stats" />
+                    </div>
                 </div>
                 <div class="column is-6">
-                    <div class="columns is-multiline">
-                        <div class="column is-12">
-                            <card color="red" class="">
-                                <template slot="card-title">
-                                    {{lang('l_search')}}
-                                </template>
-                                <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
-                            </card>
+                    <card color="red" class="has-small-bottom-margin">
+                        <template slot="card-title">
+                            {{lang('l_search')}}
+                        </template>
+                        <search slot="card-content" :search-sink="state.sinks.reads.search" :show-favorites="false" />
+                    </card>
+                    <card color="orange" class="card-equal-height">
+                        <template slot="card-title">
+                            {{lang('l_last_deposits_dataset')}}
+                        </template>
+                        <div
+                                slot="card-extra-header"
+                                class="is-pulled-right"
+                        >
                         </div>
-                        <div class="column is-12">
-                            <card color="purple">
-                                <template slot="card-title">
-                                    {{lang('l_discover')}}
-                                </template>
-                                <discovery :nav-items="navs" slot="card-content" />
-                            </card>
+                        <div slot="card-content">
+                            <last-deposits-dataset :items="items_dataset" />
                         </div>
-                        <div class="column is-12">
-                            <widget-stats :items="stats" />
-                        </div>
-                    </div>
+                    </card>
                 </div>
             </div>
         </div>
