@@ -280,5 +280,8 @@ module.exports = {
         editor: CommonFunctions.match_search('label'),
         institution: CommonFunctions.match_search('name'),
     },
+    post_queries: {
+        author: CommonFunctions.contributor_add,
+    },
 
 };

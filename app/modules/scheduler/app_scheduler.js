@@ -45,7 +45,7 @@ class AppScheduler extends Scheduler {
         const pipeline = to_import.format === 'ris' ? RISPipeline : EndNotePipeline;
         const reader = to_import.format === 'ris' ? ImporterReaders.RISReader : ImporterReaders.EndNoteReader;
         const importer = new Importer(to_import.subtype, pipeline,
-            pipeline.queries, reader);
+            pipeline.queries, reader, pipeline.post_queries);
 
         await importer.read_report(to_import._id);
         await importer.import_items();
