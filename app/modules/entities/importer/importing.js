@@ -92,7 +92,7 @@ class Importer {
                     sort: ['-_score'],
                 });
 
-                if (sources.length === 0) {
+                if (sources.length === 0 && this._post_queries[name]) {
                     const post_query = this._post_queries[name];
                     sources = [await EntitiesUtils.create(await post_query(value), name)];
                 }
@@ -246,10 +246,9 @@ class Importer {
                 await this._execute_pipeline(items_in_json);
 
             const filled_references_maps = await this._fill_references_maps(references_maps);
-
+            
             const final_items = await Importer._merge_references_and_items(items_without_references,
                 filled_references_maps);
-
             const results = await this._import_data(final_items);
             await this._set_final_information_on_report(results);
         } catch (err) {
