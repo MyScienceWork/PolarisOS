@@ -81,10 +81,18 @@ async function contributor_add(content) {
     return query;
 }
 
+
+async function journal_add(content) {
+    const query = {};
+    query.name = content;
+    return query;
+}
+
 module.exports = {
     single_ref,
     list_ref,
     match_search,
     contributor_search,
     contributor_add,
+    journal_add,
 };

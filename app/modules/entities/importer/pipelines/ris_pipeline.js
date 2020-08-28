@@ -293,6 +293,7 @@ module.exports = {
     },
     post_queries: {
         author: CommonFunctions.contributor_add,
+        journal: CommonFunctions.journal_add,
     },
 
 };
