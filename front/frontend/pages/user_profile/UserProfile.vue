@@ -108,6 +108,7 @@
                                         :use-favorites="false"
                                         color="red"
                                         placeholder="l_search_in_publications"
+                                        :show-advanced-search.sync="show_advanced_search"
                                         />
                                     </div>
                                 </div>

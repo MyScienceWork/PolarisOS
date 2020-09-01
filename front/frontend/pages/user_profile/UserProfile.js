@@ -159,6 +159,24 @@ module.exports = {
         },
     },
     computed: {
+        show_advanced_search: {
+            get() {
+                return (this.$route.query && this.$route.query.show_advanced_search === 'advanced_search');
+            },
+            set(nv) {
+                const q = _.cloneDeep(this.$route.query || {});
+                if (!nv) {
+                    delete q.show_advanced_search;
+                } else {
+                    q.show_advanced_search = 'advanced_search';
+                }
+                if (Object.keys(q).length === 0) {
+                    this.$router.replace({ query: null });
+                } else {
+                    this.$router.replace({ query: q });
+                }
+            },
+        },
         user() {
             if (this.state.author_mode) {
                 const content = this.fcontent(this.state.sinks.reads.user);
