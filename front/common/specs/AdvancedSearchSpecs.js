@@ -191,4 +191,8 @@ module.exports = {
         element: 'multi-select',
         label: 'l_publication_version',
     },
+    'dates*publication': {
+        element: 'text',
+        label: 'l_publication_year',
+    },
 };

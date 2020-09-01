@@ -180,7 +180,13 @@ module.exports = {
                         }, []);
                     }
 
-                    acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
+                    if (key.startsWith('date')) {
+                        const val2 = { [key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')]: { '>': `01-01-${val}`, '<': `31-12-${val}`, format: 'dd-MM-yyyy' } };
+                        acc.range = val2;
+                    } else {
+                        acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
+                    }
+
                     return acc;
                 }, {});
                 return result;
@@ -193,7 +199,9 @@ module.exports = {
                     return o;
                 }
 
-                if ('__bool' in f) {
+                if ('range' in f) {
+                    o = f.range;
+                } else if ('__bool' in f) {
                     const bool = f.__bool;
                     delete f.__bool;
                     if (bool in o) {
@@ -207,11 +215,9 @@ module.exports = {
                         delete o.$first;
                     }
                 }
-
                 return o;
             }, {});
 
-            console.log(JSON.stringify(filters));
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -347,7 +353,6 @@ module.exports = {
         },
         filters(nf) {
             this.state.seso.filters = nf;
-            console.log('filters', nf);
             if (this.searchWhenFiltersChange) {
                 this.send_information(this.searchSink);
             }
