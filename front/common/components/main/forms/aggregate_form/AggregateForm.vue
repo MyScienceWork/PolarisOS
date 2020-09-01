@@ -1,6 +1,6 @@
 <template>
 <div>
-    <fvariadic-element class="field" :name="state.variadic_name" :form="sink" :single="true" :default-size="3">
+    <fvariadic-element class="field" :name="state.variadic_name" :form="sink" :single="true" :default-size="1">
     <template slot="variadic" slot-scope="props">
             <component
                 :is="select_component(props.order)"
@@ -38,20 +38,20 @@
                         class="fix-selected-tag"
                         :select-first-value="true"
                     />
+                    <fselect
+                            label=""
+                            :placeholder="lang(selectPlaceholder)"
+                            :name="`${props.order}.select`"
+                            :form="state.sinks.creations.dummy"
+                            :options="options"
+                            :is-addon="true"
+                            :key="`${props.order}.select`"
+                            :default-value="state.inputs[props.order] ? state.inputs[props.order].selected : null"
+                            @select-change="(val) => select(val, props.order)"
+                            class="fix-selected-tag"
+                    />
                 </template>
                 <template slot="input-addons">
-                    <fselect
-                    label=""
-                    :placeholder="lang(selectPlaceholder)"
-                    :name="`${props.order}.select`"
-                    :form="state.sinks.creations.dummy"
-                    :options="options"
-                    :is-addon="true"
-                    :key="`${props.order}.select`"
-                    :default-value="state.inputs[props.order] ? state.inputs[props.order].selected : null"
-                    @select-change="(val) => select(val, props.order)"
-                    class="fix-selected-tag"
-                    />
                     <div class="control">
                         <a class="button is-info" @click.prevent="props.add">+</a>
                     </div>
