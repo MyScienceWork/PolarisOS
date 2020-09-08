@@ -43,7 +43,7 @@
     "fast-html-parser": "^1.0.1",
     "feed": "^2.0.2",
     "file-saver": "^1.3.3",
-    "filepreview": "^1.0.16",
+    "filepreview": "git+https://git@github.com/louismarie/filepreview-fork.git",
     "fold-to-ascii": "^2.0.2",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.0.11",
