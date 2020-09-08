@@ -143,7 +143,7 @@ class GulpFrontend {
             bundler.external(dep);
         });
 
-        bundler.transform(envify({
+        return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -170,13 +170,13 @@ class GulpFrontend {
     }
 
     watch() {
-        gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], ['front-scripts']);
-        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], ['front-styles', 'front-biblio-styles']);
-        gulp.watch(['./front/frontend/views/*.*'], ['front-views']);
+        gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], gulp.series('front-scripts'));
+        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], gulp.series('front-styles', 'front-biblio-styles'));
+        gulp.watch(['./front/frontend/views/*.*'], gulp.series('front-views'));
     }
 
     createVendorStyles() {
-        gulp
+        return gulp
         .src(['./front/frontend/styles/vendors.scss',
             './front/frontend/styles/vendors.less', ...this.vendors_css_files])
         .pipe(plumber())
@@ -189,7 +189,7 @@ class GulpFrontend {
     }
 
     createBiblioStyles() {
-        gulp
+        return gulp
             .src([...this.css_biblio_files])
             .pipe(plumber())
             .pipe(concat('biblio.css'))
@@ -199,7 +199,7 @@ class GulpFrontend {
     }
 
     createStyles() {
-        gulp
+        return gulp
         .src(['./front/frontend/styles/front.less', './front/frontend/styles/front.scss', ...this.css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
@@ -226,13 +226,13 @@ class GulpFrontend {
     }
 
     copyViews() {
-        gulp.src([
+        return gulp.src([
             './front/frontend/views/front.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
     copy3rdparties() {
-        gulp.src(`${this.FRONT_LOCATIONS.thirdparty}/**/*`).pipe(gulp.dest(this.PUB_LOCATIONS.thirdparty));
+        return gulp.src(`${this.FRONT_LOCATIONS.thirdparty}/**/*`).pipe(gulp.dest(this.PUB_LOCATIONS.thirdparty));
     }
 
     copyImgs() {
@@ -241,19 +241,19 @@ class GulpFrontend {
     }
 
     copyRobots() {
-        gulp.src([
+        return gulp.src([
             './front/frontend/seo/robots.txt',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.seo));
     }
 
-    revisionClean() {
+    revisionClean(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));
