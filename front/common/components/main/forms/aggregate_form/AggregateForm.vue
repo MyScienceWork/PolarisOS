@@ -26,8 +26,9 @@
                 class="has-small-bottom-margin"
                 :search-size="get_select_size(state.inputs[props.order])"
             >
-                <template slot="left-input-addons" v-if="props.order > 0">
+                <template slot="left-input-addons">
                     <fselect
+                        v-if="props.order > 0"
                         label=""
                         placeholder=""
                         :name="`${state.variadic_name}.${props.order}.__bool`"
@@ -38,7 +39,7 @@
                         class="fix-selected-tag"
                         :select-first-value="true"
                     />
-                    <fselect
+                  <fselect
                             label=""
                             :placeholder="lang(selectPlaceholder)"
                             :name="`${props.order}.select`"
