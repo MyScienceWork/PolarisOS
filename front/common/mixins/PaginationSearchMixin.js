@@ -162,6 +162,11 @@ module.exports = {
             }
 
             const obj = content[obj_name];
+
+            if (!obj[0].__bool) {
+                obj[0].__bool = '$and';
+            }
+
             let filters = _.map(obj, (value, idx) => {
                 // Only the __bool is in the object, so it's empty
                 if (Object.keys(value).length === 1 && idx > 0) {
