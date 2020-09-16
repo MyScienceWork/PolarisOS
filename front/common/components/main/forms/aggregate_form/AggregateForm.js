@@ -188,6 +188,11 @@ module.exports = {
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.sink,
                 name: `${this.state.variadic_name}.${order}`,
+                info: {},
+            });
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.sink,
+                name: `${this.state.variadic_name}.${order}`,
                 info: results,
             });
         },
