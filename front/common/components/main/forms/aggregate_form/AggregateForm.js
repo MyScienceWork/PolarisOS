@@ -38,14 +38,11 @@ module.exports = {
             this.$emit('aggregate-search');
         },
         select(val, id) {
-            if (val == null) {
-                if (id in this.state.inputs) {
-                    this.$store.commit(Messages.REMOVE_FORM, {
-                        form: this.state.inputs[id].sink,
-                    });
-                    delete this.state.inputs[id];
-                }
-                return;
+            if (id in this.state.inputs) {
+                this.$store.commit(Messages.REMOVE_FORM, {
+                    form: this.state.inputs[id].sink,
+                });
+                delete this.state.inputs[id];
             }
 
             const info = this.specs[val.value];
@@ -176,6 +173,22 @@ module.exports = {
                     },
                 }));
                 Vue.nextTick(() => this.execute_requests().then(() => {}));
+            });
+        },
+        update(value, order) {
+            const content = this.fcontent(this.sink);
+            const values = content[this.state.variadic_name][order];
+            const keys = Object.keys(values);
+            const results = {};
+            keys.forEach((key) => {
+                if (values[key] === value) {
+                    results[key] = value;
+                }
+            });
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.sink,
+                name: `${this.state.variadic_name}.${order}`,
+                info: results,
             });
         },
     },

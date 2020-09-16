@@ -25,6 +25,8 @@
                 :flatten-list="true"
                 class="has-small-bottom-margin"
                 :search-size="get_select_size(state.inputs[props.order])"
+                @value-change="(val) => update(val, props.order)"
+                @select-change="(val) => update(val, props.order)"
             >
                 <template slot="left-input-addons">
                     <fselect
