@@ -223,6 +223,10 @@ module.exports = {
                 return o;
             }, {});
 
+            if (filters.$first) {
+                filters.$and = filters.$first;
+                delete filters.$first;
+            }
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
