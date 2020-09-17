@@ -48,6 +48,10 @@ function _test_inner_object(object: ?Object, key: string | number): Array<any> {
 
 
 function find_object_with_path(object: ?Object, path: Array<string>): any {
+    if (object && path.length === 1 && object[path[0]] !== undefined) {
+        return object[path[0]];
+    }
+
     const p = path;
 
     if (p.length === 0) {
@@ -66,6 +70,10 @@ function find_object_with_path(object: ?Object, path: Array<string>): any {
 }
 
 function find_value_with_path(object: ?Object, path: Array<string>): any {
+    if (object && path.length === 1 && object[path[0]] !== undefined) {
+        return object[path[0]];
+    }
+
     const p = path;
     if (p.length === 0) {
         return _return_inner_object(object);
