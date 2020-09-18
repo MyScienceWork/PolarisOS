@@ -216,7 +216,12 @@ module.exports = {
                 }
 
                 if ('range' in f) {
-                    o = _.merge(o, f.range);
+                    const bool = f.__bool;
+                    if (bool in o) {
+                        o[bool].push(f.range);
+                    } else {
+                        o[bool] = [f.range];
+                    }
                 } else if ('__bool' in f) {
                     const bool = f.__bool;
                     delete f.__bool;
@@ -235,7 +240,11 @@ module.exports = {
             }, {});
 
             if (filters.$first) {
-                filters.$and = filters.$first;
+                if (filters.$and) {
+                    filters.$and = filters.$and.concat(filters.$first);
+                } else {
+                    filters.$and = filters.$first;
+                }
                 delete filters.$first;
             }
             console.log('filters : ', filters);
