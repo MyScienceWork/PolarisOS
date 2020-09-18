@@ -38,7 +38,7 @@
                         :options="bool_options"
                         :is-addon="true"
                         :key="`${props.id}.bool`"
-                        class="fix-selected-tag"
+                        class="small-select fix-selected-tag"
                         :select-first-value="true"
                     />
                   <fselect
