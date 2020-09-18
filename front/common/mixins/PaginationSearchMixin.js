@@ -156,6 +156,9 @@ module.exports = {
         },
         add_extra_filters(sink, obj_name, dot_replacer = '*') {
             const content = this.fcontent(sink);
+            console.log('sink : ', sink);
+            console.log('obj_name : ', obj_name);
+            console.log('content : ', content);
 
             if (!content || !(obj_name in content)) {
                 return;
@@ -196,16 +199,24 @@ module.exports = {
                 }, {});
                 return result;
             }).filter(f => f != null);
+            console.log('filters1 : ', filters);
 
             filters = filters.reduce((o, f, i) => {
+                console.log('o : ', o);
+                console.log('f : ', f);
+                console.log('i : ', i);
                 if (i === 0 && filters.length > 1) {
                     delete f.__bool;
-                    o.$first = [f];
+                    if (o.$first && o.$first.length > 0) {
+                        o.$first = o.$first.concat(f);
+                    } else {
+                        o.$first = [f];
+                    }
                     return o;
                 }
 
                 if ('range' in f) {
-                    o = f.range;
+                    o = _.merge(o, f.range);
                 } else if ('__bool' in f) {
                     const bool = f.__bool;
                     delete f.__bool;
@@ -227,6 +238,7 @@ module.exports = {
                 filters.$and = filters.$first;
                 delete filters.$first;
             }
+            console.log('filters : ', filters);
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
