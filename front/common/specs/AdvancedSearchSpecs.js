@@ -116,7 +116,7 @@ module.exports = {
         element: 'multi-select',
         label: 'l_country',
     },
-    'diffusion*research_team': {
+    'diffusion*research_teams*_id': {
         entity: {
             name: 'laboratory',
             label: 'fullname',
