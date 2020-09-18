@@ -29,29 +29,29 @@
                 @select-change="(val) => update(val, props.order)"
             >
                 <template slot="left-input-addons">
-                    <fselect
-                        v-if="props.order > 0"
-                        label=""
-                        placeholder=""
-                        :name="`${state.variadic_name}.${props.order}.__bool`"
-                        :form="sink"
-                        :options="bool_options"
-                        :is-addon="true"
-                        :key="`${props.id}.bool`"
-                        class="small-select fix-selected-tag"
-                        :select-first-value="true"
-                    />
                   <fselect
-                            label=""
-                            :placeholder="lang(selectPlaceholder)"
-                            :name="`${props.order}.select`"
-                            :form="state.sinks.creations.dummy"
-                            :options="options"
-                            :is-addon="true"
-                            :key="`${props.order}.select`"
-                            :default-value="state.inputs[props.order] ? state.inputs[props.order].selected : null"
-                            @select-change="(val) => select(val, props.order)"
-                            class="fix-selected-tag"
+                      v-if="props.order > 0"
+                      label=""
+                      placeholder=""
+                      :name="`${state.variadic_name}.${props.order}.__bool`"
+                      :form="sink"
+                      :options="bool_options"
+                      :is-addon="true"
+                      :key="`${props.id}.bool`"
+                      class="small-select fix-selected-tag"
+                      :select-first-value="true"
+                  />
+                  <fselect
+                      label=""
+                      :placeholder="lang(selectPlaceholder)"
+                      :name="`${props.order}.select`"
+                      :form="state.sinks.creations.dummy"
+                      :options="options"
+                      :is-addon="true"
+                      :key="`${props.order}.select`"
+                      :default-value="state.inputs[props.order] ? state.inputs[props.order].selected : null"
+                      @select-change="(val) => select(val, props.order)"
+                      class="fix-selected-tag"
                     />
                 </template>
                 <template slot="input-addons">
