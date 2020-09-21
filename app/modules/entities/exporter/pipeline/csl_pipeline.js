@@ -311,11 +311,19 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
-                const grabber = all => all.filter(idx => contribs[idx]
+                const grabber1 = all => all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.firstname
                     && contribs[idx].label.lastname)
                     .map(idx => ({ family: contribs[idx].label.lastname,
                         given: contribs[idx].label.firstname }));
+
+                const grabber2 = all => all.filter(idx => contribs[idx]
+                  && contribs[idx].label
+                  && (!contribs[idx].label.firstname || !contribs[idx].label.lastname))
+                  .map(idx => ({
+                      family: contribs[idx].label.lastname ? contribs[idx].label.lastname : '',
+                      given: contribs[idx].label.firstname ? contribs[idx].label.firstname : '',
+                  }));
 
                 const final = {};
 
@@ -344,7 +352,7 @@ const mapping = {
                 }
 
                 Object.keys(all).forEach((a) => {
-                    const end = grabber(all[a]);
+                    const end = grabber1(all[a]).concat(grabber2(all[a]));
                     if (end.length > 0) {
                         final[a] = end;
                     }
