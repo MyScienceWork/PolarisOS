@@ -177,6 +177,9 @@ module.exports = {
         },
         update(value, order) {
             const content = this.fcontent(this.sink);
+            if (content[this.state.variadic_name] === undefined) {
+                return;
+            }
             const values = content[this.state.variadic_name][order];
             const keys = Object.keys(values);
             const results = {};

@@ -35,7 +35,7 @@ module.exports = {
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
-        searchFields: { default: '', type: String },
+        searchFields: { default: '' },
         searchSize: { default: 10, type: Number },
         flattenList: { default: false, type: Boolean },
     },
