@@ -48,7 +48,7 @@ function _test_inner_object(object: ?Object, key: string | number): Array<any> {
 
 
 function find_object_with_path(object: ?Object, path: Array<string>): any {
-    if (object && path.length === 1 && object[path[0]] !== undefined) {
+    if (object && path.length === 1 && object[path[0]] !== undefined && _.isPlainObject(object[path[0]])) {
         return object[path[0]];
     }
 
