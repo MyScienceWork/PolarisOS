@@ -1,6 +1,6 @@
 <template>
     <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
-        <label 
+        <label
             v-if="label.trim().length > 0"
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
@@ -18,7 +18,7 @@
             </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
-                    <li v-for="selected in readonlyValue">{{selected}}</li> 
+                    <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
                 <v-select
@@ -40,7 +40,7 @@
                     :filterable="false"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected" 
+                    :value="state.selected"
                     :placeholder="placeholder"
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"
@@ -49,9 +49,13 @@
                 >
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
-            </div> 
+            </div>
             <slot v-if="hasAddons" name="input-addons" />
             </slot>
+        </div>
+        <div v-if="hasAddons" :class="[{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}]">
+          <slot name="search-addons">
+          </slot>
         </div>
         <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
