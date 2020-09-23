@@ -4,6 +4,7 @@ const Handlebars = require('../../../app/modules/utils/templating');
 const Messages = require('../api/messages');
 const Utils = require('../utils/utils');
 const FormMixin = require('./FormMixin');
+const Queries = require('../../common/specs/queries');
 
 module.exports = {
     mixins: [FormMixin],
@@ -156,21 +157,47 @@ module.exports = {
         },
         add_extra_filters(sink, obj_name, dot_replacer = '*') {
             const content = this.fcontent(sink);
-            console.log('sink : ', sink);
-            console.log('obj_name : ', obj_name);
-            console.log('content : ', content);
-
+            console.log("content : ", content);
+            console.log("obj_name : ", obj_name);
             if (!content || !(obj_name in content)) {
                 return;
             }
 
             const obj = content[obj_name];
+            const new_obj = {};
 
-            if (!obj[0].__bool) {
-                obj[0].__bool = '$and';
+            Object.keys(obj).map((els) => {
+                if (obj[els]['*']) {
+                    // field select all
+                    const search_text = obj[els]['*'];
+                    const bool = Object.keys(Queries.publication_search)[0];
+                    const search_all = Queries.publication_search[bool].reduce((acc, val) => {
+                        const search_key = Object.keys(val)[0];
+                        acc.push({ [search_key]: search_text });
+                        return acc;
+                    }, []);
+
+                    delete obj[els];
+                    const prev_els = obj;
+                    let last_el = 0;
+                    search_all.map((search_key, key) => {
+                        search_key.__bool = bool;
+                        new_obj[key] = search_key;
+                        last_el = key;
+                    });
+                    Object.keys(prev_els).map((prev_els_key, key) => {
+                        new_obj[key + last_el] = prev_els[prev_els_key];
+                    });
+                }
+            });
+
+            console.log('new obj : ', new_obj);
+
+            if (new_obj[0] && !new_obj[0].__bool) {
+                new_obj[0].__bool = '$and';
             }
 
-            let filters = _.map(obj, (value, idx) => {
+            let filters = _.map(new_obj, (value, idx) => {
                 // Only the __bool is in the object, so it's empty
                 if (Object.keys(value).length === 1 && idx > 0) {
                     return null;
@@ -199,13 +226,10 @@ module.exports = {
                 }, {});
                 return result;
             }).filter(f => f != null);
-            console.log('filters1 : ', filters);
 
             filters = filters.reduce((o, f, i) => {
-                console.log('o : ', o);
-                console.log('f : ', f);
-                console.log('i : ', i);
                 if (i === 0 && filters.length > 1) {
+                    console.log("test : ", f.__bool)
                     delete f.__bool;
                     if (o.$first && o.$first.length > 0) {
                         o.$first = o.$first.concat(f);
@@ -216,6 +240,7 @@ module.exports = {
                 }
 
                 if ('range' in f) {
+                    console.log("2bool : ", f.__bool);
                     const bool = f.__bool;
                     if (bool in o) {
                         o[bool].push(f.range);

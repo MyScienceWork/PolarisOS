@@ -1,4 +1,8 @@
 module.exports = {
+    '*': {
+        element: 'text',
+        label: 'l_all',
+    },
     'title*content': {
         element: 'text',
         label: 'l_title',
