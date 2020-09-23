@@ -29,10 +29,6 @@
                 @select-change="(val) => update(val, props.order)"
             >
                 <template slot="left-input-addons">
-                  <div
-                      v-if="props.order === 0"
-                      class="small-select"
-                  />
                   <fselect
                       v-if="props.order > 0"
                       label=""
@@ -65,15 +61,13 @@
                     <div class="control">
                         <a class="button is-info" @click.prevent="props.remove(props.id, props.order)">-</a>
                     </div>
-                </template>
-                <template slot="search-addons">
                     <div class="control" v-if="props.order === props.total - 1">
-                        <a class="button is-medium has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
+                        <a class="button has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
                             <i class="fa fa-search"></i>
                         </a>
                     </div>
                     <div class="control" v-if="props.order === props.total - 1">
-                        <a class="button is-medium has-text-red swap" :alt="lang('f_reset')" :title="lang('f_reset')" @click.prevent="reset">
+                        <a class="button has-text-red swap" :alt="lang('f_reset')" :title="lang('f_reset')" @click.prevent="reset">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
