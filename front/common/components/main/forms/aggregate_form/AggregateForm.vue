@@ -67,7 +67,7 @@
                     </div>
                 </template>
                 <template slot="search-addons">
-                  <div class="control" >
+                  <div class="control" v-if="props.order === props.total - 1">
                     <a class="button is-medium has-text-red swap" :alt="lang('f_search')" :title="lang('f_search')" @click.prevent="search">
                       <i class="fa fa-search"></i>
                     </a>
