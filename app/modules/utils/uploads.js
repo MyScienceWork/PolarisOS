@@ -179,7 +179,8 @@ async function download(ctx) {
     const final_stream = await generate_cover_page(information, file, stream);
     await update_download_stats(information, entity);
 
-    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
+    // encode URI fix space issue Firefox
+    ctx.set('Content-disposition', `attachment; filename=${encodeURI(shown_name)}`);
     ctx.statusCode = 200;
     ctx.body = final_stream;
 }
