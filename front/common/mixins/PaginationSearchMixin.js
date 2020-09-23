@@ -188,6 +188,8 @@ module.exports = {
                     Object.keys(prev_els).map((prev_els_key, key) => {
                         new_obj[key + last_el] = prev_els[prev_els_key];
                     });
+                } else {
+                    new_obj[els] = obj[els];
                 }
             });
 
