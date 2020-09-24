@@ -88,6 +88,12 @@ async function journal_add(content) {
     return query;
 }
 
+async function editor_add(content) {
+    const query = {};
+    query.label = content;
+    return query;
+}
+
 module.exports = {
     single_ref,
     list_ref,
@@ -95,4 +101,5 @@ module.exports = {
     contributor_search,
     contributor_add,
     journal_add,
+    editor_add,
 };

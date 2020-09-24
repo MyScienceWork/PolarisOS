@@ -76,7 +76,7 @@ const mapping = {
     T2: {
         __default: {
             transformers: [],
-            picker: async pt => ({ journal: pt[0] }),
+            picker: async pt => ({ publication_title: pt[0] }),
         },
         NEWS: {
             transformers: [],
@@ -129,6 +129,12 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async p => ({ pagination: p[0] }),
+        },
+    },
+    SV: {
+        __default: {
+            transformers: [],
+            picker: async p => ({ number: p[0] }),
         },
     },
     EP: {
@@ -294,6 +300,7 @@ module.exports = {
     post_queries: {
         author: CommonFunctions.contributor_add,
         journal: CommonFunctions.journal_add,
+        editor: CommonFunctions.editor_add,
     },
 
 };
