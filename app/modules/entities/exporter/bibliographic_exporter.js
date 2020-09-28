@@ -433,6 +433,7 @@ class BibliographicExporter {
             obj.id = publication._id;
             results.push(obj);
         }
+        //console.log("results CSL-JSON : ", JSON.stringify(results));
         return results;
     }
 
