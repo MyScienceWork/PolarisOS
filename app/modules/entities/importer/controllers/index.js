@@ -199,9 +199,16 @@ async function import_sherpa_romeo(ctx: Object): Promise<any> {
     const url = 'http://www.sherpa.ac.uk/romeo/api29.php?ak=hBIkszCV4ZE&issn=';
     const final_url = url + issn;
 
-    const response = await Request.get(final_url).type('xml');
-    const result = await XMLUtils.to_object(response.text);
-    ctx.body = result;
+    let response;
+    let result = {};
+    try {
+        response = await Request.get(final_url).type('xml');
+        result = await XMLUtils.to_object(response.text);
+        ctx.body = result;
+    } catch (err) {
+        Logger.error(err.message);
+        Logger.debug(err);
+    }
     return result;
 }
 
