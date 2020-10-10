@@ -358,7 +358,12 @@ module.exports = {
                 const role = _.find(contributor_roles_content,
                         co_role => (a.role === co_role.value));
 
-                let fullname = `${info.lastname.toUpperCase()}`;
+                let fullname = '';
+
+                if (info.lastname) {
+                    fullname = `${info.lastname.toUpperCase()}`;
+                }
+
                 if (info.firstname) {
                     fullname = `${info.firstname} ${fullname}`;
                 }

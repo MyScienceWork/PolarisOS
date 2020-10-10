@@ -4,7 +4,8 @@
     <div class="level" v-if="content.length > 0">
         <div v-if="!display_l_for_list" class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
             <h4 class="is-subtitle is-2">
-                <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong>
+                <strong>{{ state.seso.size < total ? state.seso.size : total }} {{lang('l_number_search_results', {}, total)}}</strong>
+                <strong>({{ total }} {{lang('l_total')}})</strong>
             </h4>
         </div>
         <div class="level-right">

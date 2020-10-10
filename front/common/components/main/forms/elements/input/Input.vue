@@ -53,6 +53,7 @@
         </div>
     </div>
     <div :class="[{'field': !isAddon, 'is-hidden': readonly && emptyValue}]"
+
         v-else-if="type === 'text' || type === 'number' || type === 'price' || type === 'password' || type === 'password-sha1'
         || type === 'email' || type === 'date' || type === 'date-year' || type === 'time'"
     >
@@ -155,7 +156,12 @@
                     :readonly="readonly"
                 />
             </div>
-            <slot v-if="hasAddons" name="input-addons" />
+            <slot v-if="hasAddons" name="input-addons">
+            </slot>
+        </div>
+        <div v-if="hasAddons" :class="[{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}]">
+          <slot name="search-addons">
+          </slot>
         </div>
         <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">

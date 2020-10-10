@@ -56,6 +56,10 @@
             <slot v-if="hasAddons" name="input-addons">
             </slot>
         </div>
+        <div v-if="hasAddons" :class="[{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}]">
+          <slot name="search-addons">
+          </slot>
+        </div>
         <div v-if="validations.length > 0 && viewValidationTexts">
             <p v-for="text in validations" class="redify inline-block">
                 {{lang(text)}}

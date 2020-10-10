@@ -274,6 +274,7 @@ class ODM {
             const req = {
                 index,
                 body,
+                requestTimeout: 600000,
             };
 
             if ('scroll' in opts) {

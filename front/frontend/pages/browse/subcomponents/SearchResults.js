@@ -177,7 +177,7 @@ module.exports = {
             ];
         },
         items_per_page_options() {
-            return [10, 20, 50, 100];
+            return [10, 20, 50, 100, 1000];
         },
         sorting_options() {
             return [
