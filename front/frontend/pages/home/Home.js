@@ -12,6 +12,7 @@ const Handlebars = require('../../../../app/modules/utils/templating');
 
 const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
+const LastDepositsDataset = require('./subcomponents/LastDepositsDataset.vue');
 const Search = require('./subcomponents/Search.vue');
 
 module.exports = {
@@ -22,6 +23,7 @@ module.exports = {
                 sinks: {
                     reads: {
                         publication: 'publication_read',
+                        dataset: 'dataset_read',
                         stats_publication: 'stats_publication_read',
                         stats_open_access: 'stats_oap_read',
                         menu: 'menu_read',
@@ -30,6 +32,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
+                        dataset: APIRoutes.entity('dataset', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
@@ -39,6 +42,7 @@ module.exports = {
     },
     components: {
         LastDeposits,
+        LastDepositsDataset,
         Discovery,
         Search,
     },
@@ -53,6 +57,16 @@ module.exports = {
                 size: 6,
                 sort: [{ 'dates.deposit': 'desc' }],
                 where: this.lastDepositsQuery,
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.dataset,
+            path: this.state.paths.reads.dataset,
+            body: {
+                size: 6,
+                sort: [{ 'dates.deposit': 'desc' }],
+                where: this.lastDepositsDatasetQuery,
             },
         });
 
@@ -95,8 +109,11 @@ module.exports = {
         });
     },
     computed: {
-        content() {
+        content_publication() {
             return this.fcontent(this.state.sinks.reads.publication);
+        },
+        content_dataset() {
+            return this.fcontent(this.state.sinks.reads.dataset);
         },
         stats_count() {
             return (sink) => {
@@ -120,14 +137,19 @@ module.exports = {
             ];
         },
         items() {
-            console.log("this is items");
-            if (this.content && this.content instanceof Array && this.content.length > 0) {
-                const items = this.content.map((c) => {
+            if (this.content_publication && this.content_publication instanceof Array && this.content_publication.length > 0) {
+                const items = this.content_publication.map((c) => {
                     const html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c)));
                     c.html = html;
                     return c;
                 });
                 return items;
+            }
+            return [];
+        },
+        items_dataset() {
+            if (this.content_dataset && this.content_dataset instanceof Array && this.content_dataset.length > 0) {
+                return this.content_dataset;
             }
             return [];
         },
@@ -145,6 +167,9 @@ module.exports = {
                 text: celt.name,
                 query: celt.query,
             }));
+        },
+        lastDepositsDatasetQuery() {
+            return Queries.last_deposits_dataset();
         },
         lastDepositsQuery() {
             return Queries.last_deposits(this.user._id, this.author);

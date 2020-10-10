@@ -84,7 +84,7 @@ module.exports = {
                 arr.push(val);
                 return arr;
             }, []).join('&');
-            const query = `/search?${strings}`;
+            const query = `/search_dataset?${strings}`;
 
             this.$router.push({ path: query });
         },

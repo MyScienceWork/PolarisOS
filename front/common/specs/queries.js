@@ -20,6 +20,12 @@ const publication_search = {
 const dataset_search = {
     $or: [
         { 'title': '{{{search}}}' },
+        { 'description.description': '{{{search}}}' },
+        { 'keywords.value': '{{{search}}}' },
+        { 'related_publication.citation': '{{{search}}}' },
+        { 'denormalization.author.label.fullname': '{{{search}}}' },
+        { 'denormalization.contact.label.fullname': '{{{search}}}' },
+        { 'denormalization.subject._id.label': '{{{search}}}' }
     ],
 };
 
@@ -63,6 +69,12 @@ module.exports = {
     author_name_or_id,
     filter_out_types_and_subtypes,
     unpublished_websiteok,
+    published_dataset_search: () => ({
+        $and: [
+            { status: 'published' },
+            { $or: dataset_search.$or },
+        ],
+    }),
     published_publication_search: (uid, aid) => ({
         $and: [
             { has_other_version: false },
@@ -80,6 +92,11 @@ module.exports = {
             { has_other_version: false },
             { status: 'published' },
             viewable(uid, aid),
+        ],
+    }),
+    last_deposits_dataset: () => ({
+        $and: [
+            { status: 'published' }
         ],
     }),
     filter_role(userId, roles, filter) {

@@ -6,6 +6,7 @@ const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const OAMixin = require('../../../../common/mixins/ObjectAccessMixin');
 const HtmlMixin = require('../../../../common/mixins/HtmlMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlebars = require('../../../../../app/modules/utils/templating');
@@ -14,7 +15,7 @@ const Toastr = require('toastr');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin, HtmlMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin, HtmlMixin, OAMixin],
     props: {
         showStatus: { default: false, type: Boolean },
         catName: { default: () => [], type: Array },
@@ -137,10 +138,13 @@ module.exports = {
                 return [];
             }
 
+            return content;
+            /*
             return content.map((c) => {
                 c.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template)(c)));
                 return c;
             });
+             */
         },
         select_all_to_export() {
             return this.state.select_all_to_export;

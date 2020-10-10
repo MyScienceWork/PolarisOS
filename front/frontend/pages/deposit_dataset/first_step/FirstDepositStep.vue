@@ -34,8 +34,8 @@
                             :form="creationSink"
                             name="subtype"
                             class="has-text-centered"
-                            fieldLabel="tlabel"
-                            fieldValue="name"
+                            fieldLabel="label"
+                            fieldValue="form"
                             :view-validation-texts="false"
                             :translatable="true"
                             />

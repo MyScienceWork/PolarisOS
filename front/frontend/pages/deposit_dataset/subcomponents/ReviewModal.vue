@@ -2,7 +2,7 @@
     <b-modal :active="show">
         <div class="modal-card is-height-three-quarters">
             <header class="modal-card-head">
-                <p class="modal-card-title">{{lang('l_review_modal')}}</p>
+                <p class="modal-card-title">{{lang('l_review_dataset_modal')}}</p>
                 <button class="delete" aria-label="close" @click.prevent="toggle(false)"></button>
             </header>
             <div class="modal-card-body">

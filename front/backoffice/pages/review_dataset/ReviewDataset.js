@@ -66,6 +66,17 @@ module.exports = {
                         title: 'l_p_action',
                         lang: 'other',
                     },
+                    files: {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_file',
+                        lang: 'other',
+                    },
+                    status: {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_status',
+                    },
                 },
             },
         };
@@ -142,7 +153,7 @@ module.exports = {
             this.state.columns[obj.key].visible = obj.checked;
         },
         get_multi_download_link(item) {
-            if (item.files.length === 0) {
+            if (item.files === undefined || item.files.length === 0) {
                 return null;
             }
 

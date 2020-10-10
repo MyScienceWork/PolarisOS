@@ -69,8 +69,12 @@ module.exports = {
         return `${prefix}/import`;
     },
 
-    export() {
-        return `${prefix}/export`;
+    export_publication() {
+        return `${prefix}/export_publication`;
+    },
+
+    export_dataset() {
+        return `${prefix}/export_dataset`;
     },
 
     export_bibliography() {
