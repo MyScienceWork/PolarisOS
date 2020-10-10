@@ -18,6 +18,7 @@ module.exports = {
         // form: { required: true, type: String }, //InputMixin
         multi: { default: false, type: Boolean },
         readonly: { default: false, type: Boolean },
+        conditionalReadonly: { default: '', type: String },
         options: { required: true, type: Array },
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
@@ -54,6 +55,7 @@ module.exports = {
                 showHelpModal: false,
                 form: `${this.name}_${+moment()}`,
                 es_query_ids: this.ajaxQuery !== null ? [this.ajaxQuery] : [],
+                readonlyValue: '',
             },
         };
     },
@@ -98,7 +100,7 @@ module.exports = {
                         where: {
                             [this.fieldValue]: values,
                         },
-                        projection: [this.fieldLabel, this.fieldValue],
+                        projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                         size: values.length,
                     },
                 });
@@ -133,9 +135,22 @@ module.exports = {
                 this.state.selected = null;
             }
         },
+        set_selected_readonly(s) {
+            if (s instanceof Array) {
+                this.state.selected_readonly = s.filter(c => c.readonly === true);
+                this.state.selected_not_readonly = s.filter(c => c.readonly === false);
+            } else if (s && s.readonly) {
+                this.state.selected_readonly = s;
+                this.state.selected_not_readonly = null;
+            } else if (s && s.readonly === false) {
+                this.state.selected_not_readonly = s;
+                this.state.selected_readonly = null;
+            }
+            this.setReadonlyValue(this.state.selected_readonly);
+        },
         search: _.debounce((loading, search, self) => {
             const body = {
-                projection: [self.fieldLabel, self.fieldValue],
+                projection: [self.fieldLabel, self.fieldValue, self.conditionalReadonly],
                 size: self.searchSize + (self.multi ? (self.state.selected ? self.state.selected.length : 1) : 1),
             };
 
@@ -154,9 +169,15 @@ module.exports = {
                 };
             }
 
+
             const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber);
-            if (contentQuery && contentQuery instanceof Array && contentQuery.length > 0 && contentQuery[0].content) {
-                body.where = _.merge(body.where, JSON.parse(Handlebars.compile(contentQuery[0].content)({ search })));
+
+            if (contentQuery) {
+                if (contentQuery && contentQuery instanceof Array
+                    && contentQuery.length > 0
+                    && contentQuery.find(elm => elm.id === self.ajaxQuery)) {
+                    body.where = _.merge(body.where, JSON.parse(Handlebars.compile(contentQuery.find(elm => elm.id === self.ajaxQuery).content)({ search })));
+                }
             }
 
             const promise = self.$store.dispatch('search', {
@@ -182,6 +203,15 @@ module.exports = {
                 this.state.showHelpModal = !this.state.showHelpModal;
             }
         },
+        test_read_only(val, key) {
+            if (key === null || key === '') {
+                return false;
+            }
+            if (val[key] && val[key] !== '') {
+                return false;
+            }
+            return true;
+        },
         initialize(sink) {
             if (this.form !== sink) {
                 return;
@@ -203,7 +233,10 @@ module.exports = {
 
             if (info instanceof Array) {
                 this.set_selected(info.map(i =>
-                    ({ label: i[this.fieldLabel], value: i[this.fieldValue] })));
+                    ({ label: i[this.fieldLabel],
+                        value: i[this.fieldValue],
+                        readonly: this.readonly ? true : this.test_read_only(i, this.conditionalReadonly),
+                    })));
                 return;
             }
 
@@ -278,16 +311,19 @@ module.exports = {
             // Direction:
             // to -> to vue-select
             // from -> from vue-select
+
             if (direction === 'to') {
                 return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
+                    readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
                 }));
             }
 
             return options.map(opt => ({
                 [this.fieldLabel]: opt.label,
                 [this.fieldValue]: opt.value,
+                readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
             }));
         },
         select_default_value() {
@@ -307,6 +343,15 @@ module.exports = {
                 this.state.selected = this.set_selected([{ value: this.defaultValue }]);
             }
         },
+        setReadonlyValue(selected_readonly) {
+            if (selected_readonly instanceof Array) {
+                this.state.readonlyValue = selected_readonly.map(s => s.label);
+            } else if (this.state.selected_readonly) {
+                this.state.readonlyValue = selected_readonly.label;
+            } else {
+                this.state.readonlyValue = '';
+            }
+        },
     },
     watch: {
         options() {
@@ -317,6 +362,9 @@ module.exports = {
         },
         current_state(s) {
             this.dispatch(s, this, this.form);
+        },
+        selected(s) {
+            this.set_selected_readonly(s);
         },
     },
     beforeMount() {
@@ -338,7 +386,7 @@ module.exports = {
                 path: this.ajaxUrl,
                 body: {
                     where,
-                    projection: [this.fieldLabel, this.fieldValue],
+                    projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                     size: this.searchSize,
                 },
             });
@@ -356,13 +404,19 @@ module.exports = {
             (this.state.selected instanceof Array && this.state.selected.length === 0));
         },
         readonlyValue() {
-            if (this.state.selected instanceof Array) {
-                return this.state.selected.map(s => s.label);
-            }
-            return this.state.selected ? this.state.selected.label : '';
+            return this.state.readonlyValue;
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        selected() {
+            return this.state.selected;
+        },
+        dynamic_value() {
+            if (this.conditionalReadonly === '') {
+                return this.state.selected;
+            }
+            return this.state.selected_not_readonly;
         },
     },
 };

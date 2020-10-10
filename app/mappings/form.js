@@ -54,8 +54,14 @@ module.exports = {
                         type: {
                             type: 'keyword',
                         },
+                        template: {
+                            type: 'boolean',
+                        },
                         readonly: {
                             type: 'boolean',
+                        },
+                        conditional_readonly: {
+                            type: 'keyword',
                         },
                         duplicate_warning: {
                             type: 'boolean',

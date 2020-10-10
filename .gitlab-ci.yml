@@ -5,7 +5,6 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   CI_REGISTRY_IMAGE_DOCKERHUB: mysciencework/polarisos
 
-
 stages:
     - Build
     - Deploy
@@ -43,3 +42,4 @@ Build and Push image production DOCKERHUB:
     - docker build -t $CI_REGISTRY_IMAGE_DOCKERHUB:$VERSION .
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER_DOCKERHUB" --password-stdin registry.gitlab.com
     - docker push $CI_REGISTRY_IMAGE_DOCKERHUB:$VERSION
+

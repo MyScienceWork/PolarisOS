@@ -5,6 +5,7 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
+const Handlebars = require('../../../../app/modules/utils/templating');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
@@ -149,6 +150,9 @@ module.exports = {
                 return content.depositor;
             }
             return this.m_user_id();
+        },
+        creation_date() {
+            return Handlebars.compile('{{moment unix=true}}')({});
         },
     },
     beforeMount() {

@@ -29,8 +29,12 @@ class Pipeline extends ODM {
             if (typeof value === 'boolean') {
                 return value;
             }
-            const v = value.toLowerCase();
-            return (v === 'yes' || v === 'true');
+            if (value) {
+                const v = value.toLowerCase();
+                return (v === 'yes' || v === 'true');
+            } else {
+                return false;
+            }
         }
         case 'integer':
             return parseInt(value, 10);
@@ -124,6 +128,10 @@ class Pipeline extends ODM {
 
                 const args = f.function.arguments;
                 switch (f.function.name) {
+                case 'concat':
+                    return { [f.field]: (o, p, i) => ComplFunctions.concat(args[0].value)(o, p, i) };
+                case 'copy':
+                    return { [f.field]: (o, p, i) => ComplFunctions.copy(args[0].value)(o, p, i) };
                 case 'generic_complete':
                     return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(args[0].value)(o, p, i) };
                 case 'key_complete':
@@ -170,6 +178,53 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
+    static compute_condition(Joi, v) {
+        const splitted_field = v.field.split(' ');
+
+        if (splitted_field.length !== 3) {
+            return;
+        }
+        const condition = splitted_field[1];
+        const left_sign = splitted_field[0];
+        const right_sign = splitted_field[2];
+        let result = [];
+        switch (condition) {
+            case '=':
+                result = Joi.object({
+                    [left_sign]: Joi.number().equal(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '<':
+                result = Joi.object({
+                    [left_sign]: Joi.number().max(Joi.ref(right_sign)).invalid(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '>':
+                result = Joi.object({
+                    [left_sign]: Joi.number().min(Joi.ref(right_sign)).invalid(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '<=':
+                result = Joi.object({
+                    [left_sign]: Joi.number().max(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '>=':
+                result = Joi.object({
+                    [left_sign]: Joi.number().min(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
     static async generate_validators(source: Object): Promise<Array<any>> {
         const info = source;
         const validators = [];
@@ -195,17 +250,30 @@ class Pipeline extends ODM {
                 case 'url':
                     myinfo = Joi.string().uri();
                     break;
+                case 'condition':
+                    myinfo = Pipeline.compute_condition(Joi, v);
+                    break;
                 default:
                     myinfo = Joi.any();
                 }
 
-                if (v.required) {
+                if (v.required && v.type !== 'condition') {
                     myinfo = myinfo.required();
-                } else {
+                } else if (v.type !== 'condition') {
                     myinfo = myinfo.optional().empty('');
                 }
-                const nested = Utils.make_nested_object_from_path(v.field.split('.'), myinfo);
-                return _.merge(obj, nested);
+                //TODO: add required for condition when checked v.required
+
+                if (v.type === 'condition') {
+                    myinfo._inner.children.forEach((child) => {
+                        const nested = Utils.make_nested_object_from_path(child.key.split('.'), child.schema);
+                        obj = _.merge(obj, nested);
+                    })
+                } else {
+                    const nested = Utils.make_nested_object_from_path(v.field.split('.'), myinfo);
+                    obj = _.merge(obj, nested);
+                }
+                return obj;
             }, {})));
         }
         return validators;
@@ -215,7 +283,6 @@ class Pipeline extends ODM {
         client: Object, pipelines: Array<Object>): Object {
         // console.log('gen model', index, type);
         const mapping = await Pipeline.fetch_mapping(index, type, client);
-
 
         const all_pipelines = [];
         for (const pipeline of pipelines) {

@@ -56,6 +56,10 @@ module.exports = {
                 if (!value) {
                     return value;
                 }
+                const isDateISO = moment(value, moment.ISO_8601).isValid();
+                if (isDateISO) {
+                    return moment(value, moment.ISO_8601).format(opts.date_field.format || 'YYYY');
+                }
                 return moment(parseInt(value, 10) || value).format(opts.date_field.format || 'YYYY');
             }
             return value;

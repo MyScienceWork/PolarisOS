@@ -39,8 +39,28 @@ class AppScheduler extends Scheduler {
 
         const to_import = on_wait_imports[0];
 
-        const pipeline = to_import.format === 'ris' ? RISPipeline : EndNotePipeline;
-        const reader = to_import.format === 'ris' ? ImporterReaders.RISReader : ImporterReaders.EndNoteReader;
+        const format = to_import.format;
+        let pipeline = '';
+        let reader = '';
+
+        switch (format) {
+        case 'ris':
+            pipeline = RISPipeline;
+            reader = ImporterReaders.RISReader;
+            break;
+        case 'endnote':
+            pipeline = EndNotePipeline;
+            reader = ImporterReaders.EndNoteReader;
+            break;
+        case 'excel':
+            // pipeline = ExcelPipeline;
+            // reader = ImporterReaders.ExcelReader;
+            break;
+        default:
+            throw Error('format importer not recognized');
+        }
+
+
         const importer = new Importer(to_import.subtype, pipeline,
             pipeline.queries, reader);
 

@@ -95,13 +95,13 @@
                         :label="lang('b_file_master')"
                         :help="lang('l_master_file_help')"
                         @value-change="(v) => update_master_files(i, v)"
-                        v-if="i in state.master_files || Object.keys(state.master_files).length === 0"
+                        v-if="show_master_checkboxes && (i in state.master_files || Object.keys(state.master_files).length === 0)"
                         type="checkbox" :form="form" />
                         <finput
                         :readonly="readonly"
                         :name="`${files}.${i}.not_${master}`"
                         :label="lang('b_file_not_master')"
-                        v-if="!(i in state.master_files)"
+                        v-if="show_master_checkboxes && (!(i in state.master_files))"
                         :help="lang('l_not_master_file_help')"
                         type="checkbox" :form="form" />
                         <finput

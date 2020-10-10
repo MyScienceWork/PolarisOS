@@ -3,7 +3,7 @@
     <template v-if="form.addons && form.fields.length > 0">
         <component
             :is="get_component(form.fields[0].type)"
-            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select', 'color'].indexOf(form.fields[0].type) !== -1"
+            v-if="['checkbox', 'radio', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'html-editor', 'date-year', 'multi-select', 'select', 'color'].indexOf(form.fields[0].type) !== -1"
             :label="lang(form.fields[0].label || '')"
             :name="get_name(form.fields[0].name)"
             :key="get_name(form.fields[0].name)"
@@ -35,7 +35,7 @@
                 <slot name="top-form-addons"></slot>
                 <template v-for="(field, i) in form.fields.slice(1)">
                     <finput
-                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                    v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :placeholder="lang(field.placeholder || '')"
@@ -63,6 +63,7 @@
                     :form="cform"
                     :is-addon="true"
                     :hidden-value="field.hiddenValue"
+                    :template="field.template"
                     :readonly="readonly || field.readonly"
                     :is-required="field.required"
                     :key="get_name(field.name)"
@@ -73,6 +74,7 @@
                     />
                     <fselect
                     v-else-if="field.type === 'select' || field.type === 'multi-select'"
+                    class="control is-expanded"
                     :label="lang(field.label || '')"
                     :placeholder="lang(field.placeholder || '')"
                     :name="get_name(field.name)"
@@ -84,6 +86,7 @@
                     :ajax-url="generate_ajax_url(field)"
                     :ajax-value-url="generate_ajax_url(field, 'value')"
                     :is-addon="true"
+                    :conditional-readonly="field.conditional_readonly"
                     :readonly="readonly || field.readonly"
                     :is-required="field.required"
                     :key="get_name(field.name)"
@@ -133,10 +136,10 @@
         />
     </template>
     <template v-else v-for="(field, i) in form.fields">
-        <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple">
+        <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple" :readonly="field.readonly">
             <template slot="variadic" slot-scope="props">
                 <finput
-                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+                v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
                 :label="lang(field.label || '')"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
@@ -173,6 +176,7 @@
                 :form="cform"
                 :is-addon="true"
                 :hidden-value="field.hiddenValue"
+                :template="field.template"
                 label=""
                 :readonly="readonly || field.readonly"
                 :is-required="field.required"
@@ -217,6 +221,7 @@
                 :ajax-url="generate_ajax_url(field)"
                 :ajax-value-url="generate_ajax_url(field, 'value')"
                 :readonly="readonly || field.readonly"
+                :conditional-readonly="field.conditional_readonly"
                 :is-required="field.required"
                 :has-addons="field.single_multiple"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
@@ -283,6 +288,11 @@
                 :modal_help="field.help ? field.help.use_modal : false"
                 @analyze-file="dropzone_analyze_file"
                 :allow-grobid="allowGrobid"
+                />
+                <fimporter
+                v-else-if="field.type === 'importer'"
+                :form="cform"
+                :file_format="field.file_format"
                 />
                 <template v-else-if="field.type === 'subform' && field.subform != null">
                     <template v-if="form_is_of_type('widget', field)">
@@ -351,7 +361,7 @@
         </fvariadic-element>
         <template v-else>
             <finput
-            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+            v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -379,6 +389,7 @@
             :form="cform"
             :is-addon="true"
             :hidden-value="field.hiddenValue"
+            :template="field.template"
             label=""
             :readonly="readonly || field.readonly"
             :is-required="field.required"
@@ -422,6 +433,7 @@
             :ajax-url="generate_ajax_url(field)"
             :ajax-value-url="generate_ajax_url(field, 'value')"
             :readonly="readonly || field.readonly"
+            :conditional-readonly="field.conditional_readonly"
             :is-required="field.required"
             :multi="field.type === 'multi-select'"
             :help="field.help ? field.help.content : ''"
@@ -479,6 +491,11 @@
             :modal_help="field.help ? field.help.use_modal : false"
             @analyze-file="dropzone_analyze_file"
             :allow-grobid="allowGrobid"
+            />
+            <fimporter
+            v-else-if="field.type === 'importer'"
+            :form="cform"
+            :importer="field.importer"
             />
             <template v-else-if="field.type === 'subform' && field.subform != null">
                 <template v-if="form_is_of_type('widget', field)">

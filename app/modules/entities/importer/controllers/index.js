@@ -260,9 +260,19 @@ async function import_endnote(ctx: Object): Promise<any> {
     ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
+async function import_excel(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
+    const entity = ctx.request.body.entity;
+    const my_report = await Importer.create_report(name, filepath,
+        'excel', entity, ctx.__md || {});
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
+}
+
 module.exports = {
     import_information,
     import_sherpa_romeo,
     import_ris,
     import_endnote,
+    import_excel
 };

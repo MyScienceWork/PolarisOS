@@ -32,7 +32,7 @@ const LoginChoiceView = require('../frontend/pages/login_choice/LoginChoice.vue'
 const CreateNews = require('../frontend/pages/news/CreateNews.vue');
 const WorkflowReview = require('../frontend/pages/workflow_review/WorkflowReview.vue');
 const AnalitycsDashboard = require('../frontend/pages/analitycs_dashboard/AnalitycsDashboard.vue');
-
+const ImportExcel = require('../frontend/pages/import_excel/ImportExcel.vue');
 
 module.exports = {
     home: Home,
@@ -51,6 +51,7 @@ module.exports = {
     bulk: Bulk,
     about: About,
     help: Help,
+    import_excel: ImportExcel,
     news: News,
     single_news: NewsPage,
     events: Events,

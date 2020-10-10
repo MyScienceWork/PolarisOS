@@ -1,6 +1,6 @@
 <template>
     <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
-        <label 
+        <label
             v-if="label.trim().length > 0"
             :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
@@ -15,10 +15,9 @@
         </b-tooltip>
         <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
             <slot v-if="hasAddons" name="left-input-addons" />
-            </slot>
             <div :class="['control', {'is-expanded': hasAddons}]">
                 <ul v-if="readonly && multi">
-                    <li v-for="selected in readonlyValue">{{selected}}</li> 
+                    <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
                 <v-select
@@ -26,7 +25,7 @@
                     :multiple="multi"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected"
+                    :value="dynamic_value"
                     :placeholder="placeholder"
                     :reset-on-options-change="resetOnOptionsChange"
                     :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
@@ -40,7 +39,7 @@
                     :filterable="false"
                     :options="state.options"
                     :on-change="onChange"
-                    :value="state.selected" 
+                    :value="dynamic_value"
                     :placeholder="placeholder"
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"
@@ -49,8 +48,12 @@
                 >
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
-            </div> 
-            <slot v-if="hasAddons" name="input-addons" />
+                <ul v-if="multi && !readonly && state.selected_readonly">
+                    <li v-for="selected in readonlyValue">{{selected}}</li>
+                </ul>
+                <p v-else-if="state.selected_readonly && !readonly">{{readonlyValue}}</p>
+            </div>
+            <slot v-if="hasAddons" name="input-addons">
             </slot>
         </div>
         <div v-if="validations.length > 0 && viewValidationTexts">

@@ -20,7 +20,7 @@
                 <div class="column is-paddingless">
                     <a href='#' :class="[{'icon': useIcons}, 'has-text-success']" @click.prevent="add">
                         <i v-if="useIcons" class="fa fa-plus"></i>
-                        <span v-else>{{lang('l_variadic_add_'+name)}}</span>
+                        <span v-else-if="!readonly">{{lang('l_variadic_add_'+name)}}</span>
                     </a>
                 </div>
             </div>
@@ -103,7 +103,7 @@
                         <div class="is-pulled-right">
                             <a href='#' :class="[{'icon': useIcons}, 'has-text-danger']" @click.prevent="remove(show.i, idx)">
                                 <i v-if="useIcons" class="fa fa-times"></i>
-                                <span v-else>{{lang('l_variadic_remove_'+name)}}</span>
+                                <span v-else-if="!readonly">{{lang('l_variadic_remove_'+name)}}</span>
                             </a>
                         </div>
                         <slot

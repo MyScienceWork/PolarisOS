@@ -22,6 +22,9 @@ module.exports = {
                 type: {
                     type: 'keyword',
                 },
+                file_format: {
+                    type: 'keyword',
+                },
                 connector: {
                     type: 'keyword',
                 },

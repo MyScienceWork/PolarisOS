@@ -77,6 +77,15 @@
                                     <finput :name="`${props.fname}.${props.order}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.order}.required`" :label="lang('b_field_required')" :is-required="true" :placeholder="lang('b_field_required')" type="checkbox" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.order}.readonly`" :label="lang('l_field_readonly')" :is-required="true" :placeholder="lang('l_field_readonly')" type="checkbox" :form="state.sinks.creations.form" />
+                                    <finput
+                                            :name="`${props.fname}.${props.order}.conditional_readonly`"
+                                            :key="`${props.fname}.${props.order}.conditional_readonly`"
+                                            :label="lang('l_conditional_readonly')"
+                                            :is-required="false"
+                                            :placeholder="lang('l_conditional_readonly')"
+                                            type="text"
+                                            :form="state.sinks.creations.form"
+                                    />
                                     <finput :name="`${props.fname}.${props.order}.duplicate_warning`" :label="lang('l_field_duplicate_warning')" :is-required="true" :placeholder="lang('l_field_duplicate_warning')" type="checkbox" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.order}.help.content`" :label="lang('l_help')" :placeholder="lang('l_help')" type="text" :form="state.sinks.creations.form" :is-required="true" />
                                     <finput :name="`${props.fname}.${props.order}.help.use_modal`" :label="lang('l_show_help_as_modal')" :placeholder="lang('l_show_help_as_modal')" type="checkbox" :form="state.sinks.creations.form" :is-required="true" />
@@ -366,7 +375,7 @@
                                                 </div>
                                             </card>
                                         </div>
-                                        <div v-else-if="['text', 'phone', 'number', 'email', 'password', 'html-editor', 'date-year', 'date'].indexOf(state.selected_types[props.id]) !== -1">
+                                        <div v-else-if="['text', 'phone', 'number', 'price', 'email', 'password', 'html-editor', 'date-year', 'date'].indexOf(state.selected_types[props.id]) !== -1">
                                             <finput
                                             :name="`${props.fname}.${props.order}.placeholder`"
                                             :key="`${props.fname}.${props.order}.placeholder`"
@@ -419,6 +428,10 @@
                                             </template>
                                         </div>
                                         <div v-else-if="['hidden'].indexOf(state.selected_types[props.id]) !== -1">
+                                            <finput :name="`${props.fname}.${props.order}.template`"
+                                            :key="`${props.fname}.${props.order}.template`"
+                                            :label="lang('b_is_template')" type="checkbox"
+                                            :form="state.sinks.creations.form" />
                                             <finput
                                             :name="`${props.fname}.${props.order}.hiddenValue`"
                                             :key="`${props.fname}.${props.order}.hiddenValue`"

@@ -92,13 +92,18 @@ async function render_router(part) {
     }
 
     const common_routes = pages.map((page) => {
+        let subaccess = Object.keys(page.global_access.subaccess);
+        if (!subaccess) {
+            subaccess = [];
+        }
+
         const obj = {
             path: page.route,
             name: page.route,
             meta: {
                 requiresAuth: page.global_access.access != null && page.global_access.access !== '',
                 access: page.global_access.access,
-                subaccess: Object.keys(page.global_access.subaccess).map((a) => {
+                subaccess: subaccess.map((a) => {
                     const val = page.global_access.subaccess[a];
                     if (val) {
                         return a;

@@ -45,6 +45,13 @@ module.exports = {
 
             return allowed_states;
         },
+        all_status() {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
     },
     computed: {
         after_status() {
