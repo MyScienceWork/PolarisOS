@@ -138,7 +138,7 @@ class GulpFrontend {
             bundler.external(dep);
         });
 
-        bundler.transform(envify({
+        return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
