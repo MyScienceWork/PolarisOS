@@ -134,10 +134,6 @@ class GulpFrontend {
             debug: true,
         });
 
-        this.external_dependencies.forEach((dep) => {
-            bundler.external(dep);
-        });
-
         return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
