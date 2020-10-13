@@ -167,7 +167,7 @@ class GulpFrontend {
     }
 
     createVendorStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/vendors.scss',
             './front/backoffice/styles/vendors.less', ...this.vendors_css_files])
         .pipe(plumber())
@@ -180,7 +180,7 @@ class GulpFrontend {
     }
 
     createStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/back.less', './front/backoffice/styles/back.scss', ...this.css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
@@ -207,7 +207,7 @@ class GulpFrontend {
     }
 
     copyViews() {
-        gulp.src([
+        return gulp.src([
             './front/backoffice/views/back.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
