@@ -156,7 +156,7 @@ class GulpFrontend {
     }
 
     createExternalVendors() {
-        gulp
+        return gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
         .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
