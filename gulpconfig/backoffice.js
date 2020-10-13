@@ -217,14 +217,14 @@ class GulpFrontend {
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
-    revisionClean() {
+    revisionClean(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));
