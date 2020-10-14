@@ -134,11 +134,7 @@ class GulpFrontend {
             debug: true,
         });
 
-        this.external_dependencies.forEach((dep) => {
-            bundler.external(dep);
-        });
-
-        bundler.transform(envify({
+        return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -156,7 +152,7 @@ class GulpFrontend {
     }
 
     createExternalVendors() {
-        gulp
+        return gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
         .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
@@ -171,7 +167,7 @@ class GulpFrontend {
     }
 
     createVendorStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/vendors.scss',
             './front/backoffice/styles/vendors.less', ...this.vendors_css_files])
         .pipe(plumber())
@@ -184,7 +180,7 @@ class GulpFrontend {
     }
 
     createStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/back.less', './front/backoffice/styles/back.scss', ...this.css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
@@ -211,7 +207,7 @@ class GulpFrontend {
     }
 
     copyViews() {
-        gulp.src([
+        return gulp.src([
             './front/backoffice/views/back.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
@@ -221,14 +217,14 @@ class GulpFrontend {
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
-    revisionClean() {
+    revisionClean(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));

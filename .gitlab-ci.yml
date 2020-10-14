@@ -9,37 +9,52 @@ stages:
     - Build
     - Deploy
 
-Build and Push image production DEMO:
+Build and Push image integration and production BBK:
   image: docker:18.09.7-dind
   stage: Build
   services:
     - docker:18.09.7-dind
   only:
-    - master
-    - client/DEMO
+    - client/BBK
+    - INTEGRATION-BBK
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - apk add jq
-    - export VERSION=$(cat package.json | jq -r .version)
-    - docker info
-    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - docker push $CI_REGISTRY_IMAGE:$VERSION
+    - docker build -t $CI_REGISTRY_IMAGE:BBK .
+    - docker push $CI_REGISTRY_IMAGE:BBK
 
-Build and Push image production DOCKERHUB:
-  image: docker:18.09.7-dind
-  stage: Build
-  services:
-    - docker:18.09.7-dind
+Deploy test infra:
+  image: docker:18.09.7
+  stage: Deploy
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - docker-test-bbk
   only:
-    - master
-    - client/DEMO
+    - INTEGRATION-BBK
+    - client/BBK
   script:
-    - echo "$REGISTRY_PASSWORD_DOCKERHUB" | docker login -u "$REGISTRY_USER_DOCKERHUB" --password-stdin
-    - apk add jq
-    - export VERSION=$(cat package.json | jq -r .version)
-    - docker info
-    - docker build -t $CI_REGISTRY_IMAGE_DOCKERHUB:$VERSION .
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER_DOCKERHUB" --password-stdin registry.gitlab.com
-    - docker push $CI_REGISTRY_IMAGE_DOCKERHUB:$VERSION
+    - 'which ssh-agent || ( apk update && apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_BBK_TEST01" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK test_app'
+
+#Deploy prod infra:
+#  image: docker:18.09.7
+#  stage: Deploy
+#  variables:
+#    GIT_STRATEGY: none
+#  tags:
+#    - docker-prod-bbk
+#  only:
+#    - client/BBK
+#  script:
+#    - 'which ssh-agent || ( apk update && apk add openssh-client )'
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_BBK_PROD01" | tr -d '\r' | ssh-add -
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK prod_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK prod_app-nginx'
+
 
