@@ -209,13 +209,10 @@ class ODM {
                 _.reverse(o.hits);
             }
 
-            let entity_type = type;
-            if (type === "entity" && o.hits.length > 0) {
-                entity_type = o.hits[0].source.type
-            }
-
-            await o.hits.reduce((pr, hit) =>
-                pr.then(() => hit.post_read_hook(population, entity_type)), Promise.resolve());
+            await o.hits.reduce((pr, hit) => {
+                const entity_type = type === 'entity' ? hit.source.type : type;
+                pr.then(() => hit.post_read_hook(population, entity_type))
+            }, Promise.resolve());
 
             o.total = response.hits.total;
             o.count = response.hits.total;
