@@ -6,13 +6,13 @@
                 <div class="container is-vcentered">
                     <figure class="image is-vcentered">
                         <!--<router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>-->
-                        <a href="{{lang('l_website_logo_left')}}"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></a>
+                        <a :href="lang('l_website_logo_left')"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></a>
                     </figure>
                 </div>
             </div>
             <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8">
                 <div class="container">
-                    <a href="{{lang('l_website_logo_center')}}"><img style="max-width: 15%;" :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' /></a>
+                    <a :href="lang('l_website_logo_center')"><img style="max-width: 15%;" :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' /></a>
                 </div>
             </div>
             <div v-else class="column is-vertical has-text-centered">
