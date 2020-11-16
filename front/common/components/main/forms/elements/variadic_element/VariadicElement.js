@@ -55,17 +55,10 @@ module.exports = {
             this.state.elements = this.state.elements.filter(e => e.a);
             this.state.total = this.state.elements.length;
 
-            /* this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+            this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
                 form: this.form,
                 name: `${this.name}.${order}`,
             });
-
-            this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, {
-                form: this.form,
-                name: `${this.name}.${order}`,
-                pattern: true,
-            });*/
-            this.update(order);
             // Re-number elements
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.form,
@@ -120,16 +113,6 @@ module.exports = {
                 }
             }
         },
-        /* start_collection(sink) {
-            const active_elements = this.state.elements.filter(e => e.a);
-            if (active_elements.length === 0) {
-                this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                    form: this.form,
-                    name: this.name,
-                    info: [],
-                });
-            }
-        },*/
         update(id) {
             if (id != null) {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
