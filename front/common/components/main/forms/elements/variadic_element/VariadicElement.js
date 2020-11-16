@@ -59,14 +59,7 @@ module.exports = {
                 form: this.form,
                 name: `${this.name}.${order}`,
             });
-
             // Re-number elements
-            this.$store.commit(Messages.UNREGISTER_FORM_ELEMENT, {
-                form: this.form,
-                name: `${this.name}.${order}`,
-                pattern: true,
-            });
-
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.form,
                 name: this.name,
