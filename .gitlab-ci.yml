@@ -12,6 +12,8 @@ stages:
 Build and Push image integration and production BBK:
   image: docker:18.09.7-dind
   stage: Build
+  tags:
+    - docker-build
   services:
     - docker:18.09.7-dind
   only:
