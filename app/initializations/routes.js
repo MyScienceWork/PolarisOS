@@ -12,7 +12,7 @@ const UserRoutes = require('../modules/entities/user/routes');
 const EntityRoutes = require('../modules/entities/entity/routes');
 const ImporterRoutes = require('../modules/entities/importer/routes');
 const ExporterRoutes = require('../modules/entities/exporter/routes');
-const PublicationRoutes = require('../modules/entities/publication/routes');
+//const PublicationRoutes = require('../modules/entities/publication/routes');
 const RssRoutes = require('../modules/3rdparty/rss/routes');
 const ExternalApiRoutes = require('../modules/3rdparty/external_api/routes');
 const SitemapRoutes = require('../modules/3rdparty/google/routes');
@@ -83,11 +83,13 @@ async function initialize_routes(singleton) {
     TrackingRoutes(router, singleton);
     LangRoutes(router, singleton);
 
+    /*
     if (['msw', 'uspc'].indexOf(index_prefix) === -1) {
         PublicationRoutes(router, singleton);
     } else {
         RouterUtils.generate_entity_routes(router, 'publication', []);
     }
+     */
 
     const puprefix = `${Config.api.public.prefix}/${Config.api.public.version}`;
     router.post(`${puprefix}/single_upload`, Compose([...RouterUtils.upload_middlewares('upload',
