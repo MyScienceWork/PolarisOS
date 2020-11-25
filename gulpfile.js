@@ -6,7 +6,7 @@ const production = process.env.NODE_ENV === 'production' || process.env.NODE_ENV
 const back = new gulpconfig.Backoffice(production);
 gulp.task('back-scripts', back.bundleApp.bind(back));
 gulp.task('back-vendors', back.bundleVendors.bind(back));
-//gulp.task('back-external-vendors', back.createExternalVendors.bind(back));
+// gulp.task('back-external-vendors', back.createExternalVendors.bind(back));
 gulp.task('back-vendor-styles', back.createVendorStyles.bind(back));
 gulp.task('back-styles', back.createStyles.bind(back));
 gulp.task('back-fonts', back.copyFonts.bind(back));
@@ -24,7 +24,7 @@ gulp.task('back-watch', back.watch.bind(back));
 const front = new gulpconfig.Frontend(production);
 gulp.task('front-scripts', front.bundleApp.bind(front));
 gulp.task('front-vendors', front.bundleVendors.bind(front));
-//gulp.task('front-external-vendors', front.createExternalVendors.bind(front));
+// gulp.task('front-external-vendors', front.createExternalVendors.bind(front));
 gulp.task('front-vendor-styles', front.createVendorStyles.bind(front));
 gulp.task('front-biblio-styles', front.createBiblioStyles.bind(front));
 gulp.task('front-styles', front.createStyles.bind(front));
@@ -56,5 +56,8 @@ const fronts = ['front-scripts', 'front-vendors',
     'front-revision', 'front-revision-replace',
 ];
 
-gulp.task('default', gulp.series(...fronts, 'front-watch', ...backs, 'back-watch'));
+gulp.task('fronts-dev', gulp.series(...fronts, 'front-watch'));
+gulp.task('backs-dev', gulp.series(...backs));
+
+gulp.task('default', gulp.parallel('fronts-dev', 'backs-dev'));
 gulp.task('build', gulp.series(...fronts, ...backs));
