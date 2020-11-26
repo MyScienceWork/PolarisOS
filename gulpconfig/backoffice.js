@@ -161,9 +161,9 @@ class GulpFrontend {
     }
 
     watch() {
-        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
-        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], ['back-styles']);
-        gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
+        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], gulp.series('back-scripts'));
+        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], gulp.series('back-styles'));
+        gulp.watch(['./front/backoffice/views/*.*'], gulp.series('back-views'));
     }
 
     createVendorStyles() {

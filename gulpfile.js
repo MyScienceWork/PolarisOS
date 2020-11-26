@@ -57,7 +57,7 @@ const fronts = ['front-scripts', 'front-vendors',
 ];
 
 gulp.task('fronts-dev', gulp.series(...fronts, 'front-watch'));
-gulp.task('backs-dev', gulp.series(...backs));
+gulp.task('backs-dev', gulp.series(...backs, 'back-watch'));
 
 gulp.task('default', gulp.parallel('fronts-dev', 'backs-dev'));
 gulp.task('build', gulp.series(...fronts, ...backs));
