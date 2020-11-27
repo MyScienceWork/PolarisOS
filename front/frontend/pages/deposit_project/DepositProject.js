@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
@@ -42,7 +41,7 @@ module.exports = {
                     },
                 },
                 show_review_modal: false,
-                project_form_name: 'deposit_project_form',
+                project_form_name: 'project_back',
                 project_subform_name: '',
                 project_type: '',
             },
