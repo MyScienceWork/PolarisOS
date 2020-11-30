@@ -279,29 +279,45 @@ class Pipeline extends ODM {
         return validators;
     }
 
+    static async generate_pipeline_elements(pipeline: Object,
+                                            all_pipelines: Array<Object>,
+                                            conditional_pipelines_data: Object = {}) {
+        const defaults = await Pipeline.generate_defaults(pipeline.source);
+        const filters = await Pipeline.generate_filters(pipeline.source);
+        const resetters = await Pipeline.generate_resetters(pipeline.source);
+        const formatters = await Pipeline.generate_formatters(pipeline.source);
+        const completers = await Pipeline.generate_completers(pipeline.source);
+        const validators = await Pipeline.generate_validators(pipeline.source);
+        const transformers = await Pipeline.generate_transformers(pipeline.source);
+
+        let conditions = [];
+        Object.keys(conditional_pipelines_data).map((key) => {
+            const ids = conditional_pipelines_data[key].pipeline.map((pipeline => pipeline._id));
+            ids.map((id_pipeline) => id_pipeline === pipeline._id ? conditions.push(conditional_pipelines_data[key].condition) : null);
+        })
+
+        all_pipelines.push({
+            Validation: validators,
+            Formatting: formatters,
+            Completion: completers,
+            Transforming: transformers,
+            Filtering: filters,
+            Resetting: resetters,
+            Defaults: defaults,
+            Conditions: conditions,
+        });
+        return all_pipelines;
+    }
+
     static async generate_model(index: string, type: string,
-        client: Object, pipelines: Array<Object>): Object {
-        // console.log('gen model', index, type);
+        client: Object, pipelines: Array<Object>,
+        conditional_pipelines_data: Object): Object {
+
         const mapping = await Pipeline.fetch_mapping(index, type, client);
 
-        const all_pipelines = [];
+        let all_pipelines = [];
         for (const pipeline of pipelines) {
-            const defaults = await Pipeline.generate_defaults(pipeline.source);
-            const filters = await Pipeline.generate_filters(pipeline.source);
-            const resetters = await Pipeline.generate_resetters(pipeline.source);
-            const formatters = await Pipeline.generate_formatters(pipeline.source);
-            const completers = await Pipeline.generate_completers(pipeline.source);
-            const validators = await Pipeline.generate_validators(pipeline.source);
-            const transformers = await Pipeline.generate_transformers(pipeline.source);
-            all_pipelines.push({
-                Validation: validators,
-                Formatting: formatters,
-                Completion: completers,
-                Transforming: transformers,
-                Filtering: filters,
-                Resetting: resetters,
-                Defaults: defaults,
-            });
+            all_pipelines = await this.generate_pipeline_elements(pipeline, all_pipelines, conditional_pipelines_data);
         }
 
         const pipe = {
