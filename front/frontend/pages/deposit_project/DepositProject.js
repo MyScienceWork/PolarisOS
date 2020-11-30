@@ -17,7 +17,7 @@ module.exports = {
             state: {
                 sinks: {
                     creations: {
-                        project: 'project_creation',
+                        project: 'project_back',
                     },
                     reads: {
                         user_forms: 'user_forms_read',
@@ -73,14 +73,6 @@ module.exports = {
                 body: undefined,
             });
         },
-        get_project_from() {
-            const forms = this.fcontent(this.state.sinks.reads.user_forms);
-            console.log(forms);
-            const project_back_form = _.find(forms,
-                function (o) { return o._id === this.state.project_form_name; },
-            );
-            return project_back_form;
-        },
     },
     components: {
     },
@@ -102,6 +94,12 @@ module.exports = {
         },
         creation_date() {
             return Handlebars.compile('{{moment unix=true}}')({});
+        },
+        project_form() {
+            const forms = this.fcontent(this.state.sinks.creations.project);
+            const ah = _.find(forms, (o) => o.name === this.state.sinks.creations.project);
+            console.log(ah);
+            return ah;
         },
     },
     beforeMount() {
