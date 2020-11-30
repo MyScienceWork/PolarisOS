@@ -139,7 +139,7 @@ class Pipeline {
             const validator = new Validator();
             const errors = await validator
                 .validate(item, pipeline.Validation, method);
-            if (errors) {
+            if (!_.isEmpty(errors)) {
                 Logger.error('These are validation errors : ', errors);
             }
             return { item, errors };
@@ -177,13 +177,15 @@ class Pipeline {
             const pipeline = pipelines[i];
             let pipeline_enabled = true;
 
-            for (const condition of pipeline.Conditions) {
-                const validator = new Validator();
-                const joi_condition = ConditionValidator.compute_condition({ field: condition });
-                const errorsValidation = await validator
-                    .validate(item, [joi_condition]);
-                if (errorsValidation) {
-                    pipeline_enabled = false;
+            if (pipeline.Conditions && pipeline.Conditions instanceof Array) {
+                for (const condition of pipeline.Conditions) {
+                    const validator = new Validator();
+                    const joi_condition = ConditionValidator.compute_condition({ field: condition });
+                    const errorsValidation = await validator
+                        .validate(item, [joi_condition]);
+                    if (!_.isEmpty(errorsValidation)) {
+                        pipeline_enabled = false;
+                    }
                 }
             }
 
