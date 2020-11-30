@@ -178,7 +178,7 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
-    static compute_condition(Joi, v) {
+    static compute_condition(v) {
         const splitted_field = v.field.split(' ');
 
         if (splitted_field.length !== 3) {
@@ -191,8 +191,7 @@ class Pipeline extends ODM {
         switch (condition) {
             case '=':
                 result = Joi.object({
-                    [left_sign]: Joi.number().equal(Joi.ref(right_sign)),
-                    [right_sign]: Joi.number(),
+                    [left_sign]: Joi.string().valid(right_sign),
                 });
                 break;
             case '<':
@@ -251,7 +250,7 @@ class Pipeline extends ODM {
                     myinfo = Joi.string().uri();
                     break;
                 case 'condition':
-                    myinfo = Pipeline.compute_condition(Joi, v);
+                    myinfo = Pipeline.compute_condition(v);
                     break;
                 default:
                     myinfo = Joi.any();
@@ -294,7 +293,7 @@ class Pipeline extends ODM {
         Object.keys(conditional_pipelines_data).map((key) => {
             const ids = conditional_pipelines_data[key].pipeline.map((pipeline => pipeline._id));
             ids.map((id_pipeline) => id_pipeline === pipeline._id ? conditions.push(conditional_pipelines_data[key].condition) : null);
-        })
+        });
 
         all_pipelines.push({
             Validation: validators,
