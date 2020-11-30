@@ -38,7 +38,7 @@ Deploy test infra:
     - echo "$SSH_BBK_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK test_app'
+    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --force --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK test_app'
 
 #Deploy prod infra:
 #  image: docker:18.09.7
