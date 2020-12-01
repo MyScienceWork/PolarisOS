@@ -39,7 +39,7 @@ module.exports = {
                     },
                 },
                 show_review_modal: false,
-                project_form_name: 'project_back',
+                project_form_name: 'project_front',
             },
         };
     },
@@ -96,10 +96,8 @@ module.exports = {
             return Handlebars.compile('{{moment unix=true}}')({});
         },
         project_form() {
-            const forms = this.fcontent(this.state.sinks.creations.project);
-            const ah = _.find(forms, (o) => o.name === this.state.sinks.creations.project);
-            console.log(ah);
-            return ah;
+            const forms = this.fcontent(this.state.sinks.reads.user_forms);
+            return _.find(forms, o => o.name === this.state.project_form_name);
         },
     },
     beforeMount() {
