@@ -14,11 +14,9 @@ gulp.task('back-imgs', back.copyImgs.bind(back));
 gulp.task('back-customers-fonts', back.copyCustomersFont.bind(back));
 gulp.task('back-views', back.copyViews.bind(back));
 gulp.task('back-revision-clean', back.revisionClean.bind(back));
-gulp.task('back-revision', gulp.series('back-scripts', 'back-vendors',
-    'back-vendor-styles', 'back-styles',
-    'back-fonts', 'back-views', 'back-revision-clean'), back.revision.bind(back));
-gulp.task('back-revision-replace', gulp.series('back-revision'), back.revisionReplace.bind(back));
-gulp.task('back-gzip', gulp.series('back-revision'), back.gzip.bind(back));
+gulp.task('back-revision', back.revision.bind(back));
+gulp.task('back-revision-replace', back.revisionReplace.bind(back));
+gulp.task('back-gzip', back.gzip.bind(back));
 gulp.task('back-watch', back.watch.bind(back));
 
 const front = new gulpconfig.Frontend(production);
@@ -35,11 +33,9 @@ gulp.task('front-views', front.copyViews.bind(front));
 gulp.task('front-3rdparties', front.copy3rdparties.bind(front));
 gulp.task('front-robots', front.copyRobots.bind(front));
 gulp.task('front-revision-clean', front.revisionClean.bind(front));
-gulp.task('front-revision', gulp.series('front-scripts', 'front-vendors',
-    'front-vendor-styles', 'front-styles', 'front-biblio-styles',
-    'front-fonts', 'front-views', 'front-robots', 'front-revision-clean'), front.revision.bind(front));
-gulp.task('front-revision-replace', gulp.series('front-revision'), front.revisionReplace.bind(front));
-gulp.task('front-gzip', gulp.series('front-revision'), front.gzip.bind(front));
+gulp.task('front-revision', front.revision.bind(front));
+gulp.task('front-revision-replace', front.revisionReplace.bind(front));
+gulp.task('front-gzip', front.gzip.bind(front));
 gulp.task('front-watch', front.watch.bind(front));
 
 const backs = ['back-scripts', 'back-vendors',
@@ -52,12 +48,16 @@ const backs = ['back-scripts', 'back-vendors',
 
 const fronts = ['front-scripts', 'front-vendors',
     'front-vendor-styles', 'front-styles', 'front-biblio-styles',
-    'front-fonts', 'front-customers-fonts', 'front-imgs', 'front-views', 'front-robots', 'front-3rdparties', 'front-gzip', 'front-revision-clean',
-    'front-revision', 'front-revision-replace',
+    'front-fonts', 'front-customers-fonts', 'front-imgs', 'front-views', 'front-robots', 'front-3rdparties',
+    'front-gzip', 'front-revision-clean', 'front-revision',
+    'front-revision-replace',
 ];
 
 gulp.task('fronts-dev', gulp.series(...fronts, 'front-watch'));
 gulp.task('backs-dev', gulp.series(...backs, 'back-watch'));
 
+gulp.task('fronts-prod', gulp.series(...fronts));
+gulp.task('backs-prod', gulp.series(...backs));
+
 gulp.task('default', gulp.parallel('fronts-dev', 'backs-dev'));
-gulp.task('build', gulp.series(...fronts, ...backs));
+gulp.task('build', gulp.parallel('fronts-prod', 'backs-prod'));
