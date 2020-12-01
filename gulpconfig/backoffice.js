@@ -281,9 +281,9 @@ class GulpFrontend {
         .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
-    gzip() {
+    gzip(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`,
             `${this.PUB_LOCATIONS.js}/**/*.js`, `${this.PUB_LOCATIONS.fonts}/**/*.{woff,woff2,eot,ttf,svg}`])
