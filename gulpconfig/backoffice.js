@@ -239,9 +239,9 @@ class GulpFrontend {
             .pipe(clean());
     }
 
-    revision() {
+    revision(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`, `${this.PUB_LOCATIONS.js}/**/*.js`])

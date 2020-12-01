@@ -121,7 +121,10 @@ module.exports = {
             form: this.state.sinks.reads.user_forms,
             path: this.state.paths.reads.user_forms,
             body: {
-                size: 10000,
+                where: {
+                    name: [this.state.project_form_name],
+                },
+                population: ['fields.subform', 'fields.datasource'],
             },
         });
     },
