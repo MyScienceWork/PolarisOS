@@ -233,9 +233,21 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
             return null;
         }
 
+        const c_pipelines_data = result.hits[0].source.conditional_pipelines;
+        let c_model_result = { hits: [] };
+        if (c_pipelines_data) {
+            const keys_c_pipelines = Object.keys(c_pipelines_data);
+            const ids_c_pipelines = keys_c_pipelines.map(key => c_pipelines_data[key].pipeline)
+            const c_model_response = format_search(
+                { where: { _id: _.flatten(ids_c_pipelines).map(p => p._id) } }, PipelineModel);
+            c_model_result = await Pipeline.search(get_index('pipeline'), 'pipeline'
+                , es_client, PipelineModel, c_model_response.search, c_model_response.options);
+        }
         const pipelines = model_result.hits;
+        const conditional_pipelines = c_model_result.hits;
+        
         const model = await Pipeline.generate_model(get_index(type), type,
-            es_client, pipelines);
+            es_client, pipelines.concat(conditional_pipelines), c_pipelines_data);
         return model;
     } else if (mode === 'class') {
         return ODM;

@@ -28,6 +28,18 @@ module.exports = {
                         _id: { type: 'keyword' },
                     },
                 },
+                conditional_pipelines: {
+                    type: 'nested',
+                    properties: {
+                        pipeline: {
+                            type: 'nested',
+                            properties: {
+                                _id: { type: 'keyword' },
+                            },
+                        },
+                        condition: { type: 'keyword' },
+                    },
+                },
                 backoffice: {
                     properties: {
                         columns: {

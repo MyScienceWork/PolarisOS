@@ -109,22 +109,22 @@ class GulpFrontend {
         });
 
         return appBundler
-        .transform(unflowify)
-        .transform(envify({
-            NODE_ENV: process.env.NODE_ENV || 'development',
-        }))
-        .transform(vueify)
-        .transform('babelify', {
-            presets: ['es2015'],
-            plugins: ['transform-runtime', 'transform-async-to-generator'],
-        })
-        .transform(aliases)
-        .bundle()
-        .pipe(source('bundle.js'))
-        .pipe(buffer())
-        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
-        .on('error', gutil.log)
-        .pipe(gulp.dest(this.PUB_LOCATIONS.js));
+            .transform(unflowify)
+            .transform(envify({
+                NODE_ENV: process.env.NODE_ENV || 'development',
+            }))
+            .transform(vueify)
+            .transform('babelify', {
+                presets: ['es2015'],
+                plugins: ['transform-runtime', 'transform-async-to-generator'],
+            })
+            .transform(aliases)
+            .bundle()
+            .pipe(source('bundle.js'))
+            .pipe(buffer())
+            .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+            .on('error', gutil.log)
+            .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
     bundleVendors() {
@@ -146,46 +146,46 @@ class GulpFrontend {
         return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
-        .transform(vueify)
-        .transform('babelify', {
-            presets: ['es2015'],
-            plugins: ['transform-runtime', 'transform-async-to-generator'],
-        })
-        .transform(aliases)
-        .bundle()
-        .pipe(source('vendors.js'))
-        .pipe(buffer())
-        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
-        .on('error', gutil.log)
-        .pipe(gulp.dest(this.PUB_LOCATIONS.js));
+            .transform(vueify)
+            .transform('babelify', {
+                presets: ['es2015'],
+                plugins: ['transform-runtime', 'transform-async-to-generator'],
+            })
+            .transform(aliases)
+            .bundle()
+            .pipe(source('vendors.js'))
+            .pipe(buffer())
+            .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+            .on('error', gutil.log)
+            .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
     createExternalVendors() {
         gulp
-        .src(this.external_dependencies)
-        .pipe(concat('vendors.external.js'))
-        .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
-        .on('error', gutil.log)
-        .pipe(gulp.dest(this.PUB_LOCATIONS.js));
+            .src(this.external_dependencies)
+            .pipe(concat('vendors.external.js'))
+            .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
+            .on('error', gutil.log)
+            .pipe(gulp.dest(this.PUB_LOCATIONS.js));
     }
 
     watch() {
-        gulp.watch(['./front/{frontend,common}/**/*.{vue,jsx,js}'], gulp.series('front-scripts'));
-        gulp.watch(['./front/{frontend,common}/{styles,style}/**/*.*'], gulp.series('front-styles', 'front-biblio-styles'));
-        gulp.watch(['./front/frontend/views/*.*'], gulp.series('front-views'));
+        gulp.watch('./front/{frontend,common}/**/*.{vue,jsx,js}', gulp.series('front-scripts'));
+        gulp.watch('./front/{frontend,common}/{styles,style}/**/*.*', gulp.parallel('front-styles', 'front-biblio-styles'));
+        gulp.watch('./front/frontend/views/*.*', gulp.series('front-views'));
     }
 
     createVendorStyles() {
         return gulp
-        .src(['./front/frontend/styles/vendors.scss',
-            './front/frontend/styles/vendors.less', ...this.vendors_css_files])
-        .pipe(plumber())
-        .pipe(gulpif('*.less', less()))
-        .pipe(gulpif('*.scss', sass()))
-        .pipe(concat('vendors.css'))
-        .pipe(autoprefixer())
-        .pipe(gulpif(this.isProduction, cssmin()))
-        .pipe(gulp.dest(this.PUB_LOCATIONS.css));
+            .src(['./front/frontend/styles/vendors.scss',
+                './front/frontend/styles/vendors.less', ...this.vendors_css_files])
+            .pipe(plumber())
+            .pipe(gulpif('*.less', less()))
+            .pipe(gulpif('*.scss', sass()))
+            .pipe(concat('vendors.css'))
+            .pipe(autoprefixer())
+            .pipe(gulpif(this.isProduction, cssmin()))
+            .pipe(gulp.dest(this.PUB_LOCATIONS.css));
     }
 
     createBiblioStyles() {
@@ -200,14 +200,14 @@ class GulpFrontend {
 
     createStyles() {
         return gulp
-        .src(['./front/frontend/styles/front.less', './front/frontend/styles/front.scss', ...this.css_files])
-        .pipe(plumber())
-        .pipe(gulpif('*.less', less()))
-        .pipe(gulpif('*.scss', sass()))
-        .pipe(concat('front.css'))
-        .pipe(autoprefixer())
-        .pipe(gulpif(this.isProduction, cssmin()))
-        .pipe(gulp.dest(this.PUB_LOCATIONS.css));
+            .src(['./front/frontend/styles/front.less', './front/frontend/styles/front.scss', ...this.css_files])
+            .pipe(plumber())
+            .pipe(gulpif('*.less', less()))
+            .pipe(gulpif('*.scss', sass()))
+            .pipe(concat('front.css'))
+            .pipe(autoprefixer())
+            .pipe(gulpif(this.isProduction, cssmin()))
+            .pipe(gulp.dest(this.PUB_LOCATIONS.css));
     }
 
     copyFonts() {
@@ -216,7 +216,7 @@ class GulpFrontend {
             `${font_awesome}/fontawesome-webfont.*`,
             `${font_awesome}/FontAwesome.otf`,
         ])
-        .pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
+            .pipe(gulp.dest(this.PUB_LOCATIONS.fonts));
     }
 
     copyCustomersFont() {
@@ -268,9 +268,9 @@ class GulpFrontend {
             .pipe(clean());
     }
 
-    revision() {
+    revision(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`, `${this.PUB_LOCATIONS.js}/**/*.js`])
@@ -281,14 +281,15 @@ class GulpFrontend {
             .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
-    revisionReplace() {
+    revisionReplace(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            console.error("no manifest");
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));
@@ -305,13 +306,13 @@ class GulpFrontend {
         js.reverse();
 
         return gulp.src(`${this.PUB_LOCATIONS.views}/front.html`)
-        .pipe(htmlreplace({ css, js }))
-        .pipe(gulp.dest(this.PUB_LOCATIONS.views));
+            .pipe(htmlreplace({ css, js }))
+            .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
-    gzip() {
+    gzip(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`,
             `${this.PUB_LOCATIONS.js}/**/*.js`, `${this.PUB_LOCATIONS.fonts}/**/*.{woff,woff2,eot,ttf,svg}`])
