@@ -39,6 +39,15 @@ module.exports = {
         };
     },
     methods: {
+        step_types() {
+            return [{
+                label: 'l_transition',
+                type: 'transition',
+            }, {
+                label: 'l_step',
+                type: 'step',
+            }];
+        },
         update_entity_states_labels(label) {
             if (label) {
                 this.state.entity_state = label;

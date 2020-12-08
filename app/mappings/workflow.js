@@ -124,6 +124,25 @@ module.exports = {
                                 },
                             },
                         },
+                        type: {
+                            type: 'keyword',
+                        },
+                        conditions: {
+                            type: 'nested',
+                            properties: {
+                                condition: {
+                                    type: 'keyword',
+                                },
+                                actions: {
+                                    type: 'nested',
+                                    properties: {
+                                        _id: {
+                                            type: 'keyword',
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
