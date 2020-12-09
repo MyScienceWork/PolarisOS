@@ -12,6 +12,7 @@ module.exports = {
                 paths: {
                     reads: {
                         action: APIRoutes.entity('action', 'POST', true),
+                        mail_template: APIRoutes.entity('mail_template', 'POST', true),
                     },
                     creations: {
                         action: APIRoutes.entity('action', 'POST'),
@@ -20,6 +21,7 @@ module.exports = {
                 sinks: {
                     reads: {
                         action: 'action_read',
+                        mail_template: 'mail_template_read',
                     },
                     creations: {
                         search: 'action_creation_search',
@@ -30,5 +32,28 @@ module.exports = {
                 es_query_id: 'backoffice-action-query',
             },
         };
+    },
+    methods: {
+        action_types() {
+            return [{ label: 'l_email', type: 'email' }];
+        },
+    },
+    mounted() {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.mail_template,
+            path: this.state.paths.reads.mail_template,
+            body: {
+                size: 10000,
+            },
+        });
+    },
+    computed: {
+        emails() {
+            const content = this.fcontent(this.state.sinks.reads.mail_template);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
+        },
     },
 };

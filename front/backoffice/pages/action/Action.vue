@@ -64,7 +64,29 @@
                             :get_form="state.sinks.reads.action"
                             >
                                 <finput name="name" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.action" />
-                                <finput name="type" :label="lang('b_type')" :is-required="true" :placeholder="lang('b_type')" type="text" :form="state.sinks.creations.action" />
+                                <fselect
+                                    name="type"
+                                    :label="lang('l_type')"
+                                    :placeholder="lang('l_type')"
+                                    :is-required="true"
+                                    :options="action_types()"
+                                    field-label="label"
+                                    field-value="type"
+                                    :form="state.sinks.creations.action"
+                                    :translatable="true"
+                                />
+                                <fselect
+                                    name="email_template"
+                                    :label="lang('l_email_template')"
+                                    :placeholder="lang('l_email_template')"
+                                    :is-required="true"
+                                    :options="emails"
+                                    field-label="name"
+                                    field-value="_id"
+                                    :form="state.sinks.creations.action"
+                                    :translatable="true"
+                                />
+                                <finput name="recipient" :label="lang('b_recipient')" :is-required="true" :placeholder="lang('b_recipient')" type="text" :form="state.sinks.creations.action" />
                         </fform>
                     </div>
                 </widget>

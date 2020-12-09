@@ -78,6 +78,7 @@
                                     fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
+                                    :translatable="true"
                             />
                             <fselect
                                     name="entity_state"
