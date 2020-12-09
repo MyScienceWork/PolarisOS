@@ -79,6 +79,9 @@ module.exports = {
         normal_prose_to_snake_case(string) {
             return string.toLowerCase().join('_');
         },
+        user_forms(form_name) {
+
+        },
     },
     components: {
     },
@@ -130,24 +133,19 @@ module.exports = {
         }
     },
     mounted() {
-        this.$store.dispatch('fetch',
+        this.$store.dispatch('search',
             {
                 form: this.state.sinks.reads.publication_group,
                 path: this.state.paths.reads.publication_group,
-                method: 'GET',
+                body: {},
             },
         );
-        const forms_group = this.fcontent(this.state.sinks.reads.publication_group);
-        console.log(forms_group);
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.user_forms,
-            path: this.state.paths.reads.user_forms,
-            body: {
-                where: {
-                    name: forms_group,
-                },
-                population: ['fields.subform', 'fields.datasource'],
+        this.$store.dispatch('search',
+            {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {},
             },
-        });
+        );
     },
 };

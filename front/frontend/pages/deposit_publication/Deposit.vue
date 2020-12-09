@@ -10,33 +10,53 @@
               </h4>
               <div>
                 <fselect
-                  :name="state.sinks.reads.publication_group"
-                  :options="state.publication_group"
-                  :form="state.sinks.reads.publication_group"
-                ></fselect>
-                <fform
-                  :name="state.sinks.creations.publication"
-                  :hasButtons="!is_editing()"
-                  :hasCancelButton="false"
-                  :post_path="state.paths.creations.publication"
-                  :put_path="state.paths.creations.publication"
-                  :get_path="state.paths.reads.publication"
-                  :get_form="state.sinks.reads.publication"
-                  @form-success-reset="publication_submitted"
+                  :label="lang('f_choose_publication_group')"
+                  :is-required="true"
+                  :options="publication_group"
+                  :form="state.sinks.creations.publication_group"
+                  name="group"
+                  fieldLabel="label"
+                  fieldValue="label"
+                  :view-validation-texts="false"
+                  :translatable="true"
+                  @select-change="publication_group_change"
+                />
+                <div
+                  v-if="
+                    state.publication_form_name !== '' &&
+                    Object.keys(user_forms(state.publication_form_name)).length === 0
+                  "
+                  class="column"
                 >
-                  <dynamic-form
-                    :form="publication_form"
-                    :cform="state.sinks.creations.publication"
-                  />
-                  <button
-                    v-if="is_editing()"
-                    @click.prevent="open_review_modal(props)"
-                    :disabled="success"
-                    class="button"
+                  <div class="columns is-centered">
+                    <loader />
+                  </div>
+                </div>
+                <div v-else-if="state.publication_form_name !== ''">
+                  <fform
+                    :name="state.sinks.creations.publication"
+                    :hasButtons="!is_editing()"
+                    :hasCancelButton="false"
+                    :post_path="state.paths.creations.publication"
+                    :put_path="state.paths.creations.publication"
+                    :get_path="state.paths.reads.publication"
+                    :get_form="state.sinks.reads.publication"
+                    @form-success-reset="publication_submitted"
                   >
-                    {{ lang("f_finish_review") }}
-                  </button>
-                </fform>
+                    <dynamic-form
+                      :form="publication_form"
+                      :cform="state.sinks.creations.publication"
+                    />
+                    <button
+                      v-if="is_editing()"
+                      @click.prevent="open_review_modal(props)"
+                      :disabled="success"
+                      class="button"
+                    >
+                      {{ lang("f_finish_review") }}
+                    </button>
+                  </fform>
+                </div>
               </div>
               <article
                 class="message is-success"
