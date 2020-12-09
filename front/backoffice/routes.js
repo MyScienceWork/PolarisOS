@@ -1,5 +1,6 @@
 module.exports = {
     admin: '/admin',
+    action: '/admin/action',
     user: '/admin/user',
     role: '/admin/role',
     pipeline: '/admin/pipeline',

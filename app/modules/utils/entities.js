@@ -83,6 +83,9 @@ const WorkflowModel = require('../entities/workflow/models/workflows');
 const Cache = require('../entities/cache/cache');
 const CacheModel = require('../entities/cache/models/caches');
 
+const Action = require('../entities/action/action');
+const ActionModel = require('../entities/action/models/actions');
+
 type ObjectList = {
     whitelist?: Set<string>,
     blacklist?: Set<string>
@@ -245,7 +248,7 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
         }
         const pipelines = model_result.hits;
         const conditional_pipelines = c_model_result.hits;
-        
+
         const model = await Pipeline.generate_model(get_index(type), type,
             es_client, pipelines.concat(conditional_pipelines), c_pipelines_data);
         return model;
@@ -309,6 +312,8 @@ async function get_model_from_type(type: string): ?Object {
         return WorkflowModel;
     case 'cache':
         return CacheModel;
+    case 'action':
+        return ActionModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -369,6 +374,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Workflow(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'cache':
         return new Cache(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'action':
+        return new Action(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {

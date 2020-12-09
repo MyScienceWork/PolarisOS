@@ -29,6 +29,7 @@ const tracking_stat = require('./tracking_stat');
 const system_report = require('./system_report');
 
 const workflow = require('./workflow');
+const action = require('./action');
 const cache = require('./cache');
 
 module.exports = {
@@ -64,4 +65,5 @@ module.exports = {
 
     workflow: workflow.msw,
     cache: cache.msw,
+    action: action.msw,
 };
