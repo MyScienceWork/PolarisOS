@@ -41,8 +41,7 @@ module.exports = {
                     },
                 },
                 show_review_modal: false,
-                selected_publication_group: '',
-                publication_group: [],
+                selected_publication_form: '',
             },
         };
     },
@@ -76,11 +75,25 @@ module.exports = {
                 body: undefined,
             });
         },
-        normal_prose_to_snake_case(string) {
-            return string.toLowerCase().join('_');
-        },
-        user_forms(form_name) {
-
+        publication_group_change(form) {
+            if (!form || !form.value || form.value === '') {
+                if (this.state.selected_publication_form) {
+                    this.state.selected_publication_form = '';
+                    return;
+                }
+            }
+            console.log(form.value);
+            this.state.selected_publication_form = form.value;
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [this.state.selected_publication_form],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
         },
     },
     components: {
@@ -104,16 +117,12 @@ module.exports = {
         creation_date() {
             return Handlebars.compile('{{moment unix=true}}')({});
         },
-        publication_form() {
-            const forms = this.fcontent(this.state.sinks.reads.user_forms);
-            if (this.state.selected_publication_group === '') {
-                return '';
-            }
-            const selected = this.normal_prose_to_snake_case(this.state.selected_publication_group) + '_front';
-            return _.find(forms, o => o.name === selected);
-        },
         publication_group() {
-            return this.fcontent(this.state.sinks.reads.publication_group);
+            const content = this.fcontent(this.state.sinks.reads.publication_group);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
         },
     },
     beforeMount() {
@@ -137,14 +146,18 @@ module.exports = {
             {
                 form: this.state.sinks.reads.publication_group,
                 path: this.state.paths.reads.publication_group,
-                body: {},
+                body: {
+                    size: 10000,
+                },
             },
         );
         this.$store.dispatch('search',
             {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
-                body: {},
+                body: {
+                    size: 10000,
+                },
             },
         );
     },

@@ -13,18 +13,18 @@
                   :label="lang('f_choose_publication_group')"
                   :is-required="true"
                   :options="publication_group"
-                  :form="state.sinks.creations.publication_group"
+                  :form="state.sinks.reads.publication_group"
                   name="group"
                   fieldLabel="label"
-                  fieldValue="label"
+                  fieldValue="value"
                   :view-validation-texts="false"
                   :translatable="true"
                   @select-change="publication_group_change"
                 />
                 <div
                   v-if="
-                    state.publication_form_name !== '' &&
-                    Object.keys(user_forms(state.publication_form_name)).length === 0
+                    state.selected_publication_form !== '' &&
+                    Object.keys(user_forms(state.selected_publication_form)).length === 0
                   "
                   class="column"
                 >
@@ -32,7 +32,7 @@
                     <loader />
                   </div>
                 </div>
-                <div v-else-if="state.publication_form_name !== ''">
+                <div v-else-if="state.selected_publication_form !== ''">
                   <fform
                     :name="state.sinks.creations.publication"
                     :hasButtons="!is_editing()"
@@ -44,7 +44,7 @@
                     @form-success-reset="publication_submitted"
                   >
                     <dynamic-form
-                      :form="publication_form"
+                      :form="user_forms(state.selected_publication_form)"
                       :cform="state.sinks.creations.publication"
                     />
                     <button
