@@ -83,25 +83,27 @@ module.exports = {
             });
         },
         publication_group_change(form) {
-            if (!form || !form.value || form.value === '') {
+            if (!form || !form.value || form.value === {}) {
                 if (this.state.selected_publication_form) {
                     this.state.selected_publication_form = '';
                     this.state.selected_publication_group = '';
                     return;
                 }
             }
-            this.state.selected_publication_group = form.label;
-            this.state.selected_publication_form = form.value;
+            // Getting form name
+            const { form_name } = this.fcontent(this.state.sinks.reads.publication_group).find(o => o.value === form.value);
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
                 body: {
                     where: {
-                        name: [this.state.selected_publication_form],
+                        name: [form_name],
                     },
                     population: ['fields.subform', 'fields.datasource'],
                 },
             });
+            this.state.selected_publication_form = form_name;
+            this.state.selected_publication_group = form.value;
         },
     },
     components: {
