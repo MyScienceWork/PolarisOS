@@ -42,6 +42,7 @@ module.exports = {
                 },
                 show_review_modal: false,
                 selected_publication_form: '',
+                selected_publication_group: '',
             },
         };
     },
@@ -74,15 +75,22 @@ module.exports = {
                 form: this.state.sinks.creations.publication,
                 body: undefined,
             });
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.state.sinks.creations.publication,
+                body: {
+                    publication_group: this.state.selected_publication_group,
+                },
+            });
         },
         publication_group_change(form) {
             if (!form || !form.value || form.value === '') {
                 if (this.state.selected_publication_form) {
                     this.state.selected_publication_form = '';
+                    this.state.selected_publication_group = '';
                     return;
                 }
             }
-            console.log(form.value);
+            this.state.selected_publication_group = form.label;
             this.state.selected_publication_form = form.value;
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
