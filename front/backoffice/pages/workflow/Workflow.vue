@@ -104,7 +104,7 @@
                             <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                     <fselect
-                                        name="`${props.fname}.${props.order}.type`"
+                                        :name="`${props.fname}.${props.order}.type`"
                                         :label="lang('b_type')"
                                         :is-required="true"
                                         :options="step_types()"
@@ -155,20 +155,17 @@
                                     />
                                     <fvariadic-element name="conditions" :form="state.sinks.creations.workflow" :tabs="true">
                                       <template slot="variadic" slot-scope="props2">
-                                        <finput :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}`" :label="lang('b_condition')" :is-required="true" :placeholder="lang('b_condition')" type="text" :form="state.sinks.creations.workflow" />
-                                        <fvariadic-element name="actions" :form="state.sinks.creations.workflow" :tabs="true">
-                                          <template slot="variadic" slot-scope="props3">
-                                            <fselect
-                                                name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.${props3.fname}.${props3.order}`"
-                                                :label="lang('b_action')"
-                                                :is-required="true"
-                                                :options="actions"
-                                                fieldValue="_id"
-                                                fieldLabel="label"
-                                                :form="state.sinks.creations.workflow"
-                                            />
-                                          </template>
-                                        </fvariadic-element>
+                                        <finput :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.condition`" :label="lang('b_condition')" :is-required="true" :placeholder="lang('b_condition')" type="text" :form="state.sinks.creations.workflow" />
+                                        <fselect
+                                            :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.actions`"
+                                            :label="lang('b_action')"
+                                            :is-required="true"
+                                            :options="actions"
+                                            :multi="true"
+                                            fieldValue="_id"
+                                            fieldLabel="name"
+                                            :form="state.sinks.creations.workflow"
+                                        />
                                       </template>
                                     </fvariadic-element>
                                 </template>
