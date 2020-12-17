@@ -3,6 +3,10 @@ const _ = require('lodash');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
 const ConditionValidator = require('../entities/pipeline/pipeline');
+const MailerUtils = require('../utils/mailer');
+const Config = require('../../config');
+const LangUtils = require('../utils/lang');
+const Handlebars = require('../utils/templating');
 
 /**
  * Workflow management
@@ -55,6 +59,42 @@ class Workflow {
 
     static async _process_email(action: Object) {
         console.log('action : ', action);
+        if (!action.recipient) {
+            return;
+        }
+
+        const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
+            where:
+                {
+                    _id: action.email_template,
+                },
+        });
+        if (templates.length === 0) {
+            return;
+        }
+
+        const template = templates[0];
+
+        const email_config = await MailerUtils.get_email_config();
+
+        if (!email_config) {
+            return;
+        }
+
+        const default_sender = email_config.default_sender || Config.email.default_sender;
+
+        const lang = 'EN';
+        const info_subject = Handlebars.compile(template.subject)({});
+        const info_body = Handlebars.compile(template.body)({});
+        const subject = await LangUtils.strings_to_translation(info_subject, lang);
+        const body = await LangUtils.strings_to_translation(info_body, lang);
+
+        console.log("default_sender : ", default_sender);
+        console.log("action.recipient : ", action.recipient);
+        console.log("subject : ", subject);
+        console.log("body : ", body);
+
+        await MailerUtils.send_email_with(default_sender, action.recipient, subject, body)
     }
 
     static async _process_action(action: string) {
