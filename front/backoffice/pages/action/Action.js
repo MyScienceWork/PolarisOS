@@ -35,7 +35,9 @@ module.exports = {
     },
     methods: {
         action_types() {
-            return [{ label: 'l_email', type: 'email' }];
+            return [{ label: 'l_email', type: 'email' },
+                    { label: 'l_change_state', type: 'change_state' }
+            ];
         },
     },
     mounted() {

@@ -48,13 +48,42 @@ class Workflow {
         return true;
     }
 
-    static async _run_action(actions: Array) {
+    static async __change_state(action: Object) {
+        //TODO: manage change state
+        return;
+    }
+
+    static async _process_email(action: Object) {
+        console.log('action : ', action);
+    }
+
+    static async _process_action(action: string) {
+        const info = await EntitiesUtils.search('action', {
+            where: {
+                _id: action,
+            }
+        });
+        let hits = EntitiesUtils.get_hits(info);
+        if (hits.length === 0) {
+            return;
+        }
+        const maction = hits[0].source;
+        switch (maction.type) {
+            case 'email':
+                return Workflow._process_email(maction);
+            case 'change_state':
+                return Workflow._change_state(maction);
+        }
+    }
+
+
+    static async _run_actions(actions: Array) {
         if (actions.length === 0) {
             return;
         }
 
         actions.forEach(action => {
-           console.log("action : ", action);
+           Workflow._process_action(action._id);
         });
     }
 
@@ -65,7 +94,7 @@ class Workflow {
         for (const condition of step.conditions) {
             const action_condition_validated = await Workflow._ok_condition(condition.condition, item);
             if (action_condition_validated) {
-                Workflow._run_action(condition.actions);
+                Workflow._run_actions(condition.actions);
             }
         }
     }
