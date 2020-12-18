@@ -1,5 +1,5 @@
 const Home = require('../frontend/pages/home/Home.vue');
-const Deposit = require('../frontend/pages/deposit/Deposit.vue');
+const Deposit = require('../frontend/pages/deposit_publication/Deposit.vue');
 const DepositProject = require('../frontend/pages/deposit_project/DepositProject.vue');
 const DepositProjectCurator = require('../frontend/pages/deposit_project_curator/DepositProjectCurator.vue');
 const DepositDataset = require('../frontend/pages/deposit_dataset/DepositDataset.vue');
