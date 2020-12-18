@@ -133,7 +133,7 @@ class Workflow {
         });
     }
 
-    static async _run_transition(step: Object, item: Object, entity: String) {
+    static async _run_transition(step: Object, item: Object, entity: string) {
         if (!step.conditions) {
             return;
         }
@@ -143,6 +143,13 @@ class Workflow {
                 Workflow._run_actions(condition.actions, item, entity);
             }
         }
+    }
+
+    static async _initialize_state(workflow: Object, item: Object, entity: string) {
+        if (!workflow.initial_state) {
+            return;
+        }
+        item.state = workflow.initial_state;
     }
 
     async run(entity: string, item: Object): string {
@@ -163,6 +170,8 @@ class Workflow {
                 );
                 if (run_transition_step || run_state_step) {
                     Workflow._run_transition(step, item, entity);
+                } else if (state_after === undefined) {
+                    Workflow._initialize_state(workflow, item, entity);
                 }
             });
         });
