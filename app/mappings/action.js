@@ -21,7 +21,7 @@ module.exports = {
                 },
                 state: {
                     type: 'keyword',
-                }
+                },
             },
         },
     },

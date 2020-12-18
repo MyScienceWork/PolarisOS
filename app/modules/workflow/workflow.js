@@ -1,5 +1,6 @@
 // @flow
 const _ = require('lodash');
+const Request = require('superagent');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
 const ConditionValidator = require('../entities/pipeline/pipeline');
@@ -7,6 +8,8 @@ const MailerUtils = require('../utils/mailer');
 const Config = require('../../config');
 const LangUtils = require('../utils/lang');
 const Handlebars = require('../utils/templating');
+const config = require('../../config');
+const Logger = require('../../logger');
 
 /**
  * Workflow management
@@ -28,13 +31,13 @@ class Workflow {
         if (!id_entity) {
             return undefined;
         }
-
         const info = await EntitiesUtils.search(entity, {
             where: {
                 _id: id_entity,
             }
         });
-        let hits = EntitiesUtils.get_hits(info);
+        item._id = id_entity;
+        const hits = EntitiesUtils.get_hits(info);
         if (hits.length > 0) {
             return hits[0].source.state;
         }
@@ -52,13 +55,21 @@ class Workflow {
         return true;
     }
 
-    static async __change_state(action: Object) {
-        //TODO: manage change state
-        return;
+    static async _change_state(action: Object, item: Object, entity: string) {
+        if (!action.state) {
+            return;
+        }
+        item.state = action.state;
+        const url = 'http://localhost:'+config.port+'/api/public/v2/'+entity;
+        try {
+            await Request.put(url).set('Accept', 'application/json').send(item);
+        } catch (err) {
+            Logger.error(`Unable to process action entity`);
+            Logger.error(JSON.stringify(err));
+        }
     }
 
     static async _process_email(action: Object) {
-        console.log('action : ', action);
         if (!action.recipient) {
             return;
         }
@@ -89,15 +100,10 @@ class Workflow {
         const subject = await LangUtils.strings_to_translation(info_subject, lang);
         const body = await LangUtils.strings_to_translation(info_body, lang);
 
-        console.log("default_sender : ", default_sender);
-        console.log("action.recipient : ", action.recipient);
-        console.log("subject : ", subject);
-        console.log("body : ", body);
-
         await MailerUtils.send_email_with(default_sender, action.recipient, subject, body)
     }
 
-    static async _process_action(action: string) {
+    static async _process_action(action: string, item: Object, entity: string) {
         const info = await EntitiesUtils.search('action', {
             where: {
                 _id: action,
@@ -112,29 +118,29 @@ class Workflow {
             case 'email':
                 return Workflow._process_email(maction);
             case 'change_state':
-                return Workflow._change_state(maction);
+                return Workflow._change_state(maction, item, entity);
         }
     }
 
 
-    static async _run_actions(actions: Array) {
+    static async _run_actions(actions: Array, item: Object, entity: String) {
         if (actions.length === 0) {
             return;
         }
 
         actions.forEach(action => {
-           Workflow._process_action(action._id);
+           Workflow._process_action(action._id, item, entity);
         });
     }
 
-    static async _run_transition(step: Object, item: Object) {
+    static async _run_transition(step: Object, item: Object, entity: String) {
         if (!step.conditions) {
             return;
         }
         for (const condition of step.conditions) {
             const action_condition_validated = await Workflow._ok_condition(condition.condition, item);
             if (action_condition_validated) {
-                Workflow._run_actions(condition.actions);
+                Workflow._run_actions(condition.actions, item, entity);
             }
         }
     }
@@ -156,7 +162,7 @@ class Workflow {
                     && step.state_after.findIndex(state => state._id === state_after) !== -1
                 );
                 if (run_transition_step || run_state_step) {
-                    Workflow._run_transition(step, item);
+                    Workflow._run_transition(step, item, entity);
                 }
             });
         });
