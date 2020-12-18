@@ -66,7 +66,7 @@ async function initialize_routes(singleton) {
     const extra_entities = response.result.hits.map(e => e.db.source.type);
     const entities = ['user', 'role', 'config', 'form', 'function',
         'pipeline', 'widget', 'page', 'template', 'menu', 'query',
-        'importer', 'exporter', 'connector', 'identifier', 'workflow',
+        'importer', 'exporter', 'connector', 'identifier', 'workflow', 'action',
         'chart', 'mail_template', 'tracking_stat', 'system_report', ...extra_entities];
 
     entities.forEach((e) => {

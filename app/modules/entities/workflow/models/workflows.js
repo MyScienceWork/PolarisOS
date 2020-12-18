@@ -18,6 +18,12 @@ const Formatting: Array<any> = [
         'steps.state_before': a => FormatFunctions.oarray_to_array(a),
         'steps.state_after': a => FormatFunctions.oarray_to_array(a),
     },
+    {
+        'steps.conditions': a => FormatFunctions.oarray_to_array(a),
+    },
+    {
+        'steps.conditions.actions': a => FormatFunctions.oarray_to_array(a),
+    },
 ];
 
 const Completion: Array<any> = [];

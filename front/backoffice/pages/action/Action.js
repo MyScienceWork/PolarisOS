@@ -1,54 +1,50 @@
-const Messages = require('../../../common/api/messages');
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
-const AccessMixin = require('../../../common/mixins/AccessMixin');
 
 module.exports = {
-    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin, AccessMixin],
+    mixins: [ReaderMixin, LangMixin, FormCleanerMixin, ESQueryMixin],
     data() {
         return {
             state: {
                 paths: {
                     reads: {
                         action: APIRoutes.entity('action', 'POST', true),
-                        role: APIRoutes.entity('role', 'POST', true),
-                        workflow: APIRoutes.entity('workflow', 'POST', true),
+                        mail_template: APIRoutes.entity('mail_template', 'POST', true),
                         entity: APIRoutes.entity('entity', 'POST', true),
                     },
                     creations: {
-                        workflow: APIRoutes.entity('workflow', 'POST'),
+                        action: APIRoutes.entity('action', 'POST'),
                     },
                 },
                 sinks: {
                     reads: {
                         action: 'action_read',
-                        role: 'role_read',
-                        workflow: 'workflow_read',
+                        mail_template: 'mail_template_read',
                         entity: 'entity_read',
                         entity_state: 'entity_state_read',
                     },
                     creations: {
-                        workflow: 'workflow_creation',
-                        search: 'workflow_creation_search',
+                        search: 'action_creation_search',
+                        action: 'action_creation',
                     },
                 },
-                es_query_id: 'backoffice-workflow-query',
+                selected_type: '',
+                es_query_id: 'backoffice-action-query',
                 entity_state: '',
             },
         };
     },
     methods: {
-        step_types() {
-            return [{
-                label: 'l_transition',
-                type: 'transition',
-            }, {
-                label: 'l_state',
-                type: 'state',
-            }];
+        action_types() {
+            return [{ label: 'l_send_email', type: 'email' },
+                { label: 'l_change_state', type: 'change_state' },
+            ];
+        },
+        update_type(val) {
+            this.state.selected_type = val.value;
         },
         update_entity_states_labels(label) {
             if (label) {
@@ -69,7 +65,14 @@ module.exports = {
         },
     },
     mounted() {
-        ['entity', 'role', 'action'].forEach((e) => {
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.mail_template,
+            path: this.state.paths.reads.mail_template,
+            body: {
+                size: 10000,
+            },
+        });
+        ['entity'].forEach((e) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
@@ -79,11 +82,9 @@ module.exports = {
             });
         });
     },
-    watch: {
-    },
     computed: {
-        actions() {
-            const content = this.mcontent(this.state.sinks.reads.action);
+        emails() {
+            const content = this.fcontent(this.state.sinks.reads.mail_template);
             if (content instanceof Array) {
                 return content;
             }
@@ -96,17 +97,10 @@ module.exports = {
             }
             return [];
         },
-        roles() {
-            const content = this.mcontent(this.state.sinks.reads.role);
-            if (content instanceof Array) {
-                return content;
-            }
-            return [];
-        },
         entity_states() {
             const content = this.mcontent(this.state.sinks.reads.entity_state);
-            if (content.length === 0 && this.fcontent(this.state.sinks.reads.workflow).length > 0) {
-                const entity_state = this.fcontent(this.state.sinks.reads.workflow)[0].entity_state;
+            if (content.length === 0 && this.fcontent(this.state.sinks.reads.action).length > 0) {
+                const entity_state = this.fcontent(this.state.sinks.reads.action)[0].entity_state;
                 this.update_entity_states_labels(entity_state);
             }
             if (content instanceof Array) {

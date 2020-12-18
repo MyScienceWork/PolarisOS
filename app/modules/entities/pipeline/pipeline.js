@@ -184,8 +184,8 @@ class Pipeline extends ODM {
         if (splitted_field.length !== 3) {
             return;
         }
-        const condition = splitted_field[1];
         const left_sign = splitted_field[0];
+        const condition = splitted_field[1];
         const right_sign = splitted_field[2];
         let result = [];
         switch (condition) {

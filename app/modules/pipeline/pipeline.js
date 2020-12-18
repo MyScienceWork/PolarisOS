@@ -9,6 +9,7 @@ const EntitiesUtils = require('../utils/entities');
 const Utils = require('../utils/utils');
 const Logger = require('../../logger');
 const ConditionValidator = require('../entities/pipeline/pipeline');
+const Workflow = require('../workflow/workflow');
 
 /**
  * Completion and validation pipeline
@@ -238,6 +239,9 @@ class Pipeline {
 
             const range = Pipeline._format_range(ctx.params.range, pipelines.length);
             const result = await Pipeline.run(item, type, pipelines, method, range, extra);
+
+            const workflow = new Workflow();
+            workflow.run(type, result);
 
             if ('change' in result) {
                 ctx.body = result;
