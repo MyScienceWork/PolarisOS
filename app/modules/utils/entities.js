@@ -56,8 +56,8 @@ const TemplateModel = require('../entities/template/models/templates');
 const Menu = require('../entities/menu/menu');
 const MenuModel = require('../entities/menu/models/menus');
 
-const Publication = require('../entities/publication/publication');
-const PublicationModel = require('../entities/publication/models/publications');
+//const Publication = require('../entities/publication/publication');
+//const PublicationModel = require('../entities/publication/models/publications');
 
 const Identifier = require('../entities/identifier/identifier');
 const IdentifierModel = require('../entities/identifier/models/identifiers');
@@ -292,12 +292,6 @@ async function get_model_from_type(type: string): ?Object {
         return PageModel;
     case 'menu':
         return MenuModel;
-    case 'publication': {
-        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
-            return MSWPublicationModel;
-        }
-        return PublicationModel;
-    }
     case 'identifier':
         return IdentifierModel;
     case 'mail_template':
@@ -356,12 +350,6 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'identifier':
         return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'publication': {
-        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
-            return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
-        }
-        return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
-    }
     case 'mail_template':
         return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'chart':
