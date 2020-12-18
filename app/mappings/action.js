@@ -16,6 +16,12 @@ module.exports = {
                 recipient: {
                     type: 'keyword',
                 },
+                entity_state: {
+                    type: 'keyword',
+                },
+                state: {
+                    type: 'keyword',
+                }
             },
         },
     },

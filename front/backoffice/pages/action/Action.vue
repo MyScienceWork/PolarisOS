@@ -74,8 +74,10 @@
                                     field-value="type"
                                     :form="state.sinks.creations.action"
                                     :translatable="true"
+                                    v-on:select-change="(val) => {update_type(val)}"
                                 />
                                 <fselect
+                                    v-if="state.selected_type === 'email'"
                                     name="email_template"
                                     :label="lang('l_email_template')"
                                     :placeholder="lang('l_email_template')"
@@ -86,7 +88,30 @@
                                     :form="state.sinks.creations.action"
                                     :translatable="true"
                                 />
-                                <finput name="recipient" :label="lang('b_recipient')" :is-required="true" :placeholder="lang('b_recipient')" type="text" :form="state.sinks.creations.action" />
+                                <finput v-if="state.selected_type === 'email'" name="recipient" :label="lang('b_recipient')" :is-required="true" :placeholder="lang('b_recipient')" type="text" :form="state.sinks.creations.action" />
+                                <fselect
+                                    v-if="state.selected_type === 'change_state'"
+                                    name="entity_state"
+                                    :label="lang('b_entity_state')"
+                                    :is-required="true"
+                                    :options="entitys"
+                                    fieldValue="type"
+                                    fieldLabel="type"
+                                    :form="state.sinks.creations.action"
+                                    v-on:select-change="(val) => {update_entity_states(val)}"
+                                />
+                                <fselect
+                                    v-if="state.selected_type === 'change_state'"
+                                    name="state"
+                                    :label="lang('b_next_state')"
+                                    :is-required="true"
+                                    :options="entity_states"
+                                    fieldValue="_id"
+                                    fieldLabel="label"
+                                    :translatable="true"
+                                    :help="lang('l_backoffice_state_help')"
+                                    :form="state.sinks.creations.action"
+                                />
                         </fform>
                     </div>
                 </widget>
