@@ -49,6 +49,7 @@ class Workflow {
         const joi_condition = ConditionValidator.compute_condition({ field: condition });
         const errorsValidation = await validator
             .validate(item, [joi_condition]);
+        Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
         }
@@ -142,6 +143,8 @@ class Workflow {
         }
         for (const condition of step.conditions) {
             const action_condition_validated = await Workflow._ok_condition(condition.condition, item);
+            Logger.info("transition condition : ", condition.condition);
+            Logger.info("transition item : ", JSON.stringify(item));
             Logger.info("transition condition result : ", action_condition_validated);
             if (action_condition_validated) {
                 Workflow._run_actions(condition.actions, item, entity);

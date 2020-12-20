@@ -186,14 +186,28 @@ class Pipeline extends ODM {
         }
         const left_sign = splitted_field[0];
         const condition = splitted_field[1];
-        const right_sign = splitted_field[2];
+        let right_sign = splitted_field[2];
+        let has_boolean = false;
+        if (right_sign === 'true') {
+            has_boolean = true;
+            right_sign = true;
+        } else if (right_sign === 'false') {
+            has_boolean = true;
+            right_sign = false;
+        }
         let result = [];
         switch (condition) {
             case '=':
-                result = Joi.object({
-                    [left_sign]: Joi.string().valid(right_sign),
-                    [right_sign]: Joi.string(),
-                });
+                if (has_boolean) {
+                    result = Joi.object({
+                        [left_sign]: Joi.boolean().valid(right_sign).required(),
+                    });
+                } else {
+                    result = Joi.object({
+                        [left_sign]: Joi.valid(right_sign),
+                    });
+                }
+
                 break;
             case '<':
                 result = Joi.object({
@@ -222,6 +236,7 @@ class Pipeline extends ODM {
             default:
                 break;
         }
+        logger.info("compute_condition : ", JSON.stringify(result));
         return result;
     }
 
