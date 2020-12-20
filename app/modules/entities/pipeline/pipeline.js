@@ -192,6 +192,7 @@ class Pipeline extends ODM {
             case '=':
                 result = Joi.object({
                     [left_sign]: Joi.string().valid(right_sign),
+                    [right_sign]: Joi.string(),
                 });
                 break;
             case '<':

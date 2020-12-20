@@ -74,6 +74,7 @@ class Workflow {
             return;
         }
 
+
         const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
             where:
                 {
@@ -91,6 +92,8 @@ class Workflow {
         if (!email_config) {
             return;
         }
+
+        Logger.info("send email : ", JSON.stringify(action));
 
         const default_sender = email_config.default_sender || Config.email.default_sender;
 
@@ -139,6 +142,7 @@ class Workflow {
         }
         for (const condition of step.conditions) {
             const action_condition_validated = await Workflow._ok_condition(condition.condition, item);
+            Logger.info("transition condition result : ", action_condition_validated);
             if (action_condition_validated) {
                 Workflow._run_actions(condition.actions, item, entity);
             }
@@ -153,6 +157,7 @@ class Workflow {
     }
 
     async run(entity: string, item: Object): string {
+        Logger.info("run workflow");
         const workflows = await Workflow._get_workflows_from_entity(entity);
         const state_before = await Workflow._get_state_before_modification(entity, item);
         const state_after = item.state;
@@ -168,10 +173,20 @@ class Workflow {
                     step.type === "state"
                     && step.state_after.findIndex(state => state._id === state_after) !== -1
                 );
+                Logger.info("run transition step : ", run_transition_step);
+                Logger.info("run state step : ", run_state_step);
                 if (run_transition_step || run_state_step) {
                     Workflow._run_transition(step, item, entity);
                 } else if (state_after === undefined) {
+                    Logger.info("initialize state");
                     Workflow._initialize_state(workflow, item, entity);
+                    const new_state_after = item.state;
+                    const run_state_step = (
+                        step.type === "state"
+                        && step.state_after.findIndex(state => state._id === new_state_after) !== -1);
+                    if (run_state_step) {
+                        Workflow._run_transition(step, item, entity);
+                    }
                 }
             });
         });
