@@ -20,7 +20,7 @@ class Workflow {
 
     static async _get_workflows_from_entity(entity: string): Object {
         const workflows = await EntitiesUtils.search_and_get_sources('workflow', {
-            entity,
+            where: entity,
             size: 100,
         });
         return workflows;
