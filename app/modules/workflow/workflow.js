@@ -72,6 +72,7 @@ class Workflow {
 
     static async _process_email(action: Object) {
         if (!action.recipient) {
+            Logger.error("no recipient found")
             return;
         }
 
@@ -83,6 +84,7 @@ class Workflow {
                 },
         });
         if (templates.length === 0) {
+            Logger.error("no template found")
             return;
         }
 
@@ -91,6 +93,7 @@ class Workflow {
         const email_config = await MailerUtils.get_email_config();
 
         if (!email_config) {
+            Logger.error("no email config found")
             return;
         }
 
@@ -115,6 +118,7 @@ class Workflow {
         });
         let hits = EntitiesUtils.get_hits(info);
         if (hits.length === 0) {
+            Logger.info("no actions found");
             return;
         }
         const maction = hits[0].source;
@@ -129,6 +133,7 @@ class Workflow {
 
     static async _run_actions(actions: Array, item: Object, entity: String) {
         if (actions.length === 0) {
+            Logger.info("no actions to run")
             return;
         }
 
