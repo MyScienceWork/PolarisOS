@@ -1,10 +1,21 @@
-const demo = {
-    port: 4002,
+const env = process.env;
+
+let hosts = ['http://localhost:9200'];
+
+if (env.ES_HOSTS != null) {
+    hosts = env.ES_HOSTS.split(',');
+}
+
+let index_prefix = 'pos';
+if (env.ES_INDEX_PREFIX != null) {
+    index_prefix = env.ES_INDEX_PREFIX;
+}
+
+const production = {
+    port: 5556,
     elasticsearch: {
-        hosts: [
-            'http://localhost:9200',
-        ],
-        apiVersion: '5.2',
+        index_prefix,
+        hosts,
     },
     logger: {
         transports: {
@@ -12,10 +23,10 @@ const demo = {
                 level: 'debug',
             },
             file: {
-                level: 'verbose',
+                level: 'debug',
             },
         },
     },
 };
 
-module.exports = demo;
+module.exports = production;

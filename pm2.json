@@ -7,10 +7,13 @@
     "env": {
         "NODE_ENV": "development"
     },
-    "env_test" : {
-      "NODE_ENV": "test",
-      "NODE_PORT": "5556",
-      "ES_HOSTS": "http://elastic:8yuj2AXchy9TFaG1dkCL@elasticsearch:9200"
+    "env_demo" : {
+        "NODE_ENV": "demo",
+        "NODE_PORT": "5556",
+        "ES_HOSTS": "http://elastic:8yuj2AXchy9TFaG1dkCL@elasticsearch:9200",
+        "MINIO_HOST": "minio",
+        "MINIO_ACCESS_KEY": "D6WATDX0QDZ1I61CACYZ",
+        "MINIO_SECRET_KEY": "NdD50gVGH40OeK2s+W3kPnF+qU9DntxO2HwDT2luoC"
     },
     "env_production" : {
         "NODE_ENV": "production",

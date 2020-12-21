@@ -25,6 +25,7 @@ const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 const Masas = require('./pages/masas/Masas.vue');
 const Workflow = require('./pages/workflow/Workflow.vue');
+const Action = require('./pages/action/Action.vue');
 
 module.exports.menu = [
     [
@@ -108,6 +109,17 @@ module.exports.menu = [
             submenu: [],
             component: Workflow,
             intro: 'l_backoffice_workflow_menu_help',
+        },
+        {
+            section: 'l_admin_section',
+            name: 'l_action_page',
+            access: 'back-action',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'action',
+            routes: [Routes.action],
+            submenu: [],
+            component: Action,
+            intro: 'l_backoffice_action_menu_help',
         },
         {
             section: 'l_admin_section',

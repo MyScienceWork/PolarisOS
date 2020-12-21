@@ -67,7 +67,7 @@
                                 :get_path="state.paths.reads.workflow"
                                 :get_form="state.sinks.reads.workflow"
                         >
-                            <finput name="name" :label="lang('b_workflow_name')" :is-required="true" :placeholder="lang('b_workflow_name')" type="text" :form="state.sinks.creations.workflow" />
+                          <finput name="name" :label="lang('b_workflow_name')" :is-required="true" :placeholder="lang('b_workflow_name')" type="text" :form="state.sinks.creations.workflow" />
                             <finput name="label" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.workflow" />
                             <finput rows="5" name="description" :label="lang('b_workflow_description')" :placeholder="lang('b_workflow_description')" type="textarea" :form="state.sinks.creations.workflow" />
                             <fselect
@@ -78,6 +78,7 @@
                                     fieldValue="type"
                                     fieldLabel="type"
                                     :form="state.sinks.creations.workflow"
+                                    :translatable="true"
                             />
                             <fselect
                                     name="entity_state"
@@ -102,6 +103,15 @@
                             />
                             <fvariadic-element name="steps" :form="state.sinks.creations.workflow" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
+                                    <fselect
+                                        :name="`${props.fname}.${props.order}.type`"
+                                        :label="lang('b_type')"
+                                        :is-required="true"
+                                        :options="step_types()"
+                                        fieldValue="type"
+                                        fieldLabel="label"
+                                        :form="state.sinks.creations.workflow"
+                                    />
                                     <finput :name="`${props.fname}.${props.order}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.workflow" />
                                     <finput :name="`${props.fname}.${props.order}.label`" :label="lang('b_label')" :is-required="true" :placeholder="lang('b_label')" type="text" :form="state.sinks.creations.workflow" />
                                     <finput rows="5" :name="`${props.fname}.${props.order}.description`" :label="lang('b_description')" :placeholder="lang('b_description')" type="textarea" :form="state.sinks.creations.workflow" />
@@ -143,6 +153,21 @@
                                             :translatable="true"
                                             :help="lang('l_backoffice_entity_state_after_help')"
                                     />
+                                    <fvariadic-element name="conditions" :form="state.sinks.creations.workflow" :tabs="true">
+                                      <template slot="variadic" slot-scope="props2">
+                                        <finput :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.condition`" :label="lang('b_condition')" :is-required="true" :placeholder="lang('b_condition')" type="text" :form="state.sinks.creations.workflow" />
+                                        <fselect
+                                            :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.actions`"
+                                            :label="lang('b_action')"
+                                            :is-required="true"
+                                            :options="actions"
+                                            :multi="true"
+                                            fieldValue="_id"
+                                            fieldLabel="name"
+                                            :form="state.sinks.creations.workflow"
+                                        />
+                                      </template>
+                                    </fvariadic-element>
                                 </template>
                             </fvariadic-element>
                         </fform>
