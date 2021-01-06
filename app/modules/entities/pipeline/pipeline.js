@@ -179,7 +179,7 @@ class Pipeline extends ODM {
     }
 
     static compute_conditions_part(v) {
-        const splitted_field = v.field.split(' ');
+        const splitted_field = v.trim().split(' ');
 
         const left_sign = splitted_field[0];
         const condition = splitted_field[1];
@@ -238,24 +238,30 @@ class Pipeline extends ODM {
     }
 
     static compute_conditions(v) {
-        const splitted_field = v.field.split(' ');
+        const splitted_field = v.trim().split(' ');
 
         if (splitted_field.length !== 3 && splitted_field.includes("&&")) {
-            const splitted_els = v.field.split('&&');
-            const new_els = splitted_els.slice(0).splice(0,1);
-            return splitted_els[0] && Pipeline.compute_conditions(new_els)
+            const splitted_els = v.split('&&');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" ");
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                && Pipeline.compute_conditions(end_elements);
 
         } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
-            const splitted_els = v.field.split('||');
-            const new_els = splitted_els.slice(0).splice(0,1);
-            return splitted_els[0] || Pipeline.compute_conditions(new_els)
+            const splitted_els = v.split('||');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" ");
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                || Pipeline.compute_conditions(end_elements);
         }
 
         if (splitted_field.length !== 3) {
             return;
         }
 
-        return Pipeline.compute_conditions(splitted_field);
+        return Pipeline.compute_conditions_part(v);
     }
 
     static async generate_validators(source: Object): Promise<Array<any>> {
@@ -284,7 +290,7 @@ class Pipeline extends ODM {
                     myinfo = Joi.string().uri();
                     break;
                 case 'condition':
-                    myinfo = Pipeline.compute_conditions(v);
+                    myinfo = Pipeline.compute_conditions(v.field);
                     break;
                 default:
                     myinfo = Joi.any();
