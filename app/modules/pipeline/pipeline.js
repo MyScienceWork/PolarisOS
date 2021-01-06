@@ -181,7 +181,7 @@ class Pipeline {
             if (pipeline.Conditions && pipeline.Conditions instanceof Array) {
                 for (const condition of pipeline.Conditions) {
                     const validator = new Validator();
-                    const joi_condition = ConditionValidator.compute_condition({ field: condition });
+                    const joi_condition = ConditionValidator.compute_conditions({ field: condition });
                     const errorsValidation = await validator
                         .validate(item, [joi_condition]);
                     if (!_.isEmpty(errorsValidation)) {
