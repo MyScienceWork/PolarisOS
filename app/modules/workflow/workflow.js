@@ -46,7 +46,7 @@ class Workflow {
 
     static async _ok_condition(condition: string, item: Object): boolean {
         const validator = new Validator();
-        const joi_condition = ConditionValidator.compute_condition({ field: condition });
+        const joi_condition = ConditionValidator.compute_conditions(condition);
         const errorsValidation = await validator
             .validate(item, [joi_condition]);
         Logger.info("errorsValidation : ", errorsValidation);
