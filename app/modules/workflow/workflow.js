@@ -20,7 +20,9 @@ class Workflow {
 
     static async _get_workflows_from_entity(entity: string): Object {
         const workflows = await EntitiesUtils.search_and_get_sources('workflow', {
-            where: entity,
+            where: {
+                $and: [ { entity } ]
+            },
             size: 100,
         });
         return workflows;
@@ -165,7 +167,6 @@ class Workflow {
     }
 
     async run(entity: string, item: Object): string {
-        Logger.info("run workflow");
         const workflows = await Workflow._get_workflows_from_entity(entity);
         const state_before = await Workflow._get_state_before_modification(entity, item);
         const state_after = item.state;
