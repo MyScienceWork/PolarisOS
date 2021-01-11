@@ -15,7 +15,7 @@ Build and Push image integration and production BBK:
   services:
     - docker:18.09.7-dind
   tags:
-    - docker-build
+    - gitlab-org-docker
   only:
     - client/BBK
     - INTEGRATION-BBK
