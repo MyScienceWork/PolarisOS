@@ -17,7 +17,7 @@ module.exports = {
             state: {
                 sinks: {
                     creations: {
-                        publication: 'publication_creation',
+                        publication: 'publication',
                     },
                     reads: {
                         user_forms: 'user_forms_read',
@@ -71,16 +71,12 @@ module.exports = {
         },
         publication_submitted() {
             // init publication type form choices
-            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                form: this.state.sinks.creations.publication,
-                body: undefined,
-            });
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.state.sinks.creations.publication,
-                body: {
-                    publication_group: this.state.selected_publication_group,
-                },
+                name: 'group',
+                info: this.state.selected_publication_group,
             });
+            console.log(this.state.selected_publication_group);
         },
         publication_group_change(form) {
             if (!form || !form.value || form.value === {}) {
@@ -91,7 +87,7 @@ module.exports = {
                 }
             }
             // Getting form name
-            const { form_name } = this.fcontent(this.state.sinks.reads.publication_group).find(o => o.value === form.value);
+            const { form_name } = this.fcontent(this.state.sinks.reads.publication_group).find(o => o._id === form.value);
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
