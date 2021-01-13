@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
@@ -71,12 +70,8 @@ module.exports = {
         },
         publication_submitted() {
             // init publication type form choices
-            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
-                form: this.state.sinks.creations.publication,
-                name: 'group',
-                info: this.state.selected_publication_group,
-            });
-            console.log(this.state.selected_publication_group);
+            this.state.selected_publication_form = '';
+            this.state.selected_publication_group = '';
         },
         publication_group_change(form) {
             if (!form || !form.value || form.value === {}) {
@@ -87,7 +82,8 @@ module.exports = {
                 }
             }
             // Getting form name
-            const { form_name } = this.fcontent(this.state.sinks.reads.publication_group).find(o => o._id === form.value);
+            const { form_name } = this.fcontent(this.state.sinks.reads.publication_group)
+                .find(o => o._id === form.value);
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
@@ -100,6 +96,11 @@ module.exports = {
             });
             this.state.selected_publication_form = form_name;
             this.state.selected_publication_group = form.value;
+            this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
+                form: this.state.sinks.creations.publication,
+                name: 'group',
+                info: this.state.selected_publication_group,
+            });
         },
     },
     components: {
