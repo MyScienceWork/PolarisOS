@@ -74,6 +74,7 @@ class Workflow {
             return;
         }
         item.state = action.state;
+        /*
         const url = 'http://localhost:'+config.port+'/api/public/v2/'+entity;
         try {
             await Request.put(url).set('Accept', 'application/json').send(item);
@@ -81,6 +82,9 @@ class Workflow {
             Logger.error(`Unable to process action entity`);
             Logger.error(JSON.stringify(err));
         }
+         */
+        const workflow = new Workflow();
+        workflow.run(entity, item);
     }
 
     static async _process_email(action: Object) {
