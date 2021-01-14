@@ -197,11 +197,11 @@ class Pipeline extends ODM {
             case '=':
                 if (has_boolean) {
                     result = Joi.object({
-                        [left_sign]: Joi.boolean().valid(right_sign).required(),
+                        [left_sign]: Joi.boolean().valid(right_sign).default(false),
                     });
                 } else {
                     result = Joi.object({
-                        [left_sign]: Joi.valid(right_sign),
+                        [left_sign]: Joi.valid(right_sign).required(),
                     });
                 }
 
@@ -233,7 +233,7 @@ class Pipeline extends ODM {
             default:
                 break;
         }
-        logger.info("compute_condition : ", JSON.stringify(result));
+        //logger.info("compute_condition : ", JSON.stringify(result));
         return result;
     }
 
@@ -244,15 +244,14 @@ class Pipeline extends ODM {
             const splitted_els = v.split('&&');
             const c_splitted_els = splitted_els.slice();
             c_splitted_els.shift();
-            const end_elements = c_splitted_els.join(" ");
-            return Pipeline.compute_conditions_part(splitted_els[0])
-                && Pipeline.compute_conditions(end_elements);
+            const end_elements = c_splitted_els.join(" && ");
+            return Pipeline.compute_conditions(end_elements).concat(Pipeline.compute_conditions_part(splitted_els[0]));
 
         } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
             const splitted_els = v.split('||');
             const c_splitted_els = splitted_els.slice();
             c_splitted_els.shift();
-            const end_elements = c_splitted_els.join(" ");
+            const end_elements = c_splitted_els.join(" || ");
             return Pipeline.compute_conditions_part(splitted_els[0])
                 || Pipeline.compute_conditions(end_elements);
         }

@@ -1,6 +1,7 @@
 // @flow
 const _ = require('lodash');
 const Request = require('superagent');
+const Dot = require('dot-object');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
 const ConditionValidator = require('../entities/pipeline/pipeline');
@@ -15,7 +16,18 @@ const Logger = require('../../logger');
  * Workflow management
  */
 class Workflow {
+    _options: Object;
+
     constructor() {
+        this._options = {
+            joi: {
+                allowUnknown: true,
+                abortEarly: false,
+                language: {
+                    key: '{{!key}} ',
+                },
+            },
+        };
     }
 
     static async _get_workflows_from_entity(entity: string): Object {
@@ -49,8 +61,11 @@ class Workflow {
     static async _ok_condition(condition: string, item: Object): boolean {
         const validator = new Validator();
         const joi_condition = ConditionValidator.compute_conditions(condition);
+        // convert to dot object for joi to validate deep keys
+        console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
+        console.log("object : ", JSON.stringify(item, null, 2))
         const errorsValidation = await validator
-            .validate(item, [joi_condition]);
+            .validate(Dot.dot(item), [joi_condition], this._options.joi);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
