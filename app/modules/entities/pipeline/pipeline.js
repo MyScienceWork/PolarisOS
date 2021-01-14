@@ -178,21 +178,6 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
-    static build_joi_part(cond, keys) {
-        if (keys.length === 1) {
-            return Joi.object({
-                [keys[0]]: cond
-            })
-        }
-
-        const keys_cpy = keys.slice();
-        keys_cpy.shift()
-
-        return Joi.object({
-            [keys[0]]: Pipeline.build_joi_part(cond, keys_cpy)
-        });
-    }
-
     static compute_conditions_part(v) {
         const splitted_field = v.trim().split(' ');
 
@@ -208,20 +193,16 @@ class Pipeline extends ODM {
             right_sign = false;
         }
         let result = [];
-
-        const left_sign_splitted = left_sign.split(".");
-        const right_sign_splitted = left_sign.split(".");
-
-
         switch (condition) {
             case '=':
                 if (has_boolean) {
-                    const cond = Joi.boolean().valid(right_sign).required();
-                    result = Pipeline.build_joi_part(cond, left_sign_splitted);
-
+                    result = Joi.object({
+                        [left_sign]: Joi.boolean().valid(right_sign).required(),
+                    });
                 } else {
-                    const cond = Joi.valid(right_sign);
-                    result = Pipeline.build_joi_part(cond, left_sign_splitted);
+                    result = Joi.object({
+                        [left_sign]: Joi.valid(right_sign),
+                    });
                 }
 
                 break;
@@ -252,27 +233,32 @@ class Pipeline extends ODM {
             default:
                 break;
         }
-        logger.info("compute_condition : ", JSON.stringify(result.describe(), null, 2));
+        logger.info("compute_condition : ", JSON.stringify(result));
         return result;
     }
 
     static compute_conditions(v) {
         const splitted_field = v.trim().split(' ');
-        console.log("condition : ", v);
 
         if (splitted_field.length !== 3 && splitted_field.includes("&&")) {
             const splitted_els = v.split('&&');
             const c_splitted_els = splitted_els.slice();
             c_splitted_els.shift();
             const end_elements = c_splitted_els.join(" ");
-            return Pipeline.compute_conditions(end_elements).concat(Pipeline.compute_conditions_part(splitted_els[0]));
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                && Pipeline.compute_conditions(end_elements);
 
         } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
             const splitted_els = v.split('||');
             const c_splitted_els = splitted_els.slice();
             c_splitted_els.shift();
             const end_elements = c_splitted_els.join(" ");
-            return Joi.alternatives().try(Pipeline.compute_conditions_part(splitted_els[0]), Pipeline.compute_conditions(end_elements));
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                || Pipeline.compute_conditions(end_elements);
+        }
+
+        if (splitted_field.length !== 3) {
+            return;
         }
 
         return Pipeline.compute_conditions_part(v);
