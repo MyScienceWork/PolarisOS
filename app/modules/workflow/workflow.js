@@ -16,18 +16,17 @@ const Logger = require('../../logger');
  * Workflow management
  */
 class Workflow {
-    _options: Object;
+    static _options = {
+        joi: {
+            allowUnknown: true,
+            abortEarly: false,
+            language: {
+                key: '{{!key}} ',
+            },
+        },
+    };
 
     constructor() {
-        this._options = {
-            joi: {
-                allowUnknown: true,
-                abortEarly: false,
-                language: {
-                    key: '{{!key}} ',
-                },
-            },
-        };
     }
 
     static async _get_workflows_from_entity(entity: string): Object {
@@ -65,7 +64,7 @@ class Workflow {
         console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
         console.log("object : ", JSON.stringify(item, null, 2))
         const errorsValidation = await validator
-            .validate(Dot.dot(item), [joi_condition], this._options.joi);
+            .validate(Dot.dot(item), [joi_condition], Workflow._options.joi);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
