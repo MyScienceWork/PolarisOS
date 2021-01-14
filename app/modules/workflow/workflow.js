@@ -16,16 +16,6 @@ const Logger = require('../../logger');
  * Workflow management
  */
 class Workflow {
-    static _options = {
-        joi: {
-            allowUnknown: true,
-            abortEarly: false,
-            language: {
-                key: '{{!key}} ',
-            },
-        },
-    };
-
     constructor() {
     }
 
@@ -62,9 +52,16 @@ class Workflow {
         const joi_condition = ConditionValidator.compute_conditions(condition);
         // convert to dot object for joi to validate deep keys
         console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
-        console.log("object : ", JSON.stringify(item, null, 2))
+        console.log("object : ", JSON.stringify(item, null, 2));
+        const options =  {
+            allowUnknown: true,
+            abortEarly: false,
+            language: {
+                key: '{{!key}} ',
+            },
+        };
         const errorsValidation = await validator
-            .validate(Dot.dot(item), [joi_condition], Workflow._options.joi);
+            .validate(Dot.dot(item), [joi_condition], options);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
