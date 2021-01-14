@@ -68,6 +68,7 @@ class Validator {
 
     async _validate_with_validator(method: string, object: Object, errors: Object,
         validator: Function, key: ?string): Object {
+        console.log("final validator : ", JSON.stringify(validator.describe(), null, 2));
         if (Validator._isJoi(validator)) {
             const val = Joi.validate(object, validator, this._options.joi);
             if (val.error) {

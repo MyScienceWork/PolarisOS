@@ -182,15 +182,15 @@ class Pipeline extends ODM {
         if (keys.length === 1) {
             return Joi.object({
                 [keys[0]]: cond
-            })
+            }).default({});
         }
 
         const keys_cpy = keys.slice();
-        keys_cpy.shift()
+        keys_cpy.shift();
 
         return Joi.object({
             [keys[0]]: Pipeline.build_joi_part(cond, keys_cpy)
-        });
+        }).default({});
     }
 
     static compute_conditions_part(v) {
@@ -216,14 +216,13 @@ class Pipeline extends ODM {
         switch (condition) {
             case '=':
                 if (has_boolean) {
-                    const cond = Joi.boolean().valid(right_sign).required();
+                    const cond = Joi.boolean().valid(right_sign).default(false).required();
                     result = Pipeline.build_joi_part(cond, left_sign_splitted);
 
                 } else {
-                    const cond = Joi.valid(right_sign);
+                    const cond = Joi.valid(right_sign).default("").required();
                     result = Pipeline.build_joi_part(cond, left_sign_splitted);
                 }
-
                 break;
             case '<':
                 result = Joi.object({
@@ -252,7 +251,7 @@ class Pipeline extends ODM {
             default:
                 break;
         }
-        logger.info("compute_condition : ", JSON.stringify(result.describe(), null, 2));
+        //logger.info("compute_condition : ", JSON.stringify(result.describe(), null, 2));
         return result;
     }
 
@@ -264,8 +263,11 @@ class Pipeline extends ODM {
             const splitted_els = v.split('&&');
             const c_splitted_els = splitted_els.slice();
             c_splitted_els.shift();
-            const end_elements = c_splitted_els.join(" ");
-            return Pipeline.compute_conditions(end_elements).concat(Pipeline.compute_conditions_part(splitted_els[0]));
+            const end_elements = c_splitted_els.join(" && ");
+            console.log("splitted_els : ", splitted_els);
+            console.log("c_splitted_els : ", c_splitted_els);
+            console.log("end_elements : ", end_elements);
+            return Pipeline.compute_conditions_part(splitted_els[0]).concat(Pipeline.compute_conditions(end_elements));
 
         } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
             const splitted_els = v.split('||');
