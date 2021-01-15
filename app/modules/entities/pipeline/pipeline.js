@@ -256,10 +256,6 @@ class Pipeline extends ODM {
                 || Pipeline.compute_conditions(end_elements);
         }
 
-        if (splitted_field.length !== 3) {
-            return;
-        }
-
         return Pipeline.compute_conditions_part(v);
     }
 

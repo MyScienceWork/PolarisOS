@@ -48,17 +48,20 @@ class Workflow {
     }
 
     static async _ok_condition(condition: string, item: Object): boolean {
+        if (condition === "true") {
+            console.log("condition is true !");
+            return true;
+        }
         const validator = new Validator();
         const joi_condition = ConditionValidator.compute_conditions(condition);
         // convert to dot object for joi to validate deep keys
         console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
-        console.log("object : ", JSON.stringify(item, null, 2));
+        console.log("object : ", JSON.stringify(Dot.dot(item), null, 2));
         const options =  {
             allowUnknown: true,
             abortEarly: false,
-            language: {
-                key: '{{!key}} ',
-            },
+            convert: false,
+            debug: true,
         };
         const errorsValidation = await validator
             .validate(Dot.dot(item), [joi_condition], options);
