@@ -109,7 +109,6 @@
                                     fieldValue="_id"
                                     fieldLabel="label"
                                     :translatable="true"
-                                    :help="lang('l_backoffice_state_help')"
                                     :form="state.sinks.creations.action"
                                 />
                         </fform>

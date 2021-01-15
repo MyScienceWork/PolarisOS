@@ -153,11 +153,11 @@
                                             :translatable="true"
                                             :help="lang('l_backoffice_entity_state_after_help')"
                                     />
-                                    <fvariadic-element name="conditions" :form="state.sinks.creations.workflow" :tabs="true">
+                                    <fvariadic-element :name="`${props.fname}.${props.order}.conditions`" :form="state.sinks.creations.workflow" :tabs="true">
                                       <template slot="variadic" slot-scope="props2">
-                                        <finput :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.condition`" :label="lang('b_condition')" :is-required="true" :placeholder="lang('b_condition')" type="text" :form="state.sinks.creations.workflow" />
+                                        <finput :name="`${props2.fname}.${props2.order}.condition`" :label="lang('b_condition')" :is-required="true" :placeholder="lang('b_condition')" type="textarea" :form="state.sinks.creations.workflow" />
                                         <fselect
-                                            :name="`${props.fname}.${props.order}.${props2.fname}.${props2.order}.actions`"
+                                            :name="`${props2.fname}.${props2.order}.actions`"
                                             :label="lang('b_action')"
                                             :is-required="true"
                                             :options="actions"

@@ -1,6 +1,7 @@
 // @flow
 const _ = require('lodash');
 const Request = require('superagent');
+const Dot = require('dot-object');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
 const ConditionValidator = require('../entities/pipeline/pipeline');
@@ -20,7 +21,9 @@ class Workflow {
 
     static async _get_workflows_from_entity(entity: string): Object {
         const workflows = await EntitiesUtils.search_and_get_sources('workflow', {
-            where: entity,
+            where: {
+                $and: [ { entity } ]
+            },
             size: 100,
         });
         return workflows;
@@ -45,10 +48,23 @@ class Workflow {
     }
 
     static async _ok_condition(condition: string, item: Object): boolean {
+        if (condition === "true") {
+            console.log("condition is true !");
+            return true;
+        }
         const validator = new Validator();
-        const joi_condition = ConditionValidator.compute_condition({ field: condition });
+        const joi_condition = ConditionValidator.compute_conditions(condition);
+        // convert to dot object for joi to validate deep keys
+        console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
+        console.log("object : ", JSON.stringify(Dot.dot(item), null, 2));
+        const options =  {
+            allowUnknown: true,
+            abortEarly: false,
+            convert: false,
+            debug: true,
+        };
         const errorsValidation = await validator
-            .validate(item, [joi_condition]);
+            .validate(Dot.dot(item), [joi_condition], options);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
@@ -61,6 +77,7 @@ class Workflow {
             return;
         }
         item.state = action.state;
+        /*
         const url = 'http://localhost:'+config.port+'/api/public/v2/'+entity;
         try {
             await Request.put(url).set('Accept', 'application/json').send(item);
@@ -68,6 +85,9 @@ class Workflow {
             Logger.error(`Unable to process action entity`);
             Logger.error(JSON.stringify(err));
         }
+         */
+        const workflow = new Workflow();
+        workflow.run(entity, item);
     }
 
     static async _process_email(action: Object) {
@@ -165,7 +185,6 @@ class Workflow {
     }
 
     async run(entity: string, item: Object): string {
-        Logger.info("run workflow");
         const workflows = await Workflow._get_workflows_from_entity(entity);
         const state_before = await Workflow._get_state_before_modification(entity, item);
         const state_after = item.state;

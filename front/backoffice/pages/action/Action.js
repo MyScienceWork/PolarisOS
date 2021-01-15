@@ -1,5 +1,6 @@
 const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
+const Messages = require('../../../common/api/messages');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
@@ -27,8 +28,8 @@ module.exports = {
                         entity_state: 'entity_state_read',
                     },
                     creations: {
-                        search: 'action_creation_search',
                         action: 'action_creation',
+                        search: 'action_creation_search',
                     },
                 },
                 selected_type: '',
@@ -65,14 +66,7 @@ module.exports = {
         },
     },
     mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.mail_template,
-            path: this.state.paths.reads.mail_template,
-            body: {
-                size: 10000,
-            },
-        });
-        ['entity'].forEach((e) => {
+        ['entity', 'action', 'mail_template'].forEach((e) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
@@ -82,9 +76,18 @@ module.exports = {
             });
         });
     },
+    watch: {
+    },
     computed: {
         emails() {
             const content = this.fcontent(this.state.sinks.reads.mail_template);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
+        },
+        actions() {
+            const content = this.mcontent(this.state.sinks.reads.action);
             if (content instanceof Array) {
                 return content;
             }
@@ -103,6 +106,13 @@ module.exports = {
                 const entity_state = this.fcontent(this.state.sinks.reads.action)[0].entity_state;
                 this.update_entity_states_labels(entity_state);
             }
+
+            const content_action = this.fcontent(this.state.sinks.reads.action);
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.creations.action,
+                body: content_action,
+            });
+
             if (content instanceof Array) {
                 return content;
             }

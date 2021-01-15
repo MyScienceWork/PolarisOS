@@ -233,7 +233,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden' || this.type === 'date') {
+                if (this.type === 'hidden' || this.type === 'date' || this.type === 'checkbox') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,

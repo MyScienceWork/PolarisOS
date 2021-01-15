@@ -178,12 +178,9 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
-    static compute_condition(v) {
-        const splitted_field = v.field.split(' ');
+    static compute_conditions_part(v) {
+        const splitted_field = v.trim().split(' ');
 
-        if (splitted_field.length !== 3) {
-            return;
-        }
         const left_sign = splitted_field[0];
         const condition = splitted_field[1];
         let right_sign = splitted_field[2];
@@ -200,11 +197,11 @@ class Pipeline extends ODM {
             case '=':
                 if (has_boolean) {
                     result = Joi.object({
-                        [left_sign]: Joi.boolean().valid(right_sign).required(),
+                        [left_sign]: Joi.boolean().valid(right_sign).default(false),
                     });
                 } else {
                     result = Joi.object({
-                        [left_sign]: Joi.valid(right_sign),
+                        [left_sign]: Joi.valid(right_sign).required(),
                     });
                 }
 
@@ -236,8 +233,30 @@ class Pipeline extends ODM {
             default:
                 break;
         }
-        logger.info("compute_condition : ", JSON.stringify(result));
+        //logger.info("compute_condition : ", JSON.stringify(result));
         return result;
+    }
+
+    static compute_conditions(v) {
+        const splitted_field = v.trim().split(' ');
+
+        if (splitted_field.length !== 3 && splitted_field.includes("&&")) {
+            const splitted_els = v.split('&&');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" && ");
+            return Pipeline.compute_conditions(end_elements).concat(Pipeline.compute_conditions_part(splitted_els[0]));
+
+        } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
+            const splitted_els = v.split('||');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" || ");
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                || Pipeline.compute_conditions(end_elements);
+        }
+
+        return Pipeline.compute_conditions_part(v);
     }
 
     static async generate_validators(source: Object): Promise<Array<any>> {
@@ -266,7 +285,7 @@ class Pipeline extends ODM {
                     myinfo = Joi.string().uri();
                     break;
                 case 'condition':
-                    myinfo = Pipeline.compute_condition(v);
+                    myinfo = Pipeline.compute_conditions(v.field);
                     break;
                 default:
                     myinfo = Joi.any();
