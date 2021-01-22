@@ -93,6 +93,10 @@ module.exports = {
             if (_.isObject(e) && 'target' in e) {
                 if (this.type === 'checkbox') {
                     info = e.target.checked;
+                    this.$emit('checkbox-value-change', {
+                        value: info,
+                        name: this.name,
+                    });
                 } else {
                     info = e.target.value;
                 }

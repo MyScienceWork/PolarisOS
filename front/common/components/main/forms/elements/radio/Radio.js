@@ -97,13 +97,16 @@ module.exports = {
         },
         onChange(val) {
             if (!this.readonly) {
-                this.$emit('select-change', val);
+                this.$emit('select-change', {
+                    value: val,
+                    name: this.name,
+                });
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: this.extract_values(val),
                 });
-                this.state.selected= {};
+                this.state.selected = {};
                 this.state.selected.value = this.extract_values(val);
             }
         },

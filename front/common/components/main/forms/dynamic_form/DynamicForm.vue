@@ -42,7 +42,7 @@
                     :type="field.type"
                     :form="cform"
                     :is-addon="true"
-                    :readonly="readonly || field.readonly"
+                    :readonly="readonly || field.readonly  || compute_conditional_readonly(field.conditional_readonly, i)"
                     :duplicate_warning="field.duplicate_warning"
                     :is-required="field.required"
                     :key="get_name(field.name)"
@@ -55,6 +55,7 @@
                     :min-date="field.range ? state.selected_date[field.range.start_date] : null"
                     :max-date="field.range ? state.selected_date[field.range.end_date] : null"
                     @date-value-change="update_date"
+                    @checkbox-value-change="update_checkbox"
                     />
                     <finput
                     v-else-if="['hidden'].indexOf(field.type) !== -1"
@@ -87,7 +88,7 @@
                     :ajax-value-url="generate_ajax_url(field, 'value')"
                     :is-addon="true"
                     :conditional-readonly="field.conditional_readonly"
-                    :readonly="readonly || field.readonly"
+                    :readonly="readonly || field.readonly "
                     :is-required="field.required"
                     :key="get_name(field.name)"
                     :multi="field.type === 'multi-select'"
@@ -102,6 +103,7 @@
                     />
                     <fradio
                     v-else-if="field.type === 'radio'"
+                    :key="get_name(field.name)"
                     :label="lang(field.label || '')"
                     :name="get_name(field.name)"
                     :form="cform"
@@ -111,7 +113,7 @@
                     :ajax="field.datasource.ajax"
                     :ajax-url="generate_ajax_url(field)"
                     :ajax-value-url="generate_ajax_url(field, 'value')"
-                    :readonly="readonly || field.readonly"
+                    :readonly="readonly || field.readonly || compute_conditional_readonly(field.conditional_readonly, i)"
                     :is-required="field.required"
                     :help="field.help ? field.help.content : ''"
                     :modal_help="field.help ? field.help.use_modal : false"
@@ -368,7 +370,7 @@
             :type="field.type"
             :form="cform"
             :key="get_name(field.name)"
-            :readonly="readonly || field.readonly"
+            :readonly="readonly || field.readonly "
             :duplicate_warning="field.duplicate_warning"
             :is-required="field.required"
             :help="field.help ? field.help.content : ''"

@@ -39,6 +39,10 @@ module.exports = {
                         dynamic_list: {},
                     },
                 },
+                last_changed_input: {
+                    value: null,
+                    name: '',
+                },
             },
         };
     },
@@ -399,6 +403,19 @@ module.exports = {
         on_update_data_from_api(data) {
             this.update_rows_from_api(data.data, data.name);
         },
+        update_checkbox(info) {
+            const { value, name } = info;
+            this.state.last_changed_input.name = name;
+            this.state.last_changed_input.value = value;
+        },
+        translate_conditional_readonly(field_conditional_readonly) {
+            const name = field_conditional_readonly.substr(0, field_conditional_readonly.indexOf('=')).replace(/\s+/g, '');
+            const value = field_conditional_readonly.substr(field_conditional_readonly.indexOf('=') + 1, field_conditional_readonly.size()).replace(/\s+/g, '');
+            return {
+                name,
+                value,
+            };
+        },
     },
     watch: {
         content_dynamic_list(datas) {
@@ -422,6 +439,24 @@ module.exports = {
         },
         content_dynamic_list() {
             return this.fcontent(this.state.sinks.reads.dynamic_list);
+        },
+        compute_conditional_readonly(field_conditional_readonly, i) {
+            console.log(field_conditional_readonly, i);
+            if (!field_conditional_readonly.includes('=')) {
+                return false;
+            }
+            const compare = this.translate_conditional_readonly(field_conditional_readonly);
+            if (compare.name !== this.state.last_changed_input.name) {
+                return false;
+            }
+            const { value } = compare;
+            if (value === 'true') {
+                return this.state.last_changed_input.value;
+            }
+            if (value === 'false') {
+                return !this.state.last_changed_input.value;
+            }
+            return value === this.state.last_changed_input.value;
         },
     },
 };
