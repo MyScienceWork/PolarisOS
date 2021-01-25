@@ -16,7 +16,7 @@
                   :form="state.sinks.reads.publication_group"
                   name="group"
                   fieldLabel="label"
-                  fieldValue="value"
+                  fieldValue="_id"
                   :view-validation-texts="false"
                   :translatable="true"
                   @select-change="publication_group_change"
