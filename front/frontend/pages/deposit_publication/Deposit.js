@@ -16,7 +16,7 @@ module.exports = {
             state: {
                 sinks: {
                     creations: {
-                        publication: 'publication',
+                        publication: 'publication_creation',
                     },
                     reads: {
                         user_forms: 'user_forms_read',
@@ -124,7 +124,7 @@ module.exports = {
         creation_date() {
             return Handlebars.compile('{{moment unix=true}}')({});
         },
-        publication_group() {
+        publication_group_options() {
             const content = this.fcontent(this.state.sinks.reads.publication_group);
             if (!(content instanceof Array)) {
                 return [];

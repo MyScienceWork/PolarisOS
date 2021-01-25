@@ -12,8 +12,8 @@
                 <fselect
                   :label="lang('f_choose_publication_group')"
                   :is-required="true"
-                  :options="publication_group"
-                  :form="state.sinks.reads.publication_group"
+                  :options="publication_group_options"
+                  :form="state.sinks.creations.publication"
                   name="group"
                   fieldLabel="label"
                   fieldValue="_id"
