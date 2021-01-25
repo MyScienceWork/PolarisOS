@@ -22,13 +22,7 @@
                   @select-change="publication_group_change"
                 />
                 <div
-                  v-if="
-                    !show_form() ||
-                    (
-                    state.selected_publication_form !== '' &&
-                    Object.keys(user_forms(state.selected_publication_form)).length
-                     ) === 0
-                  "
+                  v-if="!show_form() || Object.keys(user_forms(state.selected_publication_form)).length === 0"
                   class="column"
                 >
                   <div class="columns is-centered">

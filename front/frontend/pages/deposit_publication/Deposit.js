@@ -76,6 +76,8 @@ module.exports = {
             this.state.selected_publication_group = '';
         },
         review_publication() {
+            //TODO
+            /*
             const content = this.fcontent(this.state.sinks.creations.publication);
             console.log("BRYAN content : ", content);
             this.$store.dispatch('update', {
@@ -83,6 +85,7 @@ module.exports = {
                 path: this.state.paths.creations.publication,
                 body: content,
             });
+             */
         },
         publication_group_change(form) {
             if (!form || !form.value || form.value === {}) {
@@ -133,10 +136,7 @@ module.exports = {
             console.log("BRYAN3 show_form");
             // now get name of the form
             const forms = this.fcontent(this.state.sinks.reads.publication_group);
-            let form_name;
-            if (forms instanceof Array) {
-                form_name = forms.find(my_form => my_form._id === form.group).value;
-            } else {
+            if (!(forms instanceof Array)) {
                 return () => false;
             }
             console.log("BRYAN4 show_form");
