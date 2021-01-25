@@ -13,7 +13,7 @@
                   :label="lang('f_choose_publication_group')"
                   :is-required="true"
                   :options="publication_group_options"
-                  :form="state.sinks.creations.publication"
+                  :form="state.sinks.creations.publication_group"
                   name="group"
                   fieldLabel="label"
                   fieldValue="_id"
@@ -23,8 +23,11 @@
                 />
                 <div
                   v-if="
+                    !show_form() ||
+                    (
                     state.selected_publication_form !== '' &&
-                    Object.keys(user_forms(state.selected_publication_form)).length === 0
+                    Object.keys(user_forms(state.selected_publication_form)).length
+                     ) === 0
                   "
                   class="column"
                 >
@@ -47,14 +50,20 @@
                       :form="user_forms(state.selected_publication_form)"
                       :cform="state.sinks.creations.publication"
                     />
-                    <button
-                      v-if="is_editing()"
-                      @click.prevent="open_review_modal(props)"
-                      :disabled="success"
-                      class="button"
-                    >
-                      {{ lang("f_finish_review") }}
-                    </button>
+                    <button v-if="is_editing()"
+                            @click.prevent="back()"
+                            :disabled="success"
+                            class="button">{{lang('f_back')}}</button>
+                    <button v-if="is_editing()"
+                            @click.prevent="open_review_modal(props)"
+                            :disabled="success"
+                            class="button">{{lang('f_finish_review')}}</button>
+                    <review-modal
+                        @review-project="review_publication"
+                        :sink="state.sinks.creations.publication"
+                        :show.sync="state.show_review_modal"
+                        :status="after_status"
+                    ></review-modal>
                   </fform>
                 </div>
               </div>
