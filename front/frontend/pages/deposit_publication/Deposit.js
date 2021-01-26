@@ -24,6 +24,7 @@ module.exports = {
                         user_forms: 'user_forms_read',
                         publication: 'publication_read',
                         publication_group: 'publication_group_read',
+                        workflow: 'workflow_read',
                     },
                 },
                 paths: {
@@ -34,6 +35,7 @@ module.exports = {
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
                         publication_group: APIRoutes.entity('publication_group', 'POST', true),
+                        workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
                 statuses: {
@@ -44,6 +46,7 @@ module.exports = {
                 show_review_modal: false,
                 selected_publication_group: '',
                 selected_publication_form: '',
+                workflow_entity: 'publication',
             },
         };
     },
@@ -79,7 +82,6 @@ module.exports = {
             //TODO
             /*
             const content = this.fcontent(this.state.sinks.creations.publication);
-            console.log("BRYAN content : ", content);
             this.$store.dispatch('update', {
                 form: this.state.sinks.creations.publication,
                 path: this.state.paths.creations.publication,
@@ -127,19 +129,16 @@ module.exports = {
             if (this.state.selected_publication_form !== '') {
                 return () => true;
             }
-            console.log("BRYAN2 show_form");
             const content = this.fcontent(this.state.sinks.creations.publication);
             const form = content;
             if (!form || form.group === undefined || form.group === '') {
                 return () => false;
             }
-            console.log("BRYAN3 show_form");
             // now get name of the form
             const forms = this.fcontent(this.state.sinks.reads.publication_group);
             if (!(forms instanceof Array)) {
                 return () => false;
             }
-            console.log("BRYAN4 show_form");
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
@@ -150,17 +149,14 @@ module.exports = {
                     population: ['fields.subform', 'fields.datasource'],
                 },
             });
-            console.log("BRYAN5 show_form");
             const content_options = this.fcontent(this.state.sinks.reads.publication_group);
             if (!(content_options instanceof Array)) {
                 return () => false;
             }
-            console.log("BRYAN6 show_form");
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                 form: this.state.sinks.creations.publication_group,
                 body: { group: content.group },
             });
-            console.log("BRYAN7 show_form");
             return () => true;
         },
         publication_id() {
