@@ -59,6 +59,11 @@ module.exports = {
                         force: false,
                         title: 'l_p_title',
                     },
+                    'denormalization.state.label': {
+                        visible: true,
+                        force: false,
+                        title: 'l_p_state',
+                    },
                 },
             },
         };

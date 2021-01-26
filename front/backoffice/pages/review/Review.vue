@@ -47,6 +47,9 @@
                                 <b-table-column field="title.content" :label="lang('l_p_title')" :visible="state.columns['title'].visible">
                                     {{props.row.title | truncate(30)}}
                                 </b-table-column>
+                                <b-table-column field="denormalization.state.label" :label="lang('l_p_state')" :visible="state.columns['denormalization.state.label'].visible">
+                                    {{props.row.denormalization.state.label | truncate(40)}}
+                                </b-table-column>
                                 <b-table-column field="depositor" :label="lang('l_p_action', {}, 'other')" centered>
                                   <a target="_blank" class="has-text-green" :href="`${host}/deposit?type=review&_id=${props.row._id}`">{{lang('l_review_review_action')}}</a><br />
                                   <action-button
