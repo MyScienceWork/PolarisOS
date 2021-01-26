@@ -153,7 +153,7 @@ module.exports = {
             console.log("BRYAN5 show_form");
             const content_options = this.fcontent(this.state.sinks.reads.publication_group);
             if (!(content_options instanceof Array)) {
-                return [];
+                return () => false;
             }
             console.log("BRYAN6 show_form");
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
