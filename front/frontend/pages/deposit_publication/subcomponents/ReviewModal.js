@@ -17,9 +17,9 @@ module.exports = {
         toggle(v) {
             this.$emit('update:show', v);
         },
-        review_project() {
+        review_publication() {
             this.$emit('update:show', false);
-            this.$emit('review-project');
+            this.$emit('review-publication');
         },
     },
     computed: {

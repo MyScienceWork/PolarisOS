@@ -53,7 +53,7 @@
                             :disabled="success"
                             class="button">{{lang('f_finish_review')}}</button>
                     <review-modal
-                        @review-project="review_publication"
+                        @review-publication="review_publication"
                         :sink="state.sinks.creations.publication"
                         :show.sync="state.show_review_modal"
                         :status="after_status"
@@ -86,5 +86,5 @@
 </template>
 
 <script>
-module.exports = require("./Deposit.js");
+module.exports = require("./DepositPublication.js");
 </script>

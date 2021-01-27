@@ -58,20 +58,17 @@ module.exports = {
             let allowed_states = [];
 
             if (this.state.state_before === undefined) {
-                this.state.state_before = this.fcontent(this.state.sinks.creations.project).state;
+                this.state.state_before = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]).state;
             }
-
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
             const state_before = this.state.state_before;
             const workflow_states = this.fcontent(this.state.sinks.reads.entity_state);
-            const workflow_name = this.$route.query.workflow;
-
-            const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
-            if (idx !== -1) {
-                workflows[idx].steps.forEach((step) => {
+            const entity_workflows = _.filter(workflows, workflow => workflow.entity === this.state.workflow_entity);
+            entity_workflows.forEach((workflow) => {
+                workflow.steps.forEach((step) => {
                     allowed_states = allowed_states.concat(this.filter_roles(step, state_before));
                 });
-            }
+            });
             if (workflow_states.length > 0) {
                 allowed_states.forEach((allowed_state, key) => {
                     const id_workflow_state = workflow_states.find(workflow_state => workflow_state._id === allowed_state._id);
@@ -79,11 +76,11 @@ module.exports = {
                         allowed_states[key].label = id_workflow_state.label;
                     }
                 });
-            } else if (idx !== -1) {
+            } else {
                 // search entity_state
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(workflows[idx].entity_state, 'POST', true),
+                    path: APIRoutes.entity(workflows[0].entity_state, 'POST', true),
                     body: {
                         size: 10000,
                     },

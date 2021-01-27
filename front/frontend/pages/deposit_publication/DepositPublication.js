@@ -54,6 +54,15 @@ module.exports = {
         is_editing() {
             return this.$route.query && this.$route.query._id;
         },
+        review_publication() {
+            console.log("review publication");
+            const content = this.fcontent(this.state.sinks.creations.publication);
+            this.$store.dispatch('update', {
+                form: this.state.sinks.creations.publication,
+                path: this.state.paths.creations.publication,
+                body: content,
+            });
+        },
         show_error(sink) {
             if (sink === this.state.sinks.creations.publication) {
                 this.state.statuses.creations.publication = 'nok';
@@ -77,17 +86,6 @@ module.exports = {
             // init publication type form choices
             this.state.selected_publication_form = '';
             this.state.selected_publication_group = '';
-        },
-        review_publication() {
-            //TODO
-            /*
-            const content = this.fcontent(this.state.sinks.creations.publication);
-            this.$store.dispatch('update', {
-                form: this.state.sinks.creations.publication,
-                path: this.state.paths.creations.publication,
-                body: content,
-            });
-             */
         },
         publication_group_change(form) {
             if (!form || !form.value || form.value === {}) {

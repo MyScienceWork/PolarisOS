@@ -56,8 +56,8 @@
                 </div>
             </div>
             <footer class="modal-card-foot">
-            <button class="button is-info" @click.prevent="review_project">{{lang('b_validate')}}</button>
-                <button class="button" @click.prevent="toggle(false)">{{lang('b_cancel')}}</button>
+              <button class="button is-info" @click.prevent="review_publication">{{lang('b_validate')}}</button>
+              <button class="button" @click.prevent="toggle(false)">{{lang('b_cancel')}}</button>
             </footer>
         </div>
     </b-modal>
