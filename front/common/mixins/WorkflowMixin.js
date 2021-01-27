@@ -65,6 +65,16 @@ module.exports = {
             const selected_state = workflow_states.find(workflow => (workflow._id === state));
             if (selected_state.form) {
                 this.state.selected_publication_form = selected_state.form;
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.user_forms,
+                    path: this.state.paths.reads.user_forms,
+                    body: {
+                        where: {
+                            name: [selected_state.form],
+                        },
+                        population: ['fields.subform', 'fields.datasource'],
+                    },
+                });
             }
         },
     },
@@ -72,6 +82,17 @@ module.exports = {
         dyn_form() {
             const content = this.fcontent(this.state.sinks.reads.entity_state);
             if (!(content instanceof Array)) {
+                const content_workflow = this.fcontent(this.state.sinks.reads.workflow);
+                if (!(content_workflow instanceof Array)) {
+                    return [];
+                }
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.entity_state,
+                    path: APIRoutes.entity(content_workflow[0].entity_state, 'POST', true),
+                    body: {
+                        size: 10000,
+                    },
+                });
                 return [];
             }
             return content;
@@ -98,7 +119,7 @@ module.exports = {
                         allowed_states[key].label = id_workflow_state.label;
                     }
                 });
-            } else {
+            } else if (workflows instanceof Array && workflows.length > 0) {
                 // search entity_state
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,

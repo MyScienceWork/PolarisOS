@@ -10,6 +10,7 @@
               </h4>
               <div>
                 <fselect
+                  v-if="!is_editing()"
                   :label="lang('f_choose_publication_group')"
                   :is-required="true"
                   :options="publication_group_options"
@@ -29,7 +30,7 @@
                     <loader />
                   </div>
                 </div>
-                <div v-else-if="state.selected_publication_form !== ''">
+                <div v-else>
                   <fform
                     :name="state.sinks.creations.publication"
                     :hasButtons="!is_editing()"

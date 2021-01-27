@@ -92,7 +92,7 @@ module.exports = {
         },
         publication_group_change(form) {
             if (this.is_editing()) {
-                return this.state.selected_publication_form;
+                return;
             }
             if (!form || !form.value || form.value === {}) {
                 if (this.state.selected_publication_form) {
