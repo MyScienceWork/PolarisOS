@@ -53,7 +53,29 @@ module.exports = {
             return content;
         },
     },
+    watch: {
+        dyn_form(workflow_states) {
+            if (workflow_states.length === 0) {
+                return;
+            }
+            const state = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]).state;
+            if (!state) {
+                return;
+            }
+            const selected_state = workflow_states.find(workflow => (workflow._id === state));
+            if (selected_state.form) {
+                this.state.selected_publication_form = selected_state.form;
+            }
+        },
+    },
     computed: {
+        dyn_form() {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
         after_status() {
             let allowed_states = [];
 

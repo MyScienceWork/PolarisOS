@@ -24,7 +24,6 @@ module.exports = {
                         user_forms: 'user_forms_read',
                         publication: 'publication_read',
                         publication_group: 'publication_group_read',
-                        workflow: 'workflow_read',
                     },
                 },
                 paths: {
@@ -35,7 +34,6 @@ module.exports = {
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
                         publication_group: APIRoutes.entity('publication_group', 'POST', true),
-                        workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
                 statuses: {
@@ -86,8 +84,16 @@ module.exports = {
             // init publication type form choices
             this.state.selected_publication_form = '';
             this.state.selected_publication_group = '';
+
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.creations.publication_group,
+                body: undefined,
+            });
         },
         publication_group_change(form) {
+            if (this.is_editing()) {
+                return this.state.selected_publication_form;
+            }
             if (!form || !form.value || form.value === {}) {
                 if (this.state.selected_publication_form) {
                     this.state.selected_publication_form = '';

@@ -1,6 +1,5 @@
 // @flow
 const _ = require('lodash');
-const Request = require('superagent');
 const Dot = require('dot-object');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
@@ -9,7 +8,6 @@ const MailerUtils = require('../utils/mailer');
 const Config = require('../../config');
 const LangUtils = require('../utils/lang');
 const Handlebars = require('../utils/templating');
-const config = require('../../config');
 const Logger = require('../../logger');
 
 /**
