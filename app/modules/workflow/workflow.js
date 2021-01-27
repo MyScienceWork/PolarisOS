@@ -77,15 +77,6 @@ class Workflow {
             return;
         }
         item.state = action.state;
-        /*
-        const url = 'http://localhost:'+config.port+'/api/public/v2/'+entity;
-        try {
-            await Request.put(url).set('Accept', 'application/json').send(item);
-        } catch (err) {
-            Logger.error(`Unable to process action entity`);
-            Logger.error(JSON.stringify(err));
-        }
-         */
         const workflow = new Workflow();
         workflow.run(entity, item);
     }
@@ -177,20 +168,21 @@ class Workflow {
         }
     }
 
-    static async _initialize_state(workflow: Object, item: Object, entity: string) {
+    static _initialize_state(workflow: Object, item: Object, entity: string) {
         if (!workflow.initial_state) {
             return;
         }
         item.state = workflow.initial_state;
     }
 
-    async run(entity: string, item: Object): string {
+    async run(item: Object, entity: string, Pipeline, pipelines, method, range, extra): string {
         const workflows = await Workflow._get_workflows_from_entity(entity);
         const state_before = await Workflow._get_state_before_modification(entity, item);
         const state_after = item.state;
 
-        workflows.forEach(workflow => {
-            workflow.steps.forEach(step => {
+        for (let workflow of workflows) {
+            const steps = workflow.steps;
+            for (let step of steps) {
                 const run_transition_step = (
                     step.type === "transition"
                     && step.state_before.findIndex(state => state._id === state_before) !== -1
@@ -203,10 +195,14 @@ class Workflow {
                 Logger.info("run transition step : ", run_transition_step);
                 Logger.info("run state step : ", run_state_step);
                 if (run_transition_step || run_state_step) {
-                    Workflow._run_transition(step, item, entity);
+                    await Workflow._run_transition(step, item, entity);
                 } else if (state_after === undefined) {
                     Logger.info("initialize state");
                     Workflow._initialize_state(workflow, item, entity);
+                    
+                    // run again pipeline if we need to denormalize new state
+                    item = await Pipeline.run(item, entity, pipelines, method, range, extra);
+
                     const new_state_after = item.state;
                     const run_state_step = (
                         step.type === "state"
@@ -215,8 +211,9 @@ class Workflow {
                         Workflow._run_transition(step, item, entity);
                     }
                 }
-            });
-        });
+            }
+        }
+        return item;
     }
 }
 
