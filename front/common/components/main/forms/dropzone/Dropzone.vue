@@ -133,7 +133,7 @@
                         <hr />
                     </div>
                 </div>
-                <div v-else>
+                <div v-else-if="!emptyValue">
                     <table class="table is-fullwidth is-striped">
                         <thead>
                             <tr>

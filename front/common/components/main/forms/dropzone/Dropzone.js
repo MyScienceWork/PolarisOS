@@ -169,6 +169,9 @@ module.exports = {
         }
     },
     computed: {
+        emptyValue() {
+            return this.state.files.order.length === 0;
+        },
         keeperContent() {
             if (this.keeper in this.$store.state.forms) {
                 return this.$store.state.forms[this.keeper].content;
