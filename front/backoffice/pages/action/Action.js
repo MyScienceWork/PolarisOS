@@ -107,12 +107,6 @@ module.exports = {
                 this.update_entity_states_labels(entity_state);
             }
 
-            const content_action = this.fcontent(this.state.sinks.reads.action);
-            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                form: this.state.sinks.creations.action,
-                body: content_action,
-            });
-
             if (content instanceof Array) {
                 return content;
             }
