@@ -19,16 +19,21 @@ class Workflow {
     _method: Object;
     _range: Object;
     _extra: Object;
+    _item: Object;
+    _type: Object;
 
-    constructor(Pipeline: Object, pipelines, method, range, extra) {
+    constructor(Pipeline: Object, pipelines, method, range, extra, result, type) {
         this._Pipeline = Pipeline;
         this._pipelines = pipelines;
         this._method = method;
         this._range = range;
         this._extra = extra;
+        this._item = result;
+        this._type = type;
     }
 
-    async _get_workflows_from_entity(entity: string): Object {
+    async _get_workflows_from_entity(): Object {
+        const entity = this._type;
         const workflows = await EntitiesUtils.search_and_get_sources('workflow', {
             where: {
                 $and: [ { entity } ]
@@ -38,25 +43,25 @@ class Workflow {
         return workflows;
     }
 
-    async _get_state_before_modification(entity: string, item: Object): string {
-        const id_entity = item._id;
+    async _get_state_before_modification(): string {
+        const id_entity = this._item._id;
         if (!id_entity) {
             return undefined;
         }
-        const info = await EntitiesUtils.search(entity, {
+        const info = await EntitiesUtils.search(this._type, {
             where: {
                 _id: id_entity,
             }
         });
-        item._id = id_entity;
+        this._item._id = id_entity;
         const hits = EntitiesUtils.get_hits(info);
         if (hits.length > 0) {
             return hits[0].source.state;
         }
-        return undefined;
+        return this._item.state;
     }
 
-    async _ok_condition(condition: string, item: Object): boolean {
+    async _ok_condition(condition: string): boolean {
         if (condition === "true") {
             console.log("condition is true !");
             return true;
@@ -65,7 +70,7 @@ class Workflow {
         const joi_condition = ConditionValidator.compute_conditions(condition);
         // convert to dot object for joi to validate deep keys
         console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
-        console.log("object : ", JSON.stringify(Dot.dot(item), null, 2));
+        console.log("object : ", JSON.stringify(Dot.dot(this._item), null, 2));
         const options =  {
             allowUnknown: true,
             abortEarly: false,
@@ -73,7 +78,7 @@ class Workflow {
             debug: true,
         };
         const errorsValidation = await validator
-            .validate(Dot.dot(item), [joi_condition], options);
+            .validate(Dot.dot(this._item), [joi_condition], options);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
@@ -82,12 +87,13 @@ class Workflow {
         return true;
     }
 
-    async _change_state(action: Object, item: Object, entity: string) {
+    async _change_state(action: Object) {
+        console.log("action : ", action);
         if (!action.state) {
             return;
         }
-        item.state = action.state;
-        return this.run(item, entity);
+        this._item.state = action.state;
+        await this.run();
     }
 
     async _process_email(action: Object) {
@@ -95,7 +101,6 @@ class Workflow {
             Logger.error("no recipient found")
             return;
         }
-
 
         const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
             where:
@@ -130,7 +135,7 @@ class Workflow {
         await MailerUtils.send_email_with(default_sender, action.recipient, subject, body)
     }
 
-    async _process_action(action: string, item: Object, entity: string) {
+    async _process_action(action: string) {
         const info = await EntitiesUtils.search('action', {
             where: {
                 _id: action,
@@ -148,55 +153,50 @@ class Workflow {
                 await this._process_email(maction);
             case 'change_state':
                 Logger.info("process change state : ", JSON.stringify(maction));
-                item = await this._change_state(maction, item, entity);
+                Logger.info("process change item : ", JSON.stringify(this._item));
+                await this._change_state(maction);
         }
-        return item;
     }
 
 
-    async _run_actions(actions: Array, item: Object, entity: String) {
+    async _run_actions(actions: Array) {
         if (actions.length === 0) {
             Logger.info("no actions to run")
             return;
         }
 
         for (let action of actions) {
-            Logger.info("run action");
-            item = await this._process_action(action._id, item, entity);
+            await this._process_action(action._id);
         }
-        return item;
     }
 
-    async _run_transition(step: Object, item: Object, entity: string) {
+    async _run_transition(step: Object) {
         if (!step.conditions) {
             return;
         }
         for (const condition of step.conditions) {
             if (condition.condition) {
-                const action_condition_validated = await this._ok_condition(condition.condition, item);
+                const action_condition_validated = await this._ok_condition(condition.condition);
                 Logger.info("transition condition : ", condition.condition);
-                Logger.info("transition item : ", JSON.stringify(item));
                 Logger.info("transition condition result : ", action_condition_validated);
                 if (action_condition_validated) {
-                    Logger.info("run actions...");
-                    item = await this._run_actions(condition.actions, item, entity);
+                    await this._run_actions(condition.actions);
                 }
             }
         }
-        return item;
     }
 
-    _initialize_state(workflow: Object, item: Object, entity: string) {
+    _initialize_state(workflow: Object) {
         if (!workflow.initial_state) {
             return;
         }
-        item.state = workflow.initial_state;
+        this._item.state = workflow.initial_state;
     }
 
-    async run(item: Object, entity: string): string {
-        const workflows = await this._get_workflows_from_entity(entity);
-        const state_before = await this._get_state_before_modification(entity, item);
-        let state_after = item.state;
+    async run(): string {
+        const workflows = await this._get_workflows_from_entity();
+        const state_before = await this._get_state_before_modification();
+        let state_after = this._item.state;
 
         for (let workflow of workflows) {
             const steps = workflow.steps;
@@ -212,27 +212,27 @@ class Workflow {
                 );
                 Logger.info("run transition step : ", run_transition_step);
                 Logger.info("run state step : ", run_state_step);
-                state_after = item.state;
+                state_after = this._item.state;
                 if (run_transition_step || run_state_step) {
-                    item = await this._run_transition(step, item, entity);
+                    await this._run_transition(step);
                     // run again pipeline if we need to denormalize new state
-                    item = await this._Pipeline.run(item, entity, this._pipelines, this._method, this._range, this._extra);
+                    this._item = await this._Pipeline.run(this._item, this._type, this._pipelines, this._method, this._range, this._extra);
                 } else if (state_after === undefined) {
                     Logger.info("initialize state");
-                    this._initialize_state(workflow, item, entity);
-                    const new_state_after = item.state;
+                    this._initialize_state(workflow);
+                    const new_state_after = this._item.state;
                     const run_state_step = (
                         step.type === "state"
                         && step.state_after.findIndex(state => state._id === new_state_after) !== -1);
                     if (run_state_step) {
-                        item = await this._run_transition(step, item, entity);
+                        await this._run_transition(step);
                         // run again pipeline if we need to denormalize new state
-                        item = await this._Pipeline.run(item, entity, this._pipelines, this._method, this._range, this._extra);
+                        this._item = await this._Pipeline.run(this._item, this._type, this._pipelines, this._method, this._range, this._extra);
                     }
                 }
             }
         }
-        return item;
+        return this._item;
     }
 }
 
