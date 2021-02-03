@@ -9,9 +9,20 @@ module.exports = {
                         _id: 'role',
                     },
                     author: 'author',
+                    countries: {
+                        _id: 'country',
+                    },
                 },
             },
             properties: {
+                countries: {
+                    type: 'nested',
+                    properties: {
+                        _id: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 created_at: {
                     type: 'date',
                 },

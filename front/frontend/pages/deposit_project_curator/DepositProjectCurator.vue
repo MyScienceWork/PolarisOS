@@ -39,7 +39,7 @@
                                 <div v-if="historys" slot="body">
                                     <widget v-for="history in historys" :collapsed="false">
                                         <strong v-if="history.denormalization" slot="title">
-                                            <time class="is-pulled-right" :datetime="history.date">{{history.date | format_date('LLL')}}</time>
+                                            <time class="is-pulled-right" :datetime="history.updated_date">{{history.updated_date | format_date('LLL')}}</time>
                                             {{lang('l_step')}} {{lang(history.step)}} - {{lang(history.denormalization.label)}}</strong>
                                         <div slot="body">
                                             <strong slot="title">{{history.comment}}</strong>

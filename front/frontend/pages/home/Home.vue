@@ -1,6 +1,12 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
+        <div class="columns is-centered">
+            <div class="column is-8 has-text-left">
+                <p v-html="lang('l_homepage_notice')"></p>
+            </div>
+        </div>
+<!--
         <div class="columns">
             <div class="column is-6">
                 <card color="orange" class="card-equal-height">
@@ -20,11 +26,9 @@
                         <div class="level has-medium-bottom-margin has-medium-top-margin">
                             <div class="level-left">
                             </div>
-                            <!--
                             <div class="level-right">
                                 <router-link class="level-item" to="/">{{lang('l_see_more')}}</router-link>
                             </div>
-                            -->
                         </div>
                     </div>
                 </card>
@@ -62,6 +66,7 @@
                 </div>
             </div>
         </div>
+-->
     </div>
 </div>
 </template>

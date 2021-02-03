@@ -103,6 +103,16 @@
                                     :form="state.sinks.creations.user"
                                     :options="langs"
                             />
+                            <fselect
+                                    name="countries"
+                                    :label="lang('l_country')"
+                                    :options="countries"
+                                    :form="state.sinks.creations.user"
+                                    fieldValue="_id"
+                                    fieldLabel="label"
+                                    :multi="true"
+                                    :translatable="true"
+                            />
                             <finput :help="lang('l_backoffice_uid_help')" name="uid" :label="lang('l_uid')" :placeholder="lang('l_uid')" type="text" :form="state.sinks.creations.user" />
                             <finput :help="lang('l_backoffice_iid_help')" name="iid" :label="lang('l_iid')" :placeholder="lang('l_iid')" type="text" :form="state.sinks.creations.user" />
                             <finput

@@ -5,7 +5,9 @@ const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const LangMixin = require('../../../../../mixins/LangMixin');
+const ESQueryMixin = require('../../../../../mixins/ESQueryMixin');
 const ASCIIFolder = require('fold-to-ascii');
+const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
     props: {
@@ -39,11 +41,12 @@ module.exports = {
         searchFields: { default: '', type: String },
         searchSize: { default: 10, type: Number },
         flattenList: { default: false, type: Boolean },
+        ajaxQuery: { default: '', type: String },
     },
     components: {
         'v-select': VSelect,
     },
-    mixins: [InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin, ESQueryMixin],
     data() {
         return {
             state: {
@@ -51,6 +54,7 @@ module.exports = {
                 options: [],
                 showHelpModal: false,
                 form: `${this.name}_${+moment()}`,
+                es_query_ids: this.ajaxQuery !== null ? [this.ajaxQuery] : [],
                 readonlyValue: '',
             },
         };
@@ -163,6 +167,16 @@ module.exports = {
                 body.where = {
                     $and: [body.where].concat(self.ajaxFilters),
                 };
+            }
+
+            const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber[btoa(self.name)]);
+
+            if (contentQuery) {
+                if (contentQuery && contentQuery instanceof Array
+                    && contentQuery.length > 0
+                    && contentQuery.find(elm => elm.id === self.ajaxQuery)) {
+                    body.where = _.merge(body.where, JSON.parse(Handlebars.compile(contentQuery.find(elm => elm.id === self.ajaxQuery).content)({ search })));
+                }
             }
 
             const promise = self.$store.dispatch('search', {
@@ -337,7 +351,7 @@ module.exports = {
             } else if (this.state.selected_readonly) {
                 this.state.readonlyValue = selected_readonly.label;
             } else {
-                this.state.readonlyValue = ''
+                this.state.readonlyValue = '';
             }
         },
     },
