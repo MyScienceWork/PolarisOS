@@ -23,6 +23,7 @@ const URLUtils = require('../../../utils/url');
 const Json2Xml = require('json2xml');
 const XLSXParser = require('node-xlsx');
 const BibliographicExporter = require('../bibliographic_exporter');
+const DataciteDataset = require('./datacite_dataset');
 
 ExtraCSLStyles.add_styles(Cite, ExtraCSLStyles.styles);
 
@@ -419,7 +420,7 @@ async function transform_to_csl_json(publications: Array<Object>,
     return results;
 }
 
-function export_information(): Function {
+function export_publication_information(): Function {
     return async (ctx: Object): Promise<any> => {
         const body = ctx.request.body;
 
@@ -516,6 +517,89 @@ function export_information(): Function {
     };
 }
 
+function export_dataset_information(): Function {
+    return async (ctx: Object): Promise<any> => {
+        const body = ctx.request.body;
+
+        const type = body.type;
+        const ids = body.ids;
+
+        if (type == null) {
+            ctx.body = {};
+            return;
+        }
+
+        if (ids == null || ids.length === 0) {
+            ctx.body = {};
+            return;
+        }
+
+        const infos = await EntitiesUtils.search('dataset', {
+            where: {
+                _id: ids,
+            },
+        });
+
+        const dataset = EntitiesUtils.get_hits(infos)[0];
+
+        let results = '';
+        let ext = '.xml';
+
+        switch (type) {
+            default:
+            case 'dataset':
+                const my_datacite = new DataciteDataset()
+                results = await my_datacite.to_datacite(dataset);
+                ext = '.xml';
+                break;
+        }
+
+        const s = new Readable();
+        s.push(results);
+        s.push(null);
+
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${ext}`);
+        ctx.statusCode = 200;
+        ctx.body = s;
+    };
+}
+
+
+async function export_bibliography_for_website(ctx: Object): Promise<any> {
+    const query = ctx.query;
+    const lang = query.language || ['EN'];
+    const csl = query.csl || ['ined_apa'];
+    const options = {
+        types: query.typology,
+        subtypes: query.subtypology,
+        projects: query.project,
+        authors: query.author,
+        labs: query.laboratory,
+        surveys: query.survey,
+        collections: query.internal_collection,
+        sort: query.sort,
+        export_type: query.export_type,
+        start_year: query.start_year,
+        end_year: query.end_year,
+        size: query.size,
+        group: query.group,
+        extra_filters: [{ $and: [{ status: 'published' },
+            { 'diffusion.rights.exports.website': true }] }],
+    };
+
+    const be = new BibliographicExporter(csl[0], lang[0], ctx.__md, options);
+    const result = await be.run();
+
+    if (be.filetype === '.docx') {
+        ctx.set('Content-disposition', `attachment; filename=pos_exports${be.filetype}`);
+        ctx.statusCode = 200;
+        ctx.body = result;
+    } else {
+        ctx.type = 'text/html';
+        ctx.body = result;
+    }
+}
+
 async function export_bibliography(ctx: Object): Promise<any> {
     const query = ctx.query;
     const lang = query.language || ['EN'];
@@ -526,6 +610,7 @@ async function export_bibliography(ctx: Object): Promise<any> {
         projects: query.project,
         authors: query.author,
         labs: query.laboratory,
+        surveys: query.survey,
         collections: query.internal_collection,
         sort: query.sort,
         export_type: query.export_type,
@@ -549,6 +634,8 @@ async function export_bibliography(ctx: Object): Promise<any> {
 }
 
 module.exports = {
-    export_information,
+    export_publication_information,
+    export_dataset_information,
     export_bibliography,
+    export_bibliography_for_website,
 };

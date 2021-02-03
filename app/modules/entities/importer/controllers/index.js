@@ -1,6 +1,8 @@
 // @flow
 const moment = require('moment');
 const Request = require('superagent');
+const dejats = require('dejats');
+const htmlToText = require('html-to-text');
 const EntitiesUtils = require('../../../utils/entities');
 const Config = require('../../../../config');
 const Logger = require('../../../../logger');
@@ -32,12 +34,30 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             ],
         };
 
+        if (message.language && message.language.length > 0) {
+            ctx.body.lang = message.language.toUpperCase();
+        }
+
         if (message.title && message.title.length > 0) {
             ctx.body.title = { content: message.title[0] };
         }
 
         if (message.subtitle && message.subtitle.length > 0) {
             ctx.body.subtitles = [{ content: message.subtitle[0] }];
+        }
+
+        if (message.abstract && message.abstract.length > 0) {
+            dejats(message.abstract, (err, doc) => {
+                if (err) {
+                    console.error('fail to dejat abstract : ', message.abstract);
+                } else {
+                    const html_content = doc.documentElement.innerHTML;
+                    const text_content = htmlToText.fromString(html_content, {
+                        wordwrap: false,
+                    });
+                    ctx.body.abstracts = [{ content: text_content }];
+                }
+            });
         }
 
         if (message.issued && message.issued['date-parts']
@@ -93,17 +113,26 @@ async function import_crossref(ctx: Object, info: string): Promise<any> {
             }
         }
 
-        if (message.author && message.author.length > 0) {
-            const author_search_promises = message.author.map((a) => {
-                const name = `${a.given} ${a.family}`;
-                return EntitiesUtils.search('author',
-                        { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
-            });
+        ctx.body.contributors = [];
 
-            let results = await Promise.all(author_search_promises);
-            results = results.map(r => EntitiesUtils.get_hits(r))
-            .filter(r => r != null && r.length > 0);
-            ctx.body.contributors = results.map(r => ({ label: r[0].id }));
+        if (message.author && message.author.length > 0) {
+            for (let i = 0; i < message.author.length; i++) {
+                const a = message.author[i];
+                const name = `${a.given} ${a.family}`;
+                const author_search = await EntitiesUtils.search('author',
+                    { where: { fullname: { $match: { query: name, minimum_should_match: '100%' } } }, size: 1 });
+                const hits = EntitiesUtils.get_hits(author_search);
+                if (hits.length > 0) {
+                    const results = hits.map(r => EntitiesUtils.get_hits(r))
+                        .filter(r => r != null && r.length > 0);
+                    ctx.body.contributors.push({ label: hits[0].id });
+                } else {
+                    const author_result = await EntitiesUtils.create({ firstname: a.given, lastname: a.family, fullname: name }, 'author');
+                    if (author_result) {
+                        ctx.body.contributors.push({ label: author_result._id });
+                    }
+                }
+            }
         }
         return;
     }
@@ -176,12 +205,19 @@ async function import_sherpa_romeo(ctx: Object): Promise<any> {
     const body = ctx.request.body;
     const issn = body.issn;
 
-    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?issn=';
+    const url = 'http://www.sherpa.ac.uk/romeo/api29.php?ak=hBIkszCV4ZE&issn=';
     const final_url = url + issn;
 
-    const response = await Request.get(final_url).type('xml');
-    const result = await XMLUtils.to_object(response.text);
-    ctx.body = result;
+    let response;
+    let result = {};
+    try {
+        response = await Request.get(final_url).type('xml');
+        result = await XMLUtils.to_object(response.text);
+        ctx.body = result;
+    } catch (err) {
+        Logger.error(err.message);
+        Logger.debug(err);
+    }
     return result;
 }
 

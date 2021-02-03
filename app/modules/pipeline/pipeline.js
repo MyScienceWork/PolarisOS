@@ -8,6 +8,8 @@ const Formatter = require('./formatter/formatter');
 const EntitiesUtils = require('../utils/entities');
 const Utils = require('../utils/utils');
 const Logger = require('../../logger');
+const ConditionValidator = require('../entities/pipeline/pipeline');
+const Workflow = require('../workflow/workflow');
 
 /**
  * Completion and validation pipeline
@@ -138,7 +140,7 @@ class Pipeline {
             const validator = new Validator();
             const errors = await validator
                 .validate(item, pipeline.Validation, method);
-            if (errors) {
+            if (!_.isEmpty(errors)) {
                 Logger.error('These are validation errors : ', errors);
             }
             return { item, errors };
@@ -174,10 +176,26 @@ class Pipeline {
         const prange = range.length === 0 ? _.range(0, pipelines.length) : range;
         for (const i of prange) {
             const pipeline = pipelines[i];
-            info = await Pipeline._evaluate_pipeline(info.item, extra_info, pipeline,
+            let pipeline_enabled = true;
+
+            if (pipeline.Conditions && pipeline.Conditions instanceof Array) {
+                for (const condition of pipeline.Conditions) {
+                    const validator = new Validator();
+                    const joi_condition = ConditionValidator.compute_conditions(condition);
+                    const errorsValidation = await validator
+                        .validate(item, [joi_condition]);
+                    if (!_.isEmpty(errorsValidation)) {
+                        pipeline_enabled = false;
+                    }
+                }
+            }
+
+            if (pipeline_enabled) {
+                info = await Pipeline._evaluate_pipeline(info.item, extra_info, pipeline,
                     type, action, method);
-            if (action === 'validate') {
-                errors = Utils.merge_with_concat({}, errors, info.errors);
+                if (action === 'validate') {
+                    errors = Utils.merge_with_concat({}, errors, info.errors);
+                }
             }
         }
 
@@ -220,7 +238,10 @@ class Pipeline {
             const extra = ctx.__md || {};
 
             const range = Pipeline._format_range(ctx.params.range, pipelines.length);
-            const result = await Pipeline.run(item, type, pipelines, method, range, extra);
+            let result = await Pipeline.run(item, type, pipelines, method, range, extra);
+
+            const workflow = new Workflow(Pipeline, pipelines, method, range, extra, result, type);
+            result = await workflow.run();
 
             if ('change' in result) {
                 ctx.body = result;
@@ -243,6 +264,8 @@ class Pipeline {
             if (parseInt(i, 10) % 50 === 0) {
                 Logger.info(`Bulk pipeline ${parseInt(i, 10) + 1}/${items.length}`);
             }
+
+            // check authors exist
 
             const item = items[i];
             try {

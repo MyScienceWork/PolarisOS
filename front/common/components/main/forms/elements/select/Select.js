@@ -38,7 +38,7 @@ module.exports = {
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
-        searchFields: { default: '', type: String },
+        searchFields: { default: '' },
         searchSize: { default: 10, type: Number },
         flattenList: { default: false, type: Boolean },
         ajaxQuery: { default: '', type: String },
@@ -169,7 +169,8 @@ module.exports = {
                 };
             }
 
-            const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber[btoa(self.name)]);
+
+            const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber);
 
             if (contentQuery) {
                 if (contentQuery && contentQuery instanceof Array
@@ -304,9 +305,6 @@ module.exports = {
             return options;
         },
         order_options(options) {
-            if (options instanceof Array && !this.ajax) {
-                return _.orderBy(options, ['label'], ['asc']);
-            }
             return options;
         },
         format_options(options, direction = 'to') {

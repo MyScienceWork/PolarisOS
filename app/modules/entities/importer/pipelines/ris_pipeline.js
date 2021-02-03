@@ -30,7 +30,7 @@ const mapping = {
         __default: {
             transformers: [],
             picker: (abs, pub) => {
-                const lang = pub.LA ? pub.LA[0] : 'EN';
+                const lang = pub.LA ? pub.LA[0].toUpperCase() : 'EN';
                 return { abstracts: [{ content: abs[0], lang }] };
             },
         },
@@ -102,7 +102,7 @@ const mapping = {
     LA: {
         __default: {
             transformers: [],
-            picker: l => ({ lang: l[0] }),
+            picker: l => ({ lang: l[0].toUpperCase() }),
         },
     },
     CY: {
@@ -131,10 +131,22 @@ const mapping = {
             picker: async p => ({ pagination: p[0] }),
         },
     },
+    SV: {
+        __default: {
+            transformers: [],
+            picker: async p => ({ number: p[0] }),
+        },
+    },
+    EP: {
+        __default: {
+            transformers: [],
+            picker: async p => ({ pagination_end: p[0] }),
+        },
+    },
     TI: {
         __default: {
             transformers: [],
-            picker: async (t, pub) => ({ title: { content: t[0], lang: pub.LA ? pub.LA[0] : 'EN' } }),
+            picker: async (t, pub) => ({ title: { content: t[0], lang: pub.LA ? pub.LA[0].toUpperCase() : 'EN' } }),
         },
     },
     VL: {
@@ -192,7 +204,7 @@ const mapping = {
     A3: {
         __default: {
             transformers: [],
-            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'producer' })) }),
+            picker: async contribs => ({ contributors: contribs.map(c => ({ label: c, role: 'editor' })) }),
         },
     },
 };
@@ -254,6 +266,11 @@ async function run(publication, typology, idx, maps) {
         final_publication = Utils.merge_with_concat(final_publication, subobj);
     }
 
+    if (final_publication.pagination && final_publication.pagination_end) {
+        final_publication.pagination = `${final_publication.pagination}-${final_publication.pagination_end}`;
+        delete final_publication.pagination_end;
+    }
+
     const srefs = [['editor', 'editor'], ['journal', 'journal'],
         ['institution', 'delivery_institution'],
         ['conference', 'conference']];
@@ -279,6 +296,11 @@ module.exports = {
         conference: CommonFunctions.match_search('name'),
         editor: CommonFunctions.match_search('label'),
         institution: CommonFunctions.match_search('name'),
+    },
+    post_queries: {
+        author: CommonFunctions.contributor_add,
+        journal: CommonFunctions.journal_add,
+        editor: CommonFunctions.editor_add,
     },
 
 };

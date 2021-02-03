@@ -77,12 +77,20 @@ module.exports = {
         return `${prefix}/import`;
     },
 
-    export() {
-        return `${prefix}/export`;
+    export_publication() {
+        return `${prefix}/export_publication`;
+    },
+
+    export_dataset() {
+        return `${prefix}/export_dataset`;
     },
 
     export_bibliography() {
         return `${prefix}/export/bibliography`;
+    },
+
+    export_bibliography_for_website() {
+        return `${prefix}/export/bibliography/web`;
     },
 
     export_masas() {

@@ -46,6 +46,7 @@
                             :help="filename_help(filename)"
                             :default="state.files.content[filename].name"
                             :has-addons="true"
+                            :allow-grobid="allowGrobid"
                         >
                             <template slot="input-addons">
                                 <p class="control" v-if="$store.state.global_config.upload.allowRemoveFiles && !readonly">
@@ -59,7 +60,7 @@
                                         </a>
                                     </b-tooltip>
                                 </p>
-                                <p class="control">
+                                <p class="control" v-if="allowGrobid">
                                     <b-tooltip class="is-dark" :label="lang('l_dropzone_analyze_file_help')" multilined>
                                         <a class="button is-info" @click.prevent="analyze(state.files.content[filename].pathOnServer)">
                                             <span class="icon">
@@ -75,6 +76,12 @@
                             label="" type="hidden"
                             :form="form"
                             :hidden-value="state.files.content[filename].pathOnServer || ''"
+                            />
+                        <finput
+                            :name="`${files}.${i}.preview_url`"
+                            label="" type="hidden"
+                            :form="form"
+                            :hidden-value="state.files.content[filename].previewUrl || ''"
                             />
                         <div v-if="state.files.content[filename].upload.progress < 100 && state.files.content[filename].status !== 'error'">
                             <span>{{lang('b_file_status')}} </span><progress class="progress is-link" :value="state.files.content[filename].upload.progress" max="100">{{state.files.content[filename].upload.progress}}%</progress>
@@ -104,11 +111,29 @@
                             :form="form"
                             :hidden-value="parseFloat(state.files.content[filename].size / 1024).toFixed(2)"
                         />
-
+                        <div
+                            v-if="state.files.content[filename].previewUrl"
+                            class="columns is-centered">
+                            <div class="column is-6">
+                                <img v-if="state.files.content[filename].previewUrl"
+                                     :src='`/download/${state.files.content[filename].previewUrl}`'
+                                     alt='Thumbnail' class="pos-thumbnail-preview"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            v-if="state.files.content[filename].tree">
+                            <ul>
+                                <div>{{lang('b_files')}}</div>
+                                <div v-for="file in state.files.content[filename].tree">
+                                    <li>{{file.entryName}}</li>
+                                </div>
+                            </ul>
+                        </div>
                         <hr />
                     </div>
                 </div>
-                <div v-else>
+                <div v-else-if="!emptyValue">
                     <table class="table is-fullwidth is-striped">
                         <thead>
                             <tr>
@@ -151,6 +176,13 @@
                                         label="" type="hidden"
                                         :form="form"
                                         :hidden-value="state.files.content[filename].pathOnServer || ''"
+                                        />
+                                    <finput
+                                        :readonly="readonly"
+                                        :name="`${files}.${i}.preview_url`"
+                                        label="" type="hidden"
+                                        :form="form"
+                                        :hidden-value="state.files.content[filename].previewUrl || ''"
                                         />
                                 </td>
                                 <td>{{parseFloat(state.files.content[filename].size / 1024).toFixed(2)}} KB</td>

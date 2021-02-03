@@ -43,6 +43,7 @@ module.exports = {
         minDate: { require: false, type: Date },
         maxDate: { require: false, type: Date },
         fieldId: { required: false, type: Number },
+        allowGrobid: { required: false, default: true, type: Boolean },
     },
 
     data() {
@@ -120,7 +121,12 @@ module.exports = {
                 });
             }
 
-            if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
+            if (this.type === 'number' && e.target.value === "") {
+                this.$store.commit(Messages.REMOVE_FORM_ELEMENT, {
+                    form: this.form,
+                    name: this.name,
+                });
+            } else if (this.type !== 'password-sha1' || info === null || info.trim() === '') {
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
@@ -227,7 +233,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden' || this.type === 'date') {
+                if (this.type === 'hidden' || this.type === 'date' || this.type === 'checkbox') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,

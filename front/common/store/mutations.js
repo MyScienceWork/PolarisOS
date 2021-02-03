@@ -83,29 +83,21 @@ module.exports = {
                 return;
             }
             info = _.reduce(information, (o, val) => {
-                o[Object.keys(o).length] = val;
+                if (val !== undefined) {
+                    o[Object.keys(o).length.toString()] = val;
+                }
                 return o;
             }, {});
 
-            const parent = Utils.find_object_with_path(path, content);
-            parent[path[path.length - 1]] = info;
+            const object_init = Utils.make_nested_object_from_path(path.slice(), undefined);
+            form.content = Utils.merge_with_replacement(content, object_init);
+
+            const object = Utils.make_nested_object_from_path(path.slice(), info);
+            form.content = Utils.merge_with_replacement(form.content, object);
         } else {
             const object = Utils.make_nested_object_from_path(path, info);
             form.content = Utils.merge_with_replacement(content, object);
         }
-
-
-        /* const claims = state.forms[form_name].claims;
-        form.claims = Object.assign({}, claims, { [payload.name]: 1 });
-
-
-        const intersection = Object.keys(form.claims).filter(x => x in form.elements);
-        const difference = Object.keys(form.elements).filter(x => !(x in form.claims));
-        if (intersection.length === Object.keys(form.elements).length && intersection.length > 0) {
-            Vue.nextTick(() => {
-                form.state = 'completed';
-            });
-        }*/
     },
 
     [Messages.REMOVE_FORM_ELEMENT]: (state, payload) => {

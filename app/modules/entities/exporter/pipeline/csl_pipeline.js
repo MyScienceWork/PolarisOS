@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const LangUtils = require('../../../utils/lang');
 const Utils = require('../../../utils/utils');
 
@@ -81,28 +81,28 @@ const mapping = {
     'dates.publication': {
         __default: {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-journal': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
         },
         'article-newspaper': {
             transformers: [(o) => {
-                const m = moment(o.issued);
+                const m = moment(o.issued).tz('Europe/Paris');
                 return { issued: { 'date-parts': intify_dateparts([[m.format('YYYY'), m.format('MM'), m.format('DD')]]) } };
             }],
             picker: c => ({ issued: c }),
@@ -115,8 +115,8 @@ const mapping = {
                     return null;
                 }
 
-                const start = moment(o['event-date'][0]);
-                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]) : null;
+                const start = moment(o['event-date'][0]).tz('Europe/Paris');
+                const end = o['event-date'].length === 2 ? moment(o['event-date'][1]).tz('Europe/Paris') : null;
 
                 const obj = { 'event-date': { 'date-parts': [[start.format('YYYY'), start.format('MM'), start.format('DD')]] } };
                 if (end && !end.isSame(start)) {
@@ -311,11 +311,19 @@ const mapping = {
         __default: {
             transformers: [],
             picker: async (contribs, pub) => {
-                const grabber = all => all.filter(idx => contribs[idx]
+                const grabber1 = all => all.filter(idx => contribs[idx]
                     && contribs[idx].label && contribs[idx].label.firstname
                     && contribs[idx].label.lastname)
                     .map(idx => ({ family: contribs[idx].label.lastname,
                         given: contribs[idx].label.firstname }));
+
+                const grabber2 = all => all.filter(idx => contribs[idx]
+                  && contribs[idx].label
+                  && (!contribs[idx].label.firstname || !contribs[idx].label.lastname))
+                  .map(idx => ({
+                      family: contribs[idx].label.lastname ? contribs[idx].label.lastname : '',
+                      given: contribs[idx].label.firstname ? contribs[idx].label.firstname : '',
+                  }));
 
                 const final = {};
 
@@ -330,7 +338,7 @@ const mapping = {
                 const interviewers = Utils.filterIndexes(pub.contributors, c => c.role === 'interviewer');
                 const collaborators = Utils.filterIndexes(pub.contributors, c => c.role === 'collaborator');
 
-                const fallback_authors = authors.concat(coordinators).concat(directors).concat(collaborators);
+                const fallback_authors = authors.concat(coordinators).concat(collaborators);
                 fallback_authors.sort();
                 const all = { author: fallback_authors,
                     director: directors,
@@ -344,7 +352,7 @@ const mapping = {
                 }
 
                 Object.keys(all).forEach((a) => {
-                    const end = grabber(all[a]);
+                    const end = grabber1(all[a]).concat(grabber2(all[a]));
                     if (end.length > 0) {
                         final[a] = end;
                     }

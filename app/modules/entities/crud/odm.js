@@ -209,13 +209,10 @@ class ODM {
                 _.reverse(o.hits);
             }
 
-            let entity_type = type;
-            if (type === "entity" && o.hits.length > 0) {
-                entity_type = o.hits[0].source.type
-            }
-
-            await o.hits.reduce((pr, hit) =>
-                pr.then(() => hit.post_read_hook(population, entity_type)), Promise.resolve());
+            await o.hits.reduce((pr, hit) => {
+                const entity_type = type === 'entity' ? hit.source.type : type;
+                return pr.then(() => hit.post_read_hook(population, entity_type))
+            }, Promise.resolve());
 
             o.total = response.hits.total;
             o.count = response.hits.total;
@@ -232,10 +229,11 @@ class ODM {
     static async search(index: string, type: string, client: Object, model: Object,
             search: Search, opts: Object = {}): Promise<Object> {
         const query = search.generate();
-        console.log(JSON.stringify(query));
+        // console.log(JSON.stringify(query));
         const sort = search.sort();
         const aggs = search.aggs();
         const population = 'population' in opts ? opts.population : [];
+        //console.log("this is ES body : ", JSON.stringify(query));
         const body = {
             from: 'from' in opts ? opts.from : 0,
             size: 'size' in opts ? opts.size : 1000,
@@ -273,12 +271,12 @@ class ODM {
             const req = {
                 index,
                 body,
+                requestTimeout: 600000,
             };
 
             if ('scroll' in opts) {
                 req.scroll = opts.scroll;
             }
-
             response = await client.search(req);
         }
 

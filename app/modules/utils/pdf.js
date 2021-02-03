@@ -15,7 +15,10 @@ async function transform_html_to_pdf(html) {
 }
 
 function merge_pdfs(pdfs) {
-    return PDFMerge(pdfs, { output: 'stream' });
+    return PDFMerge(pdfs, { output: 'stream',
+        paperSize: {
+            delay: 100000,
+        } });
 }
 
 module.exports = {

@@ -20,8 +20,8 @@
                     <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
                 <p v-else-if="readonly">{{readonlyValue}}</p>
-                <label v-for="(item) in state.options" class="radio">
-                    <input type="radio" :id=item.value :name="name" :value=item.value @change="onChange" :checked="set_checked(state, item)">
+                <label v-else v-for="(item) in state.options" class="radio">
+                    <input type="radio" :id="name+'_'+item.value" :name="name" :value=item.value @change="onChange" :checked="set_checked(state, item)">
                     <label :for=item.value>{{item.label}}</label>
                     <br>
                 </label>

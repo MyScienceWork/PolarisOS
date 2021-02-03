@@ -12,7 +12,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>Style based on ISO 690:2010(F), V1, derived from Mellifluo, Grolimund, Hardegger and Giraud version.</summary>
-    <updated>2018-12-04T14:14:27+00:00</updated>
+    <updated>2020-09-28T14:29:37+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -170,9 +170,6 @@
               <text macro="container-translator-macro"/>
             </group>
           </if>
-          <else-if variable="editor">
-            <text macro="editor"/>
-          </else-if>
           <else>
             <text macro="translator"/>
           </else>
@@ -205,11 +202,6 @@
         <choose>
           <if variable="container-author container-translator editor translator" match="any">
             <text macro="container-responsability"/>
-            <choose>
-              <if variable="container-title event" match="any">
-                <text value=", "/>
-              </if>
-            </choose>
           </if>
         </choose>
         <choose>

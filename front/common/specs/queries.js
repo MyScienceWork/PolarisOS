@@ -7,13 +7,28 @@ const publication_search = {
         { 'denormalization.authors._id.fullname': '{{{search}}}' },
         { 'denormalization.classifications._id.label': '{{{search}}}' },
         { 'denormalization.contributors.label.fullname': '{{{search}}}' },
-        { 'denormalization.diffusion.internal_collection': '{{{search}}}' },
+        { 'denormalization.diffusion.internal_collection2._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.projects._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.research_teams._id.name': '{{{search}}}' },
         { 'denormalization.diffusion.surveys._id.name': '{{{search}}}' },
         { 'denormalization.journal': '{{{search}}}' },
         { 'denormalization.type': '{{{search}}}' },
         { 'denormalization.subtype': '{{{search}}}' },
+        { collection: '{{{search}}}' },
+        { 'keywords.value': '{{{search}}}' },
+        { 'denormalization.demovoc_keywords._id.label': '{{{search}}}' },
+    ],
+};
+
+const dataset_search = {
+    $or: [
+        { 'title': '{{{search}}}' },
+        { 'description.description': '{{{search}}}' },
+        { 'keywords.value': '{{{search}}}' },
+        { 'related_publication.citation': '{{{search}}}' },
+        { 'denormalization.author.label.fullname': '{{{search}}}' },
+        { 'denormalization.contact.label.fullname': '{{{search}}}' },
+        { 'denormalization.subject._id.label': '{{{search}}}' }
     ],
 };
 
@@ -53,9 +68,16 @@ function viewable(uid, aid) {
 
 module.exports = {
     publication_search,
+    dataset_search,
     author_name_or_id,
     filter_out_types_and_subtypes,
     unpublished_websiteok,
+    published_dataset_search: () => ({
+        $and: [
+            { status: 'published' },
+            { $or: dataset_search.$or },
+        ],
+    }),
     published_publication_search: (uid, aid) => ({
         $and: [
             { has_other_version: false },
@@ -68,6 +90,18 @@ module.exports = {
         has_other_version: false,
     },
     viewable,
+    last_deposits: (uid, aid) => ({
+        $and: [
+            { has_other_version: false },
+            { status: 'published' },
+            viewable(uid, aid),
+        ],
+    }),
+    last_deposits_dataset: () => ({
+        $and: [
+            { status: 'published' }
+        ],
+    }),
     filter_role(userId, roles, filter) {
         if (roles.funder) {
             filter.$and.push({ depositor: userId });
@@ -123,6 +157,7 @@ module.exports = {
         };
         return this.filter_role(userId, roles, filter);
     },
+
     form: {
         $or: [
             { name: '{{{search}}}' },

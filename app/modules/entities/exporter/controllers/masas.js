@@ -1,5 +1,6 @@
 // @flow
 const moment = require('moment');
+const Config = require('../../../../config');
 const _ = require('lodash');
 const CSVStringify = require('csv-stringify');
 const Readable = require('stream').Readable;
@@ -134,8 +135,6 @@ async function export_masas(ctx: Object): Promise<any> {
     const start_year = query.start_year || [];
     const end_year = query.end_year || [];
     const export_types = query.export_type || ['csv'];
-    let size = query.size || [1000];
-    size = [Math.max(1000, parseInt(size[0], 10))];
 
     /* if (projects.length === 0 && authors.length === 0
             && labs.length === 0 && statuses.length === 0) {
@@ -193,10 +192,17 @@ async function export_masas(ctx: Object): Promise<any> {
     }
 
     if (start_year.length > 0) {
-        const range = { '>=': parseInt(start_year[0], 10) };
-
+        // start year is 31 jan 23:00 UTC or 1st jan 00:00 UTC+1
+        // (due to bug in database storage timestamp is in local time)
+        // get offset milliseconds :
+        const offset = moment('2013-01-01').tz('Europe/Paris').format('Z');
+        const offset_parsed = parseInt(moment((`2013-02-08 ${offset.substr(1)}`)).format('hh'));
+        const offset_sec = offset_parsed * 3600;
+        const offset_millisec = offset_sec * 1000;
+        const range = { '>=': moment(parseInt(start_year[0], 10)).valueOf() - offset_millisec };
         if (end_year.length > 0) {
-            range['<='] = parseInt(end_year[0], 10);
+            // get the end of the year
+            range['<='] = moment(parseInt(end_year[0], 10)).add(1, 'year').valueOf() - offset_millisec - 1;
         }
         where.$and.push({ 'dates.publication': range });
     }
@@ -207,27 +213,68 @@ async function export_masas(ctx: Object): Promise<any> {
         sort,
     });
 
-    const results = await transform_to_masas(pub_results, export_types[0], { lang: 'FR' });
+    Logger.info('pub_results.length : ', pub_results.length);
+    if (pub_results.length > 1000) {
+        const date = new Date().toString().replace(/ /g, '-');
 
-    if (export_types[0] === 'xlsx') {
-        ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+        const report_body = {
+            name: `masas-${date}`,
+            type: 'masas',
+            status: 'on_wait',
+            external_information: JSON.stringify({
+                format: export_types[0],
+                date,
+                sort,
+                where,
+            }),
+        };
+        const report = await EntitiesUtils.create(report_body, 'system_report');
+        const message = `<html><body>${date}<br/>Export MASAS<br/>Please wait for the file...<br/><a target="_blank" href="masas/${encodeURI(date)}?export_type=${export_types}">Download now</a></body></html>`;
+
         ctx.statusCode = 200;
-        ctx.body = results;
-        fs.writeFile('/tmp/test.xlsx', results, (err) => {
-            console.log('writing file');
-            console.error(err);
-        });
+        ctx.body = message;
     } else {
-        const s = new Readable();
-        s.push(results);
-        s.push(null);
-        ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
-        ctx.statusCode = 200;
-        ctx.body = results;
+        const results = await transform_to_masas(pub_results, export_types[0], { lang: 'FR' });
+
+        if (export_types[0] === 'xlsx') {
+            ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+            ctx.statusCode = 200;
+            ctx.body = results;
+            fs.writeFile('/tmp/export.xlsx', results, (err) => {
+                if (err) {
+                    Logger.error('error : ', err);
+                }
+            });
+        } else {
+            const s = new Readable();
+            s.push(results);
+            s.push(null);
+            ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+            ctx.statusCode = 200;
+            ctx.body = results;
+        }
     }
+}
+
+async function export_masas_file(ctx: Object): Promise<any> {
+    const params = ctx.params;
+    const date = params.id;
+    const query = ctx.query;
+    const export_types = query.export_type || ['csv'];
+
+    ctx.set('Content-disposition', `attachment; filename=pos_exports.${export_types[0]}`);
+    ctx.statusCode = 200;
+
+    const results = fs.readFileSync(`/tmp/export${date}.xlsx`, (err) => {
+        if (err) {
+            Logger.error('error : ', err);
+        }
+    });
+    ctx.body = results;
 }
 
 module.exports = {
     transform_to_masas,
     export_masas,
+    export_masas_file,
 };

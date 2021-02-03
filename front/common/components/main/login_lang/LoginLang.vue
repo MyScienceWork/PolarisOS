@@ -51,10 +51,10 @@
             </b-dropdown>
         </p>
         <p v-else class="tile is-child has-text-centered">
-            <router-link v-if="!backoffice" class="navbar-item is-justify-center" slot="trigger" to="/login/choice?redirect=%2F">
+            <router-link v-if="!backoffice" class="navbar-item is-justify-center" slot="trigger" to="/login/choice">
                 <span>{{lang('f_login')}}</span>
             </router-link>
-            <router-link v-else class="navbar-item is-justify-center" slot="trigger" to="/admin/login/choice?redirect=%2F">
+            <router-link v-else class="navbar-item is-justify-center" slot="trigger" to="/admin/login/choice">
                 <span>{{lang('f_login')}}</span>
             </router-link>
         </p>

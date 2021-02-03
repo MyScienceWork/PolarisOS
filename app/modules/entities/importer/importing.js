@@ -13,17 +13,20 @@ class Importer {
     _read_func: Function;
     _extra: ?Object;
     _reference_queries: Object;
+    _post_queries: Object;
     _max_size_per_query: number;
     _report: ?Object;
 
     constructor(items_type: string,
         import_pipeline: Object,
         reference_queries: Object,
-        read_func: Function) {
+        read_func: Function,
+        post_queries: Object) {
         this._items_type = items_type;
         this._import_pipeline = import_pipeline;
         this._read_func = read_func;
         this._reference_queries = reference_queries;
+        this._post_queries = post_queries;
         this._max_size_per_query = 2;
         this._report = null;
         this._extra = null;
@@ -45,9 +48,11 @@ class Importer {
 
         const res = { total: 0, success: 0, errors_count: 0, results: [] };
         const results = [];
-        for (const chunk of presults) {
+        for (let i = 0, len = presults.length; i < len; i++) {
+            const chunk = presults[i];
             res.total += chunk.length;
             if ('change' in chunk[0] || chunk[0].error) {
+                chunk[0].title = items[i].title.content;
                 results.push(chunk);
                 res.errors_count += chunk.length;
             } else {
@@ -61,7 +66,7 @@ class Importer {
                 }
                 results.push(response.items);
             }
-        }
+        };
 
         res.results = _.flatten(results);
         res.success = res.total - res.errors_count;
@@ -78,13 +83,19 @@ class Importer {
             }
             filled_maps[name] = map;
 
+            let sources = {};
             for (const value in map) {
-                const sources = await EntitiesUtils.search_and_get_sources(name, {
+                sources = await EntitiesUtils.search_and_get_sources(name, {
                     projection: [],
                     where: await query(value),
                     size: this._max_size_per_query,
                     sort: ['-_score'],
                 });
+
+                if (sources.length === 0 && this._post_queries[name]) {
+                    const post_query = this._post_queries[name];
+                    sources = [await EntitiesUtils.create(await post_query(value), name)];
+                }
                 filled_maps[name][value].ids = sources.map(src => src._id);
             }
         }
@@ -235,10 +246,9 @@ class Importer {
                 await this._execute_pipeline(items_in_json);
 
             const filled_references_maps = await this._fill_references_maps(references_maps);
-
+            
             const final_items = await Importer._merge_references_and_items(items_without_references,
                 filled_references_maps);
-
             const results = await this._import_data(final_items);
             await this._set_final_information_on_report(results);
         } catch (err) {
