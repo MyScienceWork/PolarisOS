@@ -238,10 +238,10 @@ class Pipeline {
             const extra = ctx.__md || {};
 
             const range = Pipeline._format_range(ctx.params.range, pipelines.length);
-            const result = await Pipeline.run(item, type, pipelines, method, range, extra);
+            let result = await Pipeline.run(item, type, pipelines, method, range, extra);
 
-            const workflow = new Workflow();
-            workflow.run(type, result);
+            const workflow = new Workflow(Pipeline, pipelines, method, range, extra, result, type);
+            result = await workflow.run();
 
             if ('change' in result) {
                 ctx.body = result;

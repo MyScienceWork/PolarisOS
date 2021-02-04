@@ -1,6 +1,5 @@
 // @flow
 const _ = require('lodash');
-const Request = require('superagent');
 const Dot = require('dot-object');
 const EntitiesUtils = require('../utils/entities');
 const Validator = require('../pipeline/validator/validator');
@@ -9,17 +8,32 @@ const MailerUtils = require('../utils/mailer');
 const Config = require('../../config');
 const LangUtils = require('../utils/lang');
 const Handlebars = require('../utils/templating');
-const config = require('../../config');
 const Logger = require('../../logger');
 
 /**
  * Workflow management
  */
 class Workflow {
-    constructor() {
+    _Pipeline: Object;
+    _pipelines: Object;
+    _method: Object;
+    _range: Object;
+    _extra: Object;
+    _item: Object;
+    _type: Object;
+
+    constructor(Pipeline: Object, pipelines, method, range, extra, result, type) {
+        this._Pipeline = Pipeline;
+        this._pipelines = pipelines;
+        this._method = method;
+        this._range = range;
+        this._extra = extra;
+        this._item = result;
+        this._type = type;
     }
 
-    static async _get_workflows_from_entity(entity: string): Object {
+    async _get_workflows_from_entity(): Object {
+        const entity = this._type;
         const workflows = await EntitiesUtils.search_and_get_sources('workflow', {
             where: {
                 $and: [ { entity } ]
@@ -29,25 +43,25 @@ class Workflow {
         return workflows;
     }
 
-    static async _get_state_before_modification(entity: string, item: Object): string {
-        const id_entity = item._id;
+    async _get_state_before_modification(): string {
+        const id_entity = this._item._id;
         if (!id_entity) {
             return undefined;
         }
-        const info = await EntitiesUtils.search(entity, {
+        const info = await EntitiesUtils.search(this._type, {
             where: {
                 _id: id_entity,
             }
         });
-        item._id = id_entity;
+        this._item._id = id_entity;
         const hits = EntitiesUtils.get_hits(info);
         if (hits.length > 0) {
             return hits[0].source.state;
         }
-        return undefined;
+        return this._item.state;
     }
 
-    static async _ok_condition(condition: string, item: Object): boolean {
+    async _ok_condition(condition: string): boolean {
         if (condition === "true") {
             console.log("condition is true !");
             return true;
@@ -56,46 +70,37 @@ class Workflow {
         const joi_condition = ConditionValidator.compute_conditions(condition);
         // convert to dot object for joi to validate deep keys
         console.log("final validator : ", JSON.stringify(joi_condition.describe(), null, 2))
-        console.log("object : ", JSON.stringify(Dot.dot(item), null, 2));
+        console.log("object : ", JSON.stringify(Dot.dot(this._item), null, 2));
         const options =  {
             allowUnknown: true,
             abortEarly: false,
-            convert: false,
+            convert: true,
             debug: true,
         };
         const errorsValidation = await validator
-            .validate(Dot.dot(item), [joi_condition], options);
+            .validate(Dot.dot(this._item), [joi_condition], options);
         Logger.info("errorsValidation : ", errorsValidation);
         if (!_.isEmpty(errorsValidation)) {
             return false;
         }
+        Logger.info("no errors validation :)");
         return true;
     }
 
-    static async _change_state(action: Object, item: Object, entity: string) {
+    async _change_state(action: Object) {
+        console.log("action : ", action);
         if (!action.state) {
             return;
         }
-        item.state = action.state;
-        /*
-        const url = 'http://localhost:'+config.port+'/api/public/v2/'+entity;
-        try {
-            await Request.put(url).set('Accept', 'application/json').send(item);
-        } catch (err) {
-            Logger.error(`Unable to process action entity`);
-            Logger.error(JSON.stringify(err));
-        }
-         */
-        const workflow = new Workflow();
-        workflow.run(entity, item);
+        this._item.state = action.state;
+        await this.run();
     }
 
-    static async _process_email(action: Object) {
+    async _process_email(action: Object) {
         if (!action.recipient) {
             Logger.error("no recipient found")
             return;
         }
-
 
         const templates = await EntitiesUtils.search_and_get_sources('mail_template', {
             where:
@@ -130,7 +135,7 @@ class Workflow {
         await MailerUtils.send_email_with(default_sender, action.recipient, subject, body)
     }
 
-    static async _process_action(action: string, item: Object, entity: string) {
+    async _process_action(action: string) {
         const info = await EntitiesUtils.search('action', {
             where: {
                 _id: action,
@@ -144,53 +149,58 @@ class Workflow {
         const maction = hits[0].source;
         switch (maction.type) {
             case 'email':
-                return Workflow._process_email(maction);
+                Logger.info("process email : ", JSON.stringify(maction));
+                await this._process_email(maction);
             case 'change_state':
-                return Workflow._change_state(maction, item, entity);
+                Logger.info("process change state : ", JSON.stringify(maction));
+                Logger.info("process change item : ", JSON.stringify(this._item));
+                await this._change_state(maction);
         }
     }
 
 
-    static async _run_actions(actions: Array, item: Object, entity: String) {
+    async _run_actions(actions: Array) {
         if (actions.length === 0) {
             Logger.info("no actions to run")
             return;
         }
 
-        actions.forEach(action => {
-           Workflow._process_action(action._id, item, entity);
-        });
+        for (let action of actions) {
+            await this._process_action(action._id);
+        }
     }
 
-    static async _run_transition(step: Object, item: Object, entity: string) {
+    async _run_transition(step: Object) {
         if (!step.conditions) {
             return;
         }
         for (const condition of step.conditions) {
-            const action_condition_validated = await Workflow._ok_condition(condition.condition, item);
-            Logger.info("transition condition : ", condition.condition);
-            Logger.info("transition item : ", JSON.stringify(item));
-            Logger.info("transition condition result : ", action_condition_validated);
-            if (action_condition_validated) {
-                Workflow._run_actions(condition.actions, item, entity);
+            if (condition.condition) {
+                const action_condition_validated = await this._ok_condition(condition.condition);
+                Logger.info("transition condition : ", condition.condition);
+                Logger.info("transition condition result : ", action_condition_validated);
+                if (action_condition_validated) {
+                    await this._run_actions(condition.actions);
+                }
             }
         }
     }
 
-    static async _initialize_state(workflow: Object, item: Object, entity: string) {
+    _initialize_state(workflow: Object) {
         if (!workflow.initial_state) {
             return;
         }
-        item.state = workflow.initial_state;
+        this._item.state = workflow.initial_state;
     }
 
-    async run(entity: string, item: Object): string {
-        const workflows = await Workflow._get_workflows_from_entity(entity);
-        const state_before = await Workflow._get_state_before_modification(entity, item);
-        const state_after = item.state;
+    async run(): string {
+        const workflows = await this._get_workflows_from_entity();
+        const state_before = await this._get_state_before_modification();
+        let state_after = this._item.state;
 
-        workflows.forEach(workflow => {
-            workflow.steps.forEach(step => {
+        for (let workflow of workflows) {
+            const steps = workflow.steps;
+            for (let step of steps) {
                 const run_transition_step = (
                     step.type === "transition"
                     && step.state_before.findIndex(state => state._id === state_before) !== -1
@@ -202,21 +212,27 @@ class Workflow {
                 );
                 Logger.info("run transition step : ", run_transition_step);
                 Logger.info("run state step : ", run_state_step);
+                state_after = this._item.state;
                 if (run_transition_step || run_state_step) {
-                    Workflow._run_transition(step, item, entity);
+                    await this._run_transition(step);
+                    // run again pipeline if we need to denormalize new state
+                    this._item = await this._Pipeline.run(this._item, this._type, this._pipelines, this._method, this._range, this._extra);
                 } else if (state_after === undefined) {
                     Logger.info("initialize state");
-                    Workflow._initialize_state(workflow, item, entity);
-                    const new_state_after = item.state;
+                    this._initialize_state(workflow);
+                    const new_state_after = this._item.state;
                     const run_state_step = (
                         step.type === "state"
                         && step.state_after.findIndex(state => state._id === new_state_after) !== -1);
                     if (run_state_step) {
-                        Workflow._run_transition(step, item, entity);
+                        await this._run_transition(step);
+                        // run again pipeline if we need to denormalize new state
+                        this._item = await this._Pipeline.run(this._item, this._type, this._pipelines, this._method, this._range, this._extra);
                     }
                 }
-            });
-        });
+            }
+        }
+        return this._item;
     }
 }
 

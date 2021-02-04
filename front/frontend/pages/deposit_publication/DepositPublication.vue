@@ -10,29 +10,27 @@
               </h4>
               <div>
                 <fselect
+                  v-if="!is_editing()"
                   :label="lang('f_choose_publication_group')"
                   :is-required="true"
-                  :options="publication_group"
-                  :form="state.sinks.reads.publication_group"
+                  :options="publication_group_options"
+                  :form="state.sinks.creations.publication_group"
                   name="group"
                   fieldLabel="label"
-                  fieldValue="value"
+                  fieldValue="_id"
                   :view-validation-texts="false"
                   :translatable="true"
                   @select-change="publication_group_change"
                 />
                 <div
-                  v-if="
-                    state.selected_publication_form !== '' &&
-                    Object.keys(user_forms(state.selected_publication_form)).length === 0
-                  "
+                  v-if="!show_form() && state.selected_publication_form !== ''"
                   class="column"
                 >
                   <div class="columns is-centered">
                     <loader />
                   </div>
                 </div>
-                <div v-else-if="state.selected_publication_form !== ''">
+                <div v-else>
                   <fform
                     :name="state.sinks.creations.publication"
                     :hasButtons="!is_editing()"
@@ -47,14 +45,20 @@
                       :form="user_forms(state.selected_publication_form)"
                       :cform="state.sinks.creations.publication"
                     />
-                    <button
-                      v-if="is_editing()"
-                      @click.prevent="open_review_modal(props)"
-                      :disabled="success"
-                      class="button"
-                    >
-                      {{ lang("f_finish_review") }}
-                    </button>
+                    <button v-if="is_editing()"
+                            @click.prevent="back()"
+                            :disabled="success"
+                            class="button">{{lang('f_back')}}</button>
+                    <button v-if="is_editing()"
+                            @click.prevent="open_review_modal(props)"
+                            :disabled="success"
+                            class="button">{{lang('f_finish_review')}}</button>
+                    <review-modal
+                        @review-publication="review_publication"
+                        :sink="state.sinks.creations.publication"
+                        :show.sync="state.show_review_modal"
+                        :status="after_status"
+                    ></review-modal>
                   </fform>
                 </div>
               </div>
@@ -83,5 +87,5 @@
 </template>
 
 <script>
-module.exports = require("./Deposit.js");
+module.exports = require("./DepositPublication.js");
 </script>
