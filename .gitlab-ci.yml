@@ -13,6 +13,8 @@ Build and Push image integration and production INSERM:
   stage: Build
   services:
     - docker:18.09.7-dind
+  tags:
+    - docker-build
   only:
     - client/INSERM
     - INTEGRATION-INSERM
