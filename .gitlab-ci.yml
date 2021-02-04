@@ -9,12 +9,12 @@ stages:
     - Deploy
 
 Build and Push image integration and production INSERM:
-  image: docker:18.09.7-dind
+  image: docker:18.09.7
   stage: Build
   services:
     - docker:18.09.7-dind
   tags:
-    - docker-build
+    - docker-test
   only:
     - client/INSERM
     - INTEGRATION-INSERM
