@@ -138,7 +138,7 @@ class Pipeline {
             const validator = new Validator();
             const errors = await validator
                 .validate(item, pipeline.Validation, method);
-            if (errors) {
+            if (!_.isEmpty(errors)) {
                 Logger.error('These are validation errors : ', errors);
             }
             return { item, errors };
