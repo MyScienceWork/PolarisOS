@@ -325,7 +325,7 @@ class ODM {
 
     static async _create_or_update(index: string, type: string,
             client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
-        console.log('create or update body', JSON.stringify(body));
+        //console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
                 index,
