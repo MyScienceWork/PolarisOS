@@ -8,22 +8,6 @@ stages:
     - Build
     - Deploy
 
-Build and Push image production Ined:
-  image: docker:18.09.7-dind
-  stage: Build
-  services:
-    - docker:18.09.7-dind
-  only:
-    - client/INED
-  script:
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - apk add jq
-    - export VERSION=$(cat package.json | jq -r .version)
-    - docker info
-    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - docker push $CI_REGISTRY_IMAGE:$VERSION
-
 Build and Push image integration and production INSERM:
   image: docker:18.09.7-dind
   stage: Build
@@ -55,20 +39,20 @@ Deploy test infra:
     - chmod 700 ~/.ssh
     - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM test_app'
 
-Deploy prod infra:
-  image: docker:18.09.7
-  stage: Deploy
-  variables:
-    GIT_STRATEGY: none
-  tags:
-    - docker-prod
-  only:
-    - client/INSERM
-  script:
-    - 'which ssh-agent || ( apk update && apk add openssh-client )'
-    - eval $(ssh-agent -s)
-    - echo "$SSH_IRDIRC_PROD01" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app-nginx'
+# Deploy prod infra:
+#   image: docker:18.09.7
+#   stage: Deploy
+#   variables:
+#     GIT_STRATEGY: none
+#   tags:
+#     - docker-prod
+#   only:
+#     - client/INSERM
+#   script:
+#     - 'which ssh-agent || ( apk update && apk add openssh-client )'
+#     - eval $(ssh-agent -s)
+#     - echo "$SSH_IRDIRC_PROD01" | tr -d '\r' | ssh-add -
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app-nginx'
 
