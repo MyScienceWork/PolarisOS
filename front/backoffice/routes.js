@@ -1,5 +1,6 @@
 module.exports = {
     admin: '/admin',
+    action: '/admin/action',
     user: '/admin/user',
     role: '/admin/role',
     pipeline: '/admin/pipeline',
@@ -10,6 +11,7 @@ module.exports = {
     template: '/admin/template',
     function: '/admin/function',
     review: '/admin/review',
+    review_dataset: '/admin/review_dataset',
     datasource: '/admin/datasource',
     entity_view: '/admin/entity/:datainstance',
     publication: '/admin/publication',
