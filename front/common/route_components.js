@@ -1,16 +1,16 @@
 const Home = require('../frontend/pages/home/Home.vue');
-const Deposit = require('../frontend/pages/deposit_publication/DepositPublication.vue');
+// const Deposit = require('../frontend/pages/deposit_publication/DepositPublication.vue');
 const DepositProject = require('../frontend/pages/deposit_project/DepositProject.vue');
 const DepositProjectCurator = require('../frontend/pages/deposit_project_curator/DepositProjectCurator.vue');
-const DepositDataset = require('../frontend/pages/deposit_dataset/DepositDataset.vue');
-const Bulk = require('../frontend/pages/bulk/Bulk.vue');
+// const DepositDataset = require('../frontend/pages/deposit_dataset/DepositDataset.vue');
+// const Bulk = require('../frontend/pages/bulk/Bulk.vue');
 const Browse = require('../frontend/pages/browse/Browse.vue');
 const ListForWebsite = require('../frontend/pages/list_for_website/ListForWebsite.vue');
 const Search = require('../frontend/pages/search/Search.vue');
-const SearchDataset = require('../frontend/pages/search_dataset/SearchDataset.vue');
+// const SearchDataset = require('../frontend/pages/search_dataset/SearchDataset.vue');
 const SearchResearchTrials = require('../frontend/pages/searchResearchTrials/SearchResearchTrials.vue');
 const View = require('../frontend/pages/view/View.vue');
-const ViewDataset = require('../frontend/pages/view_dataset/ViewDataset.vue');
+// const ViewDataset = require('../frontend/pages/view_dataset/ViewDataset.vue');
 const Project = require('../frontend/pages/project/Project.vue');
 const About = require('../frontend/pages/about/About.vue');
 const Help = require('../frontend/pages/help/Help.vue');
@@ -38,17 +38,17 @@ module.exports = {
     home: Home,
     browse: Browse,
     search: Search,
-    search_dataset: SearchDataset,
+    // search_dataset: SearchDataset,
     search_research_trials: SearchResearchTrials,
     project: Project,
     view: View,
-    view_dataset: ViewDataset,
+    // view_dataset: ViewDataset,
     user_profile: UserProfile,
-    deposit: Deposit,
+    // deposit: Deposit,
     deposit_project: DepositProject,
     deposit_project_curator: DepositProjectCurator,
-    deposit_dataset: DepositDataset,
-    bulk: Bulk,
+    // deposit_dataset: DepositDataset,
+    // bulk: Bulk,
     about: About,
     help: Help,
     import_excel: ImportExcel,
