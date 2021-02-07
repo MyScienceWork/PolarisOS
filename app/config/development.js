@@ -1,8 +1,10 @@
+// 'http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9200',
+
 const development = {
     port: 4002,
     elasticsearch: {
         hosts: [
-            'http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9201',
+            'http://host.docker.internal:9200',
         ],
     },
     grobid: {
