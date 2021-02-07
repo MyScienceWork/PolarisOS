@@ -8,34 +8,18 @@
 #     - Build
 #     - Deploy
 
-# Build and Push image production Ined:
-#   image: docker:18.09.7-dind
-#   stage: Build
-#   services:
-#     - docker:18.09.7-dind
-#   only:
-#     - client/INED
-#   script:
-#     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-#     - apk add jq
-#     - export VERSION=$(cat package.json | jq -r .version)
-#     - docker info
-#     - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
-#     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-#     - docker push $CI_REGISTRY_IMAGE:$VERSION
-
-# Build and Push image integration and production INSERM:
-#   image: docker:18.09.7-dind
-#   stage: Build
-#   services:
-#     - docker:18.09.7-dind
-#   only:
-#     - client/INSERM
-#     - INTEGRATION-INSERM
-#   script:
-#     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-#     - docker build -t $CI_REGISTRY_IMAGE:INSERM .
-#     - docker push $CI_REGISTRY_IMAGE:INSERM
+Build and Push image integration and production INSERM:
+  image: docker:18.09.7-dind
+  stage: Build
+  services:
+    - docker:18.09.7-dind
+  only:
+    - client/INSERM
+    - INTEGRATION-INSERM
+  script:
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
+    - docker build -t $CI_REGISTRY_IMAGE:INSERM .
+    - docker push $CI_REGISTRY_IMAGE:INSERM
 
 # Deploy test infra:
 #   image: docker:18.09.7
