@@ -186,7 +186,7 @@ class ODM {
         }
 
         if ('count' in response) {
-            o.count = response.count;
+            o.count = response.count.value;
         }
 
         if ('took' in response) {
@@ -214,8 +214,8 @@ class ODM {
                 return pr.then(() => hit.post_read_hook(population, entity_type))
             }, Promise.resolve());
 
-            o.total = response.hits.total;
-            o.count = response.hits.total;
+            o.total = response.hits.total.value;
+            o.count = response.hits.total.value;
             o.max_score = response.hits.max_score;
         }
 
