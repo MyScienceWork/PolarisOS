@@ -186,7 +186,7 @@ class ODM {
         }
 
         if ('count' in response) {
-            o.count = response.count.value;
+            o.count = response.count;
         }
 
         if ('took' in response) {
@@ -215,7 +215,9 @@ class ODM {
             }, Promise.resolve());
 
             o.total = response.hits.total.value;
-            o.count = response.hits.total.value;
+            if (!'count' in response ) {
+                o.count = response.hits.total.value;
+            }
             o.max_score = response.hits.max_score;
         }
 
@@ -280,7 +282,14 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(index, type, client, model, response, population, 'search_before' in opts);
+        let o = await this.read(index, type, client, model, response, population, 'search_before' in opts);
+        // handle the case of more than 10000 results. Elasticsearch counts up to 10K, no more than that
+        if (o.total == 10000) {
+            const c = await this.count(index, type, client, model, search);
+            o.count = c.count;
+            o.total = c.count;
+        }
+        return o;
     }
 
     static async count(index: string, type: string, client: Object,
@@ -292,6 +301,7 @@ class ODM {
                 query,
             },
         });
+        console.log(response);
         return this.read(index, type, client, model, response);
     }
 
