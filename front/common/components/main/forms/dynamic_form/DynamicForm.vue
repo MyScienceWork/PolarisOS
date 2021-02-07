@@ -1,5 +1,5 @@
 <template>
-<div>
+<div :class="[form.horizontal_display ? 'columns is-gapless' : '']">
     <template v-if="form.addons && form.fields.length > 0">
         <component
             :is="get_component(form.fields[0].type)"
@@ -99,6 +99,8 @@
                     :search-size="generate_ajax_search(field, 'size')"
                     :search-fields="generate_ajax_search(field, 'fields')"
                     :ajax-query="field.datasource.query"
+                    :ajax-filters="generate_ajax_filter(field)"
+                    :prefetch-in-ajax="field.datasource.filter !== undefined"
                     />
                     <fradio
                     v-else-if="field.type === 'radio'"
@@ -118,6 +120,8 @@
                     :translate-through-hlang="field.datasource.use_hlang"
                     :translatable="field.datasource.translatable"
                     :ajax-query="field.datasource.query"
+                    :ajax-filters="generate_ajax_filter(field)"
+                    :prefetch-in-ajax="field.datasource.filter !== undefined"
                     />
                 </template>
                 <slot name="form-addons"></slot>
@@ -136,11 +140,11 @@
         />
     </template>
     <template v-else v-for="(field, i) in form.fields">
-        <fvariadic-element class="field" :use-icons="false" :name="field.multiple_name" :form="cform" v-if="field.multiple" :single="field.single_multiple" :readonly="field.readonly">
+        <fvariadic-element v-if="field.multiple" class="field" :use-icons="false" :name="field.multiple_name" :form="cform" :single="field.single_multiple" :readonly="field.readonly">
             <template slot="variadic" slot-scope="props">
                 <finput
                 v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
-                :label="lang(field.label || '')"
+                :label="!field.single_multiple || `${props.order}` == 0 ? lang(field.label || '') : ''"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :placeholder="lang(field.placeholder || '')"
                 :type="field.type"
@@ -150,8 +154,8 @@
                 :duplicate_warning="field.duplicate_warning"
                 :is-required="field.required"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
-                :help="field.help ? field.help.content : ''"
-                :modal_help="field.help ? field.help.use_modal : false"
+                :help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.content : ''"
+                :modal_help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.use_modal : false"
                 :view-validation-texts="false"
                 :year-range-start="field.range ? field.range.start : 0"
                 :year-range-end="field.range ? field.range.end : 0"
@@ -189,12 +193,12 @@
                 v-else-if="['color'].indexOf(field.type) !== -1"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :form="cform"
-                :label="lang(field.label || '')"
+                :label="(!field.single_multiple || `${props.order}` == 0) ? lang(field.label || '') : ''"
                 :readonly="readonly || field.readonly"
                 :is-required="field.required"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
-                :help="field.help ? field.help.content : ''"
-                :modal_help="field.help ? field.help.use_modal : false"
+                :help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.content : ''"
+                :modal_help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.use_modal : false"
                 :view-validation-texts="false"
                 />
                 <fstatic
@@ -202,15 +206,15 @@
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :type="field.type"
                 :form="cform"
-                :label="lang(field.label || '')"
+                :label="(!field.single_multiple || `${props.order}` == 0) ? lang(field.label || '') : ''"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
-                :help="field.help ? field.help.content : ''"
-                :modal_help="field.help ? field.help.use_modal : false"
+                :help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.content : ''"
+                :modal_help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.use_modal : false"
                 :template="field.hiddenValue"
                 />
                 <fselect
                 v-else-if="field.type === 'select' || field.type === 'multi-select'"
-                :label="lang(field.label || '')"
+                :label="`${props.order}` == 0 ? lang(field.label || '') : ''"
                 :placeholder="lang(field.placeholder || '')"
                 :name="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :form="cform"
@@ -226,13 +230,15 @@
                 :has-addons="field.single_multiple"
                 :key="get_name(`${props.fname}.${props.order}.${field.name}`)"
                 :multi="field.type === 'multi-select'"
-                :help="field.help ? field.help.content : ''"
-                :modal_help="field.help ? field.help.use_modal : false"
+                :help="field.help && `${props.order}` == 0 ? field.help.content : ''"
+                :modal_help="field.help && `${props.order}` == 0 ? field.help.use_modal : false"
                 :view-validation-texts="false"
                 :translate-through-hlang="field.datasource.use_hlang"
                 :translatable="field.datasource.translatable"
                 :search-size="generate_ajax_search(field, 'size')"
                 :search-fields="generate_ajax_search(field, 'fields')"
+                :ajax-filters="generate_ajax_filter(field)"
+                :prefetch-in-ajax="field.datasource.filter !== undefined"
                 >
                     <template v-if="field.single_multiple && !readonly" slot="input-addons">
                         <div class="control">
@@ -245,7 +251,7 @@
                 </fselect>
                 <fradio
                 v-else-if="field.type === 'radio'"
-                :label="lang(field.label || '')"
+                :label="(!field.single_multiple || `${props.order}` == 0) ? lang(field.label || '') : ''"
                 :name="get_name(field.name)"
                 :form="cform"
                 :fieldLabel="generate_select_label(field)"
@@ -256,10 +262,12 @@
                 :ajax-value-url="generate_ajax_url(field, 'value')"
                 :readonly="readonly || field.readonly"
                 :is-required="field.required"
-                :help="field.help ? field.help.content : ''"
-                :modal_help="field.help ? field.help.use_modal : false"
+                :help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.content : ''"
+                :modal_help="field.help && (!field.single_multiple || `${props.order}` == 0) ? field.help.use_modal : false"
                 :translate-through-hlang="field.datasource.use_hlang"
                 :translatable="field.datasource.translatable"
+                :ajax-filters="generate_ajax_filter(field)"
+                :prefetch-in-ajax="field.datasource.filter !== undefined"
                 />
                 <crud-form
                     :text="field.datasource.action_text"
@@ -296,7 +304,7 @@
                 />
                 <template v-else-if="field.type === 'subform' && field.subform != null">
                     <template v-if="form_is_of_type('widget', field)">
-                        <widget>
+                        <widget :collapsed="field.subform_information.widget_collapsed">
                             <span slot="title">{{lang(field.subform_information.title)}}</span>
                             <div slot="body">
                                 <dynamic-form
@@ -362,6 +370,7 @@
         <template v-else>
             <finput
             v-if="['checkbox', 'text', 'email', 'phone', 'password', 'password-sha1', 'number', 'price', 'textarea', 'time', 'date', 'date-year', 'html-editor'].indexOf(field.type) !== -1"
+            :class="[form.horizontal_display ? 'column is-pulled-bottom' : '', form.horizontal_display && field.columns_used ? 'is-'+field.columns_used : '']"
             :label="lang(field.label || '')"
             :name="get_name(field.name)"
             :placeholder="lang(field.placeholder || '')"
@@ -410,6 +419,7 @@
             />
             <fstatic
                 v-else-if="['static-html', 'static-text', 'static-list'].indexOf(field.type) !== -1"
+                :class="[form.horizontal_display ? 'column is-pulled-bottom' : '', form.horizontal_display && field.columns_used ? 'is-'+field.columns_used : '']"
                 :name="get_name(field.name)"
                 :type="field.type"
                 :form="cform"
@@ -422,6 +432,7 @@
             <fselect
             v-else-if="field.type === 'select' || field.type === 'multi-select'"
             :label="lang(field.label || '')"
+            :class="[form.horizontal_display ? 'column is-pulled-bottom' : '', form.horizontal_display && field.columns_used ? 'is-'+field.columns_used : '']"
             :placeholder="lang(field.placeholder || '')"
             :name="get_name(field.name)"
             :key="get_name(field.name)"
@@ -444,11 +455,13 @@
             :search-size="generate_ajax_search(field, 'size')"
             :search-fields="generate_ajax_search(field, 'fields')"
             :ajax-query="field.datasource.query"
-
+            :ajax-filters="generate_ajax_filter(field)"
+            :prefetch-in-ajax="field.datasource.filter !== undefined"
             />
             <fradio
             v-else-if="field.type === 'radio'"
             :label="lang(field.label || '')"
+            :class="[form.horizontal_display ? 'column is-pulled-bottom' : '', form.horizontal_display && field.columns_used ? 'is-'+field.columns_used : '']"
             :name="get_name(field.name)"
             :form="cform"
             :fieldLabel="generate_select_label(field)"
@@ -463,6 +476,8 @@
             :modal_help="field.help ? field.help.use_modal : false"
             :translate-through-hlang="field.datasource.use_hlang"
             :translatable="field.datasource.translatable"
+            :ajax-filters="generate_ajax_filter(field)"
+            :prefetch-in-ajax="field.datasource.filter !== undefined"
             />
             <crud-form
                 :text="field.datasource.action_text"
@@ -477,6 +492,7 @@
             />
             <fdropzone
             v-else-if="field.type === 'file'"
+            :class="[form.horizontal_display ? 'column is-pulled-bottom' : '', form.horizontal_display && field.columns_used ? 'is-'+field.columns_used : '']"
             :form="cform"
             :files="get_name(field.name)"
             :key="get_name(field.name)"
@@ -499,14 +515,15 @@
             />
             <template v-else-if="field.type === 'subform' && field.subform != null">
                 <template v-if="form_is_of_type('widget', field)">
-                    <widget>
+                    <widget :collapsed="field.subform_information.widget_collapsed">
                         <span slot="title">{{lang(field.subform_information.title)}}</span>
                         <div slot="body">
                             <dynamic-form
                                 :form="field.subform"
                                 :cform="cform"
+                                :prefix="prefix"
                                 :single="field.single_multiple"
-                                :readonly="readonly || field.readonly"
+                                :readonly="readonly"
                                 :key="get_name(field.name)"
                                 @crud-form-change="crud_form_change"
                                 @dropzone-analyze-file="dropzone_analyze_file"
@@ -527,8 +544,9 @@
                     <dynamic-form
                         :form="field.subform"
                         :cform="cform"
+                        :prefix="prefix"
                         :single="field.single_multiple"
-                        :readonly="readonly || field.readonly"
+                        :readonly="readonly"
                         :key="get_name(field.name)"
                         v-if="!form_is_of_type('hidden', field) || state.show[field.name]"
                         @crud-form-change="crud_form_change"

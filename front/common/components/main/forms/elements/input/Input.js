@@ -44,6 +44,8 @@ module.exports = {
         maxDate: { require: false, type: Date },
         fieldId: { required: false, type: Number },
         allowGrobid: { required: false, default: true, type: Boolean },
+        minNumber: { require: false, type: Number },
+        maxNumber: { require: false, type: Number },
     },
 
     data() {
@@ -233,7 +235,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden' || this.type === 'date' || this.type === 'checkbox') {
+                if (this.type === 'hidden' || this.type === 'date') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,

@@ -90,6 +90,8 @@
                     :value="state.value"
                     @blur="update"
                     :readonly="readonly"
+                    :min="minNumber"
+                    :max="maxNumber"
                 />
                 <input v-else-if="type === 'price'"
                        type="text"

@@ -13,6 +13,8 @@
                             :search-query="search_query"
                             :use-default-query="true"
                             search-type="form"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.form"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">
@@ -72,6 +74,12 @@
                                 type="checkbox"
                                 :form="state.sinks.creations.form"
                             />
+                            <finput
+                                name="horizontal_display"
+                                :label="lang('b_horizontal_display')"
+                                type="checkbox"
+                                :form="state.sinks.creations.form"
+                            />
                             <fvariadic-element name="fields" :form="state.sinks.creations.form" :tabs="true">
                                 <template slot="variadic" slot-scope="props">
                                     <finput :name="`${props.fname}.${props.order}.name`" :label="lang('b_name')" :is-required="true" :placeholder="lang('b_name')" type="text" :form="state.sinks.creations.form" />
@@ -93,12 +101,8 @@
                                     <finput :name="`${props.fname}.${props.order}.order`" :label="lang('b_field_order')" :is-required="true" :placeholder="lang('b_field_order')" type="number" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.order}.multiple`" :label="lang('b_field_multiple')" :placeholder="lang('b_field_multiple')" type="checkbox" :form="state.sinks.creations.form" />
                                     <finput :name="`${props.fname}.${props.order}.multiple_name`" :label="lang('b_field_multiple_name')" :placeholder="lang('b_field_multiple_name')" type="text" :form="state.sinks.creations.form" />
-                                    <finput
-                                        :name="`${props.fname}.${props.order}.single_multiple`"
-                                        :label="lang('b_single_multiple')"
-                                        type="checkbox"
-                                        :form="state.sinks.creations.form"
-                                    />
+                                    <finput :name="`${props.fname}.${props.order}.single_multiple`" :label="lang('b_single_multiple')" type="checkbox" :form="state.sinks.creations.form"/>
+                                    <finput :name="`${props.fname}.${props.order}.columns_used`" :label="lang('b_columns_used')" type="number" :minNumber="1" :maxNumber="12" :form="state.sinks.creations.form"/>
                                     <fselect
                                         :name="`${props.fname}.${props.order}.type`"
                                         :label="lang('b_field_type')"
@@ -190,6 +194,14 @@
                                             fieldLabel="name"
                                             fieldValue="id"
                                             :form="state.sinks.creations.form" />
+                                            <finput
+                                            :name="`${props.fname}.${props.order}.datasource.filter`"
+                                            :key="`${props.fname}.${props.order}.datasource.filter`"
+                                            rows="10"
+                                            :label="lang('b_datasource_filter')"
+                                            type="ide-editor"
+                                            :form="state.sinks.creations.form"
+                                            />
                                             <finput
                                             :name="`${props.fname}.${props.order}.datasource.info_in_sink`"
                                             :key="`${props.fname}.${props.order}.datasource.info_in_sink`"
@@ -474,6 +486,12 @@
                                                     :placeholder="lang('l_subform_title')"
                                                     type="text"
                                                     :form="state.sinks.creations.form" />
+                                                <finput v-if="state.selected_subform_types[props.id] == 'widget'"
+                                                    :name="`${props.fname}.${props.order}.subform_information.widget_collapsed`"
+                                                    :key="`${props.fname}.${props.order}.subform_information.widget_collapsed`"
+                                                    :label="lang('b_subform_widget_collapsed')" 
+                                                    type="checkbox" 
+                                                    :form="state.sinks.creations.form" /> 
                                             </template>
                                         </div>
                                         <div v-else-if="['file'].indexOf(state.selected_types[props.id]) !== -1">

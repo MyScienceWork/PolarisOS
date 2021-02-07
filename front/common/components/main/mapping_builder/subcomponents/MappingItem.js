@@ -25,6 +25,7 @@ module.exports = {
                     sortable: false,
                     completable: false,
                     indexable: true,
+                    date_format: ''
                 },
                 content: this.content,
             },
@@ -106,6 +107,12 @@ module.exports = {
                 };
             }
 
+            if (type === 'date') {
+                if (this.state.extra.date_format && this.state.extra.date_format.trim() !== ''){
+                    obj[this.state.name].format = this.state.extra.date_format;
+                }
+            }
+
             return obj;
         },
         compute_type(content, mapping_types) {
@@ -134,6 +141,7 @@ module.exports = {
                 completable: false,
                 sortable: false,
                 indexable: true,
+                date_format: '',
             };
             if (!content || !this.state.type) {
                 return obj;
@@ -156,6 +164,10 @@ module.exports = {
 
             if ('index' in content) {
                 obj.indexable = content.index;
+            }
+
+            if (type === 'date') {
+                obj.date_format = content.format;
             }
             return obj;
         },
