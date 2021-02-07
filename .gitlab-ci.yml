@@ -6,7 +6,7 @@ variables:
 
 stages:
   - Build
-  # - Deploy
+  - Deploy
 
 Build and Push image integration and production INSERM:
   image: docker:18.09.7
