@@ -301,7 +301,6 @@ class ODM {
                 query,
             },
         });
-        console.log(response);
         return this.read(index, type, client, model, response);
     }
 
