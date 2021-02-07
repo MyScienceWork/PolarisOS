@@ -1,12 +1,12 @@
-# variables:
-#   DOCKER_HOST: tcp://docker:2375/
-#   DOCKER_DRIVER: overlay2
-#   CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
-#   DOCKER_TLS_CERTDIR: ""
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
+  DOCKER_TLS_CERTDIR: ""
 
-# stages:
-#     - Build
-#     - Deploy
+stages:
+  - Build
+  # - Deploy
 
 Build and Push image integration and production INSERM:
   image: docker:18.09.7-dind
