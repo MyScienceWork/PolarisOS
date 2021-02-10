@@ -109,7 +109,8 @@ module.exports = {
             const entity_workflows = _.filter(workflows, workflow => workflow.entity === this.state.workflow_entity);
             entity_workflows.forEach((workflow) => {
                 workflow.steps.forEach((step) => {
-                    allowed_states = allowed_states.concat(this.filter_roles(step, state_before));
+                    allowed_states = allowed_states.concat(this.filter_roles(step, state_before)
+                        .filter(state => allowed_states.findIndex(used_states => used_states.label === state.label) === -1));
                 });
             });
             if (workflow_states.length > 0) {
