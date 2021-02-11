@@ -65,6 +65,9 @@ class Workflow {
         if (condition === "true") {
             console.log("condition is true !");
             return true;
+        } else if (condition === "false") {
+            console.log("condition is false !");
+            return false;
         }
         const validator = new Validator();
         const joi_condition = ConditionValidator.compute_conditions(condition);
