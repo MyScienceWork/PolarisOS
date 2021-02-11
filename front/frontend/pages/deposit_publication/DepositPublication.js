@@ -49,6 +49,9 @@ module.exports = {
         };
     },
     methods: {
+        back() {
+            this.$router.go(-1);
+        },
         is_editing() {
             return this.$route.query && this.$route.query._id;
         },
