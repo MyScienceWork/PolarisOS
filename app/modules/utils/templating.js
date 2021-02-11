@@ -4,7 +4,6 @@ const _moment = require('moment');
 
 Handlebars.registerHelper('moment', (array) => {
     const hash = array.hash;
-    console.log(hash);
     if (hash && hash.date && hash.utc) {
         const format = hash.format;
         const date = hash.date;
