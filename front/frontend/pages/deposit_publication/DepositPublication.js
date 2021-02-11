@@ -156,10 +156,6 @@ module.exports = {
                     population: ['fields.subform', 'fields.datasource'],
                 },
             });
-            const content_options = this.fcontent(this.state.sinks.reads.publication_group);
-            if (!(content_options instanceof Array)) {
-                return () => false;
-            }
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                 form: this.state.sinks.creations.publication_group,
                 body: { group: content.group },
