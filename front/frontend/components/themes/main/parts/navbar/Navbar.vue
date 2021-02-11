@@ -39,7 +39,7 @@
     </div>
     <div v-if="active_idx !== -1" :class="`breadcrumb breadcrumb-${state.colors[active_idx]}`">
         <div class="breadcrumb-content">
-            <br/>
+            <!--br/-->
             <!-- <router-link class="" to='/'><i class="fa fa-home"></i></router-link> -->
             <!-- <a>{{lang(menu.elements[active_idx].name)}}</a> -->
         </div>
