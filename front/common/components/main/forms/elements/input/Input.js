@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
@@ -9,7 +10,7 @@ const APIRoutes = require('../../../../../api/routes');
 const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
-    mixins: [InputMixin],
+    mixins: [InputMixin, ConditionalReadonlyMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -316,6 +317,9 @@ module.exports = {
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
         },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
+        },
         contentForm() {
             return this.fcontent(this.cform);
         },
@@ -340,7 +344,5 @@ module.exports = {
     },
     beforeMount() {
         this.init();
-    },
-    mounted() {
     },
 };
