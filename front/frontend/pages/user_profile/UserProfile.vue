@@ -250,7 +250,7 @@
                                 :use-default-query="true"
                                 :default-query="default_deposit_query"
                                 :show-status="true"
-                                :default-sorts="['-dates.publication']"
+                                :default-sorts="['-deposit_date']"
                                 />
                             </div>
                         </div>

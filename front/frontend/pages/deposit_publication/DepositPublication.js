@@ -132,6 +132,12 @@ module.exports = {
     watch: {
     },
     computed: {
+        user_id() {
+            return this.user._id;
+        },
+        updated_date() {
+            return Handlebars.compile('{{moment unix=true}}')({});
+        },
         show_form() {
             if (this.state.selected_publication_form !== '') {
                 return () => true;

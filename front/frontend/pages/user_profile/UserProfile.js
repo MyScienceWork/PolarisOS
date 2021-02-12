@@ -233,7 +233,6 @@ module.exports = {
         default_deposit_query() {
             return JSON.stringify({
                 $and: [
-                    Queries.no_other_version,
                     { depositor: this.user ? this.user._id : null },
                 ],
             });
@@ -241,8 +240,6 @@ module.exports = {
         deposit_query() {
             const s = {
                 $and: [
-                    Queries.no_other_version,
-                    { $or: Queries.publication_search.$or },
                     { depositor: this.user ? this.user._id : null },
                 ],
             };

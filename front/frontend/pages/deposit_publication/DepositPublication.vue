@@ -45,6 +45,22 @@
                       :form="user_forms(state.selected_publication_form)"
                       :cform="state.sinks.creations.publication"
                     />
+                    <finput
+                        label=""
+                        :hiddenValue="user_id"
+                        name="depositor"
+                        :form="state.sinks.creations.publication"
+                        type="hidden"
+                        v-if="!is_editing()"
+                    />
+                    <finput
+                        label=""
+                        :form="state.sinks.creations.publication"
+                        name="deposit_date"
+                        :hidden-value="updated_date"
+                        type="hidden"
+                        v-if="!is_editing()"
+                    />
                     <button v-if="is_editing()"
                             @click.prevent="open_review_modal(props)"
                             :disabled="success"

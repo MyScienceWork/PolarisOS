@@ -185,11 +185,12 @@
             <div class="has-small-bottom-margin">
                 <span v-html="info.title"></span>
                 <span> - </span>
-                <span v-if="_oa_find(info, 'denormalization.author')" >
-                    <span v-for="author in info.denormalization.author">{{ author.label.fullname }} - </span>
+                <span v-if="_oa_find(info, 'denormalization.state.label')" >
+                    {{ lang(info.denormalization.state.label) }} -
                 </span>
-                <span v-if="_oa_find(info, 'dates.deposit')">{{ parseInt(info.dates.deposit, 10) | format_date('MM/DD/YYYY') }}</span>
+                <span v-if="_oa_find(info, 'deposit_date')">{{ parseInt(info.deposit_date, 10) | format_date('MM/DD/YYYY') }}</span>
             </div>
+          <!--
             <div class="level-left level is-mobile is-hidden-mobile">
                 <div class="level-left">
                     <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view_dataset/${info._id}`">
@@ -197,6 +198,7 @@
                     </router-link>
                 </div>
             </div>
+          -->
         </div>
     </article>
 
