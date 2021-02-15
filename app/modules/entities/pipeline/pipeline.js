@@ -183,7 +183,7 @@ class Pipeline extends ODM {
 
         const left_sign = splitted_field[0];
         const condition = splitted_field[1];
-        let right_sign = splitted_field[2];
+        let right_sign = splitted_field.slice(2).join(' ');
         let has_boolean = false;
         if (right_sign === 'true') {
             has_boolean = true;
