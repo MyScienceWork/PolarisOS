@@ -170,8 +170,11 @@ module.exports = {
                     if (my_history.updated_date) {
                         my_history.updated_date = parseInt(my_history.updated_date, 10);
                     } else {
-                        const sliced_previous_history = JSON.parse(JSON.stringify(content.history[my_history_index - 1]));
-                        my_history.updated_date = parseInt(sliced_previous_history.updated_date, 10);
+                        const previous_history = content.history[my_history_index - 1];
+                        if (previous_history) {
+                            const sliced_previous_history = JSON.parse(JSON.stringify(previous_history));
+                            my_history.updated_date = parseInt(sliced_previous_history.updated_date, 10);
+                        }
                     }
 
                     obj.unshift(my_history);
