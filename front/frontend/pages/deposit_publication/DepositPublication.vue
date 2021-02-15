@@ -45,6 +45,19 @@
                       :form="user_forms(state.selected_publication_form)"
                       :cform="state.sinks.creations.publication"
                     />
+                    <widget v-if="is_editing()" :collapsed="true">
+                      <strong slot="title" class="is-uppercase">{{lang('l_history')}}</strong>
+                      <div v-if="historys" slot="body">
+                        <widget v-for="history in historys" :collapsed="false">
+                          <strong v-if="history.denormalization" slot="title">
+                            <time class="is-pulled-right" :datetime="history.updated_date">{{history.updated_date | format_date('LLL')}}</time>
+                            {{lang('l_step')}} {{lang(history.step)}} - {{lang(history.denormalization.label)}}</strong>
+                          <div slot="body">
+                            <strong slot="title">{{history.comment}}</strong>
+                          </div>
+                        </widget>
+                      </div>
+                    </widget>
                     <finput
                         label=""
                         :hiddenValue="user_id"

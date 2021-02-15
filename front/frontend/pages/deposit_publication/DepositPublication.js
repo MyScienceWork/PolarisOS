@@ -4,6 +4,7 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
 
 const APIRoutes = require('../../../common/api/routes');
@@ -11,7 +12,7 @@ const Messages = require('../../../common/api/messages');
 const ReviewModal = require('./subcomponents/ReviewModal.vue');
 
 module.exports = {
-    mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin, UserMixin, WorkflowMixin],
+    mixins: [LangMixin, RequestsMixin, FiltersMixin, FormMixin, FormCleanerMixin, UserMixin, WorkflowMixin],
     data() {
         return {
             state: {
@@ -56,7 +57,6 @@ module.exports = {
             return this.$route.query && this.$route.query._id;
         },
         review_publication() {
-            console.log("review publication");
             const content = this.fcontent(this.state.sinks.creations.publication);
             this.$store.dispatch('update', {
                 form: this.state.sinks.creations.publication,
@@ -132,11 +132,59 @@ module.exports = {
     watch: {
     },
     computed: {
+        historys() {
+            const content = this.fcontent(this.state.sinks.creations.publication);
+
+            const allStatus = this.all_status();
+            let new_content = [];
+            let has_deposit_date = false;
+
+            if (content.deposit_date) {
+                has_deposit_date = true;
+                new_content.push({
+                    step: 0,
+                    denormalization: {
+                        label: 'l_deposit',
+                    },
+                    updated_date: parseInt(content.deposit_date),
+                },
+                );
+            }
+
+            if (!content || !(content.history)) {
+                return new_content;
+            }
+
+            if (Object.keys(content.history).length > 0) {
+                new_content = Object.keys(content.history).reduce((obj, my_history_index) => {
+                    let history_index = parseInt(my_history_index, 10);
+                    if (has_deposit_date) {
+                        history_index += 1;
+                    }
+
+                    const sliced_history = JSON.parse(JSON.stringify(content.history));
+                    const my_history = sliced_history[my_history_index];
+
+                    my_history.denormalization = allStatus.find(d => d._id === my_history.state);
+                    my_history.step = history_index;
+                    if (my_history.updated_date) {
+                        my_history.updated_date = parseInt(my_history.updated_date, 10);
+                    } else {
+                        const sliced_previous_history = JSON.parse(JSON.stringify(content.history[my_history_index - 1]));
+                        my_history.updated_date = parseInt(sliced_previous_history.updated_date, 10);
+                    }
+
+                    obj.unshift(my_history);
+                    return obj;
+                }, new_content);
+            }
+            return new_content;
+        },
         user_id() {
             return this.user._id;
         },
         updated_date() {
-            return Handlebars.compile('{{moment unix=true}}')({});
+            return new Date().getTime();
         },
         show_form() {
             if (this.state.selected_publication_form !== '') {

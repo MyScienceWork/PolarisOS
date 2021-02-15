@@ -38,7 +38,7 @@ module.exports = {
             return content.state;
         },
         updated_date() {
-            return Handlebars.compile('{{moment unix=true}}')({});
+            return new Date().getTime();
         },
     },
 };
