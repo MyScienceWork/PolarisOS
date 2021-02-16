@@ -50,6 +50,7 @@ module.exports = {
         CrudForm,
     },
     beforeMount() {
+        this.watch_value(this.cform);
         const list_mappings = this.dynamic_list_mappings();
         if (list_mappings === undefined) {
             return;
