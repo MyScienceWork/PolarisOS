@@ -2,10 +2,10 @@
     <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
         <label
             v-if="label.trim().length > 0"
-            :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+            :class="{readonly: getReadonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -16,10 +16,10 @@
         <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
             <slot v-if="hasAddons" name="left-input-addons" />
             <div :class="['control', {'is-expanded': hasAddons}]">
-                <ul v-if="readonly && multi">
+                <ul v-if="getReadonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
-                <p v-else-if="readonly">{{readonlyValue}}</p>
+                <p v-else-if="getReadonly">{{readonlyValue}}</p>
                 <v-select
                     v-else-if="!ajax"
                     :multiple="multi"
@@ -28,7 +28,7 @@
                     :value="dynamic_value"
                     :placeholder="placeholder"
                     :reset-on-options-change="resetOnOptionsChange"
-                    :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    :class="[{'readonly': getReadonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :filter-by="filterFunction"
                 >
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
@@ -44,14 +44,14 @@
                     :filter-by="filterFunction"
                     :reset-on-options-change="resetOnOptionsChange"
                     @search="onSearch"
-                    :class="[{'readonly': readonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
+                    :class="[{'readonly': getReadonly, 'is-danger': !viewValidationTexts && validations.length > 0}]"
                 >
                     <span slot="no-options">{{lang('l_no_select_options')}}</span>
                 </v-select>
-                <ul v-if="multi && !readonly && state.selected_readonly">
+                <ul v-if="multi && !getReadonly && state.selected_readonly">
                     <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
-                <p v-else-if="state.selected_readonly && !readonly">{{readonlyValue}}</p>
+                <p v-else-if="state.selected_readonly && !getReadonly">{{readonlyValue}}</p>
             </div>
             <slot v-if="hasAddons" name="input-addons">
             </slot>

@@ -12,7 +12,6 @@ const ConditionalReadonlyMixin = require('../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
     mixins: [LangMixin, FiltersMixin, FormMixin, OAMixin, ConditionalReadonlyMixin],
-
     props: {
         form: { required: true },
         cform: { type: String, required: true },

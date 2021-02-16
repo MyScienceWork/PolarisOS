@@ -6,6 +6,7 @@ const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const ASCIIFolder = require('fold-to-ascii');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
     props: {
@@ -41,7 +42,7 @@ module.exports = {
     },
     components: {
     },
-    mixins: [InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin, ConditionalReadonlyMixin],
     data() {
         return {
             state: {
@@ -275,6 +276,9 @@ module.exports = {
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
         },
     },
 };
