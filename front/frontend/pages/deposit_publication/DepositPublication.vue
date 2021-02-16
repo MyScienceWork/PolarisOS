@@ -36,7 +36,7 @@
                   @select-change="publication_group_change"
                 />
                 <div
-                  v-if="!show_form() && state.selected_publication_form !== ''"
+                  v-if="!show_form() && is_editing()"
                   class="column"
                 >
                   <div class="columns is-centered">

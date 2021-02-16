@@ -54,49 +54,55 @@ module.exports = {
         },
     },
     watch: {
-        dyn_form(workflow_states) {
-            if (workflow_states.length === 0) {
-                return;
-            }
-            const state = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]).state;
-            if (!state) {
-                return;
-            }
-            const selected_state = workflow_states.find(workflow => (workflow._id === state));
-            if (selected_state.form) {
-                this.state.selected_publication_form = selected_state.form;
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.user_forms,
-                    path: this.state.paths.reads.user_forms,
-                    body: {
-                        where: {
-                            name: [selected_state.form],
-                        },
-                        population: ['fields.subform', 'fields.datasource'],
+        entity_creation() {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.workflow,
+                path: this.state.paths.reads.workflow,
+                body: {
+                    where: {
+                        entity: [this.state.workflow_entity],
                     },
-                });
-            }
+                },
+            });
         },
-    },
-    computed: {
-        dyn_form() {
-            const content = this.fcontent(this.state.sinks.reads.entity_state);
-            if (!(content instanceof Array)) {
-                const content_workflow = this.fcontent(this.state.sinks.reads.workflow);
-                if (!(content_workflow instanceof Array)) {
-                    return [];
-                }
+        workflow_read(workflows) {
+            const entity_states_workflow = workflows.map((workflow => workflow.entity_state));
+            const entity_states_no_duplicates = [...new Set(entity_states_workflow)];
+            entity_states_no_duplicates.forEach((entity_state) => {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(content_workflow[0].entity_state, 'POST', true),
+                    path: APIRoutes.entity(entity_state, 'POST', true),
                     body: {
                         size: 10000,
                     },
                 });
-                return [];
-            }
-            return content;
+            });
         },
+        entity_state_read(content) {
+            const entity = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]);
+            const entity_state = entity.state;
+            if (!entity_state) {
+                return;
+            }
+            const form_state = content.find((state => state._id === entity_state));
+            if (form_state && form_state.length === 0) {
+                return;
+            }
+            const form_name = form_state.form;
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [form_name],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
+            this.state.selected_publication_form = form_name;
+        },
+    },
+    computed: {
         after_status() {
             let allowed_states = [];
 
@@ -143,14 +149,23 @@ module.exports = {
 
             return '';
         },
-    },
-    mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.workflow,
-            path: this.state.paths.reads.workflow,
-            body: {
-                size: 10000,
-            },
-        });
+        entity_creation() {
+            const content = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]);
+            return content;
+        },
+        workflow_read() {
+            const content = this.fcontent(this.state.sinks.reads.workflow);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
+        entity_state_read() {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
     },
 };

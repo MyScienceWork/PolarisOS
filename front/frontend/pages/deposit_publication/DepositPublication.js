@@ -6,6 +6,7 @@ const UserMixin = require('../../../common/mixins/UserMixin');
 const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 const Handlebars = require('../../../../app/modules/utils/templating');
+const Utils = require('../../../common/utils/utils');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
@@ -92,6 +93,7 @@ module.exports = {
                 form: this.state.sinks.creations.publication_group,
                 body: undefined,
             });
+            this.back();
         },
         publication_group_change(form) {
             if (this.is_editing()) {
@@ -107,18 +109,10 @@ module.exports = {
             // Getting form name
             const { form_name } = this.fcontent(this.state.sinks.reads.publication_group)
                 .find(o => o._id === form.value);
-            this.$store.dispatch('search', {
-                form: this.state.sinks.reads.user_forms,
-                path: this.state.paths.reads.user_forms,
-                body: {
-                    where: {
-                        name: [form_name],
-                    },
-                    population: ['fields.subform', 'fields.datasource'],
-                },
-            });
+
             this.state.selected_publication_form = form_name;
             this.state.selected_publication_group = form.value;
+
             this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                 form: this.state.sinks.creations.publication,
                 name: 'group',
@@ -130,6 +124,29 @@ module.exports = {
         ReviewModal,
     },
     watch: {
+        publication_read(content) {
+            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
+                form: this.state.sinks.creations.publication,
+                body: content,
+            });
+        },
+        publication_group_read(publication_group) {
+            const forms = publication_group.map((mpublication_group => mpublication_group.form_name));
+            if (forms.length > 0) {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.user_forms,
+                    path: this.state.paths.reads.user_forms,
+                    body: {
+                        where: {
+                            $or: forms.map(form => ({ name: form })),
+                        },
+                        population: ['fields.subform', 'fields.datasource'],
+                    },
+
+
+                });
+            }
+        },
     },
     computed: {
         historys() {
@@ -190,33 +207,9 @@ module.exports = {
             return new Date().getTime();
         },
         show_form() {
-            if (this.state.selected_publication_form !== '') {
-                return () => true;
-            }
-            const content = this.fcontent(this.state.sinks.creations.publication);
-            const form = content;
-            if (!form || form.group === undefined || form.group === '') {
+            if (this.state.selected_publication_form === '') {
                 return () => false;
             }
-            // now get name of the form
-            const forms = this.fcontent(this.state.sinks.reads.publication_group);
-            if (!(forms instanceof Array)) {
-                return () => false;
-            }
-            this.$store.dispatch('search', {
-                form: this.state.sinks.reads.user_forms,
-                path: this.state.paths.reads.user_forms,
-                body: {
-                    where: {
-                        name: [this.state.selected_publication_form],
-                    },
-                    population: ['fields.subform', 'fields.datasource'],
-                },
-            });
-            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                form: this.state.sinks.creations.publication_group,
-                body: { group: content.group },
-            });
             return () => true;
         },
         publication_id() {
@@ -242,24 +235,40 @@ module.exports = {
             }
             return content;
         },
+        publication_read() {
+            const content = this.fcontent(this.state.sinks.reads.publication);
+            return content;
+        },
+        publication_group_read() {
+            const content = this.fcontent(this.state.sinks.reads.publication_group);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
     },
     beforeMount() {
         const query = this.$route.query;
         const id = query._id;
 
         if (id) {
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.creations.publication,
+            });
+            this.$store.commit(Messages.INITIALIZE, {
+                form: this.state.sinks.reads.publication,
+            });
             this.$store.state.requests.push({
                 name: 'single_read',
                 type: 'dispatch',
                 content: {
-                    form: this.state.sinks.creations.publication,
+                    form: this.state.sinks.reads.publication,
                     path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });
             this.execute_requests().then(() => {}).catch(err => console.error(err));
         }
-    },
-    mounted() {
+
         this.$store.dispatch('search',
             {
                 form: this.state.sinks.reads.publication_group,
@@ -269,14 +278,7 @@ module.exports = {
                 },
             },
         );
-        this.$store.dispatch('search',
-            {
-                form: this.state.sinks.reads.user_forms,
-                path: this.state.paths.reads.user_forms,
-                body: {
-                    size: 10000,
-                },
-            },
-        );
+    },
+    mounted() {
     },
 };
