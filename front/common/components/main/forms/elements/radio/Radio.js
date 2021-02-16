@@ -220,8 +220,8 @@ module.exports = {
     watch: {
         options() {
             if (!this.prefetchInAjax) {
-                this.state.options = this.translate_options(this.format_options(this.options, 'to'));
-                this.select_default_value();
+                //this.state.options = this.translate_options(this.format_options(this.options, 'to'));
+                //this.select_default_value();
             }
         },
         current_state(s) {
