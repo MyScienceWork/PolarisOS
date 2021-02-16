@@ -6,19 +6,20 @@
     @name: extract(@ined-colors, @i);
 
     .navbar-item-@{name}:hover {
-        background-color: @@name;
+        background-color: @grey-3;
     }
 
     .navbar-item-@{name}.is-active {
-        background-color: @@name;
+        background-color: @grey-3;
     }
 
     .navbar-item-@{name} {
-        border-bottom-color: @@name;
+        background-color: @grey-4;
+        border-bottom-color: @white;
     }
 
     .breadcrumb-@{name} {
-        background-color: @@name;
+        background-color: @white;
     }
 
     .breadcrumb-@{name} {
@@ -29,12 +30,12 @@
         }
 
         a:first-child {
-            background: @@name;
-            color: @white;
+            background: @white;
+            color: @grey-1;
         }
 
         a:first-child::after {
-            background: @@name;
+            background: @white;
         }
     }
 
@@ -45,12 +46,12 @@
                     background-color: @@name;
                     .has-link {
                         a {
-                            color: @white;
+                            color: @grey-1;
                         }
 
                         a:hover {
                             background-color: @grey-3;
-                            color: @white;
+                            color: @grey-1;
                         }
                     }
                 }
@@ -62,7 +63,6 @@
 }
 nav.navigation-menu {
     margin-top: 2%;
-    background-color: @grey-3;
 
     .columns {
         padding-left: 10%;
@@ -81,7 +81,7 @@ nav.navigation-menu {
         border-bottom-style: solid;
         border-bottom-width: 5px;
         a {
-            color: @white;
+            color: @grey-1;
             font-weight: bold;
             text-transform: uppercase;
             width: 100%;
@@ -95,7 +95,7 @@ nav.navigation-menu {
         }
 
         a:hover {
-            color: @white;
+            color: @grey-1;
         }
 
         .dropdown {
@@ -136,7 +136,7 @@ nav.navigation-menu-hidden {
             line-height: 36px;
             color: black;
             padding: 0 10px 0 30px;
-            background: @white-transparent-breadcrumb;
+            background: @white;
             position: relative;
 
             .fa {
@@ -153,7 +153,7 @@ nav.navigation-menu-hidden {
             height: 36px;
             transform: scale(0.707) rotate(45deg);
             z-index: 1;
-            background: @white-transparent-breadcrumb;
+            background: @white;
             border-radius: 0 5px 0 50px;
         }
     }
