@@ -77,6 +77,7 @@
     "node-xlsx": "^0.12.1",
     "nodemailer": "^4.6.4",
     "oai-pmh": "^1.1.1",
+    "object-path": "^0.11.5",
     "pdf-merge": "^1.2.0",
     "phantom-html2pdf": "^4.0.1",
     "promise-parallel-throttle": "^3.1.0",

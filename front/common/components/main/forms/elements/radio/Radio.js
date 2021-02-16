@@ -6,6 +6,7 @@ const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const LangMixin = require('../../../../../mixins/LangMixin');
 const ASCIIFolder = require('fold-to-ascii');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
     props: {
@@ -41,7 +42,7 @@ module.exports = {
     },
     components: {
     },
-    mixins: [InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin, ConditionalReadonlyMixin],
     data() {
         return {
             state: {
@@ -97,13 +98,16 @@ module.exports = {
         },
         onChange(val) {
             if (!this.readonly) {
-                this.$emit('select-change', val);
+                this.$emit('select-change', {
+                    value: val,
+                    name: this.name,
+                });
                 this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                     form: this.form,
                     name: this.name,
                     info: this.extract_values(val),
                 });
-                this.state.selected= {};
+                this.state.selected = {};
                 this.state.selected.value = this.extract_values(val);
             }
         },
@@ -272,6 +276,9 @@ module.exports = {
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
         },
     },
 };

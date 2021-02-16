@@ -8,6 +8,7 @@ const LangMixin = require('../../../../../mixins/LangMixin');
 const ESQueryMixin = require('../../../../../mixins/ESQueryMixin');
 const ASCIIFolder = require('fold-to-ascii');
 const Handlebars = require('../../../../../../../app/modules/utils/templating');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
     props: {
@@ -18,7 +19,6 @@ module.exports = {
         // form: { required: true, type: String }, //InputMixin
         multi: { default: false, type: Boolean },
         readonly: { default: false, type: Boolean },
-        conditionalReadonly: { default: '', type: String },
         options: { required: true, type: Array },
         fieldLabel: { required: false, default: 'label', type: String },
         fieldValue: { required: false, default: 'value', type: String },
@@ -46,7 +46,7 @@ module.exports = {
     components: {
         'v-select': VSelect,
     },
-    mixins: [InputMixin, LangMixin, ESQueryMixin],
+    mixins: [InputMixin, LangMixin, ESQueryMixin, ConditionalReadonlyMixin],
     data() {
         return {
             state: {
@@ -417,6 +417,9 @@ module.exports = {
                 return this.state.selected;
             }
             return this.state.selected_not_readonly;
+        },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
         },
     },
 };
