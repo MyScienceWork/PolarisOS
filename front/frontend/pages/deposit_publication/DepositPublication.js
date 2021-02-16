@@ -23,7 +23,7 @@ module.exports = {
                         publication_group: 'publication_group_creation',
                     },
                     reads: {
-                        user_forms: 'user_forms_read',
+                        //user_forms: 'muser_forms_read',
                         publication: 'publication_read',
                         publication_group: 'publication_group_read',
                     },
@@ -33,7 +33,7 @@ module.exports = {
                         publication: APIRoutes.entity('publication', 'POST'),
                     },
                     reads: {
-                        user_forms: APIRoutes.entity('form', 'POST', true),
+                        //user_forms: APIRoutes.entity('form', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
                         publication_group: APIRoutes.entity('publication_group', 'POST', true),
                     },
@@ -124,13 +124,10 @@ module.exports = {
         ReviewModal,
     },
     watch: {
-        publication_read(content) {
-            this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
-                form: this.state.sinks.creations.publication,
-                body: content,
-            });
-        },
         publication_group_read(publication_group) {
+            if (this.is_editing()) {
+                return;
+            }
             const forms = publication_group.map((mpublication_group => mpublication_group.form_name));
             if (forms.length > 0) {
                 this.$store.dispatch('search', {
@@ -142,8 +139,6 @@ module.exports = {
                         },
                         population: ['fields.subform', 'fields.datasource'],
                     },
-
-
                 });
             }
         },
@@ -219,7 +214,7 @@ module.exports = {
             return '';
         },
         depositor_user_id() {
-            const content = this.fcontent(this.state.sinks.reads.publication);
+            const content = this.fcontent(this.state.sinks.creation.publication);
             if (content.depositor) {
                 return content.depositor;
             }
@@ -233,10 +228,6 @@ module.exports = {
             if (!(content instanceof Array)) {
                 return [];
             }
-            return content;
-        },
-        publication_read() {
-            const content = this.fcontent(this.state.sinks.reads.publication);
             return content;
         },
         publication_group_read() {
@@ -255,14 +246,11 @@ module.exports = {
             this.$store.commit(Messages.INITIALIZE, {
                 form: this.state.sinks.creations.publication,
             });
-            this.$store.commit(Messages.INITIALIZE, {
-                form: this.state.sinks.reads.publication,
-            });
             this.$store.state.requests.push({
                 name: 'single_read',
                 type: 'dispatch',
                 content: {
-                    form: this.state.sinks.reads.publication,
+                    form: this.state.sinks.creations.publication,
                     path: APIRoutes.entity('publication', 'GET', false, id),
                 },
             });

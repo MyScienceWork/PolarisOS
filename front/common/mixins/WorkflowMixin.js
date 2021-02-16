@@ -13,6 +13,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
+                        user_forms: APIRoutes.entity('form', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
@@ -55,6 +56,10 @@ module.exports = {
     },
     watch: {
         entity_creation() {
+            const content = this.fcontent(this.state.sinks.reads.workflow);
+            if (content.length > 0) {
+                return;
+            }
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.workflow,
                 path: this.state.paths.reads.workflow,
@@ -66,8 +71,14 @@ module.exports = {
             });
         },
         workflow_read(workflows) {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (content.length > 0) {
+                return;
+            }
+
             const entity_states_workflow = workflows.map((workflow => workflow.entity_state));
             const entity_states_no_duplicates = [...new Set(entity_states_workflow)];
+
             entity_states_no_duplicates.forEach((entity_state) => {
                 this.$store.dispatch('search', {
                     form: this.state.sinks.reads.entity_state,
@@ -80,15 +91,19 @@ module.exports = {
         },
         entity_state_read(content) {
             const entity = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]);
+            if (!entity || _.isEmpty(entity)) {
+                return;
+            }
             const entity_state = entity.state;
             if (!entity_state) {
                 return;
             }
             const form_state = content.find((state => state._id === entity_state));
-            if (form_state && form_state.length === 0) {
+            if (!form_state) {
                 return;
             }
             const form_name = form_state.form;
+
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads.user_forms,
                 path: this.state.paths.reads.user_forms,
@@ -125,15 +140,6 @@ module.exports = {
                     if (id_workflow_state !== undefined) {
                         allowed_states[key].label = id_workflow_state.label;
                     }
-                });
-            } else if (workflows instanceof Array && workflows.length > 0) {
-                // search entity_state
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(workflows[0].entity_state, 'POST', true),
-                    body: {
-                        size: 10000,
-                    },
                 });
             }
             return allowed_states;
