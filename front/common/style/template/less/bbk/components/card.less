@@ -8,7 +8,7 @@
 
     .card-@{name} {
         background-color: @@name;
-        
+
         .card-header-tag {
             .tag {
                 background-color: @white;
@@ -46,7 +46,7 @@
             background-color: @@name;
 
             .card-header-title {
-                color: @white !important;
+                color: @grey-1 !important;
             }
         }
     }
@@ -55,7 +55,7 @@
         a {
             color: @@name;
         }
-        
+
         a:hover {
             color: @grey-3;
         }
@@ -79,7 +79,7 @@
 
     .card-header-@{name} {
         background-color: @@name;
-        border-radius: 5px 5px 0 0;
+        border-radius: 0px 0px 0 0;
         padding: 1%;
         border-bottom: 0px solid @white !important;
         font-weight: bold;
@@ -87,7 +87,7 @@
         text-transform: uppercase;
 
         .card-header-title {
-            color: @white !important;
+            color: @grey-1 !important;
         }
     }
 
@@ -97,8 +97,8 @@
 .card {
     padding: 1%;
     border: 1px solid @white;
-    border-radius: 5px;
-    box-shadow: 0 0 3px @black-shadow;
+    border-radius: 0px;
+    box-shadow: 0 0 0px @black-shadow;
 
     .card-header {
         box-shadow: none;
@@ -112,15 +112,16 @@
 }
 
 .clickable-card, .info-card {
-    border-radius: 5px;
-    box-shadow: 0 0 3px @black-shadow;
+    border-radius: 0px;
+    border: 1px solid @grey-3;
+    box-shadow: 0 0 0px @black-shadow;
     padding: 0 2% 2% 2%;
 
     .card-header {
         display: inline-block;
         padding: 0px 10px;
         color: @white;
-        border-radius: 0 0 5px 5px;
+        border-radius: 0 0 0px 0px;
         text-transform: uppercase;
         border-bottom: none;
     }
@@ -131,7 +132,8 @@
 }
 
 .has-card-gradient {
-    background: linear-gradient(to bottom, @grey-gradient,@white);
+    //background: linear-gradient(to bottom, @grey-gradient,@white);
+    background-color: @grey-3;
 }
 
 .card-equal-height {
@@ -163,7 +165,7 @@
     hr {
        margin: 0.75rem 0;
     }
-    
+
     .card-content {
         padding: 0.35rem;
     }
@@ -172,7 +174,8 @@
         padding: 0.5rem;
     }
 
-    background-image: linear-gradient(to bottom, @white, @grey-gradient); 
+    //background-image: linear-gradient(to bottom, @white, @grey-gradient);
+    background-color: @grey-3;
     padding: 0 !important;
 
     .title, .subtitle {
@@ -193,7 +196,7 @@
     .tag {
         border-radius: 0px;
     }
-    
+
     &.is-left:first-child > .tag {
         border-top-left-radius: 5px;
     }

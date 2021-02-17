@@ -5,7 +5,8 @@
         .step-item {
             &.is-@{name} {
                 &::before{
-                    background: linear-gradient(to left, #DBDBDB 50%, @@name 50%);
+                    //background: linear-gradient(to left, #DBDBDB 50%, @@name 50%);
+                    background-color: @grey-3;
                     background-size: 200% 100%;
                     background-position: right bottom;
                 }
@@ -14,7 +15,7 @@
                         background-position: left bottom;
                     }
                     .step-marker {
-                        background-color: #FFF; 
+                        background-color: #FFF;
                         border-color: @@name;
                         color: @@name;
                     }
@@ -27,7 +28,7 @@
                         background-color: @@name;
                     }
                 }
-            } 
+            }
         }
     }
     .generate-colored-steps((@i - 1));
