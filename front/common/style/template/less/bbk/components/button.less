@@ -1,4 +1,9 @@
 //Mixins
+.button.is-info {
+  background-color: @deep-blue;
+  border-radius: 0px !important;
+}
+
 .generate-colored-buttons(@i: length(@ined-colors)) when (@i > 0) {
     @name: extract(@ined-colors, @i);
 
