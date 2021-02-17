@@ -42,6 +42,7 @@ module.exports = {
         },
     },
     mounted() {
+        /*
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.typology_color,
             path: this.state.paths.reads.typology_color,
@@ -50,5 +51,6 @@ module.exports = {
                 projection: ['color', 'name'],
             },
         });
+         */
     },
 };

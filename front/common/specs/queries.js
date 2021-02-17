@@ -74,16 +74,14 @@ module.exports = {
         has_other_version: false,
     },
     viewable,
-    last_deposits: (uid, aid) => ({
+    published: () => ({
         $and: [
-            { has_other_version: false },
-            { status: 'published' },
-            viewable(uid, aid),
+            { 'denormalization.state.label': 'l_published' },
         ],
     }),
     last_deposits_dataset: () => ({
         $and: [
-            { status: 'published' }
+            { status: 'published' },
         ],
     }),
     filter_role(userId, roles, filter) {
