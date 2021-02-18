@@ -23,6 +23,7 @@ module.exports = {
                     reads: {
                         publication: 'publication_read',
                         stats_publication: 'stats_publication_read',
+                        stats_project: 'stats_project_read',
                         menu: 'menu_read',
                         search: 'search_home_sink',
                     },
@@ -30,6 +31,7 @@ module.exports = {
                 paths: {
                     reads: {
                         publication: APIRoutes.entity('publication', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
@@ -74,6 +76,13 @@ module.exports = {
                 where: Queries.published(),
             },
         });
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.stats_project,
+            path: this.state.paths.reads.project,
+            body: {
+                size: 0,
+            },
+        });
     },
     computed: {
         content_publication() {
@@ -90,9 +99,13 @@ module.exports = {
         },
         stats() {
             return [
-                { label: 'l_deposit',
+                { label: 'l_deposit_publications',
                     label_count: 'l_reference',
                     count: this.stats_count(this.state.sinks.reads.stats_publication),
+                    icon: 'fa-file-text' },
+                { label: 'l_deposit_projects',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_project),
                     icon: 'fa-file-text' },
             ];
         },
