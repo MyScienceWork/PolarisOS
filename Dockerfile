@@ -8,7 +8,7 @@ RUN apt-get update
 RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \ 
     && apt-get upgrade -y -o Dir::Etc::SourceList=/etc/apt/security.sources.list
 
-# RUN apt-get install -y git
+RUN apt-get install -y git
 RUN apt-get install -y pdftk
 RUN npm install pm2 -g
 
