@@ -9,7 +9,8 @@ RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \
     && apt-get upgrade -y -o Dir::Etc::SourceList=/etc/apt/security.sources.list
 
 # Remove unused unsecure packages
-RUN apt-get remove -y mercurial mercurial-common && apt autoremove
+RUN apt-get remove -y mercurial mercurial-common 
+# && apt-get -y autoremove
 
 RUN apt-get install -y git
 RUN apt-get install -y pdftk
@@ -30,7 +31,7 @@ COPY ./pm2.json .
 
 
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm install
+RUN npm install --only=prod
 
 RUN npm run build-prod
 
