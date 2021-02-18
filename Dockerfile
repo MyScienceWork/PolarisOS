@@ -1,4 +1,4 @@
-FROM node:12.20.2-stretch
+FROM node:12.20.2-buster
 
 RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
 
@@ -7,6 +7,9 @@ RUN apt-get update
 # Apply security patches
 RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \ 
     && apt-get upgrade -y -o Dir::Etc::SourceList=/etc/apt/security.sources.list
+
+# Remove unused unsecure packages
+RUN apt-get remove -y mercurial mercurial-common && apt autoremove
 
 RUN apt-get install -y git
 RUN apt-get install -y pdftk
@@ -33,6 +36,7 @@ RUN npm run build-prod
 
 # Show current folder structure in logs
 #RUN ls -l
+RUN python --version
 
 
 CMD [ "pm2-docker", "start", "pm2.json", "--env", "production" ]
