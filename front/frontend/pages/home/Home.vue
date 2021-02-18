@@ -2,7 +2,7 @@
     <div class="hero-body">
         <div class="container is-fluid">
             <div class="columns is-centered">
-                <div class="column is-10">
+                <div class="column is-8">
                     <div class="columns is-multiline">
                         <div class="column is-12">
                             <!-- last deposit publication -->
