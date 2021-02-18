@@ -1,9 +1,14 @@
-FROM node:8.16.1
+FROM node:12.20.2-stretch-slim
 
 RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
 
 RUN apt-get update
-RUN apt-get install -y git
+
+# Apply security patches
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \ 
+    && apt-get upgrade -y -o Dir::Etc::SourceList=/etc/apt/security.sources.list
+
+# RUN apt-get install -y git
 RUN apt-get install -y pdftk
 RUN npm install pm2 -g
 
