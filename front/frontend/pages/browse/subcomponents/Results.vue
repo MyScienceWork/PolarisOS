@@ -12,7 +12,17 @@
             </div>
             <div class="media-content">
                 <p class="has-small-bottom-margin">
-                    <span>{{ info.title }}</span>
+                  <router-link :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view/${info._id}`">
+                    <span class="icon is-small"><i class="fa fa-external-link"></i></span>
+                  </router-link>
+                  <strong>{{ info.title }}</strong>
+                  <span class="tag is-info">{{ lang(_oa_find(info, 'denormalization.group.label')) }}</span>
+                </p>
+                <p>
+                  <span>{{ info.denormalization.authors | join('researcher.full_name') | truncate(30) }}</span>
+                </p>
+                <p>
+                  <span>{{ _oa_find(info, 'denormalization.journal.name') }}</span>
                 </p>
             </div>
         </article>
