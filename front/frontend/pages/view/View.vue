@@ -1,8 +1,8 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns" v-if="content_item && Object.keys(content_item).length > 0">
-            <div class="column is-8">
+        <div class="columns is-centered" v-if="content_item && Object.keys(content_item).length > 0">
+          <div class="column is-8">
                 <div class="card card-equal-height card-with-tag">
                     <div class="card-header">
                         <a href='#' class="card-header-icon card-header-tag is-left">
