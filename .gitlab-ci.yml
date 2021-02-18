@@ -9,7 +9,7 @@ stages:
     - Build
     - Deploy
 
-Build and Push image integration and production BBK:
+Build image with security patches BBK:
   image: docker:18.09.7-dind
   stage: Build
   services:
