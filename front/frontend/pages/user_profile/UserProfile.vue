@@ -46,6 +46,7 @@
                                 </span>
                             </button>
 
+                            <!--
                             <b-dropdown-item has-link
                                 :class="{'is-active': state.current_tab === 0}"
                             >
@@ -56,13 +57,14 @@
                             >
                                 <a @click.prevent="update_tab(1)">{{lang('l_my_account')}}</a>
                             </b-dropdown-item>
-
+                            -->
                             <b-dropdown-item has-link
                                 :class="{'is-active': state.current_tab === 2}"
                             >
                                 <a @click.prevent="update_tab(2)">{{lang('f_my_deposit', {}, 'other')}}</a>
                             </b-dropdown-item>
 
+                            <!--
                             <b-dropdown-item has-link
                                 :class="{'is-active': state.current_tab === 3}"
                             >
@@ -70,7 +72,7 @@
                                     {{lang('f_bibliographic_report', {}, 'other')}}
                                 </a>
                             </b-dropdown-item>
-                            <!--
+
                             <b-dropdown-item has-link
                                              :class="{'is-active': state.current_tab === 4}"
                             >
@@ -81,21 +83,24 @@
                     </div>
                     <div class="tabs is-centered is-toggle is-hidden-mobile" v-if="state.loggedIn">
                         <ul>
+                          <!--
                             <li :class="{'is-active': state.current_tab === 0, 'is-red': true}">
                                 <a @click.prevent="update_tab(0)">{{lang('l_overview')}}</a>
                             </li>
                             <li :class="{'is-active': state.current_tab === 1, 'is-red': true}">
                                 <a @click.prevent="update_tab(1)">{{lang('l_my_account')}}</a>
                             </li>
+                            -->
                             <li :class="{'is-active': state.current_tab === 2, 'is-red': true}">
                                 <a @click.prevent="update_tab(2)">{{lang('f_my_deposit', {}, 'other')}}</a>
                             </li>
+                          <!--
                             <li :class="{'is-active': state.current_tab === 3, 'is-red': true}">
                                 <a @click.prevent="update_tab(3)">
                                     {{lang('f_bibliographic_report', {}, 'other')}}
                                 </a>
                             </li>
-                            <!--
+
                             <li :class="{'is-active': state.current_tab === 4, 'is-red': true}">
                                 <a @click.prevent="update_tab(4)">
                                     {{lang('f_registered_search', {}, 'other')}}
