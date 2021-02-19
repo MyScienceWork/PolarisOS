@@ -6,14 +6,14 @@
                 <div class="card">
                     <div class="card-content">
                         <fdata-table-searching
-                                v-if="table_ready"
+                                v-if="state.table_ready"
                                 :search-sink="state.sinks.creations.search"
-                                :result-sink="state.sinks.reads[entity()]"
-                                :search-path="state.paths.reads[entity()]"
+                                :result-sink="state.sinks.reads[state.workflow_entity]"
+                                :search-path="state.paths.reads[state.workflow_entity]"
                                 :search-query="search_query_with_state_filters"
                                 :empty-search-query="empty_search_query_with_state_filters"
                                 :use-default-query="false"
-                                :search-type="entity()"
+                                :search-type="state.workflow_entity"
                                 :detailed="true"
                                 detail-key="_id"
                                 :checkable="true"
@@ -22,7 +22,7 @@
                                 @column-checkbox-update="on_column_update"
                                 @table-checked-rows-update="on_checked_rows_update"
                                 :change-with-create-success="true"
-                                :form-create-success="state.sinks.creations[entity()]"
+                                :form-create-success="state.sinks.creations[state.workflow_entity]"
                         >
                             <template slot="rows" slot-scope="props">
                                 <b-table-column v-for="(value, key) in state.columns"

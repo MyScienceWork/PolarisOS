@@ -40,13 +40,11 @@ module.exports = {
                 checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
                 workflow_entity: 'publication',
+                table_ready: false,
             },
         };
     },
     methods: {
-        entity() {
-            return this.state.workflow_entity;
-        },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
             this.$set(this.state, 'columns', this.state.columns);
@@ -144,12 +142,10 @@ module.exports = {
                     path: this.state.paths.reads[e],
                 });
             });
+            this.state.table_ready = true;
         },
     },
     computed: {
-        table_ready() {
-            return this.state.sinks.reads[this.entity()] !== undefined;
-        },
         content_entity() {
             const content = this.mcontent(this.state.sinks.reads.entity);
             if (content.length > 0) {
