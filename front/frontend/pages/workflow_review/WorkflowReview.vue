@@ -5,9 +5,8 @@
             <div class="column">
                 <div class="card">
                     <div class="card-content">
-                        <h4 class="title is-4">{{lang('l_workflow_info')}} {{lang(workflow_name())}}</h4>
                         <fdata-table-searching
-                                v-if="state.sinks.reads[entity()]"
+                                v-if="table_ready"
                                 :search-sink="state.sinks.creations.search"
                                 :result-sink="state.sinks.reads[entity()]"
                                 :search-path="state.paths.reads[entity()]"
@@ -45,18 +44,9 @@
                                 </b-table-column>
 
                                 <b-table-column field="actions" :label="lang('l_p_action', {}, 'other')" centered>
-                                    <router-link :to="`/deposit_project_curator?type=review&_id=${props.row._id}&workflow=${workflow_name()}`">
-                                    <a class="has-text-green">{{lang('l_review_review_action')}}</a><br />
+                                    <router-link :to="`/deposit?type=review&_id=${props.row._id}`">
+                                      <a class="has-text-green">{{lang('l_review_review_action')}}</a><br />
                                     </router-link>
-                                    <!--
-                                    <action-button
-                                            class="has-text-red"
-                                            tag="a"
-                                            :confirmation="lang('l_remove_confirmation')"
-                                            :two-steps="true"
-                                            @action-click="remove(props.row, entity())"
-                                    >{{lang('l_review_remove_button')}}</action-button>
-                                     -->
                                 </b-table-column>
                             </template>
                             <template slot="detail" slot-scope="props">

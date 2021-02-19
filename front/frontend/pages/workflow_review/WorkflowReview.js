@@ -1,6 +1,5 @@
 const LangMixin = require('../../../common/mixins/LangMixin');
 const APIRoutes = require('../../../common/api/routes');
-const Messages = require('../../../common/api/messages');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FiltersMixin = require('../../../common/mixins/FiltersMixin');
@@ -9,8 +8,6 @@ const ESQueryMixin = require('../../../common/mixins/ESQueryMixin');
 const OAMixin = require('../../../common/mixins/ObjectAccessMixin');
 const RemoveMixin = require('../../../common/mixins/RemoveMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
-const Queries = require('../../../common/specs/queries');
-const BrowserUtils = require('../../../common/utils/browser');
 
 const _ = require('lodash');
 
@@ -42,19 +39,13 @@ module.exports = {
                 columns: this.columns || {},
                 checked_rows: [],
                 es_query_id: this.search_query || '__no__search__query__',
-                my_entity: '',
+                workflow_entity: 'publication',
             },
         };
     },
     methods: {
-        workflow_name() {
-            return this.$route.query.workflow;
-        },
         entity() {
-            if (this.state.my_entity) {
-                return this.state.my_entity;
-            }
-            return '__no__entity__defined__';
+            return this.state.workflow_entity;
         },
         on_column_update(obj) {
             this.state.columns[obj.key].visible = obj.checked;
@@ -111,14 +102,26 @@ module.exports = {
                 path: this.state.paths.reads[e],
                 body: {
                     size: 10000,
+                    where: {
+                        entity: this.state.workflow_entity,
+                    },
+                },
+            });
+        });
+        ['entity'].forEach((e) => {
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads[e],
+                path: this.state.paths.reads[e],
+                body: {
+                    size: 10000,
+                    where: {
+                        type: this.state.workflow_entity,
+                    },
                 },
             });
         });
     },
     watch: {
-        current_read_state_entity(s) {
-            // console.log('WATCH current_read_state_entity : ', s);
-        },
         search_query(q) {
             if (q) {
                 this.state.es_query_id = q;
@@ -129,48 +132,23 @@ module.exports = {
                 this.state.columns = cols;
             }
         },
+        workflow_read(workflow) {
+            this.state.sinks.reads[this.state.workflow_entity] = `${this.state.workflow_entity}_read`;
+            this.state.paths.reads[this.state.workflow_entity] = APIRoutes.entity(this.state.workflow_entity, 'POST', true);
+
+            //TODO: add allowed states before with workflow mixin new function
+
+            [this.state.workflow_entity].forEach((e) => {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads[e],
+                    path: this.state.paths.reads[e],
+                });
+            });
+        },
     },
     computed: {
-        current_read_state_entity() {
-            const workflows = this.fcontent(this.state.sinks.reads.workflow);
-            if (workflows.length === 0) {
-                return;
-            }
-            const workflow_name = this.$route.query.workflow;
-            const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
-            if (idx === -1) {
-                return;
-            }
-            const workflow_entity = workflows[idx].entity;
-            if (this.state.my_entity === workflow_entity) {
-                return;
-            }
-            this.state.my_entity = workflow_entity;
-            this.state.sinks.reads[workflow_entity] = `${workflow_entity}_read`;
-            this.state.paths.reads[workflow_entity] = APIRoutes.entity(workflow_entity, 'POST', true);
-            ['entity'].forEach((e) => {
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads[e],
-                    path: this.state.paths.reads[e],
-                    body: {
-                        where: {
-                            type: workflow_entity,
-                        },
-                    },
-                });
-            });
-            const filtered_states = this.filtered_states();
-            [workflow_entity].forEach((e) => {
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads[e],
-                    path: this.state.paths.reads[e],
-                    body: {
-                        where: {
-                            _id: filtered_states,
-                        },
-                    },
-                });
-            });
+        table_ready() {
+            return this.state.sinks.reads[this.entity()] !== undefined;
         },
         content_entity() {
             const content = this.mcontent(this.state.sinks.reads.entity);
@@ -204,6 +182,10 @@ module.exports = {
                 }, {});
             }
             return {};
+        },
+        workflow_read() {
+            const content = this.fcontent(this.state.sinks.reads.workflow);
+            return content;
         },
     },
 };

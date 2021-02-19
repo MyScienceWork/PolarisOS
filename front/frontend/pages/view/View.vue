@@ -41,11 +41,6 @@
                 <p v-html="lang('l_unexisting_item_view')"></p>
             </div>
         </div>
-        <copy-requester
-            :logged-in="state.loggedIn"
-            :trigger.sync="state.copyRequest"
-            :item="content_item._id"
-        />
     </div>
 </div>
 </template>
