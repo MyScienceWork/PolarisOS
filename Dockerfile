@@ -1,17 +1,14 @@
 # Create the base image with all required components
 FROM node:12.20.2-buster AS base
 
-#RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
-
 RUN apt-get update
 
 # Apply security patches
-RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \ 
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list \
     && apt-get upgrade -y -o Dir::Etc::SourceList=/etc/apt/security.sources.list
 
 # Remove unused unsecure packages
-RUN apt-get remove -y mercurial mercurial-common 
-# && apt-get -y autoremove
+RUN apt-get remove -y mercurial mercurial-common
 
 RUN apt-get install -y git
 RUN apt-get install -y pdftk
@@ -54,5 +51,4 @@ COPY --from=builder /app/public /app/public
 COPY --from=builder /app/build /app/build
 
 # Show current folder structure in logs
-#RUN ls -l
 CMD [ "pm2-docker", "start", "pm2.json", "--env", "production" ]
