@@ -4,7 +4,7 @@ const development = {
     port: 4002,
     elasticsearch: {
         hosts: [
-            'http://host.docker.internal:9201',
+            'http://elastic:password@localhost:9201',
         ],
     },
     grobid: {
