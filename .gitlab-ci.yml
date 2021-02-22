@@ -16,13 +16,10 @@ Build and Push image integration and production BBK:
     - docker:18.09.7-dind
   tags:
     - gitlab-org-docker
-  only:
-    - client/BBK
-    - INTEGRATION-BBK
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - docker build -t $CI_REGISTRY_IMAGE:BBK .
-    - docker push $CI_REGISTRY_IMAGE:BBK
+    - docker build -t $CI_REGISTRY_IMAGE:BBK_SEC .
+    - docker push $CI_REGISTRY_IMAGE:BBK_SEC
 
 Deploy test infra:
   image: docker:18.09.7
