@@ -75,7 +75,7 @@
     "natural": "^0.6.2",
     "node-uuid": "^1.4.8",
     "node-xlsx": "^0.12.1",
-    "nodemailer": "^4.6.4",
+    "nodemailer": "^6.4.18",
     "oai-pmh": "^1.1.1",
     "object-path": "^0.11.5",
     "pdf-merge": "^1.2.0",
