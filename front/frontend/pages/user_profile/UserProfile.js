@@ -60,7 +60,7 @@ module.exports = {
                         author: 'nc',
                     },
                 },
-                current_tab: 0,
+                current_tab: 2,
                 loggedIn: true,
                 last_deposits_number: 10,
                 author_mode: false,

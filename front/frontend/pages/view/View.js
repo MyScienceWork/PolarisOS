@@ -13,6 +13,7 @@ const Handlebars = require('../../../../app/modules/utils/templating');
 const TrackingMixin = require('../../../common/mixins/TrackingMixin');
 const HtmlMixin = require('../../../common/mixins/HtmlMixin');
 const FileMixin = require('../../../common/mixins/FileMixin');
+const Utils = require('../../../common/utils/utils');
 
 module.exports = {
     mixins: [FileMixin, LangMixin, FormMixin, FormCleanerMixin, OAMixin, UserMixin, FiltersMixin, TrackingMixin, HtmlMixin],
@@ -54,10 +55,10 @@ module.exports = {
             const content = this.fcontent(this.state.sinks.reads.item);
             if (content instanceof Array && content.length > 0) {
                 const item = content[0];
-                console.log("content item : ", item);
+                console.log('content item : ', item);
                 return item;
             }
-            console.log("content item : ", content);
+            console.log('content item : ', content);
             return content;
         },
         abstracts() {
@@ -67,6 +68,27 @@ module.exports = {
             }
 
             return item.abstracts;
+        },
+        affiliations() {
+            const affiliations = _.sortBy(this.contributors.affiliations, 'order');
+            return affiliations.map(aff => `<strong>${aff}</strong>`);
+        },
+        contributors() {
+            const item = this.content_item;
+            if (!item) {
+                return '';
+            }
+            const authors = item.denormalization.authors;
+            const affiliations = [];
+
+            const authors_content = authors.map((a) => {
+                affiliations.push(a.institution.name);
+                const affiliations_numbers = [affiliations.length];
+                return `<strong>${a.researcher.full_name}</strong><sup>${affiliations_numbers.join(',')}</sup>`;
+            }).filter(a => a != null);
+
+            return { contributors: [...authors_content].join(', '),
+                affiliations };
         },
         journal() {
             const item = this.content_item;
@@ -80,15 +102,6 @@ module.exports = {
 
             return item.denormalization.journal.name;
         },
-        working_paper() {
-            const item = this.content_item;
-            if (!item) {
-                return null;
-            }
-
-            const tpl = "{{#if collection}}{{collection}}, {{/if}}{{#if number}}n°{{number}}, {{/if}}{{#if localisation.city}}{{localisation.city}} : {{/if}}{{#if denormalization.editor}}{{denormalization.editor}}, {{/if}}{{moment date=dates.publication format='YYYY'}}";
-            return this.hlang(Handlebars.compile(tpl)(item));
-        },
         date() {
             return (type) => {
                 const item = this.content_item;
@@ -101,6 +114,19 @@ module.exports = {
                 }
                 return '';
             };
+        },
+        working_paper() {
+            const item = this.content_item;
+            if (!item) {
+                return null;
+            }
+            console.log("item : ", item);
+            console.log("Utils.find_value_with_path(item, 'denormalization.group.value') : ", Utils.find_value_with_path(item, 'denormalization.group.value'));
+            if (Utils.find_value_with_path(item, 'denormalization.group.value'.split('.')) !== 'working_paper') {
+                return null;
+            }
+            const tpl = '{{#if series}}Series : {{series}} {{/if}}';
+            return this.hlang(Handlebars.compile(tpl)(item));
         },
     },
     mounted() {
