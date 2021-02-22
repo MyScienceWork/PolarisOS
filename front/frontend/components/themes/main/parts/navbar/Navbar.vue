@@ -1,10 +1,12 @@
 <template>
 <nav role="navigation" aria-label="main navigation" :class="{ 'navigation-menu': true, 'navigation-menu-hidden': !showNavbar }">
     <div class="columns is-centered">
+      <!--
         <router-link class="has-small-right-margin" to='/'> <span class="icon is-medium">
             <i class="fa fa-2x fa-home has-text-white" style="margin-top: 0.7em;"></i>
             </span>
         </router-link>
+      -->
         <div
             v-for="(item, i) in menu_filtered_with_roles()"
             :class="`column is-paddingless navbar-item-${state.colors[i]} navbar-item ${active_idx == i ? 'is-active' : ''}`"

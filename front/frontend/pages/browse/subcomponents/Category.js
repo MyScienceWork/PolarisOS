@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const Vue = require('vue');
 
 const LangMixin = require('../../../../common/mixins/LangMixin');
@@ -173,10 +173,20 @@ module.exports = {
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: ids })]);
                 } else if ('browsing_dates' in content && content.browsing_dates) {
                     const date = content.browsing_dates;
+                    // start year is 31 jan 23:00 UTC or 1st jan 00:00 UTC+1
+                    // (due to bug in database storage timestamp is in local time)
+                    // get offset milliseconds :
+                    const my_date = new Date(parseInt(date, 10), 0, 1, 0, 0, 0);
+                    const offset = moment('2013-01-01').tz('Europe/Paris').format('Z');
+                    const offset_parsed = parseInt(moment((`2013-02-08 ${offset.substr(1)}`)).format('hh'), 10);
+                    const offset_sec = offset_parsed * 3600;
+                    const offset_millisec = offset_sec * 1000;
+                    const fixed_start_date = moment(my_date).valueOf() - offset_millisec;
+                    const fixed_end_date = moment(my_date).add(1, 'year').valueOf() - offset_millisec - 1;
+
                     this.$emit('update:filters', [JSON.stringify({ [this.state.query.b]: {
-                        '>=': date,
-                        '<': `${parseInt(date, 10) + 1}`,
-                        f: 'YYYY',
+                        '>=': fixed_start_date,
+                        '<=': fixed_end_date,
                     } })]);
                 }
             }

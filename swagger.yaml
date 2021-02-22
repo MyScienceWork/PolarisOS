@@ -1,0 +1,952 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is the API exposed by polarisOS backend.
+  version: 0.0.1
+  title: Polaris OS API
+  license:
+    name: Licence MIT
+    url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/LICENSE.md'
+host: localhost:4002
+basePath: /api/public/v2
+tags:
+  - name: Generated routes
+    description: Routes generated for each entity
+    externalDocs:
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/modules/utils/router.js'
+  - name: User routes
+    description: Routes for authentication and user
+    externalDocs:
+      description: Find out more
+      url: 'https://github.com/louismarie/PolarisOS/blob/master/app/modules/entities/user/routes/index.js'
+  - name : Importer routes
+    description: Routes used to import data
+    externalDocs: 
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/modules/entities/importer/routes/index.js'
+  - name : Exporter routes
+    description: Routes used to export data
+    externalDocs:
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/modules/entities/exporter/routes/index.js'
+  - name : RSS routes
+    description: Routes used to generate RSS feed
+    externalDocs: 
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/modules/3rdparty/rss/routes.js'
+  - name : Tracking routes
+    description: TBD
+    externalDocs: 
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app'
+  - name : Upload routes
+    description: TBD
+    externalDocs: 
+      description: Find out more
+      url: 'https://github.com/MyScienceWork/PolarisOS/blob/master/app/initializations/routes.js'
+schemes:
+  - http
+paths:
+  /entity:
+    put:
+      tags:
+          - "Generated routes"
+      summary: Create or modify one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+  /entity/bulk:
+    post:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+    put:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+  /entity/bulk/validate:
+    post:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+    put:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+  /entity/bulk/validate/{range}:
+    post:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+      parameters:
+          - name: "range"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"
+    put:
+      tags:
+          - "Generated routes"
+      summary: Bulk modifications entities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+      parameters:
+          - name: "range"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"        
+  /entity/{id}:
+    get:
+      tags:
+          - "Generated routes"
+      summary: Get one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string"
+    delete:
+      tags:
+        - "Generated routes"
+      summary: Delete one entity from the store
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string" 
+  /entity/{id}/{projection}:
+    get:
+      tags:
+          - "Generated routes"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string" 
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string"  
+  /entity/{id}/{projection}/{population}:
+    get:
+      tags:
+          - "Generated routes"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string" 
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string" 
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"            
+  /entity/exists/{id}:
+    get:
+      tags:
+          - "Generated routes"
+      summary: Get one entity from the store 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []    
+      parameters:
+          - name: "id"
+            in: "path"
+            description: "ID of the entity"
+            required: true
+            type: "string"
+  /entity/validate:
+    put:
+      tags:
+          - "Generated routes"
+      summary: Validate entity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+  /entity/validate/{range}:
+    put:
+      tags:
+          - "Generated routes"
+      summary: Validate entity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []  
+      parameters:
+          - name: "range"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string" 
+            
+  /entitys:
+    get:
+      tags:
+          - "Generated routes"
+      summary: Get multiple entities from the store (scroll mode)
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []
+    post:
+      tags:
+          - "Generated routes"
+      summary: Get multiple entities from the store
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security: 
+        - BasicAuth: []             
+  /entitys/count:
+      get:
+        tags:
+        - "Generated routes"
+        summary: Get number of entities
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+      post:
+        tags:
+          - "Generated routes"
+        summary: Get number of entities
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []   
+  /entitys/{projection}:
+      get:
+        tags:
+          - "Generated routes"
+        summary: Search some entries with specified projection (scroll mode)
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"         
+      post:
+        tags:
+          - "Generated routes"
+        summary: Search some entries with specified projection
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"         
+  /entitys/{projection}/{population}:
+      get:
+        tags:
+            - "Generated routes"
+        summary: Search some entries with specified projection and population (scroll mode)
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"  
+      post:
+        tags:
+          - "Generated routes"
+        summary: Search some entries with specified projection and population
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []    
+        parameters:
+          - name: "projection"
+            in: "path"
+            description: "Fields you want in result"
+            required: true
+            type: "string"
+          - name: "population"
+            in: "path"
+            description: "TBD"
+            required: true
+            type: "string"        
+  /entitys/search:
+      post:
+        tags:
+          - "Generated routes"
+        summary: Search some entities
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+  /entitys/search/{translatable}/{lang}:
+      post:
+        tags:
+          - "Generated routes"
+        summary: Search some translatable entities
+        description: ''
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: OK
+        security: 
+          - BasicAuth: []
+        parameters:
+        - name: "translatable"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+  /authenticate:
+    post:
+      tags:
+        - "User routes"
+      summary: Authenticate user
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+  /list/publications/{iid}:
+    get:
+      tags:
+        - "User routes"
+      summary: Authenticate user
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+      parameters:
+        - name: "iid"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+  /iuser/access:
+    post:
+      tags:
+        - "User routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /my_user:
+    put:
+      tags:
+        - "User routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /my_user/validate:
+    put:
+      tags:
+        - "User routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []  
+  /my_user/validate/{range}:
+    put:
+      tags:
+        - "User routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []     
+      parameters:
+        - name: "range"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+  /import:   
+    post:
+      tags:
+        - "Importer routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []     
+  /import/ris:   
+    post:
+      tags:
+        - "Importer routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []    
+  /export:   
+    post:
+      tags:
+        - "Exporter routes"
+      summary: TBD
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /export/bibliography:   
+    post:
+      tags:
+        - "Exporter routes"
+      summary: TBD
+      description: 'Export bibliography'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /export/masas:   
+    post:
+      tags:
+        - "Exporter routes"
+      summary: TBD
+      description: 'TBD'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /export/hal:   
+    post:
+      tags:
+        - "Exporter routes"
+      summary: TBD
+      description: 'Export to HAL'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: [] 
+  /rss/{entity}/{mapping}/{lang}:   
+    post:
+      tags:
+        - "RSS routes"
+      summary: TBD
+      description: 'RSS feed'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "mapping"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+  /rss/{entity}/{mapping}/{lang}/{query}:   
+    post:
+      tags:
+        - "RSS routes"
+      summary: TBD
+      description: 'RSS feed'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "mapping"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "query"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+  /rss/{entity}/{mapping}/{lang}/{query}/{sort}:   
+    post:
+      tags:
+        - "RSS routes"
+      summary: TBD
+      description: 'RSS feed'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "mapping"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "query"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "sort"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+  /rss/{entity}/{mapping}/{lang}/{query}/{sort}/{size}:   
+    post:
+      tags:
+        - "RSS routes"
+      summary: TBD
+      description: 'RSS feed'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "mapping"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "lang"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "query"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "sort"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "size"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string" 
+  /itracking_stat/add:   
+    post:
+      tags:
+        - "Tracking routes"
+      summary: TBD
+      description: 'TBD'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+  /single_upload:   
+    post:
+      tags:
+        - "Upload routes"
+      summary: Upload file to minio
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+  /download/{entity}/{eid}/{filename}:   
+    get:
+      tags:
+        - "Upload routes"
+      summary: Download one file
+      description: 'TBD'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []   
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "eid"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "filename"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+  /downloads/{entity}/{eid}/{names}/{filenames}:     
+    get:
+      tags:
+        - "Upload routes"
+      summary: Download multiple files
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: "entity"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "eid"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"  
+        - name: "names"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        - name: "filenames"
+          in: "path"
+          description: "TBD"
+          required: true
+          type: "string"
+        
+securityDefinitions:
+  BasicAuth:
+    type: basic

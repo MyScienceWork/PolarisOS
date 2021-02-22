@@ -213,8 +213,6 @@ class Workflow {
                     step.type === "state"
                     && step.state_after.findIndex(state => state._id === state_after) !== -1
                 );
-                Logger.info("run transition step : ", run_transition_step);
-                Logger.info("run state step : ", run_state_step);
                 state_after = this._item.state;
                 if (run_transition_step || run_state_step) {
                     await this._run_transition(step);

@@ -23,7 +23,7 @@ module.exports = {
         keep_files: { default: false, type: Boolean },
         restore_files: { default: false, type: Boolean },
         allowGrobid: { default: true, type: Boolean },
-        show_master_checkboxes: { default: true, type: Boolean },
+        show_master_checkboxes: { default: false, type: Boolean },
     },
     data() {
         return {

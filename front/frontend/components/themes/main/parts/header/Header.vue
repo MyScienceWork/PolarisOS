@@ -3,16 +3,15 @@
     <div class="container is-fluid">
         <div class="columns is-ancestor is-centered">
             <div class="column is-vcentered is-2 is-hidden-touch">
-                <div class="container is-vcentered">
+                <div v-if="$store.state.global_config.gui.logo_left != ''" class="container is-vcentered">
                     <figure class="image is-vcentered">
-                        <!--<router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>-->
-                        <a :href="lang('l_website_logo_left')"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></a>
+                        <router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>
                     </figure>
                 </div>
             </div>
             <div v-if="$store.state.global_config.gui.logo_center" class="column is-vcentered has-text-centered is-8">
                 <div class="container">
-                    <a :href="lang('l_website_logo_center')"><img style="max-width: 15%;" :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' /></a>
+                  <router-link to="/"><img :src='$store.state.global_config.gui.logo_center' alt='LogoCenter' title='App Logo' /></router-link>
                 </div>
             </div>
             <div v-else class="column is-vertical has-text-centered">
@@ -22,14 +21,16 @@
             </div>
             <div class="column is-vcentered container has-text-centered is-2 is-vertical">
                 <div class="container">
-                    <login-lang :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
+                    <login-lang :backoffice="false" :languages="languages" :back-to-website="true" :website="lang('l_back_to_website_url')" />
                 </div>
             </div>
             <!-- <search class="is-fixed-right" :show-advanced-search="false" :show-favorites="false" key="header-searchbar" :collapsible="true" /> -->
         </div>
     </div>
     <navbar :menu="menu" />
+    <!--
     <div :style="showNavbar ? 'height: 0px' : 'height: 53px'"></div>
+    -->
 </div>
 </template>
 

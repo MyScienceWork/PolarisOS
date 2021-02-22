@@ -3,7 +3,7 @@ const path = require('path');
 const all = {
     root: path.resolve(path.join(__dirname, '..')),
     elasticsearch: {
-        index_prefix: 'inserm',
+        index_prefix: 'pos',
         apiVersion: '7.x',
     },
     logger: {
@@ -23,10 +23,11 @@ const all = {
     minio: {
         host: 'localhost',
         port: 9000,
-        accessKey: 'D6WOTGX0QWJ0I61CACYZ',
-        secretKey: 'NdD4gVGH3OeK3s+W4kPnF+qU8DntxO1HwDT0luoC',
+        accessKey: 'D6WATDX0QDZ1I61CACYZ',
+        secretKey: 'NdD50gVGH40OeK2s+W3kPnF+qU9DntxO2HwDT2luoC',
         secure: false,
         default_bucket: 'posbucket',
+        public_bucket: 'pospubbucket',
         sitemap_bucket: 'possitemap',
     },
     grobid: {
@@ -41,10 +42,10 @@ const all = {
     },
     scheduler: {
         app: {
-            interval: 120 * 1000,
+            interval: 30 * 1000,
         },
         api: {
-            interval: 60 * 60 * 1000,
+            interval: 45 * 1000,
         },
     },
 };

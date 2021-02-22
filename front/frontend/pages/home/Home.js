@@ -5,30 +5,34 @@ const APIRoutes = require('../../../common/api/routes');
 const FormMixin = require('../../../common/mixins/FormMixin');
 const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
+const HtmlMixin = require('../../../common/mixins/HtmlMixin');
 const Queries = require('../../../common/specs/queries');
 const BrowserUtils = require('../../../common/utils/browser');
 const Handlebars = require('../../../../app/modules/utils/templating');
 
+const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
+const Search = require('./subcomponents/Search.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin],
+    mixins: [LangMixin, FormMixin, FormCleanerMixin, UserMixin, HtmlMixin],
     data() {
         return {
             state: {
                 sinks: {
                     reads: {
-                        project: 'project_read',
-                        project_published: 'project_published_read',
-                        project_reviewed_by_curator_1: 'project_reviewed_by_curator_1_read',
-                        project_reviewed_by_curator_2: 'project_reviewed_by_curator_2_read',
-                        project_rejected_by_curator_1: 'project_rejected_by_curator_1_read',
-                        project_rejected_by_curator_2: 'project_rejected_by_curator_2_read',
+                        publication: 'publication_read',
+                        stats_publication: 'stats_publication_read',
+                        stats_project: 'stats_project_read',
+                        menu: 'menu_read',
+                        search: 'search_home_sink',
                     },
                 },
                 paths: {
                     reads: {
+                        publication: APIRoutes.entity('publication', 'POST', true),
                         project: APIRoutes.entity('project', 'POST', true),
+                        menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
             },
@@ -36,57 +40,53 @@ module.exports = {
     },
     components: {
         LastDeposits,
+        Discovery,
+        Search,
     },
     methods: {
 
     },
     mounted() {
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project,
-            path: this.state.paths.reads.project,
+            form: this.state.sinks.reads.publication,
+            path: this.state.paths.reads.publication,
             body: {
+                size: 6,
+                sort: [{ date: 'desc' }],
                 where: this.lastDepositsQuery,
             },
         });
+
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project_published,
-            path: this.state.paths.reads.project,
+            form: this.state.sinks.reads.menu,
+            path: this.state.paths.reads.menu,
             body: {
-                where: this.lastDepositsQueryPublished,
+                size: 1,
+                where: {
+                    'menu.elements.name': 'f_nav_browse',
+                },
+            },
+        });
+
+        this.$store.dispatch('search', {
+            form: this.state.sinks.reads.stats_publication,
+            path: this.state.paths.reads.publication,
+            body: {
+                size: 0,
+                where: Queries.published(),
             },
         });
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project_reviewed_by_curator_1,
+            form: this.state.sinks.reads.stats_project,
             path: this.state.paths.reads.project,
             body: {
-                where: this.lastDepositsQueryReviewed1,
-            },
-        });
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project_reviewed_by_curator_2,
-            path: this.state.paths.reads.project,
-            body: {
-                where: this.lastDepositsQueryReviewed2,
-            },
-        });
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project_rejected_by_curator_1,
-            path: this.state.paths.reads.project,
-            body: {
-                where: this.lastDepositsQueryRejected1,
-            },
-        });
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.project_rejected_by_curator_2,
-            path: this.state.paths.reads.project,
-            body: {
-                where: this.lastDepositsQueryRejected2,
+                size: 0,
             },
         });
     },
     computed: {
-        content() {
-            return this.fcontent(this.state.sinks.reads.project);
+        content_publication() {
+            return this.fcontent(this.state.sinks.reads.publication);
         },
         stats_count() {
             return (sink) => {
@@ -97,84 +97,42 @@ module.exports = {
                 return 0;
             };
         },
-        stats_submitted() {
+        stats() {
             return [
-                { label: 'l_deposit_submitted',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project),
+                { label: 'l_deposit_publications',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_publication),
+                    icon: 'fa-file-text' },
+                { label: 'l_deposit_projects',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_project),
                     icon: 'fa-file-text' },
             ];
         },
-        stats_published() {
-            return [
-                { label: 'l_deposit_published',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project_published),
-                    icon: 'fa-file-text' },
-            ];
-        },
-        stats_reviewed_by_curator_1() {
-            return [
-                { label: 'l_deposit_reviewed_by_curator_1',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project_reviewed_by_curator_1),
-                    icon: 'fa-file-text' },
-            ];
-        },
-        stats_reviewed_by_curator_2() {
-            return [
-                { label: 'l_deposit_reviewed_by_curator_2',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project_reviewed_by_curator_2),
-                    icon: 'fa-file-text' },
-            ];
-        },
-        stats_rejected_by_curator_1() {
-            return [
-                { label: 'l_deposit_rejected_by_curator_1',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project_rejected_by_curator_1),
-                    icon: 'fa-file-text' },
-            ];
-        },
-        stats_rejected_by_curator_2() {
-            return [
-                { label: 'l_deposit_rejected_by_curator_2',
-                    label_count: 'l_projects',
-                    count: this.stats_count(this.state.sinks.reads.project_rejected_by_curator_2),
-                    icon: 'fa-file-text' },
-            ];
-        },
-
         items() {
-            if (this.content && this.content instanceof Array && this.content.length > 0) {
-                const item_show = this.content.slice(0, 11);
-                const items = item_show.map((c) => {
-                    const html = this.hlang(Handlebars.compile('{{title}}' || '')(c));
-                    c.html = html;
-                    return c;
-                });
-                return items;
+            console.log("BRYAN this.content_publication : ", this.content_publication);
+            if (this.content_publication instanceof Array) {
+                return this.content_publication;
             }
             return [];
         },
+        navs() {
+            const content = this.fcontent(this.state.sinks.reads.menu);
+            if (!content || !(content instanceof Array) || content.length === 0) {
+                return [];
+            }
+            const idx = _.findIndex(content[0].elements, elt => elt.name === 'f_nav_browse');
+            if (idx === -1) {
+                return [];
+            }
+            const elt = content[0].elements[idx];
+            return elt.submenus.map(celt => ({
+                text: celt.name,
+                query: celt.query,
+            }));
+        },
         lastDepositsQuery() {
-            return Queries.last_deposits_submitted(this.user._id, this.roles);
-        },
-        lastDepositsQueryPublished() {
-            return Queries.last_deposits_published(this.user._id, this.roles);
-        },
-        lastDepositsQueryReviewed1() {
-            return Queries.last_deposits_reviewed_by_curator_1(this.user._id, this.roles);
-        },
-        lastDepositsQueryReviewed2() {
-            return Queries.last_deposits_reviewed_by_curator_2(this.user._id, this.roles);
-        },
-        lastDepositsQueryRejected1() {
-            return Queries.last_deposits_rejected_by_curator_1(this.user._id, this.roles);
-        },
-        lastDepositsQueryRejected2() {
-            return Queries.last_deposits_rejected_by_curator_2(this.user._id, this.roles);
+            return Queries.published();
         },
     },
 };

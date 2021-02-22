@@ -8,10 +8,10 @@ const CrudForm = require('./CrudForm.vue');
 const Handlebars = require('../../../../../../app/modules/utils/templating');
 const Utils = require('../../../../utils/utils');
 const Messages = require('../../../../../common/api/messages');
+const ConditionalReadonlyMixin = require('../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
-    mixins: [LangMixin, FiltersMixin, FormMixin, OAMixin],
-
+    mixins: [LangMixin, FiltersMixin, FormMixin, OAMixin, ConditionalReadonlyMixin],
     props: {
         form: { required: true },
         cform: { type: String, required: true },
@@ -39,6 +39,10 @@ module.exports = {
                         dynamic_list: {},
                     },
                 },
+                last_changed_input: {
+                    value: null,
+                    name: '',
+                },
             },
         };
     },
@@ -46,6 +50,7 @@ module.exports = {
         CrudForm,
     },
     beforeMount() {
+        this.watch_value(this.cform);
         const list_mappings = this.dynamic_list_mappings();
         if (list_mappings === undefined) {
             return;
@@ -405,6 +410,11 @@ module.exports = {
         },
         on_update_data_from_api(data) {
             this.update_rows_from_api(data.data, data.name);
+        },
+        update_checkbox(info) {
+            const { value, name } = info;
+            this.state.last_changed_input.name = name;
+            this.state.last_changed_input.value = value;
         },
     },
     watch: {

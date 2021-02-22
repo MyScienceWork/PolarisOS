@@ -1,25 +1,28 @@
 variables:
-  # DOCKER_HOST: tcp://docker:2375/
-  # DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
   CI_REGISTRY_IMAGE: registry.gitlab.com/polaris-os-group/polaris-os
   DOCKER_TLS_CERTDIR: ""
+  CI_REGISTRY_IMAGE_DOCKERHUB: mysciencework/polarisos
 
 stages:
-  - Build
-  - Deploy
+    - Build
+    - Deploy
 
-Build and Push image integration and production INSERM:
-  image: docker:18.09.7
+Build and Push image integration and production BBK:
+  image: docker:18.09.7-dind
   stage: Build
   services:
     - docker:18.09.7-dind
+  tags:
+    - gitlab-org-docker
   only:
-    - client/INSERM
-    - INTEGRATION-INSERM
+    - client/BBK
+    - INTEGRATION-BBK
   script:
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin registry.gitlab.com
-    - docker build -t $CI_REGISTRY_IMAGE:INSERM .
-    - docker push $CI_REGISTRY_IMAGE:INSERM
+    - docker build -t $CI_REGISTRY_IMAGE:BBK .
+    - docker push $CI_REGISTRY_IMAGE:BBK
 
 Deploy test infra:
   image: docker:18.09.7
@@ -27,32 +30,33 @@ Deploy test infra:
   variables:
     GIT_STRATEGY: none
   tags:
-    - docker-test
+    - docker-test-bbk
   only:
-    - INTEGRATION-INSERM
-    - client/INSERM
+    - INTEGRATION-BBK
+    - client/BBK
   script:
     - 'which ssh-agent || ( apk update && apk add openssh-client )'
     - eval $(ssh-agent -s)
-    - echo "$SSH_IRDIRC_TEST01" | tr -d '\r' | ssh-add -
+    - echo "$SSH_BBK_TEST01" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM test_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM test_app-nginx'
+    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_TEST01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --force --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK test_app'
 
-# Deploy prod infra:
-#   image: docker:18.09.7
-#   stage: Deploy
-#   variables:
-#     GIT_STRATEGY: none
-#   tags:
-#     - docker-prod
-#   only:
-#     - client/INSERM
-#   script:
-#     - 'which ssh-agent || ( apk update && apk add openssh-client )'
-#     - eval $(ssh-agent -s)
-#     - echo "$SSH_IRDIRC_PROD01" | tr -d '\r' | ssh-add -
-#     - mkdir -p ~/.ssh
-#     - chmod 700 ~/.ssh
-#     - ssh -o "StrictHostKeyChecking=no" -tt mysciencework@${IP_IRDIRC_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:INSERM && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:INSERM prod_app-nginx'
+#Deploy prod infra:
+#  image: docker:18.09.7
+#  stage: Deploy
+#  variables:
+#    GIT_STRATEGY: none
+#  tags:
+#    - docker-prod-bbk
+#  only:
+#    - client/BBK
+#  script:
+#    - 'which ssh-agent || ( apk update && apk add openssh-client )'
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_BBK_PROD01" | tr -d '\r' | ssh-add -
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#    - ssh -o "StrictHostKeyChecking=no" -tt deployuser@${IP_BBK_PROD01} 'docker login registry.gitlab.com && docker pull registry.gitlab.com/polaris-os-group/polaris-os:BBK && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK prod_app && docker service update --with-registry-auth --image registry.gitlab.com/polaris-os-group/polaris-os:BBK prod_app-nginx'
+
 

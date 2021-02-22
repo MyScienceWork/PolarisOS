@@ -13,7 +13,7 @@
                         </div>
                         <div class="media-content is-uppercase">
                             <p class="title is-6">{{lang(item.label, {}, item.count)}}</p>
-                            <p class="subtitle is-6">{{item.count}} {{lang(item.label_count, {}, item.count)}}</p>
+                            <p class="subtitle is-6">{{item.count.value}} {{lang(item.label_count, {}, item.count)}}</p>
                         </div>
                     </div>
                 </div>

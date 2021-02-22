@@ -6,6 +6,8 @@ const FiltersMixin = require('../../../../common/mixins/FiltersMixin');
 const CSLSpecs = require('../../../../common/specs/csl');
 const PaginationSearchMixin = require('../../../../common/mixins/PaginationSearchMixin');
 const FormCleanerMixin = require('../../../../common/mixins/FormCleanerMixin');
+const OAMixin = require('../../../../common/mixins/ObjectAccessMixin');
+const HtmlMixin = require('../../../../common/mixins/HtmlMixin');
 const Auth = require('../../../../common/utils/auth');
 const Handlebars = require('../../../../../app/modules/utils/templating');
 
@@ -13,7 +15,7 @@ const Toastr = require('toastr');
 const Results = require('./Results.vue');
 
 module.exports = {
-    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin],
+    mixins: [LangMixin, FormMixin, PaginationSearchMixin, FormCleanerMixin, FiltersMixin, HtmlMixin, OAMixin],
     props: {
         showStatus: { default: false, type: Boolean },
         catName: { default: () => [], type: Array },
@@ -30,6 +32,7 @@ module.exports = {
                 export_type: '',
                 export_subtype: null,
                 select_all_to_export: false,
+
                 sinks: {
                     reads: {
                         export: 'exporter_read',
@@ -75,7 +78,7 @@ module.exports = {
                     keep_content: false,
                 });*/
                 this.add_extra_filters(sink, 'pos_aggregate', '*');
-                console.log('running_search in SearchResults, send_information, for sink', sink);
+                //console.log('running_search in SearchResults, send_information, for sink', sink);
                 this.run_search(sink);
             }
         },
@@ -104,7 +107,9 @@ module.exports = {
     },
     watch: {
         current_state_export(s) {
-            this.dispatch(s, this, this.state.sinks.reads.export);
+            if (s !== 'initial') {
+                this.dispatch(s, this, this.state.sinks.reads.export);
+            }
         },
         select_all_to_export(s) {
             this.state.select_all_to_export = s;
@@ -123,23 +128,30 @@ module.exports = {
         },
     },
     computed: {
+        content_received() {
+            const content = this.fcontent(this.resultSink);
+            return content instanceof Array;
+        },
         content() {
             const content = this.fcontent(this.resultSink);
             if (!(content instanceof Array)) {
                 return [];
             }
 
+            return content;
+            /*
             return content.map((c) => {
-                c.html = this.hlang(Handlebars.compile(c.denormalization.type.template)(c));
+                c.html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template)(c)));
                 return c;
             });
+             */
         },
         select_all_to_export() {
             return this.state.select_all_to_export;
         },
         total() {
             const form = this.fform(this.resultSink);
-            return form.total || 0;
+            return form.total.value || 0;
         },
         current_state_export() {
             return this.fstate(this.state.sinks.reads.export);
@@ -165,7 +177,7 @@ module.exports = {
             ];
         },
         items_per_page_options() {
-            return [10, 20, 50, 100];
+            return [10, 20, 50, 100, 1000];
         },
         sorting_options() {
             return [

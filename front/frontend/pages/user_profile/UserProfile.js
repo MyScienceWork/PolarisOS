@@ -51,7 +51,7 @@ module.exports = {
                         user: APIRoutes.entity('user', 'POST', true),
                         user_forms: APIRoutes.entity('form', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
-                    //    publication: APIRoutes.entity('publication', 'POST', true),
+                        publication: APIRoutes.entity('publication', 'POST', true),
                     },
                 },
                 statuses: {
@@ -60,7 +60,7 @@ module.exports = {
                         author: 'nc',
                     },
                 },
-                current_tab: 0,
+                current_tab: 2,
                 loggedIn: true,
                 last_deposits_number: 10,
                 author_mode: false,
@@ -163,10 +163,29 @@ module.exports = {
         },
     },
     computed: {
+        show_advanced_search: {
+            get() {
+                return (this.$route.query && this.$route.query.show_advanced_search === 'advanced_search');
+            },
+            set(nv) {
+                const q = _.cloneDeep(this.$route.query || {});
+                if (!nv) {
+                    delete q.show_advanced_search;
+                } else {
+                    q.show_advanced_search = 'advanced_search';
+                }
+                if (Object.keys(q).length === 0) {
+                    this.$router.replace({ query: null });
+                } else {
+                    this.$router.replace({ query: q });
+                }
+            },
+        },
         user() {
             if (this.state.author_mode) {
                 const content = this.fcontent(this.state.sinks.reads.user);
                 if (content instanceof Array && content.length > 0) {
+                    console.log("this is user : ", content[0]);
                     return { author: content[0],
                         firstname: content[0].firstname,
                         lastname: content[0].lastname,
@@ -214,7 +233,6 @@ module.exports = {
         default_deposit_query() {
             return JSON.stringify({
                 $and: [
-                    Queries.no_other_version,
                     { depositor: this.user ? this.user._id : null },
                 ],
             });
@@ -222,8 +240,6 @@ module.exports = {
         deposit_query() {
             const s = {
                 $and: [
-                    Queries.no_other_version,
-                    { $or: Queries.publication_search.$or },
                     { depositor: this.user ? this.user._id : null },
                 ],
             };

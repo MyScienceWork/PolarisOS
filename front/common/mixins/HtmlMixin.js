@@ -56,6 +56,7 @@ module.exports = {
     computed: {
     },
     mounted() {
+        /*
         this.$store.dispatch('search', {
             form: this.state.sinks.reads.author,
             path: this.state.paths.reads.author,
@@ -64,5 +65,6 @@ module.exports = {
                 size: 10000,
             },
         });
+         */
     },
 };

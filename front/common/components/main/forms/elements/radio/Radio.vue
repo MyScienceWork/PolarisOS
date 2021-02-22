@@ -2,10 +2,10 @@
     <div :class="{'field': !isAddon, 'is-hidden': isHidden}">
         <label
             v-if="label.trim().length > 0"
-            :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+            :class="{readonly: getReadonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -16,10 +16,10 @@
         <div :class="{'field': !isAddon, 'has-addons': hasAddons, 'has-addons-right': hasAddons}">
             <slot v-if="hasAddons" name="left-input-addons" />
             <div :class="['control', {'is-expanded': hasAddons}]">
-                <ul v-if="readonly && multi">
+                <ul v-if="getReadonly && multi">
                     <li v-for="selected in readonlyValue">{{selected}}</li>
                 </ul>
-                <p v-else-if="readonly">{{readonlyValue}}</p>
+                <p v-else-if="getReadonly">{{readonlyValue}}</p>
                 <label v-else v-for="(item) in state.options" class="radio">
                     <input type="radio" :id="name+'_'+item.value" :name="name" :value=item.value @change="onChange" :checked="set_checked(state, item)">
                     <label :for=item.value>{{item.label}}</label>
