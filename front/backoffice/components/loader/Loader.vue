@@ -1,5 +1,5 @@
 <template>
-<div class="msw-loader">
+  <div class="msw-loader">
     <div class="loader-square secondary-color" :style="css.secondary" />
     <div class="loader-square secondary-color" :style="css.secondary" />
     <div class="loader-square secondary-color loader-last" :style="css.secondary" />
@@ -9,7 +9,7 @@
     <div class="loader-square secondary-color loader-clear" :style="css.secondary" />
     <div class="loader-square secondary-color" :style="css.secondary" />
     <div class="loader-square secondary-color loader-last" :style="css.secondary" />
-</div>
+  </div>
 </template>
 
 <script>

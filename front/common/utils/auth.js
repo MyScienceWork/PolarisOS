@@ -90,6 +90,41 @@ class Auth {
         }
     }
 
+    static async forgot_password(email) {
+        const route = APIRoutes.forgot_password();
+        try {
+            const res = await Request.post(route).send({
+                email,
+                host: window.location.host,
+            });
+
+            if ('ok' in res.body && res.body.ok) {
+                return true;
+            }
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    static async reset_password(email, password, key) {
+        const route = APIRoutes.reset_password();
+        try {
+            const res = await Request.post(route).send({
+                email,
+                password: password ? Crypto.createHash('sha1').update(password).digest('hex') : null,
+                key,
+            });
+
+            if ('ok' in res.body && res.body.ok) {
+                return true;
+            }
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
     static async access(part, types, check = 'any') {
         const user = Auth.get('user');
         if (user == null || !('authentication' in user) || !('key' in user.authentication)) {
@@ -101,14 +136,14 @@ class Auth {
 
         try {
             const res = await Request.post(route)
-            .set('Authorization', `${signature.key}:${signature.sign}`)
-            .set('X-MD-TIMESTAMP', signature.timestamp)
-            .send({
-                key: user.authentication.key,
-                part,
-                types,
-                check,
-            });
+                .set('Authorization', `${signature.key}:${signature.sign}`)
+                .set('X-MD-TIMESTAMP', signature.timestamp)
+                .send({
+                    key: user.authentication.key,
+                    part,
+                    types,
+                    check,
+                });
 
             if ('ok' in res.body && res.body.ok) {
                 return true;

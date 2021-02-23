@@ -155,6 +155,18 @@ module.exports = {
         ctx.commit(Messages.LOGIN_PASS, { status });
     },
 
+    forgot_password: async (ctx, { email }) => {
+        const ok = await Auth.forgot_password(email);
+        const status = ok ? 'success' : 'fail';
+        ctx.commit(Messages.FORGOT_PASSWORD_PASS, { status });
+    },
+
+    reset_password: async (ctx, { email, password, key }) => {
+        const ok = await Auth.reset_password(email, password, key);
+        const status = ok ? 'success' : 'fail';
+        ctx.commit(Messages.RESET_PASSWORD_PASS, { status });
+    },
+
     download: async (ctx, { body, path }) => {
         const method = 'POST';
         const payload = {

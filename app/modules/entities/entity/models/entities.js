@@ -22,6 +22,9 @@ const Validation: Array<any> = [
 
 const Formatting: Array<any> = [
     {
+        conditional_pipelines: a => FormatFunctions.oarray_to_array(a),
+    },
+    {
         'backoffice.columns': FormatFunctions.oarray_to_array,
     },
     {

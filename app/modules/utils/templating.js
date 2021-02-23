@@ -15,10 +15,13 @@ Handlebars.registerHelper('moment', (array) => {
         return _moment(fixed_start_date).format(format);
     } else if (hash && hash.date) {
         const format = hash.format;
+        if (hash.date === 'now') {
+            return _moment().format(format);
+        }
         const date = hash.date;
         return _moment(date).format(format);
     }
-    return _moment(array).valueOf();
+    return _moment(hash).valueOf();
 });
 
 Handlebars.registerHelper('join', (array, sep, options) => array.map(item => options.fn(item)).join(sep));

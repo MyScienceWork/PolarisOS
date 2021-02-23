@@ -131,6 +131,18 @@ const mapping = {
             picker: async p => ({ pagination: p[0] }),
         },
     },
+    SV: {
+        __default: {
+            transformers: [],
+            picker: async p => ({ number: p[0] }),
+        },
+    },
+    EP: {
+        __default: {
+            transformers: [],
+            picker: async p => ({ pagination_end: p[0] }),
+        },
+    },
     TI: {
         __default: {
             transformers: [],
@@ -254,6 +266,11 @@ async function run(publication, typology, idx, maps) {
         final_publication = Utils.merge_with_concat(final_publication, subobj);
     }
 
+    if (final_publication.pagination && final_publication.pagination_end) {
+        final_publication.pagination = `${final_publication.pagination}-${final_publication.pagination_end}`;
+        delete final_publication.pagination_end;
+    }
+
     const srefs = [['editor', 'editor'], ['journal', 'journal'],
         ['institution', 'delivery_institution'],
         ['conference', 'conference']];
@@ -279,6 +296,11 @@ module.exports = {
         conference: CommonFunctions.match_search('name'),
         editor: CommonFunctions.match_search('label'),
         institution: CommonFunctions.match_search('name'),
+    },
+    post_queries: {
+        author: CommonFunctions.contributor_add,
+        journal: CommonFunctions.journal_add,
+        editor: CommonFunctions.editor_add,
     },
 
 };

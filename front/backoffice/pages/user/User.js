@@ -17,6 +17,7 @@ module.exports = {
                         user: APIRoutes.entity('user', 'POST', true),
                         author: APIRoutes.entity('author', 'POST', true),
                         role: APIRoutes.entity('role', 'POST', true),
+                        country: APIRoutes.entity('country', 'POST', true),
                     },
                     creations: {
                         user: APIRoutes.entity('user', 'POST'),
@@ -27,6 +28,7 @@ module.exports = {
                         role: 'role_read',
                         user: 'user_read',
                         // author: 'author_read',
+                        country: 'country_read',
                     },
                     creations: {
                         search: 'search_creation_user',
@@ -48,7 +50,7 @@ module.exports = {
         },
     },
     mounted() {
-        this.$store.state.requests = ['role'].map(e => ({
+        this.$store.state.requests = ['role', 'country'].map(e => ({
             name: 'search',
             type: 'dispatch',
             content: {
@@ -70,6 +72,10 @@ module.exports = {
             },*/
         roles() {
             const content = this.mcontent(this.state.sinks.reads.role);
+            return content;
+        },
+        countries() {
+            const content = this.mcontent(this.state.sinks.reads.country);
             return content;
         },
         langs() {

@@ -36,7 +36,6 @@ function routes(router: KoaRouter) {
 
     router.get(`${puprefix}/export/masas`, compose([...get_mware,
         MyControllerMasas.export_masas]));
-
     router.get(`${puprefix}/export/datacite_publication/:id`, compose([...get_mware,
         MyControllerDatacitePublication.export_datacite]));
     router.del(`${puprefix}/export/datacite_publication/:id`, compose([...del_mware,
@@ -46,7 +45,8 @@ function routes(router: KoaRouter) {
         MyControllerDataciteDataset.export_datacite]));
     router.del(`${puprefix}/export/datacite_dataset/:id`, compose([...del_mware,
         MyControllerDataciteDataset.delete_datacite]));
-
+    router.get(`${puprefix}/export/masas/:id`, compose([...get_mware,
+        MyControllerMasas.export_masas_file]));
     router.post(`${puprefix}/export/hal`, compose([...post_mware,
         SwordController.create_controller]));
 

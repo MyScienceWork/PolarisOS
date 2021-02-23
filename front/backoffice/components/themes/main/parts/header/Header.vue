@@ -3,7 +3,7 @@
         <div class="container is-fluid">
             <div class="columns is-ancestor is-centered">
                 <div class="column is-vcentered is-2 is-hidden-touch">
-                    <div class="container is-vcentered">
+                    <div v-if="$store.state.global_config.gui.logo_left != ''" class="container is-vcentered">
                         <figure class="image is-vcentered">
                             <router-link to="/"><img :src='$store.state.global_config.gui.logo_left' alt='LogoLeft' title='Organization Logo' /></router-link>
                         </figure>

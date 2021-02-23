@@ -1,0 +1,29 @@
+.generate-colored-cards(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .menu-list{
+        a.is-active.is-@{name}{
+            background-color: @@name; 
+        }
+    } 
+}
+
+.dropdown-menu {
+    .dropdown-content {
+        .has-link {
+            a {
+                padding: 0.375rem 2rem;
+            }
+        }
+    }
+}
+
+.menu-list {
+    a.no-menu {
+        border-radius: 0;
+        display: inline;
+        padding: 0;
+    }
+}
+
+.generate-colored-cards();

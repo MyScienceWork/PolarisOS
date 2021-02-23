@@ -18,8 +18,8 @@
                 </b-dropdown-item>
                 -->
                 <b-dropdown-item has-link class="has-text-centered">
-                    <router-link  v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile?t=4`">{{lang('f_my_projects', {}, 'other')}}</router-link>
-                    <a v-else class="dropdown-item" :href="`/u/${user_id}/profile?t=4`" target="_blank">{{lang('f_my_projects', {}, 'other')}}</a>
+                    <router-link  v-if="!backoffice" class="dropdown-item" :to="`/u/${user_id}/profile?t=2`">{{lang('f_my_projects', {}, 'other')}}</router-link>
+                    <a v-else class="dropdown-item" :href="`/u/${user_id}/profile?t=2`" target="_blank">{{lang('f_my_projects', {}, 'other')}}</a>
                 </b-dropdown-item>
                 <b-dropdown-item class="has-text-centered" has-link v-if="'administrator' in roles">
                     <a v-if="!backoffice" class="dropdown-item" href="/admin" target="_blank">{{lang('f_admin')}}</a>

@@ -25,7 +25,7 @@
     <category citation-format="author-date"/>
     <category field="generic-base"/>
     <summary>The author-date variant of the Chicago style</summary>
-    <updated>2018-12-10T17:25:06+00:00</updated>
+    <updated>2020-09-21T10:05:04+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="fr">
@@ -59,7 +59,7 @@
             <label form="verb" text-case="capitalize-first" suffix=" "/>
             <name and="text" delimiter=", "/>
           </names>
-          <names variable="director" delimiter=". ">
+          <names variable="director" delimiter=". " suffix=" ">
             <label form="verb" text-case="capitalize-first" suffix=" "/>
             <name and="text" delimiter=", "/>
           </names>

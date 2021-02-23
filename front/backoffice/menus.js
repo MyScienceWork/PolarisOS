@@ -18,13 +18,14 @@ const Page = require('./pages/page/Page.vue');
 const Menu = require('./pages/menu/Menu.vue');
 const Widget = require('./pages/widget/Widget.vue');
 const Template = require('./pages/template/Template.vue');
-//const Connector = require('./pages/connector/Connector.vue');
-//const Importer = require('./pages/importer/Importer.vue');
+const Connector = require('./pages/connector/Connector.vue');
+const Importer = require('./pages/importer/Importer.vue');
 const Query = require('./pages/query/Query.vue');
 const MailTemplate = require('./pages/mail_template/MailTemplate.vue');
 const ChartConfiguration = require('./pages/chart_configuration/ChartConfiguration.vue');
 const Masas = require('./pages/masas/Masas.vue');
 const Workflow = require('./pages/workflow/Workflow.vue');
+const Action = require('./pages/action/Action.vue');
 
 module.exports.menu = [
     [
@@ -108,6 +109,17 @@ module.exports.menu = [
             submenu: [],
             component: Workflow,
             intro: 'l_backoffice_workflow_menu_help',
+        },
+        {
+            section: 'l_admin_section',
+            name: 'l_action_page',
+            access: 'back-action',
+            subaccess: ['c', 'r', 'u', 'd'],
+            key: 'action',
+            routes: [Routes.action],
+            submenu: [],
+            component: Action,
+            intro: 'l_backoffice_action_menu_help',
         },
         {
             section: 'l_admin_section',
@@ -233,8 +245,7 @@ module.exports.menu = [
             intro: 'l_backoffice_page_menu_help',
         },
     ],
-    /*
-     [
+    [
         {
             section: 'l_import_export_section',
             name: 'l_connectors_page',
@@ -246,7 +257,7 @@ module.exports.menu = [
             component: Connector,
         },
         {
-            section: 'l_import_export_section',
+            section: 'l_import_section',
             name: 'l_importers_page',
             access: 'entity',
             subaccess: ['c', 'r', 'u', 'd'],
@@ -266,7 +277,6 @@ module.exports.menu = [
             component: Widget,
         },
     ],
-    */
     [
         {
             section: 'l_advanced_section',

@@ -217,13 +217,15 @@ function merge_with_superposition(object: Object, ...sources) {
                 return objValue.concat(srcValue);
             }
             return objValue;
-        } else if (objValue && srcValue) {
-            return _.merge(objValue, srcValue);
-        } else if (objValue) {
-            return objValue;
-        } else if (srcValue) {
-            return srcValue;
         }
+        // no need to handle other cases as they are handled by the default merge when returning undefined
+        // else if (objValue && srcValue && _.isObject(objValue)) {
+        //     return _.merge(objValue, srcValue);
+        // } else if (srcValue) {
+        //     return srcValue;
+        // } else if (objValue) {
+        //     return objValue;
+        // }
     }
     return _.mergeWith(object, ...sources, customizer);
 }

@@ -134,11 +134,7 @@ class GulpFrontend {
             debug: true,
         });
 
-        this.external_dependencies.forEach((dep) => {
-            bundler.external(dep);
-        });
-
-        bundler.transform(envify({
+        return bundler.transform(envify({
             NODE_ENV: process.env.NODE_ENV || 'development',
         }))
         .transform(vueify)
@@ -156,7 +152,7 @@ class GulpFrontend {
     }
 
     createExternalVendors() {
-        gulp
+        return gulp
         .src(this.external_dependencies)
         .pipe(concat('vendors.external.js'))
         .pipe(gulpif(this.isProduction, uglify({ mangle: true })))
@@ -165,13 +161,13 @@ class GulpFrontend {
     }
 
     watch() {
-        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], ['back-scripts']);
-        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], ['back-styles']);
-        gulp.watch(['./front/backoffice/views/*.*'], ['back-views']);
+        gulp.watch(['./front/{backoffice,common}/**/*.{vue,jsx,js}'], gulp.series('back-scripts'));
+        gulp.watch(['./front/{backoffice,common}/{styles,style}/**/*.*'], gulp.series('back-styles'));
+        gulp.watch(['./front/backoffice/views/*.*'], gulp.series('back-views'));
     }
 
     createVendorStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/vendors.scss',
             './front/backoffice/styles/vendors.less', ...this.vendors_css_files])
         .pipe(plumber())
@@ -184,7 +180,7 @@ class GulpFrontend {
     }
 
     createStyles() {
-        gulp
+        return gulp
         .src(['./front/backoffice/styles/back.less', './front/backoffice/styles/back.scss', ...this.css_files])
         .pipe(plumber())
         .pipe(gulpif('*.less', less()))
@@ -211,7 +207,7 @@ class GulpFrontend {
     }
 
     copyViews() {
-        gulp.src([
+        return gulp.src([
             './front/backoffice/views/back.html',
         ]).pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
@@ -221,14 +217,14 @@ class GulpFrontend {
             .pipe(gulp.dest(this.PUB_LOCATIONS.imgs));
     }
 
-    revisionClean() {
+    revisionClean(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));
@@ -243,9 +239,9 @@ class GulpFrontend {
             .pipe(clean());
     }
 
-    revision() {
+    revision(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`, `${this.PUB_LOCATIONS.js}/**/*.js`])
@@ -256,14 +252,15 @@ class GulpFrontend {
             .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
-    revisionReplace() {
+    revisionReplace(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
 
         const manifest_path = `${this.PUB_LOCATIONS.views}/rev-manifest.json`;
         if (!fs.existsSync(manifest_path)) {
-            return null;
+            console.error("no manifest");
+            return cb();
         }
 
         const manifest = JSON.parse(fs.readFileSync(manifest_path));
@@ -284,9 +281,9 @@ class GulpFrontend {
         .pipe(gulp.dest(this.PUB_LOCATIONS.views));
     }
 
-    gzip() {
+    gzip(cb) {
         if (!this.isProduction) {
-            return null;
+            return cb();
         }
         return gulp.src([`${this.PUB_LOCATIONS.css}/**/*.css`,
             `${this.PUB_LOCATIONS.js}/**/*.js`, `${this.PUB_LOCATIONS.fonts}/**/*.{woff,woff2,eot,ttf,svg}`])

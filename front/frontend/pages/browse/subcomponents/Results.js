@@ -30,6 +30,8 @@ module.exports = {
     },
     methods: {
         is_accessable(item) {
+            return false;
+
             if (this.can_modify(item)) {
                 return true;
             }
@@ -83,7 +85,8 @@ module.exports = {
                 return false;
             }
 
-            return item.depositor === this.user._id || item.contributors.filter(c => c.label === this.user.author).length > 0;
+            return false;
+            //return item.depositor === this.user._id || item.contributors.filter(c => c.label === this.user.author).length > 0;
         },
     },
     computed: {
