@@ -13,6 +13,7 @@ module.exports = {
                 },
                 paths: {
                     reads: {
+                        user_forms: APIRoutes.entity('form', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                     },
                 },
@@ -53,40 +54,92 @@ module.exports = {
             return content;
         },
     },
+    watch: {
+        entity_creation() {
+            const content = this.fcontent(this.state.sinks.reads.workflow);
+            if (content.length > 0) {
+                return;
+            }
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.workflow,
+                path: this.state.paths.reads.workflow,
+                body: {
+                    where: {
+                        entity: [this.state.workflow_entity],
+                    },
+                },
+            });
+        },
+        workflow_read(workflows) {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (content.length > 0) {
+                return;
+            }
+
+            const entity_states_workflow = workflows.map((workflow => workflow.entity_state));
+            const entity_states_no_duplicates = [...new Set(entity_states_workflow)];
+
+            entity_states_no_duplicates.forEach((entity_state) => {
+                this.$store.dispatch('search', {
+                    form: this.state.sinks.reads.entity_state,
+                    path: APIRoutes.entity(entity_state, 'POST', true),
+                    body: {
+                        size: 10000,
+                    },
+                });
+            });
+        },
+        entity_state_read(content) {
+            const entity = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]);
+            if (!entity || _.isEmpty(entity)) {
+                return;
+            }
+            const entity_state = entity.state;
+            if (!entity_state) {
+                return;
+            }
+            const form_state = content.find((state => state._id === entity_state));
+            if (!form_state) {
+                return;
+            }
+            const form_name = form_state.form;
+
+            this.$store.dispatch('search', {
+                form: this.state.sinks.reads.user_forms,
+                path: this.state.paths.reads.user_forms,
+                body: {
+                    where: {
+                        name: [form_name],
+                    },
+                    population: ['fields.subform', 'fields.datasource'],
+                },
+            });
+            this.state.selected_publication_form = form_name;
+        },
+    },
     computed: {
         after_status() {
             let allowed_states = [];
 
             if (this.state.state_before === undefined) {
-                this.state.state_before = this.fcontent(this.state.sinks.creations.project).state;
+                this.state.state_before = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]).state;
             }
-
             const workflows = this.fcontent(this.state.sinks.reads.workflow);
             const state_before = this.state.state_before;
             const workflow_states = this.fcontent(this.state.sinks.reads.entity_state);
-            const workflow_name = this.$route.query.workflow;
-
-            const idx = _.findIndex(workflows, workflow => workflow.name === workflow_name);
-            if (idx !== -1) {
-                workflows[idx].steps.forEach((step) => {
-                    allowed_states = allowed_states.concat(this.filter_roles(step, state_before));
+            const entity_workflows = _.filter(workflows, workflow => workflow.entity === this.state.workflow_entity);
+            entity_workflows.forEach((workflow) => {
+                workflow.steps.forEach((step) => {
+                    allowed_states = allowed_states.concat(this.filter_roles(step, state_before)
+                        .filter(state => allowed_states.findIndex(used_states => used_states.label === state.label) === -1));
                 });
-            }
+            });
             if (workflow_states.length > 0) {
                 allowed_states.forEach((allowed_state, key) => {
                     const id_workflow_state = workflow_states.find(workflow_state => workflow_state._id === allowed_state._id);
                     if (id_workflow_state !== undefined) {
                         allowed_states[key].label = id_workflow_state.label;
                     }
-                });
-            } else if (idx !== -1) {
-                // search entity_state
-                this.$store.dispatch('search', {
-                    form: this.state.sinks.reads.entity_state,
-                    path: APIRoutes.entity(workflows[idx].entity_state, 'POST', true),
-                    body: {
-                        size: 10000,
-                    },
                 });
             }
             return allowed_states;
@@ -102,14 +155,23 @@ module.exports = {
 
             return '';
         },
-    },
-    mounted() {
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.workflow,
-            path: this.state.paths.reads.workflow,
-            body: {
-                size: 10000,
-            },
-        });
+        entity_creation() {
+            const content = this.fcontent(this.state.sinks.creations[this.state.workflow_entity]);
+            return content;
+        },
+        workflow_read() {
+            const content = this.fcontent(this.state.sinks.reads.workflow);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
+        entity_state_read() {
+            const content = this.fcontent(this.state.sinks.reads.entity_state);
+            if (!(content instanceof Array)) {
+                return [];
+            }
+            return content;
+        },
     },
 };

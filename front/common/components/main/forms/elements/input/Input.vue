@@ -20,12 +20,12 @@
         :name="name"
         :value="state.value"
         @input="update"
-        :readonly="readonly"
+        :readonly="getReadonly"
     ></input>
     <div :class="[{'field': !isAddon}]" v-else-if="type === 'html-editor'">
-        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+        <label :class="{readonly: getReadonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -79,7 +79,7 @@
                     :value="state.value"
                     @input="update"
                     @blur="blur"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                      v-on:keydown.enter.prevent='handleEnter'
                 />
                 <input v-else-if="type === 'number'"
@@ -90,6 +90,8 @@
                     :value="state.value"
                     @blur="update"
                     :readonly="readonly"
+                    :min="minNumber"
+                    :max="maxNumber"
                 />
                 <input v-else-if="type === 'price'"
                        type="text"
@@ -97,7 +99,7 @@
                        :name="name"
                        :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                        @blur="update"
-                       :readonly="readonly"
+                       :readonly="getReadonly"
                        v-model="state.value"
                        v-on:input="handle_price_value"
                 />
@@ -108,44 +110,44 @@
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
                     @blur="update"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                 />
                 <b-datepicker
                     v-model="state.value"
-                    v-else-if="type === 'date' && !readonly"
+                    v-else-if="type === 'date' && !getReadonly"
                     :value="state.value"
                     @input="update"
                     :first-day-of-week="1"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                     :placeholder="placeholder"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :min-date="get_min_date"
                     :max-date="get_max_date"
                 ></b-datepicker>
                 <input
-                    v-else-if="type === 'date-year' && !readonly"
+                    v-else-if="type === 'date-year' && !getReadonly"
                     :value="state.value"
                     @blur="update"
                     type="number"
                     :min="yearRangeStart"
                     :max="yearRangeEnd"
                     :step="yearStep"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                     :placeholder="placeholder"
                     :name="name"
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     />
-                <p v-else-if="type === 'date' && readonly">{{readonlyValue}}</p>
+                <p v-else-if="type === 'date' && getReadonly">{{readonlyValue}}</p>
                 <b-timepicker
-                    v-else-if="type === 'time' && !readonly"
+                    v-else-if="type === 'time' && !getReadonly"
                     :placeholder="placeholder"
                     :value="state.value"
                     @input="update"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                     :class="[{'is-danger': !viewValidationTexts && validations.length > 0}]"
                     icon="clock-o" >
                 </b-timepicker>
-                <p v-else-if="type === 'time' && readonly">{{readonlyValue}}</p>
+                <p v-else-if="type === 'time' && getReadonly">{{readonlyValue}}</p>
                 <input v-else
                     type="email"
                     :placeholder="placeholder"
@@ -153,7 +155,7 @@
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
                     @input="update"
-                    :readonly="readonly"
+                    :readonly="getReadonly"
                 />
             </div>
             <slot v-if="hasAddons" name="input-addons">
@@ -180,11 +182,11 @@
         </div>
     </div>
 
-    <div v-else-if="type === 'textarea'" :class="['field', {'is-hidden': readonly && emptyValue}]">
-        <label :class="{readonly: readonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
+    <div v-else-if="type === 'textarea'" :class="['field', {'is-hidden': getReadonly && emptyValue}]">
+        <label :class="{readonly: getReadonly}" :for="name">{{label}}<span v-if="isRequired" class="redify">*</span></label>
 
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -202,7 +204,7 @@
                     :rows="rows"
                     @input="update"
                     @blur="blur"
-                    v-if="!readonly"
+                    v-if="!getReadonly"
                     v-model="state.value"
                     v-on:input="check_textarea_limit"
                 />
@@ -233,7 +235,7 @@
     <div v-else-if="type === 'radio'" class="field">
         <label :for="name">{{label}<span v-if="isRequired" class="redify">*</span></label>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">
@@ -248,7 +250,7 @@
                 :name="name"
                 :value="state.value"
                 @input="update"
-                :disabled="readonly"
+                :disabled="getReadonly"
                 />
                 {{btn[1]}}
             </label>
@@ -263,7 +265,7 @@
             :value="state.value"
             :checked="state.value"
             @change="update"
-            :disabled="readonly"
+            :disabled="getReadonly"
             />
         </span>
     </div>
@@ -277,13 +279,13 @@
                 :value="state.value"
                 :checked="state.value"
                 @change="update"
-                :disabled="readonly"
+                :disabled="getReadonly"
                 />
                 {{label}}
             </label>
         </div>
         <b-tooltip class="is-dark" :label="lang(help)" multilined
-            v-if="help != null && help.trim() !== '' && !readonly"
+            v-if="help != null && help.trim() !== '' && !getReadonly"
         >
             <a href='#' @click.prevent="toggleHelpModal" alt="Tooltip">
                 <span class="icon has-text-info">

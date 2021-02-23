@@ -24,6 +24,7 @@ module.exports = {
     },
     methods: {
         onScroll() {
+            /*
             const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
             if (currentScrollPosition < 0) {
                 return;
@@ -35,6 +36,7 @@ module.exports = {
             }
             this.showNavbar = currentScrollPosition < this.lastScrollPosition;
             this.lastScrollPosition = currentScrollPosition;
+             */
         },
     },
     computed: {
@@ -43,9 +45,9 @@ module.exports = {
         },
     },
     mounted() {
-        window.addEventListener('scroll', this.onScroll);
+        //window.addEventListener('scroll', this.onScroll);
     },
     beforeDestroy() {
-        window.removeEventListener('scroll', this.onScroll);
+        //window.removeEventListener('scroll', this.onScroll);
     },
 };

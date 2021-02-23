@@ -12,7 +12,6 @@ const Handlebars = require('../../../../app/modules/utils/templating');
 
 const Discovery = require('./subcomponents/Discovery.vue');
 const LastDeposits = require('./subcomponents/LastDeposits.vue');
-const LastDepositsDataset = require('./subcomponents/LastDepositsDataset.vue');
 const Search = require('./subcomponents/Search.vue');
 
 module.exports = {
@@ -23,17 +22,16 @@ module.exports = {
                 sinks: {
                     reads: {
                         publication: 'publication_read',
-                        dataset: 'dataset_read',
                         stats_publication: 'stats_publication_read',
-                        stats_open_access: 'stats_oap_read',
+                        stats_project: 'stats_project_read',
                         menu: 'menu_read',
                         search: 'search_home_sink',
                     },
                 },
                 paths: {
                     reads: {
-                        dataset: APIRoutes.entity('dataset', 'POST', true),
                         publication: APIRoutes.entity('publication', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
@@ -42,7 +40,6 @@ module.exports = {
     },
     components: {
         LastDeposits,
-        LastDepositsDataset,
         Discovery,
         Search,
     },
@@ -55,18 +52,8 @@ module.exports = {
             path: this.state.paths.reads.publication,
             body: {
                 size: 6,
-                sort: [{ 'dates.deposit': 'desc' }],
+                sort: [{ date: 'desc' }],
                 where: this.lastDepositsQuery,
-            },
-        });
-
-        this.$store.dispatch('search', {
-            form: this.state.sinks.reads.dataset,
-            path: this.state.paths.reads.dataset,
-            body: {
-                size: 6,
-                sort: [{ 'dates.deposit': 'desc' }],
-                where: this.lastDepositsDatasetQuery,
             },
         });
 
@@ -86,34 +73,20 @@ module.exports = {
             path: this.state.paths.reads.publication,
             body: {
                 size: 0,
-                where: {
-                    $and: [
-                        Queries.published,
-                        Queries.no_other_version,
-                        Queries.viewable(this.user._id, this.author),
-                    ],
-                },
+                where: Queries.published(),
             },
         });
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.stats_open_access,
-            path: this.state.paths.reads.publication,
+            form: this.state.sinks.reads.stats_project,
+            path: this.state.paths.reads.project,
             body: {
                 size: 0,
-                where: {
-                    $and: [{ 'diffusion.rights.access': ['AWF0ZQmRfoecpXq21Jl9'] },
-                        Queries.published,
-                        Queries.no_other_version, Queries.viewable(this.user._id, this.author)],
-                },
             },
         });
     },
     computed: {
         content_publication() {
             return this.fcontent(this.state.sinks.reads.publication);
-        },
-        content_dataset() {
-            return this.fcontent(this.state.sinks.reads.dataset);
         },
         stats_count() {
             return (sink) => {
@@ -126,30 +99,20 @@ module.exports = {
         },
         stats() {
             return [
-                { label: 'l_deposit',
+                { label: 'l_deposit_publications',
                     label_count: 'l_reference',
                     count: this.stats_count(this.state.sinks.reads.stats_publication),
                     icon: 'fa-file-text' },
-                { label: 'l_open_access',
-                    label_count: 'l_publication',
-                    count: this.stats_count(this.state.sinks.reads.stats_open_access),
-                    icon: 'fa-unlock-alt' },
+                { label: 'l_deposit_projects',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_project),
+                    icon: 'fa-file-text' },
             ];
         },
         items() {
-            if (this.content_publication && this.content_publication instanceof Array && this.content_publication.length > 0) {
-                const items = this.content_publication.map((c) => {
-                    const html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c)));
-                    c.html = html;
-                    return c;
-                });
-                return items;
-            }
-            return [];
-        },
-        items_dataset() {
-            if (this.content_dataset && this.content_dataset instanceof Array && this.content_dataset.length > 0) {
-                return this.content_dataset;
+            console.log("BRYAN this.content_publication : ", this.content_publication);
+            if (this.content_publication instanceof Array) {
+                return this.content_publication;
             }
             return [];
         },
@@ -168,20 +131,8 @@ module.exports = {
                 query: celt.query,
             }));
         },
-        lastDepositsDatasetQuery() {
-            return Queries.last_deposits_dataset();
-        },
         lastDepositsQuery() {
-            return Queries.last_deposits(this.user._id, this.author);
-        },
-        rssMapping() {
-            return {
-                title: '{{{title.content}}}',
-                description: '{{{abstracts.0.content}}}',
-                content: '',
-                link: `${BrowserUtils.getURLHost(window.location)}/view/{{{_id}}}`,
-                id: '{{_id}}',
-            };
+            return Queries.published();
         },
     },
 };

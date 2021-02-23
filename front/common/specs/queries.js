@@ -1,22 +1,6 @@
 const publication_search = {
     $or: [
-        { 'title.content': '{{{search}}}' },
-        { 'subtitles.content': '{{{search}}}' },
-        { 'translated_titles.content': '{{{search}}}' },
-        { 'abstracts.content': '{{{search}}}' },
-        { 'denormalization.authors._id.fullname': '{{{search}}}' },
-        { 'denormalization.classifications._id.label': '{{{search}}}' },
-        { 'denormalization.contributors.label.fullname': '{{{search}}}' },
-        { 'denormalization.diffusion.internal_collection2._id.name': '{{{search}}}' },
-        { 'denormalization.diffusion.projects._id.name': '{{{search}}}' },
-        { 'denormalization.diffusion.research_teams._id.name': '{{{search}}}' },
-        { 'denormalization.diffusion.surveys._id.name': '{{{search}}}' },
-        { 'denormalization.journal': '{{{search}}}' },
-        { 'denormalization.type': '{{{search}}}' },
-        { 'denormalization.subtype': '{{{search}}}' },
-        { collection: '{{{search}}}' },
-        { 'keywords.value': '{{{search}}}' },
-        { 'denormalization.demovoc_keywords._id.label': '{{{search}}}' },
+        { 'title': '{{{search}}}' },
     ],
 };
 
@@ -90,16 +74,14 @@ module.exports = {
         has_other_version: false,
     },
     viewable,
-    last_deposits: (uid, aid) => ({
+    published: () => ({
         $and: [
-            { has_other_version: false },
-            { status: 'published' },
-            viewable(uid, aid),
+            { 'denormalization.state.label': 'l_published' },
         ],
     }),
     last_deposits_dataset: () => ({
         $and: [
-            { status: 'published' }
+            { status: 'published' },
         ],
     }),
     filter_role(userId, roles, filter) {

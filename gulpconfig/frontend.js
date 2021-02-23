@@ -213,6 +213,7 @@ class GulpFrontend {
     copyFonts() {
         const font_awesome = './node_modules/font-awesome/fonts';
         return gulp.src([
+            './front/frontend/styles/fonts/*',
             `${font_awesome}/fontawesome-webfont.*`,
             `${font_awesome}/FontAwesome.otf`,
         ])

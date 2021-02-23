@@ -89,10 +89,10 @@ module.exports = {
                 return o;
             }, {});
 
-            const object_init = Utils.make_nested_object_from_path(path, undefined);
+            const object_init = Utils.make_nested_object_from_path(path.slice(), undefined);
             form.content = Utils.merge_with_replacement(content, object_init);
 
-            const object = Utils.make_nested_object_from_path(path, info);
+            const object = Utils.make_nested_object_from_path(path.slice(), info);
             form.content = Utils.merge_with_replacement(form.content, object);
         } else {
             const object = Utils.make_nested_object_from_path(path, info);

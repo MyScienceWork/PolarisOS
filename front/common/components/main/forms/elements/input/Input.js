@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
@@ -9,7 +10,7 @@ const APIRoutes = require('../../../../../api/routes');
 const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
-    mixins: [InputMixin],
+    mixins: [InputMixin, ConditionalReadonlyMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -44,6 +45,8 @@ module.exports = {
         maxDate: { require: false, type: Date },
         fieldId: { required: false, type: Number },
         allowGrobid: { required: false, default: true, type: Boolean },
+        minNumber: { require: false, type: Number },
+        maxNumber: { require: false, type: Number },
     },
 
     data() {
@@ -93,6 +96,10 @@ module.exports = {
             if (_.isObject(e) && 'target' in e) {
                 if (this.type === 'checkbox') {
                     info = e.target.checked;
+                    this.$emit('checkbox-value-change', {
+                        value: info,
+                        name: this.name,
+                    });
                 } else {
                     info = e.target.value;
                 }
@@ -233,7 +240,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden' || this.type === 'date') {
+                if (this.type === 'hidden' || this.type === 'date' || this.type === 'checkbox') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,
@@ -312,6 +319,9 @@ module.exports = {
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
         },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
+        },
         contentForm() {
             return this.fcontent(this.cform);
         },
@@ -336,7 +346,5 @@ module.exports = {
     },
     beforeMount() {
         this.init();
-    },
-    mounted() {
     },
 };

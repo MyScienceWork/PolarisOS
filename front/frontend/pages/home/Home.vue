@@ -1,8 +1,8 @@
 <template>
     <div class="hero-body">
         <div class="container is-fluid">
-            <div class="columns">
-                <div class="column is-6">
+            <div class="columns is-centered">
+                <div class="column is-8">
                     <div class="columns is-multiline">
                         <div class="column is-12">
                             <!-- last deposit publication -->
@@ -26,16 +26,6 @@
                                     slot="card-extra-header"
                                     class="is-pulled-right"
                                 >
-                                    <rss-feed-icon
-                                        entity="publication"
-                                        :sort="[
-                                            '-dates.deposit',
-                                            '-dates.update',
-                                        ]"
-                                        :query="lastDepositsQuery"
-                                        :mapping="rssMapping"
-                                        :lang-code="$store.state.interfaceLang"
-                                    />
                                 </div>
                                 <div
                                     class="has-small-bottom-margin"
@@ -62,39 +52,6 @@
                             <div class="has-small-bottom-margin column is-12">
                                 <widget-stats :items="stats" />
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <div class="columns is-multiline">
-                        <div class="column is-12">
-                            <!-- last deposit dataset -->
-                            <card color="red" class="has-small-bottom-margin">
-                                <template slot="card-title">
-                                    {{ lang("l_search") }}
-                                </template>
-                                <search
-                                    slot="card-content"
-                                    :search-sink="state.sinks.reads.search"
-                                    :show-favorites="false"
-                                />
-                            </card>
-                        </div>
-                        <div class="column is-12">
-                            <card color="orange" class="card-equal-height">
-                                <template slot="card-title">
-                                    {{ lang("l_last_deposits_dataset") }}
-                                </template>
-                                <div
-                                    slot="card-extra-header"
-                                    class="is-pulled-right"
-                                ></div>
-                                <div slot="card-content">
-                                    <last-deposits-dataset
-                                        :items="items_dataset"
-                                    />
-                                </div>
-                            </card>
                         </div>
                     </div>
                 </div>

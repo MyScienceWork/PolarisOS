@@ -1,0 +1,59 @@
+//Mixins
+.generate-colored-footer-menu(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .footer-menu-@{name} {
+        border-top-color: @@name;
+
+        .footer-menu-list {
+            a:hover {
+                color: @@name;
+            }
+        }
+    }
+
+    .generate-colored-footer-menu((@i - 1));
+}
+
+
+footer {
+    background-color: @grey-3;
+    color: @grey-1;
+    font-size: 0.9rem;
+
+    a {
+        color: @grey-1;
+    }
+
+    a:hover {
+        color: @grey-1;
+    }
+
+    .container {
+        margin-left: 10% !important;
+        margin-right: 10% !important;
+    }
+
+    .footer-menu {
+        .column {
+            border-top-width: 5px;
+            border-top-style: solid;
+            .footer-menu-title {
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+            .footer-menu-list {
+                a:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .footer-disclaimer {
+        font-weight: bold;
+        text-align: center;
+    }
+}
+
+.generate-colored-footer-menu();
