@@ -4,7 +4,8 @@
     <div class="level" v-if="content.length > 0">
         <div v-if="!display_l_for_list" class="level-left"><input type='checkbox' class="has-medium-right-margin" v-model="state.select_all_to_export" />
             <h4 class="is-subtitle is-2">
-                <strong>{{total}} {{lang('l_number_search_results', {}, total)}}</strong>
+                <strong>{{ state.seso.size < total ? state.seso.size : total }} {{lang('l_number_search_results', {}, total)}}</strong>
+                <strong>({{ total }} {{lang('l_total')}})</strong>
             </h4>
         </div>
         <div class="level-right">
@@ -82,6 +83,7 @@
             </div>
             <div class="level-item is-hidden-mobile">
                 <div class="field has-addons">
+                    <!--
                     <p class="control">
                         <b-dropdown hoverable>
                             <a class="button" slot="trigger">
@@ -105,6 +107,7 @@
                             </template>
                         </b-dropdown>
                     </p>
+                    -->
                     <p class="control">
                         <b-dropdown hoverable>
                             <a class="button" slot="trigger">
@@ -164,6 +167,8 @@
             </div>
         </div>
     </div>
+
+    <!--
     <results
     :is-selectable="true"
     :show-status="showStatus"
@@ -173,6 +178,32 @@
     :export-sink="state.sinks.reads.export"
     v-if="content.length > 0"
     />
+    -->
+
+    <article v-if="content.length > 0" class="media is-flex-mobile pos-search-result" v-for="(info, idx) in content">
+        <div class="media-content">
+            <div class="has-small-bottom-margin">
+                <span v-html="info.title"></span>
+                <span> - </span>
+                <span v-if="_oa_find(info, 'denormalization.state.label')" >
+                    {{ lang(info.denormalization.state.label) }} -
+                </span>
+                <span v-if="_oa_find(info, 'deposit_date')">{{ parseInt(info.deposit_date, 10) | format_date('MM/DD/YYYY') }}</span>
+            </div>
+          <!--
+            <div class="level-left level is-mobile is-hidden-mobile">
+                <div class="level-left">
+                    <router-link class="level-item" :alt="lang('f_view_publication')" :title="lang('f_view_publication')" :to="`/view_dataset/${info._id}`">
+                        <span class="icon is-small"><i class="fa fa-eye"></i></span>
+                    </router-link>
+                </div>
+            </div>
+          -->
+        </div>
+    </article>
+
+
+
     <div v-else-if="!content_received">
         <div class="columns is-centered">
             <loader />

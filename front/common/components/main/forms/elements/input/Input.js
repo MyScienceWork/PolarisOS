@@ -2,13 +2,15 @@ const _ = require('lodash');
 const Messages = require('../../../../../api/messages');
 const Utils = require('../../../../../utils/utils');
 const InputMixin = require('../../mixins/InputMixin');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 const moment = require('moment');
 const Crypto = require('crypto');
 const AceEditor = require('vue2-ace-editor');
 const APIRoutes = require('../../../../../api/routes');
+const Handlebars = require('../../../../../../../app/modules/utils/templating');
 
 module.exports = {
-    mixins: [InputMixin],
+    mixins: [InputMixin, ConditionalReadonlyMixin],
     props: {
         name: { required: true, type: String },
         label: { required: true, type: String },
@@ -23,6 +25,7 @@ module.exports = {
         hasAddons: { default: false, type: Boolean },
         isAddon: { default: false, type: Boolean },
         hiddenValue: { default: '', type: String },
+        template: { default: false, type: Boolean },
         default: { default: null },
         readonly: { default: false, type: Boolean },
         duplicate_warning: { default: false, type: Boolean },
@@ -41,6 +44,9 @@ module.exports = {
         minDate: { require: false, type: Date },
         maxDate: { require: false, type: Date },
         fieldId: { required: false, type: Number },
+        allowGrobid: { required: false, default: true, type: Boolean },
+        minNumber: { require: false, type: Number },
+        maxNumber: { require: false, type: Number },
     },
 
     data() {
@@ -55,6 +61,7 @@ module.exports = {
                         duplicate_warning: [],
                     },
                 },
+                limit_textarea: 5000,
             },
         };
     },
@@ -64,6 +71,10 @@ module.exports = {
     },
 
     methods: {
+        handleEnter(e) {
+            if (e) e.preventDefault();
+            console.log('enter key');
+        },
         IDEInit() {
             require('brace/ext/language_tools');
             require('brace/mode/json');
@@ -85,6 +96,10 @@ module.exports = {
             if (_.isObject(e) && 'target' in e) {
                 if (this.type === 'checkbox') {
                     info = e.target.checked;
+                    this.$emit('checkbox-value-change', {
+                        value: info,
+                        name: this.name,
+                    });
                 } else {
                     info = e.target.value;
                 }
@@ -143,7 +158,16 @@ module.exports = {
             if (!this.duplicate_warning) {
                 return;
             }
-            const info = e.target.value;
+
+            let info = null;
+
+            if (_.isObject(e)) {
+                info = Utils.find_value_with_path(e, 'target.value'.split('.'));
+            }
+
+            if (info == null) {
+                info = e;
+            }
             if (info.trim() === '') {
                 return;
             }
@@ -173,6 +197,9 @@ module.exports = {
             } else if (this.type === 'date-year') {
                 return null;// +moment.utc(moment.utc().format('YYYY'), 'YYYY');
             } else if (this.type === 'hidden') {
+                if (this.template) {
+                    return Handlebars.compile(this.hiddenValue)({});
+                }
                 return this.hiddenValue;
             } else if (this.type === 'ide-editor') {
                 return '';
@@ -213,7 +240,7 @@ module.exports = {
             if (value == null) {
                 const info = this.defaultValue();
 
-                if (this.type === 'hidden' || this.type === 'date') {
+                if (this.type === 'hidden' || this.type === 'date' || this.type === 'checkbox') {
                     this.$store.commit(Messages.COMPLETE_FORM_ELEMENT, {
                         form: this.form,
                         name: this.name,
@@ -225,13 +252,18 @@ module.exports = {
             } else {
                 this.state.value = this.formatValue(value);
             }
+            this.blur(this.state.value);
         },
     },
 
     watch: {
         hiddenValue(n) {
             if (this.type === 'hidden' && this.value !== n) {
-                this.update({ target: { value: n } });
+                if (this.template) {
+                    this.update({ target: { value: Handlebars.compile(n) } });
+                } else {
+                    this.update({ target: { value: n } });
+                }
             }
         },
         current_state(s) {
@@ -260,6 +292,21 @@ module.exports = {
         },
     },
     computed: {
+        check_textarea_limit() {
+            if (this.state.value) {
+                this.state.value = this.state.value.substr(0, this.state.limit_textarea);
+            }
+        },
+        handle_price_value() {
+            if (this.state.value) {
+                const value_without_text = this.state.value.replace(/\D/g,'');
+                if (Number.parseInt(value_without_text, 10)) {
+                    this.state.value = Number.parseInt(value_without_text, 10).toLocaleString('en-EN', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                } else {
+                    this.state.value = "$0";
+                }
+            }
+        },
         emptyValue() {
             return this.state.value === null ||
                 this.state.value === undefined ||
@@ -271,6 +318,9 @@ module.exports = {
         },
         readonlyValue() {
             return this.computeReadonlyValue(this.state.value);
+        },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
         },
         contentForm() {
             return this.fcontent(this.cform);
@@ -296,7 +346,5 @@ module.exports = {
     },
     beforeMount() {
         this.init();
-    },
-    mounted() {
     },
 };

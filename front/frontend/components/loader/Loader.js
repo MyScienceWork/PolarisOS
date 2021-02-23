@@ -5,10 +5,10 @@ module.exports = {
         return {
             css: {
                 primary: {
-                    backgroundColor: this.primaryColor,
+                    backgroundColor: '#0062A1',
                 },
                 secondary: {
-                    backgroundColor: this.secondaryColor,
+                    backgroundColor: '#262626',
                 },
             },
         };

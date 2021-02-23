@@ -208,9 +208,16 @@ async function import_sherpa_romeo(ctx: Object): Promise<any> {
     const url = 'http://www.sherpa.ac.uk/romeo/api29.php?ak=hBIkszCV4ZE&issn=';
     const final_url = url + issn;
 
-    const response = await Request.get(final_url).type('xml');
-    const result = await XMLUtils.to_object(response.text);
-    ctx.body = result;
+    let response;
+    let result = {};
+    try {
+        response = await Request.get(final_url).type('xml');
+        result = await XMLUtils.to_object(response.text);
+        ctx.body = result;
+    } catch (err) {
+        Logger.error(err.message);
+        Logger.debug(err);
+    }
     return result;
 }
 
@@ -260,9 +267,19 @@ async function import_endnote(ctx: Object): Promise<any> {
     ctx.body = WebUtils.forge_ok_response(my_report, 'post');
 }
 
+async function import_excel(ctx: Object): Promise<any> {
+    const filepath = ctx.request.body.filepath;
+    const name = ctx.request.body.name;
+    const entity = ctx.request.body.entity;
+    const my_report = await Importer.create_report(name, filepath,
+        'excel', entity, ctx.__md || {});
+    ctx.body = WebUtils.forge_ok_response(my_report, 'post');
+}
+
 module.exports = {
     import_information,
     import_sherpa_romeo,
     import_ris,
     import_endnote,
+    import_excel
 };

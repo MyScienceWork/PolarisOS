@@ -27,7 +27,7 @@
             </button>
         </div>
     </div>
-    <div class="field" v-if="state.opened && state.type && openable">
+    <div class="field has-addons" v-if="state.opened && state.type && openable">
         <div class="control"> 
             <label class="checkbox has-small-right-margin">
                 <input type="checkbox" v-model="state.extra.indexable">
@@ -41,6 +41,10 @@
                 <input type="checkbox" v-model="state.extra.completable">
                 {{lang('l_field_completable')}} 
             </label>
+        </div>
+        <div class="control is-expanded">
+            <input v-if="state.type.value === 'date'" class="input" 
+            type="text" :placeholder="lang('l_date_format')" v-model="state.extra.date_format"/>
         </div>
     </div>
     <template v-if="state.type && (state.type.value === 'object' || state.type.value === 'nested')">

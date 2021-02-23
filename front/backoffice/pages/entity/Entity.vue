@@ -97,6 +97,27 @@
                                 :form="state.sinks.creations.entity"
                                 :multi="true"
                             />
+                          <fvariadic-element name="conditional_pipelines" :form="state.sinks.creations.entity" :tabs="true">
+                            <template slot="variadic" slot-scope="props">
+                              <fselect
+                                  :name="`${props.fname}.${props.order}.pipeline`"
+                                  :label="lang('b_conditional_pipeline_name', {}, 'other')"
+                                  :is-required="true"
+                                  :options="pipelines || []"
+                                  fieldLabel="name"
+                                  fieldValue="_id"
+                                  :form="state.sinks.creations.entity"
+                                  :multi="true"
+                              />
+                              <finput :name="`${props.fname}.${props.order}.condition`"
+                                  :label="lang('l_conditional_pipeline_condition')"
+                                  :is-required="false"
+                                  type="text"
+                                  :form="state.sinks.creations.entity"
+                              />
+                            </template>
+                          </fvariadic-element>
+
                             <fselect name="search_query"
                                 :label="lang('l_search_query')"
                                 :placeholder="lang('l_search_query')"

@@ -13,6 +13,8 @@
                             :search-query="es_query_content"
                             :use-default-query="true"
                             search-type="pipeline"
+                            :change-with-create-success="true"
+                            :form-create-success="state.sinks.creations.pipeline"
                         >
                             <widget slot="search-result" slot-scope="props">
                                 <span slot="title">

@@ -209,16 +209,15 @@ class ODM {
                 _.reverse(o.hits);
             }
 
-            let entity_type = type;
-            if (type === "entity" && o.hits.length > 0) {
-                entity_type = o.hits[0].source.type
+            await o.hits.reduce((pr, hit) => {
+                const entity_type = type === 'entity' ? hit.source.type : type;
+                return pr.then(() => hit.post_read_hook(population, entity_type))
+            }, Promise.resolve());
+
+            o.total = response.hits.total.value;
+            if (!'count' in response ) {
+                o.count = response.hits.total.value;
             }
-
-            await o.hits.reduce((pr, hit) =>
-                pr.then(() => hit.post_read_hook(population, entity_type)), Promise.resolve());
-
-            o.total = response.hits.total;
-            o.count = response.hits.total;
             o.max_score = response.hits.max_score;
         }
 
@@ -274,6 +273,7 @@ class ODM {
             const req = {
                 index,
                 body,
+                requestTimeout: 600000,
             };
 
             if ('scroll' in opts) {
@@ -282,7 +282,14 @@ class ODM {
             response = await client.search(req);
         }
 
-        return this.read(index, type, client, model, response, population, 'search_before' in opts);
+        let o = await this.read(index, type, client, model, response, population, 'search_before' in opts);
+        // handle the case of more than 10000 results. Elasticsearch counts up to 10K, no more than that
+        if (o.total == 10000) {
+            const c = await this.count(index, type, client, model, search);
+            o.count = c.count;
+            o.total = c.count;
+        }
+        return o;
     }
 
     static async count(index: string, type: string, client: Object,
@@ -315,8 +322,8 @@ class ODM {
                 id,
                 refresh: true,
             });
-            // console.log(response);
-            return response.found;
+            //console.log(response);
+            return response.result === "deleted";
         } catch (err) {
             console.log('remove error', err);
             return false;
@@ -325,7 +332,7 @@ class ODM {
 
     static async _create_or_update(index: string, type: string,
             client: Object, model: Object, body: Object, id: ?string = null): Promise<?ODM> {
-        console.log('create or update body', JSON.stringify(body));
+        //console.log('create or update body', JSON.stringify(body));
         try {
             const content = {
                 index,

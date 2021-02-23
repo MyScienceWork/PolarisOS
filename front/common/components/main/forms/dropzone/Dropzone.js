@@ -22,6 +22,8 @@ module.exports = {
         keeper: { default: 'keeper_sink', type: String },
         keep_files: { default: false, type: Boolean },
         restore_files: { default: false, type: Boolean },
+        allowGrobid: { default: true, type: Boolean },
+        show_master_checkboxes: { default: false, type: Boolean },
     },
     data() {
         return {
@@ -75,6 +77,8 @@ module.exports = {
             const name = `${file.name}_${file.lastModified}`;
             file.pathOnServer = response.file;
             file.previewUrl = response.preview;
+            file.tree = response.tree;
+            console.log('file.tree : ', file.tree);
             this.state.files.content = Object.assign({},
                 this.state.files.content, { [name]: file });
         },
@@ -165,6 +169,9 @@ module.exports = {
         }
     },
     computed: {
+        emptyValue() {
+            return this.state.files.order.length === 0;
+        },
         keeperContent() {
             if (this.keeper in this.$store.state.forms) {
                 return this.$store.state.forms[this.keeper].content;

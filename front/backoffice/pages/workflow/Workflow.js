@@ -13,6 +13,7 @@ module.exports = {
             state: {
                 paths: {
                     reads: {
+                        action: APIRoutes.entity('action', 'POST', true),
                         role: APIRoutes.entity('role', 'POST', true),
                         workflow: APIRoutes.entity('workflow', 'POST', true),
                         entity: APIRoutes.entity('entity', 'POST', true),
@@ -23,6 +24,7 @@ module.exports = {
                 },
                 sinks: {
                     reads: {
+                        action: 'action_read',
                         role: 'role_read',
                         workflow: 'workflow_read',
                         entity: 'entity_read',
@@ -39,6 +41,15 @@ module.exports = {
         };
     },
     methods: {
+        step_types() {
+            return [{
+                label: 'l_transition',
+                type: 'transition',
+            }, {
+                label: 'l_state',
+                type: 'state',
+            }];
+        },
         update_entity_states_labels(label) {
             if (label) {
                 this.state.entity_state = label;
@@ -58,7 +69,7 @@ module.exports = {
         },
     },
     mounted() {
-        ['entity', 'role'].forEach((e) => {
+        ['entity', 'role', 'action'].forEach((e) => {
             this.$store.dispatch('search', {
                 form: this.state.sinks.reads[e],
                 path: this.state.paths.reads[e],
@@ -71,6 +82,13 @@ module.exports = {
     watch: {
     },
     computed: {
+        actions() {
+            const content = this.mcontent(this.state.sinks.reads.action);
+            if (content instanceof Array) {
+                return content;
+            }
+            return [];
+        },
         entitys() {
             const content = this.mcontent(this.state.sinks.reads.entity);
             if (content instanceof Array) {

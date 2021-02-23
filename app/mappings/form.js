@@ -39,6 +39,9 @@ module.exports = {
                 has_subforms: {
                     type: 'boolean',
                 },
+                horizontal_display: {
+                    type: 'boolean',
+                },
                 fields: {
                     type: 'nested',
                     properties: {
@@ -54,8 +57,14 @@ module.exports = {
                         type: {
                             type: 'keyword',
                         },
+                        template: {
+                            type: 'boolean',
+                        },
                         readonly: {
                             type: 'boolean',
+                        },
+                        conditional_readonly: {
+                            type: 'keyword',
                         },
                         duplicate_warning: {
                             type: 'boolean',
@@ -70,6 +79,9 @@ module.exports = {
                                 },
                                 title: {
                                     type: 'text',
+                                },
+                                widget_collapsed: {
+                                    type: 'boolean',
                                 },
                             },
                         },
@@ -184,6 +196,9 @@ module.exports = {
                                     type: 'integer',
                                 },
                                 query: {
+                                    type: 'keyword',
+                                },
+                                filter: {
                                     type: 'keyword',
                                 },
                             },
@@ -304,6 +319,9 @@ module.exports = {
                                     type: 'boolean',
                                 },
                             },
+                        },
+                        columns_used: {
+                            type: 'integer'
                         },
                     },
                 },

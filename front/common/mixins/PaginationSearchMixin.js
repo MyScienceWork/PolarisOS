@@ -4,6 +4,7 @@ const Handlebars = require('../../../app/modules/utils/templating');
 const Messages = require('../api/messages');
 const Utils = require('../utils/utils');
 const FormMixin = require('./FormMixin');
+const Queries = require('../../common/specs/queries');
 
 module.exports = {
     mixins: [FormMixin],
@@ -161,13 +162,49 @@ module.exports = {
         },
         add_extra_filters(sink, obj_name, dot_replacer = '*') {
             const content = this.fcontent(sink);
-
+            console.log("content : ", content);
+            console.log("obj_name : ", obj_name);
             if (!content || !(obj_name in content)) {
                 return;
             }
 
             const obj = content[obj_name];
-            let filters = _.map(obj, (value, idx) => {
+            const new_obj = {};
+
+            Object.keys(obj).map((els) => {
+                if (obj[els]['*']) {
+                    // field select all
+                    const search_text = obj[els]['*'];
+                    const bool = Object.keys(Queries.publication_search)[0];
+                    const search_all = Queries.publication_search[bool].reduce((acc, val) => {
+                        const search_key = Object.keys(val)[0];
+                        acc.push({ [search_key]: search_text });
+                        return acc;
+                    }, []);
+
+                    delete obj[els];
+                    const prev_els = obj;
+                    let last_el = 0;
+                    search_all.map((search_key, key) => {
+                        search_key.__bool = bool;
+                        new_obj[key] = search_key;
+                        last_el = key;
+                    });
+                    Object.keys(prev_els).map((prev_els_key, key) => {
+                        new_obj[key + last_el] = prev_els[prev_els_key];
+                    });
+                } else {
+                    new_obj[els] = obj[els];
+                }
+            });
+
+            console.log('new obj : ', new_obj);
+
+            if (new_obj[0] && !new_obj[0].__bool) {
+                new_obj[0].__bool = '$and';
+            }
+
+            let filters = _.map(new_obj, (value, idx) => {
                 // Only the __bool is in the object, so it's empty
                 if (Object.keys(value).length === 1 && idx > 0) {
                     return null;
@@ -185,7 +222,13 @@ module.exports = {
                         }, []);
                     }
 
-                    acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
+                    if (key.startsWith('date')) {
+                        const val2 = { [key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')]: { '>': `01-01-${val}`, '<': `31-12-${val}`, format: 'dd-MM-yyyy' } };
+                        acc.range = val2;
+                    } else {
+                        acc[key.replace(new RegExp(`\\${dot_replacer}`, 'gi'), '.')] = val;
+                    }
+
                     return acc;
                 }, {});
                 return result;
@@ -193,12 +236,25 @@ module.exports = {
 
             filters = filters.reduce((o, f, i) => {
                 if (i === 0 && filters.length > 1) {
+                    console.log("test : ", f.__bool)
                     delete f.__bool;
-                    o.$first = [f];
+                    if (o.$first && o.$first.length > 0) {
+                        o.$first = o.$first.concat(f);
+                    } else {
+                        o.$first = [f];
+                    }
                     return o;
                 }
 
-                if ('__bool' in f) {
+                if ('range' in f) {
+                    console.log("2bool : ", f.__bool);
+                    const bool = f.__bool;
+                    if (bool in o) {
+                        o[bool].push(f.range);
+                    } else {
+                        o[bool] = [f.range];
+                    }
+                } else if ('__bool' in f) {
                     const bool = f.__bool;
                     delete f.__bool;
                     if (bool in o) {
@@ -212,10 +268,17 @@ module.exports = {
                         delete o.$first;
                     }
                 }
-
                 return o;
             }, {});
-
+            if (filters.$first) {
+                if (filters.$and) {
+                    filters.$and = filters.$and.concat(filters.$first);
+                } else {
+                    filters.$and = filters.$first;
+                }
+                delete filters.$first;
+            }
+            console.log('filters : ', filters);
             this.state.seso.extra_filters = filters;
         },
         run_search(sink) {
@@ -315,7 +378,10 @@ module.exports = {
                 body.sort = body.sort.concat(this.defaultSorts);
             }
 
-            body.sort.push({ _id: 'desc' });
+            //body.sort.push({ _score: 'desc' });
+            if (body.sort.length == 0) {
+                body.sort.push({ _id: 'desc' });
+            }
 
             this.$store.dispatch('search', {
                 path: this.searchPath,

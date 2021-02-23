@@ -5,13 +5,14 @@ const FormCleanerMixin = require('../../../common/mixins/FormCleanerMixin');
 const RequestsMixin = require('../../../common/mixins/RequestsMixin');
 const UserMixin = require('../../../common/mixins/UserMixin');
 const WorkflowMixin = require('../../../common/mixins/WorkflowMixin');
+const FiltersMixin = require('../../../common/mixins/FiltersMixin');
 
 const APIRoutes = require('../../../common/api/routes');
 const Messages = require('../../../common/api/messages');
 const ReviewModal = require('./subcomponents/ReviewModal.vue');
 
 module.exports = {
-    mixins: [LangMixin, RequestsMixin, FormMixin, FormCleanerMixin, UserMixin, WorkflowMixin],
+    mixins: [FiltersMixin, LangMixin, RequestsMixin, FormMixin, FormCleanerMixin, UserMixin, WorkflowMixin],
     data() {
         return {
             state: {
@@ -163,7 +164,7 @@ module.exports = {
             }
             this.$store.commit(Messages.TRANSFERT_INTO_FORM, {
                 form: this.state.sinks.creations.project_type,
-                body: {type: content.type},
+                body: { type: content.type },
             });
 
             return () => true;
@@ -174,6 +175,26 @@ module.exports = {
                 return [];
             }
             return content;
+        },
+        historys() {
+            const content = this.fcontent(this.state.sinks.creations.project);
+            if (!content || !(content.history)) {
+                return [];
+            }
+            const allStatus = this.all_status();
+            let new_content;
+            let index = 1;
+            if (Object.keys(content.history).length > 0) {
+                new_content = Object.keys(content.history).reduce((obj, my_history_index) => {
+                    const my_history = content.history[my_history_index];
+                    my_history.denormalization = allStatus.find(d => d._id === my_history.state);
+                    my_history.step = index;
+                    index += 1;
+                    obj.unshift(my_history);
+                    return obj;
+                }, []);
+            }
+            return new_content;
         },
     },
     beforeMount() {

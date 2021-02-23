@@ -23,7 +23,7 @@ module.exports = {
                     reads: {
                         publication: 'publication_read',
                         stats_publication: 'stats_publication_read',
-                        stats_open_access: 'stats_oap_read',
+                        stats_project: 'stats_project_read',
                         menu: 'menu_read',
                         search: 'search_home_sink',
                     },
@@ -31,6 +31,7 @@ module.exports = {
                 paths: {
                     reads: {
                         publication: APIRoutes.entity('publication', 'POST', true),
+                        project: APIRoutes.entity('project', 'POST', true),
                         menu: APIRoutes.entity('menu', 'POST', true),
                     },
                 },
@@ -51,7 +52,7 @@ module.exports = {
             path: this.state.paths.reads.publication,
             body: {
                 size: 6,
-                sort: [{ 'dates.deposit': 'desc' }],
+                sort: [{ date: 'desc' }],
                 where: this.lastDepositsQuery,
             },
         });
@@ -72,30 +73,19 @@ module.exports = {
             path: this.state.paths.reads.publication,
             body: {
                 size: 0,
-                where: {
-                    $and: [
-                        Queries.published,
-                        Queries.no_other_version,
-                        Queries.viewable(this.user._id, this.author),
-                    ],
-                },
+                where: Queries.published(),
             },
         });
         this.$store.dispatch('search', {
-            form: this.state.sinks.reads.stats_open_access,
-            path: this.state.paths.reads.publication,
+            form: this.state.sinks.reads.stats_project,
+            path: this.state.paths.reads.project,
             body: {
                 size: 0,
-                where: {
-                    $and: [{ 'diffusion.rights.access': ['AWF0ZQmRfoecpXq21Jl9'] },
-                        Queries.published,
-                        Queries.no_other_version, Queries.viewable(this.user._id, this.author)],
-                },
             },
         });
     },
     computed: {
-        content() {
+        content_publication() {
             return this.fcontent(this.state.sinks.reads.publication);
         },
         stats_count() {
@@ -109,25 +99,20 @@ module.exports = {
         },
         stats() {
             return [
-                { label: 'l_deposit',
+                { label: 'l_deposit_publications',
                     label_count: 'l_reference',
                     count: this.stats_count(this.state.sinks.reads.stats_publication),
                     icon: 'fa-file-text' },
-                { label: 'l_open_access',
-                    label_count: 'l_publication',
-                    count: this.stats_count(this.state.sinks.reads.stats_open_access),
-                    icon: 'fa-unlock-alt' },
+                { label: 'l_deposit_projects',
+                    label_count: 'l_reference',
+                    count: this.stats_count(this.state.sinks.reads.stats_project),
+                    icon: 'fa-file-text' },
             ];
         },
         items() {
-            console.log("this is items");
-            if (this.content && this.content instanceof Array && this.content.length > 0) {
-                const items = this.content.map((c) => {
-                    const html = this.filter_ined_profile_links(this.hlang(Handlebars.compile(c.denormalization.type.template || '')(c)));
-                    c.html = html;
-                    return c;
-                });
-                return items;
+            console.log("BRYAN this.content_publication : ", this.content_publication);
+            if (this.content_publication instanceof Array) {
+                return this.content_publication;
             }
             return [];
         },
@@ -147,16 +132,7 @@ module.exports = {
             }));
         },
         lastDepositsQuery() {
-            return Queries.last_deposits(this.user._id, this.author);
-        },
-        rssMapping() {
-            return {
-                title: '{{{title.content}}}',
-                description: '{{{abstracts.0.content}}}',
-                content: '',
-                link: `${BrowserUtils.getURLHost(window.location)}/view/{{{_id}}}`,
-                id: '{{_id}}',
-            };
+            return Queries.published();
         },
     },
 };

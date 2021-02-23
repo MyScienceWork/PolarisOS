@@ -3,6 +3,7 @@ const moment = require('moment');
 const FS = require('fs');
 const Path = require('path');
 const FilePreview = require('filepreview');
+const AdmZip = require('adm-zip');
 const Errors = require('../exceptions/errors');
 const MinioUtils = require('./minio');
 const Archiver = require('archiver');
@@ -136,11 +137,20 @@ async function add_single(ctx) {
     await MinioUtils.put_into_bucket(MinioUtils.default_bucket, file);
 
     let thumbnailInfo = { filename: null };
-    try {
-        thumbnailInfo = await generate_preview(file);
-        await MinioUtils.put_into_bucket(MinioUtils.public_bucket, thumbnailInfo);
-    } catch (err) {
-        Logger.error(`Unable to generate preview for file ${file.path}`);
+    let tree = undefined;
+
+    const splitted_name = file.originalname.split('.');
+    const ext = splitted_name[splitted_name.length - 1];
+    if (ext === 'zip') {
+        // get zip infos
+        tree = new AdmZip(file.path).getEntries().filter((c) => c.isDirectory === false).sort((a, b) => a.entryName < b.entryName);
+    } else {
+        try {
+            thumbnailInfo = await generate_preview(file);
+            await MinioUtils.put_into_bucket(MinioUtils.public_bucket, thumbnailInfo);
+        } catch (err) {
+            Logger.error(`Unable to generate preview for file ${file.path}`);
+        }
     }
 
     try {
@@ -149,7 +159,7 @@ async function add_single(ctx) {
             FS.unlinkSync(thumbnailInfo.path);
         }
     } catch (errfs) {}
-    ctx.body = { file: file.filename, preview: thumbnailInfo.filename };
+    ctx.body = { file: file.filename, preview: thumbnailInfo.filename, tree };
 }
 
 async function generic_download(ctx) {
@@ -219,7 +229,8 @@ async function download(ctx) {
     const final_stream = await generate_cover_page(information, file, stream);
     await update_download_stats(information, entity);
 
-    ctx.set('Content-disposition', `attachment; filename=${shown_name}`);
+    // encode URI fix space issue Firefox
+    ctx.set('Content-disposition', `attachment; filename=${encodeURI(shown_name)}`);
     ctx.statusCode = 200;
     ctx.body = final_stream;
 }

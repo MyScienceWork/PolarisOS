@@ -1,4 +1,8 @@
 module.exports = {
+    '*': {
+        element: 'text',
+        label: 'l_all',
+    },
     'title*content': {
         element: 'text',
         label: 'l_title',
@@ -116,7 +120,7 @@ module.exports = {
         element: 'multi-select',
         label: 'l_country',
     },
-    'diffusion*research_team': {
+    'diffusion*research_teams*_id': {
         entity: {
             name: 'laboratory',
             label: 'fullname',
@@ -190,5 +194,9 @@ module.exports = {
         },
         element: 'multi-select',
         label: 'l_publication_version',
+    },
+    'dates*publication': {
+        element: 'text',
+        label: 'l_publication_year',
     },
 };

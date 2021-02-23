@@ -5,7 +5,10 @@ const InputMixin = require('../../mixins/InputMixin');
 const Utils = require('../../../../../utils/utils');
 const Messages = require('../../../../../api/messages');
 const LangMixin = require('../../../../../mixins/LangMixin');
+const ESQueryMixin = require('../../../../../mixins/ESQueryMixin');
 const ASCIIFolder = require('fold-to-ascii');
+const Handlebars = require('../../../../../../../app/modules/utils/templating');
+const ConditionalReadonlyMixin = require('../../mixins/ConditionalReadonlyMixin');
 
 module.exports = {
     props: {
@@ -35,14 +38,15 @@ module.exports = {
         translateThroughHlang: { default: false, type: Boolean },
         selectFirstValue: { default: false, type: Boolean },
         selectAllValues: { default: false, type: Boolean },
-        searchFields: { default: '', type: String },
+        searchFields: { default: '' },
         searchSize: { default: 10, type: Number },
         flattenList: { default: false, type: Boolean },
+        ajaxQuery: { default: '', type: String },
     },
     components: {
         'v-select': VSelect,
     },
-    mixins: [InputMixin, LangMixin],
+    mixins: [InputMixin, LangMixin, ESQueryMixin, ConditionalReadonlyMixin],
     data() {
         return {
             state: {
@@ -50,6 +54,8 @@ module.exports = {
                 options: [],
                 showHelpModal: false,
                 form: `${this.name}_${+moment()}`,
+                es_query_ids: this.ajaxQuery !== null ? [this.ajaxQuery] : [],
+                readonlyValue: '',
             },
         };
     },
@@ -94,7 +100,7 @@ module.exports = {
                         where: {
                             [this.fieldValue]: values,
                         },
-                        projection: [this.fieldLabel, this.fieldValue],
+                        projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                         size: values.length,
                     },
                 });
@@ -129,9 +135,22 @@ module.exports = {
                 this.state.selected = null;
             }
         },
+        set_selected_readonly(s) {
+            if (s instanceof Array) {
+                this.state.selected_readonly = s.filter(c => c.readonly === true);
+                this.state.selected_not_readonly = s.filter(c => c.readonly === false);
+            } else if (s && s.readonly) {
+                this.state.selected_readonly = s;
+                this.state.selected_not_readonly = null;
+            } else if (s && s.readonly === false) {
+                this.state.selected_not_readonly = s;
+                this.state.selected_readonly = null;
+            }
+            this.setReadonlyValue(this.state.selected_readonly);
+        },
         search: _.debounce((loading, search, self) => {
             const body = {
-                projection: [self.fieldLabel, self.fieldValue],
+                projection: [self.fieldLabel, self.fieldValue, self.conditionalReadonly],
                 size: self.searchSize + (self.multi ? (self.state.selected ? self.state.selected.length : 1) : 1),
             };
 
@@ -148,6 +167,17 @@ module.exports = {
                 body.where = {
                     $and: [body.where].concat(self.ajaxFilters),
                 };
+            }
+
+
+            const contentQuery = self.fcontent(self.state.sinks.reads.query_grabber);
+
+            if (contentQuery) {
+                if (contentQuery && contentQuery instanceof Array
+                    && contentQuery.length > 0
+                    && contentQuery.find(elm => elm.id === self.ajaxQuery)) {
+                    body.where = _.merge(body.where, JSON.parse(Handlebars.compile(contentQuery.find(elm => elm.id === self.ajaxQuery).content)({ search })));
+                }
             }
 
             const promise = self.$store.dispatch('search', {
@@ -173,6 +203,15 @@ module.exports = {
                 this.state.showHelpModal = !this.state.showHelpModal;
             }
         },
+        test_read_only(val, key) {
+            if (key === null || key === '') {
+                return false;
+            }
+            if (val[key] && val[key] !== '') {
+                return false;
+            }
+            return true;
+        },
         initialize(sink) {
             if (this.form !== sink) {
                 return;
@@ -194,7 +233,10 @@ module.exports = {
 
             if (info instanceof Array) {
                 this.set_selected(info.map(i =>
-                    ({ label: i[this.fieldLabel], value: i[this.fieldValue] })));
+                    ({ label: i[this.fieldLabel],
+                        value: i[this.fieldValue],
+                        readonly: this.readonly ? true : this.test_read_only(i, this.conditionalReadonly),
+                    })));
                 return;
             }
 
@@ -263,25 +305,25 @@ module.exports = {
             return options;
         },
         order_options(options) {
-            if (options instanceof Array && !this.ajax) {
-                return _.orderBy(options, ['label'], ['asc']);
-            }
             return options;
         },
         format_options(options, direction = 'to') {
             // Direction:
             // to -> to vue-select
             // from -> from vue-select
+
             if (direction === 'to') {
                 return options.map(opt => ({
                     label: opt[this.fieldLabel],
                     value: opt[this.fieldValue],
+                    readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
                 }));
             }
 
             return options.map(opt => ({
                 [this.fieldLabel]: opt.label,
                 [this.fieldValue]: opt.value,
+                readonly: this.readonly ? true : this.test_read_only(opt, this.conditionalReadonly),
             }));
         },
         select_default_value() {
@@ -301,6 +343,15 @@ module.exports = {
                 this.state.selected = this.set_selected([{ value: this.defaultValue }]);
             }
         },
+        setReadonlyValue(selected_readonly) {
+            if (selected_readonly instanceof Array) {
+                this.state.readonlyValue = selected_readonly.map(s => s.label);
+            } else if (this.state.selected_readonly) {
+                this.state.readonlyValue = selected_readonly.label;
+            } else {
+                this.state.readonlyValue = '';
+            }
+        },
     },
     watch: {
         options() {
@@ -311,6 +362,9 @@ module.exports = {
         },
         current_state(s) {
             this.dispatch(s, this, this.form);
+        },
+        selected(s) {
+            this.set_selected_readonly(s);
         },
     },
     beforeMount() {
@@ -332,7 +386,7 @@ module.exports = {
                 path: this.ajaxUrl,
                 body: {
                     where,
-                    projection: [this.fieldLabel, this.fieldValue],
+                    projection: [this.fieldLabel, this.fieldValue, this.conditionalReadonly],
                     size: this.searchSize,
                 },
             });
@@ -350,13 +404,22 @@ module.exports = {
             (this.state.selected instanceof Array && this.state.selected.length === 0));
         },
         readonlyValue() {
-            if (this.state.selected instanceof Array) {
-                return this.state.selected.map(s => s.label);
-            }
-            return this.state.selected ? this.state.selected.label : '';
+            return this.state.readonlyValue;
         },
         current_state() {
             return this.fstate(this.form);
+        },
+        selected() {
+            return this.state.selected;
+        },
+        dynamic_value() {
+            if (this.conditionalReadonly === '') {
+                return this.state.selected;
+            }
+            return this.state.selected_not_readonly;
+        },
+        getReadonly() {
+            return this.readonly || this.state.isConditionalReadonly;
         },
     },
 };

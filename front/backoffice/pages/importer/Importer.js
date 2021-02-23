@@ -4,6 +4,7 @@ const APIRoutes = require('../../../common/api/routes');
 const ReaderMixin = require('../../../common/mixins/ReaderMixin');
 const LangMixin = require('../../../common/mixins/LangMixin');
 const ImporterTypes = require('../../../common/lists/importer_types');
+const ImporterFilesFormat = require('../../../common/lists/importer_files_format');
 
 module.exports = {
     mixins: [ReaderMixin, LangMixin],
@@ -13,6 +14,7 @@ module.exports = {
                 itemsPerPage: 1000,
                 itemsPerRow: 1,
                 importer_type: null,
+                importer_file_format: null,
                 paths: {
                     creations: {
                         importer: APIRoutes.entity('importer', 'POST'),
@@ -44,6 +46,13 @@ module.exports = {
                 this.state.importer_type = null;
             } else {
                 this.state.importer_type = val.value;
+            }
+        },
+        change_importer_file_format(val) {
+            if (val == null) {
+                this.state.importer_file_format = null;
+            } else {
+                this.state.importer_file_format = val.value;
             }
         },
     },
@@ -149,9 +158,11 @@ module.exports = {
         current_read_state_pipeline() {
             return this.mcurrent_read_state(this.state.sinks.reads.pipeline);
         },
-
         types() {
             return ImporterTypes;
+        },
+        files_format() {
+            return ImporterFilesFormat;
         },
     },
 };

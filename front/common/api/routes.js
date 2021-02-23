@@ -62,6 +62,14 @@ module.exports = {
         return `${prefix}/authenticate`;
     },
 
+    forgot_password() {
+        return `${prefix}/forgotpassword`;
+    },
+
+    reset_password() {
+        return `${prefix}/resetpassword`;
+    },
+
     import(type) {
         if (type) {
             return `${prefix}/import/${type}`;
@@ -69,8 +77,12 @@ module.exports = {
         return `${prefix}/import`;
     },
 
-    export() {
-        return `${prefix}/export`;
+    export_publication() {
+        return `${prefix}/export_publication`;
+    },
+
+    export_dataset() {
+        return `${prefix}/export_dataset`;
     },
 
     export_bibliography() {

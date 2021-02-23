@@ -22,13 +22,13 @@ const exporter = require('./exporter');
 const connector = require('./connector');
 const query = require('./query');
 
-const publication = require('./publication');
 const mswpublication = require('./mswpublication');
 
 const tracking_stat = require('./tracking_stat');
 const system_report = require('./system_report');
 
 const workflow = require('./workflow');
+const action = require('./action');
 const cache = require('./cache');
 
 module.exports = {
@@ -56,7 +56,6 @@ module.exports = {
     connector: connector.msw,
     query: query.msw,
 
-    publication: publication.msw,
     mswpublication: mswpublication.msw,
 
     tracking_stat: tracking_stat.msw,
@@ -64,4 +63,5 @@ module.exports = {
 
     workflow: workflow.msw,
     cache: cache.msw,
+    action: action.msw,
 };

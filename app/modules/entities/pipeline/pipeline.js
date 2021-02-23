@@ -29,8 +29,12 @@ class Pipeline extends ODM {
             if (typeof value === 'boolean') {
                 return value;
             }
-            const v = value.toLowerCase();
-            return (v === 'yes' || v === 'true');
+            if (value) {
+                const v = value.toLowerCase();
+                return (v === 'yes' || v === 'true');
+            } else {
+                return false;
+            }
         }
         case 'integer':
             return parseInt(value, 10);
@@ -124,6 +128,10 @@ class Pipeline extends ODM {
 
                 const args = f.function.arguments;
                 switch (f.function.name) {
+                case 'concat':
+                    return { [f.field]: (o, p, i) => ComplFunctions.concat(args[0].value)(o, p, i) };
+                case 'copy':
+                    return { [f.field]: (o, p, i) => ComplFunctions.copy(args[0].value)(o, p, i) };
                 case 'generic_complete':
                     return { [f.field]: (o, p, i) => ComplFunctions.generic_complete(args[0].value)(o, p, i) };
                 case 'key_complete':
@@ -170,6 +178,87 @@ class Pipeline extends ODM {
         }).filter(f => f != null);
     }
 
+    static compute_conditions_part(v) {
+        const splitted_field = v.trim().split(' ');
+
+        const left_sign = splitted_field[0];
+        const condition = splitted_field[1];
+        let right_sign = splitted_field.slice(2).join(' ');
+        let has_boolean = false;
+        if (right_sign === 'true') {
+            has_boolean = true;
+            right_sign = true;
+        } else if (right_sign === 'false') {
+            has_boolean = true;
+            right_sign = false;
+        }
+        let result = [];
+        switch (condition) {
+            case '=':
+                if (has_boolean) {
+                    result = Joi.object({
+                        [left_sign]: Joi.boolean().valid(right_sign).default(false),
+                    });
+                } else {
+                    result = Joi.object({
+                        [left_sign]: Joi.valid(right_sign).required(),
+                    });
+                }
+
+                break;
+            case '<':
+                result = Joi.object({
+                    [left_sign]: Joi.number().max(Joi.ref(right_sign)).invalid(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '>':
+                result = Joi.object({
+                    [left_sign]: Joi.number().min(Joi.ref(right_sign)).invalid(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '<=':
+                result = Joi.object({
+                    [left_sign]: Joi.number().max(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            case '>=':
+                result = Joi.object({
+                    [left_sign]: Joi.number().min(Joi.ref(right_sign)),
+                    [right_sign]: Joi.number(),
+                });
+                break;
+            default:
+                break;
+        }
+        //logger.info("compute_condition : ", JSON.stringify(result));
+        return result;
+    }
+
+    static compute_conditions(v) {
+        const splitted_field = v.trim().split(' ');
+
+        if (splitted_field.length !== 3 && splitted_field.includes("&&")) {
+            const splitted_els = v.split('&&');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" && ");
+            return Pipeline.compute_conditions(end_elements).concat(Pipeline.compute_conditions_part(splitted_els[0]));
+
+        } else if (splitted_field.length !== 3 && splitted_field.includes("||")) {
+            const splitted_els = v.split('||');
+            const c_splitted_els = splitted_els.slice();
+            c_splitted_els.shift();
+            const end_elements = c_splitted_els.join(" || ");
+            return Pipeline.compute_conditions_part(splitted_els[0])
+                || Pipeline.compute_conditions(end_elements);
+        }
+
+        return Pipeline.compute_conditions_part(v);
+    }
+
     static async generate_validators(source: Object): Promise<Array<any>> {
         const info = source;
         const validators = [];
@@ -195,46 +284,74 @@ class Pipeline extends ODM {
                 case 'url':
                     myinfo = Joi.string().uri();
                     break;
+                case 'condition':
+                    myinfo = Pipeline.compute_conditions(v.field);
+                    break;
                 default:
                     myinfo = Joi.any();
                 }
 
-                if (v.required) {
+                if (v.required && v.type !== 'condition') {
                     myinfo = myinfo.required();
-                } else {
+                } else if (v.type !== 'condition') {
                     myinfo = myinfo.optional().empty('');
                 }
-                const nested = Utils.make_nested_object_from_path(v.field.split('.'), myinfo);
-                return _.merge(obj, nested);
+                //TODO: add required for condition when checked v.required
+
+                if (v.type === 'condition') {
+                    myinfo._inner.children.forEach((child) => {
+                        const nested = Utils.make_nested_object_from_path(child.key.split('.'), child.schema);
+                        obj = _.merge(obj, nested);
+                    })
+                } else {
+                    const nested = Utils.make_nested_object_from_path(v.field.split('.'), myinfo);
+                    obj = _.merge(obj, nested);
+                }
+                return obj;
             }, {})));
         }
         return validators;
     }
 
+    static async generate_pipeline_elements(pipeline: Object,
+                                            all_pipelines: Array<Object>,
+                                            conditional_pipelines_data: Object = {}) {
+        const defaults = await Pipeline.generate_defaults(pipeline.source);
+        const filters = await Pipeline.generate_filters(pipeline.source);
+        const resetters = await Pipeline.generate_resetters(pipeline.source);
+        const formatters = await Pipeline.generate_formatters(pipeline.source);
+        const completers = await Pipeline.generate_completers(pipeline.source);
+        const validators = await Pipeline.generate_validators(pipeline.source);
+        const transformers = await Pipeline.generate_transformers(pipeline.source);
+
+        let conditions = [];
+        Object.keys(conditional_pipelines_data).map((key) => {
+            const ids = conditional_pipelines_data[key].pipeline.map((pipeline => pipeline._id));
+            ids.map((id_pipeline) => id_pipeline === pipeline._id ? conditions.push(conditional_pipelines_data[key].condition) : null);
+        });
+
+        all_pipelines.push({
+            Validation: validators,
+            Formatting: formatters,
+            Completion: completers,
+            Transforming: transformers,
+            Filtering: filters,
+            Resetting: resetters,
+            Defaults: defaults,
+            Conditions: conditions,
+        });
+        return all_pipelines;
+    }
+
     static async generate_model(index: string, type: string,
-        client: Object, pipelines: Array<Object>): Object {
-        // console.log('gen model', index, type);
+        client: Object, pipelines: Array<Object>,
+        conditional_pipelines_data: Object): Object {
+
         const mapping = await Pipeline.fetch_mapping(index, type, client);
 
-
-        const all_pipelines = [];
+        let all_pipelines = [];
         for (const pipeline of pipelines) {
-            const defaults = await Pipeline.generate_defaults(pipeline.source);
-            const filters = await Pipeline.generate_filters(pipeline.source);
-            const resetters = await Pipeline.generate_resetters(pipeline.source);
-            const formatters = await Pipeline.generate_formatters(pipeline.source);
-            const completers = await Pipeline.generate_completers(pipeline.source);
-            const validators = await Pipeline.generate_validators(pipeline.source);
-            const transformers = await Pipeline.generate_transformers(pipeline.source);
-            all_pipelines.push({
-                Validation: validators,
-                Formatting: formatters,
-                Completion: completers,
-                Transforming: transformers,
-                Filtering: filters,
-                Resetting: resetters,
-                Defaults: defaults,
-            });
+            all_pipelines = await this.generate_pipeline_elements(pipeline, all_pipelines, conditional_pipelines_data);
         }
 
         const pipe = {

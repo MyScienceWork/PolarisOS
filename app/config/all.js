@@ -42,10 +42,10 @@ const all = {
     },
     scheduler: {
         app: {
-            interval: 120 * 1000,
+            interval: 30 * 1000,
         },
         api: {
-            interval: 60 * 60 * 1000,
+            interval: 45 * 1000,
         },
     },
 };

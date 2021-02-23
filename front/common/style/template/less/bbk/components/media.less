@@ -1,0 +1,19 @@
+//Mixins
+.generate-colored-media(@i: length(@ined-colors)) when (@i > 0) {
+    @name: extract(@ined-colors, @i);
+
+    .media-content-@{name} {
+        color: @@name !important;
+        .subtitle {
+            color: @@name !important;
+        }
+
+        .title {
+            color: @@name !important;
+        }
+    }
+
+    .generate-colored-media((@i - 1));
+}
+
+.generate-colored-media();

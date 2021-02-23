@@ -22,6 +22,7 @@ module.exports = {
     },
     methods: {
         onScroll() {
+            /*
             const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
             if (currentScrollPosition < 0) {
                 return;
@@ -33,6 +34,7 @@ module.exports = {
             }
             this.showNavbar = currentScrollPosition < this.lastScrollPosition;
             this.lastScrollPosition = currentScrollPosition;
+             */
         },
         generate_route(item) {
             if (item.query && item.query.trim() !== '') {
@@ -59,12 +61,13 @@ module.exports = {
             if (this.$route.path === '/browse') {
                 return 1;
             }
-            const index = _.findIndex(this.menu.elements, r => this.$route.path === r.$route);
+            const index = _.findIndex(this.menu_filtered_with_roles(), r => this.$route.path === r.$route);
             if (index === -1) {
                 return -1;
             }
 
-            const info = this.menu.elements[index];
+            const menu_filtered = this.menu_filtered_with_roles();
+            const info = menu_filtered[index];
             if (info) {
                 return index;
             }
@@ -72,10 +75,10 @@ module.exports = {
         },
     },
     mounted() {
-        window.addEventListener('scroll', this.onScroll);
+        //window.addEventListener('scroll', this.onScroll);
     },
     beforeDestroy() {
-        window.removeEventListener('scroll', this.onScroll);
+        //window.removeEventListener('scroll', this.onScroll);
     },
     beforeMount() {
     },

@@ -62,9 +62,44 @@ async function contributor_search(content) {
     return search;
 }
 
+async function contributor_add(content) {
+    const parts = content.split(',').map(c => c.trim());
+
+    if (parts.length === 0) {
+        return null;
+    }
+
+    const query = {};
+    if (parts.length === 1) {
+        query.lastname = parts[0];
+        query.fullname = parts[0];
+    } else {
+        query.firstname = parts[0];
+        query.lastname = parts[1];
+        query.fullname = `${parts[0]} ${parts[1]}`;
+    }
+    return query;
+}
+
+
+async function journal_add(content) {
+    const query = {};
+    query.name = content;
+    return query;
+}
+
+async function editor_add(content) {
+    const query = {};
+    query.label = content;
+    return query;
+}
+
 module.exports = {
     single_ref,
     list_ref,
     match_search,
     contributor_search,
+    contributor_add,
+    journal_add,
+    editor_add,
 };

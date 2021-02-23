@@ -1,314 +1,35 @@
 <template>
 <div class="hero-body">
     <div class="container is-fluid">
-        <div class="columns" v-if="content_item && Object.keys(content_item).length > 0">
-            <div class="column is-8">
+        <div class="columns is-centered" v-if="content_item && Object.keys(content_item).length > 0">
+          <div class="column is-8">
                 <div class="card card-equal-height card-with-tag">
                     <div class="card-header">
                         <a href='#' class="card-header-icon card-header-tag is-left">
-                            <span class="tag is-purple is-active">{{lang(content_item.denormalization.type.label)}}</span>
-                        </a>
-                        <div class="card-header-title">
-                        </div>
-                        <a href='#' class="card-header-icon card-header-tag" v-for="(tt, index) in titles" @click.prevent="activate_lang('title', tt.lang)">
-                            <span :class="['tag is-purple', {'is-active': state.current_title.lang === tt.lang}]">{{good_language(index, lang, tt)}}</span>
+                            <span class="tag is-purple is-active">{{lang(content_item.denormalization.group.label)}}</span>
                         </a>
                     </div>
                     <div class="card-content content">
-                        <h3 class="title is-3">{{state.current_title.content}}</h3>
-                        <h5 class="title is-3" v-if="state.current_subtitle !== ''">{{state.current_subtitle.content}}</h5>
-                        <p v-html="contributors.contributors"></p>
-                        <ol>
-                            <li v-for="affiliation in affiliations" v-html="affiliation"></li>
-                        </ol>
-                        <!--<p><span v-if="date('publication')"> {{date('publication') | format_date('YYYY')}} </span><span v-if="country">{{lang(country)}}, </span><span v-if="city">{{city}}. </span></p>
-                        <p v-if="editor"> {{lang('l_editor')}} {{editor}} </p>-->
-                        <!--<p>{{lang(content_item.denormalization.type.label)}}</p>-->
-                        <p v-if="journal" v-html="journal"></p>
-                        <p v-if="book" v-html="book"></p>
-                        <p v-if="press" v-html="press"></p>
-                        <p v-if="chapter" v-html="chapter"></p>
-                        <p v-if="report" v-html="report"></p>
-                        <p v-if="thesis" v-html="thesis"></p>
-                        <p v-if="conference" v-html="conference"></p>
-                        <p v-if="other_document" v-html="other_document"></p>
+                        <h3 class="title is-3">{{content_item.title}}</h3>
+                        <h4 class="title is-4">{{_oa_find(content_item, 'denormalization.publishing_institution.name')}}</h4>
                         <p v-if="working_paper" v-html="working_paper"></p>
-                        <div class="card card-with-tag has-medium-bottom-margin" v-if="state.current_abstract.content !== ''">
-                            <div class="card-header">
-                                <div class="card-header-title">
-                                </div>
-                                <a href='#' class="card-header-icon card-header-tag" v-for="ab in abstracts" @click.prevent="activate_lang('abstract', ab.lang)">
-                                    <span :class="['tag is-purple', {'is-active': state.current_abstract.lang === ab.lang}]">{{ab.lang}}</span>
-                                </a>
-                            </div>
-                            <div class="card-content">
-                                <h4 class="subtitle is-5"><strong>{{lang('f_abstract')}}</strong></h4>
-                                <p v-html="$options.filters.nl2br(state.current_abstract.content)">
-                                </p>
-                            </div>
-                        </div>
-                        <p class="has-small-top-margin" v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
-                        <!--<p><strong v-html="lang('f_publication_id')"></strong></p>-->
-                        <!--<p class="has-small-top-margin"><a class="" href='#' @click.prevent="see_more_metadata">{{state.more_metadata ? lang('f_see_less_metadata') : lang('f_see_more_metadata')}}</a></p>-->
+                      <p v-html="contributors.contributors"></p>
+                      <ol>
+                          <li v-for="affiliation in affiliations" v-html="affiliation"></li>
+                        </ol>
+                        <p v-if="content_item.doi">
+                          <strong>DOI</strong> : <a class="break-word has-text-purple" target='_blank' :href='`https://doi.org/${content_item.doi}`'><span class="icon is-small"><i class="fa fa-external-link"></i></span>{{content_item.doi}}</a>
+                        </p>
+                        <p v-if="content_item.url">
+                          <a class="break-word has-text-purple" target='_blank' :href='`${content_item.url}`'><span class="icon is-small"><i class="fa fa-external-link"></i></span>{{content_item.url}}</a>
+                        </p>
                         <div>
-                            <widget v-if="themes.length > 0 || keywords('user') || keywords('demovoc')" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_indexing')}}</span>
-                                <div slot="body">
-                                    <p v-if="keywords('user')"><strong v-html="lang('f_publication_keyword', {}, 'other')"></strong> {{keywords('user')}}</p>
-                                    <p v-if="keywords('demovoc')"><strong v-html="lang('f_publication_demovoc_keyword', {}, 'other')"></strong> {{keywords('demovoc')}}</p>
-                                    <p v-if="themes.length > 0"><strong v-html="lang('f_publication_theme', {}, 'other')"></strong>
-                                        <ul>
-                                            <li v-for="theme in themes">{{lang(theme)}}</li>
-                                        </ul>
-                                    </p>
-                                </div>
-                            </widget>
-                            <widget v-if="ids.length > 0 || _oa_find(content_item, 'system.api.handle', false)" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_id_title', {}, 'other')}}</span>
-                                <div slot="body">
-                                    <p v-if="_oa_find(content_item, 'system.api.handle', false)">
-                                        <strong>{{lang('l_handle_id')}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='generate_handle_link(content_item)'>{{generate_handle_link(content_item)}}</a>
-                                    </p>
-                                    <p v-for="id in ids">
-                                        <template v-if="id.type.toUpperCase() === 'DOI'">
-                                            <strong>{{id.type.toUpperCase()}}</strong> : <a class="break-word has-text-purple" target='_blank' :href='`https://doi.org/${id._id}`'>{{id._id}}</a>
-                                        </template>
-                                        <template v-else-if="id.type.toUpperCase() !== 'HANDLE'">
-                                            <strong>{{id.type.toUpperCase()}}</strong> : {{id._id}}
-                                        </template>
-                                    </p>
-                                </div>
-                            </widget>
-                            <widget v-if="publication_version || access_level || license || content_item.url || resources.length > 0" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_rights')}}</span>
-                                <div slot="body">
-                                    <p v-if="publication_version"><strong v-html="lang('f_publication_version')"></strong> {{lang(publication_version)}}</p>
-                                    <p v-if="access_level"><strong v-html="lang('f_publication_access_level')"></strong> {{lang(access_level)}}</p>
-                                    <p v-if="embargo"><strong v-html="lang('f_publication_embargo')"></strong> {{embargo}}</p>
-                                    <p v-if="license"><strong v-html="lang('f_publication_license')"></strong>
-                                        <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
-                                        <span v-else>{{lang(license.label)}}</span>
-                                    </p>
-                                    <p v-if="content_item.url"><strong v-html="lang('f_publication_url')"></strong> <a class="break-word has-text-purple" target='_blank' :href='content_item.url'>{{content_item.url}}</a></p>
-                                    <p v-if="resources.length > 0">
-                                        <strong v-html="lang('f_publication_resource', {}, 'other')"></strong>
-                                        <ul>
-                                            <li v-for="r in resources"><a class="has-text-purple break-word" target='_blank' :href='r.url' title='URL'>{{r.url}}</a> ({{lang(r.type)}})</li>
-                                        </ul>
-                                    </p>
-                                </div>
-                            </widget>
-                            <widget v-if="teams.length > 0 || collection || projects.length > 0 || surveys.length > 0" :collapsed="true">
-                                <span slot="title">{{lang('f_publication_collection_title', {}, 'other')}}</span>
-                                <div slot="body">
-                                    <p v-if="teams && teams.length > 0"><strong v-html="lang('f_publication_team', {}, 'other')"></strong>
-                                        <ul>
-                                            <li v-for="t in teams">
-                                                {{lang(t)}}
-                                            </li>
-                                        </ul>
-                                    </p>
-                                    <p v-if="collection.length > 0"><strong v-html="lang('f_publication_collection', {}, 'other')"></strong>
-                                    <ul>
-                                        <li v-for="col in collection">
-                                            {{lang(col)}}
-                                        </li>
-                                    </ul>
-                                    </p>
-
-                                    <p v-if="projects.length > 0"><strong v-html="lang('f_publication_project', {}, 'other')"></strong>
-                                        <ul>
-                                            <li v-for="p in projects">
-                                                {{lang(p)}}
-                                            </li>
-                                        </ul>
-                                    </p>
-                                    <p v-if="surveys.length > 0"><strong v-html="lang('f_publication_survey', {}, 'other')"></strong>
-                                        <ul>
-                                            <li v-for="p in surveys">
-                                                {{lang(p)}}
-                                            </li>
-                                        </ul>
-                                    </p>
-                                </div>
-                            </widget>
                             <widget :collapsed="true">
                                 <span slot="title">{{lang('f_publication_information')}}</span>
                                 <div slot="body">
-                                    <p v-if="depositor"><strong v-html="lang('f_publication_depositor')"></strong> {{depositor.firstname}} {{depositor.lastname}}</p>
-                                    <!--<p><strong v-html="lang('f_publication_id')"></strong>: </p>-->
-                                    <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit', 'DD/MM/YYYY')}}</p>
-                                    <p><strong v-html="lang('f_publication_last_modification_date')"></strong> {{date('update', 'DD/MM/YYYY')}}</p>
-                                    <p><strong v-html="lang('f_publication_deposit_version')"></strong> {{content_item.version}} </p>
-                                    <template v-if="last_version_link">
-                                    <p>
-                                    <span>{{lang('f_more_recent_version_exists')}}</span> <router-link
-                                        class="has-text-purple"
-                                        v-html="lang('f_click_here_see_most_recent_version')"
-                                        :to="last_version_link"
-                                        ></router-link>
-                                    </p>
-                                    </template>
+                                    <p><strong v-html="lang('f_publication_deposit_date')"></strong> {{date('deposit_date') | format_date('MM/DD/YYYY')}}</p>
                                 </div>
                             </widget>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="column">
-                <div class="columns is-centered" v-if="content_item.files && content_item.files.length > 0">
-                    <div class="column">
-                        <div class="card info-card info-card-purple">
-                            <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_file')}}</p>
-                            </header>
-                            <div
-                                class="card-content has-text-centered"
-                                v-if="is_files_accessible"
-                            >
-                                <template v-if="generate_preview_link('master')">
-                                    <div class="columns is-centered">
-                                        <div class="column has-vertically-aligned-content is-vcentered">
-                                            <a target="_blank" :href="generate_viewer_link('master')" v-if="generate_viewer_link('master')">
-                                                <img :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' width="256px" />
-                                            </a>
-                                            <img v-else :src="generate_preview_link('master')" alt='Thumbnail' class='pos-view-thumbnail-preview' />
-                                        </div>
-                                    </div>
-                                    <div class="has-small-top-margin">
-                                        <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
-                                            <a :href="generate_download_link('master')" class="swap">
-                                                <span class="icon is-large">
-                                                    <i class="fa fa-cloud-download fa-3x"></i>
-                                                </span>
-                                            </a>
-                                        </b-tooltip>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <div class="columns is-centered">
-                                        <div class="column has-vertically-aligned-content is-vcentered">
-                                            <b-tooltip class="is-dark" :label="lang('l_master_file_download_help')" multilined>
-                                                <a :href="generate_download_link('master')" class="swap">
-                                                    <span class="icon is-large">
-                                                        <i class="fa fa-file fa-3x"></i>
-                                                    </span>
-                                                </a>
-                                            </b-tooltip>
-                                        </div>
-                                    </div>
-                                </template>
-                                <p class="has-small-top-margin" v-if="has_extra_files">
-                                    <a class="swap has-small-top-margin" @click.prevent="state.show_extra_files = !state.show_extra_files">
-                                        {{lang('f_click_here_to_download_extra_files')}}
-                                    </a>
-                                </p>
-
-                                <div class="has-small-top-margin" v-if="state.show_extra_files">
-                                    <p class="title is-5">{{lang('f_select_extra_files_to_download')}}</p>
-                                    <div class="field has-addons" v-for="file in content_item.files">
-                                        <p class="control is-expanded">
-                                            <a class="button is-static is-fullwidth">
-                                                {{$lodash.truncate(file.name)}}
-                                            </a>
-                                        </p>
-                                        <div class="control">
-                                            <div class="input">
-                                                <input type="checkbox" v-model="state.selected_files[file.name].s" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="field is-grouped">
-                                        <div class="control">
-                                            <a class="button" :href='multi_download_link'>{{lang('f_download')}}</a>
-                                        </div>
-                                        <div class="control">
-                                            <button class="button is-primary" @click.prevent="select_all_extra_files(!is_all_extra_files_selected)">{{is_all_extra_files_selected ?  lang('f_deselect_all') : lang('f_select_all')}}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-content has-text-centered" v-else>
-                                <a @click.prevent="state.copyRequest = !state.copyRequest" class="swap" href=''>{{lang('f_click_here_to_request_copy')}}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-centered" v-if="license">
-                    <div class="column">
-                        <div class="card info-card info-card-red">
-                            <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_license_title')}}</p>
-                            </header>
-                            <div class="card-content">
-                                <p>
-                                    <a class="has-text-purple" v-if="license.link && license.link.trim() !== '' ":href='license.link' target='_blank'>{{lang(license.label)}}</a>
-                                    <span v-else>{{lang(license.label)}}</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-centered">
-                    <div class="column">
-                        <div class="card info-card info-card-purple">
-                            <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_citation')}}</p>
-                            </header>
-                            <div class="card-content">
-                                <p class="break-word" v-html="content_item.html"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-centered">
-                    <div class="column">
-                        <div class="card info-card info-card-purple">
-                            <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_export')}}</p>
-                            </header>
-                            <div class="card-content">
-                                <p class="has-text-centered"><a @click.prevent="run_export('csv')">{{lang('l_csv_export')}}</a> |
-                                <a @click.prevent="run_export('bibtex')">{{lang('l_bibtext_export')}}</a> |
-                                <a @click.prevent="run_export('ris')">{{lang('l_ris_export')}}</a> |
-                                <a @click.prevent="run_export('endnote')">{{lang('l_endnote_export')}}</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-centered">
-                    <div class="column">
-                        <div class="card info-card info-card-red">
-                            <header class="card-header">
-                                <p class="card-header-title">{{lang('f_publication_share')}}</p>
-                            </header>
-                            <div class="card-content has-text-centered">
-                                <social-sharing
-                                  :title="state.current_title.content"
-                                  :description="state.current_abstract.content"
-                                  quote=""
-                                  hashtags="ined"
-                                  twitter-user="InedFr"
-                                  network-tag="a"
-                                  inline-template
-                                >
-                                    <div>
-                                        <network network="facebook" class="icon facebook-color is-large share-icon">
-                                            <i class="fa fa-facebook-official fa-2x"></i>
-                                        </network>
-                                        <network network="twitter" class="icon twitter-color is-large share-icon">
-                                            <i class="fa fa-twitter fa-2x"></i>
-                                        </network>
-                                        <network network="linkedin" class="icon linkedin-color is-large share-icon">
-                                            <i class="fa fa-linkedin fa-2x"></i>
-                                        </network>
-                                        <network network="email" class="swap icon is-large share-icon">
-                                            <i class="fa fa-envelope fa-2x"></i>
-                                        </network>
-                                    </div>
-                                </social-sharing>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -320,11 +41,6 @@
                 <p v-html="lang('l_unexisting_item_view')"></p>
             </div>
         </div>
-        <copy-requester
-            :logged-in="state.loggedIn"
-            :trigger.sync="state.copyRequest"
-            :item="content_item._id"
-        />
     </div>
 </div>
 </template>

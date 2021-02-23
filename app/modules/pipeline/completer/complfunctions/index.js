@@ -14,6 +14,29 @@ function generic_complete(template: string): Function {
     };
 }
 
+function copy(template: string): Function {
+    return (object: Object, path: string, info: Object = {}) => {
+        const obj = Utils.find_value_with_path(object, template.split("."));
+        return Utils.make_nested_object_from_path(path.split('.'), obj);
+    };
+}
+
+function concat(template: string): Function {
+    return (object: Object, path: string, info: Object = {}) => {
+        const keys = template.split(',');
+        let result = [];
+        keys.forEach(key => {
+            let temp = Utils.find_value_with_path(object, key.split("."));
+            if (temp instanceof Array) {
+                result = result.concat(temp);
+            } else if (temp) {
+                result = result.concat([{ _id: temp }]);
+            }
+        })
+        return Utils.make_nested_object_from_path(path.split('.'), result);
+    };
+}
+
 async function key_complete(object: Object, path: string, info: Object = {}) {
     const result = Utils.make_nested_object_from_path(path.split('.'), CryptoUtils.generate_key(''));
     return result;
@@ -198,4 +221,6 @@ module.exports = {
     denormalization,
     initial,
     flatten,
+    copy,
+    concat
 };

@@ -56,8 +56,8 @@ const TemplateModel = require('../entities/template/models/templates');
 const Menu = require('../entities/menu/menu');
 const MenuModel = require('../entities/menu/models/menus');
 
-const Publication = require('../entities/publication/publication');
-const PublicationModel = require('../entities/publication/models/publications');
+//const Publication = require('../entities/publication/publication');
+//const PublicationModel = require('../entities/publication/models/publications');
 
 const Identifier = require('../entities/identifier/identifier');
 const IdentifierModel = require('../entities/identifier/models/identifiers');
@@ -82,6 +82,9 @@ const WorkflowModel = require('../entities/workflow/models/workflows');
 
 const Cache = require('../entities/cache/cache');
 const CacheModel = require('../entities/cache/models/caches');
+
+const Action = require('../entities/action/action');
+const ActionModel = require('../entities/action/models/actions');
 
 type ObjectList = {
     whitelist?: Set<string>,
@@ -233,9 +236,21 @@ async function grab_entity_from_type(type: string, mode: string = 'model'): ?Obj
             return null;
         }
 
+        const c_pipelines_data = result.hits[0].source.conditional_pipelines;
+        let c_model_result = { hits: [] };
+        if (c_pipelines_data) {
+            const keys_c_pipelines = Object.keys(c_pipelines_data);
+            const ids_c_pipelines = keys_c_pipelines.map(key => c_pipelines_data[key].pipeline)
+            const c_model_response = format_search(
+                { where: { _id: _.flatten(ids_c_pipelines).map(p => p._id) } }, PipelineModel);
+            c_model_result = await Pipeline.search(get_index('pipeline'), 'pipeline'
+                , es_client, PipelineModel, c_model_response.search, c_model_response.options);
+        }
         const pipelines = model_result.hits;
+        const conditional_pipelines = c_model_result.hits;
+
         const model = await Pipeline.generate_model(get_index(type), type,
-            es_client, pipelines);
+            es_client, pipelines.concat(conditional_pipelines), c_pipelines_data);
         return model;
     } else if (mode === 'class') {
         return ODM;
@@ -277,12 +292,6 @@ async function get_model_from_type(type: string): ?Object {
         return PageModel;
     case 'menu':
         return MenuModel;
-    case 'publication': {
-        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
-            return MSWPublicationModel;
-        }
-        return PublicationModel;
-    }
     case 'identifier':
         return IdentifierModel;
     case 'mail_template':
@@ -297,6 +306,8 @@ async function get_model_from_type(type: string): ?Object {
         return WorkflowModel;
     case 'cache':
         return CacheModel;
+    case 'action':
+        return ActionModel;
     default: {
         return grab_entity_from_type(type, 'model');
     }
@@ -339,12 +350,6 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Page(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'identifier':
         return new Identifier(get_index(type), type, es_client, await get_model_from_type(type), id);
-    case 'publication': {
-        if (['uspc', 'msw'].indexOf(config.elasticsearch.index_prefix) !== -1) {
-            return new MSWPublication(get_index(type), type, es_client, await get_model_from_type(type), id);
-        }
-        return new Publication(get_index(type), type, es_client, await get_model_from_type(type), id);
-    }
     case 'mail_template':
         return new MailTemplate(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'chart':
@@ -357,6 +362,8 @@ async function get_info_from_type(type: string, id: ?string): ?ODM {
         return new Workflow(get_index(type), type, es_client, await get_model_from_type(type), id);
     case 'cache':
         return new Cache(get_index(type), type, es_client, await get_model_from_type(type), id);
+    case 'action':
+        return new Action(get_index(type), type, es_client, await get_model_from_type(type), id);
     default: {
         const CLS = await grab_entity_from_type(type, 'class');
         if (CLS == null) {
