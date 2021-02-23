@@ -89,7 +89,9 @@
                     :class="['input', {'is-danger': !viewValidationTexts && validations.length > 0}]"
                     :value="state.value"
                     @blur="update"
-                    :readonly="getReadonly"
+                    :readonly="readonly"
+                    :min="minNumber"
+                    :max="maxNumber"
                 />
                 <input v-else-if="type === 'price'"
                        type="text"

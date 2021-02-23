@@ -178,6 +178,13 @@ module.exports = {
                 return null;
             }
         },
+        generate_ajax_filter(field) {
+            try {
+                return JSON.parse(field.datasource.filter);
+            } catch (error) {
+                return []
+            }
+        },
         dropzone_analyze_file(filename) {
             this.$emit('dropzone-analyze-file', filename);
         },

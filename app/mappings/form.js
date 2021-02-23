@@ -39,6 +39,9 @@ module.exports = {
                 has_subforms: {
                     type: 'boolean',
                 },
+                horizontal_display: {
+                    type: 'boolean',
+                },
                 fields: {
                     type: 'nested',
                     properties: {
@@ -76,6 +79,9 @@ module.exports = {
                                 },
                                 title: {
                                     type: 'text',
+                                },
+                                widget_collapsed: {
+                                    type: 'boolean',
                                 },
                             },
                         },
@@ -190,6 +196,9 @@ module.exports = {
                                     type: 'integer',
                                 },
                                 query: {
+                                    type: 'keyword',
+                                },
+                                filter: {
                                     type: 'keyword',
                                 },
                             },
@@ -310,6 +319,9 @@ module.exports = {
                                     type: 'boolean',
                                 },
                             },
+                        },
+                        columns_used: {
+                            type: 'integer'
                         },
                     },
                 },

@@ -1,3 +1,5 @@
+// 'http://elastic:vZE5zl8HVGQMquAQJ4Nn@localhost:9201',
+
 const development = {
     port: 4002,
     elasticsearch: {

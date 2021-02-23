@@ -84,7 +84,7 @@
                             name="content"
                             :label="lang('l_query_content_json')"
                             :is-required="true"
-                            type="textarea"
+                            type="ide-editor"
                             :form="state.sinks.creations.query"
                         />
                         </fform>

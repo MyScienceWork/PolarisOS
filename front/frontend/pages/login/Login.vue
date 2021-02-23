@@ -106,6 +106,11 @@
                 </p>
             </div>
         </div>
+        <div class="columns is-centered">
+            <div class="column is-6 has-text-left">
+                <p v-html="lang('l_rgpd_notice')"></p>
+            </div>
+        </div>
     </div>
     <div class="container" v-else>
         <div class="columns is-centered">

@@ -1,0 +1,19 @@
+FROM node:12.18.3
+
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y pdftk
+RUN apt-get install -y gettext-base
+RUN npm install pm2 -g
+RUN npm install gulp-cli -g
+RUN npm install flow-bin -g
+
+# support asian character
+RUN apt-get install -y fonts-takao-mincho fonts-takao fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
+
+#CMD [ "start_polarisos.sh", "pm2-dev", "start", "pm2.json" ]
+# npm install to install all node packages
+# npm run watch
+# gulp default

@@ -378,7 +378,10 @@ module.exports = {
                 body.sort = body.sort.concat(this.defaultSorts);
             }
 
-            body.sort.push({ _score: 'desc' });
+            //body.sort.push({ _score: 'desc' });
+            if (body.sort.length == 0) {
+                body.sort.push({ _id: 'desc' });
+            }
 
             this.$store.dispatch('search', {
                 path: this.searchPath,

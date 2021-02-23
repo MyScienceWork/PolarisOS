@@ -45,6 +45,8 @@ module.exports = {
         maxDate: { require: false, type: Date },
         fieldId: { required: false, type: Number },
         allowGrobid: { required: false, default: true, type: Boolean },
+        minNumber: { require: false, type: Number },
+        maxNumber: { require: false, type: Number },
     },
 
     data() {
